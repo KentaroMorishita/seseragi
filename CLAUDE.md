@@ -8,8 +8,7 @@ Seseragiは、TypeScriptにトランスパイルされる純粋関数型プロ�
 
 ## リポジトリ構造
 
-- `design.md` - 構文、型、機能を含む包括的な言語仕様
-- `language-design.md` - 代替言語仕様文書
+- `specification.md` - 言語仕様
 
 ## 言語アーキテクチャ
 
