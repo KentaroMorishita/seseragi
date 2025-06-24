@@ -213,30 +213,67 @@ bun run typecheck
 - セミコロン: 必要に応じて
 - 末尾カンマ: ES5準拠
 
-### Git ワークフロー
+## 開発ワークフロー
+
+### 1. 作業開始時
 ```bash
-# 機能ブランチ作成
-git checkout -b feature/new-feature
+# TODOリストの確認
+cat TODO.md
 
-# 変更をコミット前にフォーマット実行
-bun run format
-bun run typecheck
-bun test
+# 作業対象のタスクを決定
+# TODOリストでタスクを進行中にマーク（手動）
+```
 
-# コミット
+### 2. 開発サイクル
+```bash
+# 機能ブランチ作成（必要に応じて）
+git checkout -b feature/task-name
+
+# 開発実行
+# - コード実装
+# - テスト追加・更新
+
+# 品質チェック
+bun run format      # コードフォーマット
+bun run typecheck   # 型チェック
+bun run lint        # リンティング
+bun test            # テスト実行
+
+# ビルド確認
+bun run build:all   # 全ビルド実行
+```
+
+### 3. 作業完了時
+```bash
+# TODOリスト更新
+# - 完了したタスクにチェックマーク
+# - 必要に応じて新しいサブタスク追加
+
+# 変更をコミット
 git add .
-git commit -m "機能説明
+git commit -m "タスク完了: [タスク名]
+
+詳細な変更内容の説明
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 
-# リモートにプッシュ
-git push -u origin feature/new-feature
+# リモートにプッシュ（必要に応じて）
+git push -u origin feature/task-name
+```
 
+### 4. プルリクエスト作成
+```bash
 # GitHub CLIでプルリクエスト作成
 gh pr create --title "機能タイトル" --body "詳細説明"
 ```
+
+### TODOリスト管理ルール
+- タスク開始時: `[ ]` → `[進行中]`として手動マーク
+- タスク完了時: `[進行中]` → `[x]`に変更
+- 新しいサブタスクが発見された場合は追加
+- 完了したタスクは必ずコミットと一緒に更新
 
 ### TypeScript設定
 
