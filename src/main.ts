@@ -20,7 +20,7 @@ try {
   const tokens = lexer.tokenize()
   console.log(
     "Tokens:",
-    tokens.map((t: any) => `${t.type}:${t.value}`)
+    tokens.map((t) => `${t.type}:${t.value}`)
   )
 
   const parser = new Parser(source)
@@ -31,5 +31,3 @@ try {
 } catch (error) {
   console.error("Parse error:", error)
 }
-
-export {}

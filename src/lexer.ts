@@ -140,7 +140,7 @@ export class Lexer {
       return null
     }
 
-    const start = this.current
+    const _start = this.current
     const startLine = this.line
     const startColumn = this.column
 

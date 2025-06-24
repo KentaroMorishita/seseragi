@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test"
 import { Parser } from "../src/parser"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Parser", () => {
   it("should parse variable declaration", () => {

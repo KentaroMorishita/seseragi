@@ -5,7 +5,9 @@
       "Bash(npm init:*)",
       "Bash(npx tsc:*)",
       "Bash(bun init:*)",
-      "Bash(bun test:*)"
+      "Bash(bun test:*)",
+      "Bash(bun add:*)",
+      "Bash(bunx biome lint:*)"
     ],
     "deny": []
   }

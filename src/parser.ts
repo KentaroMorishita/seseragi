@@ -2,7 +2,7 @@
  * Seseragi Parser - Recursive Descent Parser
  */
 
-import { Token, TokenType, Lexer } from "./lexer"
+import { type Token, TokenType, Lexer } from "./lexer"
 import * as AST from "./ast"
 
 export class ParseError extends Error {
@@ -289,7 +289,7 @@ export class Parser {
     const parameters: AST.Parameter[] = []
 
     // Parse first parameter
-    const firstParam = this.consume(
+    const _firstParam = this.consume(
       TokenType.IDENTIFIER,
       "Expected parameter name"
     ).value
