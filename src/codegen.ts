@@ -17,6 +17,7 @@ import {
   ReversePipe,
   MonadBind,
   FoldMonoid,
+  FunctionApplicationOperator,
   Type,
   FunctionType,
   PrimitiveType,
@@ -115,6 +116,11 @@ class CodeGenerator {
       "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {",
       "  return arr.reduce(combine, empty);",
       "};",
+      "",
+      "// 組み込み関数のヘルパー",
+      "const print = (value: any): void => console.log(value);",
+      "const putStrLn = (value: string): void => console.log(value);",
+      "const toString = (value: any): string => String(value);",
     ]
   }
 
@@ -215,6 +221,8 @@ class CodeGenerator {
       return this.generateMonadBind(expr)
     } else if (expr instanceof FoldMonoid) {
       return this.generateFoldMonoid(expr)
+    } else if (expr instanceof FunctionApplicationOperator) {
+      return this.generateFunctionApplicationOperator(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -370,6 +378,16 @@ class CodeGenerator {
     const right = this.generateExpression(fold.right)
 
     return `foldMonoid(${left}, /* empty */, ${right})`
+  }
+
+  // 関数適用演算子の生成
+  generateFunctionApplicationOperator(app: FunctionApplicationOperator): string {
+    const left = this.generateExpression(app.left)
+    const right = this.generateExpression(app.right)
+
+    // $ は右結合で、基本的には関数呼び出しと同じ
+    // f $ x → f(x)
+    return `${left}(${right})`
   }
 
   // 型の生成
