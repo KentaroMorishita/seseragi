@@ -117,6 +117,16 @@ let result = partialFn 3    // c=3 を適用して評価: 6
 
 ## 6. 演算子
 
+### 6.0 演算子の優先順位と結合性
+
+演算子の優先順位（高い順）：
+1. **関数呼び出し** - `f(x)`, `f x`
+2. **逆パイプ演算子** - `~` （右結合）
+3. **パイプライン演算子** - `|` （左結合）
+4. **モナドバインド演算子** - `>>=` （左結合）
+5. **モノイド畳み込み演算子** - `>>>` （左結合）
+6. **関数適用演算子** - `$` （右結合、最低優先順位）
+
 ### 6.1 パイプライン演算子 (`|`)
 
 関数適用を左から右に繋げます。
@@ -148,7 +158,23 @@ fn addFive x :Int -> Maybe<Int> = Just (x + 5)
 let result = Just 10 >>= addFive  // 結果: Just 15
 ```
 
-### 6.4 モノイド畳み込み演算子 (`>>>`)
+### 6.4 関数適用演算子 (`$`)
+
+関数適用の優先順位を最低にして、括弧を減らします。右結合で評価されます。
+
+```rust
+print $ toString $ add 10 5     // (print (toString (add 10 5))) と同等
+print $ toString $ multiply 4 6 // (print (toString (multiply 4 6))) と同等
+
+// 括弧が多いネストした呼び出し
+let result1 = add 1 $ multiply 2 $ subtract 10 3  // add 1 (multiply 2 (subtract 10 3))
+
+// パイプライン演算子との違い
+let pipeline = 10 | add 5 | toString | print      // 左から右へ
+let application = print $ toString $ add 5 10   // 右から左へ（優先順位）
+```
+
+### 6.5 モノイド畳み込み演算子 (`>>>`)
 
 モノイドの畳み込み操作を行います。
 
@@ -223,7 +249,7 @@ impl Wallet {
     fn add self -> other :Wallet -> Wallet {
         Wallet { amount: self.amount + other.amount }
     }
-    
+
     fn sub self -> other :Wallet -> Wallet {
         Wallet { amount: self.amount - other.amount }
     }
@@ -239,7 +265,7 @@ impl Wallet {
     operator + (self, other :Wallet) -> Wallet {
         self.add other
     }
-    
+
     operator - (self, other :Wallet) -> Wallet {
         self.sub other
     }
@@ -259,7 +285,7 @@ let result = wallet1 + wallet2  // Wallet { amount: 150 }
 impl Wallet {
     monoid {
         identity Wallet { amount: 0 }
-        
+
         operator + (self, other :Wallet) -> Wallet {
             self.add other
         }
@@ -398,7 +424,18 @@ fn greetUser user :User -> String {
     "Hello, " ++ user.name ++ "! You are " ++ String.fromInt user.age ++ " years old."
 }
 
+fn add x :Int -> y :Int -> Int = x + y
+fn toString x :Int -> String = String.fromInt x
+
 // メイン処理
 let result = createUser "Alice" 25 >>= (\user -> Just (greetUser user))
 // 結果: Just "Hello, Alice! You are 25 years old."
+
+// 関数適用演算子の使用例
+print $ toString $ add 10 5        // カッコなしでネストした関数呼び出し
+print $ greetUser $ User { name: "Bob", age: 30 }
+
+// 比較: 括弧を使った従来の書き方
+print (toString (add 10 5))        // 括弧が多くて読みにくい
+print (greetUser (User { name: "Bob", age: 30 }))
 ```

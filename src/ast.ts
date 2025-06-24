@@ -253,6 +253,23 @@ export class FoldMonoid extends Expression {
   }
 }
 
+export class FunctionApplicationOperator extends Expression {
+  kind = "FunctionApplicationOperator"
+  left: Expression
+  right: Expression
+
+  constructor(
+    left: Expression,
+    right: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.left = left
+    this.right = right
+  }
+}
+
 export class ConditionalExpression extends Expression {
   kind = "ConditionalExpression"
   condition: Expression
