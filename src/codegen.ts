@@ -1,6 +1,7 @@
 import {
   Statement,
   Expression,
+  ExpressionStatement,
   FunctionDeclaration,
   VariableDeclaration,
   TypeDeclaration,
@@ -8,6 +9,8 @@ import {
   Identifier,
   BinaryOperation,
   FunctionCall,
+  FunctionApplication,
+  BuiltinFunctionCall,
   ConditionalExpression,
   MatchExpression,
   Pipeline,
@@ -123,9 +126,17 @@ class CodeGenerator {
       return this.generateVariableDeclaration(stmt)
     } else if (stmt instanceof TypeDeclaration) {
       return this.generateTypeDeclaration(stmt)
+    } else if (stmt instanceof ExpressionStatement) {
+      return this.generateExpressionStatement(stmt)
     }
 
     return `// Unsupported statement: ${stmt.constructor.name}`
+  }
+
+  // 式ステートメントの生成
+  generateExpressionStatement(stmt: ExpressionStatement): string {
+    const expr = this.generateExpression(stmt.expression)
+    return `${expr};`
   }
 
   // 関数宣言の生成
@@ -188,6 +199,10 @@ class CodeGenerator {
       return this.generateBinaryOperation(expr)
     } else if (expr instanceof FunctionCall) {
       return this.generateFunctionCall(expr)
+    } else if (expr instanceof FunctionApplication) {
+      return this.generateFunctionApplication(expr)
+    } else if (expr instanceof BuiltinFunctionCall) {
+      return this.generateBuiltinFunctionCall(expr)
     } else if (expr instanceof ConditionalExpression) {
       return this.generateConditionalExpression(expr)
     } else if (expr instanceof MatchExpression) {
@@ -239,6 +254,56 @@ class CodeGenerator {
     const args = call.arguments.map((arg) => this.generateExpression(arg))
 
     return `${func}(${args.join(", ")})`
+  }
+
+  // 関数適用の生成
+  generateFunctionApplication(app: FunctionApplication): string {
+    const func = this.generateExpression(app.function)
+    const arg = this.generateExpression(app.argument)
+    
+    // ビルトイン関数の特別処理
+    if (app.function instanceof Identifier) {
+      const funcName = app.function.name
+      if (funcName === "print" || funcName === "putStrLn") {
+        return `console.log(${arg})`
+      } else if (funcName === "toString") {
+        return `String(${arg})`
+      }
+    }
+    
+    // ネストした関数適用の処理
+    if (app.function instanceof FunctionApplication) {
+      const nestedFunc = app.function.function
+      if (nestedFunc instanceof Identifier) {
+        const funcName = nestedFunc.name
+        if (funcName === "print" || funcName === "putStrLn") {
+          const firstArg = this.generateExpression(app.function.argument)
+          return `console.log(${firstArg}, ${arg})`
+        }
+      }
+    }
+    
+    // 通常の関数適用
+    return `${func}(${arg})`
+  }
+
+  // ビルトイン関数呼び出しの生成
+  generateBuiltinFunctionCall(call: BuiltinFunctionCall): string {
+    const args = call.arguments.map((arg) => this.generateExpression(arg))
+
+    switch (call.functionName) {
+      case "print":
+        return `console.log(${args.join(", ")})`
+      case "putStrLn":
+        return `console.log(${args.join(", ")})`
+      case "toString":
+        if (args.length !== 1) {
+          throw new Error("toString requires exactly one argument")
+        }
+        return `String(${args[0]})`
+      default:
+        throw new Error(`Unknown builtin function: ${call.functionName}`)
+    }
   }
 
   // 条件式の生成

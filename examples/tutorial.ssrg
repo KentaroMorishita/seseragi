@@ -1,0 +1,174 @@
+// Seseragi チュートリアル
+// 段階的に関数型プログラミングを学ぶためのサンプル
+
+print "=== Seseragi Tutorial ==="
+
+// =============================================================================
+// ステップ1: 基本的な値と出力
+// =============================================================================
+
+print "--- Step 1: Basic Values and Output ---"
+
+// 変数の宣言（let は不変変数）
+let message :String = "Welcome to Seseragi!"
+let age :Int = 25
+let height :Float = 170.5
+let isStudent :Bool = True
+
+// 基本的な出力
+print message
+print (toString age)
+print (toString height)
+print (toString isStudent)
+
+// =============================================================================
+// ステップ2: 関数の定義と呼び出し
+// =============================================================================
+
+print "--- Step 2: Functions ---"
+
+// 単純な関数
+fn sayHello name :String -> String = "Hello, " + name
+
+// 関数の呼び出し（関数型スタイル）
+print (sayHello "Alice")
+print (sayHello "Bob")
+
+// 数値を扱う関数
+fn square x :Int -> Int = x * x
+fn cube x :Int -> Int = x * x * x
+
+print (toString (square 5))   // 25
+print (toString (cube 3))     // 27
+
+// =============================================================================
+// ステップ3: 複数パラメータの関数（カリー化）
+// =============================================================================
+
+print "--- Step 3: Curried Functions ---"
+
+// 複数パラメータの関数は自動的にカリー化される
+fn add x :Int -> y :Int -> Int = x + y
+fn subtract x :Int -> y :Int -> Int = x - y
+fn multiply x :Int -> y :Int -> Int = x * y
+
+// 通常の使用
+print (toString (add 10 5))       // 15
+print (toString (subtract 10 3))  // 7
+print (toString (multiply 4 6))   // 24
+
+// 部分適用の例
+let add10 = add 10
+print (toString (add10 5))        // 15
+print (toString (add10 8))        // 18
+
+let multiplyBy3 = multiply 3
+print (toString (multiplyBy3 7))  // 21
+
+// =============================================================================
+// ステップ4: 条件分岐
+// =============================================================================
+
+print "--- Step 4: Conditional Expressions ---"
+
+fn absolute x :Int -> Int = if x < 0 then 0 - x else x
+
+fn max x :Int -> y :Int -> Int = if x > y then x else y
+
+fn sign x :Int -> String = if x > 0 then "positive" else if x < 0 then "negative" else "zero"
+
+print (toString (absolute 5))   // 5
+print (toString (max 8 12))        // 12
+print (sign 7)                     // positive
+print (sign (0 - 3))                  // negative
+print (sign 0)                     // zero
+
+// =============================================================================
+// ステップ5: 文字列操作
+// =============================================================================
+
+print "--- Step 5: String Operations ---"
+
+fn greetFormal title :String -> name :String -> String = "Good day, " + title + " " + name + "!"
+
+fn makeUppercase s :String -> String = s  // 仮実装（実際は大文字変換）
+
+print (greetFormal "Mr." "Smith")
+print (greetFormal "Dr." "Johnson")
+
+// 文字列の結合
+fn fullName first :String -> last :String -> String = first + " " + last
+
+print (fullName "John" "Doe")
+print (fullName "Jane" "Smith")
+
+// =============================================================================
+// ステップ6: 高階関数の基本
+// =============================================================================
+
+print "--- Step 6: Higher-Order Functions ---"
+
+// 関数を受け取る関数
+fn applyOperation op :(Int -> Int) -> value :Int -> Int = op value
+
+// 操作関数の定義
+fn double x :Int -> Int = x * 2
+fn increment x :Int -> Int = x + 1
+
+print (toString (applyOperation double 5))     // 10
+print (toString (applyOperation increment 5))  // 6
+
+// 関数を2回適用する
+fn applyTwice f :(Int -> Int) -> x :Int -> Int = f (f x)
+
+print (toString (applyTwice double 3))     // 12 (3 * 2 * 2)
+print (toString (applyTwice increment 5))  // 7 (5 + 1 + 1)
+
+// =============================================================================
+// ステップ7: 再帰関数
+// =============================================================================
+
+print "--- Step 7: Recursive Functions ---"
+
+// 階乗の計算
+fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
+
+print (toString (factorial 5))  // 120
+print (toString (factorial 3))  // 6
+
+// フィボナッチ数列
+fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
+
+print (toString (fibonacci 6))  // 8
+print (toString (fibonacci 7))  // 13
+
+// 累乗計算
+fn power base :Int -> exp :Int -> Int = if exp == 0 then 1 else if exp == 1 then base else base * power base (exp - 1)
+
+print (toString (power 2 3))   // 8
+print (toString (power 3 4))   // 81
+
+// =============================================================================
+// ステップ8: 組み合わせ技
+// =============================================================================
+
+print "--- Step 8: Combining Techniques ---"
+
+// 複数の概念を組み合わせた例
+fn processNumber n :Int -> String = let doubled = double n in let result = if doubled > 10 then "big" else "small" in "Number " + toString n + " doubled is " + toString doubled + " (" + result + ")"
+
+print (processNumber 3)   // Number 3 doubled is 6 (small)
+print (processNumber 8)   // Number 8 doubled is 16 (big)
+
+// 複雑な計算の例
+fn calculateArea length :Float -> width :Float -> Float = length * width
+fn calculateVolume length :Float -> width :Float -> height :Float -> Float = calculateArea length width * height
+
+// 型を合わせるために整数で計算
+fn simpleArea l :Int -> w :Int -> Int = l * w
+fn simpleVolume l :Int -> w :Int -> h :Int -> Int = simpleArea l w * h
+
+print (toString (simpleArea 5 3))      // 15
+print (toString (simpleVolume 4 3 2))  // 24
+
+print "=== Tutorial Complete! ==="

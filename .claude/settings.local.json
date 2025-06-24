@@ -18,7 +18,9 @@
       "Bash(ln:*)",
       "Bash(bun link:*)",
       "Bash(seseragi compile:*)",
-      "Bash(seseragi:*)"
+      "Bash(seseragi:*)",
+      "Bash(bun:*)",
+      "Bash(code:*)"
     ],
     "deny": []
   }

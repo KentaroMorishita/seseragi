@@ -1,0 +1,22 @@
+// ビルトイン関数のテスト
+
+// 基本的な出力
+print("Hello, Seseragi!")
+
+// 変数を出力
+let name :String = "World"
+print(name)
+
+// 数値を文字列に変換して出力
+let age :Int = 25
+putStrLn(toString(age))
+
+// 計算結果を出力
+let result :Int = 10 + 20
+print(toString(result))
+
+// 関数の中でprint使用
+fn greet name :String -> Unit = print("Hello, " + name)
+
+// 複数の引数を出力
+print("Name:", name, "Age:", toString(age))
