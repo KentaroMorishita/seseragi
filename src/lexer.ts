@@ -72,6 +72,7 @@ export enum TokenType {
   NEWLINE = "NEWLINE",
   EOF = "EOF",
   WHITESPACE = "WHITESPACE",
+  COMMENT = "COMMENT",
 }
 
 export interface Token {
@@ -204,6 +205,9 @@ export class Lexer {
       case "*":
         return this.makeToken(TokenType.MULTIPLY, char, startLine, startColumn)
       case "/":
+        if (this.peek() === "/") {
+          return this.comment(startLine, startColumn)
+        }
         return this.makeToken(TokenType.DIVIDE, char, startLine, startColumn)
       case "%":
         return this.makeToken(TokenType.MODULO, char, startLine, startColumn)
@@ -448,5 +452,19 @@ export class Lexer {
 
   private isAlphaNumeric(char: string): boolean {
     return this.isAlpha(char) || this.isDigit(char)
+  }
+
+  private comment(startLine: number, startColumn: number): Token {
+    // Skip the first /
+    this.advance()
+
+    let value = ""
+
+    // Read until end of line or end of file
+    while (this.peek() !== "\n" && !this.isAtEnd()) {
+      value += this.advance()
+    }
+
+    return this.makeToken(TokenType.COMMENT, value, startLine, startColumn)
   }
 }

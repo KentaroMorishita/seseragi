@@ -1,0 +1,94 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import { Parser } from '../parser.js';
+import { generateTypeScript } from '../codegen.js';
+
+export interface CompileOptions {
+  input: string;
+  output?: string;
+  watch?: boolean;
+  generateComments?: boolean;
+  useArrowFunctions?: boolean;
+}
+
+export async function compileCommand(options: CompileOptions): Promise<void> {
+  try {
+    if (options.watch) {
+      await watchAndCompile(options);
+    } else {
+      await compile(options);
+    }
+  } catch (error) {
+    console.error('Compilation failed:', error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
+}
+
+async function compile(options: CompileOptions): Promise<void> {
+  // ファイルの存在チェック
+  if (!fs.existsSync(options.input)) {
+    throw new Error(`Input file not found: ${options.input}`);
+  }
+
+  // ソースコードを読み込み
+  const sourceCode = fs.readFileSync(options.input, 'utf-8');
+  
+  // パースしてASTを生成
+  console.log(`Parsing ${options.input}...`);
+  const parser = new Parser(sourceCode);
+  const ast = parser.parse();
+  
+  // TypeScriptコードを生成
+  console.log('Generating TypeScript code...');
+  const typeScriptCode = generateTypeScript(ast.statements, {
+    generateComments: options.generateComments,
+    useArrowFunctions: options.useArrowFunctions,
+  });
+  
+  // TypeScriptコードを出力
+  if (options.output) {
+    // 出力ファイルが指定されている場合
+    fs.writeFileSync(options.output, typeScriptCode, 'utf-8');
+    console.log(`✓ Compiled to ${options.output}`);
+  } else {
+    // 出力ファイルが指定されていない場合は標準出力
+    console.log(typeScriptCode);
+  }
+}
+
+async function watchAndCompile(options: CompileOptions): Promise<void> {
+  console.log(`Watching ${options.input} for changes...`);
+  
+  // watchモード時は必ず出力ファイルが必要
+  if (!options.output) {
+    options.output = getDefaultOutputFileName(options.input);
+  }
+  
+  // 初回コンパイル
+  await compile({ ...options, watch: false });
+  
+  // ファイル監視
+  fs.watchFile(options.input, { interval: 1000 }, async (curr, prev) => {
+    if (curr.mtime !== prev.mtime) {
+      console.log(`\nFile changed: ${options.input}`);
+      try {
+        await compile({ ...options, watch: false });
+      } catch (error) {
+        console.error('Compilation failed:', error instanceof Error ? error.message : error);
+      }
+    }
+  });
+  
+  // プロセスを継続
+  return new Promise(() => {
+    process.on('SIGINT', () => {
+      console.log('\nStopping watch mode...');
+      process.exit(0);
+    });
+  });
+}
+
+function getDefaultOutputFileName(inputFile: string): string {
+  const parsed = path.parse(inputFile);
+  return path.join(parsed.dir, `${parsed.name}.ts`);
+}

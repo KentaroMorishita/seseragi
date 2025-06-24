@@ -27,7 +27,7 @@ export class Parser {
     const statements: AST.Statement[] = []
 
     while (!this.isAtEnd()) {
-      if (this.peek().type === TokenType.NEWLINE) {
+      if (this.peek().type === TokenType.NEWLINE || this.peek().type === TokenType.COMMENT) {
         this.advance()
         continue
       }
@@ -76,10 +76,11 @@ export class Parser {
         return this.returnStatement()
       }
 
-      // Skip whitespace and newlines
+      // Skip whitespace, newlines, and comments
       if (
         this.peek().type === TokenType.NEWLINE ||
-        this.peek().type === TokenType.WHITESPACE
+        this.peek().type === TokenType.WHITESPACE ||
+        this.peek().type === TokenType.COMMENT
       ) {
         this.advance()
         return null
