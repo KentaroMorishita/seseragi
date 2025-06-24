@@ -151,6 +151,40 @@ export class FunctionCall extends Expression {
   }
 }
 
+export class BuiltinFunctionCall extends Expression {
+  kind = "BuiltinFunctionCall"
+  functionName: "print" | "putStrLn" | "toString"
+  arguments: Expression[]
+
+  constructor(
+    functionName: "print" | "putStrLn" | "toString",
+    args: Expression[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.functionName = functionName
+    this.arguments = args
+  }
+}
+
+export class FunctionApplication extends Expression {
+  kind = "FunctionApplication"
+  function: Expression
+  argument: Expression
+
+  constructor(
+    func: Expression,
+    arg: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.function = func
+    this.argument = arg
+  }
+}
+
 export class Pipeline extends Expression {
   kind = "Pipeline"
   left: Expression
@@ -321,6 +355,16 @@ export class MatchExpression extends Expression {
 // =============================================================================
 
 export abstract class Statement extends ASTNode {}
+
+export class ExpressionStatement extends Statement {
+  kind = "ExpressionStatement"
+  expression: Expression
+
+  constructor(expression: Expression, line: number, column: number) {
+    super(line, column)
+    this.expression = expression
+  }
+}
 
 export class Parameter extends ASTNode {
   kind = "Parameter"

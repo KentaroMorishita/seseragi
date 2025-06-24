@@ -32,6 +32,11 @@ export enum TokenType {
   PURE = "PURE",
   PERFORM = "PERFORM",
 
+  // Built-in functions
+  PRINT = "PRINT",
+  PUT_STR_LN = "PUT_STR_LN",
+  TO_STRING = "TO_STRING",
+
   // Operators
   PIPE = "PIPE", // |
   REVERSE_PIPE = "REVERSE_PIPE", // ~
@@ -107,6 +112,9 @@ export class Lexer {
     ["else", TokenType.ELSE],
     ["pure", TokenType.PURE],
     ["perform", TokenType.PERFORM],
+    ["print", TokenType.PRINT],
+    ["putStrLn", TokenType.PUT_STR_LN],
+    ["toString", TokenType.TO_STRING],
     ["True", TokenType.BOOLEAN],
     ["False", TokenType.BOOLEAN],
   ])

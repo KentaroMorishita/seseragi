@@ -29,6 +29,9 @@
     },
     {
       "include": "#identifiers"
+    },
+    {
+      "include": "#punctuation"
     }
   ],
   "repository": {
@@ -113,6 +116,26 @@
     "functions": {
       "patterns": [
         {
+          "name": "support.function.builtin.io.seseragi",
+          "match": "\\b(print|putStrLn|toString)(?=\\s*\\()"
+        },
+        {
+          "name": "support.function.builtin.io.functional.seseragi",
+          "match": "\\b(print|putStrLn|toString)(?=\\s+[^\\(])"
+        },
+        {
+          "name": "support.function.builtin.io.standalone.seseragi",
+          "match": "\\b(print|putStrLn|toString)(?=\\s*$)"
+        },
+        {
+          "name": "entity.name.function.call.seseragi",
+          "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*\\()"
+        },
+        {
+          "name": "entity.name.function.application.seseragi",
+          "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s+[^\\(:])"
+        },
+        {
           "name": "entity.name.function.seseragi",
           "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*[a-zA-Z0-9_\\s]*:)"
         },
@@ -173,6 +196,42 @@
         {
           "name": "variable.other.seseragi",
           "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.parenthesis.begin.seseragi",
+          "match": "\\("
+        },
+        {
+          "name": "punctuation.parenthesis.end.seseragi",
+          "match": "\\)"
+        },
+        {
+          "name": "punctuation.bracket.begin.seseragi",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.bracket.end.seseragi",
+          "match": "\\]"
+        },
+        {
+          "name": "punctuation.brace.begin.seseragi",
+          "match": "\\{"
+        },
+        {
+          "name": "punctuation.brace.end.seseragi",
+          "match": "\\}"
+        },
+        {
+          "name": "punctuation.separator.comma.seseragi",
+          "match": ","
+        },
+        {
+          "name": "punctuation.separator.colon.seseragi",
+          "match": ":"
         }
       ]
     }
