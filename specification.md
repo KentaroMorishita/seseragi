@@ -28,7 +28,7 @@ import      // モジュールインポート
 as          // エイリアス
 match       // パターンマッチング
 case        // パターンマッチングのケース
-is          // 条件評価
+if          // 条件式
 then        // 条件分岐 - 真の場合
 else        // 条件分岐 - 偽の場合
 pure        // 値をモナドに持ち上げ
@@ -162,24 +162,24 @@ let sum = List<Int>[1, 2, 3] >>> (+)  // 結果: 6
 
 ### 7.1 条件分岐
 
-`if`文の代わりに`Condition`型と`is`, `then`, `else`を使用します。
+`if then else`式を使用して条件分岐を行います。
 
 ```rust
-let result = is (age < 18) then "Child" else "Adult"
+let result = if age < 18 then "Child" else "Adult"
 ```
 
-### 7.2 `Condition`型
+### 7.2 条件式の評価
 
-比較演算子の結果は`Condition`型として評価され、`is`メソッドで`Bool`型に変換されます。
+比較演算子の結果は`Bool`型として評価され、`if`式で直接使用できます。
 
 ```rust
-let condition = x < 10 && y > 5  // Condition型
-let result = is condition then "OK" else "NG"
+let condition = x < 10 && y > 5  // Bool型
+let result = if condition then "OK" else "NG"
 ```
 
 ### 7.3 パターンマッチング
 
-`match`キーワードを使用してパターンマッチングを行います。
+`match`キーワードを使用してパターンマッチングを行います。これはHaskellの`case`式に相当し、代数的データ型の値を分解して処理します。
 
 ```rust
 match maybeValue {
@@ -192,6 +192,10 @@ match eitherValue {
     Right value -> handleSuccess value
 }
 ```
+
+**if式とmatch式の使い分け:**
+- **if式**: 単純な条件による値の選択 (`if condition then value1 else value2`)
+- **match式**: パターンマッチングによる代数的データ型の分解と処理
 
 ---
 
@@ -273,7 +277,7 @@ impl Wallet {
 
 ```rust
 fn safeDivide x :Int -> y :Int -> Maybe<Int> {
-    is (y == 0) then Nothing else Just (x / y)
+    if y == 0 then Nothing else Just (x / y)
 }
 
 let result = safeDivide 10 2 >>= (\x -> Just (x * 2))  // Just 10
@@ -285,7 +289,7 @@ let result = safeDivide 10 2 >>= (\x -> Just (x * 2))  // Just 10
 
 ```rust
 fn parseInt str :String -> Either<String, Int> {
-    is (String.isInt str)
+    if String.isInt str
     then Right (String.toInt str)
     else Left ("Not a valid number: " ++ str)
 }
@@ -356,7 +360,7 @@ import shopping::{Product, Cart}
 
 ```rust
 fn safeOperation x :Int -> Maybe<Int> {
-    is (x > 0) then Just (x * 2) else Nothing
+    if x > 0 then Just (x * 2) else Nothing
 }
 
 let result = safeOperation 5 >>= (\x -> Just (x + 1))  // Just 11
@@ -366,7 +370,7 @@ let result = safeOperation 5 >>= (\x -> Just (x + 1))  // Just 11
 
 ```rust
 fn validateAge age :Int -> Either<String, Int> {
-    is (age >= 0 && age <= 150)
+    if age >= 0 && age <= 150
     then Right age
     else Left "Invalid age"
 }
@@ -385,7 +389,7 @@ type User {
 
 // 関数定義
 fn createUser name :String -> age :Int -> Maybe<User> {
-    is (age >= 0 && age <= 150)
+    if age >= 0 && age <= 150
     then Just (User { name: name, age: age })
     else Nothing
 }
