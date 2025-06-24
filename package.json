@@ -2,6 +2,9 @@
   "name": "seseragi",
   "version": "1.0.0",
   "main": "src/main.ts",
+  "bin": {
+    "seseragi": "./src/cli.ts"
+  },
   "scripts": {
     "dev": "bun run --watch src/main.ts",
     "build": "bun build src/main.ts --outdir dist --target node",
@@ -16,7 +19,8 @@
     "format:check": "biome format src tests",
     "clean": "rm -rf dist",
     "seseragi": "bun run src/cli.ts",
-    "seseragi:format": "bun run src/cli.ts format"
+    "seseragi:format": "bun run src/cli.ts format",
+    "seseragi:compile": "bun run src/cli.ts compile"
   },
   "keywords": [],
   "author": "",

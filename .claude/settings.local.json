@@ -15,7 +15,10 @@
       "mcp__github-mcp-server__create_pull_request_review",
       "mcp__github-mcp-server__merge_pull_request",
       "Bash(git pull:*)",
-      "Bash(ln:*)"
+      "Bash(ln:*)",
+      "Bash(bun link:*)",
+      "Bash(seseragi compile:*)",
+      "Bash(seseragi:*)"
     ],
     "deny": []
   }
