@@ -202,6 +202,23 @@ export class MonadBind extends Expression {
   }
 }
 
+export class FoldMonoid extends Expression {
+  kind = "FoldMonoid"
+  left: Expression
+  right: Expression
+
+  constructor(
+    left: Expression,
+    right: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.left = left
+    this.right = right
+  }
+}
+
 export class ConditionalExpression extends Expression {
   kind = "ConditionalExpression"
   condition: Expression

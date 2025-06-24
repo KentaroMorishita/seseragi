@@ -30,7 +30,7 @@ describe("Lexer", () => {
   })
 
   it("should handle operators", () => {
-    const source = "| ~ >>= >>> -> == != < > <= >="
+    const source = "| ~ >>= >>> -> == != < > <= >= + - * / %"
     const lexer = new Lexer(source)
     const tokens = lexer.tokenize()
 
@@ -46,6 +46,11 @@ describe("Lexer", () => {
       TokenType.GREATER_THAN,
       TokenType.LESS_EQUAL,
       TokenType.GREATER_EQUAL,
+      TokenType.PLUS,
+      TokenType.MINUS,
+      TokenType.MULTIPLY,
+      TokenType.DIVIDE,
+      TokenType.MODULO,
       TokenType.EOF,
     ]
 
@@ -98,5 +103,19 @@ describe("Lexer", () => {
     expect(tokens[0].value).toBe("True")
     expect(tokens[1].type).toBe(TokenType.BOOLEAN)
     expect(tokens[1].value).toBe("False")
+  })
+
+  it("should handle modulo operator in expressions", () => {
+    const source = "x % y"
+    const lexer = new Lexer(source)
+    const tokens = lexer.tokenize()
+
+    expect(tokens[0].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[0].value).toBe("x")
+    expect(tokens[1].type).toBe(TokenType.MODULO)
+    expect(tokens[1].value).toBe("%")
+    expect(tokens[2].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[2].value).toBe("y")
+    expect(tokens[3].type).toBe(TokenType.EOF)
   })
 })

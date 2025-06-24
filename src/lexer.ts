@@ -42,6 +42,7 @@ export enum TokenType {
   MINUS = "MINUS", // -
   MULTIPLY = "MULTIPLY", // *
   DIVIDE = "DIVIDE", // /
+  MODULO = "MODULO", // %
   EQUAL = "EQUAL", // ==
   NOT_EQUAL = "NOT_EQUAL", // !=
   LESS_THAN = "LESS_THAN", // <
@@ -204,6 +205,8 @@ export class Lexer {
         return this.makeToken(TokenType.MULTIPLY, char, startLine, startColumn)
       case "/":
         return this.makeToken(TokenType.DIVIDE, char, startLine, startColumn)
+      case "%":
+        return this.makeToken(TokenType.MODULO, char, startLine, startColumn)
       case "|":
         return this.makeToken(TokenType.PIPE, char, startLine, startColumn)
       case "~":

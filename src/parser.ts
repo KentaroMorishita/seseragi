@@ -697,7 +697,7 @@ export class Parser {
   private factorExpression(): AST.Expression {
     let expr = this.unaryExpression()
 
-    while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE)) {
+    while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
       const operator = this.previous().value
       const right = this.unaryExpression()
       expr = new AST.BinaryOperation(
