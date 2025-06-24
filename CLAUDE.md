@@ -226,7 +226,7 @@ cat TODO.md
 
 ### 2. 開発サイクル
 ```bash
-# 機能ブランチ作成（必要に応じて）
+# 機能ブランチ作成（必須）
 git checkout -b feature/task-name
 
 # 開発実行
@@ -249,7 +249,7 @@ bun run build:all   # 全ビルド実行
 # - 完了したタスクにチェックマーク
 # - 必要に応じて新しいサブタスク追加
 
-# 変更をコミット
+# 変更をコミット（featureブランチで）
 git add .
 git commit -m "タスク完了: [タスク名]
 
@@ -259,15 +259,43 @@ git commit -m "タスク完了: [タスク名]
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 
-# リモートにプッシュ（必要に応じて）
+# featureブランチをリモートにプッシュ
 git push -u origin feature/task-name
 ```
 
 ### 4. プルリクエスト作成
+**重要：必ずfeatureブランチから作成すること**
+
 ```bash
-# GitHub CLIでプルリクエスト作成
+# 1. featureブランチ作成（作業開始時）
+git checkout -b feature/task-name
+
+# 2. 開発・テスト・コミット
+# ... 開発作業 ...
+git add .
+git commit -m "実装内容の説明"
+
+# 3. featureブランチをリモートにプッシュ
+git push -u origin feature/task-name
+
+# 4. MCPのGitHub機能でプルリクエスト作成（推奨）
+# mcp__github-mcp-server__create_pull_request を使用
+
+# または GitHub CLIでプルリクエスト作成
 gh pr create --title "機能タイトル" --body "詳細説明"
 ```
+
+**プルリクエスト作成の正しい手順：**
+1. ✅ 最初にfeatureブランチを作成
+2. ✅ featureブランチで開発・テスト
+3. ✅ featureブランチにコミット
+4. ✅ featureブランチをremoteにpush
+5. ✅ MCPまたはGitHub CLIでプルリクエスト作成
+6. ✅ レビュー後、MCPでマージ
+
+**❌ 絶対にやってはいけないこと：**
+- mainブランチで直接開発してpush
+- 開発後にプルリクエストを作ろうとすること
 
 ### TODOリスト管理ルール
 - タスク開始時: `[ ]` → `[進行中]`として手動マーク
