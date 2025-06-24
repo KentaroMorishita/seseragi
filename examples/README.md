@@ -56,9 +56,24 @@ Seseragiの主要機能を網羅
 
 ## サンプルの実行方法
 
-### 基本的な使用法
+### 🚀 直接実行（推奨・最も簡単）
 ```bash
-# メインサンプルの実行（推奨）
+# メインサンプルの実行
+seseragi run examples/working-samples.ssrg
+
+# チュートリアルの実行
+seseragi run examples/tutorial.ssrg
+
+# 関数型構文デモの実行
+seseragi run examples/functional-style.ssrg
+
+# 基本サンプルの実行
+seseragi run examples/basic-samples.ssrg
+```
+
+### 📂 コンパイル後実行（詳細制御が必要な場合）
+```bash
+# メインサンプルの実行
 seseragi compile examples/working-samples.ssrg --output examples/compiled/working-samples.ts
 bun examples/compiled/working-samples.ts
 
@@ -67,22 +82,25 @@ seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts
 bun examples/compiled/tutorial.ts
 ```
 
-### 便利なワンライナー
+### 🛠️ 便利なオプション
 ```bash
-# コンパイル＆実行
-seseragi compile examples/working-samples.ssrg --output examples/compiled/working-samples.ts && bun examples/compiled/working-samples.ts
+# 一時ファイルを保持（デバッグ用）
+seseragi run examples/tutorial.ssrg --keep-temp
+
+# 一時ファイルの場所を指定
+seseragi run examples/tutorial.ssrg --temp-dir /tmp
 
 # 複数サンプルを一括実行
 for file in examples/*.ssrg; do
-  name=$(basename "$file" .ssrg)
-  seseragi compile "$file" --output "examples/compiled/${name}.ts" && bun "examples/compiled/${name}.ts"
-  echo "--- $name completed ---"
+  echo "=== Running $(basename "$file") ==="
+  seseragi run "$file"
+  echo ""
 done
 ```
 
-### その他のオプション
+### 🔧 その他のオプション
 ```bash
-# ファイル監視モード
+# ファイル監視モード（コンパイルのみ）
 seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts --watch
 
 # 標準出力への出力（デバッグ用）
@@ -92,9 +110,29 @@ seseragi compile examples/functional-style.ssrg --output -
 ## 学習の進め方
 
 1. **`tutorial.ssrg`から開始** - 基本概念を段階的に学習
+   ```bash
+   seseragi run examples/tutorial.ssrg
+   ```
+
 2. **`functional-style.ssrg`で構文に慣れる** - 関数型の書き方を理解
-3. **`basic-samples.ssrg`で機能を探索** - より多くの機能を試す
-4. **`advanced-features.ssrg`で応用を学ぶ** - 高度なパターンを学習
+   ```bash
+   seseragi run examples/functional-style.ssrg
+   ```
+
+3. **`working-samples.ssrg`で総合的に体験** - 実用的なパターンを理解
+   ```bash
+   seseragi run examples/working-samples.ssrg
+   ```
+
+4. **`basic-samples.ssrg`で機能を探索** - より多くの機能を試す
+   ```bash
+   seseragi run examples/basic-samples.ssrg
+   ```
+
+5. **`advanced-features.ssrg`で応用を学ぶ** - 高度なパターンと将来機能を理解
+   ```bash
+   seseragi run examples/advanced-features.ssrg
+   ```
 
 ## 現在実装済みの機能
 

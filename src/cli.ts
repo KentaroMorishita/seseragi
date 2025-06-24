@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { formatCommand } from './cli/format.js';
 import { compileCommand } from './cli/compile.js';
+import { runCommand } from './cli/run.js';
 
 const program = new Command();
 
@@ -46,6 +47,25 @@ program
       generateComments: !options.noComments,
       useArrowFunctions: !options.functionDeclarations,
     });
+  });
+
+program
+  .command('run')
+  .description('Run Seseragi source file directly')
+  .argument('<file>', 'Seseragi source file to run')
+  .option('--temp-dir <dir>', 'Directory for temporary files (default: system temp)')
+  .option('--keep-temp', 'Keep temporary TypeScript file for debugging')
+  .action(async (file, options) => {
+    try {
+      await runCommand({
+        input: file,
+        tempDir: options.tempDir,
+        keepTemp: options.keepTemp,
+      });
+    } catch (error) {
+      console.error('Execution failed:', error instanceof Error ? error.message : error);
+      process.exit(1);
+    }
   });
 
 program.parse();

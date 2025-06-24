@@ -165,16 +165,32 @@ bun run format:check   # フォーマットチェック（変更なし）
 bun run clean         # ビルド成果物削除
 ```
 
+**Seseragiコマンド:**
+```bash
+# 直接実行（推奨）
+seseragi run examples/tutorial.ssrg
+
+# TypeScriptにトランスパイル
+seseragi compile input.ssrg --output output.ts
+
+# ファイル監視でトランスパイル
+seseragi compile input.ssrg --output output.ts --watch
+
+# コードフォーマット
+seseragi format input.ssrg --in-place
+```
+
 将来実装予定のコマンド:
 ```bash
 # REPL起動
-bun run repl
-
-# トランスパイル実行
-seseragi compile input.ses --output output.ts
+seseragi repl
 
 # 型チェック
-seseragi check input.ses
+seseragi check input.ssrg
+
+# パッケージ管理
+seseragi init
+seseragi install <package>
 ```
 
 ## 開発環境セットアップ手順
