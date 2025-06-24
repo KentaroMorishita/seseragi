@@ -1,0 +1,113 @@
+// Seseragi 基本サンプル集
+// 関数型プログラミングの基本機能を紹介
+
+print "=== Seseragi Basic Samples ==="
+
+// =============================================================================
+// 基本的な値と型
+// =============================================================================
+
+print "--- Basic Types and Values ---"
+
+// 基本型の変数宣言
+let name :String = "Seseragi"
+let version :Float = 1.0
+let isReady :Bool = True
+let count :Int = 42
+
+// 基本的な出力
+print name
+print (toString version)
+print (toString isReady)
+print (toString count)
+
+// =============================================================================
+// 標準出力（関数型スタイル）
+// =============================================================================
+
+print "--- Output Functions ---"
+
+// 基本的な出力
+print "Hello, Seseragi!"
+putStrLn "This is a new line"
+
+// 変数の出力
+print ("Version: " + toString version)
+print ("Count is: " + toString count)
+
+// =============================================================================
+// 関数定義と呼び出し
+// =============================================================================
+
+print "--- Functions ---"
+
+// 単純な関数
+fn greet name :String -> String = "Hello, " + name
+
+// 複数パラメータの関数（カリー化）
+fn add x :Int -> y :Int -> Int = x + y
+
+// 関数の使用（関数型スタイル）
+print (greet "World")
+print (toString (add 10 20))
+
+// 部分適用
+let add10 = add 10
+print (toString (add10 5))
+
+// =============================================================================
+// 条件分岐
+// =============================================================================
+
+print "--- Conditionals ---"
+
+fn checkSign n :Int -> String = if n > 0 then "Positive" else "NotPositive"
+
+print (checkSign 5)
+print (checkSign 0)
+print (checkSign (0 - 3))
+
+// =============================================================================
+// 文字列操作
+// =============================================================================
+
+print "--- String Operations ---"
+
+fn fullName first :String -> last :String -> String = first + " " + last
+fn makeGreeting name :String -> String = "Welcome, " + name + "!"
+
+print (fullName "John" "Doe")
+print (makeGreeting "Alice")
+
+// =============================================================================
+// 再帰関数
+// =============================================================================
+
+print "--- Recursive Functions ---"
+
+fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
+fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
+
+print (toString (factorial 5))
+print (toString (fibonacci 6))
+
+// =============================================================================
+// 高階関数の例
+// =============================================================================
+
+print "--- Higher-Order Functions ---"
+
+fn double x :Int -> Int = x * 2
+fn square x :Int -> Int = x * x
+
+// 注意: 現在の実装では関数型パラメータは限定的
+// fn applyTwice f :(Int -> Int) -> x :Int -> Int = f (f x)
+// より簡単な例で代替:
+
+fn applyDouble x :Int -> Int = double (double x)
+fn applySquare x :Int -> Int = square (square x)
+
+print (toString (applyDouble 3))   // 12
+print (toString (applySquare 2))   // 16
+
+print "=== Basic Samples Complete! ==="
