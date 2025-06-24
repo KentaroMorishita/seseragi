@@ -14,7 +14,9 @@
     "lint": "biome lint src tests",
     "format": "biome format --write src tests",
     "format:check": "biome format src tests",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "seseragi": "bun run src/cli.ts",
+    "seseragi:format": "bun run src/cli.ts format"
   },
   "keywords": [],
   "author": "",
@@ -29,5 +31,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "commander": "^14.0.0"
+  }
 }
