@@ -2,59 +2,91 @@
 
 このディレクトリには、Seseragi言語の様々な機能を示すサンプルコードが含まれています。
 
+## ディレクトリ構造
+
+```
+examples/
+├── README.md                    # このファイル
+├── compiled/                    # コンパイル済みファイル（.gitignoreで除外）
+├── working-samples.ssrg         # ✅ 動作確認済みメインサンプル
+├── functional-style.ssrg        # 関数型スタイル構文デモ
+├── tutorial.ssrg               # 段階的学習チュートリアル
+├── basic-samples.ssrg          # 基本機能紹介
+└── advanced-features.ssrg      # 高度な機能と将来機能
+```
+
 ## サンプルファイル
 
-### 1. `functional-style.ssrg`
-関数型スタイルの基本的な構文を示すサンプル
-- 括弧なし関数呼び出し
-- ビルトイン関数の使用
-- 基本的な式の構成
-
-### 2. `tutorial.ssrg` 
-初心者向けの段階的チュートリアル
-- 基本的な値と変数
-- 関数の定義と呼び出し
+### 🌟 `working-samples.ssrg` - メインサンプル（推奨）
+動作確認済みの包括的なサンプル
+- 基本的な値と関数
 - カリー化と部分適用
-- 条件分岐
-- 再帰関数
-- 高階関数
+- 条件分岐と再帰関数
+- 関数型スタイル構文
+- **完全にテスト済み** ✅
 
-### 3. `basic-samples.ssrg`
-Seseragiの基本機能を幅広くカバー
-- 基本型の使用
-- 標準出力
-- 関数定義
-- パイプライン演算子
-- 型定義
+### 📖 `tutorial.ssrg` - 学習チュートリアル
+初心者向けの段階的ガイド
+- Step 1: 基本的な値と出力
+- Step 2: 関数の定義と呼び出し
+- Step 3: カリー化された関数
+- Step 4: 条件分岐
+- Step 5: 文字列操作
+- Step 6: 再帰関数
+- Step 7: 関数型スタイル
 
-### 4. `advanced-features.ssrg`
-高度な機能と将来実装予定の機能
-- 複雑な関数合成
-- モナド的操作
-- パターンマッチング（将来実装）
-- カスタム演算子（将来実装）
+### 🎯 `functional-style.ssrg` - 関数型構文デモ
+関数型プログラミングの核となる構文
+- 括弧なし関数呼び出し: `print "hello"`
+- ビルトイン関数の使用
+- 変数との組み合わせ
+
+### 📚 `basic-samples.ssrg` - 基本機能集
+Seseragiの主要機能を網羅
+- 基本型（Int, Float, Bool, String）
+- 標準出力関数
+- 関数定義とカリー化
+- 条件分岐と文字列操作
+
+### 🚀 `advanced-features.ssrg` - 高度な機能
+現在の高度な例と将来実装予定の機能
+- 現在実装済みの高度な例
+- 将来実装予定の機能（コメント形式）
+- パターンマッチング、Maybe型、パイプライン等
 
 ## サンプルの実行方法
 
-### コンパイルと実行
+### 基本的な使用法
 ```bash
-# TypeScriptにトランスパイル
-seseragi compile examples/tutorial.ssrg
+# メインサンプルの実行（推奨）
+seseragi compile examples/working-samples.ssrg --output examples/compiled/working-samples.ts
+bun examples/compiled/working-samples.ts
 
-# 生成されたTypeScriptファイルを実行
-bun examples/tutorial.ts
+# チュートリアルの実行
+seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts
+bun examples/compiled/tutorial.ts
 ```
 
-### ファイル監視モード
+### 便利なワンライナー
 ```bash
-# ファイルの変更を監視して自動コンパイル
-seseragi compile examples/tutorial.ssrg --watch
+# コンパイル＆実行
+seseragi compile examples/working-samples.ssrg --output examples/compiled/working-samples.ts && bun examples/compiled/working-samples.ts
+
+# 複数サンプルを一括実行
+for file in examples/*.ssrg; do
+  name=$(basename "$file" .ssrg)
+  seseragi compile "$file" --output "examples/compiled/${name}.ts" && bun "examples/compiled/${name}.ts"
+  echo "--- $name completed ---"
+done
 ```
 
-### 標準出力への出力
+### その他のオプション
 ```bash
-# コンパイル結果を標準出力に出力
-seseragi compile examples/tutorial.ssrg --output -
+# ファイル監視モード
+seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts --watch
+
+# 標準出力への出力（デバッグ用）
+seseragi compile examples/functional-style.ssrg --output -
 ```
 
 ## 学習の進め方

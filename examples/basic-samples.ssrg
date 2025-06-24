@@ -1,9 +1,13 @@
 // Seseragi 基本サンプル集
 // 関数型プログラミングの基本機能を紹介
 
+print "=== Seseragi Basic Samples ==="
+
 // =============================================================================
 // 基本的な値と型
 // =============================================================================
+
+print "--- Basic Types and Values ---"
 
 // 基本型の変数宣言
 let name :String = "Seseragi"
@@ -11,26 +15,31 @@ let version :Float = 1.0
 let isReady :Bool = True
 let count :Int = 42
 
+// 基本的な出力
+print name
+print (toString version)
+print (toString isReady)
+print (toString count)
+
 // =============================================================================
 // 標準出力（関数型スタイル）
 // =============================================================================
+
+print "--- Output Functions ---"
 
 // 基本的な出力
 print "Hello, Seseragi!"
 putStrLn "This is a new line"
 
 // 変数の出力
-print name
-print (toString version)
-print (toString count)
-
-// 複合式の出力
 print ("Version: " + toString version)
 print ("Count is: " + toString count)
 
 // =============================================================================
 // 関数定義と呼び出し
 // =============================================================================
+
+print "--- Functions ---"
 
 // 単純な関数
 fn greet name :String -> String = "Hello, " + name
@@ -50,70 +59,55 @@ print (toString (add10 5))
 // 条件分岐
 // =============================================================================
 
-fn checkNumber n :Int -> String = 
-  if n > 0 then "Positive"
-  else if n < 0 then "Negative" 
-  else "Zero"
+print "--- Conditionals ---"
 
-print (checkNumber 5)
-print (checkNumber (-3))
-print (checkNumber 0)
+fn checkSign n :Int -> String = if n > 0 then "Positive" else "NotPositive"
 
-// =============================================================================
-// パイプライン演算子
-// =============================================================================
-
-// パイプラインの使用例
-let result1 = 10 | add 5 | toString
-print result1
-
-let result2 = "Seseragi" | greet | print
+print (checkSign 5)
+print (checkSign 0)
+print (checkSign (0 - 3))
 
 // =============================================================================
-// 型定義
+// 文字列操作
 // =============================================================================
 
-type Person {
-  name :String
-  age :Int
-}
+print "--- String Operations ---"
+
+fn fullName first :String -> last :String -> String = first + " " + last
+fn makeGreeting name :String -> String = "Welcome, " + name + "!"
+
+print (fullName "John" "Doe")
+print (makeGreeting "Alice")
 
 // =============================================================================
-// Maybe型の使用例（将来実装予定）
+// 再帰関数
 // =============================================================================
 
-// type Optional<T> = Just T | Nothing
+print "--- Recursive Functions ---"
 
-// fn safeDivide x :Int -> y :Int -> Maybe<Int> = 
-//   if y == 0 then Nothing
-//   else Just (x / y)
+fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
+fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
+
+print (toString (factorial 5))
+print (toString (fibonacci 6))
 
 // =============================================================================
 // 高階関数の例
 // =============================================================================
 
-fn applyTwice f :(Int -> Int) -> x :Int -> Int = f (f x)
+print "--- Higher-Order Functions ---"
 
 fn double x :Int -> Int = x * 2
+fn square x :Int -> Int = x * x
 
-// 使用例
-let doubled = applyTwice double 5
-print (toString doubled)  // 20が出力される
+// 注意: 現在の実装では関数型パラメータは限定的
+// fn applyTwice f :(Int -> Int) -> x :Int -> Int = f (f x)
+// より簡単な例で代替:
 
-// =============================================================================
-// リスト操作（将来実装予定）
-// =============================================================================
+fn applyDouble x :Int -> Int = double (double x)
+fn applySquare x :Int -> Int = square (square x)
 
-// let numbers :List<Int> = [1, 2, 3, 4, 5]
-// let doubled_numbers = map double numbers
-// let sum_result = fold (+) 0 numbers
+print (toString (applyDouble 3))   // 12
+print (toString (applySquare 2))   // 16
 
-// =============================================================================
-// エラーハンドリング（将来実装予定）
-// =============================================================================
-
-// type Result<T, E> = Ok T | Err E
-
-// fn parseNumber s :String -> Result<Int, String> = 
-//   if isNumeric s then Ok (toInt s)
-//   else Err "Not a number"
+print "=== Basic Samples Complete! ==="
