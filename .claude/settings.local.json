@@ -7,7 +7,8 @@
       "Bash(bun init:*)",
       "Bash(bun test:*)",
       "Bash(bun add:*)",
-      "Bash(bunx biome lint:*)"
+      "Bash(bunx biome lint:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }
