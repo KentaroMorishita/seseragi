@@ -1,0 +1,157 @@
+// Seseragi 高度な機能のサンプル
+// 関数型プログラミングの応用例
+
+// =============================================================================
+// 複雑な関数合成
+// =============================================================================
+
+// 文字列処理の関数チェーン
+fn toUpperCase s :String -> String = s  // 仮実装
+fn reverse s :String -> String = s      // 仮実装
+fn addPrefix prefix :String -> s :String -> String = prefix + s
+
+// 関数合成の例
+fn processString s :String -> String = 
+  s | toUpperCase | reverse | addPrefix ">>> "
+
+print (processString "hello")
+
+// =============================================================================
+// カリー化の活用
+// =============================================================================
+
+// 数学的な関数
+fn multiply x :Int -> y :Int -> Int = x * y
+fn power base :Int -> exp :Int -> Int = base  // 仮実装
+
+// 部分適用を使った専用関数
+let double = multiply 2
+let triple = multiply 3
+let square = power 2
+
+print (toString (double 15))    // 30
+print (toString (triple 8))     // 24
+print (toString (square 4))     // 16（仮）
+
+// =============================================================================
+// 高階関数とクロージャー
+// =============================================================================
+
+// 関数を返す関数
+fn makeAdder n :Int -> (Int -> Int) = add n
+
+let add5 = makeAdder 5
+print (toString (add5 10))  // 15
+
+// フィルタリング関数（概念的な例）
+fn isEven n :Int -> Bool = (n % 2) == 0
+fn isPositive n :Int -> Bool = n > 0
+
+// =============================================================================
+// パターンマッチング（将来実装）
+// =============================================================================
+
+// type Color = Red | Green | Blue | RGB Int Int Int
+
+// fn colorToString color :Color -> String = match color {
+//   Red -> "Red"
+//   Green -> "Green" 
+//   Blue -> "Blue"
+//   RGB r g b -> "RGB(" + toString r + "," + toString g + "," + toString b + ")"
+// }
+
+// =============================================================================
+// モナド的な操作（将来実装）
+// =============================================================================
+
+// Maybe型を使った安全な操作
+// fn safeDivide x :Int -> y :Int -> Maybe<Int> = 
+//   if y == 0 then Nothing else Just (x / y)
+
+// fn safeMultiply x :Maybe<Int> -> y :Int -> Maybe<Int> = 
+//   x >>= (\val -> Just (val * y))
+
+// 使用例
+// let result = Just 10 >>= safeDivide 2 >>= safeMultiply 3
+// print (toString result)  // Just 15
+
+// =============================================================================
+// 副作用のある関数（effectful）
+// =============================================================================
+
+// effectful fn readFile path :String -> IO<String> = 
+//   -- ファイル読み込みの実装
+
+// effectful fn writeFile path :String -> content :String -> IO<Unit> = 
+//   -- ファイル書き込みの実装
+
+// =============================================================================
+// カスタム演算子（将来実装）
+// =============================================================================
+
+// impl Int {
+//   operator <+> (x, y :Int) -> Int {
+//     (x + y) * 2
+//   }
+// }
+
+// let result = 5 <+> 3  // (5 + 3) * 2 = 16
+
+// =============================================================================
+// 型クラス的な機能（impl）
+// =============================================================================
+
+// impl String {
+//   fn length s :String -> Int = -- 実装
+//   fn isEmpty s :String -> Bool = length s == 0
+//   
+//   monoid {
+//     identity ""
+//     operator + (x, y :String) -> String { x + y }
+//   }
+// }
+
+// =============================================================================
+// リスト処理の関数型スタイル
+// =============================================================================
+
+// 高階関数を使ったリスト操作（将来実装）
+// fn map f :(T -> U) -> list :List<T> -> List<U> = -- 実装
+// fn filter pred :(T -> Bool) -> list :List<T> -> List<T> = -- 実装
+// fn fold f :(T -> T -> T) -> init :T -> list :List<T> -> T = -- 実装
+
+// 使用例
+// let numbers = [1, 2, 3, 4, 5]
+// let doubled = map double numbers
+// let evens = filter isEven numbers  
+// let sum = fold (+) 0 numbers
+
+// パイプラインでのリスト処理
+// let result = [1, 2, 3, 4, 5] 
+//   | map double 
+//   | filter (\x -> x > 5)
+//   | fold (+) 0
+
+// =============================================================================
+// 実際に動作する関数型スタイルのサンプル
+// =============================================================================
+
+// 現在実装済みの機能で動作するサンプル
+fn factorial n :Int -> Int = 
+  if n <= 1 then 1
+  else n * factorial (n - 1)
+
+print "=== Factorial Examples ==="
+print (toString (factorial 5))   // 120
+print (toString (factorial 0))   // 1
+print (toString (factorial 3))   // 6
+
+fn fibonacci n :Int -> Int = 
+  if n <= 1 then n
+  else fibonacci (n - 1) + fibonacci (n - 2)
+
+print "=== Fibonacci Examples ==="
+print (toString (fibonacci 0))   // 0
+print (toString (fibonacci 1))   // 1
+print (toString (fibonacci 5))   // 5
+print (toString (fibonacci 8))   // 21

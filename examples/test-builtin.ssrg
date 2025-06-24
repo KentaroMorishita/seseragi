@@ -1,0 +1,6 @@
+// テスト用のビルトイン関数
+print("Testing print function")
+putStrLn("Testing putStrLn function")
+
+let value :Int = 42
+print(toString(value))

@@ -86,7 +86,13 @@ export class Parser {
         return null
       }
 
-      throw new ParseError("Unexpected token", this.peek())
+      // 式ステートメントとして処理
+      const expr = this.expression()
+      return new AST.ExpressionStatement(
+        expr,
+        this.previous().line,
+        this.previous().column
+      )
     } catch (error) {
       this.synchronize()
       throw error
@@ -733,6 +739,7 @@ export class Parser {
 
     while (true) {
       if (this.match(TokenType.LEFT_PAREN)) {
+        // 括弧付き関数呼び出し
         const args: AST.Expression[] = []
 
         if (!this.check(TokenType.RIGHT_PAREN)) {
@@ -748,12 +755,37 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+      } else if (this.canStartExpression()) {
+        // 括弧なし関数適用（関数型言語の標準）
+        const arg = this.primaryExpression()
+        expr = new AST.FunctionApplication(
+          expr,
+          arg,
+          this.previous().line,
+          this.previous().column
+        )
       } else {
         break
       }
     }
 
     return expr
+  }
+
+  // 次のトークンが式の開始になり得るかチェック
+  private canStartExpression(): boolean {
+    const type = this.peek().type
+    return (
+      type === TokenType.INTEGER ||
+      type === TokenType.FLOAT ||
+      type === TokenType.STRING ||
+      type === TokenType.BOOLEAN ||
+      type === TokenType.IDENTIFIER ||
+      type === TokenType.PRINT ||
+      type === TokenType.PUT_STR_LN ||
+      type === TokenType.TO_STRING ||
+      type === TokenType.LEFT_PAREN
+    )
   }
 
   private primaryExpression(): AST.Expression {
@@ -795,6 +827,31 @@ export class Parser {
         this.previous().line,
         this.previous().column
       )
+    }
+
+    // ビルトイン関数
+    if (this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING)) {
+      const functionName = this.previous().value as "print" | "putStrLn" | "toString"
+      const line = this.previous().line
+      const column = this.previous().column
+      
+      // 括弧付きの場合（後方互換性）
+      if (this.check(TokenType.LEFT_PAREN)) {
+        this.advance() // consume '('
+        const args: AST.Expression[] = []
+        
+        if (!this.check(TokenType.RIGHT_PAREN)) {
+          do {
+            args.push(this.expression())
+          } while (this.match(TokenType.COMMA))
+        }
+        
+        this.consume(TokenType.RIGHT_PAREN, "Expected ')' after arguments")
+        return new AST.BuiltinFunctionCall(functionName, args, line, column)
+      } else {
+        // 括弧なしの場合はIdentifierとして返し、callExpressionで処理
+        return new AST.Identifier(functionName, line, column)
+      }
     }
 
     if (this.match(TokenType.IDENTIFIER)) {
