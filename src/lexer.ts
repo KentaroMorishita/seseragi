@@ -42,6 +42,7 @@ export enum TokenType {
   REVERSE_PIPE = "REVERSE_PIPE", // ~
   BIND = "BIND", // >>=
   FOLD_MONOID = "FOLD_MONOID", // >>>
+  FUNCTION_APPLICATION = "FUNCTION_APPLICATION", // $
   ARROW = "ARROW", // ->
   PLUS = "PLUS", // +
   MINUS = "MINUS", // -
@@ -224,6 +225,13 @@ export class Lexer {
       case "~":
         return this.makeToken(
           TokenType.REVERSE_PIPE,
+          char,
+          startLine,
+          startColumn
+        )
+      case "$":
+        return this.makeToken(
+          TokenType.FUNCTION_APPLICATION,
           char,
           startLine,
           startColumn

@@ -10,11 +10,11 @@ print message
 
 // 数値の変換と出力
 let number :Int = 42
-print (toString number)
+print $ toString number
 
 // 複合式
 let name :String = "Alice"
-print ("Hello, " + name)
+print $ "Hello, " + name
 
 // 関数定義内でのビルトイン使用
-fn greetUser name :String -> Unit = print ("Welcome, " + name)
+fn greetUser name :String -> Unit = print $ "Welcome, " + name

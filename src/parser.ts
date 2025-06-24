@@ -605,7 +605,23 @@ export class Parser {
   }
 
   private binaryExpression(): AST.Expression {
-    return this.pipelineExpression()
+    return this.functionApplicationExpression()
+  }
+
+  private functionApplicationExpression(): AST.Expression {
+    let expr = this.pipelineExpression()
+
+    while (this.match(TokenType.FUNCTION_APPLICATION)) {
+      const right = this.functionApplicationExpression() // 右結合のため再帰
+      expr = new AST.FunctionApplicationOperator(
+        expr,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
   }
 
   private pipelineExpression(): AST.Expression {
