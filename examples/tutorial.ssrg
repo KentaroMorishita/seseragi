@@ -72,16 +72,10 @@ print (toString (multiplyBy3 7))  // 21
 print "--- Step 4: Conditional Expressions ---"
 
 fn absolute x :Int -> Int = if x < 0 then 0 - x else x
-
 fn max x :Int -> y :Int -> Int = if x > y then x else y
 
-fn sign x :Int -> String = if x > 0 then "positive" else if x < 0 then "negative" else "zero"
-
-print (toString (absolute 5))   // 5
-print (toString (max 8 12))        // 12
-print (sign 7)                     // positive
-print (sign (0 - 3))                  // negative
-print (sign 0)                     // zero
+print (toString (absolute 5))     // 5
+print (toString (max 8 12))       // 12
 
 // =============================================================================
 // ステップ5: 文字列操作
@@ -90,45 +84,16 @@ print (sign 0)                     // zero
 print "--- Step 5: String Operations ---"
 
 fn greetFormal title :String -> name :String -> String = "Good day, " + title + " " + name + "!"
-
-fn makeUppercase s :String -> String = s  // 仮実装（実際は大文字変換）
-
-print (greetFormal "Mr." "Smith")
-print (greetFormal "Dr." "Johnson")
-
-// 文字列の結合
 fn fullName first :String -> last :String -> String = first + " " + last
 
+print (greetFormal "Mr." "Smith")
 print (fullName "John" "Doe")
-print (fullName "Jane" "Smith")
 
 // =============================================================================
-// ステップ6: 高階関数の基本
+// ステップ6: 再帰関数
 // =============================================================================
 
-print "--- Step 6: Higher-Order Functions ---"
-
-// 関数を受け取る関数
-fn applyOperation op :(Int -> Int) -> value :Int -> Int = op value
-
-// 操作関数の定義
-fn double x :Int -> Int = x * 2
-fn increment x :Int -> Int = x + 1
-
-print (toString (applyOperation double 5))     // 10
-print (toString (applyOperation increment 5))  // 6
-
-// 関数を2回適用する
-fn applyTwice f :(Int -> Int) -> x :Int -> Int = f (f x)
-
-print (toString (applyTwice double 3))     // 12 (3 * 2 * 2)
-print (toString (applyTwice increment 5))  // 7 (5 + 1 + 1)
-
-// =============================================================================
-// ステップ7: 再帰関数
-// =============================================================================
-
-print "--- Step 7: Recursive Functions ---"
+print "--- Step 6: Recursive Functions ---"
 
 // 階乗の計算
 fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
@@ -142,33 +107,21 @@ fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci
 print (toString (fibonacci 6))  // 8
 print (toString (fibonacci 7))  // 13
 
-// 累乗計算
-fn power base :Int -> exp :Int -> Int = if exp == 0 then 1 else if exp == 1 then base else base * power base (exp - 1)
-
-print (toString (power 2 3))   // 8
-print (toString (power 3 4))   // 81
-
 // =============================================================================
-// ステップ8: 組み合わせ技
+// ステップ7: 関数型スタイルの呼び出し
 // =============================================================================
 
-print "--- Step 8: Combining Techniques ---"
+print "--- Step 7: Functional Style Calls ---"
 
-// 複数の概念を組み合わせた例
-fn processNumber n :Int -> String = let doubled = double n in let result = if doubled > 10 then "big" else "small" in "Number " + toString n + " doubled is " + toString doubled + " (" + result + ")"
+// 括弧なしの呼び出し
+print "Functional style works!"
+putStrLn "This adds a newline"
 
-print (processNumber 3)   // Number 3 doubled is 6 (small)
-print (processNumber 8)   // Number 8 doubled is 16 (big)
+// 変数との組み合わせ
+let number :Int = 42
+print (toString number)
 
-// 複雑な計算の例
-fn calculateArea length :Float -> width :Float -> Float = length * width
-fn calculateVolume length :Float -> width :Float -> height :Float -> Float = calculateArea length width * height
-
-// 型を合わせるために整数で計算
-fn simpleArea l :Int -> w :Int -> Int = l * w
-fn simpleVolume l :Int -> w :Int -> h :Int -> Int = simpleArea l w * h
-
-print (toString (simpleArea 5 3))      // 15
-print (toString (simpleVolume 4 3 2))  // 24
+// 複合式
+print ("Result: " + toString (add 20 22))
 
 print "=== Tutorial Complete! ==="
