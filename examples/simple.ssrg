@@ -1,0 +1,6 @@
+// Simple Seseragi example
+fn add a :Int -> b :Int -> Int = a + b
+
+let greeting :String = "Hello"
+
+fn double x :Int -> Int = x * 2

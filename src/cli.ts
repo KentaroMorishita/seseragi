@@ -1,6 +1,7 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { Command } from 'commander';
 import { formatCommand } from './cli/format.js';
+import { compileCommand } from './cli/compile.js';
 
 const program = new Command();
 
@@ -26,6 +27,24 @@ program
       check: options.check,
       removeWhitespace: options.removeWhitespace,
       normalizeSpacing: options.normalizeSpacing,
+    });
+  });
+
+program
+  .command('compile')
+  .description('Compile Seseragi source to TypeScript')
+  .argument('<file>', 'Seseragi source file to compile')
+  .option('-o, --output <file>', 'Output TypeScript file')
+  .option('-w, --watch', 'Watch for file changes and recompile')
+  .option('--no-comments', 'Do not generate comments in output')
+  .option('--function-declarations', 'Use function declarations instead of arrow functions')
+  .action(async (file, options) => {
+    await compileCommand({
+      input: file,
+      output: options.output,
+      watch: options.watch,
+      generateComments: !options.noComments,
+      useArrowFunctions: !options.functionDeclarations,
     });
   });
 
