@@ -14,7 +14,8 @@
       "mcp__github-mcp-server__get_pull_request_files",
       "mcp__github-mcp-server__create_pull_request_review",
       "mcp__github-mcp-server__merge_pull_request",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(ln:*)"
     ],
     "deny": []
   }
