@@ -1,0 +1,177 @@
+export function formatSeseragiCode(code: string): string {
+  const lines = code.split('\n');
+  const result: string[] = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    
+    // 空行処理
+    if (trimmed === '') {
+      if (result.length > 0 && result[result.length - 1] !== '') {
+        result.push('');
+      }
+      continue;
+    }
+    
+    // コメント行はそのまま
+    if (trimmed.startsWith('//')) {
+      result.push(trimmed);
+      continue;
+    }
+    
+    // 基本的なクリーンアップ
+    const cleaned = trimmed.replace(/\s+/g, ' ');
+    
+    // 相対的なインデントレベルを計算
+    const indentLevel = calculateIndentLevel(cleaned, i, lines);
+    const indent = '  '.repeat(indentLevel);
+    
+    result.push(indent + cleaned);
+  }
+  
+  return result.join('\n') + '\n';
+}
+
+function calculateIndentLevel(line: string, index: number, allLines: string[]): number {
+  // 現在のコンテキストレベルを取得
+  const contextLevel = getCurrentContextLevel(index, allLines);
+  
+  // トップレベル要素でブロック内にない場合
+  if (isTopLevelElement(line) && contextLevel === 0) {
+    return 0;
+  }
+  
+  // 要素タイプに応じた相対インデントを追加
+  const relativeIndent = getRelativeIndent(line, index, allLines);
+  
+  return contextLevel + relativeIndent;
+}
+
+function isTopLevelElement(line: string): boolean {
+  return line.startsWith('fn ') || 
+         line.startsWith('let ') || 
+         line.startsWith('type ') || 
+         line.startsWith('impl ') || 
+         line.startsWith('monoid ') || 
+         line.startsWith('effectful ');
+}
+
+function getCurrentContextLevel(index: number, allLines: string[]): number {
+  let level = 0;
+  
+  // 現在の行の前までのコンテキストを解析
+  for (let i = 0; i < index; i++) {
+    const line = allLines[i].trim();
+    
+    if (line === '') continue;
+    
+    // ブロック開始
+    if (line.endsWith('{')) {
+      level++;
+    }
+    
+    // ブロック終了
+    if (line === '}') {
+      level = Math.max(0, level - 1);
+    }
+  }
+  
+  // 現在の行が閉じブラケットの場合、レベルを1つ下げる
+  const currentLine = allLines[index].trim();
+  if (currentLine === '}') {
+    level = Math.max(0, level - 1);
+  }
+  
+  return level;
+}
+
+function getRelativeIndent(line: string, index: number, allLines: string[]): number {
+  // パイプで始まる行（match case、type選択肢）
+  if (line.startsWith('|')) {
+    return 1; // 親から +2スペース
+  }
+  
+  // else文
+  if (line === 'else') {
+    return 1; // 親から +2スペース
+  }
+  
+  // Right/Left等の深い継続
+  if (line.startsWith('Right ') || line.startsWith('Left ')) {
+    return 2; // 親から +4スペース
+  }
+  
+  // 矢印の後の継続行
+  if (isArrowContinuation(index, allLines)) {
+    return 2; // 矢印から +4スペース（match caseから +2スペース）
+  }
+  
+  // 関数本体や式の継続
+  if (isExpressionContinuation(index, allLines)) {
+    return 1; // 親から +2スペース
+  }
+  
+  // ブロック内の要素（implブロック内のfnなど）で、トップレベル要素でない場合
+  const contextLevel = getCurrentContextLevel(index, allLines);
+  if (contextLevel > 0 && !isTopLevelElement(line)) {
+    return 1; // 親から +2スペース
+  }
+  
+  // その他はインデントなし（相対で0）
+  return 0;
+}
+
+function isArrowContinuation(index: number, allLines: string[]): boolean {
+  if (index === 0) return false;
+  
+  const prevLine = allLines[index - 1]?.trim();
+  return prevLine && prevLine.endsWith(' ->');
+}
+
+function isExpressionContinuation(index: number, allLines: string[]): boolean {
+  if (index === 0) return false;
+  
+  // 直前の行をチェック
+  for (let i = index - 1; i >= 0; i--) {
+    const prevLine = allLines[i].trim();
+    
+    // 空行やコメントはスキップ
+    if (prevLine === '' || prevLine.startsWith('//')) {
+      continue;
+    }
+    
+    // 等号で終わる行の後
+    if (prevLine.endsWith(' =')) {
+      return true;
+    }
+    
+    // match文の後
+    if (prevLine.includes('match ')) {
+      return true;
+    }
+    
+    // then文の後（elseでない限り）
+    if (prevLine.includes(' then') && !prevLine.includes(' else')) {
+      return true;
+    }
+    
+    // 他の条件に当てはまらない場合は継続ではない
+    break;
+  }
+  
+  return false;
+}
+
+export function removeExtraWhitespace(code: string): string {
+  return code
+    .replace(/[ \t]+/g, ' ')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/^\n+/, '')
+    .replace(/\n+$/, '\n');
+}
+
+export function normalizeOperatorSpacing(code: string): string {
+  return code;
+}
