@@ -1,0 +1,180 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Seseragi",
+  "scopeName": "source.seseragi",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#booleans"
+    },
+    {
+      "include": "#identifiers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.seseragi",
+          "begin": "//",
+          "end": "$"
+        },
+        {
+          "name": "comment.block.seseragi",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.seseragi",
+          "match": "\\b(fn|let|type|impl|monoid|operator|effectful|match|import|as|if|then|else)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.primitive.seseragi",
+          "match": "\\b(Int|Float|Bool|String|Char|Unit)\\b"
+        },
+        {
+          "name": "entity.name.type.generic.seseragi",
+          "match": "\\b(Maybe|Either|IO|List|Array)\\b"
+        },
+        {
+          "name": "entity.name.type.user.seseragi",
+          "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.pipeline.seseragi",
+          "match": "\\|"
+        },
+        {
+          "name": "keyword.operator.reverse-pipe.seseragi",
+          "match": "~"
+        },
+        {
+          "name": "keyword.operator.bind.seseragi",
+          "match": ">>="
+        },
+        {
+          "name": "keyword.operator.fold-monoid.seseragi",
+          "match": ">>>"
+        },
+        {
+          "name": "keyword.operator.arrow.seseragi",
+          "match": "->"
+        },
+        {
+          "name": "keyword.operator.assignment.seseragi",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.comparison.seseragi",
+          "match": "(==|!=|<=|>=|<|>)"
+        },
+        {
+          "name": "keyword.operator.logical.seseragi",
+          "match": "(&&|\\|\\|)"
+        },
+        {
+          "name": "keyword.operator.arithmetic.seseragi",
+          "match": "(\\+|-|\\*|/|%)"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.seseragi",
+          "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*[a-zA-Z0-9_\\s]*:)"
+        },
+        {
+          "name": "support.function.builtin.seseragi",
+          "match": "\\b(Just|Nothing|Left|Right|Cons|Nil)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.seseragi",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.seseragi",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.seseragi",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.seseragi",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.seseragi",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.seseragi",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.seseragi",
+          "match": "\\b(True|False)\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.seseragi",
+          "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    }
+  }
+}

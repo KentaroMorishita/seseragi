@@ -19,7 +19,7 @@ let isReady :Bool = True
 fn isEven n :Int -> Bool = n % 2 == 0
 
 fn absolute x :Int -> Int =
-  x >= 0 is True then x else -x
+  if x >= 0 then x else -x
 
 // パイプライン演算子の使用
 fn processNumber x :Int -> Int =
@@ -27,11 +27,11 @@ fn processNumber x :Int -> Int =
 
 // Maybe型の使用
 fn safeDivide a :Int -> b :Int -> Maybe<Int> =
-  b == 0 is True then Nothing else Just (a / b)
+  if b == 0 then Nothing else Just (a / b)
 
 // Either型の使用
 fn parseNumber str :String -> Either<String, Int> =
-  str | isDigitOnly is True then
+  if str | isDigitOnly then
     Right (str | stringToInt)
   else
     Left ("Invalid number format: " + str)

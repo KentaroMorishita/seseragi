@@ -490,7 +490,7 @@ export class Parser {
   }
 
   private conditionalExpression(): AST.Expression {
-    if (this.match(TokenType.IS)) {
+    if (this.match(TokenType.IF)) {
       const condition = this.binaryExpression()
       this.consume(TokenType.THEN, "Expected 'then' after condition")
       const thenExpr = this.binaryExpression()

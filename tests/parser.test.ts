@@ -90,7 +90,7 @@ describe("Parser", () => {
   })
 
   it("should parse conditional expressions", () => {
-    const source = "let result = is (x > 0) then 1 else 0"
+    const source = "let result = if x > 0 then 1 else 0"
     const parser = new Parser(source)
     const program = parser.parse()
 
