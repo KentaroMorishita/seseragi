@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(npm init:*)",
+      "Bash(npx tsc:*)",
+      "Bash(bun init:*)",
+      "Bash(bun test:*)"
+    ],
+    "deny": []
+  }
+}
