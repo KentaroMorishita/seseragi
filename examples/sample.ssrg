@@ -1,0 +1,83 @@
+// Seseragi言語のサンプルコード
+// 基本的な関数型プログラミングの例
+
+// 基本的な関数定義
+fn add a :Int -> b :Int -> Int = a + b
+
+fn multiply x :Int -> y :Int -> Int = x * y
+
+// 単一パラメータ関数
+fn double x :Int -> Int = x * 2
+
+fn square n :Int -> Int = n * n
+
+// 型付き変数
+let pi :Float = 3.14159
+let greeting :String = "Hello, Seseragi!"
+let isReady :Bool = True
+
+// 条件付き関数
+fn isEven n :Int -> Bool = n % 2 == 0
+
+fn absolute x :Int -> Int = 
+  x >= 0 is True then x else -x
+
+// パイプライン演算子の使用
+fn processNumber x :Int -> Int = 
+  x | double | square
+
+// Maybe型の使用
+fn safeDivide a :Int -> b :Int -> Maybe<Int> =
+  b == 0 is True then Nothing else Just (a / b)
+
+// Either型の使用
+fn parseNumber str :String -> Either<String, Int> =
+  // 実装は省略
+  Right 42
+
+// List操作
+fn sumList numbers :List<Int> -> Int =
+  numbers >>> (+) 0
+
+// 代数的データ型の定義
+type Point = Point Int Int
+
+type Color = 
+  | Red
+  | Green  
+  | Blue
+  | RGB Int Int Int
+
+// パターンマッチング
+fn colorToString color :Color -> String = match color
+  | Red -> "赤"
+  | Green -> "緑"
+  | Blue -> "青"
+  | RGB r g b -> "RGB(" + r + "," + g + "," + b + ")"
+
+// 高階関数
+fn mapList f :Int -> Int -> list :List<Int> -> List<Int> =
+  // 実装は省略
+  list
+
+// モナドバインド演算子
+fn chainMaybe value :Maybe<Int> -> Maybe<Int> =
+  value >>= \x -> Just (x * 2)
+
+// 副作用を持つ関数
+effectful fn printNumber n :Int -> IO<Unit> =
+  // 実装は省略
+  IO Unit
+
+// impl ブロック
+impl Point {
+  fn distance p1 :Point -> p2 :Point -> Float =
+    // 実装は省略
+    0.0
+}
+
+// monoid の定義
+monoid IntSum {
+  empty = 0
+  combine = (+)
+}

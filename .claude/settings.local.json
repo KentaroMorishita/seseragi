@@ -8,7 +8,13 @@
       "Bash(bun test:*)",
       "Bash(bun add:*)",
       "Bash(bunx biome lint:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "mcp__github-mcp-server__create_pull_request",
+      "mcp__github-mcp-server__get_pull_request",
+      "mcp__github-mcp-server__get_pull_request_files",
+      "mcp__github-mcp-server__create_pull_request_review",
+      "mcp__github-mcp-server__merge_pull_request",
+      "Bash(git pull:*)"
     ],
     "deny": []
   }
