@@ -56,14 +56,130 @@ print someValue      // { tag: "Just", value: 42 }
 print result         // "8"
 ```
 
-### 実行方法
+## Seseragiコマンドライン
+
+### インストール
 
 ```bash
-# Seseragiファイルを直接実行
+# 依存関係をインストール
+bun install
+
+# 開発用ビルド
+bun run build
+
+# seseragiコマンドをグローバルにインストール（オプション）
+npm link
+```
+
+### コマンド一覧
+
+#### `seseragi run` - 直接実行
+
+Seseragiファイルを直接実行します：
+
+```bash
+# 基本的な実行
 seseragi run examples/tutorial.ssrg
 
-# TypeScriptにコンパイル
+# デバッグ用（一時ファイルを保持）
+seseragi run examples/tutorial.ssrg --keep-temp
+
+# カスタム一時ディレクトリ指定
+seseragi run examples/tutorial.ssrg --temp-dir ./tmp
+```
+
+#### `seseragi compile` - TypeScriptコンパイル
+
+SeseragiファイルをTypeScriptにコンパイルします：
+
+```bash
+# 基本的なコンパイル
 seseragi compile input.ssrg --output output.ts
+
+# ファイル監視モード
+seseragi compile input.ssrg --output output.ts --watch
+
+# 関数宣言スタイル使用
+seseragi compile input.ssrg --output output.ts --function-declarations
+
+# コメントなしで出力
+seseragi compile input.ssrg --output output.ts --no-comments
+
+# ランタイムモード指定
+seseragi compile input.ssrg --output output.ts --runtime embedded
+seseragi compile input.ssrg --output output.ts --runtime import
+seseragi compile input.ssrg --output output.ts --runtime minimal
+```
+
+#### `seseragi format` - コードフォーマット
+
+Seseragiファイルをフォーマットします：
+
+```bash
+# ファイルをフォーマット（標準出力）
+seseragi format input.ssrg
+
+# インプレース編集
+seseragi format input.ssrg --in-place
+
+# フォーマットチェック
+seseragi format input.ssrg --check
+
+# 出力ファイル指定
+seseragi format input.ssrg --output formatted.ssrg
+```
+
+### 使用例
+
+#### 開発ワークフロー
+
+```bash
+# 1. Seseragiファイルを作成
+echo 'print "Hello, Seseragi!"' > hello.ssrg
+
+# 2. コードをフォーマット
+seseragi format hello.ssrg --in-place
+
+# 3. 直接実行して動作確認
+seseragi run hello.ssrg
+
+# 4. TypeScriptにコンパイル
+seseragi compile hello.ssrg --output hello.ts
+
+# 5. 生成されたTypeScriptを確認
+cat hello.ts
+```
+
+#### 継続的開発
+
+```bash
+# ファイル監視モードでコンパイル
+seseragi compile src/main.ssrg --output dist/main.ts --watch
+
+# 別ターミナルで実行テスト
+seseragi run src/main.ssrg
+```
+
+### ランタイムモードの説明
+
+- **`minimal`** (デフォルト): 必要な機能のみを含む最小ランタイム
+- **`embedded`**: 全機能を含む埋め込み式ランタイム  
+- **`import`**: 外部ランタイムライブラリからインポート
+
+### 出力例
+
+```bash
+$ seseragi run hello.ssrg
+Parsing hello.ssrg...
+Generating TypeScript code...
+Running...
+
+Hello, Seseragi!
+
+$ seseragi compile hello.ssrg --output hello.ts
+Parsing hello.ssrg...
+Generating TypeScript code...
+✓ Compiled to hello.ts
 ```
 
 ### モナド演算子の例
@@ -76,7 +192,7 @@ fn increment x :Int -> Maybe<Int> = Just (x + 1)
 // ファンクター演算子 (<$>)
 let doubled = double <$> Just 21    // Just 42
 
-// アプリカティブ演算子 (<*>)  
+// アプリカティブ演算子 (<*>)
 let added = Just add <*> Just 10 <*> Just 5    // Just 15
 
 // モナド演算子 (>>=)
