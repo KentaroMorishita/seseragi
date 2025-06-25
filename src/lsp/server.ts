@@ -25,7 +25,11 @@ import { URI } from "vscode-uri";
 import { Lexer } from "../formatter/lexer";
 import { Parser } from "../parser";
 import { TypeChecker } from "../typechecker";
-import { SeseragiFormatter, defaultFormatterOptions } from "../formatter/formatter";
+import { 
+  formatSeseragiCode,
+  removeExtraWhitespace,
+  normalizeOperatorSpacing,
+} from "../formatter/index.js";
 
 // Create a connection for the server, using Node's IPC as a transport
 const connection = createConnection(ProposedFeatures.all);
@@ -769,13 +773,18 @@ connection.onDocumentFormatting((params: DocumentFormattingParams): TextEdit[] =
 
   try {
     const text = document.getText();
-    const formatter = new SeseragiFormatter({
-      ...defaultFormatterOptions,
-      indentSize: params.options.tabSize,
-      // Convert insertSpaces to indentSize setting if needed
-    });
     
-    const formattedText = formatter.format(text);
+    // Apply the same formatting process as CLI
+    let formatted = text;
+    
+    // Remove extra whitespace (like CLI does)
+    formatted = removeExtraWhitespace(formatted);
+    
+    // Normalize operator spacing (like CLI does)
+    formatted = normalizeOperatorSpacing(formatted);
+    
+    // Apply main formatting
+    formatted = formatSeseragiCode(formatted);
     
     // Return a single TextEdit that replaces the entire document
     const fullRange = {
@@ -785,7 +794,7 @@ connection.onDocumentFormatting((params: DocumentFormattingParams): TextEdit[] =
     
     return [{
       range: fullRange,
-      newText: formattedText
+      newText: formatted
     }];
   } catch (error) {
     // Log error but don't fail - just return no edits
