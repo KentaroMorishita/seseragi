@@ -1,0 +1,60 @@
+// Maybe型と演算子のサンプル
+
+print "=== Maybe Type with Operators ==="
+
+// =============================================================================
+// 基本的なMaybe値
+// =============================================================================
+
+let someValue = Just 42
+let nothingValue = Nothing
+
+print someValue
+print nothingValue
+
+// =============================================================================
+// ファンクター演算子 (<$>)
+// =============================================================================
+
+print "--- Functor <$> ---"
+
+fn double x :Int -> Int = x * 2
+
+let doubled = double <$> someValue
+let doubledNothing = double <$> nothingValue
+
+print doubled
+print doubledNothing
+
+// =============================================================================
+// アプリカティブ演算子 (<*>)
+// =============================================================================
+
+print "--- Applicative <*> ---"
+
+fn add x :Int -> y :Int -> Int = x + y
+
+let value1 = Just 10
+let value2 = Just 5
+
+let addResult = Just add <*> value1 <*> value2
+let addWithNothing = Just add <*> value1 <*> nothingValue
+
+print addResult
+print addWithNothing
+
+// =============================================================================
+// モナド演算子 (>>=)
+// =============================================================================
+
+print "--- Monad >>= ---"
+
+fn safeDivide x :Int -> y :Int -> Maybe<Int> = if y == 0 then Nothing else Just (x / y)
+
+let chainResult = Just 20 >>= safeDivide 2 >>= safeDivide 2
+let chainError = Just 20 >>= safeDivide 0 >>= safeDivide 2
+
+print chainResult
+print chainError
+
+print "Maybe operators sample completed!"

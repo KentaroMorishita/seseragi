@@ -13,8 +13,11 @@ import {
   BuiltinFunctionCall,
   ConditionalExpression,
   MatchExpression,
+  ConstructorExpression,
   Pipeline,
   ReversePipe,
+  FunctorMap,
+  ApplicativeApply,
   MonadBind,
   FoldMonoid,
   FunctionApplicationOperator,
@@ -23,6 +26,7 @@ import {
   PrimitiveType,
   GenericType,
 } from "./ast"
+import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
 
 /**
  * Seseragi から TypeScript へのコード生成器
@@ -33,12 +37,14 @@ export interface CodeGenOptions {
   indent?: string
   useArrowFunctions?: boolean
   generateComments?: boolean
+  runtimeMode?: 'embedded' | 'import' | 'minimal'
 }
 
 const defaultOptions: CodeGenOptions = {
   indent: "  ",
   useArrowFunctions: true,
   generateComments: false,
+  runtimeMode: 'import',
 }
 
 export function generateTypeScript(
@@ -53,6 +59,7 @@ export function generateTypeScript(
 class CodeGenerator {
   options: CodeGenOptions
   indentLevel: number
+  usageAnalysis?: UsageAnalysis
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -63,13 +70,17 @@ class CodeGenerator {
   generateProgram(statements: Statement[]): string {
     const lines: string[] = []
 
+    // 使用分析を実行
+    const analyzer = new UsageAnalyzer()
+    this.usageAnalysis = analyzer.analyze(statements)
+
     if (this.options.generateComments) {
       lines.push("// Generated TypeScript code from Seseragi")
       lines.push("")
     }
 
-    // ヘルパー関数の追加
-    lines.push(...this.generateHelperFunctions())
+    // ランタイムの生成
+    lines.push(...this.generateRuntime())
     lines.push("")
 
     for (const stmt of statements) {
@@ -83,12 +94,239 @@ class CodeGenerator {
     return lines.join("\n")
   }
 
-  // ヘルパー関数の生成
-  generateHelperFunctions(): string[] {
+  // ランタイムの生成
+  generateRuntime(): string[] {
+    const lines: string[] = []
+    
+    if (!this.usageAnalysis) {
+      return lines
+    }
+
+    switch (this.options.runtimeMode) {
+      case 'import':
+        return this.generateRuntimeImports()
+      case 'minimal':
+        return this.generateMinimalRuntime()
+      case 'embedded':
+      default:
+        return this.generateEmbeddedRuntime()
+    }
+  }
+
+  // 外部ランタイムライブラリからのインポート
+  generateRuntimeImports(): string[] {
+    const lines: string[] = []
+    const imports: string[] = []
+    
+    if (!this.usageAnalysis) return lines
+
+    // 必要な機能のみインポート
+    if (this.usageAnalysis.needsCurrying) {
+      imports.push('curry')
+    }
+    if (this.usageAnalysis.needsPipeline) {
+      imports.push('pipe')
+    }
+    if (this.usageAnalysis.needsReversePipe) {
+      imports.push('reversePipe')
+    }
+    if (this.usageAnalysis.needsFunctionApplication) {
+      imports.push('apply')
+    }
+    if (this.usageAnalysis.needsMaybe) {
+      imports.push('Just', 'Nothing', 'type Maybe')
+    }
+    if (this.usageAnalysis.needsEither) {
+      imports.push('Left', 'Right', 'type Either')
+    }
+    if (this.usageAnalysis.needsFunctorMap) {
+      imports.push('map')
+    }
+    if (this.usageAnalysis.needsApplicativeApply) {
+      imports.push('applyWrapped')
+    }
+    if (this.usageAnalysis.needsMonadBind) {
+      imports.push('bind')
+    }
+    if (this.usageAnalysis.needsFoldMonoid) {
+      imports.push('foldMonoid')
+    }
+    if (this.usageAnalysis.needsBuiltins.print) {
+      imports.push('print')
+    }
+    if (this.usageAnalysis.needsBuiltins.putStrLn) {
+      imports.push('putStrLn')
+    }
+    if (this.usageAnalysis.needsBuiltins.toString) {
+      imports.push('toString')
+    }
+
+    if (imports.length > 0) {
+      lines.push(`import { ${imports.join(', ')} } from './runtime/seseragi-runtime.js';`)
+    }
+
+    return lines
+  }
+
+  // 最小限のランタイム（使用機能のみ埋め込み）
+  generateMinimalRuntime(): string[] {
+    const lines: string[] = ["// Seseragi minimal runtime", ""]
+    
+    if (!this.usageAnalysis) return lines
+
+    // 型定義
+    if (this.usageAnalysis.needsMaybe) {
+      lines.push("type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };")
+    }
+    if (this.usageAnalysis.needsEither) {
+      lines.push("type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };")
+    }
+    if (this.usageAnalysis.needsMaybe || this.usageAnalysis.needsEither) {
+      lines.push("")
+    }
+
+    // 必要な機能のみ生成
+    if (this.usageAnalysis.needsCurrying) {
+      lines.push(...this.generateCurryFunction())
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsPipeline) {
+      lines.push("const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsReversePipe) {
+      lines.push("const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsFunctionApplication) {
+      lines.push("const apply = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsMaybe) {
+      lines.push("const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });")
+      lines.push("const Nothing: Maybe<never> = { tag: 'Nothing' };")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsEither) {
+      lines.push("const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });")
+      lines.push("const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsFunctorMap) {
+      lines.push("const map = <T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {")
+      lines.push("  if ('tag' in container) {")
+      lines.push("    if (container.tag === 'Just') return Just(fn(container.value));")
+      lines.push("    if (container.tag === 'Right') return Right(fn(container.value));")
+      lines.push("    if (container.tag === 'Nothing') return Nothing;")
+      lines.push("    if (container.tag === 'Left') return container;")
+      lines.push("  }")
+      lines.push("  return Nothing;")
+      lines.push("};")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsApplicativeApply) {
+      lines.push("const applyWrapped = <T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {")
+      lines.push("  // Maybe types")
+      lines.push("  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;")
+      lines.push("  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));")
+      lines.push("  // Either types")
+      lines.push("  if (wrapped.tag === 'Left') return wrapped;")
+      lines.push("  if (container.tag === 'Left') return container;")
+      lines.push("  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));")
+      lines.push("  return Nothing;")
+      lines.push("};")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsMonadBind) {
+      lines.push("const bind = <T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> => {")
+      lines.push("  if (container.tag === 'Just') return fn(container.value);")
+      lines.push("  if (container.tag === 'Right') return fn(container.value);")
+      lines.push("  if (container.tag === 'Nothing') return Nothing;")
+      lines.push("  if (container.tag === 'Left') return container;")
+      lines.push("  return Nothing;")
+      lines.push("};")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsFoldMonoid) {
+      lines.push("const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {")
+      lines.push("  return arr.reduce(combine, empty);")
+      lines.push("};")
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsBuiltins.print) {
+      lines.push("const print = (value: any): void => console.log(value);")
+    }
+    if (this.usageAnalysis.needsBuiltins.putStrLn) {
+      lines.push("const putStrLn = (value: string): void => console.log(value);")
+    }
+    if (this.usageAnalysis.needsBuiltins.toString) {
+      lines.push("const toString = (value: any): string => String(value);")
+    }
+
+    return lines
+  }
+
+  // 従来の埋め込み式ランタイム（下位互換性用）
+  generateEmbeddedRuntime(): string[] {
     return [
       "// Seseragi runtime helpers",
       "",
-      "// カリー化関数のヘルパー",
+      "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };",
+      "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };",
+      "",
+      ...this.generateCurryFunction(),
+      "",
+      "const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);",
+      "",
+      "const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);",
+      "",
+      "const map = <T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {",
+      "  if ('tag' in container) {",
+      "    if (container.tag === 'Just') return Just(fn(container.value));",
+      "    if (container.tag === 'Right') return Right(fn(container.value));",
+      "    if (container.tag === 'Nothing') return Nothing;",
+      "    if (container.tag === 'Left') return container;",
+      "  }",
+      "  return Nothing;",
+      "};",
+      "",
+      "const applyWrapped = <T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {",
+      "  // Maybe types",
+      "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;",
+      "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));",
+      "  // Either types", 
+      "  if (wrapped.tag === 'Left') return wrapped;",
+      "  if (container.tag === 'Left') return container;",
+      "  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));",
+      "  return Nothing;",
+      "};",
+      "",
+      "const bind = <T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> => {",
+      "  if (container.tag === 'Just') return fn(container.value);",
+      "  if (container.tag === 'Right') return fn(container.value);",
+      "  if (container.tag === 'Nothing') return Nothing;",
+      "  if (container.tag === 'Left') return container;",
+      "  return Nothing;",
+      "};",
+      "",
+      "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {",
+      "  return arr.reduce(combine, empty);",
+      "};",
+      "",
+      "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });",
+      "const Nothing: Maybe<never> = { tag: 'Nothing' };",
+      "",
+      "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });",
+      "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });",
+      "",
+      "const print = (value: any): void => console.log(value);",
+      "const putStrLn = (value: string): void => console.log(value);",
+      "const toString = (value: any): string => String(value);",
+    ]
+  }
+
+  private generateCurryFunction(): string[] {
+    return [
       "const curry = (fn: Function) => {",
       "  return function curried(...args: any[]) {",
       "    if (args.length >= fn.length) {",
@@ -99,28 +337,7 @@ class CodeGenerator {
       "      };",
       "    }",
       "  };",
-      "};",
-      "",
-      "// パイプライン演算子のヘルパー",
-      "const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);",
-      "",
-      "// 逆パイプ演算子のヘルパー",
-      "const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);",
-      "",
-      "// モナドバインドのヘルパー（Maybe用）",
-      "const bind = <T, U>(maybe: T | null | undefined, fn: (value: T) => U | null | undefined): U | null | undefined => {",
-      "  return maybe != null ? fn(maybe) : null;",
-      "};",
-      "",
-      "// 畳み込みモノイドのヘルパー",
-      "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {",
-      "  return arr.reduce(combine, empty);",
-      "};",
-      "",
-      "// 組み込み関数のヘルパー",
-      "const print = (value: any): void => console.log(value);",
-      "const putStrLn = (value: string): void => console.log(value);",
-      "const toString = (value: any): string => String(value);",
+      "};"
     ]
   }
 
@@ -217,12 +434,18 @@ class CodeGenerator {
       return this.generatePipeline(expr)
     } else if (expr instanceof ReversePipe) {
       return this.generateReversePipe(expr)
+    } else if (expr instanceof FunctorMap) {
+      return this.generateFunctorMap(expr)
+    } else if (expr instanceof ApplicativeApply) {
+      return this.generateApplicativeApply(expr)
     } else if (expr instanceof MonadBind) {
       return this.generateMonadBind(expr)
     } else if (expr instanceof FoldMonoid) {
       return this.generateFoldMonoid(expr)
     } else if (expr instanceof FunctionApplicationOperator) {
       return this.generateFunctionApplicationOperator(expr)
+    } else if (expr instanceof ConstructorExpression) {
+      return this.generateConstructorExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -364,6 +587,22 @@ class CodeGenerator {
     return `reversePipe(${left}, ${right})`
   }
 
+  // ファンクターマップの生成
+  generateFunctorMap(map: FunctorMap): string {
+    const func = this.generateExpression(map.left)
+    const value = this.generateExpression(map.right)
+
+    return `map(${func}, ${value})`
+  }
+
+  // アプリカティブ適用の生成
+  generateApplicativeApply(apply: ApplicativeApply): string {
+    const wrapped = this.generateExpression(apply.left)
+    const value = this.generateExpression(apply.right)
+
+    return `applyWrapped(${wrapped}, ${value})`
+  }
+
   // モナドバインドの生成
   generateMonadBind(bind: MonadBind): string {
     const left = this.generateExpression(bind.left)
@@ -385,9 +624,39 @@ class CodeGenerator {
     const left = this.generateExpression(app.left)
     const right = this.generateExpression(app.right)
 
+    // ビルトイン関数の特別処理
+    if (app.left instanceof Identifier) {
+      const funcName = app.left.name
+      if (funcName === "print" || funcName === "putStrLn") {
+        return `console.log(${right})`
+      } else if (funcName === "toString") {
+        return `String(${right})`
+      }
+    }
+
     // $ は右結合で、基本的には関数呼び出しと同じ
     // f $ x → f(x)
     return `${left}(${right})`
+  }
+
+  // コンストラクタ式の生成
+  generateConstructorExpression(expr: ConstructorExpression): string {
+    const name = expr.constructorName
+    const args = expr.arguments.map(arg => this.generateExpression(arg))
+
+    switch (name) {
+      case "Nothing":
+        return "Nothing"
+      case "Just":
+        return args.length > 0 ? `Just(${args[0]})` : "Just"
+      case "Left":
+        return args.length > 0 ? `Left(${args[0]})` : "Left"
+      case "Right":
+        return args.length > 0 ? `Right(${args[0]})` : "Right"
+      default:
+        // 一般的なコンストラクタ
+        return args.length > 0 ? `${name}(${args.join(", ")})` : name
+    }
   }
 
   // 型の生成
