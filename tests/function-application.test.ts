@@ -28,7 +28,7 @@ describe("Function Application Operator ($)", () => {
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
     expect((expr.left as AST.Identifier).name).toBe("f")
-    
+
     // Right side should be another FunctionApplicationOperator
     const right = expr.right as AST.FunctionApplicationOperator
     expect(right.kind).toBe("FunctionApplicationOperator")
@@ -46,7 +46,7 @@ describe("Function Application Operator ($)", () => {
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
     expect((expr.left as AST.Identifier).name).toBe("print")
-    
+
     // Right side should be another function application
     const right = expr.right as AST.FunctionApplicationOperator
     expect(right.kind).toBe("FunctionApplicationOperator")
@@ -63,7 +63,7 @@ describe("Function Application Operator ($)", () => {
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
     expect((expr.left as AST.Identifier).name).toBe("f")
-    
+
     // Right side should be the binary operation x + y
     const right = expr.right as AST.BinaryOperation
     expect(right.kind).toBe("BinaryOperation")

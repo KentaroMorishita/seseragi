@@ -1,0 +1,297 @@
+import { describe, test, expect } from "bun:test"
+import { Lexer } from "../src/lexer"
+import { Parser } from "../src/parser"
+import { TypeChecker } from "../src/typechecker"
+
+function checkTypes(code: string) {
+  const parser = new Parser(code)
+  const ast = parser.parse()
+  const typeChecker = new TypeChecker()
+  return typeChecker.check(ast)
+}
+
+describe("TypeChecker - Basic Types", () => {
+  test("should type check literal expressions", () => {
+    const errors = checkTypes(`
+      let x = 42
+      let y = "hello"
+      let z = true
+      let w = 3.14
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect type mismatch in variable declaration", () => {
+    const errors = checkTypes(`
+      let x: String = 42
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("initializer type 'Int' does not match declared type 'String'")
+  })
+
+  test("should infer types for variables without explicit type", () => {
+    const errors = checkTypes(`
+      let x = 42
+      let y = x + 10
+    `)
+    expect(errors).toHaveLength(0)
+  })
+})
+
+describe("TypeChecker - Binary Operations", () => {
+  test("should type check numeric operations", () => {
+    const errors = checkTypes(`
+      let x = 1 + 2
+      let y = 3.14 * 2.0
+      let z = 10 / 3
+      let w = 10 % 3
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should promote Int to Float in mixed operations", () => {
+    const errors = checkTypes(`
+      let x = 1 + 2.5
+      let y = 3.14 * 2
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect type errors in numeric operations", () => {
+    const errors = checkTypes(`
+      let x = "hello" + 42
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("incompatible types")
+  })
+
+  test("should type check comparison operations", () => {
+    const errors = checkTypes(`
+      let a = 1 < 2
+      let b = "a" == "b"
+      let c = 3.14 > 2.0
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect type mismatch in comparisons", () => {
+    const errors = checkTypes(`
+      let x = "hello" < 42
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("types must match")
+  })
+})
+
+describe("TypeChecker - Functions", () => {
+  test("should type check function declarations", () => {
+    const errors = checkTypes(`
+      fn add(x: Int, y: Int): Int = x + y
+      fn greet(name: String): String = "Hello, " + name
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect return type mismatch", () => {
+    const errors = checkTypes(`
+      fn bad(x: Int): String = x + 1
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("body type 'Int' does not match declared return type 'String'")
+  })
+
+  test("should type check function calls", () => {
+    const errors = checkTypes(`
+      fn add(x: Int, y: Int): Int = x + y
+      let result = add(1, 2)
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect argument type mismatch", () => {
+    const errors = checkTypes(`
+      fn add(x: Int, y: Int): Int = x + y
+      let result = add("hello", 2)
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("expected 'Int', got 'String'")
+  })
+
+  test("should handle curried function application", () => {
+    const errors = checkTypes(`
+      fn add(x: Int, y: Int): Int = x + y
+      let addOne = add(1)
+      let result = addOne(2)
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should type check block functions", () => {
+    const errors = checkTypes(`
+      fn factorial(n: Int): Int = {
+        let result = if (n == 0) then 1 else n * factorial(n - 1)
+        return result
+      }
+    `)
+    expect(errors).toHaveLength(0)
+  })
+})
+
+describe("TypeChecker - Built-in Functions", () => {
+  test("should type check print and putStrLn", () => {
+    const errors = checkTypes(`
+      print("Hello")
+      putStrLn("World")
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect non-string argument to print", () => {
+    const errors = checkTypes(`
+      print(42)
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("print expects String argument")
+  })
+
+  test("should type check toString", () => {
+    const errors = checkTypes(`
+      let s1 = toString(42)
+      let s2 = toString(true)
+      let s3 = toString("already a string")
+    `)
+    expect(errors).toHaveLength(0)
+  })
+})
+
+describe("TypeChecker - Pipeline Operator", () => {
+  test("should type check pipeline operations", () => {
+    const errors = checkTypes(`
+      fn double(x: Int): Int = x * 2
+      fn addOne(x: Int): Int = x + 1
+      let result = 5 | double | addOne
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect type mismatch in pipeline", () => {
+    const errors = checkTypes(`
+      fn needsString(s: String): Int = 42
+      let result = 5 | needsString
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("function expects 'String', got 'Int'")
+  })
+})
+
+describe("TypeChecker - Conditionals", () => {
+  test("should type check if-then-else expressions", () => {
+    const errors = checkTypes(`
+      let x = if (true) then 1 else 2
+      let y = if (1 < 2) then "yes" else "no"
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect non-boolean condition", () => {
+    const errors = checkTypes(`
+      let x = if (42) then 1 else 2
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("Condition must be Bool")
+  })
+
+  test("should detect branch type mismatch", () => {
+    const errors = checkTypes(`
+      let x = if (true) then 1 else "two"
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("branches must have same type")
+  })
+})
+
+describe("TypeChecker - Pattern Matching", () => {
+  test("should type check match expressions", () => {
+    const errors = checkTypes(`
+      let x = Just(42)
+      let y = match x {
+        Just(n) => n + 1
+        Nothing => 0
+      }
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect inconsistent case types", () => {
+    const errors = checkTypes(`
+      let x = Just(42)
+      let y = match x {
+        Just(n) => n + 1
+        Nothing => "zero"
+      }
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("All match cases must have same type")
+  })
+})
+
+describe("TypeChecker - Maybe Type", () => {
+  test("should type check Just constructor", () => {
+    const errors = checkTypes(`
+      let x = Just(42)
+      let y = Just("hello")
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should type check Nothing constructor", () => {
+    const errors = checkTypes(`
+      let x = Nothing
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect wrong number of arguments to Just", () => {
+    const errors = checkTypes(`
+      let x = Just(1, 2)
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("Just expects exactly 1 argument")
+  })
+})
+
+describe("TypeChecker - Either Type", () => {
+  test("should type check Left and Right constructors", () => {
+    const errors = checkTypes(`
+      let x = Left("error")
+      let y = Right(42)
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should detect wrong number of arguments", () => {
+    const errors = checkTypes(`
+      let x = Left(1, 2)
+    `)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].message).toContain("Left expects exactly 1 argument")
+  })
+})
+
+describe("TypeChecker - Function Application Operator", () => {
+  test("should type check $ operator", () => {
+    const errors = checkTypes(`
+      fn double(x: Int): Int = x * 2
+      let result = double $ 21
+    `)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should handle nested $ operators", () => {
+    const errors = checkTypes(`
+      fn add(x: Int, y: Int): Int = x + y
+      let result = add 1 $ add 2 $ 3
+    `)
+    expect(errors).toHaveLength(0)
+  })
+})

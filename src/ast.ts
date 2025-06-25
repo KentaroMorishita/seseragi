@@ -173,12 +173,7 @@ export class FunctionApplication extends Expression {
   function: Expression
   argument: Expression
 
-  constructor(
-    func: Expression,
-    arg: Expression,
-    line: number,
-    column: number
-  ) {
+  constructor(func: Expression, arg: Expression, line: number, column: number) {
     super(line, column)
     this.function = func
     this.argument = arg

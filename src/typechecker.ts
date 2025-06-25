@@ -1,6 +1,6 @@
 /**
  * Type Checker for Seseragi Language
- * 
+ *
  * Performs static type checking and type inference on the AST
  */
 
@@ -34,13 +34,30 @@ export class TypeEnvironment {
   }
 }
 
-// Type error class
+// Type error class with enhanced error information
 export class TypeError {
   constructor(
     public message: string,
     public line: number,
-    public column: number
+    public column: number,
+    public code?: string,
+    public suggestion?: string
   ) {}
+
+  // Format error with context and suggestions
+  toString(): string {
+    let result = `Error at line ${this.line}, column ${this.column}: ${this.message}`
+
+    if (this.code) {
+      result += `\n  Code: ${this.code}`
+    }
+
+    if (this.suggestion) {
+      result += `\n  Suggestion: ${this.suggestion}`
+    }
+
+    return result
+  }
 }
 
 // Type checker main class
@@ -61,7 +78,8 @@ export class TypeChecker {
       new AST.FunctionType(
         new AST.PrimitiveType("a", 0, 0), // Type variable
         new AST.PrimitiveType("Unit", 0, 0),
-        0, 0
+        0,
+        0
       )
     )
 
@@ -71,7 +89,8 @@ export class TypeChecker {
       new AST.FunctionType(
         new AST.PrimitiveType("a", 0, 0), // Type variable
         new AST.PrimitiveType("Unit", 0, 0),
-        0, 0
+        0,
+        0
       )
     )
 
@@ -81,7 +100,8 @@ export class TypeChecker {
       new AST.FunctionType(
         new AST.PrimitiveType("a", 0, 0), // Type variable
         new AST.PrimitiveType("String", 0, 0),
-        0, 0
+        0,
+        0
       )
     )
   }
@@ -111,7 +131,10 @@ export class TypeChecker {
         this.checkTypeDeclaration(statement as AST.TypeDeclaration, env)
         break
       case "ExpressionStatement":
-        this.checkExpression((statement as AST.ExpressionStatement).expression, env)
+        this.checkExpression(
+          (statement as AST.ExpressionStatement).expression,
+          env
+        )
         break
       case "ReturnStatement":
         this.checkExpression((statement as AST.ReturnStatement).expression, env)
@@ -122,7 +145,10 @@ export class TypeChecker {
     }
   }
 
-  private checkFunctionDeclaration(func: AST.FunctionDeclaration, env: TypeEnvironment): void {
+  private checkFunctionDeclaration(
+    func: AST.FunctionDeclaration,
+    env: TypeEnvironment
+  ): void {
     // Create function type
     let funcType: AST.Type = func.returnType
 
@@ -146,27 +172,34 @@ export class TypeChecker {
     }
 
     const bodyType = this.checkExpression(func.body, bodyEnv)
-    
+
     // Verify return type matches
     if (!this.typesEqual(bodyType, func.returnType)) {
       this.addError(
-        `Function '${func.name}' body type '${this.typeToString(bodyType)}' does not match declared return type '${this.typeToString(func.returnType)}'`,
+        `Function '${func.name}' return type mismatch`,
         func.body.line,
-        func.body.column
+        func.body.column,
+        `Expected: ${this.typeToString(func.returnType)}, but function body returns: ${this.typeToString(bodyType)}`,
+        `Check that all return paths return the declared type '${this.typeToString(func.returnType)}'`
       )
     }
   }
 
-  private checkVariableDeclaration(varDecl: AST.VariableDeclaration, env: TypeEnvironment): void {
+  private checkVariableDeclaration(
+    varDecl: AST.VariableDeclaration,
+    env: TypeEnvironment
+  ): void {
     const initType = this.checkExpression(varDecl.initializer, env)
 
     if (varDecl.type) {
       // If type is explicitly declared, check it matches
       if (!this.typesEqual(initType, varDecl.type)) {
         this.addError(
-          `Variable '${varDecl.name}' initializer type '${this.typeToString(initType)}' does not match declared type '${this.typeToString(varDecl.type)}'`,
+          `Variable '${varDecl.name}' type mismatch`,
           varDecl.line,
-          varDecl.column
+          varDecl.column,
+          `Declared as '${this.typeToString(varDecl.type)}' but initialized with '${this.typeToString(initType)}'`,
+          this.getTypeMismatchSuggestion(varDecl.type, initType)
         )
       }
       env.define(varDecl.name, varDecl.type)
@@ -176,48 +209,64 @@ export class TypeChecker {
     }
   }
 
-  private checkTypeDeclaration(typeDecl: AST.TypeDeclaration, env: TypeEnvironment): void {
+  private checkTypeDeclaration(
+    typeDecl: AST.TypeDeclaration,
+    env: TypeEnvironment
+  ): void {
     // Register custom type (simplified for now)
     // Full implementation would handle type constructors
   }
 
-  private checkExpression(expr: AST.Expression, env: TypeEnvironment): AST.Type {
+  private checkExpression(
+    expr: AST.Expression,
+    env: TypeEnvironment
+  ): AST.Type {
     switch (expr.kind) {
       case "Literal":
         return this.checkLiteral(expr as AST.Literal)
-      
+
       case "Identifier":
         return this.checkIdentifier(expr as AST.Identifier, env)
-      
+
       case "BinaryOperation":
         return this.checkBinaryOperation(expr as AST.BinaryOperation, env)
-      
+
       case "FunctionCall":
         return this.checkFunctionCall(expr as AST.FunctionCall, env)
-      
+
       case "BuiltinFunctionCall":
-        return this.checkBuiltinFunctionCall(expr as AST.BuiltinFunctionCall, env)
-      
+        return this.checkBuiltinFunctionCall(
+          expr as AST.BuiltinFunctionCall,
+          env
+        )
+
       case "FunctionApplication":
-        return this.checkFunctionApplication(expr as AST.FunctionApplication, env)
-      
+        return this.checkFunctionApplication(
+          expr as AST.FunctionApplication,
+          env
+        )
+
       case "Pipeline":
         return this.checkPipeline(expr as AST.Pipeline, env)
-      
+
       case "ConditionalExpression":
         return this.checkConditional(expr as AST.ConditionalExpression, env)
-      
+
       case "MatchExpression":
         return this.checkMatch(expr as AST.MatchExpression, env)
-      
+
       case "ConstructorExpression":
         return this.checkConstructor(expr as AST.ConstructorExpression, env)
-      
+
       case "BlockExpression":
         return this.checkBlock(expr as AST.BlockExpression, env)
-      
+
       default:
-        this.addError(`Unhandled expression type: ${expr.kind}`, expr.line, expr.column)
+        this.addError(
+          `Unhandled expression type: ${expr.kind}`,
+          expr.line,
+          expr.column
+        )
         return new AST.PrimitiveType("Unknown", expr.line, expr.column)
     }
   }
@@ -238,13 +287,22 @@ export class TypeChecker {
   private checkIdentifier(id: AST.Identifier, env: TypeEnvironment): AST.Type {
     const type = env.lookup(id.name)
     if (!type) {
-      this.addError(`Undefined variable '${id.name}'`, id.line, id.column)
+      this.addError(
+        `Undefined variable '${id.name}'`,
+        id.line,
+        id.column,
+        `Variable '${id.name}' is not declared in this scope`,
+        `Did you mean to declare it with 'let ${id.name} = ...' or is there a typo?`
+      )
       return new AST.PrimitiveType("Unknown", id.line, id.column)
     }
     return type
   }
 
-  private checkBinaryOperation(binOp: AST.BinaryOperation, env: TypeEnvironment): AST.Type {
+  private checkBinaryOperation(
+    binOp: AST.BinaryOperation,
+    env: TypeEnvironment
+  ): AST.Type {
     const leftType = this.checkExpression(binOp.left, env)
     const rightType = this.checkExpression(binOp.right, env)
 
@@ -258,18 +316,25 @@ export class TypeChecker {
             return leftType
           }
           // If mixed Int/Float, promote to Float
-          if ((this.isIntType(leftType) && this.isFloatType(rightType)) ||
-              (this.isFloatType(leftType) && this.isIntType(rightType))) {
+          if (
+            (this.isIntType(leftType) && this.isFloatType(rightType)) ||
+            (this.isFloatType(leftType) && this.isIntType(rightType))
+          ) {
             return new AST.PrimitiveType("Float", binOp.line, binOp.column)
           }
-        } else if (this.isStringType(leftType) && this.isStringType(rightType)) {
+        } else if (
+          this.isStringType(leftType) &&
+          this.isStringType(rightType)
+        ) {
           // String concatenation
           return new AST.PrimitiveType("String", binOp.line, binOp.column)
         }
         this.addError(
-          `Type error in binary operation '${binOp.operator}': incompatible types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          `Invalid operands for '${binOp.operator}' operator`,
           binOp.line,
-          binOp.column
+          binOp.column,
+          `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
         )
         return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
 
@@ -284,15 +349,19 @@ export class TypeChecker {
             return leftType
           }
           // If mixed Int/Float, promote to Float
-          if ((this.isIntType(leftType) && this.isFloatType(rightType)) ||
-              (this.isFloatType(leftType) && this.isIntType(rightType))) {
+          if (
+            (this.isIntType(leftType) && this.isFloatType(rightType)) ||
+            (this.isFloatType(leftType) && this.isIntType(rightType))
+          ) {
             return new AST.PrimitiveType("Float", binOp.line, binOp.column)
           }
         }
         this.addError(
-          `Type error in binary operation '${binOp.operator}': incompatible types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          `Invalid operands for '${binOp.operator}' operator`,
           binOp.line,
-          binOp.column
+          binOp.column,
+          `Arithmetic operations require numeric types, got '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          `Use numeric types (Int or Float) for arithmetic operations`
         )
         return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
 
@@ -325,34 +394,45 @@ export class TypeChecker {
         return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
 
       default:
-        this.addError(`Unknown operator '${binOp.operator}'`, binOp.line, binOp.column)
+        this.addError(
+          `Unknown operator '${binOp.operator}'`,
+          binOp.line,
+          binOp.column
+        )
         return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
     }
   }
 
-  private checkFunctionCall(call: AST.FunctionCall, env: TypeEnvironment): AST.Type {
+  private checkFunctionCall(
+    call: AST.FunctionCall,
+    env: TypeEnvironment
+  ): AST.Type {
     const funcType = this.checkExpression(call.function, env)
-    
+
     // Apply arguments one by one (currying)
     let currentType = funcType
     for (const arg of call.arguments) {
       if (currentType.kind !== "FunctionType") {
         this.addError(
-          `Cannot apply argument to non-function type '${this.typeToString(currentType)}'`,
+          `Cannot call as function`,
           arg.line,
-          arg.column
+          arg.column,
+          `Attempted to call '${this.typeToString(currentType)}' as a function`,
+          `Only function types can be called. Check if this is the correct variable name.`
         )
         return new AST.PrimitiveType("Unknown", call.line, call.column)
       }
 
       const fnType = currentType as AST.FunctionType
       const argType = this.checkExpression(arg, env)
-      
+
       if (!this.typesCompatible(fnType.paramType, argType)) {
         this.addError(
-          `Type mismatch in function application: expected '${this.typeToString(fnType.paramType)}', got '${this.typeToString(argType)}'`,
+          `Function argument type mismatch`,
           arg.line,
-          arg.column
+          arg.column,
+          `Expected '${this.typeToString(fnType.paramType)}' but got '${this.typeToString(argType)}'`,
+          this.getTypeMismatchSuggestion(fnType.paramType, argType)
         )
       }
 
@@ -362,7 +442,10 @@ export class TypeChecker {
     return currentType
   }
 
-  private checkBuiltinFunctionCall(call: AST.BuiltinFunctionCall, env: TypeEnvironment): AST.Type {
+  private checkBuiltinFunctionCall(
+    call: AST.BuiltinFunctionCall,
+    env: TypeEnvironment
+  ): AST.Type {
     switch (call.functionName) {
       case "print":
       case "putStrLn":
@@ -392,14 +475,21 @@ export class TypeChecker {
         return new AST.PrimitiveType("String", call.line, call.column)
 
       default:
-        this.addError(`Unknown builtin function '${call.functionName}'`, call.line, call.column)
+        this.addError(
+          `Unknown builtin function '${call.functionName}'`,
+          call.line,
+          call.column
+        )
         return new AST.PrimitiveType("Unknown", call.line, call.column)
     }
   }
 
-  private checkFunctionApplication(app: AST.FunctionApplication, env: TypeEnvironment): AST.Type {
+  private checkFunctionApplication(
+    app: AST.FunctionApplication,
+    env: TypeEnvironment
+  ): AST.Type {
     const funcType = this.checkExpression(app.function, env)
-    
+
     if (funcType.kind !== "FunctionType") {
       this.addError(
         `Cannot apply argument to non-function type '${this.typeToString(funcType)}'`,
@@ -411,12 +501,14 @@ export class TypeChecker {
 
     const fnType = funcType as AST.FunctionType
     const argType = this.checkExpression(app.argument, env)
-    
+
     if (!this.typesCompatible(fnType.paramType, argType)) {
       this.addError(
-        `Type mismatch in function application: expected '${this.typeToString(fnType.paramType)}', got '${this.typeToString(argType)}'`,
+        `Function argument type mismatch`,
         app.argument.line,
-        app.argument.column
+        app.argument.column,
+        `Expected '${this.typeToString(fnType.paramType)}' but got '${this.typeToString(argType)}'`,
+        this.getTypeMismatchSuggestion(fnType.paramType, argType)
       )
     }
 
@@ -449,7 +541,10 @@ export class TypeChecker {
     return fnType.returnType
   }
 
-  private checkConditional(cond: AST.ConditionalExpression, env: TypeEnvironment): AST.Type {
+  private checkConditional(
+    cond: AST.ConditionalExpression,
+    env: TypeEnvironment
+  ): AST.Type {
     const condType = this.checkExpression(cond.condition, env)
     if (!this.isBoolType(condType)) {
       this.addError(
@@ -474,11 +569,18 @@ export class TypeChecker {
     return thenType
   }
 
-  private checkMatch(match: AST.MatchExpression, env: TypeEnvironment): AST.Type {
+  private checkMatch(
+    match: AST.MatchExpression,
+    env: TypeEnvironment
+  ): AST.Type {
     const exprType = this.checkExpression(match.expression, env)
-    
+
     if (match.cases.length === 0) {
-      this.addError("Match expression must have at least one case", match.line, match.column)
+      this.addError(
+        "Match expression must have at least one case",
+        match.line,
+        match.column
+      )
       return new AST.PrimitiveType("Unknown", match.line, match.column)
     }
 
@@ -492,7 +594,7 @@ export class TypeChecker {
       const case_ = match.cases[i]
       const caseEnv = this.checkPattern(case_.pattern, exprType, env)
       const caseType = this.checkExpression(case_.expression, caseEnv)
-      
+
       if (!this.typesEqual(caseType, resultType)) {
         this.addError(
           `All match cases must have same type: case ${i + 1} has '${this.typeToString(caseType)}', but expected '${this.typeToString(resultType)}'`,
@@ -505,7 +607,11 @@ export class TypeChecker {
     return resultType
   }
 
-  private checkPattern(pattern: AST.Pattern, matchedType: AST.Type, env: TypeEnvironment): TypeEnvironment {
+  private checkPattern(
+    pattern: AST.Pattern,
+    matchedType: AST.Type,
+    env: TypeEnvironment
+  ): TypeEnvironment {
     const newEnv = env.extend()
 
     switch (pattern.kind) {
@@ -517,12 +623,13 @@ export class TypeChecker {
       case "LiteralPattern":
         // Check literal type matches
         const litPat = pattern as AST.LiteralPattern
-        const litType = typeof litPat.value === "string" 
-          ? new AST.PrimitiveType("String", pattern.line, pattern.column)
-          : typeof litPat.value === "number"
-          ? new AST.PrimitiveType("Int", pattern.line, pattern.column) // Simplified
-          : new AST.PrimitiveType("Bool", pattern.line, pattern.column)
-        
+        const litType =
+          typeof litPat.value === "string"
+            ? new AST.PrimitiveType("String", pattern.line, pattern.column)
+            : typeof litPat.value === "number"
+              ? new AST.PrimitiveType("Int", pattern.line, pattern.column) // Simplified
+              : new AST.PrimitiveType("Bool", pattern.line, pattern.column)
+
         if (!this.typesEqual(litType, matchedType)) {
           this.addError(
             `Pattern type '${this.typeToString(litType)}' does not match expression type '${this.typeToString(matchedType)}'`,
@@ -542,12 +649,19 @@ export class TypeChecker {
     return newEnv
   }
 
-  private checkConstructor(ctor: AST.ConstructorExpression, env: TypeEnvironment): AST.Type {
+  private checkConstructor(
+    ctor: AST.ConstructorExpression,
+    env: TypeEnvironment
+  ): AST.Type {
     // Handle Maybe and Either constructors
     switch (ctor.constructorName) {
       case "Just":
         if (ctor.arguments.length !== 1) {
-          this.addError("Just expects exactly 1 argument", ctor.line, ctor.column)
+          this.addError(
+            "Just expects exactly 1 argument",
+            ctor.line,
+            ctor.column
+          )
           return new AST.PrimitiveType("Unknown", ctor.line, ctor.column)
         }
         const argType = this.checkExpression(ctor.arguments[0], env)
@@ -559,7 +673,7 @@ export class TypeChecker {
         }
         // Return Maybe<a> with unspecified type parameter
         return new AST.GenericType(
-          "Maybe", 
+          "Maybe",
           [new AST.PrimitiveType("a", ctor.line, ctor.column)],
           ctor.line,
           ctor.column
@@ -568,28 +682,46 @@ export class TypeChecker {
       case "Left":
       case "Right":
         if (ctor.arguments.length !== 1) {
-          this.addError(`${ctor.constructorName} expects exactly 1 argument`, ctor.line, ctor.column)
+          this.addError(
+            `${ctor.constructorName} expects exactly 1 argument`,
+            ctor.line,
+            ctor.column
+          )
           return new AST.PrimitiveType("Unknown", ctor.line, ctor.column)
         }
         const valueType = this.checkExpression(ctor.arguments[0], env)
         // Return Either<L,R> with one type parameter known, using consistent type variables
-        const leftType = ctor.constructorName === "Left" 
-          ? valueType 
-          : new AST.PrimitiveType("l", ctor.line, ctor.column)
-        const rightType = ctor.constructorName === "Right" 
-          ? valueType 
-          : new AST.PrimitiveType("r", ctor.line, ctor.column)
-        return new AST.GenericType("Either", [leftType, rightType], ctor.line, ctor.column)
+        const leftType =
+          ctor.constructorName === "Left"
+            ? valueType
+            : new AST.PrimitiveType("l", ctor.line, ctor.column)
+        const rightType =
+          ctor.constructorName === "Right"
+            ? valueType
+            : new AST.PrimitiveType("r", ctor.line, ctor.column)
+        return new AST.GenericType(
+          "Either",
+          [leftType, rightType],
+          ctor.line,
+          ctor.column
+        )
 
       default:
-        this.addError(`Unknown constructor '${ctor.constructorName}'`, ctor.line, ctor.column)
+        this.addError(
+          `Unknown constructor '${ctor.constructorName}'`,
+          ctor.line,
+          ctor.column
+        )
         return new AST.PrimitiveType("Unknown", ctor.line, ctor.column)
     }
   }
 
-  private checkBlock(block: AST.BlockExpression, env: TypeEnvironment): AST.Type {
+  private checkBlock(
+    block: AST.BlockExpression,
+    env: TypeEnvironment
+  ): AST.Type {
     const blockEnv = env.extend()
-    
+
     // Check all statements in the block
     for (const stmt of block.statements) {
       this.checkStatement(stmt, blockEnv)
@@ -620,15 +752,19 @@ export class TypeChecker {
       case "FunctionType":
         const f1 = t1 as AST.FunctionType
         const f2 = t2 as AST.FunctionType
-        return this.typesEqual(f1.paramType, f2.paramType) && 
-               this.typesEqual(f1.returnType, f2.returnType)
+        return (
+          this.typesEqual(f1.paramType, f2.paramType) &&
+          this.typesEqual(f1.returnType, f2.returnType)
+        )
 
       case "GenericType":
         const g1 = t1 as AST.GenericType
         const g2 = t2 as AST.GenericType
         if (g1.name !== g2.name) return false
         if (g1.typeArguments.length !== g2.typeArguments.length) return false
-        return g1.typeArguments.every((arg, i) => this.typesEqual(arg, g2.typeArguments[i]))
+        return g1.typeArguments.every((arg, i) =>
+          this.typesEqual(arg, g2.typeArguments[i])
+        )
 
       default:
         return false
@@ -637,17 +773,19 @@ export class TypeChecker {
 
   // Check if a type name represents a type variable (single lowercase letter)
   private isTypeVariable(name: string): boolean {
-    return name.length === 1 && name >= 'a' && name <= 'z'
+    return name.length === 1 && name >= "a" && name <= "z"
   }
 
   // Check if two types are compatible (including polymorphic types)
   private typesCompatible(expected: AST.Type, actual: AST.Type): boolean {
     // If expected type is a type variable, it can accept any type
-    if (expected.kind === "PrimitiveType" && 
-        this.isTypeVariable((expected as AST.PrimitiveType).name)) {
+    if (
+      expected.kind === "PrimitiveType" &&
+      this.isTypeVariable((expected as AST.PrimitiveType).name)
+    ) {
       return true
     }
-    
+
     // Otherwise use normal type equality
     return this.typesEqual(expected, actual)
   }
@@ -663,7 +801,9 @@ export class TypeChecker {
 
       case "GenericType":
         const gt = type as AST.GenericType
-        const args = gt.typeArguments.map(t => this.typeToString(t)).join(", ")
+        const args = gt.typeArguments
+          .map((t) => this.typeToString(t))
+          .join(", ")
         return `${gt.name}<${args}>`
 
       default:
@@ -676,22 +816,94 @@ export class TypeChecker {
   }
 
   private isIntType(type: AST.Type): boolean {
-    return type.kind === "PrimitiveType" && (type as AST.PrimitiveType).name === "Int"
+    return (
+      type.kind === "PrimitiveType" &&
+      (type as AST.PrimitiveType).name === "Int"
+    )
   }
 
   private isFloatType(type: AST.Type): boolean {
-    return type.kind === "PrimitiveType" && (type as AST.PrimitiveType).name === "Float"
+    return (
+      type.kind === "PrimitiveType" &&
+      (type as AST.PrimitiveType).name === "Float"
+    )
   }
 
   private isBoolType(type: AST.Type): boolean {
-    return type.kind === "PrimitiveType" && (type as AST.PrimitiveType).name === "Bool"
+    return (
+      type.kind === "PrimitiveType" &&
+      (type as AST.PrimitiveType).name === "Bool"
+    )
   }
 
   private isStringType(type: AST.Type): boolean {
-    return type.kind === "PrimitiveType" && (type as AST.PrimitiveType).name === "String"
+    return (
+      type.kind === "PrimitiveType" &&
+      (type as AST.PrimitiveType).name === "String"
+    )
   }
 
-  private addError(message: string, line: number, column: number): void {
-    this.errors.push(new TypeError(message, line, column))
+  private addError(
+    message: string,
+    line: number,
+    column: number,
+    code?: string,
+    suggestion?: string
+  ): void {
+    this.errors.push(new TypeError(message, line, column, code, suggestion))
+  }
+
+  // Helper methods for better error suggestions
+  private getTypeMismatchSuggestion(
+    expected: AST.Type,
+    actual: AST.Type
+  ): string {
+    const expectedStr = this.typeToString(expected)
+    const actualStr = this.typeToString(actual)
+
+    if (expectedStr === "String" && actualStr === "Int") {
+      return "Use toString() to convert Int to String, or declare the variable as Int"
+    }
+    if (expectedStr === "String" && actualStr === "Float") {
+      return "Use toString() to convert Float to String, or declare the variable as Float"
+    }
+    if (expectedStr === "Int" && actualStr === "String") {
+      return "Remove quotes to make it a number, or declare the variable as String"
+    }
+    if (expectedStr === "Float" && actualStr === "Int") {
+      return "Add a decimal point (e.g., 42.0) to make it a Float, or declare the variable as Int"
+    }
+
+    return `Change the value to match type '${expectedStr}' or change the type annotation to '${actualStr}'`
+  }
+
+  private getBinaryOperatorSuggestion(
+    operator: string,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): string {
+    const leftStr = this.typeToString(leftType)
+    const rightStr = this.typeToString(rightType)
+
+    if (operator === "+") {
+      if (leftStr === "String" || rightStr === "String") {
+        return "For string concatenation, both operands must be String. Use toString() to convert other types"
+      }
+      return "For addition, both operands must be numeric (Int or Float)"
+    }
+
+    if (["-", "*", "/", "%"].includes(operator)) {
+      return "Arithmetic operations require both operands to be numeric (Int or Float)"
+    }
+
+    if (["==", "!=", "<", ">", "<=", ">="].includes(operator)) {
+      return "Comparison operations require both operands to have the same type"
+    }
+
+    if (["&&", "||"].includes(operator)) {
+      return "Boolean operations require both operands to be Bool"
+    }
+
+    return "Check the types of both operands"
   }
 }

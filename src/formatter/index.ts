@@ -1,12 +1,12 @@
-export { Lexer, TokenType, type Token } from './lexer.js';
-export { 
-  SeseragiFormatter, 
-  type FormatterOptions, 
-  defaultFormatterOptions 
-} from './formatter.js';
+export { Lexer, TokenType, type Token } from "./lexer.js"
+export {
+  SeseragiFormatter,
+  type FormatterOptions,
+  defaultFormatterOptions,
+} from "./formatter.js"
 
-export { 
+export {
   formatSeseragiCode,
   removeExtraWhitespace,
-  normalizeOperatorSpacing
-} from './relative-indent-formatter.js';
+  normalizeOperatorSpacing,
+} from "./relative-indent-formatter.js"
