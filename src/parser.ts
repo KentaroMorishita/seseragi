@@ -108,9 +108,17 @@ export class Parser {
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters)
 
-    this.consume(TokenType.ASSIGN, "Expected '=' after function signature")
+    let body: AST.Expression
 
-    const body = this.expression()
+    if (this.match(TokenType.ASSIGN)) {
+      // ワンライナー形式: fn name params = expression
+      body = this.expression()
+    } else if (this.match(TokenType.LEFT_BRACE)) {
+      // ブロック形式: fn name params { statements }
+      body = this.blockExpression()
+    } else {
+      throw new ParseError("Expected '=' or '{' after function signature", this.peek())
+    }
 
     return new AST.FunctionDeclaration(
       name,
@@ -124,6 +132,12 @@ export class Parser {
   }
 
   private parseFunctionSignature(parameters: AST.Parameter[]): AST.Type {
+    // Check for immediate arrow (no parameters case: "fn name -> Type")
+    if (this.check(TokenType.ARROW)) {
+      this.advance() // consume ->
+      return this.parseType()
+    }
+    
     // Parse parameters until we reach the final return type
     while (this.check(TokenType.IDENTIFIER)) {
       const paramNameToken = this.peek()
@@ -1033,6 +1047,64 @@ export class Parser {
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
       type === TokenType.LEFT_PAREN
+    )
+  }
+
+  private blockExpression(): AST.BlockExpression {
+    const statements: AST.Statement[] = []
+    let returnExpression: AST.Expression | undefined
+
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+      // Skip newlines and comments
+      if (this.match(TokenType.NEWLINE, TokenType.COMMENT)) {
+        continue
+      }
+
+      // Check for explicit return statement
+      if (this.check(TokenType.RETURN)) {
+        const returnStmt = this.returnStatement()
+        returnExpression = returnStmt.expression
+        break
+      }
+
+      // Parse statement or expression
+      const stmt = this.statement()
+      if (stmt) {
+        // If this is an expression statement and it's the last thing before closing brace,
+        // treat it as the return expression
+        if (stmt instanceof AST.ExpressionStatement) {
+          // Look ahead to see if we're at the end of the block
+          this.skipNewlines()
+          if (this.check(TokenType.RIGHT_BRACE)) {
+            returnExpression = stmt.expression
+          } else {
+            statements.push(stmt)
+          }
+        } else {
+          statements.push(stmt)
+        }
+      }
+    }
+
+    this.consume(TokenType.RIGHT_BRACE, "Expected '}' after block")
+
+    return new AST.BlockExpression(
+      statements,
+      returnExpression,
+      this.previous().line,
+      this.previous().column
+    )
+  }
+
+  private checkStatementStart(): boolean {
+    const type = this.peek().type
+    return (
+      type === TokenType.FN ||
+      type === TokenType.EFFECTFUL ||
+      type === TokenType.TYPE ||
+      type === TokenType.IMPL ||
+      type === TokenType.IMPORT ||
+      type === TokenType.LET
     )
   }
 }

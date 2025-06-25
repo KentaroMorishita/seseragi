@@ -97,8 +97,8 @@ describe("Function Application Operator ($)", () => {
     const program = parser.parse()
     const generated = generateTypeScript(program.statements)
 
-    // TypeScript生成では toString -> String に変換される
-    expect(generated).toContain("print(String(42))")
+    // TypeScript生成では print -> console.log, toString -> String に変換される
+    expect(generated).toContain("console.log(String(42))")
   })
 
   it("should work with complex expressions", () => {
@@ -107,7 +107,7 @@ describe("Function Application Operator ($)", () => {
     const program = parser.parse()
     const generated = generateTypeScript(program.statements)
 
-    expect(generated).toContain("print(toString(")
+    expect(generated).toContain("console.log(String(")
     expect(generated).toContain("multiply")
   })
 

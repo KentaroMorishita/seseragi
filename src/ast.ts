@@ -321,6 +321,23 @@ export class ConstructorExpression extends Expression {
   }
 }
 
+export class BlockExpression extends Expression {
+  kind = "BlockExpression"
+  statements: Statement[]
+  returnExpression?: Expression
+
+  constructor(
+    statements: Statement[],
+    returnExpression: Expression | undefined,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.statements = statements
+    this.returnExpression = returnExpression
+  }
+}
+
 export class ConditionalExpression extends Expression {
   kind = "ConditionalExpression"
   condition: Expression

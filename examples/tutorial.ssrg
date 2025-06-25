@@ -25,8 +25,8 @@ print boolValue
 print "--- Functions ---"
 
 // 引数なしの関数
-fn getMessage String = "Hello from function!"
-fn getNumber Int = 42
+fn getMessage -> String = "Hello from function!"
+fn getNumber -> Int = 42
 
 // 引数ありの関数
 fn add x :Int -> y :Int -> Int = x + y
@@ -34,11 +34,44 @@ fn double x :Int -> Int = x * 2
 
 let sum = add 10 5
 let doubled = double 7
-let message = getMessage()
+let message = getMessage
+let number = getNumber
 
 print sum
 print doubled
 print message
+print number
+
+// =============================================================================
+// ブロック形式の関数定義
+// =============================================================================
+
+print "--- Block Functions ---"
+
+// 複数行のブロック形式で関数を定義
+fn processNumber x :Int -> Int {
+  let doubled = x * 2
+  let incremented = doubled + 1
+  incremented
+}
+
+fn formatMessage x :Int -> String {
+  "Result"
+}
+
+fn complexCalculation a :Int -> b :Int -> Int {
+  let sum = a + b
+  let product = a * b
+  if sum > product then sum else product
+}
+
+let processed = processNumber 5
+let formatted = formatMessage 42
+let calculated = complexCalculation 4 6
+
+print processed
+print formatted
+print calculated
 
 // =============================================================================
 // if-then-else

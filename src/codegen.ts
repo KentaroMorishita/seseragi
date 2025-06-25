@@ -14,6 +14,7 @@ import {
   ConditionalExpression,
   MatchExpression,
   ConstructorExpression,
+  BlockExpression,
   Pipeline,
   ReversePipe,
   FunctorMap,
@@ -446,6 +447,8 @@ class CodeGenerator {
       return this.generateFunctionApplicationOperator(expr)
     } else if (expr instanceof ConstructorExpression) {
       return this.generateConstructorExpression(expr)
+    } else if (expr instanceof BlockExpression) {
+      return this.generateBlockExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -713,5 +716,26 @@ class CodeGenerator {
       default:
         return name
     }
+  }
+
+  // ブロック式の生成
+  generateBlockExpression(expr: BlockExpression): string {
+    const lines: string[] = []
+    
+    // ブロック内の文を生成
+    for (const stmt of expr.statements) {
+      const code = this.generateStatement(stmt)
+      if (code.trim()) {
+        lines.push(code)
+      }
+    }
+
+    // 最後の式/return文を追加
+    if (expr.returnExpression) {
+      lines.push(`return ${this.generateExpression(expr.returnExpression)};`)
+    }
+
+    // IIFEとして生成（即座に実行される関数式）
+    return `(() => {\n${lines.map(line => `  ${line}`).join('\n')}\n})()`
   }
 }
