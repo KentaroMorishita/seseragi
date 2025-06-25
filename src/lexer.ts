@@ -43,6 +43,8 @@ export enum TokenType {
   BIND = "BIND", // >>=
   FOLD_MONOID = "FOLD_MONOID", // >>>
   FUNCTION_APPLICATION = "FUNCTION_APPLICATION", // $
+  MAP = "MAP", // <$>
+  APPLY = "APPLY", // <*>
   ARROW = "ARROW", // ->
   PLUS = "PLUS", // +
   MINUS = "MINUS", // -
@@ -75,6 +77,7 @@ export enum TokenType {
   RIGHT_BRACKET = "RIGHT_BRACKET", // ]
 
   // Special
+  LAMBDA = "LAMBDA", // \
   NEWLINE = "NEWLINE",
   EOF = "EOF",
   WHITESPACE = "WHITESPACE",
@@ -236,6 +239,8 @@ export class Lexer {
           startLine,
           startColumn
         )
+      case "\\":
+        return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
       case "\n":
         this.line++
         this.column = 1
@@ -268,6 +273,16 @@ export class Lexer {
     }
 
     if (char === "<") {
+      if (this.peek() === "$" && this.peekNext() === ">") {
+        this.advance() // consume $
+        this.advance() // consume >
+        return this.makeToken(TokenType.MAP, "<$>", startLine, startColumn)
+      }
+      if (this.peek() === "*" && this.peekNext() === ">") {
+        this.advance() // consume *
+        this.advance() // consume >
+        return this.makeToken(TokenType.APPLY, "<*>", startLine, startColumn)
+      }
       if (this.peek() === "=") {
         this.advance()
         return this.makeToken(

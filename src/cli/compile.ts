@@ -9,6 +9,7 @@ export interface CompileOptions {
   watch?: boolean;
   generateComments?: boolean;
   useArrowFunctions?: boolean;
+  runtimeMode?: 'embedded' | 'import' | 'minimal';
 }
 
 export async function compileCommand(options: CompileOptions): Promise<void> {
@@ -43,17 +44,13 @@ async function compile(options: CompileOptions): Promise<void> {
   const typeScriptCode = generateTypeScript(ast.statements, {
     generateComments: options.generateComments,
     useArrowFunctions: options.useArrowFunctions,
+    runtimeMode: options.runtimeMode || 'minimal',
   });
   
   // TypeScriptコードを出力
-  if (options.output) {
-    // 出力ファイルが指定されている場合
-    fs.writeFileSync(options.output, typeScriptCode, 'utf-8');
-    console.log(`✓ Compiled to ${options.output}`);
-  } else {
-    // 出力ファイルが指定されていない場合は標準出力
-    console.log(typeScriptCode);
-  }
+  const outputFile = options.output || getDefaultOutputFileName(options.input);
+  fs.writeFileSync(outputFile, typeScriptCode, 'utf-8');
+  console.log(`✓ Compiled to ${outputFile}`);
 }
 
 async function watchAndCompile(options: CompileOptions): Promise<void> {

@@ -123,9 +123,11 @@ let result = partialFn 3    // c=3 を適用して評価: 6
 1. **関数呼び出し** - `f(x)`, `f x`
 2. **逆パイプ演算子** - `~` （右結合）
 3. **パイプライン演算子** - `|` （左結合）
-4. **モナドバインド演算子** - `>>=` （左結合）
-5. **モノイド畳み込み演算子** - `>>>` （左結合）
-6. **関数適用演算子** - `$` （右結合、最低優先順位）
+4. **ファンクターマップ演算子** - `<$>` （左結合）
+5. **アプリカティブ演算子** - `<*>` （左結合）
+6. **モナドバインド演算子** - `>>=` （左結合）
+7. **モノイド畳み込み演算子** - `>>>` （左結合）
+8. **関数適用演算子** - `$` （右結合、最低優先順位）
 
 ### 6.1 パイプライン演算子 (`|`)
 
@@ -148,7 +150,29 @@ fn triple a :Int -> b :Int -> c :Int -> Int = a + b + c
 let result = 1 ~ triple 2 3  // 1 + 2 + 3 = 6
 ```
 
-### 6.3 モナドバインド演算子 (`>>=`)
+### 6.3 ファンクターマップ演算子 (`<$>`)
+
+ファンクターの中の値に関数を適用します。
+
+```rust
+fn add1 x :Int -> Int = x + 1
+
+let result = add1 <$> Just 10  // 結果: Just 11
+let nothingResult = add1 <$> Nothing  // 結果: Nothing
+```
+
+### 6.4 アプリカティブ演算子 (`<*>`)
+
+アプリカティブファンクターで、コンテナ内の関数をコンテナ内の値に適用します。
+
+```rust
+fn add x :Int -> y :Int -> Int = x + y
+
+let result = Just add <*> Just 5 <*> Just 3  // 結果: Just 8
+let mixedResult = Just add <*> Nothing <*> Just 3  // 結果: Nothing
+```
+
+### 6.5 モナドバインド演算子 (`>>=`)
 
 モナドの値を次のモナド関数に流し込みます。
 
@@ -158,7 +182,7 @@ fn addFive x :Int -> Maybe<Int> = Just (x + 5)
 let result = Just 10 >>= addFive  // 結果: Just 15
 ```
 
-### 6.4 関数適用演算子 (`$`)
+### 6.6 関数適用演算子 (`$`)
 
 関数適用の優先順位を最低にして、括弧を減らします。右結合で評価されます。
 
@@ -174,7 +198,7 @@ let pipeline = 10 | add 5 | toString | print      // 左から右へ
 let application = print $ toString $ add 5 10   // 右から左へ（優先順位）
 ```
 
-### 6.5 モノイド畳み込み演算子 (`>>>`)
+### 6.7 モノイド畳み込み演算子 (`>>>`)
 
 モノイドの畳み込み操作を行います。
 
@@ -299,19 +323,27 @@ impl Wallet {
 
 ### 9.1 `Maybe<T>`
 
-値の存在を安全に扱うモナドです。
+値の存在を安全に扱うモナドです。Functor、Applicative、Monadの階層を実装しています。
 
 ```rust
 fn safeDivide x :Int -> y :Int -> Maybe<Int> {
     if y == 0 then Nothing else Just (x / y)
 }
 
-let result = safeDivide 10 2 >>= (\x -> Just (x * 2))  // Just 10
+// Functor（<$>）の使用例
+let doubled = (\x -> x * 2) <$> Just 5  // Just 10
+
+// Applicative（<*>）の使用例
+fn add x :Int -> y :Int -> Int = x + y
+let result = Just add <*> Just 10 <*> Just 5  // Just 15
+
+// Monad（>>=）の使用例
+let chained = safeDivide 10 2 >>= (\x -> Just (x * 2))  // Just 10
 ```
 
 ### 9.2 `Either<L, R>`
 
-エラーと成功を表現するモナドです。
+エラーと成功を表現するモナドです。Functor、Applicative、Monadの階層を実装しています。
 
 ```rust
 fn parseInt str :String -> Either<String, Int> {
@@ -319,6 +351,18 @@ fn parseInt str :String -> Either<String, Int> {
     then Right (String.toInt str)
     else Left ("Not a valid number: " ++ str)
 }
+
+// Functor（<$>）の使用例 - Right側のみにmapが適用される
+let doubled = (\x -> x * 2) <$> Right 5  // Right 10
+let errorCase = (\x -> x * 2) <$> Left "error"  // Left "error"
+
+// Applicative（<*>）の使用例
+fn add x :Int -> y :Int -> Int = x + y
+let success = Right add <*> Right 10 <*> Right 5  // Right 15
+let failure = Right add <*> Left "error" <*> Right 5  // Left "error"
+
+// Monad（>>=）の使用例
+let chained = parseInt "42" >>= (\x -> Right (x * 2))  // Right 84
 ```
 
 ### 9.3 `IO<T>`
