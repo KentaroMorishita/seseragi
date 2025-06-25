@@ -27,7 +27,10 @@ export class Parser {
     const statements: AST.Statement[] = []
 
     while (!this.isAtEnd()) {
-      if (this.peek().type === TokenType.NEWLINE || this.peek().type === TokenType.COMMENT) {
+      if (
+        this.peek().type === TokenType.NEWLINE ||
+        this.peek().type === TokenType.COMMENT
+      ) {
         this.advance()
         continue
       }
@@ -117,7 +120,10 @@ export class Parser {
       // ブロック形式: fn name params { statements }
       body = this.blockExpression()
     } else {
-      throw new ParseError("Expected '=' or '{' after function signature", this.peek())
+      throw new ParseError(
+        "Expected '=' or '{' after function signature",
+        this.peek()
+      )
     }
 
     return new AST.FunctionDeclaration(
@@ -137,7 +143,7 @@ export class Parser {
       this.advance() // consume ->
       return this.parseType()
     }
-    
+
     // Parse parameters until we reach the final return type
     while (this.check(TokenType.IDENTIFIER)) {
       const paramNameToken = this.peek()
@@ -896,22 +902,27 @@ export class Parser {
     }
 
     // ビルトイン関数
-    if (this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING)) {
-      const functionName = this.previous().value as "print" | "putStrLn" | "toString"
+    if (
+      this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING)
+    ) {
+      const functionName = this.previous().value as
+        | "print"
+        | "putStrLn"
+        | "toString"
       const line = this.previous().line
       const column = this.previous().column
-      
+
       // 括弧付きの場合（後方互換性）
       if (this.check(TokenType.LEFT_PAREN)) {
         this.advance() // consume '('
         const args: AST.Expression[] = []
-        
+
         if (!this.check(TokenType.RIGHT_PAREN)) {
           do {
             args.push(this.expression())
           } while (this.match(TokenType.COMMA))
         }
-        
+
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after arguments")
         return new AST.BuiltinFunctionCall(functionName, args, line, column)
       } else {
@@ -924,38 +935,50 @@ export class Parser {
       const name = this.previous().value
       const line = this.previous().line
       const column = this.previous().column
-      
+
       // 大文字で始まる場合はコンストラクタの可能性
       if (name[0] === name[0].toUpperCase()) {
         // 引数がある場合
-        if (this.checkPrimaryStart() && !this.check(TokenType.ARROW) && !this.check(TokenType.PIPE)) {
+        if (
+          this.checkPrimaryStart() &&
+          !this.check(TokenType.ARROW) &&
+          !this.check(TokenType.PIPE)
+        ) {
           const args: AST.Expression[] = []
-          
+
           // 括弧付きの場合
           if (this.check(TokenType.LEFT_PAREN)) {
             this.advance() // consume '('
-            
+
             if (!this.check(TokenType.RIGHT_PAREN)) {
               do {
                 args.push(this.expression())
               } while (this.match(TokenType.COMMA))
             }
-            
-            this.consume(TokenType.RIGHT_PAREN, "Expected ')' after constructor arguments")
+
+            this.consume(
+              TokenType.RIGHT_PAREN,
+              "Expected ')' after constructor arguments"
+            )
           } else {
             // 括弧なしで単一引数の場合
             args.push(this.primaryExpression())
           }
-          
+
           return new AST.ConstructorExpression(name, args, line, column)
         }
-        
+
         // 引数がない場合（Nothing等）はそのままコンストラクタ
-        if (name === "Nothing" || name === "Just" || name === "Left" || name === "Right") {
+        if (
+          name === "Nothing" ||
+          name === "Just" ||
+          name === "Left" ||
+          name === "Right"
+        ) {
           return new AST.ConstructorExpression(name, [], line, column)
         }
       }
-      
+
       return new AST.Identifier(name, line, column)
     }
 

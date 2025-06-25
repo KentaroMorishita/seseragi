@@ -34,13 +34,30 @@ export class TypeEnvironment {
   }
 }
 
-// Type error class
+// Type error class with enhanced error information
 export class TypeError {
   constructor(
     public message: string,
     public line: number,
-    public column: number
+    public column: number,
+    public code?: string,
+    public suggestion?: string
   ) {}
+
+  // Format error with context and suggestions
+  toString(): string {
+    let result = `Error at line ${this.line}, column ${this.column}: ${this.message}`
+
+    if (this.code) {
+      result += `\n  Code: ${this.code}`
+    }
+
+    if (this.suggestion) {
+      result += `\n  Suggestion: ${this.suggestion}`
+    }
+
+    return result
+  }
 }
 
 // Type checker main class
@@ -150,9 +167,11 @@ export class TypeChecker {
     // Verify return type matches
     if (!this.typesEqual(bodyType, func.returnType)) {
       this.addError(
-        `Function '${func.name}' body type '${this.typeToString(bodyType)}' does not match declared return type '${this.typeToString(func.returnType)}'`,
+        `Function '${func.name}' return type mismatch`,
         func.body.line,
-        func.body.column
+        func.body.column,
+        `Expected: ${this.typeToString(func.returnType)}, but function body returns: ${this.typeToString(bodyType)}`,
+        `Check that all return paths return the declared type '${this.typeToString(func.returnType)}'`
       )
     }
   }
@@ -164,9 +183,11 @@ export class TypeChecker {
       // If type is explicitly declared, check it matches
       if (!this.typesEqual(initType, varDecl.type)) {
         this.addError(
-          `Variable '${varDecl.name}' initializer type '${this.typeToString(initType)}' does not match declared type '${this.typeToString(varDecl.type)}'`,
+          `Variable '${varDecl.name}' type mismatch`,
           varDecl.line,
-          varDecl.column
+          varDecl.column,
+          `Declared as '${this.typeToString(varDecl.type)}' but initialized with '${this.typeToString(initType)}'`,
+          this.getTypeMismatchSuggestion(varDecl.type, initType)
         )
       }
       env.define(varDecl.name, varDecl.type)
@@ -238,7 +259,13 @@ export class TypeChecker {
   private checkIdentifier(id: AST.Identifier, env: TypeEnvironment): AST.Type {
     const type = env.lookup(id.name)
     if (!type) {
-      this.addError(`Undefined variable '${id.name}'`, id.line, id.column)
+      this.addError(
+        `Undefined variable '${id.name}'`,
+        id.line,
+        id.column,
+        `Variable '${id.name}' is not declared in this scope`,
+        `Did you mean to declare it with 'let ${id.name} = ...' or is there a typo?`
+      )
       return new AST.PrimitiveType("Unknown", id.line, id.column)
     }
     return type
@@ -267,9 +294,11 @@ export class TypeChecker {
           return new AST.PrimitiveType("String", binOp.line, binOp.column)
         }
         this.addError(
-          `Type error in binary operation '${binOp.operator}': incompatible types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          `Invalid operands for '${binOp.operator}' operator`,
           binOp.line,
-          binOp.column
+          binOp.column,
+          `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
         )
         return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
 
@@ -290,9 +319,11 @@ export class TypeChecker {
           }
         }
         this.addError(
-          `Type error in binary operation '${binOp.operator}': incompatible types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          `Invalid operands for '${binOp.operator}' operator`,
           binOp.line,
-          binOp.column
+          binOp.column,
+          `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+          this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
         )
         return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
 
@@ -338,9 +369,11 @@ export class TypeChecker {
     for (const arg of call.arguments) {
       if (currentType.kind !== "FunctionType") {
         this.addError(
-          `Cannot apply argument to non-function type '${this.typeToString(currentType)}'`,
+          `Cannot call as function`,
           arg.line,
-          arg.column
+          arg.column,
+          `Attempted to call '${this.typeToString(currentType)}' as a function`,
+          `Only function types can be called. Check if this is the correct variable name.`
         )
         return new AST.PrimitiveType("Unknown", call.line, call.column)
       }
@@ -350,9 +383,11 @@ export class TypeChecker {
       
       if (!this.typesCompatible(fnType.paramType, argType)) {
         this.addError(
-          `Type mismatch in function application: expected '${this.typeToString(fnType.paramType)}', got '${this.typeToString(argType)}'`,
+          `Function argument type mismatch`,
           arg.line,
-          arg.column
+          arg.column,
+          `Expected '${this.typeToString(fnType.paramType)}' but got '${this.typeToString(argType)}'`,
+          this.getTypeMismatchSuggestion(fnType.paramType, argType)
         )
       }
 
@@ -414,9 +449,11 @@ export class TypeChecker {
     
     if (!this.typesCompatible(fnType.paramType, argType)) {
       this.addError(
-        `Type mismatch in function application: expected '${this.typeToString(fnType.paramType)}', got '${this.typeToString(argType)}'`,
+        `Function argument type mismatch`,
         app.argument.line,
-        app.argument.column
+        app.argument.column,
+        `Expected '${this.typeToString(fnType.paramType)}' but got '${this.typeToString(argType)}'`,
+        this.getTypeMismatchSuggestion(fnType.paramType, argType)
       )
     }
 
@@ -691,7 +728,68 @@ export class TypeChecker {
     return type.kind === "PrimitiveType" && (type as AST.PrimitiveType).name === "String"
   }
 
-  private addError(message: string, line: number, column: number): void {
-    this.errors.push(new TypeError(message, line, column))
+  private addError(
+    message: string,
+    line: number,
+    column: number,
+    code?: string,
+    suggestion?: string
+  ): void {
+    this.errors.push(new TypeError(message, line, column, code, suggestion))
   }
+
+  // Helper methods for better error suggestions
+  private getTypeMismatchSuggestion(
+    expected: AST.Type,
+    actual: AST.Type
+  ): string {
+    const expectedStr = this.typeToString(expected)
+    const actualStr = this.typeToString(actual)
+
+    if (expectedStr === "String" && actualStr === "Int") {
+      return "Use toString() to convert Int to String, or declare the variable as Int"
+    }
+    if (expectedStr === "String" && actualStr === "Float") {
+      return "Use toString() to convert Float to String, or declare the variable as Float"
+    }
+    if (expectedStr === "Int" && actualStr === "String") {
+      return "Remove quotes to make it a number, or declare the variable as String"
+    }
+    if (expectedStr === "Float" && actualStr === "Int") {
+      return "Add a decimal point (e.g., 42.0) to make it a Float, or declare the variable as Int"
+    }
+
+    return `Change the value to match type '${expectedStr}' or change the type annotation to '${actualStr}'`
+  }
+
+  private getBinaryOperatorSuggestion(
+    operator: string,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): string {
+    const leftStr = this.typeToString(leftType)
+    const rightStr = this.typeToString(rightType)
+
+    if (operator === "+") {
+      if (leftStr === "String" || rightStr === "String") {
+        return "For string concatenation, both operands must be String. Use toString() to convert other types"
+      }
+      return "For addition, both operands must be numeric (Int or Float)"
+    }
+
+    if (["-", "*", "/", "%"].includes(operator)) {
+      return "Arithmetic operations require both operands to be numeric (Int or Float)"
+    }
+
+    if (["==", "!=", "<", ">", "<=", ">="].includes(operator)) {
+      return "Comparison operations require both operands to have the same type"
+    }
+
+    if (["&&", "||"].includes(operator)) {
+      return "Boolean operations require both operands to be Bool"
+    }
+
+    return "Check the types of both operands"
+  }
+}
 }

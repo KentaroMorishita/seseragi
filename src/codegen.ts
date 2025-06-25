@@ -38,14 +38,14 @@ export interface CodeGenOptions {
   indent?: string
   useArrowFunctions?: boolean
   generateComments?: boolean
-  runtimeMode?: 'embedded' | 'import' | 'minimal'
+  runtimeMode?: "embedded" | "import" | "minimal"
 }
 
 const defaultOptions: CodeGenOptions = {
   indent: "  ",
   useArrowFunctions: true,
   generateComments: false,
-  runtimeMode: 'import',
+  runtimeMode: "import",
 }
 
 export function generateTypeScript(
@@ -98,17 +98,17 @@ class CodeGenerator {
   // ランタイムの生成
   generateRuntime(): string[] {
     const lines: string[] = []
-    
+
     if (!this.usageAnalysis) {
       return lines
     }
 
     switch (this.options.runtimeMode) {
-      case 'import':
+      case "import":
         return this.generateRuntimeImports()
-      case 'minimal':
+      case "minimal":
         return this.generateMinimalRuntime()
-      case 'embedded':
+      case "embedded":
       default:
         return this.generateEmbeddedRuntime()
     }
@@ -118,52 +118,54 @@ class CodeGenerator {
   generateRuntimeImports(): string[] {
     const lines: string[] = []
     const imports: string[] = []
-    
+
     if (!this.usageAnalysis) return lines
 
     // 必要な機能のみインポート
     if (this.usageAnalysis.needsCurrying) {
-      imports.push('curry')
+      imports.push("curry")
     }
     if (this.usageAnalysis.needsPipeline) {
-      imports.push('pipe')
+      imports.push("pipe")
     }
     if (this.usageAnalysis.needsReversePipe) {
-      imports.push('reversePipe')
+      imports.push("reversePipe")
     }
     if (this.usageAnalysis.needsFunctionApplication) {
-      imports.push('apply')
+      imports.push("apply")
     }
     if (this.usageAnalysis.needsMaybe) {
-      imports.push('Just', 'Nothing', 'type Maybe')
+      imports.push("Just", "Nothing", "type Maybe")
     }
     if (this.usageAnalysis.needsEither) {
-      imports.push('Left', 'Right', 'type Either')
+      imports.push("Left", "Right", "type Either")
     }
     if (this.usageAnalysis.needsFunctorMap) {
-      imports.push('map')
+      imports.push("map")
     }
     if (this.usageAnalysis.needsApplicativeApply) {
-      imports.push('applyWrapped')
+      imports.push("applyWrapped")
     }
     if (this.usageAnalysis.needsMonadBind) {
-      imports.push('bind')
+      imports.push("bind")
     }
     if (this.usageAnalysis.needsFoldMonoid) {
-      imports.push('foldMonoid')
+      imports.push("foldMonoid")
     }
     if (this.usageAnalysis.needsBuiltins.print) {
-      imports.push('print')
+      imports.push("print")
     }
     if (this.usageAnalysis.needsBuiltins.putStrLn) {
-      imports.push('putStrLn')
+      imports.push("putStrLn")
     }
     if (this.usageAnalysis.needsBuiltins.toString) {
-      imports.push('toString')
+      imports.push("toString")
     }
 
     if (imports.length > 0) {
-      lines.push(`import { ${imports.join(', ')} } from './runtime/seseragi-runtime.js';`)
+      lines.push(
+        `import { ${imports.join(", ")} } from './runtime/seseragi-runtime.js';`
+      )
     }
 
     return lines
@@ -172,15 +174,19 @@ class CodeGenerator {
   // 最小限のランタイム（使用機能のみ埋め込み）
   generateMinimalRuntime(): string[] {
     const lines: string[] = ["// Seseragi minimal runtime", ""]
-    
+
     if (!this.usageAnalysis) return lines
 
     // 型定義
     if (this.usageAnalysis.needsMaybe) {
-      lines.push("type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };")
+      lines.push(
+        "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };"
+      )
     }
     if (this.usageAnalysis.needsEither) {
-      lines.push("type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };")
+      lines.push(
+        "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };"
+      )
     }
     if (this.usageAnalysis.needsMaybe || this.usageAnalysis.needsEither) {
       lines.push("")
@@ -192,32 +198,50 @@ class CodeGenerator {
       lines.push("")
     }
     if (this.usageAnalysis.needsPipeline) {
-      lines.push("const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);")
+      lines.push(
+        "const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);"
+      )
       lines.push("")
     }
     if (this.usageAnalysis.needsReversePipe) {
-      lines.push("const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);")
+      lines.push(
+        "const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);"
+      )
       lines.push("")
     }
     if (this.usageAnalysis.needsFunctionApplication) {
-      lines.push("const apply = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);")
+      lines.push(
+        "const apply = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);"
+      )
       lines.push("")
     }
     if (this.usageAnalysis.needsMaybe) {
-      lines.push("const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });")
+      lines.push(
+        "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });"
+      )
       lines.push("const Nothing: Maybe<never> = { tag: 'Nothing' };")
       lines.push("")
     }
     if (this.usageAnalysis.needsEither) {
-      lines.push("const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });")
-      lines.push("const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });")
+      lines.push(
+        "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });"
+      )
+      lines.push(
+        "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });"
+      )
       lines.push("")
     }
     if (this.usageAnalysis.needsFunctorMap) {
-      lines.push("const map = <T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {")
+      lines.push(
+        "const map = <T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {"
+      )
       lines.push("  if ('tag' in container) {")
-      lines.push("    if (container.tag === 'Just') return Just(fn(container.value));")
-      lines.push("    if (container.tag === 'Right') return Right(fn(container.value));")
+      lines.push(
+        "    if (container.tag === 'Just') return Just(fn(container.value));"
+      )
+      lines.push(
+        "    if (container.tag === 'Right') return Right(fn(container.value));"
+      )
       lines.push("    if (container.tag === 'Nothing') return Nothing;")
       lines.push("    if (container.tag === 'Left') return container;")
       lines.push("  }")
@@ -226,20 +250,30 @@ class CodeGenerator {
       lines.push("")
     }
     if (this.usageAnalysis.needsApplicativeApply) {
-      lines.push("const applyWrapped = <T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {")
+      lines.push(
+        "const applyWrapped = <T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {"
+      )
       lines.push("  // Maybe types")
-      lines.push("  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;")
-      lines.push("  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));")
+      lines.push(
+        "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;"
+      )
+      lines.push(
+        "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));"
+      )
       lines.push("  // Either types")
       lines.push("  if (wrapped.tag === 'Left') return wrapped;")
       lines.push("  if (container.tag === 'Left') return container;")
-      lines.push("  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));")
+      lines.push(
+        "  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));"
+      )
       lines.push("  return Nothing;")
       lines.push("};")
       lines.push("")
     }
     if (this.usageAnalysis.needsMonadBind) {
-      lines.push("const bind = <T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> => {")
+      lines.push(
+        "const bind = <T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> => {"
+      )
       lines.push("  if (container.tag === 'Just') return fn(container.value);")
       lines.push("  if (container.tag === 'Right') return fn(container.value);")
       lines.push("  if (container.tag === 'Nothing') return Nothing;")
@@ -249,7 +283,9 @@ class CodeGenerator {
       lines.push("")
     }
     if (this.usageAnalysis.needsFoldMonoid) {
-      lines.push("const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {")
+      lines.push(
+        "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {"
+      )
       lines.push("  return arr.reduce(combine, empty);")
       lines.push("};")
       lines.push("")
@@ -258,7 +294,9 @@ class CodeGenerator {
       lines.push("const print = (value: any): void => console.log(value);")
     }
     if (this.usageAnalysis.needsBuiltins.putStrLn) {
-      lines.push("const putStrLn = (value: string): void => console.log(value);")
+      lines.push(
+        "const putStrLn = (value: string): void => console.log(value);"
+      )
     }
     if (this.usageAnalysis.needsBuiltins.toString) {
       lines.push("const toString = (value: any): string => String(value);")
@@ -295,7 +333,7 @@ class CodeGenerator {
       "  // Maybe types",
       "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;",
       "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));",
-      "  // Either types", 
+      "  // Either types",
       "  if (wrapped.tag === 'Left') return wrapped;",
       "  if (container.tag === 'Left') return container;",
       "  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));",
@@ -338,7 +376,7 @@ class CodeGenerator {
       "      };",
       "    }",
       "  };",
-      "};"
+      "};",
     ]
   }
 
@@ -365,7 +403,7 @@ class CodeGenerator {
 
   // 関数宣言の生成
   generateFunctionDeclaration(func: FunctionDeclaration): string {
-    const indent = (this.options.indent || '  ').repeat(this.indentLevel)
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
     const params = func.parameters
       .map((p) => `${p.name}: ${this.generateType(p.type)}`)
       .join(", ")
@@ -389,7 +427,7 @@ class CodeGenerator {
 
   // 変数宣言の生成
   generateVariableDeclaration(varDecl: VariableDeclaration): string {
-    const indent = (this.options.indent || '  ').repeat(this.indentLevel)
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
     const type = varDecl.type ? `: ${this.generateType(varDecl.type)}` : ""
     const value = this.generateExpression(varDecl.initializer)
 
@@ -398,7 +436,7 @@ class CodeGenerator {
 
   // 型宣言の生成
   generateTypeDeclaration(typeDecl: TypeDeclaration): string {
-    const indent = (this.options.indent || '  ').repeat(this.indentLevel)
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
 
     if (typeDecl.fields && typeDecl.fields.length > 0) {
       // 構造体型として生成
@@ -494,7 +532,7 @@ class CodeGenerator {
   generateFunctionApplication(app: FunctionApplication): string {
     const func = this.generateExpression(app.function)
     const arg = this.generateExpression(app.argument)
-    
+
     // ビルトイン関数の特別処理
     if (app.function instanceof Identifier) {
       const funcName = app.function.name
@@ -504,7 +542,7 @@ class CodeGenerator {
         return `String(${arg})`
       }
     }
-    
+
     // ネストした関数適用の処理
     if (app.function instanceof FunctionApplication) {
       const nestedFunc = app.function.function
@@ -516,7 +554,7 @@ class CodeGenerator {
         }
       }
     }
-    
+
     // 通常の関数適用
     return `${func}(${arg})`
   }
@@ -623,7 +661,9 @@ class CodeGenerator {
   }
 
   // 関数適用演算子の生成
-  generateFunctionApplicationOperator(app: FunctionApplicationOperator): string {
+  generateFunctionApplicationOperator(
+    app: FunctionApplicationOperator
+  ): string {
     const left = this.generateExpression(app.left)
     const right = this.generateExpression(app.right)
 
@@ -645,7 +685,7 @@ class CodeGenerator {
   // コンストラクタ式の生成
   generateConstructorExpression(expr: ConstructorExpression): string {
     const name = expr.constructorName
-    const args = expr.arguments.map(arg => this.generateExpression(arg))
+    const args = expr.arguments.map((arg) => this.generateExpression(arg))
 
     switch (name) {
       case "Nothing":
@@ -721,7 +761,7 @@ class CodeGenerator {
   // ブロック式の生成
   generateBlockExpression(expr: BlockExpression): string {
     const lines: string[] = []
-    
+
     // ブロック内の文を生成
     for (const stmt of expr.statements) {
       const code = this.generateStatement(stmt)
@@ -736,6 +776,6 @@ class CodeGenerator {
     }
 
     // IIFEとして生成（即座に実行される関数式）
-    return `(() => {\n${lines.map(line => `  ${line}`).join('\n')}\n})()`
+    return `(() => {\n${lines.map((line) => `  ${line}`).join("\n")}\n})()`
   }
 }

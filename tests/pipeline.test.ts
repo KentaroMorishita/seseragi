@@ -35,7 +35,7 @@ describe("Pipeline Operator", () => {
 
     // x | double | add should tokenize correctly
     expect(tokens[0].type).toBe(TokenType.IDENTIFIER)
-    expect(tokens[1].type).toBe(TokenType.PIPE) 
+    expect(tokens[1].type).toBe(TokenType.PIPE)
     expect(tokens[2].type).toBe(TokenType.IDENTIFIER)
     expect(tokens[3].type).toBe(TokenType.PIPE)
     expect(tokens[4].type).toBe(TokenType.IDENTIFIER)

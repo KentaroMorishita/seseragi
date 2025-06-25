@@ -25,7 +25,7 @@ describe("TypeChecker - Basic Tests", () => {
       let x :String = 42
     `)
     expect(errors).toHaveLength(1)
-    expect(errors[0].message).toContain("initializer type 'Int' does not match declared type 'String'")
+    expect(errors[0].message).toBe("Variable 'x' type mismatch")
   })
 
   test("should type check simple functions", () => {
@@ -40,7 +40,7 @@ describe("TypeChecker - Basic Tests", () => {
       fn bad x :Int -> String = x + 1
     `)
     expect(errors).toHaveLength(1)
-    expect(errors[0].message).toContain("body type 'Int' does not match declared return type 'String'")
+    expect(errors[0].message).toBe("Function 'bad' return type mismatch")
   })
 
   test("should type check binary operations", () => {
@@ -56,7 +56,11 @@ describe("TypeChecker - Basic Tests", () => {
       let x = "hello" + 42
     `)
     expect(errors).toHaveLength(1)
+<<<<<<< HEAD
+    expect(errors[0].message).toBe("Invalid operands for '+' operator")
+=======
     expect(errors[0].message).toContain("incompatible types")
+>>>>>>> main
   })
 
   test("should type check Maybe constructors", () => {
@@ -91,4 +95,8 @@ describe("TypeChecker - Basic Tests", () => {
     `)
     expect(errors).toHaveLength(0)
   })
+<<<<<<< HEAD
 })
+=======
+})
+>>>>>>> main
