@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Parser } from '../parser.js';
 import { generateTypeScript } from '../codegen.js';
+import { TypeChecker } from '../typechecker.js';
+import { Lexer } from '../lexer.js';
 
 export interface CompileOptions {
   input: string;
@@ -10,6 +12,7 @@ export interface CompileOptions {
   generateComments?: boolean;
   useArrowFunctions?: boolean;
   runtimeMode?: 'embedded' | 'import' | 'minimal';
+  skipTypeCheck?: boolean;
 }
 
 export async function compileCommand(options: CompileOptions): Promise<void> {
@@ -38,6 +41,22 @@ async function compile(options: CompileOptions): Promise<void> {
   console.log(`Parsing ${options.input}...`);
   const parser = new Parser(sourceCode);
   const ast = parser.parse();
+  
+  // 型チェック
+  if (!options.skipTypeCheck) {
+    console.log('Type checking...');
+    const typeChecker = new TypeChecker();
+    const typeErrors = typeChecker.check(ast);
+    
+    if (typeErrors.length > 0) {
+      console.error('\nType checking failed:');
+      for (const error of typeErrors) {
+        console.error(`  Error at line ${error.line}, column ${error.column}: ${error.message}`);
+      }
+      throw new Error(`Type checking failed with ${typeErrors.length} error(s)`);
+    }
+    console.log('✓ Type checking passed');
+  }
   
   // TypeScriptコードを生成
   console.log('Generating TypeScript code...');
