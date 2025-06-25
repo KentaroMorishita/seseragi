@@ -1,140 +1,99 @@
 # Seseragi サンプルコード集
 
-このディレクトリには、Seseragi言語の様々な機能を示すサンプルコードが含まれています。
+このディレクトリには、Seseragi言語の機能を示すサンプルコードが含まれています。
 
-## ディレクトリ構造
+## ファイル構成
 
 ```
 examples/
-├── README.md                    # このファイル
-├── compiled/                    # コンパイル済みファイル（.gitignoreで除外）
-├── working-samples.ssrg         # ✅ 動作確認済みメインサンプル
-├── functional-style.ssrg        # 関数型スタイル構文デモ
-├── tutorial.ssrg               # 段階的学習チュートリアル
-├── basic-samples.ssrg          # 基本機能紹介
-└── advanced-features.ssrg      # 高度な機能と将来機能
+├── README.md              # このファイル
+├── compiled/              # コンパイル済みファイル
+├── tutorial.ssrg          # 🌟 基本チュートリアル（推奨開始点）
+├── maybe-example.ssrg     # Maybe型と演算子
+├── either-example.ssrg    # Either型と演算子
+└── advanced-features.ssrg # 高度な機能
 ```
 
 ## サンプルファイル
 
-### 🌟 `working-samples.ssrg` - メインサンプル（推奨）
-動作確認済みの包括的なサンプル
-- 基本的な値と関数
-- カリー化と部分適用
-- 条件分岐と再帰関数
-- 関数型スタイル構文
-- **完全にテスト済み** ✅
+### 🌟 `tutorial.ssrg` - 基本チュートリアル（推奨開始点）
+言語の基本機能を一通り学べるチュートリアル
+- ✅ 基本型（Int, Float, String, Bool）
+- ✅ 変数定義（let）
+- ✅ 関数定義（引数あり・なし）
+- ✅ 条件分岐（if-then-else）
+- ✅ Maybe型の基本
+- ✅ Either型の基本
 
-### 📖 `tutorial.ssrg` - 学習チュートリアル
-初心者向けの段階的ガイド
-- Step 1: 基本的な値と出力
-- Step 2: 関数の定義と呼び出し
-- Step 3: カリー化された関数
-- Step 4: 条件分岐
-- Step 5: 文字列操作
-- Step 6: 再帰関数
-- Step 7: 関数型スタイル
+### 📖 `maybe-example.ssrg` - Maybe型演算子
+Maybe型の演算子使用例
+- ✅ ファンクター（`<$>`）の使用方法
+- ✅ アプリカティブ（`<*>`）の使用方法
+- ✅ モナド（`>>=`）の使用方法
+- ✅ 安全な計算チェーン
 
-### 🎯 `functional-style.ssrg` - 関数型構文デモ
-関数型プログラミングの核となる構文
-- 括弧なし関数呼び出し: `print "hello"`
-- ビルトイン関数の使用
-- 変数との組み合わせ
-
-### 📚 `basic-samples.ssrg` - 基本機能集
-Seseragiの主要機能を網羅
-- 基本型（Int, Float, Bool, String）
-- 標準出力関数
-- 関数定義とカリー化
-- 条件分岐と文字列操作
+### 📖 `either-example.ssrg` - Either型演算子
+Either型の演算子使用例
+- ✅ エラーハンドリングパターン
+- ✅ ファンクター（`<$>`）の使用方法
+- ✅ アプリカティブ（`<*>`）の使用方法
+- ✅ モナド（`>>=`）の使用方法
 
 ### 🚀 `advanced-features.ssrg` - 高度な機能
-現在の高度な例と将来実装予定の機能
-- 現在実装済みの高度な例
-- 将来実装予定の機能（コメント形式）
-- パターンマッチング、Maybe型、パイプライン等
+将来実装予定の高度な機能
+- 🚧 パターンマッチング
+- 🚧 カスタム型定義
+- 🚧 モジュールシステム
 
-## サンプルの実行方法
+## 実行方法
 
-### 🚀 直接実行（推奨・最も簡単）
+### 🚀 直接実行（推奨）
 ```bash
-# メインサンプルの実行
-seseragi run examples/working-samples.ssrg
-
-# チュートリアルの実行
+# 基本チュートリアル
 seseragi run examples/tutorial.ssrg
 
-# 関数型構文デモの実行
-seseragi run examples/functional-style.ssrg
+# Maybe型演算子サンプル
+seseragi run examples/maybe-example.ssrg
 
-# 基本サンプルの実行
-seseragi run examples/basic-samples.ssrg
+# Either型演算子サンプル
+seseragi run examples/either-example.ssrg
+
+# 高度な機能
+seseragi run examples/advanced-features.ssrg
 ```
 
-### 📂 コンパイル後実行（詳細制御が必要な場合）
+### 📂 コンパイル後実行
 ```bash
-# メインサンプルの実行
-seseragi compile examples/working-samples.ssrg --output examples/compiled/working-samples.ts
-bun examples/compiled/working-samples.ts
-
-# チュートリアルの実行
+# コンパイル
 seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts
+
+# 実行
 bun examples/compiled/tutorial.ts
-```
-
-### 🛠️ 便利なオプション
-```bash
-# 一時ファイルを保持（デバッグ用）
-seseragi run examples/tutorial.ssrg --keep-temp
-
-# 一時ファイルの場所を指定
-seseragi run examples/tutorial.ssrg --temp-dir /tmp
-
-# 複数サンプルを一括実行
-for file in examples/*.ssrg; do
-  echo "=== Running $(basename "$file") ==="
-  seseragi run "$file"
-  echo ""
-done
-```
-
-### 🔧 その他のオプション
-```bash
-# ファイル監視モード（コンパイルのみ）
-seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts --watch
-
-# 標準出力への出力（デバッグ用）
-seseragi compile examples/functional-style.ssrg --output -
 ```
 
 ## 学習の進め方
 
-1. **`tutorial.ssrg`から開始** - 基本概念を段階的に学習
+1. **`tutorial.ssrg`から開始** - 基本概念を理解
    ```bash
    seseragi run examples/tutorial.ssrg
    ```
 
-2. **`functional-style.ssrg`で構文に慣れる** - 関数型の書き方を理解
+2. **`maybe-example.ssrg`でMaybe型を学習** - 安全な計算方法を理解
    ```bash
-   seseragi run examples/functional-style.ssrg
+   seseragi run examples/maybe-example.ssrg
    ```
 
-3. **`working-samples.ssrg`で総合的に体験** - 実用的なパターンを理解
+3. **`either-example.ssrg`でEither型を学習** - エラーハンドリング方法を理解
    ```bash
-   seseragi run examples/working-samples.ssrg
+   seseragi run examples/either-example.ssrg
    ```
 
-4. **`basic-samples.ssrg`で機能を探索** - より多くの機能を試す
-   ```bash
-   seseragi run examples/basic-samples.ssrg
-   ```
-
-5. **`advanced-features.ssrg`で応用を学ぶ** - 高度なパターンと将来機能を理解
+4. **`advanced-features.ssrg`で将来機能を確認** - 言語の方向性を理解
    ```bash
    seseragi run examples/advanced-features.ssrg
    ```
 
-## 現在実装済みの機能
+## 実装済み機能
 
 ✅ **基本機能**
 - 基本型（Int, Float, Bool, String）
@@ -146,33 +105,30 @@ seseragi compile examples/functional-style.ssrg --output -
 - カリー化された関数
 - 部分適用
 - 高階関数
-- 再帰関数
+
+✅ **モナド型**
+- Maybe型（Just, Nothing）
+- Either型（Left, Right）
+
+✅ **モナド演算子**
+- ファンクター：`<$>` - `double <$> Just 42`
+- アプリカティブ：`<*>` - `Just add <*> Just 5 <*> Just 3`
+- モナド：`>>=` - `Just 10 >>= safeDivide 2`
 
 ✅ **標準出力**
 - `print` - 値の出力
-- `putStrLn` - 改行付き出力
-- `toString` - 文字列変換
 
-✅ **関数呼び出し構文**
-- 括弧付き: `print("hello")`
-- 括弧なし: `print "hello"`（関数型スタイル）
-
-## 将来実装予定の機能
+## 将来実装予定機能
 
 🚧 **型システム拡張**
-- Maybe型、Either型
-- List型とArray型
 - カスタム代数的データ型
+- List型とArray型
+- 型推論の改善
 
 🚧 **パターンマッチング**
 - match式
 - ガード式
 - 網羅性チェック
-
-🚧 **モナド操作**
-- >>= 演算子
-- do記法
-- IO型
 
 🚧 **モジュールシステム**
 - import/export
@@ -193,26 +149,10 @@ seseragi compile examples/functional-style.ssrg --output -
    ```
    Type mismatch: expected String, got Int
    ```
-   → `toString`を使って型を変換してください
-
-3. **未定義関数エラー**
-   ```
-   Unknown function: undefined_function
-   ```
-   → 関数が定義されているか確認してください
+   → 適切な型変換を行ってください
 
 ### デバッグのコツ
 
 1. **小さなコードから始める** - 複雑な式を分割して確認
-2. **型注釈を明示する** - 型推論に頼らず明示的に型を指定
+2. **型注釈を明示する** - 明示的に型を指定
 3. **段階的に構築する** - 機能を少しずつ追加して動作確認
-
-## コントリビューション
-
-新しいサンプルコードの追加や既存コードの改善は歓迎します！
-- わかりやすいコメント
-- 段階的な説明
-- 実用的な例
-- エラーハンドリングの例
-
-を含めてください。

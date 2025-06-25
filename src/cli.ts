@@ -39,6 +39,7 @@ program
   .option('-w, --watch', 'Watch for file changes and recompile')
   .option('--no-comments', 'Do not generate comments in output')
   .option('--function-declarations', 'Use function declarations instead of arrow functions')
+  .option('--runtime <mode>', 'Runtime mode: embedded, import, minimal (default: minimal)', 'minimal')
   .action(async (file, options) => {
     await compileCommand({
       input: file,
@@ -46,6 +47,7 @@ program
       watch: options.watch,
       generateComments: !options.noComments,
       useArrowFunctions: !options.functionDeclarations,
+      runtimeMode: options.runtime,
     });
   });
 

@@ -499,10 +499,14 @@ export class Parser {
   private conditionalExpression(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpression()
+      this.skipNewlines()
       this.consume(TokenType.THEN, "Expected 'then' after condition")
-      const thenExpr = this.binaryExpression()
+      this.skipNewlines()
+      const thenExpr = this.conditionalExpression()
+      this.skipNewlines()
       this.consume(TokenType.ELSE, "Expected 'else' after then expression")
-      const elseExpr = this.binaryExpression()
+      this.skipNewlines()
+      const elseExpr = this.conditionalExpression()
 
       return new AST.ConditionalExpression(
         condition,
@@ -641,11 +645,43 @@ export class Parser {
   }
 
   private bindExpression(): AST.Expression {
-    let expr = this.reversePipeExpression()
+    let expr = this.applicativeExpression()
 
     while (this.match(TokenType.BIND)) {
-      const right = this.reversePipeExpression()
+      const right = this.applicativeExpression()
       expr = new AST.MonadBind(
+        expr,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private applicativeExpression(): AST.Expression {
+    let expr = this.functorExpression()
+
+    while (this.match(TokenType.APPLY)) {
+      const right = this.functorExpression()
+      expr = new AST.ApplicativeApply(
+        expr,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private functorExpression(): AST.Expression {
+    let expr = this.reversePipeExpression()
+
+    while (this.match(TokenType.MAP)) {
+      const right = this.reversePipeExpression()
+      expr = new AST.FunctorMap(
         expr,
         right,
         this.previous().line,
@@ -872,11 +908,41 @@ export class Parser {
 
     if (this.match(TokenType.IDENTIFIER)) {
       const name = this.previous().value
-      return new AST.Identifier(
-        name,
-        this.previous().line,
-        this.previous().column
-      )
+      const line = this.previous().line
+      const column = this.previous().column
+      
+      // 大文字で始まる場合はコンストラクタの可能性
+      if (name[0] === name[0].toUpperCase()) {
+        // 引数がある場合
+        if (this.checkPrimaryStart() && !this.check(TokenType.ARROW) && !this.check(TokenType.PIPE)) {
+          const args: AST.Expression[] = []
+          
+          // 括弧付きの場合
+          if (this.check(TokenType.LEFT_PAREN)) {
+            this.advance() // consume '('
+            
+            if (!this.check(TokenType.RIGHT_PAREN)) {
+              do {
+                args.push(this.expression())
+              } while (this.match(TokenType.COMMA))
+            }
+            
+            this.consume(TokenType.RIGHT_PAREN, "Expected ')' after constructor arguments")
+          } else {
+            // 括弧なしで単一引数の場合
+            args.push(this.primaryExpression())
+          }
+          
+          return new AST.ConstructorExpression(name, args, line, column)
+        }
+        
+        // 引数がない場合（Nothing等）はそのままコンストラクタ
+        if (name === "Nothing" || name === "Just" || name === "Left" || name === "Right") {
+          return new AST.ConstructorExpression(name, [], line, column)
+        }
+      }
+      
+      return new AST.Identifier(name, line, column)
     }
 
     if (this.match(TokenType.LEFT_PAREN)) {
@@ -947,5 +1013,26 @@ export class Parser {
 
       this.advance()
     }
+  }
+
+  private skipNewlines(): void {
+    while (this.check(TokenType.NEWLINE)) {
+      this.advance()
+    }
+  }
+
+  private checkPrimaryStart(): boolean {
+    const type = this.peek().type
+    return (
+      type === TokenType.INTEGER ||
+      type === TokenType.FLOAT ||
+      type === TokenType.STRING ||
+      type === TokenType.BOOLEAN ||
+      type === TokenType.IDENTIFIER ||
+      type === TokenType.PRINT ||
+      type === TokenType.PUT_STR_LN ||
+      type === TokenType.TO_STRING ||
+      type === TokenType.LEFT_PAREN
+    )
   }
 }

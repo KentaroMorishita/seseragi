@@ -219,6 +219,40 @@ export class ReversePipe extends Expression {
   }
 }
 
+export class FunctorMap extends Expression {
+  kind = "FunctorMap"
+  left: Expression
+  right: Expression
+
+  constructor(
+    left: Expression,
+    right: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.left = left
+    this.right = right
+  }
+}
+
+export class ApplicativeApply extends Expression {
+  kind = "ApplicativeApply"
+  left: Expression
+  right: Expression
+
+  constructor(
+    left: Expression,
+    right: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.left = left
+    this.right = right
+  }
+}
+
 export class MonadBind extends Expression {
   kind = "MonadBind"
   left: Expression
@@ -267,6 +301,23 @@ export class FunctionApplicationOperator extends Expression {
     super(line, column)
     this.left = left
     this.right = right
+  }
+}
+
+export class ConstructorExpression extends Expression {
+  kind = "ConstructorExpression"
+  constructorName: string
+  arguments: Expression[]
+
+  constructor(
+    constructorName: string,
+    args: Expression[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.constructorName = constructorName
+    this.arguments = args
   }
 }
 
