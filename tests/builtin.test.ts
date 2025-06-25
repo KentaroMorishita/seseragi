@@ -80,7 +80,7 @@ describe('Builtin Functions', () => {
     const seseragiCode = `
     let name :String = "Alice"
     let age :Int = 30
-    print("Name:", name)
+    print("Name: " + name)
     putStrLn(toString(age))
     `;
     
@@ -94,7 +94,7 @@ describe('Builtin Functions', () => {
     });
 
     const compiledCode = fs.readFileSync(testOutputFile, 'utf-8');
-    expect(compiledCode).toContain('console.log("Name:", name)');
+    expect(compiledCode).toContain('console.log(("Name: " + name))');
     expect(compiledCode).toContain('console.log(String(age))');
   });
 
