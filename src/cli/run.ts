@@ -55,6 +55,7 @@ async function compileToTemp(options: RunOptions): Promise<string> {
   const typeScriptCode = generateTypeScript(ast.statements, {
     generateComments: false, // 実行用なのでコメントは不要
     useArrowFunctions: true,
+    runtimeMode: 'minimal', // 必要なランタイムのみ埋め込み
   });
   
   // 一時ファイルに書き込み

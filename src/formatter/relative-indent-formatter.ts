@@ -173,5 +173,30 @@ export function removeExtraWhitespace(code: string): string {
 }
 
 export function normalizeOperatorSpacing(code: string): string {
-  return code;
+  return code
+    // 型注釈 :
+    .replace(/\s*:\s*/g, ': ')
+    // 関数矢印 ->
+    .replace(/\s*->\s*/g, ' -> ')
+    // 代入演算子 =
+    .replace(/\s*=\s*/g, ' = ')
+    // 加算演算子 +
+    .replace(/(?<=[^\+])\s*\+\s*(?=[^\+=])/g, ' + ')
+    // 減算演算子 -
+    .replace(/(?<=[^-])\s*-\s*(?=[^->])/g, ' - ')
+    // 乗算演算子 *
+    .replace(/\s*\*\s*/g, ' * ')
+    // 除算演算子 /
+    .replace(/\s*\/\s*/g, ' / ')
+    // パイプライン演算子 |
+    .replace(/\s*\|\s*/g, ' | ')
+    // 逆パイプ演算子 ~
+    .replace(/\s*~\s*/g, ' ~ ')
+    // バインド演算子 >>=
+    .replace(/\s*>>=\s*/g, ' >>= ')
+    // 関数適用演算子 $
+    .replace(/\s*\$\s*/g, ' $ ')
+    // 余分な空白を削除
+    .replace(/\s+/g, ' ')
+    .trim();
 }
