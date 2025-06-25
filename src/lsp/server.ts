@@ -25,6 +25,7 @@ import { URI } from "vscode-uri";
 import { Lexer } from "../formatter/lexer";
 import { Parser } from "../parser";
 import { TypeChecker } from "../typechecker";
+import { TypeInferenceSystem, TypeVariable } from "../type-inference";
 import { 
   formatSeseragiCode,
   removeExtraWhitespace,
@@ -165,27 +166,44 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const parser = new Parser(text);
     const ast = parser.parse();
 
-    // Type check the document
+    // Type check the document using both old and new systems
     const typeChecker = new TypeChecker();
-    const typeErrors = typeChecker.check(ast);
+    const oldTypeErrors = typeChecker.check(ast);
+
+    // Use new type inference system
+    const typeInference = new TypeInferenceSystem();
+    const inferenceResult = typeInference.infer(ast);
+    
+    // Combine errors from both systems
+    const allErrors = [...oldTypeErrors, ...inferenceResult.errors];
 
     // Convert type errors to diagnostics
-    for (const error of typeErrors) {
+    for (const error of allErrors) {
       const startPos = error.line !== undefined && error.column !== undefined
-        ? { line: error.line, character: error.column }
+        ? { line: Math.max(0, error.line - 1), character: Math.max(0, error.column) }
         : textDocument.positionAt(0);
       const endPos = error.line !== undefined && error.column !== undefined
-        ? { line: error.line, character: error.column + ((error as any).length || 1) }
+        ? { line: Math.max(0, error.line - 1), character: Math.max(0, error.column + ((error as any).length || 1)) }
         : textDocument.positionAt(Math.min(text.length, 100));
         
+      // Enhanced error message with context
+      let enhancedMessage = error.message;
+      if ('context' in error && error.context) {
+        enhancedMessage += `\n\nContext: ${error.context}`;
+      }
+      if ('suggestion' in error && error.suggestion) {
+        enhancedMessage += `\n\nSuggestion: ${error.suggestion}`;
+      }
+      
       const diagnostic: Diagnostic = {
         severity: DiagnosticSeverity.Error,
         range: {
           start: startPos,
           end: endPos,
         },
-        message: error.message,
+        message: enhancedMessage,
         source: "seseragi",
+        code: ('code' in error && error.code) || "type-error",
       };
       
       if (hasDiagnosticRelatedInformationCapability) {
@@ -495,15 +513,36 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
   return null;
 }
 
-// Get type information using the type checker
+// Get type information using the new type inference system
 function getTypeInfoWithTypeChecker(ast: any, symbol: string, typeChecker: TypeChecker): string | null {
-  // Run type checking to populate type environment
-  typeChecker.check(ast);
-  
-  // Look for the symbol in the AST with type information
-  const symbolInfo = findSymbolWithType(ast, symbol, typeChecker);
-  if (symbolInfo) {
-    return formatTypeInfo(symbol, symbolInfo);
+  try {
+    // Use new type inference system
+    const typeInference = new TypeInferenceSystem();
+    const inferenceResult = typeInference.infer(ast);
+    
+    // Apply substitutions to get final types
+    const symbolInfo = findSymbolWithInferredType(ast, symbol, inferenceResult.substitution);
+    if (symbolInfo) {
+      return formatInferredTypeInfo(symbol, symbolInfo);
+    }
+    
+    // Fallback to old type checker
+    typeChecker.check(ast);
+    const fallbackInfo = findSymbolWithType(ast, symbol, typeChecker);
+    if (fallbackInfo) {
+      return formatTypeInfo(symbol, fallbackInfo);
+    }
+  } catch (error) {
+    // Fallback to old type checker on error
+    try {
+      typeChecker.check(ast);
+      const fallbackInfo = findSymbolWithType(ast, symbol, typeChecker);
+      if (fallbackInfo) {
+        return formatTypeInfo(symbol, fallbackInfo);
+      }
+    } catch (fallbackError) {
+      // Return null if both systems fail
+    }
   }
   
   return null;
@@ -679,6 +718,148 @@ function getKeywordInfo(keyword: string): string | null {
   };
 
   return keywordDocs[keyword] || null;
+}
+
+// Find symbol with inferred type information
+function findSymbolWithInferredType(ast: any, symbol: string, substitution: any): any {
+  if (!ast.statements) {
+    return null;
+  }
+
+  for (const statement of ast.statements) {
+    if (statement.kind === 'FunctionDeclaration' && statement.name === symbol) {
+      // Apply substitution to function type
+      let funcType = statement.returnType;
+      for (let i = statement.parameters.length - 1; i >= 0; i--) {
+        funcType = {
+          kind: 'FunctionType',
+          paramType: statement.parameters[i].type,
+          returnType: funcType
+        };
+      }
+      
+      const finalType = substitution.apply ? substitution.apply(funcType) : funcType;
+      
+      return {
+        type: 'function',
+        name: symbol,
+        parameters: statement.parameters,
+        finalType: finalType,
+        isEffectful: statement.isEffectful
+      };
+    }
+    
+    if (statement.kind === 'VariableDeclaration' && statement.name === symbol) {
+      // For variables, we need to find the inferred type from the initializer
+      let varType = statement.type;
+      
+      // If no explicit type, try to infer from initializer
+      if (!varType && statement.initializer) {
+        varType = inferTypeFromExpression(statement.initializer);
+      }
+      
+      const finalType = substitution.apply ? substitution.apply(varType) : varType;
+      
+      return {
+        type: 'variable',
+        name: symbol,
+        finalType: finalType,
+        hasExplicitType: !!statement.type
+      };
+    }
+  }
+  
+  return null;
+}
+
+// Simple type inference from expression (fallback)
+function inferTypeFromExpression(expr: any): any {
+  if (!expr) return null;
+  
+  switch (expr.kind) {
+    case 'Literal':
+      switch (expr.literalType) {
+        case 'integer': return { kind: 'PrimitiveType', name: 'Int' };
+        case 'float': return { kind: 'PrimitiveType', name: 'Float' };
+        case 'string': return { kind: 'PrimitiveType', name: 'String' };
+        case 'boolean': return { kind: 'PrimitiveType', name: 'Bool' };
+        default: return null;
+      }
+    
+    case 'BinaryOperation':
+      // For binary operations, try to infer numeric types
+      if (['+', '-', '*', '/', '%'].includes(expr.operator)) {
+        return { kind: 'PrimitiveType', name: 'Int' }; // Simplified
+      }
+      if (['==', '!=', '<', '>', '<=', '>=', '&&', '||'].includes(expr.operator)) {
+        return { kind: 'PrimitiveType', name: 'Bool' };
+      }
+      return null;
+      
+    default:
+      return null;
+  }
+}
+
+// Format inferred type information for hover display
+function formatInferredTypeInfo(symbol: string, info: any): string {
+  switch (info.type) {
+    case 'function':
+      const params = info.parameters?.map((p: any) => {
+        const paramType = formatInferredTypeForDisplay(p.type);
+        return `${p.name}: ${paramType}`;
+      }).join(', ') || '';
+      
+      const returnType = formatInferredTypeForDisplay(info.finalType);
+      const effectful = info.isEffectful ? 'effectful ' : '';
+      
+      // Show both function signature and inferred type
+      const funcSignature = `${effectful}fn ${symbol}(${params})`;
+      const finalTypeStr = formatInferredTypeForDisplay(info.finalType);
+      
+      return `\`\`\`seseragi\n${funcSignature}\n\`\`\`\n**Inferred type:** \`${finalTypeStr}\``;
+      
+    case 'variable':
+      const typeAnnotation = info.hasExplicitType ? 'explicit' : 'inferred';
+      const varType = formatInferredTypeForDisplay(info.finalType);
+      
+      return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\`\n**Type:** ${typeAnnotation}`;
+      
+    default:
+      return null;
+  }
+}
+
+// Format inferred type for display
+function formatInferredTypeForDisplay(type: any): string {
+  if (!type) return 'unknown';
+  
+  if (typeof type === 'string') {
+    return type;
+  }
+  
+  if (type.kind === 'PrimitiveType') {
+    return type.name;
+  }
+  
+  if (type.kind === 'TypeVariable') {
+    // Show type variables as their names with a note
+    return `${type.name} (type variable)`;
+  }
+  
+  if (type.kind === 'FunctionType') {
+    const paramType = formatInferredTypeForDisplay(type.paramType);
+    const returnType = formatInferredTypeForDisplay(type.returnType);
+    return `(${paramType} -> ${returnType})`;
+  }
+  
+  if (type.kind === 'GenericType') {
+    const baseType = type.name;
+    const typeArgs = type.typeArguments?.map(formatInferredTypeForDisplay).join(', ') || '';
+    return typeArgs ? `${baseType}<${typeArgs}>` : baseType;
+  }
+  
+  return type.name || 'unknown';
 }
 
 // This handler provides go to definition functionality.
