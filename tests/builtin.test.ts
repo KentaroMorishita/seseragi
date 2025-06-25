@@ -93,17 +93,10 @@ describe("Builtin Functions", () => {
       useArrowFunctions: true,
     })
 
-<<<<<<< HEAD
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
     expect(compiledCode).toContain('console.log(("Name: " + name))')
     expect(compiledCode).toContain("console.log(String(age))")
   })
-=======
-    const compiledCode = fs.readFileSync(testOutputFile, 'utf-8');
-    expect(compiledCode).toContain('console.log(("Name: " + name))');
-    expect(compiledCode).toContain('console.log(String(age))');
-  });
->>>>>>> main
 
   it("should handle builtin functions in function definitions", async () => {
     const seseragiCode = `

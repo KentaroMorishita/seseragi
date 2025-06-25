@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "main": "src/main.ts",
   "bin": {
-    "seseragi": "./src/cli.ts"
+    "seseragi": "./src/cli.ts",
+    "seseragi-lsp": "./src/lsp/main.ts"
   },
   "scripts": {
     "dev": "bun run --watch src/main.ts",
-    "build": "bun build src/main.ts --outdir dist --target node",
+    "build": "bun build src/main.ts --outdir dist --target node && bun build src/lsp/main.ts --outdir dist/lsp --target node",
     "build:types": "tsc --project tsconfig.json",
     "build:all": "bun run build && bun run build:types",
     "test": "bun test",
@@ -37,6 +38,9 @@
   },
   "private": true,
   "dependencies": {
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12",
+    "vscode-uri": "^3.1.0"
   }
 }

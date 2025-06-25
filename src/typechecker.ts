@@ -792,4 +792,3 @@ export class TypeChecker {
     return "Check the types of both operands"
   }
 }
-}
