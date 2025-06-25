@@ -15,7 +15,7 @@ test('removeExtraWhitespace removes trailing whitespace', () => {
 
 test('normalizeOperatorSpacing adds proper spacing', () => {
   const input = 'fn add a:Int->b:Int->Int=a+b';
-  const expected = 'fn add a: Int -> b: Int -> Int = a + b';
+  const expected = 'fn add a :Int -> b :Int -> Int = a + b';
   expect(normalizeOperatorSpacing(input)).toBe(expected);
 });
 

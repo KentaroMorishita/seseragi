@@ -16,7 +16,9 @@ export function formatSeseragiCode(code: string): string {
     
     // コメント行はそのまま
     if (trimmed.startsWith('//')) {
-      result.push(trimmed);
+      const indentLevel = calculateIndentLevel(trimmed, i, lines);
+      const indent = '  '.repeat(indentLevel);
+      result.push(indent + trimmed);
       continue;
     }
     
@@ -173,30 +175,47 @@ export function removeExtraWhitespace(code: string): string {
 }
 
 export function normalizeOperatorSpacing(code: string): string {
-  return code
-    // 型注釈 :
-    .replace(/\s*:\s*/g, ': ')
-    // 関数矢印 ->
-    .replace(/\s*->\s*/g, ' -> ')
-    // 代入演算子 =
-    .replace(/\s*=\s*/g, ' = ')
-    // 加算演算子 +
-    .replace(/(?<=[^\+])\s*\+\s*(?=[^\+=])/g, ' + ')
-    // 減算演算子 -
-    .replace(/(?<=[^-])\s*-\s*(?=[^->])/g, ' - ')
-    // 乗算演算子 *
-    .replace(/\s*\*\s*/g, ' * ')
-    // 除算演算子 /
-    .replace(/\s*\/\s*/g, ' / ')
-    // パイプライン演算子 |
-    .replace(/\s*\|\s*/g, ' | ')
-    // 逆パイプ演算子 ~
-    .replace(/\s*~\s*/g, ' ~ ')
-    // バインド演算子 >>=
-    .replace(/\s*>>=\s*/g, ' >>= ')
-    // 関数適用演算子 $
-    .replace(/\s*\$\s*/g, ' $ ')
-    // 余分な空白を削除
-    .replace(/\s+/g, ' ')
-    .trim();
+  // コメント行とその他の行を分けて処理
+  const lines = code.split('\n');
+  const processedLines = lines.map(line => {
+    const trimmed = line.trim();
+    
+    // コメント行はそのまま
+    if (trimmed.startsWith('//')) {
+      return line;
+    }
+    
+    // その他の行は演算子のスペーシングを正規化
+    return line
+      // 型注釈 : (変数名 + スペース + コロン + 型名、関数パラメータのみ)
+      .replace(/(\w+)\s*:\s*([A-Z])/g, '$1 :$2')
+      // ファンクター演算子 <$> (最初に処理)
+      .replace(/\s*<\$>\s*/g, ' <$> ')
+      // アプリカティブ演算子 <*> (最初に処理)
+      .replace(/\s*<\*>\s*/g, ' <*> ')
+      // バインド演算子 >>= (最初に処理)
+      .replace(/\s*>>=\s*/g, ' >>= ')
+      // 関数矢印 ->
+      .replace(/\s*->\s*/g, ' -> ')
+      // 等価演算子 == を先に処理（= より前に）
+      .replace(/\s*==\s*/g, ' == ')
+      // 代入演算子 =（==, >>= でない場合のみ）
+      .replace(/(?<![\!=>])\s*=\s*(?!=)/g, ' = ')
+      // 加算演算子 +
+      .replace(/(?<=[^\+])\s*\+\s*(?=[^\+=])/g, ' + ')
+      // 減算演算子 -
+      .replace(/(?<=[^-])\s*-\s*(?=[^->])/g, ' - ')
+      // 乗算演算子 * (<*> でない場合のみ)
+      .replace(/(?<![<])\s*\*\s*(?![>])/g, ' * ')
+      // 除算演算子 / （コメント // でない場合のみ）
+      .replace(/(?<!\/)\s*\/\s*(?!\/)/g, ' / ')
+      // パイプライン演算子 |
+      .replace(/\s*\|\s*/g, ' | ')
+      // 逆パイプ演算子 ~
+      .replace(/\s*~\s*/g, ' ~ ')
+      // 関数適用演算子 $ (単独の場合のみ)
+      .replace(/(?<![<>])\s*\$\s*(?![>])/g, ' $ ');
+  });
+  
+  return processedLines.join('\n');
 }
