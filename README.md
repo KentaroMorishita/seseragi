@@ -39,13 +39,48 @@ Seseragi言語（`.ssrg`）のサンプル：
 // 基本的な関数定義
 fn add a :Int -> b :Int -> Int = a + b
 
-// パイプライン演算子
-fn processNumber x :Int -> Int = 
-  x | double | square
+// 関数適用演算子の使用例
+fn double x :Int -> Int = x * 2
 
 // Maybe型による安全な処理
-fn safeDivide a :Int -> b :Int -> Maybe<Int> =
-  b == 0 is True then Nothing else Just (a / b)
+let someValue = Just 42
+let nothingValue = Nothing
+
+// 関数適用演算子（$）
+let result = toString $ add 5 3
+
+// 実行例
+print $ add 10 5     // 15
+print $ double 7     // 14
+print someValue      // { tag: "Just", value: 42 }
+print result         // "8"
+```
+
+### 実行方法
+
+```bash
+# Seseragiファイルを直接実行
+seseragi run examples/tutorial.ssrg
+
+# TypeScriptにコンパイル
+seseragi compile input.ssrg --output output.ts
+```
+
+### モナド演算子の例
+
+```seseragi
+fn double x :Int -> Int = x * 2
+fn add a :Int -> b :Int -> Int = a + b
+fn increment x :Int -> Maybe<Int> = Just (x + 1)
+
+// ファンクター演算子 (<$>)
+let doubled = double <$> Just 21    // Just 42
+
+// アプリカティブ演算子 (<*>)  
+let added = Just add <*> Just 10 <*> Just 5    // Just 15
+
+// モナド演算子 (>>=)
+let chained = Just 20 >>= increment    // Just 21
 ```
 
 ## VS Code拡張
