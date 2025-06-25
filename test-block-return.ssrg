@@ -1,0 +1,31 @@
+// ブロック形式と return のテスト
+
+// ブロック形式の関数定義
+fn processNumber x :Int -> Int {
+  let doubled = x * 2
+  let incremented = doubled + 1
+  incremented
+}
+
+// ブロック形式の関数定義（文字列）
+fn explicitReturn x :Int -> String {
+  let processed = x * 2
+  "Result: 42"
+}
+
+fn conditionalReturn x :Int -> Int {
+  if x > 10 then x * 2 else x + 5
+}
+
+fn complexCalculation a :Int -> b :Int -> Int {
+  let sum = a + b
+  let product = a * b
+  if sum > product then sum else product
+}
+
+print "=== Block Functions Test ==="
+print $ processNumber 5
+print $ explicitReturn 10
+print $ conditionalReturn 15
+print $ conditionalReturn 3
+print $ complexCalculation 4 6
