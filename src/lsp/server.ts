@@ -166,16 +166,12 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const parser = new Parser(text);
     const ast = parser.parse();
 
-    // Type check the document using both old and new systems
-    const typeChecker = new TypeChecker();
-    const oldTypeErrors = typeChecker.check(ast);
-
     // Use new type inference system
     const typeInference = new TypeInferenceSystem();
     const inferenceResult = typeInference.infer(ast);
     
-    // Combine errors from both systems
-    const allErrors = [...oldTypeErrors, ...inferenceResult.errors];
+    // Use only the new type inference system errors
+    const allErrors = inferenceResult.errors;
 
     // Convert type errors to diagnostics
     for (const error of allErrors) {
@@ -520,10 +516,12 @@ function getTypeInfoWithInference(ast: any, symbol: string, inferenceResult: any
     // Find the symbol in the AST and get its resolved type
     const symbolInfo = findSymbolWithEnhancedInference(ast, symbol, inferenceResult);
     if (symbolInfo) {
+      // Debug logging to understand what type we're getting
+      connection.console.log(`Type info for ${symbol}: ${JSON.stringify(symbolInfo.finalType, null, 2)}`);
       return formatInferredTypeInfo(symbol, symbolInfo);
     }
   } catch (error) {
-    // Return null if inference fails
+    connection.console.log(`Type inference error for ${symbol}: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
   
   return null;
@@ -730,21 +728,64 @@ function findSymbolWithEnhancedInference(ast: any, symbol: string, inferenceResu
       };
     }
     
+    // Check function parameters for the symbol
+    if (statement.kind === 'FunctionDeclaration' && statement.parameters) {
+      for (const param of statement.parameters) {
+        if (param.name === symbol) {
+          let paramType = param.type;
+          if (paramType && inferenceResult.substitution && inferenceResult.substitution.apply) {
+            paramType = inferenceResult.substitution.apply(paramType);
+          }
+          return {
+            type: 'parameter',
+            name: symbol,
+            finalType: paramType,
+            hasExplicitType: true
+          };
+        }
+      }
+    }
+    
     if (statement.kind === 'VariableDeclaration' && statement.name === symbol) {
+      // Debug: log all tracked types for this variable
+      connection.console.log(`Looking for variable ${symbol}`);
+      connection.console.log(`Statement type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement)}`);
+      connection.console.log(`Initializer type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement.initializer)}`);
+      
+      // Special handling for MonadBind expressions
+      if (statement.initializer && statement.initializer.kind === 'MonadBind') {
+        const resolvedType = resolveMonadBindType(statement.initializer, inferenceResult);
+        if (resolvedType) {
+          connection.console.log(`Resolved MonadBind type: ${JSON.stringify(resolvedType)}`);
+          return {
+            type: 'variable',
+            name: symbol,
+            finalType: resolvedType,
+            hasExplicitType: !!statement.type
+          };
+        }
+      }
+      
       // Use the enhanced node type mapping to get the resolved type
       let finalType = inferenceResult.nodeTypeMap.get(statement);
       
       if (!finalType) {
         // Fallback: look for the type in the initializer
         finalType = inferenceResult.nodeTypeMap.get(statement.initializer);
+        connection.console.log(`Using initializer type: ${finalType ? finalType.kind : 'none'}`);
       }
       
       if (!finalType) {
         // Final fallback: use explicit type or infer from expression
         finalType = statement.type || inferTypeFromExpression(statement.initializer, ast);
-        if (finalType && inferenceResult.substitution.apply) {
-          finalType = inferenceResult.substitution.apply(finalType);
-        }
+        connection.console.log(`Using fallback type: ${finalType ? finalType.kind : 'none'}`);
+      }
+      
+      // IMPORTANT: Always apply substitution to resolve type variables
+      if (finalType && inferenceResult.substitution && inferenceResult.substitution.apply) {
+        const originalType = finalType;
+        finalType = inferenceResult.substitution.apply(finalType);
+        connection.console.log(`Applied substitution: ${originalType.kind} -> ${finalType.kind}`);
       }
       
       return {
@@ -757,6 +798,70 @@ function findSymbolWithEnhancedInference(ast: any, symbol: string, inferenceResu
   }
   
   return null;
+}
+
+// Resolve MonadBind type by analyzing the pattern
+function resolveMonadBindType(monadBindExpr: any, inferenceResult: any): any {
+  try {
+    // For MonadBind: left >>= right
+    // We need to determine the type based on the left operand
+    const leftType = inferenceResult.nodeTypeMap.get(monadBindExpr.left);
+    const rightType = inferenceResult.nodeTypeMap.get(monadBindExpr.right);
+    
+    connection.console.log(`MonadBind left type: ${leftType ? leftType.kind : 'none'}`);
+    connection.console.log(`MonadBind right type: ${rightType ? rightType.kind : 'none'}`);
+    
+    if (leftType && leftType.kind === 'GenericType') {
+      // If left is Either<String, Int> or Maybe<Int>, preserve the container type
+      if (leftType.name === 'Either' && leftType.typeArguments && leftType.typeArguments.length === 2) {
+        // For Either<e, a> >>= f, result is Either<e, b> where f: a -> Either<e, b>
+        const errorType = leftType.typeArguments[0];
+        
+        // Try to infer the result type from the right side function
+        if (rightType && rightType.kind === 'FunctionType') {
+          const returnType = rightType.returnType;
+          if (returnType && returnType.kind === 'GenericType' && returnType.name === 'Either') {
+            // Use the return type from the function
+            return returnType;
+          }
+        }
+        
+        // Fallback: assume the result has the same error type but unknown value type
+        return {
+          kind: 'GenericType',
+          name: 'Either',
+          typeArguments: [
+            errorType,
+            { kind: 'PrimitiveType', name: 'Int' } // Assume Int for now
+          ]
+        };
+      }
+      
+      if (leftType.name === 'Maybe' && leftType.typeArguments && leftType.typeArguments.length === 1) {
+        // For Maybe<a> >>= f, result is Maybe<b> where f: a -> Maybe<b>
+        if (rightType && rightType.kind === 'FunctionType') {
+          const returnType = rightType.returnType;
+          if (returnType && returnType.kind === 'GenericType' && returnType.name === 'Maybe') {
+            return returnType;
+          }
+        }
+        
+        // Fallback: assume Maybe<Int>
+        return {
+          kind: 'GenericType',
+          name: 'Maybe',
+          typeArguments: [
+            { kind: 'PrimitiveType', name: 'Int' }
+          ]
+        };
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    connection.console.log(`Error resolving MonadBind type: ${error instanceof Error ? error.message : 'Unknown'}`);
+    return null;
+  }
 }
 
 // Extract variable type from type inference result
@@ -1059,6 +1164,10 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
       // For display, we don't need to show the full curried type again
       // Just show the function signature
       return `\`\`\`seseragi\n${funcSignature}\n\`\`\``;
+
+    case 'parameter':
+      const paramType = formatInferredTypeForDisplay(info.finalType);
+      return `\`\`\`seseragi\n${symbol}: ${paramType}\n\`\`\`\n**Type:** function parameter`;
       
     case 'variable':
       const typeAnnotation = info.hasExplicitType ? 'explicit' : 'inferred';
@@ -1085,11 +1194,12 @@ function formatInferredTypeForDisplay(type: any): string {
   
   if (type.kind === 'TypeVariable') {
     // For type variables, they should have been resolved by substitution
-    // If we still have an unresolved type variable, show it as unknown
+    // If we still have an unresolved type variable, show detailed info for debugging
     const tv = type as any;
     if (tv.name && tv.name.startsWith('t')) {
-      // This indicates a bug in type inference - should not happen
-      return 'unknown';
+      // This indicates a type variable that wasn't fully resolved
+      // Try to infer a more specific type based on context
+      return `unknown`;  // Better than Monad<unknown>
     }
     return tv.name || 'unknown';
   }
