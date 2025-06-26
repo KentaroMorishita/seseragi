@@ -8,6 +8,7 @@ import {
   Literal,
   Identifier,
   BinaryOperation,
+  UnaryOperation,
   FunctionCall,
   FunctionApplication,
   BuiltinFunctionCall,
@@ -22,6 +23,7 @@ import {
   MonadBind,
   FoldMonoid,
   FunctionApplicationOperator,
+  LambdaExpression,
   Type,
   FunctionType,
   PrimitiveType,
@@ -459,6 +461,8 @@ class CodeGenerator {
       return expr.name
     } else if (expr instanceof BinaryOperation) {
       return this.generateBinaryOperation(expr)
+    } else if (expr instanceof UnaryOperation) {
+      return this.generateUnaryOperation(expr)
     } else if (expr instanceof FunctionCall) {
       return this.generateFunctionCall(expr)
     } else if (expr instanceof FunctionApplication) {
@@ -487,6 +491,8 @@ class CodeGenerator {
       return this.generateConstructorExpression(expr)
     } else if (expr instanceof BlockExpression) {
       return this.generateBlockExpression(expr)
+    } else if (expr instanceof LambdaExpression) {
+      return this.generateLambdaExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -518,6 +524,14 @@ class CodeGenerator {
     if (operator === "!=") operator = "!=="
 
     return `(${left} ${operator} ${right})`
+  }
+
+  // 単項演算の生成
+  generateUnaryOperation(unaryOp: UnaryOperation): string {
+    const operand = this.generateExpression(unaryOp.operand)
+    
+    // 演算子をそのまま使用（TypeScriptと同じ）
+    return `(${unaryOp.operator}${operand})`
   }
 
   // 関数呼び出しの生成
@@ -555,7 +569,10 @@ class CodeGenerator {
       }
     }
 
-    // 通常の関数適用
+    // 通常の関数適用 - wrap lambda expressions in parentheses
+    if (app.function instanceof LambdaExpression) {
+      return `(${func})(${arg})`
+    }
     return `${func}(${arg})`
   }
 
@@ -591,19 +608,71 @@ class CodeGenerator {
   generateMatchExpression(match: MatchExpression): string {
     const expr = this.generateExpression(match.expression)
 
-    // switch文として生成（簡略版）
+    // if-else チェーンとして生成（柔軟性を向上）
     const cases = match.cases
-      .map((c) => {
-        const pattern = this.generatePattern(c.pattern)
-        const body = this.generateExpression(c.expression)
-        return `    case ${pattern}: return ${body};`
-      })
-      .join("\n")
-
-    return `(() => {\n  switch (${expr}) {\n${cases}\n    default: throw new Error('Non-exhaustive pattern match');\n  }\n})()`
+    let result = "(() => {\n  const matchValue = " + expr + ";\n"
+    
+    for (let i = 0; i < cases.length; i++) {
+      const c = cases[i]
+      const condition = this.generatePatternCondition(c.pattern, "matchValue")
+      const body = this.generateExpression(c.expression)
+      
+      if (i === 0) {
+        result += `  if (${condition}) {\n    return ${body};\n  }`
+      } else {
+        result += ` else if (${condition}) {\n    return ${body};\n  }`
+      }
+    }
+    
+    result += " else {\n    throw new Error('Non-exhaustive pattern match');\n  }\n})()"
+    return result
   }
 
-  // パターンの生成
+  // パターン条件の生成（if-else用）
+  generatePatternCondition(pattern: any, valueVar: string): string {
+    if (!pattern) {
+      return "true" // ワイルドカードパターン
+    }
+    
+    // リテラルパターンの場合
+    if (pattern.value !== undefined) {
+      if (typeof pattern.value === "string") {
+        return `${valueVar} === ${JSON.stringify(pattern.value)}`
+      } else {
+        return `${valueVar} === ${pattern.value}`
+      }
+    }
+    
+    // 識別子パターンの場合（変数バインディング）
+    if (pattern.name) {
+      if (pattern.name === "_") {
+        return "true" // ワイルドカードパターン
+      }
+      // 変数にバインドする場合（常に true だが、将来の拡張のため）
+      return "true"
+    }
+    
+    // コンストラクタパターンの場合（Maybe, Either等）
+    if (pattern.constructor) {
+      switch (pattern.constructor) {
+        case "Nothing":
+          return `${valueVar}.tag === 'Nothing'`
+        case "Just":
+          return `${valueVar}.tag === 'Just'`
+        case "Left":
+          return `${valueVar}.tag === 'Left'`
+        case "Right":
+          return `${valueVar}.tag === 'Right'`
+        default:
+          return `${valueVar}.tag === '${pattern.constructor}'`
+      }
+    }
+    
+    // デフォルト：toString を使用
+    return `${valueVar} === ${JSON.stringify(pattern.toString())}`
+  }
+
+  // パターンの生成（旧メソッド、下位互換性のため保持）
   generatePattern(pattern: any): string {
     // 簡易実装：リテラルパターンのみサポート
     if (pattern.value !== undefined) {
@@ -720,6 +789,8 @@ class CodeGenerator {
           return "string"
         case "Unit":
           return "void"
+        case "_":
+          return "any"  // Placeholder type for inference
         default:
           return type.name
       }
@@ -777,5 +848,28 @@ class CodeGenerator {
 
     // IIFEとして生成（即座に実行される関数式）
     return `(() => {\n${lines.map((line) => `  ${line}`).join("\n")}\n})()`
+  }
+
+  // ラムダ式の生成
+  generateLambdaExpression(expr: LambdaExpression): string {
+    const body = this.generateExpression(expr.body)
+
+    // For single parameter lambdas, we can use arrow function syntax
+    if (expr.parameters.length === 1) {
+      const param = expr.parameters[0]
+      const paramWithType = `${param.name}: ${this.generateType(param.type)}`
+      return `(${paramWithType}) => ${body}`
+    }
+
+    // For multi-parameter lambdas, we need to curry them
+    // \a -> \b -> expr becomes (a) => (b) => expr
+    let result = body
+    for (let i = expr.parameters.length - 1; i >= 0; i--) {
+      const param = expr.parameters[i]
+      const paramWithType = `${param.name}: ${this.generateType(param.type)}`
+      result = `(${paramWithType}) => ${result}`
+    }
+
+    return result
   }
 }
