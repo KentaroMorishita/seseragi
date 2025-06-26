@@ -453,9 +453,23 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "UnaryOperation":
+        resultType = this.generateConstraintsForUnaryOperation(
+          expr as AST.UnaryOperation,
+          env
+        )
+        break
+
       case "FunctionCall":
         resultType = this.generateConstraintsForFunctionCall(
           expr as AST.FunctionCall,
+          env
+        )
+        break
+
+      case "BuiltinFunctionCall":
+        resultType = this.generateConstraintsForBuiltinFunctionCall(
+          expr as AST.BuiltinFunctionCall,
           env
         )
         break
@@ -523,6 +537,20 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "LambdaExpression":
+        resultType = this.generateConstraintsForLambdaExpression(
+          expr as AST.LambdaExpression,
+          env
+        )
+        break
+
+      case "MatchExpression":
+        resultType = this.generateConstraintsForMatchExpression(
+          expr as AST.MatchExpression,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -582,23 +610,35 @@ export class TypeInferenceSystem {
 
     switch (binOp.operator) {
       case "+":
+        // + 演算子は数値演算か文字列結合のどちらか
+        // より具体的な制約生成で型安全性を保つ
+        
+        // 左右のオペランドが同じ型である制約
+        this.addConstraint(
+          new TypeConstraint(
+            leftType,
+            rightType,
+            binOp.line,
+            binOp.column,
+            `Binary operation + operands must have same type`
+          )
+        )
+        
+        // 結果の型は左のオペランドと同じ型
+        return leftType
+
       case "-":
       case "*":
       case "/":
       case "%":
-        // 数値演算: 両オペランドは Int または Float 型、結果も同じ型
-        const intType = new AST.PrimitiveType("Int", binOp.line, binOp.column)
-        const floatType = new AST.PrimitiveType(
-          "Float",
-          binOp.line,
-          binOp.column
-        )
-
+        // 数値演算のみ: 両オペランドは Int または Float 型、結果も同じ型
+        const numIntType = new AST.PrimitiveType("Int", binOp.line, binOp.column)
+        
         // まず Int 型として制約を追加
         this.addConstraint(
           new TypeConstraint(
             leftType,
-            intType,
+            numIntType,
             binOp.left.line,
             binOp.left.column,
             `Binary operation ${binOp.operator} left operand`
@@ -607,13 +647,13 @@ export class TypeInferenceSystem {
         this.addConstraint(
           new TypeConstraint(
             rightType,
-            intType,
+            numIntType,
             binOp.right.line,
             binOp.right.column,
             `Binary operation ${binOp.operator} right operand`
           )
         )
-        return intType
+        return numIntType
 
       case "==":
       case "!=":
@@ -666,6 +706,56 @@ export class TypeInferenceSystem {
           )
         )
         return this.freshTypeVariable(binOp.line, binOp.column)
+    }
+  }
+
+  private generateConstraintsForUnaryOperation(
+    unaryOp: AST.UnaryOperation,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const operandType = this.generateConstraintsForExpression(unaryOp.operand, env)
+
+    switch (unaryOp.operator) {
+      case "-":
+        // 数値の単項マイナス: Int -> Int, Float -> Float
+        const intType = new AST.PrimitiveType("Int", unaryOp.line, unaryOp.column)
+        const floatType = new AST.PrimitiveType("Float", unaryOp.line, unaryOp.column)
+        
+        // まず Int 型として制約を追加
+        this.addConstraint(
+          new TypeConstraint(
+            operandType,
+            intType,
+            unaryOp.operand.line,
+            unaryOp.operand.column,
+            `Unary minus operand (Int)`
+          )
+        )
+        return intType
+
+      case "!":
+        // 論理否定: Bool -> Bool
+        const boolType = new AST.PrimitiveType("Bool", unaryOp.line, unaryOp.column)
+        this.addConstraint(
+          new TypeConstraint(
+            operandType,
+            boolType,
+            unaryOp.operand.line,
+            unaryOp.operand.column,
+            `Logical negation operand`
+          )
+        )
+        return boolType
+
+      default:
+        this.errors.push(
+          new TypeInferenceError(
+            `Unknown unary operator: ${unaryOp.operator}`,
+            unaryOp.line,
+            unaryOp.column
+          )
+        )
+        return this.freshTypeVariable(unaryOp.line, unaryOp.column)
     }
   }
 
@@ -766,6 +856,40 @@ export class TypeInferenceSystem {
     }
 
     return resultType
+  }
+
+  private generateConstraintsForBuiltinFunctionCall(
+    call: AST.BuiltinFunctionCall,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    switch (call.functionName) {
+      case "print":
+      case "putStrLn":
+        // Type: 'a -> Unit (polymorphic)
+        if (call.arguments.length === 1) {
+          // Just check that the argument has some type, but we accept anything
+          this.generateConstraintsForExpression(call.arguments[0], env)
+        }
+        return new AST.PrimitiveType("Unit", call.line, call.column)
+
+      case "toString":
+        // Type: 'a -> String (polymorphic)
+        if (call.arguments.length === 1) {
+          // Just check that the argument has some type, but we accept anything
+          this.generateConstraintsForExpression(call.arguments[0], env)
+        }
+        return new AST.PrimitiveType("String", call.line, call.column)
+
+      default:
+        this.errors.push(
+          new TypeInferenceError(
+            `Unknown builtin function: ${call.functionName}`,
+            call.line,
+            call.column
+          )
+        )
+        return this.freshTypeVariable(call.line, call.column)
+    }
   }
 
   private generateConstraintsForFunctionApplication(
@@ -1452,6 +1576,46 @@ export class TypeInferenceSystem {
     }
   }
 
+  private generateConstraintsForLambdaExpression(
+    lambda: AST.LambdaExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // Create a new environment for the lambda body
+    const lambdaEnv = new Map(env)
+
+    // Create fresh type variables for parameters with placeholder types
+    const parameterTypes: AST.Type[] = []
+    
+    for (const param of lambda.parameters) {
+      let paramType = param.type
+      
+      // If parameter type is placeholder "_", create fresh type variable
+      if (paramType.kind === "PrimitiveType" && 
+          (paramType as AST.PrimitiveType).name === "_") {
+        paramType = this.freshTypeVariable(param.line, param.column)
+      }
+      
+      parameterTypes.push(paramType)
+      lambdaEnv.set(param.name, paramType)
+    }
+
+    // Infer the type of the lambda body
+    const bodyType = this.generateConstraintsForExpression(lambda.body, lambdaEnv)
+
+    // Build the function type from right to left (currying)
+    let resultType: AST.Type = bodyType
+    for (let i = lambda.parameters.length - 1; i >= 0; i--) {
+      resultType = new AST.FunctionType(
+        parameterTypes[i],
+        resultType,
+        lambda.line,
+        lambda.column
+      )
+    }
+
+    return resultType
+  }
+
   // 制約解決（単一化アルゴリズム）
   private solveConstraints(): TypeSubstitution {
     let substitution = new TypeSubstitution()
@@ -1667,6 +1831,135 @@ export class TypeInferenceSystem {
 
       default:
         return "Unknown"
+    }
+  }
+
+  private generateConstraintsForMatchExpression(
+    match: AST.MatchExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // マッチ対象の式の型を推論
+    const exprType = this.generateConstraintsForExpression(match.expression, env)
+
+    if (match.cases.length === 0) {
+      this.errors.push(
+        new TypeInferenceError(
+          "Match expression must have at least one case",
+          match.line,
+          match.column
+        )
+      )
+      return this.freshTypeVariable(match.line, match.column)
+    }
+
+    // 最初のケースの結果型を基準とする
+    const firstCase = match.cases[0]
+    
+    // パターンマッチングで新しい変数環境を作成
+    const patternEnv = new Map(env)
+    this.generateConstraintsForPattern(firstCase.pattern, exprType, patternEnv)
+    
+    // 最初のケースの結果型を推論
+    const resultType = this.generateConstraintsForExpression(firstCase.expression, patternEnv)
+
+    // 残りのケースの型をチェックし、すべて同じ型になるよう制約を追加
+    for (let i = 1; i < match.cases.length; i++) {
+      const caseItem = match.cases[i]
+      
+      // パターンマッチングで新しい変数環境を作成
+      const caseEnv = new Map(env)
+      this.generateConstraintsForPattern(caseItem.pattern, exprType, caseEnv)
+      
+      // ケースの結果型を推論
+      const caseResultType = this.generateConstraintsForExpression(caseItem.expression, caseEnv)
+      
+      // 結果型が一致するよう制約を追加
+      this.addConstraint(
+        new TypeConstraint(
+          caseResultType,
+          resultType,
+          caseItem.expression.line,
+          caseItem.expression.column,
+          `Match case ${i + 1} result type`
+        )
+      )
+    }
+
+    return resultType
+  }
+
+  private generateConstraintsForPattern(
+    pattern: AST.Pattern,
+    expectedType: AST.Type,
+    env: Map<string, AST.Type>
+  ): void {
+    switch (pattern.kind) {
+      case "IdentifierPattern":
+        // 変数パターン: 変数を環境に追加
+        const idPattern = pattern as AST.IdentifierPattern
+        env.set(idPattern.name, expectedType)
+        break
+
+      case "LiteralPattern":
+        // リテラルパターン: 期待する型と一致するかチェック
+        const litPattern = pattern as AST.LiteralPattern
+        let literalType: AST.Type
+        
+        switch (typeof litPattern.value) {
+          case "string":
+            literalType = new AST.PrimitiveType("String", pattern.line, pattern.column)
+            break
+          case "number":
+            literalType = new AST.PrimitiveType("Int", pattern.line, pattern.column)
+            break
+          case "boolean":
+            literalType = new AST.PrimitiveType("Bool", pattern.line, pattern.column)
+            break
+          default:
+            literalType = this.freshTypeVariable(pattern.line, pattern.column)
+        }
+        
+        this.addConstraint(
+          new TypeConstraint(
+            expectedType,
+            literalType,
+            pattern.line,
+            pattern.column,
+            `Literal pattern type`
+          )
+        )
+        break
+
+      case "ConstructorPattern":
+        // コンストラクタパターン: 代数的データ型のコンストラクタ
+        const ctorPattern = pattern as AST.ConstructorPattern
+        
+        // コンストラクタの型をチェック（簡易実装）
+        // ここでは期待する型がコンストラクタと一致することをチェック
+        this.addConstraint(
+          new TypeConstraint(
+            expectedType,
+            new AST.PrimitiveType(ctorPattern.constructorName, pattern.line, pattern.column),
+            pattern.line,
+            pattern.column,
+            `Constructor pattern type`
+          )
+        )
+        
+        // ネストしたパターンがあれば再帰的に処理
+        for (const nestedPattern of ctorPattern.patterns) {
+          this.generateConstraintsForPattern(nestedPattern, expectedType, env)
+        }
+        break
+
+      default:
+        this.errors.push(
+          new TypeInferenceError(
+            `Unsupported pattern type: ${pattern.kind}`,
+            pattern.line,
+            pattern.column
+          )
+        )
     }
   }
 }

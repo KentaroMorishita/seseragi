@@ -56,7 +56,7 @@ describe("TypeChecker - Basic Tests", () => {
       let x = "hello" + 42
     `)
     expect(errors).toHaveLength(1)
-    expect(errors[0].message).toContain("incompatible types")
+    expect(errors[0].message).toContain("Invalid operands")
   })
 
   test("should type check Maybe constructors", () => {

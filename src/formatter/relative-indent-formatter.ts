@@ -119,6 +119,11 @@ function getRelativeIndent(
     return 2 // 親から +4スペース
   }
 
+  // Lambda expressions starting with backslash
+  if (line.startsWith("\\")) {
+    return 1 // 親から +2スペース
+  }
+
   // 矢印の後の継続行
   if (isArrowContinuation(index, allLines)) {
     return 2 // 矢印から +4スペース（match caseから +2スペース）

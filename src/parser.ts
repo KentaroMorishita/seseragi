@@ -211,6 +211,52 @@ export class Parser {
   private typeDeclaration(): AST.TypeDeclaration {
     const name = this.consume(TokenType.IDENTIFIER, "Expected type name").value
 
+    // Check if this is a union type (type Name = A | B | C) or struct type (type Name { field: Type })
+    if (this.match(TokenType.ASSIGN)) {
+      // Union type: type Color = Red | Green | Blue
+      return this.parseUnionType(name)
+    } else {
+      // Struct type: type Point { x: Int, y: Int }
+      return this.parseStructType(name)
+    }
+  }
+
+  private parseUnionType(name: string): AST.TypeDeclaration {
+    const variants: AST.TypeField[] = []
+
+    // Parse first variant
+    const firstVariant = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
+    variants.push(
+      new AST.TypeField(
+        firstVariant,
+        new AST.PrimitiveType("Unit", this.previous().line, this.previous().column), // Union variants are Unit types
+        this.previous().line,
+        this.previous().column
+      )
+    )
+
+    // Parse additional variants separated by '|'
+    while (this.match(TokenType.PIPE)) {
+      const variantName = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
+      variants.push(
+        new AST.TypeField(
+          variantName,
+          new AST.PrimitiveType("Unit", this.previous().line, this.previous().column),
+          this.previous().line,
+          this.previous().column
+        )
+      )
+    }
+
+    return new AST.TypeDeclaration(
+      name,
+      variants,
+      this.previous().line,
+      this.previous().column
+    )
+  }
+
+  private parseStructType(name: string): AST.TypeDeclaration {
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after type name")
 
     const fields: AST.TypeField[] = []
@@ -894,11 +940,17 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
-      type === TokenType.LEFT_PAREN
+      type === TokenType.LEFT_PAREN ||
+      type === TokenType.LAMBDA
     )
   }
 
   private primaryExpression(): AST.Expression {
+    // Lambda expressions: \x -> expr or \x :Type -> expr
+    if (this.match(TokenType.LAMBDA)) {
+      return this.lambdaExpression()
+    }
+
     if (this.match(TokenType.INTEGER)) {
       const value = parseInt(this.previous().value)
       return new AST.Literal(
@@ -1107,7 +1159,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
-      type === TokenType.LEFT_PAREN
+      type === TokenType.LEFT_PAREN ||
+      type === TokenType.LAMBDA
     )
   }
 
@@ -1155,6 +1208,48 @@ export class Parser {
       this.previous().line,
       this.previous().column
     )
+  }
+
+  private lambdaExpression(): AST.LambdaExpression {
+    const startLine = this.previous().line
+    const startColumn = this.previous().column
+
+    const parameters: AST.Parameter[] = []
+
+    // Parse parameter(s) - support both single param and nested lambdas
+    // \x -> expr  or  \x :Type -> expr
+    do {
+      const paramName = this.consume(
+        TokenType.IDENTIFIER,
+        "Expected parameter name after '\\'"
+      ).value
+
+      let paramType: AST.Type | undefined
+
+      // Check for optional type annotation
+      if (this.match(TokenType.COLON)) {
+        paramType = this.parseType()
+      } else {
+        // Create a placeholder type that will be inferred
+        paramType = new AST.PrimitiveType("_", startLine, startColumn)
+      }
+
+      parameters.push(
+        new AST.Parameter(paramName, paramType, startLine, startColumn)
+      )
+
+      // If we find another lambda, it's a nested lambda (\a -> \b -> ...)
+      if (this.check(TokenType.LAMBDA)) {
+        break
+      }
+    } while (false) // Only parse one parameter per lambda
+
+    this.consume(TokenType.ARROW, "Expected '->' after lambda parameter")
+
+    // Parse the body - could be another lambda or expression
+    const body = this.expression()
+
+    return new AST.LambdaExpression(parameters, body, startLine, startColumn)
   }
 
   private checkStatementStart(): boolean {

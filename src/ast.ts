@@ -353,6 +353,23 @@ export class ConditionalExpression extends Expression {
   }
 }
 
+export class LambdaExpression extends Expression {
+  kind = "LambdaExpression"
+  parameters: Parameter[]
+  body: Expression
+
+  constructor(
+    parameters: Parameter[],
+    body: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.parameters = parameters
+    this.body = body
+  }
+}
+
 // =============================================================================
 // Pattern Matching
 // =============================================================================

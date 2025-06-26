@@ -231,6 +231,9 @@ export class TypeChecker {
       case "BinaryOperation":
         return this.checkBinaryOperation(expr as AST.BinaryOperation, env)
 
+      case "UnaryOperation":
+        return this.checkUnaryOperation(expr as AST.UnaryOperation, env)
+
       case "FunctionCall":
         return this.checkFunctionCall(expr as AST.FunctionCall, env)
 
@@ -260,6 +263,9 @@ export class TypeChecker {
 
       case "BlockExpression":
         return this.checkBlock(expr as AST.BlockExpression, env)
+
+      case "LambdaExpression":
+        return this.checkLambda(expr as AST.LambdaExpression, env)
 
       default:
         this.addError(
@@ -440,6 +446,51 @@ export class TypeChecker {
     }
 
     return currentType
+  }
+
+  private checkUnaryOperation(
+    unaryOp: AST.UnaryOperation,
+    env: TypeEnvironment
+  ): AST.Type {
+    const operandType = this.checkExpression(unaryOp.operand, env)
+
+    switch (unaryOp.operator) {
+      case "-":
+        // Unary minus: only works on numeric types
+        if (this.isNumericType(operandType)) {
+          return operandType // Return same type (Int -> Int, Float -> Float)
+        }
+        this.addError(
+          `Invalid operand for unary '-' operator`,
+          unaryOp.line,
+          unaryOp.column,
+          `Cannot apply unary '-' to type '${this.typeToString(operandType)}'`,
+          `Unary '-' can only be applied to Int or Float types`
+        )
+        return new AST.PrimitiveType("Int", unaryOp.line, unaryOp.column) // fallback
+
+      case "!":
+        // Logical negation: only works on Bool
+        if (this.isBoolType(operandType)) {
+          return operandType // Bool -> Bool
+        }
+        this.addError(
+          `Invalid operand for logical negation '!' operator`,
+          unaryOp.line,
+          unaryOp.column,
+          `Cannot apply '!' to type '${this.typeToString(operandType)}'`,
+          `Logical negation '!' can only be applied to Bool type`
+        )
+        return new AST.PrimitiveType("Bool", unaryOp.line, unaryOp.column) // fallback
+
+      default:
+        this.addError(
+          `Unknown unary operator: ${unaryOp.operator}`,
+          unaryOp.line,
+          unaryOp.column
+        )
+        return new AST.PrimitiveType("Int", unaryOp.line, unaryOp.column) // fallback
+    }
   }
 
   private checkBuiltinFunctionCall(
@@ -734,6 +785,52 @@ export class TypeChecker {
     } else {
       return new AST.PrimitiveType("Unit", block.line, block.column)
     }
+  }
+
+  private checkLambda(
+    lambda: AST.LambdaExpression,
+    env: TypeEnvironment
+  ): AST.Type {
+    // Create a new environment for the lambda body
+    const lambdaEnv = env.extend()
+
+    // Add parameters to the lambda environment
+    for (const param of lambda.parameters) {
+      let paramType = param.type
+      
+      // If parameter type is placeholder "_", we'll use type inference
+      if (paramType.kind === "PrimitiveType" && 
+          (paramType as AST.PrimitiveType).name === "_") {
+        // Create a type variable for inference
+        paramType = new AST.PrimitiveType("a", param.line, param.column)
+      }
+      
+      lambdaEnv.define(param.name, paramType)
+    }
+
+    // Check the lambda body
+    const bodyType = this.checkExpression(lambda.body, lambdaEnv)
+
+    // Build the function type from right to left (currying)
+    let resultType: AST.Type = bodyType
+    for (let i = lambda.parameters.length - 1; i >= 0; i--) {
+      let paramType = lambda.parameters[i].type
+      
+      // Handle placeholder types for inference
+      if (paramType.kind === "PrimitiveType" && 
+          (paramType as AST.PrimitiveType).name === "_") {
+        paramType = new AST.PrimitiveType("a", lambda.parameters[i].line, lambda.parameters[i].column)
+      }
+      
+      resultType = new AST.FunctionType(
+        paramType,
+        resultType,
+        lambda.line,
+        lambda.column
+      )
+    }
+
+    return resultType
   }
 
   // Helper methods
