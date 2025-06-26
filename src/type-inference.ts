@@ -446,6 +446,10 @@ export class TypeInferenceSystem {
         resultType = this.generateConstraintsForMonadBind(expr as AST.MonadBind, env)
         break
       
+      case "FunctionApplicationOperator":
+        resultType = this.generateConstraintsForFunctionApplicationOperator(expr as AST.FunctionApplicationOperator, env)
+        break
+      
       default:
         this.errors.push(new TypeInferenceError(
           `Unhandled expression type: ${expr.kind}`,
@@ -1097,6 +1101,36 @@ export class TypeInferenceSystem {
     }
     
     // For unknown types, let constraint resolution figure it out
+    return resultType
+  }
+
+  private generateConstraintsForFunctionApplicationOperator(
+    funcApp: AST.FunctionApplicationOperator,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // $ operator: f $ x = f(x)
+    // This is the same as function application but with infix syntax
+    const funcType = this.generateConstraintsForExpression(funcApp.left, env)
+    const argType = this.generateConstraintsForExpression(funcApp.right, env)
+    
+    const resultType = this.freshTypeVariable(funcApp.line, funcApp.column)
+    
+    // The function should be of type argType -> resultType
+    const expectedFuncType = new AST.FunctionType(
+      argType,
+      resultType,
+      funcApp.line,
+      funcApp.column
+    )
+    
+    this.addConstraint(new TypeConstraint(
+      funcType,
+      expectedFuncType,
+      funcApp.line,
+      funcApp.column,
+      `Function application operator $`
+    ))
+    
     return resultType
   }
 
