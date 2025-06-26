@@ -487,15 +487,16 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
     return null;
   }
 
-  // Try to get type information using the type checker
+  // Try to get type information using the type inference system
   try {
-    const typeChecker = new TypeChecker();
-    const typeInfo = getTypeInfoWithTypeChecker(ast, wordAtPosition, typeChecker);
+    const typeInference = new TypeInferenceSystem();
+    const result = typeInference.infer(ast);
+    const typeInfo = getTypeInfoWithInference(ast, wordAtPosition, result);
     if (typeInfo) {
       return typeInfo;
     }
   } catch (error) {
-    // Fall back to basic type info if type checker fails
+    // Fall back to basic type info if type inference fails
   }
 
   // Try to find type information for the word
@@ -513,36 +514,16 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
   return null;
 }
 
-// Get type information using the new type inference system
-function getTypeInfoWithTypeChecker(ast: any, symbol: string, typeChecker: TypeChecker): string | null {
+// Get type information using the enhanced type inference system
+function getTypeInfoWithInference(ast: any, symbol: string, inferenceResult: any): string | null {
   try {
-    // Use new type inference system
-    const typeInference = new TypeInferenceSystem();
-    const inferenceResult = typeInference.infer(ast);
-    
-    // Apply substitutions to get final types
-    const symbolInfo = findSymbolWithInferredType(ast, symbol, inferenceResult.substitution);
+    // Find the symbol in the AST and get its resolved type
+    const symbolInfo = findSymbolWithEnhancedInference(ast, symbol, inferenceResult);
     if (symbolInfo) {
       return formatInferredTypeInfo(symbol, symbolInfo);
     }
-    
-    // Fallback to old type checker
-    typeChecker.check(ast);
-    const fallbackInfo = findSymbolWithType(ast, symbol, typeChecker);
-    if (fallbackInfo) {
-      return formatTypeInfo(symbol, fallbackInfo);
-    }
   } catch (error) {
-    // Fallback to old type checker on error
-    try {
-      typeChecker.check(ast);
-      const fallbackInfo = findSymbolWithType(ast, symbol, typeChecker);
-      if (fallbackInfo) {
-        return formatTypeInfo(symbol, fallbackInfo);
-      }
-    } catch (fallbackError) {
-      // Return null if both systems fail
-    }
+    // Return null if inference fails
   }
   
   return null;
@@ -721,7 +702,7 @@ function getKeywordInfo(keyword: string): string | null {
 }
 
 // Find symbol with inferred type information
-function findSymbolWithInferredType(ast: any, symbol: string, substitution: any): any {
+function findSymbolWithEnhancedInference(ast: any, symbol: string, inferenceResult: any): any {
   if (!ast.statements) {
     return null;
   }
@@ -738,7 +719,7 @@ function findSymbolWithInferredType(ast: any, symbol: string, substitution: any)
         };
       }
       
-      const finalType = substitution.apply ? substitution.apply(funcType) : funcType;
+      const finalType = inferenceResult.substitution.apply ? inferenceResult.substitution.apply(funcType) : funcType;
       
       return {
         type: 'function',
@@ -750,37 +731,40 @@ function findSymbolWithInferredType(ast: any, symbol: string, substitution: any)
     }
     
     if (statement.kind === 'VariableDeclaration' && statement.name === symbol) {
-      // For variables, we need to find the inferred type from the initializer
-      let varType = statement.type;
+      // Use the enhanced node type mapping to get the resolved type
+      let finalType = inferenceResult.nodeTypeMap.get(statement);
       
-      // If no explicit type, try to infer from initializer
-      if (!varType && statement.initializer) {
-        varType = inferTypeFromExpression(statement.initializer, ast);
-        
-        // If still no type but we have substitution information, try to resolve
-        if (!varType && substitution && substitution.typeVarMap) {
-          // Look for type variables that might correspond to this variable
-          for (const [varId, resolvedType] of substitution.typeVarMap.entries()) {
-            if (resolvedType && resolvedType.kind !== 'TypeVariable') {
-              varType = resolvedType;
-              break;
-            }
-          }
-        }
+      if (!finalType) {
+        // Fallback: look for the type in the initializer
+        finalType = inferenceResult.nodeTypeMap.get(statement.initializer);
       }
       
-      const finalType = substitution.apply ? substitution.apply(varType) : varType;
+      if (!finalType) {
+        // Final fallback: use explicit type or infer from expression
+        finalType = statement.type || inferTypeFromExpression(statement.initializer, ast);
+        if (finalType && inferenceResult.substitution.apply) {
+          finalType = inferenceResult.substitution.apply(finalType);
+        }
+      }
       
       return {
         type: 'variable',
         name: symbol,
-        finalType: finalType || varType,
+        finalType: finalType,
         hasExplicitType: !!statement.type
       };
     }
   }
   
   return null;
+}
+
+// Extract variable type from type inference result
+function extractVariableTypeFromInference(statement: any, substitution: any): any {
+  // This is a simplified approach - in a full implementation, we'd need to
+  // track which type variables correspond to which expressions
+  // For now, try to infer the type from the expression directly
+  return inferTypeFromExpression(statement.initializer);
 }
 
 // Simple type inference from expression (fallback)
@@ -795,6 +779,46 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
         case 'string': return { kind: 'PrimitiveType', name: 'String' };
         case 'boolean': return { kind: 'PrimitiveType', name: 'Bool' };
         default: return null;
+      }
+    
+    case 'ConstructorExpression':
+      // Handle Maybe and Either constructors
+      const ctor = expr as any;
+      switch (ctor.constructorName) {
+        case 'Just':
+          if (ctor.arguments && ctor.arguments.length > 0) {
+            const argType = inferTypeFromExpression(ctor.arguments[0], ast);
+            return {
+              kind: 'GenericType',
+              name: 'Maybe',
+              typeArguments: [argType || { kind: 'PrimitiveType', name: 'Int' }]
+            };
+          }
+          return { kind: 'GenericType', name: 'Maybe', typeArguments: [{ kind: 'PrimitiveType', name: 'Int' }] };
+        case 'Nothing':
+          return { kind: 'GenericType', name: 'Maybe', typeArguments: [{ kind: 'TypeVariable', name: 'a' }] };
+        case 'Right':
+          if (ctor.arguments && ctor.arguments.length > 0) {
+            const argType = inferTypeFromExpression(ctor.arguments[0], ast);
+            return {
+              kind: 'GenericType',
+              name: 'Either',
+              typeArguments: [{ kind: 'TypeVariable', name: 'a' }, argType || { kind: 'PrimitiveType', name: 'Int' }]
+            };
+          }
+          return { kind: 'GenericType', name: 'Either', typeArguments: [{ kind: 'TypeVariable', name: 'a' }, { kind: 'PrimitiveType', name: 'Int' }] };
+        case 'Left':
+          if (ctor.arguments && ctor.arguments.length > 0) {
+            const argType = inferTypeFromExpression(ctor.arguments[0], ast);
+            return {
+              kind: 'GenericType',
+              name: 'Either',
+              typeArguments: [argType || { kind: 'PrimitiveType', name: 'String' }, { kind: 'TypeVariable', name: 'b' }]
+            };
+          }
+          return { kind: 'GenericType', name: 'Either', typeArguments: [{ kind: 'PrimitiveType', name: 'String' }, { kind: 'TypeVariable', name: 'b' }] };
+        default:
+          return null;
       }
     
     case 'BinaryOperation':
@@ -1060,14 +1084,20 @@ function formatInferredTypeForDisplay(type: any): string {
   }
   
   if (type.kind === 'TypeVariable') {
-    // For type variables, check if they have been resolved
+    // For type variables, they should have been resolved by substitution
+    // If we still have an unresolved type variable, show it as unknown
     const tv = type as any;
     if (tv.name && tv.name.startsWith('t')) {
-      // This is an unresolved type variable, show as unknown
+      // This indicates a bug in type inference - should not happen
       return 'unknown';
     }
-    // Otherwise show the type variable name
     return tv.name || 'unknown';
+  }
+  
+  if (type.kind === 'PolymorphicTypeVariable') {
+    // For polymorphic type variables, show them properly
+    const ptv = type as any;
+    return `'${ptv.name}`;
   }
   
   if (type.kind === 'FunctionType') {

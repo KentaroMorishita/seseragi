@@ -34,8 +34,8 @@ fn double x :Int -> Int = x * 2
 
 let sum = add 10 5
 let doubled = double 7
-let message = getMessage
-let number = getNumber
+let message = getMessage()
+let number = getNumber()
 
 print sum
 print doubled
@@ -67,7 +67,7 @@ fn complexCalculation a :Int -> b :Int -> Int {
 
 let processed = processNumber 5
 let formatted = formatMessage 42
-let calculated = complexCalculation 4 6
+let calculated = complexCalculation 5 6
 
 print processed
 print formatted

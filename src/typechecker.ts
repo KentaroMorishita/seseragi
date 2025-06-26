@@ -408,7 +408,8 @@ export class TypeChecker {
             call.column
           )
         } else {
-          // print and putStrLn accept any type (polymorphic)
+          // print and putStrLn accept any type, so we just check the expression
+          // without enforcing a specific type on it.
           this.checkExpression(call.arguments[0], env)
         }
         return new AST.PrimitiveType("Unit", call.line, call.column)
@@ -421,7 +422,7 @@ export class TypeChecker {
             call.column
           )
         } else {
-          // toString accepts any type
+          // toString also accepts any type.
           this.checkExpression(call.arguments[0], env)
         }
         return new AST.PrimitiveType("String", call.line, call.column)
