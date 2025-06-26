@@ -384,6 +384,10 @@ export class TypeInferenceSystem {
 
     // Track the type for this variable declaration
     this.nodeTypeMap.set(varDecl, finalType)
+    
+    // Also track the initializer expression type
+    this.nodeTypeMap.set(varDecl.initializer, initType)
+    
     return finalType
   }
 
@@ -428,6 +432,18 @@ export class TypeInferenceSystem {
       
       case "ConstructorExpression":
         resultType = this.generateConstraintsForConstructorExpression(expr as AST.ConstructorExpression, env)
+        break
+      
+      case "FunctorMap":
+        resultType = this.generateConstraintsForFunctorMap(expr as AST.FunctorMap, env)
+        break
+      
+      case "ApplicativeApply":
+        resultType = this.generateConstraintsForApplicativeApply(expr as AST.ApplicativeApply, env)
+        break
+      
+      case "MonadBind":
+        resultType = this.generateConstraintsForMonadBind(expr as AST.MonadBind, env)
         break
       
       default:
@@ -757,6 +773,331 @@ export class TypeInferenceSystem {
     
     // If no return expression and last statement is not an expression, return Unit
     return new AST.PrimitiveType("Unit", block.line, block.column)
+  }
+
+  private generateConstraintsForFunctorMap(
+    functorMap: AST.FunctorMap,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // <$> operator: f <$> m
+    // Type signature: (a -> b) -> f a -> f b
+    const funcType = this.generateConstraintsForExpression(functorMap.left, env)
+    const containerType = this.generateConstraintsForExpression(functorMap.right, env)
+    
+    const inputType = this.freshTypeVariable(functorMap.line, functorMap.column)
+    const outputType = this.freshTypeVariable(functorMap.line, functorMap.column)
+    
+    // Function must be of type (a -> b)
+    const expectedFuncType = new AST.FunctionType(
+      inputType,
+      outputType,
+      functorMap.line,
+      functorMap.column
+    )
+    
+    this.addConstraint(new TypeConstraint(
+      funcType,
+      expectedFuncType,
+      functorMap.line,
+      functorMap.column,
+      `FunctorMap function type`
+    ))
+    
+    // Container must be of type f a (for the same 'a' as function input)
+    if (containerType.kind === "GenericType") {
+      const gt = containerType as AST.GenericType
+      
+      if (gt.name === "Maybe" && gt.typeArguments.length === 1) {
+        // Maybe<a> case
+        this.addConstraint(new TypeConstraint(
+          gt.typeArguments[0],
+          inputType,
+          functorMap.line,
+          functorMap.column,
+          `FunctorMap Maybe container input type`
+        ))
+        
+        return new AST.GenericType(
+          "Maybe",
+          [outputType],
+          functorMap.line,
+          functorMap.column
+        )
+      } else if (gt.name === "Either" && gt.typeArguments.length === 2) {
+        // Either<e, a> case - function operates on the 'a' type (right side)
+        const errorType = gt.typeArguments[0]  // Left type stays the same
+        this.addConstraint(new TypeConstraint(
+          gt.typeArguments[1],  // Right type
+          inputType,
+          functorMap.line,
+          functorMap.column,
+          `FunctorMap Either container input type`
+        ))
+        
+        return new AST.GenericType(
+          "Either",
+          [errorType, outputType],  // Keep error type, map value type
+          functorMap.line,
+          functorMap.column
+        )
+      } else if (gt.typeArguments.length > 0) {
+        // Generic functor case
+        this.addConstraint(new TypeConstraint(
+          gt.typeArguments[gt.typeArguments.length - 1],  // Last type argument
+          inputType,
+          functorMap.line,
+          functorMap.column,
+          `FunctorMap container input type`
+        ))
+        
+        // Replace last type argument with output type
+        const newArgs = [...gt.typeArguments]
+        newArgs[newArgs.length - 1] = outputType
+        
+        return new AST.GenericType(
+          gt.name,
+          newArgs,
+          functorMap.line,
+          functorMap.column
+        )
+      }
+    }
+    
+    // Fallback: assume container is a generic type and return a generic result
+    return new AST.GenericType(
+      "Functor",
+      [outputType],
+      functorMap.line,
+      functorMap.column
+    )
+  }
+
+  private generateConstraintsForApplicativeApply(
+    applicativeApply: AST.ApplicativeApply,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // <*> operator: f (a -> b) <*> f a
+    // Type signature: f (a -> b) -> f a -> f b
+    const funcContainerType = this.generateConstraintsForExpression(applicativeApply.left, env)
+    const valueContainerType = this.generateConstraintsForExpression(applicativeApply.right, env)
+    
+    const inputType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
+    const outputType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
+    
+    // Function type inside the container
+    const funcType = new AST.FunctionType(
+      inputType,
+      outputType,
+      applicativeApply.line,
+      applicativeApply.column
+    )
+    
+    if (funcContainerType.kind === "GenericType" && valueContainerType.kind === "GenericType") {
+      const funcGt = funcContainerType as AST.GenericType
+      const valueGt = valueContainerType as AST.GenericType
+      
+      // Ensure both containers are of the same type
+      if (funcGt.name === valueGt.name) {
+        if (funcGt.name === "Maybe" && funcGt.typeArguments.length === 1 && valueGt.typeArguments.length === 1) {
+          // Maybe case: Maybe<(a -> b)> <*> Maybe<a> -> Maybe<b>
+          this.addConstraint(new TypeConstraint(
+            funcGt.typeArguments[0],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Maybe function container type`
+          ))
+          
+          this.addConstraint(new TypeConstraint(
+            valueGt.typeArguments[0],
+            inputType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Maybe value container type`
+          ))
+          
+          return new AST.GenericType(
+            "Maybe",
+            [outputType],
+            applicativeApply.line,
+            applicativeApply.column
+          )
+        } else if (funcGt.name === "Either" && funcGt.typeArguments.length === 2 && valueGt.typeArguments.length === 2) {
+          // Either case: Either<e, (a -> b)> <*> Either<e, a> -> Either<e, b>
+          const errorType1 = funcGt.typeArguments[0]
+          const errorType2 = valueGt.typeArguments[0]
+          
+          // Error types must match
+          this.addConstraint(new TypeConstraint(
+            errorType1,
+            errorType2,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Either error type consistency`
+          ))
+          
+          this.addConstraint(new TypeConstraint(
+            funcGt.typeArguments[1],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Either function container type`
+          ))
+          
+          this.addConstraint(new TypeConstraint(
+            valueGt.typeArguments[1],
+            inputType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Either value container type`
+          ))
+          
+          return new AST.GenericType(
+            "Either",
+            [errorType1, outputType],
+            applicativeApply.line,
+            applicativeApply.column
+          )
+        }
+      }
+    }
+    
+    // Fallback
+    return new AST.GenericType(
+      "Applicative",
+      [outputType],
+      applicativeApply.line,
+      applicativeApply.column
+    )
+  }
+
+  private generateConstraintsForMonadBind(
+    monadBind: AST.MonadBind,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // >>= operator: m a >>= (a -> m b)
+    // Type signature: m a -> (a -> m b) -> m b
+    const monadType = this.generateConstraintsForExpression(monadBind.left, env)
+    const funcType = this.generateConstraintsForExpression(monadBind.right, env)
+    
+    const inputType = this.freshTypeVariable(monadBind.line, monadBind.column)
+    const outputType = this.freshTypeVariable(monadBind.line, monadBind.column)
+    
+    // Create a generic monad variable that will be constrained later
+    const monadVar = this.freshTypeVariable(monadBind.line, monadBind.column)
+    
+    // Constrain the left side to be a monad of inputType
+    this.addConstraint(new TypeConstraint(
+      monadType,
+      monadVar,
+      monadBind.line,
+      monadBind.column,
+      `MonadBind left side monad type`
+    ))
+    
+    // The function should take inputType and return a monad of outputType
+    const expectedOutputMonad = this.freshTypeVariable(monadBind.line, monadBind.column)
+    const expectedFuncType = new AST.FunctionType(
+      inputType,
+      expectedOutputMonad,
+      monadBind.line,
+      monadBind.column
+    )
+    
+    this.addConstraint(new TypeConstraint(
+      funcType,
+      expectedFuncType,
+      monadBind.line,
+      monadBind.column,
+      `MonadBind function type`
+    ))
+    
+    // The result should have the same monad structure as the input but with outputType
+    const resultType = this.freshTypeVariable(monadBind.line, monadBind.column)
+    
+    // Add constraint that the output monad and result should be the same
+    this.addConstraint(new TypeConstraint(
+      expectedOutputMonad,
+      resultType,
+      monadBind.line,
+      monadBind.column,
+      `MonadBind result type`
+    ))
+    
+    // Add specific constraints for known monad types
+    if (monadType.kind === "GenericType") {
+      const monadGt = monadType as AST.GenericType
+      
+      if (monadGt.name === "Maybe" && monadGt.typeArguments.length === 1) {
+        // Maybe case: Maybe<a> >>= (a -> Maybe<b>) -> Maybe<b>
+        this.addConstraint(new TypeConstraint(
+          monadGt.typeArguments[0],
+          inputType,
+          monadBind.line,
+          monadBind.column,
+          `MonadBind Maybe input type`
+        ))
+        
+        const outputMonadType = new AST.GenericType(
+          "Maybe",
+          [outputType],
+          monadBind.line,
+          monadBind.column
+        )
+        
+        this.addConstraint(new TypeConstraint(
+          expectedOutputMonad,
+          outputMonadType,
+          monadBind.line,
+          monadBind.column,
+          `MonadBind Maybe output type`
+        ))
+        
+        return new AST.GenericType(
+          "Maybe",
+          [outputType],
+          monadBind.line,
+          monadBind.column
+        )
+      } else if (monadGt.name === "Either" && monadGt.typeArguments.length === 2) {
+        // Either case: Either<e, a> >>= (a -> Either<e, b>) -> Either<e, b>
+        const errorType = monadGt.typeArguments[0]
+        const valueType = monadGt.typeArguments[1]
+        
+        this.addConstraint(new TypeConstraint(
+          valueType,
+          inputType,
+          monadBind.line,
+          monadBind.column,
+          `MonadBind Either input type`
+        ))
+        
+        const outputMonadType = new AST.GenericType(
+          "Either",
+          [errorType, outputType],
+          monadBind.line,
+          monadBind.column
+        )
+        
+        this.addConstraint(new TypeConstraint(
+          expectedOutputMonad,
+          outputMonadType,
+          monadBind.line,
+          monadBind.column,
+          `MonadBind Either output type`
+        ))
+        
+        return new AST.GenericType(
+          "Either",
+          [errorType, outputType],
+          monadBind.line,
+          monadBind.column
+        )
+      }
+    }
+    
+    // For unknown types, let constraint resolution figure it out
+    return resultType
   }
 
   private generateConstraintsForConstructorExpression(
