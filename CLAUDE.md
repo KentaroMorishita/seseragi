@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-Seseragiは、TypeScriptにトランスパイルされる純粋関数型プログラミング言語です。字句解析、構文解析、型推論、コード生成、CLI、LSPサーバー、VS Code拡張などの機能が実装されています。
+Seseragiは、TypeScriptにトランスパイルされるプログラミング言語です。字句解析、構文解析、型推論、コード生成、CLI、LSPサーバー、VS Code拡張などの機能が実装されています。
 
 ## リポジトリ構造
 
 ```
 src/
 ├── lexer.ts              # 字句解析器
-├── parser.ts             # 構文解析器  
+├── parser.ts             # 構文解析器
 ├── ast.ts                # 抽象構文木定義
 ├── codegen.ts            # TypeScriptコード生成
 ├── typechecker.ts        # 型チェッカー
@@ -36,7 +36,7 @@ extensions/seseragi/      # VS Code拡張機能
 ## 言語アーキテクチャ
 
 ### 核となる設計原則
-- **純粋関数型プログラミング** - `effectful`キーワードによる明示的な副作用管理
+- **副作用の明示的管理** - `effectful`キーワードによる安全な副作用処理
 - **静的型付け** - 型安全性の保証
 - **不変変数** - `let`キーワードを使用、再代入不可
 - **デフォルトでカリー化された関数** - すべての関数が部分適用をサポート
@@ -94,7 +94,7 @@ extensions/seseragi/      # VS Code拡張機能
 
 **モナドとランタイム:**
 - ✅ **Maybe<T>モナド** - 実装済み
-- ✅ **Either<L,R>モナド** - 実装済み  
+- ✅ **Either<L,R>モナド** - 実装済み
 - ✅ **モナド演算子** - `>>=`, `<$>`, `<*>` 実装済み
 - ✅ **Seseragiランタイム** - TypeScript/JavaScript実装 (src/runtime/)
 
@@ -155,8 +155,9 @@ extensions/seseragi/      # VS Code拡張機能
 
 1. **言語進化**: 構文や意味論の変更は両方の仕様文書に反映
 2. **TypeScript互換性**: TypeScriptにトランスパイルするため、機能拡張時はTypeScript互換性を考慮
-3. **関数型純粋性**: 関数型プログラミングパラダイムを維持 - 副作用は`IO`モナドと`effectful`関数で明示的に管理
+3. **型安全性**: 強力な型システムと型推論により、実行時エラーを最小化
 4. **日本語文書**: 現在の文書はすべて日本語 - この慣例を維持するか並行して英語文書を提供
+5. **実用性重視**: 理論的純粋性よりも実用性を優先 - 必要に応じて副作用も扱える
 
 ## 開発コマンド
 
