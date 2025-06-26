@@ -728,6 +728,24 @@ function findSymbolWithEnhancedInference(ast: any, symbol: string, inferenceResu
       };
     }
     
+    // Check function parameters for the symbol
+    if (statement.kind === 'FunctionDeclaration' && statement.parameters) {
+      for (const param of statement.parameters) {
+        if (param.name === symbol) {
+          let paramType = param.type;
+          if (paramType && inferenceResult.substitution && inferenceResult.substitution.apply) {
+            paramType = inferenceResult.substitution.apply(paramType);
+          }
+          return {
+            type: 'parameter',
+            name: symbol,
+            finalType: paramType,
+            hasExplicitType: true
+          };
+        }
+      }
+    }
+    
     if (statement.kind === 'VariableDeclaration' && statement.name === symbol) {
       // Debug: log all tracked types for this variable
       connection.console.log(`Looking for variable ${symbol}`);
@@ -1146,6 +1164,10 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
       // For display, we don't need to show the full curried type again
       // Just show the function signature
       return `\`\`\`seseragi\n${funcSignature}\n\`\`\``;
+
+    case 'parameter':
+      const paramType = formatInferredTypeForDisplay(info.finalType);
+      return `\`\`\`seseragi\n${symbol}: ${paramType}\n\`\`\`\n**Type:** function parameter`;
       
     case 'variable':
       const typeAnnotation = info.hasExplicitType ? 'explicit' : 'inferred';

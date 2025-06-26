@@ -128,16 +128,12 @@
           "match": "\\b(print|putStrLn|toString)(?=\\s*$)"
         },
         {
+          "name": "entity.name.function.definition.seseragi",
+          "match": "(?<=fn\\s+)[a-z][a-zA-Z0-9_]*"
+        },
+        {
           "name": "entity.name.function.call.seseragi",
           "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*\\()"
-        },
-        {
-          "name": "entity.name.function.application.seseragi",
-          "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s+[^\\(:])"
-        },
-        {
-          "name": "entity.name.function.seseragi",
-          "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*[a-zA-Z0-9_\\s]*:)"
         },
         {
           "name": "support.function.builtin.seseragi",
