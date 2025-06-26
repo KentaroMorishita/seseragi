@@ -296,28 +296,26 @@ export class Lexer {
     }
 
     if (char === ">") {
-      if (this.peek() === "=") {
-        this.advance()
-        return this.makeToken(
-          TokenType.GREATER_EQUAL,
-          ">=",
-          startLine,
-          startColumn
-        )
-      }
       if (this.peek() === ">" && this.peekNext() === "=") {
         this.advance() // first >
-        this.advance() // second >
         this.advance() // =
         return this.makeToken(TokenType.BIND, ">>=", startLine, startColumn)
       }
       if (this.peek() === ">" && this.peekNext() === ">") {
         this.advance() // first >
         this.advance() // second >
-        this.advance() // third >
         return this.makeToken(
           TokenType.FOLD_MONOID,
           ">>>",
+          startLine,
+          startColumn
+        )
+      }
+      if (this.peek() === "=") {
+        this.advance()
+        return this.makeToken(
+          TokenType.GREATER_EQUAL,
+          ">=",
           startLine,
           startColumn
         )
