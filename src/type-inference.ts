@@ -19,6 +19,17 @@ export class TypeVariable extends AST.Type {
   }
 }
 
+// 多相型変数を表現するクラス (例: 'a, 'b)
+export class PolymorphicTypeVariable extends AST.Type {
+  kind = "PolymorphicTypeVariable"
+  name: string
+
+  constructor(name: string, line: number, column: number) {
+    super(line, column)
+    this.name = name
+  }
+}
+
 // 型制約を表現するクラス
 export class TypeConstraint {
   constructor(
@@ -39,6 +50,8 @@ export class TypeConstraint {
         return (type as AST.PrimitiveType).name
       case "TypeVariable":
         return (type as TypeVariable).name
+      case "PolymorphicTypeVariable":
+        return `'${(type as PolymorphicTypeVariable).name}`
       case "FunctionType":
         const ft = type as AST.FunctionType
         return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
@@ -71,6 +84,10 @@ export class TypeSubstitution {
         const tv = type as TypeVariable
         const substituted = this.get(tv.id)
         return substituted ? this.apply(substituted) : type
+
+      case "PolymorphicTypeVariable":
+        // 多相型変数は置換しない（常に多相のまま）
+        return type
 
       case "FunctionType":
         const ft = type as AST.FunctionType
@@ -142,6 +159,8 @@ export class TypeSubstitution {
         return (type as AST.PrimitiveType).name
       case "TypeVariable":
         return (type as TypeVariable).name
+      case "PolymorphicTypeVariable":
+        return `'${(type as PolymorphicTypeVariable).name}`
       case "FunctionType":
         const ft = type as AST.FunctionType
         return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
@@ -178,6 +197,7 @@ export class TypeInferenceSystem {
   private nextVarId = 0
   private constraints: TypeConstraint[] = []
   private errors: TypeInferenceError[] = []
+  private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
@@ -192,11 +212,13 @@ export class TypeInferenceSystem {
   // 型推論のメインエントリーポイント
   infer(program: AST.Program): { 
     substitution: TypeSubstitution, 
-    errors: TypeInferenceError[] 
+    errors: TypeInferenceError[],
+    nodeTypeMap: Map<any, AST.Type>
   } {
     this.constraints = []
     this.errors = []
     this.nextVarId = 0
+    this.nodeTypeMap.clear()
 
     // 型環境の初期化
     const env = this.createInitialEnvironment()
@@ -207,7 +229,13 @@ export class TypeInferenceSystem {
     // 制約解決（単一化）
     const substitution = this.solveConstraints()
 
-    return { substitution, errors: this.errors }
+    // Apply substitution to all tracked node types
+    const resolvedNodeTypeMap = new Map<any, AST.Type>()
+    for (const [node, type] of this.nodeTypeMap) {
+      resolvedNodeTypeMap.set(node, substitution.apply(type))
+    }
+
+    return { substitution, errors: this.errors, nodeTypeMap: resolvedNodeTypeMap }
   }
 
   // 初期型環境を作成
@@ -216,8 +244,25 @@ export class TypeInferenceSystem {
     
     // 組み込み関数の型を定義
     
+    // print: 'a -> Unit (多相関数)
+    const printType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("Unit", 0, 0),
+      0, 0
+    )
+    env.set("print", printType)
+    
+    // putStrLn: 'a -> Unit (多相関数)
+    const putStrLnType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("Unit", 0, 0),
+      0, 0
+    )
+    env.set("putStrLn", putStrLnType)
+    
+    // toString: 'a -> String (多相関数)
     const toStringType = new AST.FunctionType(
-      this.freshTypeVariable(0, 0),
+      new PolymorphicTypeVariable("a", 0, 0),
       new AST.PrimitiveType("String", 0, 0),
       0, 0
     )
@@ -267,14 +312,25 @@ export class TypeInferenceSystem {
     let funcType: AST.Type = returnType
     
     // パラメータから関数型を構築（カリー化）
-    for (let i = func.parameters.length - 1; i >= 0; i--) {
-      const paramType = func.parameters[i].type || this.freshTypeVariable(func.parameters[i].line, func.parameters[i].column)
+    if (func.parameters.length === 0) {
+      // 引数なしの関数は Unit -> ReturnType
       funcType = new AST.FunctionType(
-        paramType,
+        new AST.PrimitiveType("Unit", func.line, func.column),
         funcType,
         func.line,
         func.column
       )
+    } else {
+      // 引数ありの関数は通常のカリー化
+      for (let i = func.parameters.length - 1; i >= 0; i--) {
+        const paramType = func.parameters[i].type || this.freshTypeVariable(func.parameters[i].line, func.parameters[i].column)
+        funcType = new AST.FunctionType(
+          paramType,
+          funcType,
+          func.line,
+          func.column
+        )
+      }
     }
 
     // 関数を環境に追加
@@ -307,6 +363,7 @@ export class TypeInferenceSystem {
     // 初期化式の型を推論
     const initType = this.generateConstraintsForExpression(varDecl.initializer, env)
 
+    let finalType: AST.Type
     if (varDecl.type) {
       // 明示的な型注釈がある場合は制約を追加
       this.addConstraint(new TypeConstraint(
@@ -317,47 +374,61 @@ export class TypeInferenceSystem {
         `Variable ${varDecl.name} type annotation`
       ))
       env.set(varDecl.name, varDecl.type)
-      return varDecl.type
+      finalType = varDecl.type
     } else {
       // 型注釈がない場合は推論された型を使用
-      // ここで型変数の場合も正しく処理
-      const inferredType = initType.kind === "TypeVariable" ? initType : initType
-      env.set(varDecl.name, inferredType)
-      return inferredType
+      // 型変数、ジェネリック型、関数型すべてを正しく保持
+      env.set(varDecl.name, initType)
+      finalType = initType
     }
+
+    // Track the type for this variable declaration
+    this.nodeTypeMap.set(varDecl, finalType)
+    return finalType
   }
 
-  private generateConstraintsForExpression(
+  public generateConstraintsForExpression(
     expr: AST.Expression,
     env: Map<string, AST.Type>
   ): AST.Type {
+    let resultType: AST.Type
+    
     switch (expr.kind) {
       case "Literal":
-        return this.generateConstraintsForLiteral(expr as AST.Literal)
+        resultType = this.generateConstraintsForLiteral(expr as AST.Literal)
+        break
       
       case "Identifier":
-        return this.generateConstraintsForIdentifier(expr as AST.Identifier, env)
+        resultType = this.generateConstraintsForIdentifier(expr as AST.Identifier, env)
+        break
       
       case "BinaryOperation":
-        return this.generateConstraintsForBinaryOperation(expr as AST.BinaryOperation, env)
+        resultType = this.generateConstraintsForBinaryOperation(expr as AST.BinaryOperation, env)
+        break
       
       case "FunctionCall":
-        return this.generateConstraintsForFunctionCall(expr as AST.FunctionCall, env)
+        resultType = this.generateConstraintsForFunctionCall(expr as AST.FunctionCall, env)
+        break
       
       case "FunctionApplication":
-        return this.generateConstraintsForFunctionApplication(expr as AST.FunctionApplication, env)
+        resultType = this.generateConstraintsForFunctionApplication(expr as AST.FunctionApplication, env)
+        break
       
       case "Pipeline":
-        return this.generateConstraintsForPipeline(expr as AST.Pipeline, env)
+        resultType = this.generateConstraintsForPipeline(expr as AST.Pipeline, env)
+        break
       
       case "ConditionalExpression":
-        return this.generateConstraintsForConditional(expr as AST.ConditionalExpression, env)
+        resultType = this.generateConstraintsForConditional(expr as AST.ConditionalExpression, env)
+        break
       
       case "BlockExpression":
-        return this.generateConstraintsForBlockExpression(expr as AST.BlockExpression, env)
+        resultType = this.generateConstraintsForBlockExpression(expr as AST.BlockExpression, env)
+        break
       
       case "ConstructorExpression":
-        return this.generateConstraintsForConstructorExpression(expr as AST.ConstructorExpression, env)
+        resultType = this.generateConstraintsForConstructorExpression(expr as AST.ConstructorExpression, env)
+        break
       
       default:
         this.errors.push(new TypeInferenceError(
@@ -365,8 +436,13 @@ export class TypeInferenceSystem {
           expr.line,
           expr.column
         ))
-        return this.freshTypeVariable(expr.line, expr.column)
+        resultType = this.freshTypeVariable(expr.line, expr.column)
+        break
     }
+    
+    // Track the type for this expression
+    this.nodeTypeMap.set(expr, resultType)
+    return resultType
   }
 
   private generateConstraintsForLiteral(literal: AST.Literal): AST.Type {
@@ -484,16 +560,61 @@ export class TypeInferenceSystem {
     call: AST.FunctionCall,
     env: Map<string, AST.Type>
   ): AST.Type {
-    // print関数の特別処理
-    if (call.function.kind === "Identifier" && (call.function as AST.Identifier).name === "print") {
-      if (call.arguments.length === 1) {
-        // print関数は任意の型を受け取り、Unit型を返す
+    // print/putStrLn関数の特別処理
+    if (call.function.kind === "Identifier") {
+      const funcName = (call.function as AST.Identifier).name
+      if ((funcName === "print" || funcName === "putStrLn") && call.arguments.length === 1) {
+        // print/putStrLn関数は任意の型を受け取り、Unit型を返す
         this.generateConstraintsForExpression(call.arguments[0], env)
         return new AST.PrimitiveType("Unit", call.line, call.column)
       }
     }
     
     const funcType = this.generateConstraintsForExpression(call.function, env)
+    
+    // 引数が0個の場合は、関数がユニット型を取る関数として扱う
+    if (call.arguments.length === 0) {
+      // 関数の型が既知の場合、その戻り値型を抽出
+      if (funcType.kind === "FunctionType") {
+        const ft = funcType as AST.FunctionType
+        // Unit -> ReturnType の形を期待
+        const expectedFuncType = new AST.FunctionType(
+          new AST.PrimitiveType("Unit", call.line, call.column),
+          ft.returnType, // 既存の戻り値型を使用
+          call.line,
+          call.column
+        )
+        
+        this.addConstraint(new TypeConstraint(
+          funcType,
+          expectedFuncType,
+          call.line,
+          call.column,
+          `Unit function application`
+        ))
+        
+        return ft.returnType // 戻り値型を直接返す
+      }
+      
+      // 関数型が不明な場合のフォールバック
+      const resultType = this.freshTypeVariable(call.line, call.column)
+      const expectedFuncType = new AST.FunctionType(
+        new AST.PrimitiveType("Unit", call.line, call.column),
+        resultType,
+        call.line,
+        call.column
+      )
+      
+      this.addConstraint(new TypeConstraint(
+        funcType,
+        expectedFuncType,
+        call.line,
+        call.column,
+        `Unit function application`
+      ))
+      
+      return resultType
+    }
     
     // 関数呼び出しの結果型
     let resultType = funcType
@@ -516,7 +637,7 @@ export class TypeInferenceSystem {
         expectedFuncType,
         call.line,
         call.column,
-        `Function application`
+        `Function application with ${this.typeToString(argType)}`
       ))
       
       resultType = newResultType
@@ -677,9 +798,10 @@ export class TypeInferenceSystem {
             ctor.column
           ))
         }
+        // Nothing is polymorphic: Maybe<'a>
         return new AST.GenericType(
           "Maybe",
-          [this.freshTypeVariable(ctor.line, ctor.column)],
+          [new PolymorphicTypeVariable("a", ctor.line, ctor.column)],
           ctor.line,
           ctor.column
         )
@@ -687,9 +809,10 @@ export class TypeInferenceSystem {
       case "Right":
         if (ctor.arguments && ctor.arguments.length > 0) {
           const argType = this.generateConstraintsForExpression(ctor.arguments[0], env)
+          // Right is polymorphic in its left type: Either<'a, argType>
           return new AST.GenericType(
             "Either",
-            [this.freshTypeVariable(ctor.line, ctor.column), argType],
+            [new PolymorphicTypeVariable("a", ctor.line, ctor.column), argType],
             ctor.line,
             ctor.column
           )
@@ -701,7 +824,7 @@ export class TypeInferenceSystem {
         ))
         return new AST.GenericType(
           "Either",
-          [this.freshTypeVariable(ctor.line, ctor.column), this.freshTypeVariable(ctor.line, ctor.column)],
+          [new PolymorphicTypeVariable("a", ctor.line, ctor.column), new PolymorphicTypeVariable("b", ctor.line, ctor.column)],
           ctor.line,
           ctor.column
         )
@@ -709,9 +832,10 @@ export class TypeInferenceSystem {
       case "Left":
         if (ctor.arguments && ctor.arguments.length > 0) {
           const argType = this.generateConstraintsForExpression(ctor.arguments[0], env)
+          // Left is polymorphic in its right type: Either<argType, 'b>
           return new AST.GenericType(
             "Either",
-            [argType, this.freshTypeVariable(ctor.line, ctor.column)],
+            [argType, new PolymorphicTypeVariable("b", ctor.line, ctor.column)],
             ctor.line,
             ctor.column
           )
@@ -723,7 +847,7 @@ export class TypeInferenceSystem {
         ))
         return new AST.GenericType(
           "Either",
-          [this.freshTypeVariable(ctor.line, ctor.column), this.freshTypeVariable(ctor.line, ctor.column)],
+          [new PolymorphicTypeVariable("a", ctor.line, ctor.column), new PolymorphicTypeVariable("b", ctor.line, ctor.column)],
           ctor.line,
           ctor.column
         )
@@ -787,6 +911,12 @@ export class TypeInferenceSystem {
         throw new Error(`Infinite type: ${tv2.name} occurs in ${this.typeToString(type1)}`)
       }
       substitution.set(tv2.id, type1)
+      return substitution
+    }
+    
+    // 多相型変数の場合 - これらは常に多相のまま残す
+    if (type1.kind === "PolymorphicTypeVariable" || type2.kind === "PolymorphicTypeVariable") {
+      // 多相型変数は統一しない（常に多相のまま）
       return substitution
     }
     
@@ -868,6 +998,9 @@ export class TypeInferenceSystem {
       case "TypeVariable":
         return (type1 as TypeVariable).id === (type2 as TypeVariable).id
       
+      case "PolymorphicTypeVariable":
+        return (type1 as PolymorphicTypeVariable).name === (type2 as PolymorphicTypeVariable).name
+      
       case "FunctionType":
         const ft1 = type1 as AST.FunctionType
         const ft2 = type2 as AST.FunctionType
@@ -887,13 +1020,16 @@ export class TypeInferenceSystem {
   }
 
   // 型を文字列に変換
-  private typeToString(type: AST.Type): string {
+  public typeToString(type: AST.Type): string {
     switch (type.kind) {
       case "PrimitiveType":
         return (type as AST.PrimitiveType).name
       
       case "TypeVariable":
         return (type as TypeVariable).name
+      
+      case "PolymorphicTypeVariable":
+        return `'${(type as PolymorphicTypeVariable).name}`
       
       case "FunctionType":
         const ft = type as AST.FunctionType
