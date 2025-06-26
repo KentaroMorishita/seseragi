@@ -65,8 +65,8 @@ test("Functor Laws - Either - Composition", () => {
 // =============================================================================
 
 test("Applicative Laws - Maybe - Identity", () => {
-  const value = Just(42)
-  const identity = <T>(x: T): T => x
+  const value: Maybe<number> = Just(42)
+  const identity: (x: number) => number = (x) => x
 
   // pure(id) <*> v = v
   const result = applyMaybe(pureMaybe(identity), value)
@@ -74,7 +74,6 @@ test("Applicative Laws - Maybe - Identity", () => {
 })
 
 test("Applicative Laws - Maybe - Composition", () => {
-  // より簡単な例で合成法則をテスト
   const f = (x: number) => x * 2
   const x = 5
 
