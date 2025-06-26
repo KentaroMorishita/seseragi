@@ -4,7 +4,12 @@
 
 import { describe, it, expect, beforeEach } from "bun:test"
 import * as AST from "../src/ast"
-import { TypeInferenceSystem, TypeVariable, TypeConstraint, TypeSubstitution } from "../src/type-inference"
+import {
+  TypeInferenceSystem,
+  TypeVariable,
+  TypeConstraint,
+  TypeSubstitution,
+} from "../src/type-inference"
 
 describe("TypeInferenceSystem", () => {
   let inference: TypeInferenceSystem
@@ -16,10 +21,7 @@ describe("TypeInferenceSystem", () => {
   describe("基本的なリテラル推論", () => {
     it("整数リテラルはInt型と推論される", () => {
       const program = new AST.Program([
-        new AST.ExpressionStatement(
-          new AST.Literal(42, "integer", 1, 1),
-          1, 1
-        )
+        new AST.ExpressionStatement(new AST.Literal(42, "integer", 1, 1), 1, 1),
       ])
 
       const result = inference.infer(program)
@@ -30,8 +32,9 @@ describe("TypeInferenceSystem", () => {
       const program = new AST.Program([
         new AST.ExpressionStatement(
           new AST.Literal("hello", "string", 1, 1),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -42,8 +45,9 @@ describe("TypeInferenceSystem", () => {
       const program = new AST.Program([
         new AST.ExpressionStatement(
           new AST.Literal(true, "boolean", 1, 1),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -58,8 +62,9 @@ describe("TypeInferenceSystem", () => {
           "x",
           new AST.Literal(42, "integer", 1, 9),
           undefined, // 型注釈なし
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -72,8 +77,9 @@ describe("TypeInferenceSystem", () => {
           "x",
           new AST.Literal(42, "integer", 1, 12),
           new AST.PrimitiveType("Int", 1, 7),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -86,8 +92,9 @@ describe("TypeInferenceSystem", () => {
           "x",
           new AST.Literal("hello", "string", 1, 15),
           new AST.PrimitiveType("Int", 1, 7),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -103,10 +110,12 @@ describe("TypeInferenceSystem", () => {
             new AST.Literal(1, "integer", 1, 1),
             "+",
             new AST.Literal(2, "integer", 1, 5),
-            1, 3
+            1,
+            3
           ),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -120,10 +129,12 @@ describe("TypeInferenceSystem", () => {
             new AST.Literal(1, "integer", 1, 1),
             "==",
             new AST.Literal("hello", "string", 1, 6),
-            1, 3
+            1,
+            3
           ),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -137,10 +148,12 @@ describe("TypeInferenceSystem", () => {
             new AST.Literal(1, "integer", 1, 1),
             "&&",
             new AST.Literal(true, "boolean", 1, 6),
-            1, 3
+            1,
+            3
           ),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -159,11 +172,13 @@ describe("TypeInferenceSystem", () => {
             new AST.Identifier("x", 1, 25),
             "+",
             new AST.Literal(1, "integer", 1, 29),
-            1, 27
+            1,
+            27
           ),
           false,
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -176,15 +191,18 @@ describe("TypeInferenceSystem", () => {
           "badFunction",
           [new AST.Parameter("x", new AST.PrimitiveType("Int", 1, 16), 1, 14)],
           new AST.PrimitiveType("String", 1, 22), // String型を宣言
-          new AST.BinaryOperation(  // しかし本体はInt型を返す
+          new AST.BinaryOperation(
+            // しかし本体はInt型を返す
             new AST.Identifier("x", 1, 35),
             "+",
             new AST.Literal(1, "integer", 1, 39),
-            1, 37
+            1,
+            37
           ),
           false,
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -204,20 +222,24 @@ describe("TypeInferenceSystem", () => {
             new AST.Identifier("x", 1, 25),
             "+",
             new AST.Literal(1, "integer", 1, 29),
-            1, 27
+            1,
+            27
           ),
           false,
-          1, 1
+          1,
+          1
         ),
         // 関数呼び出し: increment(5)
         new AST.ExpressionStatement(
           new AST.FunctionCall(
             new AST.Identifier("increment", 2, 1),
             [new AST.Literal(5, "integer", 2, 11)],
-            2, 1
+            2,
+            1
           ),
-          2, 1
-        )
+          2,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -235,20 +257,24 @@ describe("TypeInferenceSystem", () => {
             new AST.Identifier("x", 1, 25),
             "+",
             new AST.Literal(1, "integer", 1, 29),
-            1, 27
+            1,
+            27
           ),
           false,
-          1, 1
+          1,
+          1
         ),
         // 関数呼び出し: increment("hello") - 型エラー
         new AST.ExpressionStatement(
           new AST.FunctionCall(
             new AST.Identifier("increment", 2, 1),
             [new AST.Literal("hello", "string", 2, 11)],
-            2, 1
+            2,
+            1
           ),
-          2, 1
-        )
+          2,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -264,10 +290,12 @@ describe("TypeInferenceSystem", () => {
             new AST.Literal(true, "boolean", 1, 1),
             new AST.Literal(1, "integer", 1, 11),
             new AST.Literal(2, "integer", 1, 18),
-            1, 1
+            1,
+            1
           ),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -281,10 +309,12 @@ describe("TypeInferenceSystem", () => {
             new AST.Literal(true, "boolean", 1, 1),
             new AST.Literal(1, "integer", 1, 11),
             new AST.Literal("hello", "string", 1, 18),
-            1, 1
+            1,
+            1
           ),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -298,10 +328,12 @@ describe("TypeInferenceSystem", () => {
             new AST.Literal(1, "integer", 1, 1), // Bool型ではない
             new AST.Literal(2, "integer", 1, 8),
             new AST.Literal(3, "integer", 1, 15),
-            1, 1
+            1,
+            1
           ),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -321,20 +353,24 @@ describe("TypeInferenceSystem", () => {
             new AST.Identifier("x", 1, 22),
             "*",
             new AST.Literal(2, "integer", 1, 26),
-            1, 24
+            1,
+            24
           ),
           false,
-          1, 1
+          1,
+          1
         ),
         // パイプライン: 5 | double
         new AST.ExpressionStatement(
           new AST.Pipeline(
             new AST.Literal(5, "integer", 2, 1),
             new AST.Identifier("double", 2, 5),
-            2, 3
+            2,
+            3
           ),
-          2, 1
-        )
+          2,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -347,8 +383,9 @@ describe("TypeInferenceSystem", () => {
       const program = new AST.Program([
         new AST.ExpressionStatement(
           new AST.Identifier("undefinedVar", 1, 1),
-          1, 1
-        )
+          1,
+          1
+        ),
       ])
 
       const result = inference.infer(program)
@@ -363,9 +400,9 @@ describe("TypeSubstitution", () => {
     const substitution = new TypeSubstitution()
     const typeVar = new TypeVariable(0, 1, 1)
     const intType = new AST.PrimitiveType("Int", 1, 1)
-    
+
     substitution.set(0, intType)
-    
+
     const result = substitution.apply(typeVar)
     expect(result.kind).toBe("PrimitiveType")
     expect((result as AST.PrimitiveType).name).toBe("Int")
@@ -376,9 +413,9 @@ describe("TypeSubstitution", () => {
     const typeVar = new TypeVariable(0, 1, 1)
     const intType = new AST.PrimitiveType("Int", 1, 1)
     const funcType = new AST.FunctionType(typeVar, intType, 1, 1)
-    
+
     substitution.set(0, new AST.PrimitiveType("String", 1, 1))
-    
+
     const result = substitution.apply(funcType) as AST.FunctionType
     expect(result.kind).toBe("FunctionType")
     expect((result.paramType as AST.PrimitiveType).name).toBe("String")
@@ -388,12 +425,12 @@ describe("TypeSubstitution", () => {
   it("置換の合成が正しく動作する", () => {
     const sub1 = new TypeSubstitution()
     const sub2 = new TypeSubstitution()
-    
+
     sub1.set(0, new AST.PrimitiveType("Int", 1, 1))
     sub2.set(1, new TypeVariable(0, 1, 1))
-    
+
     const composed = sub1.compose(sub2)
-    
+
     const typeVar1 = new TypeVariable(1, 1, 1)
     const result = composed.apply(typeVar1)
     expect((result as AST.PrimitiveType).name).toBe("Int")
@@ -405,10 +442,11 @@ describe("TypeConstraint", () => {
     const constraint = new TypeConstraint(
       new AST.PrimitiveType("Int", 1, 1),
       new TypeVariable(0, 1, 1),
-      1, 1,
+      1,
+      1,
       "test constraint"
     )
-    
+
     const str = constraint.toString()
     expect(str).toContain("Int")
     expect(str).toContain("t0")

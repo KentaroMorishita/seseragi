@@ -1,4 +1,4 @@
-import { Lexer, Token, TokenType } from "./lexer.js"
+import { Lexer, Token, TokenType } from "../lexer.js"
 
 export interface FormatterOptions {
   indentSize: number
@@ -91,7 +91,7 @@ export class SeseragiFormatter {
     this.addToken()
 
     // Parameters
-    while (!this.isAtEnd() && !this.check(TokenType.EQUALS)) {
+    while (!this.isAtEnd() && !this.check(TokenType.ASSIGN)) {
       if (this.check(TokenType.ARROW)) {
         this.addSpace()
         this.addToken()
@@ -104,7 +104,7 @@ export class SeseragiFormatter {
       }
     }
 
-    if (this.check(TokenType.EQUALS)) {
+    if (this.check(TokenType.ASSIGN)) {
       this.addSpace()
       this.addToken() // '='
       this.addSpace()
@@ -138,7 +138,7 @@ export class SeseragiFormatter {
     }
 
     // Assignment
-    if (this.check(TokenType.EQUALS)) {
+    if (this.check(TokenType.ASSIGN)) {
       this.addSpace()
       this.addToken()
       this.addSpace()
@@ -186,7 +186,7 @@ export class SeseragiFormatter {
     this.addNewline()
 
     this.indentLevel++
-    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
       this.formatStatement()
     }
     this.indentLevel--
@@ -206,7 +206,7 @@ export class SeseragiFormatter {
     this.addNewline()
 
     this.indentLevel++
-    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
       if (this.check(TokenType.IDENTIFIER)) {
         this.addIndent()
         this.addToken() // property name
@@ -228,7 +228,10 @@ export class SeseragiFormatter {
 
   private formatExpression(): void {
     while (!this.isAtEnd() && !this.isStatementEnd()) {
-      if (this.check(TokenType.PIPE)) {
+      if (this.check(TokenType.STRING)) {
+        // Handle string literals specially - don't format inside them
+        this.addToken()
+      } else if (this.check(TokenType.PIPE)) {
         if (this.shouldBreakPipeline()) {
           this.addNewline()
           this.addIndent()
@@ -241,10 +244,6 @@ export class SeseragiFormatter {
         }
       } else if (this.check(TokenType.MATCH)) {
         this.formatMatchExpression()
-      } else if (this.check(TokenType.IS)) {
-        this.addSpace()
-        this.addToken()
-        this.addSpace()
       } else if (this.check(TokenType.THEN)) {
         this.addSpace()
         this.addToken()
@@ -253,12 +252,17 @@ export class SeseragiFormatter {
         this.addSpace()
         this.addToken()
         this.addSpace()
-      } else if (this.check(TokenType.LPAREN)) {
+      } else if (this.check(TokenType.LEFT_PAREN)) {
         this.addToken()
         this.formatExpression()
-        if (this.check(TokenType.RPAREN)) {
+        if (this.check(TokenType.RIGHT_PAREN)) {
           this.addToken()
         }
+      } else if (this.isComparisonOperator()) {
+        // Handle comparison operators specially to avoid breaking them
+        this.addSpace()
+        this.addToken()
+        this.addSpace()
       } else {
         this.addToken()
       }
@@ -360,7 +364,7 @@ export class SeseragiFormatter {
     return (
       this.check(TokenType.NEWLINE) ||
       this.check(TokenType.EOF) ||
-      this.check(TokenType.RBRACE)
+      this.check(TokenType.RIGHT_BRACE)
     )
   }
 
@@ -380,9 +384,15 @@ export class SeseragiFormatter {
   }
 
   private addSpace(): void {
-    if (this.options.normalizeSpacing) {
+    if (this.options.normalizeSpacing && !this.lastCharIsSpace()) {
       this.output.push(" ")
     }
+  }
+
+  private lastCharIsSpace(): boolean {
+    if (this.output.length === 0) return false
+    const lastOutput = this.output[this.output.length - 1]
+    return lastOutput.endsWith(" ")
   }
 
   private addNewline(): void {
@@ -391,7 +401,13 @@ export class SeseragiFormatter {
 
   private addToken(): void {
     if (!this.isAtEnd()) {
-      this.output.push(this.current().value)
+      const token = this.current()
+      if (token.type === TokenType.STRING) {
+        // For string literals, preserve the original quotes and content
+        this.output.push(`"${token.value}"`)
+      } else {
+        this.output.push(token.value)
+      }
       this.advance()
     }
   }
@@ -434,6 +450,35 @@ export class SeseragiFormatter {
     if (!this.isAtEnd()) {
       this.position++
     }
+  }
+
+  private isComparisonOperator(): boolean {
+    if (this.isAtEnd()) return false
+
+    const tokenType = this.current().type
+    return (
+      tokenType === TokenType.LESS_EQUAL ||
+      tokenType === TokenType.GREATER_EQUAL ||
+      tokenType === TokenType.LESS_THAN ||
+      tokenType === TokenType.GREATER_THAN ||
+      tokenType === TokenType.EQUAL ||
+      tokenType === TokenType.NOT_EQUAL
+    )
+  }
+
+  private shouldAddSpaceAroundToken(): boolean {
+    if (this.isAtEnd()) return false
+
+    const tokenType = this.current().type
+    return (
+      tokenType === TokenType.PLUS ||
+      tokenType === TokenType.MINUS ||
+      tokenType === TokenType.MULTIPLY ||
+      tokenType === TokenType.DIVIDE ||
+      tokenType === TokenType.MODULO ||
+      tokenType === TokenType.AND ||
+      tokenType === TokenType.OR
+    )
   }
 
   private isAtEnd(): boolean {

@@ -18,8 +18,8 @@ program
   .option("-o, --output <file>", "Output file (default: stdout)")
   .option("-i, --in-place", "Edit file in place")
   .option("-c, --check", "Check if file is formatted correctly")
-  .option("--remove-whitespace", "Remove extra whitespace", true)
-  .option("--normalize-spacing", "Normalize operator spacing", true)
+  .option("--remove-whitespace", "Remove extra whitespace", false)
+  .option("--normalize-spacing", "Normalize operator spacing", false)
   .action(async (file, options) => {
     await formatCommand({
       input: file,
