@@ -142,15 +142,7 @@ export class SeseragiFormatter {
       this.addSpace()
       this.addToken()
       this.addSpace()
-      
-      // Check if we need to indent for monadic operations
-      if (this.hasMonadicOperatorAhead()) {
-        this.indentLevel++
-        this.formatExpression()
-        this.indentLevel--
-      } else {
-        this.formatExpression()
-      }
+      this.formatExpression()
     }
 
     this.addNewline()
@@ -250,12 +242,6 @@ export class SeseragiFormatter {
           this.addToken()
           this.addSpace()
         }
-      } else if (this.isMonadicOperator()) {
-        // Handle monadic operators with proper indentation
-        this.addSpace()
-        this.addToken()
-        this.addNewline()
-        this.addIndent()
       } else if (this.check(TokenType.MATCH)) {
         this.formatMatchExpression()
       } else if (this.check(TokenType.THEN)) {
@@ -277,15 +263,7 @@ export class SeseragiFormatter {
         this.addSpace()
         this.addToken()
         this.addSpace()
-      } else if (this.shouldAddSpaceAroundToken()) {
-        this.addSpace()
-        this.addToken()
-        this.addSpace()
       } else {
-        // Add space before token if needed
-        if (this.needsSpaceBefore()) {
-          this.addSpace()
-        }
         this.addToken()
       }
     }
@@ -485,54 +463,6 @@ export class SeseragiFormatter {
       tokenType === TokenType.GREATER_THAN ||
       tokenType === TokenType.EQUAL ||
       tokenType === TokenType.NOT_EQUAL
-    )
-  }
-
-  private isMonadicOperator(): boolean {
-    if (this.isAtEnd()) return false
-
-    const tokenType = this.current().type
-    return (
-      tokenType === TokenType.BIND ||        // >>=
-      tokenType === TokenType.APPLY ||       // <*>
-      tokenType === TokenType.MAP            // <$>
-    )
-  }
-
-  private hasMonadicOperatorAhead(): boolean {
-    const saved = this.position
-    let foundMonadicOp = false
-
-    while (!this.isStatementEnd() && !this.isAtEnd()) {
-      if (this.isMonadicOperator()) {
-        foundMonadicOp = true
-        break
-      }
-      this.advance()
-    }
-
-    this.position = saved
-    return foundMonadicOp
-  }
-
-  private needsSpaceBefore(): boolean {
-    if (this.output.length === 0) return false
-    
-    const lastOutput = this.output[this.output.length - 1]
-    const lastChar = lastOutput[lastOutput.length - 1]
-    
-    // Don't add space after newline or existing space
-    if (lastChar === '\n' || lastChar === ' ') return false
-    
-    const currentToken = this.current()
-    
-    // Need space before most tokens except punctuation
-    return (
-      currentToken.type === TokenType.IDENTIFIER ||
-      currentToken.type === TokenType.INTEGER ||
-      currentToken.type === TokenType.FLOAT ||
-      currentToken.type === TokenType.STRING ||
-      currentToken.type === TokenType.BOOLEAN
     )
   }
 

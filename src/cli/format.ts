@@ -1,7 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises"
 import {
-  SeseragiFormatter,
-  defaultFormatterOptions,
+  formatSeseragiCode,
   removeExtraWhitespace,
   normalizeOperatorSpacing,
 } from "../formatter/index.js"
@@ -34,8 +33,7 @@ export async function formatCommand(
     }
 
     // フル フォーマット
-    const formatter = new SeseragiFormatter(defaultFormatterOptions)
-    formatted = formatter.format(formatted)
+    formatted = formatSeseragiCode(formatted)
 
     // チェックモード：フォーマットが必要かどうかのみ確認
     if (options.check) {
