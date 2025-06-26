@@ -14,16 +14,16 @@ export function formatSeseragiCode(code: string): string {
       continue
     }
 
-    // コメント行はそのまま
+    // コメント行は元のインデントを保持
     if (trimmed.startsWith("//")) {
-      const indentLevel = calculateIndentLevel(trimmed, i, lines)
-      const indent = "  ".repeat(indentLevel)
-      result.push(indent + trimmed)
+      // 元の行からインデントを抽出
+      const originalIndent = line.match(/^(\s*)/)?.[1] || ""
+      result.push(originalIndent + trimmed)
       continue
     }
 
     // 基本的なクリーンアップ
-    const cleaned = trimmed.replace(/\s+/g, " ")
+    const cleaned = trimmed
 
     // 相対的なインデントレベルを計算
     const indentLevel = calculateIndentLevel(cleaned, i, lines)
@@ -72,7 +72,7 @@ function getCurrentContextLevel(index: number, allLines: string[]): number {
   for (let i = 0; i < index; i++) {
     const line = allLines[i].trim()
 
-    if (line === "") continue
+    if (line === "" || line.startsWith("//")) continue
 
     // ブロック開始
     if (line.endsWith("{")) {
@@ -195,38 +195,51 @@ export function normalizeOperatorSpacing(code: string): string {
       return line
     }
 
+    // 文字列リテラルの部分を一時的に保護
+    const stringParts: string[] = []
+    let processed = line.replace(/"[^"]*"/g, (match) => {
+      const index = stringParts.length
+      stringParts.push(match)
+      return `__STRING_${index}__`
+    })
+
     // その他の行は演算子のスペーシングを正規化
-    return (
-      line
-        // 型注釈 : (変数名 + スペース + コロン + 型名、関数パラメータのみ)
-        .replace(/(\w+)\s*:\s*([A-Z])/g, "$1 :$2")
-        // ファンクター演算子 <$> (最初に処理)
-        .replace(/\s*<\$>\s*/g, " <$> ")
-        // アプリカティブ演算子 <*> (最初に処理)
-        .replace(/\s*<\*>\s*/g, " <*> ")
-        // バインド演算子 >>= (最初に処理)
-        .replace(/\s*>>=\s*/g, " >>= ")
-        // 関数矢印 ->
-        .replace(/\s*->\s*/g, " -> ")
-        // 等価演算子 == を先に処理（= より前に）
-        .replace(/\s*==\s*/g, " == ")
-        // 代入演算子 =（==, >>= でない場合のみ）
-        .replace(/(?<![\!=>])\s*=\s*(?!=)/g, " = ")
-        // 加算演算子 +
-        .replace(/(?<=[^\+])\s*\+\s*(?=[^\+=])/g, " + ")
-        // 減算演算子 -
-        .replace(/(?<=[^-])\s*-\s*(?=[^->])/g, " - ")
-        // 乗算演算子 * (<*> でない場合のみ)
-        .replace(/(?<![<])\s*\*\s*(?![>])/g, " * ")
-        // 除算演算子 / （コメント // でない場合のみ）
-        .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
-        // パイプライン演算子 |
-        .replace(/\s*\|\s*/g, " | ")
-        // 逆パイプ演算子 ~
-        .replace(/\s*~\s*/g, " ~ ")
-        // 関数適用演算子 $ (単独の場合のみ)
-        .replace(/(?<![<>])\s*\$\s*(?![>])/g, " $ ")
-    )
+    processed = processed
+      // コロンの処理（型注釈）
+      .replace(/(\w+)\s*:\s*/g, "$1 :")
+      // 複数文字演算子を最初に処理
+      .replace(/\s*>>=\s*/g, " >>= ") // バインド演算子
+      .replace(/\s*->\s*/g, " -> ") // 関数矢印
+      .replace(/\s*==\s*/g, " == ") // 等価演算子
+      .replace(/\s*!=\s*/g, " != ") // 不等価演算子
+      .replace(/\s*<=\s*/g, " <= ") // 以下演算子
+      .replace(/\s*>=\s*/g, " >= ") // 以上演算子
+      .replace(/\s*<\$>\s*/g, " <$> ") // ファンクター演算子
+      .replace(/\s*<\*>\s*/g, " <*> ") // アプリカティブ演算子
+      // 比較演算子 < > (矢印以外の場合)
+      .replace(/(?<![<>=-])\s*<\s*(?![=*$])/g, " < ")
+      .replace(/(?<![><=-])\s*>\s*(?![=>])/g, " > ")
+      // 代入演算子 =（==, >=, <=, >>=, != でない場合のみ）
+      .replace(/(?<![\!<>=>])\s*=\s*(?!=)/g, " = ")
+      // 加算演算子 +
+      .replace(/(?<=[^\+])\s*\+\s*(?=[^\+=])/g, " + ")
+      // 乗算演算子 * (<*> でない場合のみ)
+      .replace(/(?<![<])\s*\*\s*(?![>])/g, " * ")
+      // 除算演算子 / （コメント // でない場合のみ）
+      .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
+      // パイプライン演算子 |
+      .replace(/\s*\|\s*/g, " | ")
+      // 逆パイプ演算子 ~
+      .replace(/\s*~\s*/g, " ~ ")
+      // 関数適用演算子 $ (単独の場合のみ)
+      .replace(/(?<![<>])\s*\$\s*(?![>])/g, " $ ")
+
+    // 文字列リテラルを復元
+    stringParts.forEach((str, index) => {
+      processed = processed.replace(`__STRING_${index}__`, str)
+    })
+
+    return processed
   })
 
   return processedLines.join("\n")

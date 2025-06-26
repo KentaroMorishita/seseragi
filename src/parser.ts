@@ -115,6 +115,7 @@ export class Parser {
 
     if (this.match(TokenType.ASSIGN)) {
       // ワンライナー形式: fn name params = expression
+      this.skipNewlines()
       body = this.expression()
     } else if (this.match(TokenType.LEFT_BRACE)) {
       // ブロック形式: fn name params { statements }
@@ -295,7 +296,7 @@ export class Parser {
     const returnType = this.parseFunctionSignature(parameters)
 
     this.consume(TokenType.ASSIGN, "Expected '=' after method signature")
-
+    this.skipNewlines()
     const body = this.expression()
 
     return new AST.MethodDeclaration(
@@ -439,6 +440,7 @@ export class Parser {
     }
 
     this.consume(TokenType.ASSIGN, "Expected '=' after variable name")
+    this.skipNewlines()
     const initializer = this.expression()
 
     return new AST.VariableDeclaration(
@@ -635,14 +637,20 @@ export class Parser {
   private functionApplicationExpression(): AST.Expression {
     let expr = this.pipelineExpression()
 
-    while (this.match(TokenType.FUNCTION_APPLICATION)) {
-      const right = this.functionApplicationExpression() // 右結合のため再帰
-      expr = new AST.FunctionApplicationOperator(
-        expr,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.FUNCTION_APPLICATION)) {
+        this.skipNewlines()
+        const right = this.functionApplicationExpression() // 右結合のため再帰
+        expr = new AST.FunctionApplicationOperator(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
     }
 
     return expr
@@ -651,14 +659,20 @@ export class Parser {
   private pipelineExpression(): AST.Expression {
     let expr = this.bindExpression()
 
-    while (this.match(TokenType.PIPE)) {
-      const right = this.bindExpression()
-      expr = new AST.Pipeline(
-        expr,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.PIPE)) {
+        this.skipNewlines()
+        const right = this.bindExpression()
+        expr = new AST.Pipeline(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
     }
 
     return expr
@@ -667,14 +681,20 @@ export class Parser {
   private bindExpression(): AST.Expression {
     let expr = this.applicativeExpression()
 
-    while (this.match(TokenType.BIND)) {
-      const right = this.applicativeExpression()
-      expr = new AST.MonadBind(
-        expr,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.BIND)) {
+        this.skipNewlines()
+        const right = this.applicativeExpression()
+        expr = new AST.MonadBind(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
     }
 
     return expr
@@ -683,14 +703,20 @@ export class Parser {
   private applicativeExpression(): AST.Expression {
     let expr = this.functorExpression()
 
-    while (this.match(TokenType.APPLY)) {
-      const right = this.functorExpression()
-      expr = new AST.ApplicativeApply(
-        expr,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.APPLY)) {
+        this.skipNewlines()
+        const right = this.functorExpression()
+        expr = new AST.ApplicativeApply(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
     }
 
     return expr
@@ -699,14 +725,20 @@ export class Parser {
   private functorExpression(): AST.Expression {
     let expr = this.reversePipeExpression()
 
-    while (this.match(TokenType.MAP)) {
-      const right = this.reversePipeExpression()
-      expr = new AST.FunctorMap(
-        expr,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.MAP)) {
+        this.skipNewlines()
+        const right = this.reversePipeExpression()
+        expr = new AST.FunctorMap(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
     }
 
     return expr
@@ -715,14 +747,20 @@ export class Parser {
   private reversePipeExpression(): AST.Expression {
     let expr = this.comparisonExpression()
 
-    while (this.match(TokenType.REVERSE_PIPE)) {
-      const right = this.comparisonExpression()
-      expr = new AST.ReversePipe(
-        expr,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.REVERSE_PIPE)) {
+        this.skipNewlines()
+        const right = this.comparisonExpression()
+        expr = new AST.ReversePipe(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
     }
 
     return expr
@@ -1053,7 +1091,7 @@ export class Parser {
   }
 
   private skipNewlines(): void {
-    while (this.check(TokenType.NEWLINE)) {
+    while (this.check(TokenType.NEWLINE) || this.check(TokenType.COMMENT)) {
       this.advance()
     }
   }

@@ -2,7 +2,7 @@
   "name": "seseragi-language-support",
   "displayName": "Seseragi Language Support",
   "description": "Syntax highlighting and language support for Seseragi functional programming language",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "seseragi-dev",
   "engines": {
     "vscode": "^1.74.0"
@@ -37,6 +37,11 @@
         "path": "./syntaxes/seseragi.tmLanguage.json"
       }
     ],
+    "configurationDefaults": {
+      "[seseragi]": {
+        "editor.defaultFormatter": "seseragi-dev.seseragi-language-support"
+      }
+    },
     "configuration": {
       "type": "object",
       "title": "Seseragi configuration",
