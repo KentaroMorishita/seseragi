@@ -215,12 +215,6 @@ export class TypeInferenceSystem {
     const env = new Map<string, AST.Type>()
     
     // 組み込み関数の型を定義
-    const printType = new AST.FunctionType(
-      this.freshTypeVariable(0, 0),
-      new AST.PrimitiveType("Unit", 0, 0),
-      0, 0
-    )
-    env.set("print", printType)
     
     const toStringType = new AST.FunctionType(
       this.freshTypeVariable(0, 0),
@@ -228,6 +222,9 @@ export class TypeInferenceSystem {
       0, 0
     )
     env.set("toString", toStringType)
+
+    // Maybe型のコンストラクタを削除（ConstructorExpressionで処理）
+    // Either型のコンストラクタを削除（ConstructorExpressionで処理）
 
     return env
   }
@@ -263,13 +260,17 @@ export class TypeInferenceSystem {
     func: AST.FunctionDeclaration,
     env: Map<string, AST.Type>
   ): void {
+    // 戻り値の型が指定されていない場合は型変数を作成
+    const returnType = func.returnType || this.freshTypeVariable(func.line, func.column)
+    
     // 関数の型を構築
-    let funcType: AST.Type = func.returnType
+    let funcType: AST.Type = returnType
     
     // パラメータから関数型を構築（カリー化）
     for (let i = func.parameters.length - 1; i >= 0; i--) {
+      const paramType = func.parameters[i].type || this.freshTypeVariable(func.parameters[i].line, func.parameters[i].column)
       funcType = new AST.FunctionType(
-        func.parameters[i].type,
+        paramType,
         funcType,
         func.line,
         func.column
@@ -282,7 +283,8 @@ export class TypeInferenceSystem {
     // 関数本体の型推論用の環境を作成
     const bodyEnv = new Map(env)
     for (const param of func.parameters) {
-      bodyEnv.set(param.name, param.type)
+      const paramType = param.type || this.freshTypeVariable(param.line, param.column)
+      bodyEnv.set(param.name, paramType)
     }
 
     // 関数本体の型を推論
@@ -291,7 +293,7 @@ export class TypeInferenceSystem {
     // 関数本体の型と戻り値型が一致することを制約として追加
     this.addConstraint(new TypeConstraint(
       bodyType,
-      func.returnType,
+      returnType,
       func.body.line,
       func.body.column,
       `Function ${func.name} body type`
@@ -318,8 +320,10 @@ export class TypeInferenceSystem {
       return varDecl.type
     } else {
       // 型注釈がない場合は推論された型を使用
-      env.set(varDecl.name, initType)
-      return initType
+      // ここで型変数の場合も正しく処理
+      const inferredType = initType.kind === "TypeVariable" ? initType : initType
+      env.set(varDecl.name, inferredType)
+      return inferredType
     }
   }
 
@@ -348,6 +352,12 @@ export class TypeInferenceSystem {
       
       case "ConditionalExpression":
         return this.generateConstraintsForConditional(expr as AST.ConditionalExpression, env)
+      
+      case "BlockExpression":
+        return this.generateConstraintsForBlockExpression(expr as AST.BlockExpression, env)
+      
+      case "ConstructorExpression":
+        return this.generateConstraintsForConstructorExpression(expr as AST.ConstructorExpression, env)
       
       default:
         this.errors.push(new TypeInferenceError(
@@ -403,23 +413,26 @@ export class TypeInferenceSystem {
       case "*":
       case "/":
       case "%":
-        // 数値演算: 両オペランドは数値型、結果も数値型
-        const numResultType = this.freshTypeVariable(binOp.line, binOp.column)
+        // 数値演算: 両オペランドは Int または Float 型、結果も同じ型
+        const intType = new AST.PrimitiveType("Int", binOp.line, binOp.column)
+        const floatType = new AST.PrimitiveType("Float", binOp.line, binOp.column)
+        
+        // まず Int 型として制約を追加
         this.addConstraint(new TypeConstraint(
           leftType,
-          numResultType,
+          intType,
           binOp.left.line,
           binOp.left.column,
           `Binary operation ${binOp.operator} left operand`
         ))
         this.addConstraint(new TypeConstraint(
           rightType,
-          numResultType,
+          intType,
           binOp.right.line,
           binOp.right.column,
           `Binary operation ${binOp.operator} right operand`
         ))
-        return numResultType
+        return intType
 
       case "==":
       case "!=":
@@ -471,6 +484,15 @@ export class TypeInferenceSystem {
     call: AST.FunctionCall,
     env: Map<string, AST.Type>
   ): AST.Type {
+    // print関数の特別処理
+    if (call.function.kind === "Identifier" && (call.function as AST.Identifier).name === "print") {
+      if (call.arguments.length === 1) {
+        // print関数は任意の型を受け取り、Unit型を返す
+        this.generateConstraintsForExpression(call.arguments[0], env)
+        return new AST.PrimitiveType("Unit", call.line, call.column)
+      }
+    }
+    
     const funcType = this.generateConstraintsForExpression(call.function, env)
     
     // 関数呼び出しの結果型
@@ -586,6 +608,136 @@ export class TypeInferenceSystem {
     return thenType
   }
 
+  private generateConstraintsForBlockExpression(
+    block: AST.BlockExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // Create a new environment for the block scope
+    const blockEnv = new Map(env)
+    
+    // Process all statements in the block
+    for (const statement of block.statements) {
+      this.generateConstraintsForStatement(statement, blockEnv)
+    }
+    
+    // The block's type is determined by its return expression
+    if (block.returnExpression) {
+      return this.generateConstraintsForExpression(block.returnExpression, blockEnv)
+    }
+    
+    // If no explicit return expression, check if the last statement is an expression
+    if (block.statements.length > 0) {
+      const lastStatement = block.statements[block.statements.length - 1]
+      if (lastStatement.kind === "ExpressionStatement") {
+        const exprStmt = lastStatement as AST.ExpressionStatement
+        return this.generateConstraintsForExpression(exprStmt.expression, blockEnv)
+      }
+    }
+    
+    // If no return expression and last statement is not an expression, return Unit
+    return new AST.PrimitiveType("Unit", block.line, block.column)
+  }
+
+  private generateConstraintsForConstructorExpression(
+    ctor: AST.ConstructorExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const constructorName = ctor.constructorName
+    
+    switch (constructorName) {
+      case "Just":
+        if (ctor.arguments && ctor.arguments.length > 0) {
+          const argType = this.generateConstraintsForExpression(ctor.arguments[0], env)
+          return new AST.GenericType(
+            "Maybe",
+            [argType],
+            ctor.line,
+            ctor.column
+          )
+        }
+        // Just without arguments - should be error
+        this.errors.push(new TypeInferenceError(
+          "Just constructor requires exactly one argument",
+          ctor.line,
+          ctor.column
+        ))
+        return new AST.GenericType(
+          "Maybe",
+          [this.freshTypeVariable(ctor.line, ctor.column)],
+          ctor.line,
+          ctor.column
+        )
+      
+      case "Nothing":
+        // Nothing doesn't take arguments
+        if (ctor.arguments && ctor.arguments.length > 0) {
+          this.errors.push(new TypeInferenceError(
+            "Nothing constructor does not take any arguments",
+            ctor.line,
+            ctor.column
+          ))
+        }
+        return new AST.GenericType(
+          "Maybe",
+          [this.freshTypeVariable(ctor.line, ctor.column)],
+          ctor.line,
+          ctor.column
+        )
+      
+      case "Right":
+        if (ctor.arguments && ctor.arguments.length > 0) {
+          const argType = this.generateConstraintsForExpression(ctor.arguments[0], env)
+          return new AST.GenericType(
+            "Either",
+            [this.freshTypeVariable(ctor.line, ctor.column), argType],
+            ctor.line,
+            ctor.column
+          )
+        }
+        this.errors.push(new TypeInferenceError(
+          "Right constructor requires exactly one argument",
+          ctor.line,
+          ctor.column
+        ))
+        return new AST.GenericType(
+          "Either",
+          [this.freshTypeVariable(ctor.line, ctor.column), this.freshTypeVariable(ctor.line, ctor.column)],
+          ctor.line,
+          ctor.column
+        )
+      
+      case "Left":
+        if (ctor.arguments && ctor.arguments.length > 0) {
+          const argType = this.generateConstraintsForExpression(ctor.arguments[0], env)
+          return new AST.GenericType(
+            "Either",
+            [argType, this.freshTypeVariable(ctor.line, ctor.column)],
+            ctor.line,
+            ctor.column
+          )
+        }
+        this.errors.push(new TypeInferenceError(
+          "Left constructor requires exactly one argument",
+          ctor.line,
+          ctor.column
+        ))
+        return new AST.GenericType(
+          "Either",
+          [this.freshTypeVariable(ctor.line, ctor.column), this.freshTypeVariable(ctor.line, ctor.column)],
+          ctor.line,
+          ctor.column
+        )
+      
+      default:
+        this.errors.push(new TypeInferenceError(
+          `Unknown constructor: ${constructorName}`,
+          ctor.line,
+          ctor.column
+        ))
+        return this.freshTypeVariable(ctor.line, ctor.column)
+    }
+  }
+
   // 制約解決（単一化アルゴリズム）
   private solveConstraints(): TypeSubstitution {
     let substitution = new TypeSubstitution()
@@ -636,6 +788,16 @@ export class TypeInferenceSystem {
       }
       substitution.set(tv2.id, type1)
       return substitution
+    }
+    
+    // プリミティブ型の場合
+    if (type1.kind === "PrimitiveType" && type2.kind === "PrimitiveType") {
+      const pt1 = type1 as AST.PrimitiveType
+      const pt2 = type2 as AST.PrimitiveType
+      if (pt1.name === pt2.name) {
+        return substitution
+      }
+      throw new Error(`Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`)
     }
     
     // 関数型の場合

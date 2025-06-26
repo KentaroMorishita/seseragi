@@ -4,11 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-Seseragiは、TypeScriptにトランスパイルされる純粋関数型プログラミング言語です。このリポジトリには言語仕様と設計文書が含まれています。現在は実装コードはなく、日本語での設計文書のみが存在します。
+Seseragiは、TypeScriptにトランスパイルされる純粋関数型プログラミング言語です。字句解析、構文解析、型推論、コード生成、CLI、LSPサーバー、VS Code拡張などの機能が実装されています。
 
 ## リポジトリ構造
 
-- `specification.md` - 言語仕様
+```
+src/
+├── lexer.ts              # 字句解析器
+├── parser.ts             # 構文解析器  
+├── ast.ts                # 抽象構文木定義
+├── codegen.ts            # TypeScriptコード生成
+├── typechecker.ts        # 型チェッカー
+├── type-inference.ts     # Hindley-Milner型推論システム
+├── usage-analyzer.ts     # 使用量解析
+├── cli.ts                # CLIメインエントリーポイント
+├── cli/                  # CLI個別コマンド実装
+│   ├── compile.ts        # compile コマンド
+│   ├── format.ts         # format コマンド
+│   └── run.ts            # run コマンド
+├── formatter/            # コードフォーマッター（複数実装）
+├── lsp/                  # Language Server Protocol実装
+│   ├── main.ts           # LSPサーバーエントリーポイント
+│   └── server.ts         # LSPサーバー実装
+└── runtime/              # Seseragiランタイムライブラリ
+
+tests/                    # 包括的テストスイート
+examples/                 # Seseragiサンプルコードと使用例
+extensions/seseragi/      # VS Code拡張機能
+```
 
 ## 言語アーキテクチャ
 
@@ -50,85 +73,83 @@ Seseragiは、TypeScriptにトランスパイルされる純粋関数型プロ�
 - インポート構文: `import module::{Type1, Type2}`
 - 名前衝突回避のための`as`キーワードによる型エイリアス
 
-## 言語実装プラン
+## 現在の実装状況
 
-### フェーズ1: 基礎実装 (1-2ヶ月)
-1. **字句解析器 (Lexer)**
-   - Seseragi構文のトークン化
-   - 予約語、演算子、リテラルの認識
-   - TypeScript/JavaScriptで実装
+### ✅ 完了済み実装
 
-2. **構文解析器 (Parser)**
-   - 抽象構文木 (AST) の生成
-   - 関数定義、型定義、変数定義の解析
-   - パターンマッチング構文の解析
+**コア言語機能:**
+- ✅ **字句解析器 (Lexer)** - 実装済み (src/lexer.ts)
+- ✅ **構文解析器 (Parser)** - 手書き再帰降下パーサー実装済み (src/parser.ts)
+- ✅ **抽象構文木 (AST)** - 型安全なAST定義 (src/ast.ts)
+- ✅ **型チェッカー** - 実装済み (src/typechecker.ts)
+- ✅ **Hindley-Milner型推論システム** - 実装済み (src/type-inference.ts)
+- ✅ **TypeScriptコード生成** - 実装済み (src/codegen.ts)
 
-3. **基本型システム**
-   - プリミティブ型の実装
-   - 型推論の基礎
-   - 型チェッカーの骨格
+**開発ツール:**
+- ✅ **CLI** - compile, run, format コマンド実装済み (src/cli.ts, src/cli/)
+- ✅ **Language Server Protocol (LSP)** - VS Code統合対応済み (src/lsp/)
+- ✅ **VS Code拡張** - シンタックスハイライト、補完等対応済み (extensions/seseragi/)
+- ✅ **コードフォーマッター** - 複数のフォーマッター実装 (src/formatter/)
+- ✅ **使用量解析** - 変数使用状況解析 (src/usage-analyzer.ts)
 
-### フェーズ2: コア機能 (2-3ヶ月)
-1. **関数とカリー化**
-   - カリー化された関数の実装
-   - 部分適用のサポート
-   - 高階関数の処理
+**モナドとランタイム:**
+- ✅ **Maybe<T>モナド** - 実装済み
+- ✅ **Either<L,R>モナド** - 実装済み  
+- ✅ **モナド演算子** - `>>=`, `<$>`, `<*>` 実装済み
+- ✅ **Seseragiランタイム** - TypeScript/JavaScript実装 (src/runtime/)
 
-2. **演算子システム**
-   - 中置記法の実装
-   - カスタム演算子の定義
-   - 演算子の優先順位処理
+**テストと品質:**
+- ✅ **テストスイート** - Bunテストランナー使用
+- ✅ **型安全性テスト** - 型推論、型チェックテスト
+- ✅ **モナド法則テスト** - 数学的正確性検証
+- ✅ **パフォーマンステスト** - 大規模コード処理確認
 
-3. **基本モナド**
-   - `Maybe<T>`の実装
-   - `Either<L,R>`の実装
-   - モナド演算子 `>>=` の実装
+### 🔄 継続開発項目
 
-### フェーズ3: 高度な機能 (2-3ヶ月)
-1. **パターンマッチング**
-   - `match`構文の完全実装
-   - 網羅性チェック
-   - ガード式のサポート
-
-2. **副作用管理**
-   - `IO<T>`モナドの実装
-   - `effectful`関数の処理
-   - 純粋性の検証
-
-3. **モジュールシステム**
-   - ファイルベースモジュール
-   - インポート/エクスポート
-   - 名前空間管理
-
-### フェーズ4: TypeScriptトランスパイラ (1-2ヶ月)
-1. **コード生成**
-   - ASTからTypeScriptコードへの変換
-   - カリー化の実装
-   - モナドのJavaScript表現
-
-2. **最適化**
-   - 不要なカリー化の除去
-   - インライン化
-   - デッドコード除去
-
-### フェーズ5: 開発ツール (1-2ヶ月)
-1. **REPL**
-   - インタラクティブな開発環境
-   - 式の評価
-   - 型情報の表示
-
-2. **言語サーバー**
-   - エディタサポート
-   - シンタックスハイライト
-   - エラー診断
+**高度な機能 (優先度順):**
+- 🔄 **パターンマッチングの拡張** - より複雑なパターン対応
+- 🔄 **エラーメッセージの改善** - ユーザビリティ向上
+- 🔄 **REPL実装** - インタラクティブ開発環境
+- 🔄 **モジュールシステム** - インポート/エクスポート機能
 
 ## 実装技術スタック
 
-- **言語**: TypeScript/JavaScript (セルフホスティング目標)
-- **パーサー**: 手書き再帰降下パーサーまたはPEG.js
-- **テスト**: Jest またはVitest
-- **ビルド**: esbuildまたはVite
-- **CLI**: Commander.js
+- **言語**: TypeScript/JavaScript
+- **ランタイム**: [Bun](https://bun.sh) - 高速JavaScript/TypeScriptランタイム
+- **パーサー**: 手書き再帰降下パーサー (src/parser.ts)
+- **テスト**: Bunの組み込みテストランナー (`bun test`)
+- **ビルド**: Bunビルダー (`bun build`)
+- **CLI**: Commander.js - コマンドライン引数解析
+- **LSP**: vscode-languageserver - VS Code統合
+- **コード品質**: Biome v2.0.5 - リンティング・フォーマット
+- **型推論**: Hindley-Milner型推論システム (独自実装)
+
+## 主要コンポーネント
+
+### コンパイルパイプライン
+1. **字句解析 (Lexer)**: Seseragiソースコードをトークンに変換
+2. **構文解析 (Parser)**: トークンから抽象構文木 (AST) を生成
+3. **型推論 (TypeInference)**: Hindley-Milner型推論でASTに型情報を付与
+4. **型チェック (TypeChecker)**: 型安全性と型制約の検証
+5. **コード生成 (CodeGen)**: ASTからTypeScriptコードを生成
+
+### CLI Architecture
+- **メインCLI (cli.ts)**: Commanderベースのコマンド分割
+- **compileCommand**: .ssrg → .ts コンパイル（ウォッチモード対応）
+- **runCommand**: 一時ファイル経由でのSeseragiコード実行
+- **formatCommand**: 複数フォーマッター選択式コード整形
+
+### LSP Server Architecture
+- **LSP Server**: VS Code統合対応、診断・補完・ホバー・フォーマット
+- **診断機能**: リアルタイムエラー・警告表示
+- **型情報表示**: ホバーでHindley-Milner推論結果表示
+- **自動フォーマット**: 保存時フォーマット統合
+
+### Type Inference System
+- **Hindley-Milner実装**: src/type-inference.ts
+- **型変数の単一化**: TypeVariable, TypeConstructor, FunctionType
+- **型制約の解決**: Constraint solving algorithm
+- **多相型サポート**: Generics and type parameters
 
 ## 開発時の注意点
 
@@ -329,3 +350,46 @@ gh pr create --title "機能タイトル" --body "詳細説明"
 - 開発設定を継承
 - `tests/`ディレクトリも含む
 - 一部厳密チェックを緩和（開発効率のため）
+
+## 特定開発タスク
+
+### 単一テストファイル実行
+```bash
+# 特定のテストファイルのみ実行
+bun test tests/type-inference.test.ts
+bun test tests/parser.test.ts
+bun test tests/monad-laws.test.ts
+
+# テスト名パターンマッチング
+bun test --grep "type inference"
+bun test --grep "Maybe monad"
+```
+
+### LSPサーバー開発・デバッグ
+```bash
+# LSPサーバーを独立起動（デバッグ用）
+bun run src/lsp/main.ts --stdio
+
+# VS Code拡張のリロードテスト
+cd extensions/seseragi
+bun run compile
+# VS Code: Ctrl+Shift+P → "Developer: Reload Window"
+```
+
+### 型推論システムの動作確認
+```bash
+# 型推論の詳細ログ付きで実行
+DEBUG=type-inference bun run src/main.ts
+
+# 特定のSeseragiファイルで型推論テスト
+seseragi compile examples/tutorial.ssrg --output /tmp/test.ts
+```
+
+### フォーマッター開発
+```bash
+# 複数フォーマッター実装のテスト
+bun test tests/formatter.test.ts
+
+# 特定フォーマッター実装の確認
+seseragi format examples/tutorial.ssrg --check
+```
