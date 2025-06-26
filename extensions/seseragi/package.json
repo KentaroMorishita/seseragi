@@ -39,7 +39,9 @@
     ],
     "configurationDefaults": {
       "[seseragi]": {
-        "editor.defaultFormatter": "seseragi-dev.seseragi-language-support"
+        "editor.defaultFormatter": "seseragi-dev.seseragi-language-support",
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
       }
     },
     "configuration": {
