@@ -99,6 +99,11 @@ function getRelativeIndent(
   index: number,
   allLines: string[]
 ): number {
+  // モナド演算子で始まる行（>>=, <*>, <$>）
+  if (line.startsWith(">>=") || line.startsWith("<*>") || line.startsWith("<$>")) {
+    return 1 // 親から +2スペース
+  }
+
   // パイプで始まる行（match case、type選択肢）
   if (line.startsWith("|")) {
     return 1 // 親から +2スペース
