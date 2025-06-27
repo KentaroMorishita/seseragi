@@ -13,7 +13,8 @@ examples/
 ├── 03-maybe-monad.ssrg          # Maybe型と演算子
 ├── 04-either-monad.ssrg         # Either型と演算子
 ├── 05-list-operations.ssrg      # List型の基本操作
-└── 06-list-syntax-sugar.ssrg    # List型シンタックスシュガー
+├── 06-list-syntax-sugar.ssrg    # List型シンタックスシュガー
+└── 07-array-list-simple.ssrg    # Array↔List相互変換
 ```
 
 ## サンプルファイル
@@ -61,6 +62,13 @@ List型の基本的な操作方法
 - ✅ Array型との区別
 - ✅ 混合構文の活用
 
+### 🔄 `07-array-list-simple.ssrg` - Array↔List相互変換
+実用的なデータ変換パターン
+- ✅ `arrayToList`による配列→リスト変換
+- ✅ `listToArray`によるリスト→配列変換
+- ✅ 空配列の処理
+- ✅ 文字列配列の変換
+
 ## 実行方法
 
 ### 🚀 直接実行（推奨）
@@ -79,6 +87,9 @@ seseragi run examples/05-list-operations.ssrg
 
 # List型シンタックスシュガー
 seseragi run examples/06-list-syntax-sugar.ssrg
+
+# Array↔List相互変換
+seseragi run examples/07-array-list-simple.ssrg
 
 # 高度な機能
 seseragi run examples/01-advanced-features.ssrg
@@ -136,6 +147,10 @@ bun examples/compiled/tutorial.ts
 - ファンクター：`<$>` - `double <$> Just 42`
 - アプリカティブ：`<*>` - `Just add <*> Just 5 <*> Just 3`
 - モナド：`>>=` - `Just 10 >>= safeDivide 2`
+
+✅ **Array↔List変換**
+- `arrayToList` - Array→List変換
+- `listToArray` - List→Array変換
 
 ✅ **標準出力**
 - `print` - 値の出力

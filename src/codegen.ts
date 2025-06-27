@@ -170,6 +170,12 @@ class CodeGenerator {
     if (this.usageAnalysis.needsBuiltins.toString) {
       imports.push("toString")
     }
+    if (this.usageAnalysis.needsBuiltins.arrayToList) {
+      imports.push("arrayToList")
+    }
+    if (this.usageAnalysis.needsBuiltins.listToArray) {
+      imports.push("listToArray")
+    }
 
     if (imports.length > 0) {
       lines.push(
@@ -320,6 +326,30 @@ class CodeGenerator {
     if (this.usageAnalysis.needsBuiltins.toString) {
       lines.push("const toString = (value: any): string => String(value);")
     }
+    if (this.usageAnalysis.needsBuiltins.arrayToList || this.usageAnalysis.needsBuiltins.listToArray) {
+      lines.push("")
+      if (this.usageAnalysis.needsBuiltins.arrayToList) {
+        lines.push("const arrayToList = curry(<T>(arr: T[]): List<T> => {")
+        lines.push("  let result: List<T> = Empty;")
+        lines.push("  for (let i = arr.length - 1; i >= 0; i--) {")
+        lines.push("    result = Cons(arr[i], result);")
+        lines.push("  }")
+        lines.push("  return result;")
+        lines.push("});")
+        lines.push("")
+      }
+      if (this.usageAnalysis.needsBuiltins.listToArray) {
+        lines.push("const listToArray = curry(<T>(list: List<T>): T[] => {")
+        lines.push("  const result: T[] = [];")
+        lines.push("  let current = list;")
+        lines.push("  while (current.tag === 'Cons') {")
+        lines.push("    result.push(current.head);")
+        lines.push("    current = current.tail;")
+        lines.push("  }")
+        lines.push("  return result;")
+        lines.push("});")
+      }
+    }
 
     return lines
   }
@@ -384,6 +414,24 @@ class CodeGenerator {
       "const print = (value: any): void => console.log(value);",
       "const putStrLn = (value: string): void => console.log(value);",
       "const toString = (value: any): string => String(value);",
+      "",
+      "const arrayToList = curry(<T>(arr: T[]): List<T> => {",
+      "  let result: List<T> = Empty;",
+      "  for (let i = arr.length - 1; i >= 0; i--) {",
+      "    result = Cons(arr[i], result);",
+      "  }",
+      "  return result;",
+      "});",
+      "",
+      "const listToArray = curry(<T>(list: List<T>): T[] => {",
+      "  const result: T[] = [];",
+      "  let current = list;",
+      "  while (current.tag === 'Cons') {",
+      "    result.push(current.head);",
+      "    current = current.tail;",
+      "  }",
+      "  return result;",
+      "});",
     ]
   }
 

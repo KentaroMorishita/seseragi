@@ -217,6 +217,12 @@ export class TypeInferenceError {
   }
 }
 
+// 型推論結果インターフェース
+export interface InferenceResult {
+  errors: TypeInferenceError[]
+  inferredTypes?: Map<string, AST.Type>
+}
+
 // 型推論システムのメインクラス
 export class TypeInferenceSystem {
   private nextVarId = 0
@@ -227,6 +233,60 @@ export class TypeInferenceSystem {
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
     return new TypeVariable(this.nextVarId++, line, column)
+  }
+
+  // 多相型を具体化（インスタンス化）
+  instantiatePolymorphicType(type: AST.Type, line: number, column: number): AST.Type {
+    const substitutionMap = new Map<string, AST.Type>()
+    
+    const substitute = (t: AST.Type): AST.Type => {
+      switch (t.kind) {
+        case "PolymorphicTypeVariable":
+          const polyVar = t as PolymorphicTypeVariable
+          if (!substitutionMap.has(polyVar.name)) {
+            substitutionMap.set(polyVar.name, this.freshTypeVariable(line, column))
+          }
+          return substitutionMap.get(polyVar.name)!
+          
+        case "FunctionType":
+          const ft = t as AST.FunctionType
+          return new AST.FunctionType(
+            substitute(ft.paramType),
+            substitute(ft.returnType),
+            ft.line,
+            ft.column
+          )
+          
+        case "GenericType":
+          const gt = t as AST.GenericType
+          return new AST.GenericType(
+            gt.name,
+            gt.typeArguments.map(arg => substitute(arg)),
+            gt.line,
+            gt.column
+          )
+          
+        case "RecordType":
+          const rt = t as AST.RecordType
+          return new AST.RecordType(
+            rt.fields.map(field => 
+              new AST.RecordField(
+                field.name,
+                substitute(field.type),
+                field.line,
+                field.column
+              )
+            ),
+            rt.line,
+            rt.column
+          )
+          
+        default:
+          return t
+      }
+    }
+    
+    return substitute(type)
   }
 
   // 制約を追加
@@ -300,8 +360,69 @@ export class TypeInferenceSystem {
     )
     env.set("toString", toStringType)
 
-    // Maybe型のコンストラクタを削除（ConstructorExpressionで処理）
-    // Either型のコンストラクタを削除（ConstructorExpressionで処理）
+    // arrayToList: Array<'a> -> List<'a>
+    const aTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const arrayToListType = new AST.FunctionType(
+      new AST.GenericType("Array", [aTypeVar], 0, 0),
+      new AST.GenericType("List", [aTypeVar], 0, 0),
+      0,
+      0
+    )
+    env.set("arrayToList", arrayToListType)
+
+    // listToArray: List<'a> -> Array<'a>
+    const bTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const listToArrayType = new AST.FunctionType(
+      new AST.GenericType("List", [bTypeVar], 0, 0),
+      new AST.GenericType("Array", [bTypeVar], 0, 0),
+      0,
+      0
+    )
+    env.set("listToArray", listToArrayType)
+
+    // List constructors for pattern matching and expressions
+    // Empty : List<'a>
+    const emptyTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const emptyType = new AST.GenericType("List", [emptyTypeVar], 0, 0)
+    env.set("Empty", emptyType)
+
+    // Cons : 'a -> List<'a> -> List<'a>
+    const consTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const consListType = new AST.GenericType("List", [consTypeVar], 0, 0)
+    const consType = new AST.FunctionType(
+      consTypeVar,
+      new AST.FunctionType(consListType, consListType, 0, 0),
+      0,
+      0
+    )
+    env.set("Cons", consType)
+
+    // Maybe constructors for pattern matching and expressions
+    // Nothing : Maybe<'a>
+    const nothingTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const nothingType = new AST.GenericType("Maybe", [nothingTypeVar], 0, 0)
+    env.set("Nothing", nothingType)
+
+    // Just : 'a -> Maybe<'a>
+    const justTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const justMaybeType = new AST.GenericType("Maybe", [justTypeVar], 0, 0)
+    const justType = new AST.FunctionType(justTypeVar, justMaybeType, 0, 0)
+    env.set("Just", justType)
+
+    // Either constructors for pattern matching and expressions
+    // Left : 'a -> Either<'a, 'b>
+    const leftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const leftRightTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const leftEitherType = new AST.GenericType("Either", [leftTypeVar, leftRightTypeVar], 0, 0)
+    const leftType = new AST.FunctionType(leftTypeVar, leftEitherType, 0, 0)
+    env.set("Left", leftType)
+
+    // Right : 'b -> Either<'a, 'b>
+    const rightLeftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const rightTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const rightEitherType = new AST.GenericType("Either", [rightLeftTypeVar, rightTypeVar], 0, 0)
+    const rightType = new AST.FunctionType(rightTypeVar, rightEitherType, 0, 0)
+    env.set("Right", rightType)
 
     return env
   }
@@ -311,8 +432,21 @@ export class TypeInferenceSystem {
     program: AST.Program,
     env: Map<string, AST.Type>
   ): void {
+    // Two-pass approach to handle forward references:
+    // Pass 1: Process all function declarations and type declarations first
+    // This allows variables to reference functions defined later in the file
     for (const statement of program.statements) {
-      this.generateConstraintsForStatement(statement, env)
+      if (statement.kind === "FunctionDeclaration" || statement.kind === "TypeDeclaration") {
+        this.generateConstraintsForStatement(statement, env)
+      }
+    }
+    
+    // Pass 2: Process variable declarations and expression statements in original order
+    // At this point all functions and types are available in the environment
+    for (const statement of program.statements) {
+      if (statement.kind === "VariableDeclaration" || statement.kind === "ExpressionStatement") {
+        this.generateConstraintsForStatement(statement, env)
+      }
     }
   }
 
@@ -374,12 +508,15 @@ export class TypeInferenceSystem {
     } else {
       // 引数ありの関数は通常のカリー化
       for (let i = func.parameters.length - 1; i >= 0; i--) {
-        const paramType =
-          func.parameters[i].type ||
-          this.freshTypeVariable(
-            func.parameters[i].line,
-            func.parameters[i].column
-          )
+        const param = func.parameters[i]
+        let paramType: AST.Type
+        
+        if (param.type) {
+          paramType = param.type
+        } else {
+          paramType = this.freshTypeVariable(param.line, param.column)
+        }
+        
         funcType = new AST.FunctionType(
           paramType,
           funcType,
@@ -395,8 +532,14 @@ export class TypeInferenceSystem {
     // 関数本体の型推論用の環境を作成
     const bodyEnv = new Map(env)
     for (const param of func.parameters) {
-      const paramType =
-        param.type || this.freshTypeVariable(param.line, param.column)
+      let paramType: AST.Type
+      
+      if (param.type) {
+        paramType = param.type
+      } else {
+        paramType = this.freshTypeVariable(param.line, param.column)
+      }
+      
       bodyEnv.set(param.name, paramType)
     }
 
@@ -704,80 +847,6 @@ export class TypeInferenceSystem {
     identifier: AST.Identifier,
     env: Map<string, AST.Type>
   ): AST.Type {
-    const name = identifier.name
-    
-    // Special handling for constructor names used as values
-    switch (name) {
-      case "Just":
-        // Just : 'a -> Maybe<'a>
-        const justElemType = new PolymorphicTypeVariable("a", identifier.line, identifier.column)
-        const justMaybeType = new AST.GenericType(
-          "Maybe",
-          [justElemType],
-          identifier.line,
-          identifier.column
-        )
-        return new AST.FunctionType(justElemType, justMaybeType, identifier.line, identifier.column)
-        
-      case "Nothing":
-        // Nothing : Maybe<'a>
-        return new AST.GenericType(
-          "Maybe",
-          [new PolymorphicTypeVariable("a", identifier.line, identifier.column)],
-          identifier.line,
-          identifier.column
-        )
-        
-      case "Left":
-        // Left : 'a -> Either<'a, 'b>
-        const leftLeftType = new PolymorphicTypeVariable("a", identifier.line, identifier.column)
-        const leftRightType = new PolymorphicTypeVariable("b", identifier.line, identifier.column)
-        const leftEitherType = new AST.GenericType(
-          "Either",
-          [leftLeftType, leftRightType],
-          identifier.line,
-          identifier.column
-        )
-        return new AST.FunctionType(leftLeftType, leftEitherType, identifier.line, identifier.column)
-        
-      case "Right":
-        // Right : 'b -> Either<'a, 'b>
-        const rightLeftType = new PolymorphicTypeVariable("a", identifier.line, identifier.column)
-        const rightRightType = new PolymorphicTypeVariable("b", identifier.line, identifier.column)
-        const rightEitherType = new AST.GenericType(
-          "Either",
-          [rightLeftType, rightRightType],
-          identifier.line,
-          identifier.column
-        )
-        return new AST.FunctionType(rightRightType, rightEitherType, identifier.line, identifier.column)
-        
-      case "Empty":
-        // Empty : List<'a>
-        return new AST.GenericType(
-          "List",
-          [new PolymorphicTypeVariable("a", identifier.line, identifier.column)],
-          identifier.line,
-          identifier.column
-        )
-        
-      case "Cons":
-        // Cons : 'a -> List<'a> -> List<'a>
-        const consElemType = new PolymorphicTypeVariable("a", identifier.line, identifier.column)
-        const consListType = new AST.GenericType(
-          "List",
-          [consElemType],
-          identifier.line,
-          identifier.column
-        )
-        return new AST.FunctionType(
-          consElemType,
-          new AST.FunctionType(consListType, consListType, identifier.line, identifier.column),
-          identifier.line,
-          identifier.column
-        )
-    }
-    
     // Normal identifier lookup
     const type = env.get(identifier.name)
     if (!type) {
@@ -790,7 +859,8 @@ export class TypeInferenceSystem {
       )
       return this.freshTypeVariable(identifier.line, identifier.column)
     }
-    return type
+    // Instantiate polymorphic types when looking up from environment
+    return this.instantiatePolymorphicType(type, identifier.line, identifier.column)
   }
 
   private generateConstraintsForBinaryOperation(
@@ -1038,7 +1108,8 @@ export class TypeInferenceSystem {
     }
 
     // 関数呼び出しの結果型
-    let resultType = funcType
+    // 多相型を具体化してから制約を生成
+    let resultType = this.instantiatePolymorphicType(funcType, call.line, call.column)
 
     // 各引数に対して関数適用の制約を生成
     for (const arg of call.arguments) {
@@ -2668,4 +2739,34 @@ export class TypeInferenceSystem {
     // 結果の型もList<T>
     return new AST.GenericType("List", [headType], consExpr.line, consExpr.column)
   }
+}
+
+// Convenience function for type inference
+export function infer(statements: AST.Statement[]): InferenceResult {
+  const inference = new TypeInferenceSystem();
+  const program = new AST.Program(statements);
+  const result = inference.infer(program);
+  
+  // Transform the result to match InferenceResult interface
+  const inferredTypes = new Map<string, AST.Type>();
+  
+  // Extract inferred types for variables
+  for (const stmt of statements) {
+    if (stmt instanceof AST.VariableDeclaration) {
+      const type = result.nodeTypeMap.get(stmt);
+      if (type) {
+        inferredTypes.set(stmt.name, result.substitution.apply(type));
+      }
+    } else if (stmt instanceof AST.FunctionDeclaration) {
+      const type = result.nodeTypeMap.get(stmt);
+      if (type) {
+        inferredTypes.set(stmt.name, result.substitution.apply(type));
+      }
+    }
+  }
+  
+  return {
+    errors: result.errors,
+    inferredTypes
+  };
 }

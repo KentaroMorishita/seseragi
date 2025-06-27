@@ -1,0 +1,3 @@
+let intValue = 42
+let negativeInt = -10
+let zero = 0

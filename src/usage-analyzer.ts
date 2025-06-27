@@ -21,6 +21,8 @@ export interface UsageAnalysis {
     print: boolean
     putStrLn: boolean
     toString: boolean
+    arrayToList: boolean
+    listToArray: boolean
   }
 }
 
@@ -41,6 +43,8 @@ export class UsageAnalyzer {
       print: false,
       putStrLn: false,
       toString: false,
+      arrayToList: false,
+      listToArray: false,
     },
   }
 
@@ -178,6 +182,14 @@ export class UsageAnalyzer {
       this.analysis.needsBuiltins.putStrLn = true
     } else if (name === "toString") {
       this.analysis.needsBuiltins.toString = true
+    } else if (name === "arrayToList") {
+      this.analysis.needsBuiltins.arrayToList = true
+      this.analysis.needsList = true  // List型も必要
+      this.analysis.needsCurrying = true  // カリー化も必要
+    } else if (name === "listToArray") {
+      this.analysis.needsBuiltins.listToArray = true
+      this.analysis.needsList = true  // List型も必要
+      this.analysis.needsCurrying = true  // カリー化も必要
     }
   }
 

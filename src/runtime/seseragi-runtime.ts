@@ -326,6 +326,11 @@ export const toArray = <T>(list: List<T>): T[] => {
   return result
 }
 
+// Seseragi-style conversion functions with currying
+export const arrayToList = curry(<T>(arr: T[]): List<T> => fromArray(arr))
+
+export const listToArray = curry(<T>(list: List<T>): T[] => toArray(list))
+
 // =============================================================================
 // モナド演算子
 // =============================================================================

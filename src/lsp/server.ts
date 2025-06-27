@@ -1170,6 +1170,17 @@ function inferFunctionCallReturnType(call: any, ast?: any): any {
     complexCalculation: { kind: "PrimitiveType", name: "Int" },
     add: { kind: "PrimitiveType", name: "Int" },
     double: { kind: "PrimitiveType", name: "Int" },
+    // Array↔List conversion functions
+    arrayToList: (argType: any) => ({
+      kind: "GenericType",
+      name: "List",
+      typeArguments: [argType || { kind: "TypeVariable", name: "T" }],
+    }),
+    listToArray: (argType: any) => ({
+      kind: "GenericType",
+      name: "Array",
+      typeArguments: [argType || { kind: "TypeVariable", name: "T" }],
+    }),
     getMessage: { kind: "PrimitiveType", name: "String" },
     getNumber: { kind: "PrimitiveType", name: "Int" },
     max: { kind: "PrimitiveType", name: "Int" },

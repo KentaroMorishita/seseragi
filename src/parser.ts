@@ -4,6 +4,7 @@
 
 import { type Token, TokenType, Lexer } from "./lexer"
 import * as AST from "./ast"
+import { TypeVariable } from "./type-inference"
 
 export class ParseError extends Error {
   token: Token
@@ -14,17 +15,32 @@ export class ParseError extends Error {
   }
 }
 
+export interface ParseResult {
+  statements?: AST.Statement[]
+  errors: ParseError[]
+}
+
 export class Parser {
   private tokens: Token[]
   private current: number = 0
+  private typeVarCounter: number = 0
 
-  constructor(source: string) {
-    const lexer = new Lexer(source)
-    this.tokens = lexer.tokenize()
+  constructor(input: string | Token[]) {
+    if (typeof input === "string") {
+      const lexer = new Lexer(input)
+      this.tokens = lexer.tokenize()
+    } else {
+      this.tokens = input
+    }
   }
 
-  parse(): AST.Program {
+  private freshTypeVariable(line: number, column: number): TypeVariable {
+    return new TypeVariable(this.typeVarCounter++, line, column)
+  }
+
+  parse(): ParseResult {
     const statements: AST.Statement[] = []
+    const errors: ParseError[] = []
 
     while (!this.isAtEnd()) {
       if (
@@ -35,13 +51,44 @@ export class Parser {
         continue
       }
 
-      const stmt = this.statement()
-      if (stmt) {
-        statements.push(stmt)
+      try {
+        const stmt = this.statement()
+        if (stmt) {
+          statements.push(stmt)
+        }
+      } catch (error) {
+        if (error instanceof ParseError) {
+          errors.push(error)
+          // Try to recover by advancing to the next statement
+          this.synchronize()
+        } else {
+          throw error
+        }
       }
     }
 
-    return new AST.Program(statements)
+    return { statements, errors }
+  }
+
+  private synchronize(): void {
+    this.advance()
+    
+    while (!this.isAtEnd()) {
+      if (this.previous().type === TokenType.NEWLINE) {
+        return
+      }
+      
+      switch (this.peek().type) {
+        case TokenType.FN:
+        case TokenType.LET:
+        case TokenType.TYPE:
+        case TokenType.IMPL:
+        case TokenType.IMPORT:
+          return
+      }
+      
+      this.advance()
+    }
   }
 
   // =============================================================================
@@ -145,49 +192,15 @@ export class Parser {
       return this.parseType()
     }
 
-    // Parse parameters until we reach the final return type
+    // Parse parameters until we reach assignment or return type
     while (this.check(TokenType.IDENTIFIER)) {
       const paramNameToken = this.peek()
 
-      // Look ahead to see if this is a parameter or return type
-      // Scan ahead to find the pattern:
-      // param :Type -> (parameter)
-      // param :Type = (this is wrong, shouldn't happen)
-      // Type = (return type)
-
-      let isParameter = false
-      let lookahead = this.current
-
-      // Check if next token is colon (indicating parameter)
-      if (
-        lookahead + 1 < this.tokens.length &&
-        this.tokens[lookahead + 1].type === TokenType.COLON
-      ) {
-        // This looks like "param :Type"
-        lookahead += 2 // Skip param and :
-
-        // Skip the type (could be complex)
-        while (
-          lookahead < this.tokens.length &&
-          this.tokens[lookahead].type !== TokenType.ARROW &&
-          this.tokens[lookahead].type !== TokenType.ASSIGN
-        ) {
-          lookahead++
-        }
-
-        // If we found an arrow, it's a parameter
-        if (
-          lookahead < this.tokens.length &&
-          this.tokens[lookahead].type === TokenType.ARROW
-        ) {
-          isParameter = true
-        }
-      }
-
-      if (isParameter) {
-        // Parse as parameter
+      // Check if this identifier is followed by colon (typed parameter)
+      if (this.checkNext(TokenType.COLON)) {
+        // Typed parameter: param :Type ->
         const paramName = this.advance().value
-        this.consume(TokenType.COLON, "Expected ':' after parameter name")
+        this.consume(TokenType.COLON, "Expected ':'")
         const paramType = this.parseType()
         this.consume(TokenType.ARROW, "Expected '->' after parameter type")
 
@@ -200,12 +213,54 @@ export class Parser {
           )
         )
       } else {
-        // This must be the return type
-        return this.parseType()
+        // Either untyped parameter or return type
+        // Look ahead to determine which one
+        if (this.isReturnType()) {
+          // This is the return type, stop parsing parameters
+          return this.parseType()
+        } else {
+          // Untyped parameter
+          const paramName = this.advance().value
+          parameters.push(
+            new AST.Parameter(
+              paramName,
+              this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
+              paramNameToken.line,
+              paramNameToken.column
+            )
+          )
+        }
       }
     }
 
-    throw new ParseError("Expected return type", this.peek())
+    // If we reach here and have no explicit return type, use fresh type variable for inference
+    return this.freshTypeVariable(this.peek().line, this.peek().column)
+  }
+
+  private checkNext(type: TokenType): boolean {
+    if (this.current + 1 >= this.tokens.length) return false
+    return this.tokens[this.current + 1].type === type
+  }
+
+  private isReturnType(): boolean {
+    // Look ahead to see if this identifier is followed by '=' or '{'
+    // If so, it's a return type
+    let lookahead = this.current + 1
+    
+    // Skip the current identifier
+    while (
+      lookahead < this.tokens.length &&
+      this.tokens[lookahead].type !== TokenType.ASSIGN &&
+      this.tokens[lookahead].type !== TokenType.LEFT_BRACE &&
+      this.tokens[lookahead].type !== TokenType.IDENTIFIER
+    ) {
+      lookahead++
+    }
+
+    // If we find '=' or '{' next, this identifier is the return type
+    return lookahead < this.tokens.length &&
+           (this.tokens[lookahead].type === TokenType.ASSIGN ||
+            this.tokens[lookahead].type === TokenType.LEFT_BRACE)
   }
 
   private typeDeclaration(): AST.TypeDeclaration {
@@ -1582,4 +1637,10 @@ export class Parser {
     
     return lookahead < this.tokens.length && this.tokens[lookahead].type === type
   }
+}
+
+// Convenience function for parsing
+export function parse(tokens: Token[]): ParseResult {
+  const parser = new Parser(tokens);
+  return parser.parse();
 }

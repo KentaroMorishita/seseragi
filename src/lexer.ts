@@ -502,3 +502,9 @@ export class Lexer {
     return this.makeToken(TokenType.COMMENT, value, startLine, startColumn)
   }
 }
+
+// Convenience function for lexing
+export function lex(source: string): Token[] {
+  const lexer = new Lexer(source);
+  return lexer.tokenize();
+}

@@ -152,7 +152,7 @@
         },
         {
           "name": "support.function.builtin.seseragi",
-          "match": "\\b(Just|Nothing|Left|Right|Cons|Nil)\\b"
+          "match": "\\b(Just|Nothing|Left|Right|Cons|Nil|Empty|arrayToList|listToArray)\\b"
         }
       ]
     },
