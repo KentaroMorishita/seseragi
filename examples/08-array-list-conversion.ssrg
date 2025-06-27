@@ -1,4 +1,4 @@
-// シンプルなArray↔List変換のサンプル
+// 08. Array↔List変換 - JavaScript配列とSeseragiリストの相互変換
 
 // 基本的な変換
 let arr = [1, 2, 3, 4, 5]

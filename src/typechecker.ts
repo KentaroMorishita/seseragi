@@ -104,6 +104,17 @@ export class TypeChecker {
         0
       )
     )
+
+    // show: a -> Unit (polymorphic)
+    this.globalEnv.define(
+      "show",
+      new AST.FunctionType(
+        new AST.PrimitiveType("a", 0, 0), // Type variable
+        new AST.PrimitiveType("Unit", 0, 0),
+        0,
+        0
+      )
+    )
   }
 
   // Main entry point for type checking
@@ -531,6 +542,19 @@ export class TypeChecker {
           this.checkExpression(call.arguments[0], env)
         }
         return new AST.PrimitiveType("String", call.line, call.column)
+
+      case "show":
+        if (call.arguments.length !== 1) {
+          this.addError(
+            `show expects exactly 1 argument, got ${call.arguments.length}`,
+            call.line,
+            call.column
+          )
+        } else {
+          // show also accepts any type.
+          this.checkExpression(call.arguments[0], env)
+        }
+        return new AST.PrimitiveType("Unit", call.line, call.column)
 
       default:
         this.addError(

@@ -14,7 +14,8 @@ examples/
 ├── 04-either-monad.ssrg         # Either型と演算子
 ├── 05-list-operations.ssrg      # List型の基本操作
 ├── 06-list-syntax-sugar.ssrg    # List型シンタックスシュガー
-└── 07-array-list-simple.ssrg    # Array↔List相互変換
+├── 07-show-function.ssrg        # show関数による美しい出力
+└── 08-array-list-conversion.ssrg # Array↔List相互変換
 ```
 
 ## サンプルファイル
@@ -62,7 +63,14 @@ List型の基本的な操作方法
 - ✅ Array型との区別
 - ✅ 混合構文の活用
 
-### 🔄 `07-array-list-simple.ssrg` - Array↔List相互変換
+### 🎨 `07-show-function.ssrg` - show関数による美しい出力
+開発体験を向上させる美しい出力機能
+- ✅ `show`関数による自動整形出力
+- ✅ `print`との比較デモ
+- ✅ Maybe/Either/List型の美しい表示
+- ✅ 複雑なネストデータの整形
+
+### 🔄 `08-array-list-conversion.ssrg` - Array↔List相互変換
 実用的なデータ変換パターン
 - ✅ `arrayToList`による配列→リスト変換
 - ✅ `listToArray`によるリスト→配列変換
@@ -88,8 +96,11 @@ seseragi run examples/05-list-operations.ssrg
 # List型シンタックスシュガー
 seseragi run examples/06-list-syntax-sugar.ssrg
 
+# show関数による美しい出力
+seseragi run examples/07-show-function.ssrg
+
 # Array↔List相互変換
-seseragi run examples/07-array-list-simple.ssrg
+seseragi run examples/08-array-list-conversion.ssrg
 
 # 高度な機能
 seseragi run examples/01-advanced-features.ssrg
@@ -154,6 +165,7 @@ bun examples/compiled/tutorial.ts
 
 ✅ **標準出力**
 - `print` - 値の出力
+- `show` - 美しい整形出力（開発体験向上）
 
 ## 将来実装予定機能
 

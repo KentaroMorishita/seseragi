@@ -1,0 +1,46 @@
+// 07. show関数 - 美しい出力で開発体験を向上
+
+print "=== SHOW FUNCTION DEMO ==="
+print ""
+
+print "【show vs print 比較】"
+
+// 同じデータをprintとshowで比較
+let data = Just 42
+
+print "print出力:"
+print data
+
+print "show出力:"
+show data
+print ""
+
+// リストの表示
+let list = `[1, 2, 3, 4, 5]
+
+print "リスト - print:"
+print list
+
+print "リスト - show:"
+show list
+print ""
+
+// 複雑なデータ構造
+let complex = {
+  maybes: `[Just 1, Nothing, Just 42],
+  eithers: `[Right "OK", Left "Error"],
+  nested: {
+    lists: `[`[1, 2], `[3, 4]],
+    info: { status: "Active", score: 95 }
+  }
+}
+
+print "複雑なデータ - print:"
+print complex
+
+print ""
+print "複雑なデータ - show:"
+show complex
+
+print ""
+print "=== SHOW DEMO COMPLETE ==="

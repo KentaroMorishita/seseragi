@@ -360,6 +360,15 @@ export class TypeInferenceSystem {
     )
     env.set("toString", toStringType)
 
+    // show: 'a -> Unit (多相関数)
+    const showType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("Unit", 0, 0),
+      0,
+      0
+    )
+    env.set("show", showType)
+
     // arrayToList: Array<'a> -> List<'a>
     const aTypeVar = new PolymorphicTypeVariable("a", 0, 0)
     const arrayToListType = new AST.FunctionType(

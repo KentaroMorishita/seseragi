@@ -170,6 +170,9 @@ class CodeGenerator {
     if (this.usageAnalysis.needsBuiltins.toString) {
       imports.push("toString")
     }
+    if (this.usageAnalysis.needsBuiltins.show) {
+      imports.push("show")
+    }
     if (this.usageAnalysis.needsBuiltins.arrayToList) {
       imports.push("arrayToList")
     }
@@ -316,7 +319,20 @@ class CodeGenerator {
       lines.push("")
     }
     if (this.usageAnalysis.needsBuiltins.print) {
-      lines.push("const print = (value: any): void => console.log(value);")
+      lines.push(`const print = (value: any): void => {
+  // Seseragi型の場合は美しく整形
+  if (value && typeof value === 'object' && (
+    value.tag === 'Just' || value.tag === 'Nothing' ||
+    value.tag === 'Left' || value.tag === 'Right' ||
+    value.tag === 'Cons' || value.tag === 'Empty'
+  )) {
+    console.log(toString(value))
+  } 
+  // 通常のオブジェクトはそのまま
+  else {
+    console.log(value)
+  }
+};`)
     }
     if (this.usageAnalysis.needsBuiltins.putStrLn) {
       lines.push(
@@ -324,7 +340,142 @@ class CodeGenerator {
       )
     }
     if (this.usageAnalysis.needsBuiltins.toString) {
-      lines.push("const toString = (value: any): string => String(value);")
+      lines.push(`const toString = (value: any): string => {
+  // Maybe型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Just') {
+    return \`Just(\${toString(value.value)})\`
+  }
+  if (value && typeof value === 'object' && value.tag === 'Nothing') {
+    return 'Nothing'
+  }
+  
+  // Either型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Left') {
+    return \`Left(\${toString(value.value)})\`
+  }
+  if (value && typeof value === 'object' && value.tag === 'Right') {
+    return \`Right(\${toString(value.value)})\`
+  }
+  
+  // List型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Empty') {
+    return '[]'
+  }
+  if (value && typeof value === 'object' && value.tag === 'Cons') {
+    const items = []
+    let current = value
+    while (current.tag === 'Cons') {
+      items.push(toString(current.head))
+      current = current.tail
+    }
+    return \`[\${items.join(', ')}]\`
+  }
+  
+  // 配列の表示
+  if (Array.isArray(value)) {
+    return \`[\${value.map(toString).join(', ')}]\`
+  }
+  
+  // プリミティブ型
+  if (typeof value === 'string') {
+    return \`"\${value}"\`
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value)
+  }
+  
+  return String(value)
+};`)
+    }
+    if (this.usageAnalysis.needsBuiltins.show) {
+      // prettyFormat関数も必要
+      lines.push(`// Seseragi型の構造を正規化
+function normalizeStructure(obj) {
+  if (!obj || typeof obj !== 'object') return obj
+  
+  // List型 → 配列に変換
+  if (obj.tag === 'Empty') return []
+  if (obj.tag === 'Cons') {
+    const items = []
+    let current = obj
+    while (current && current.tag === 'Cons') {
+      items.push(normalizeStructure(current.head))
+      current = current.tail
+    }
+    return items
+  }
+  
+  // Maybe型
+  if (obj.tag === 'Just') {
+    return { '@@type': 'Just', value: normalizeStructure(obj.value) }
+  }
+  if (obj.tag === 'Nothing') {
+    return '@@Nothing'
+  }
+  
+  // Either型
+  if (obj.tag === 'Right') {
+    return { '@@type': 'Right', value: normalizeStructure(obj.value) }
+  }
+  if (obj.tag === 'Left') {
+    return { '@@type': 'Left', value: normalizeStructure(obj.value) }
+  }
+  
+  // 配列
+  if (Array.isArray(obj)) {
+    return obj.map(normalizeStructure)
+  }
+  
+  // 通常のオブジェクト
+  const result = {}
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      result[key] = normalizeStructure(obj[key])
+    }
+  }
+  return result
+}
+
+// JSON文字列をSeseragi型の美しい表記に変換
+function beautifySeseragiTypes(json) {
+  return json
+    // Just型
+    .replace(/"@@type":\\s*"Just",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Just(\${val.trim()})\`)
+    .replace(/\\{\\s*Just\\(([^)]+)\\)\\s*\\}/g, 'Just($1)')
+    // Nothing
+    .replace(/"@@Nothing"/g, 'Nothing')
+    // Right型
+    .replace(/"@@type":\\s*"Right",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Right(\${val.trim()})\`)
+    .replace(/\\{\\s*Right\\(([^)]+)\\)\\s*\\}/g, 'Right($1)')
+    // Left型
+    .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
+    .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
+}
+
+// 美しくフォーマットする関数
+const prettyFormat = (value) => {
+  // プリミティブ型
+  if (typeof value === 'string') return \`"\${value}"\`
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (value === null) return 'null'
+  if (value === undefined) return 'undefined'
+  
+  // オブジェクトの場合
+  if (typeof value === 'object') {
+    // まず構造を正規化
+    const normalized = normalizeStructure(value)
+    // JSON.stringifyで整形
+    const json = JSON.stringify(normalized, null, 2)
+    // Seseragi型の表記に変換
+    return beautifySeseragiTypes(json)
+  }
+  
+  return String(value)
+}
+
+const show = (value) => {
+  console.log(prettyFormat(value))
+};`)
     }
     if (this.usageAnalysis.needsBuiltins.arrayToList || this.usageAnalysis.needsBuiltins.listToArray) {
       lines.push("")
@@ -411,9 +562,70 @@ class CodeGenerator {
       "const Empty: List<never> = { tag: 'Empty' };",
       "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });",
       "",
-      "const print = (value: any): void => console.log(value);",
+      `const print = (value: any): void => {
+  // Seseragi型の場合は美しく整形
+  if (value && typeof value === 'object' && (
+    value.tag === 'Just' || value.tag === 'Nothing' ||
+    value.tag === 'Left' || value.tag === 'Right' ||
+    value.tag === 'Cons' || value.tag === 'Empty'
+  )) {
+    console.log(toString(value))
+  } 
+  // 通常のオブジェクトはそのまま
+  else {
+    console.log(value)
+  }
+};`,
       "const putStrLn = (value: string): void => console.log(value);",
-      "const toString = (value: any): string => String(value);",
+      `const toString = (value: any): string => {
+  // Maybe型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Just') {
+    return \`Just(\${toString(value.value)})\`
+  }
+  if (value && typeof value === 'object' && value.tag === 'Nothing') {
+    return 'Nothing'
+  }
+  
+  // Either型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Left') {
+    return \`Left(\${toString(value.value)})\`
+  }
+  if (value && typeof value === 'object' && value.tag === 'Right') {
+    return \`Right(\${toString(value.value)})\`
+  }
+  
+  // List型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Empty') {
+    return '[]'
+  }
+  if (value && typeof value === 'object' && value.tag === 'Cons') {
+    const items = []
+    let current = value
+    while (current.tag === 'Cons') {
+      items.push(toString(current.head))
+      current = current.tail
+    }
+    return \`[\${items.join(', ')}]\`
+  }
+  
+  // 配列の表示
+  if (Array.isArray(value)) {
+    return \`[\${value.map(toString).join(', ')}]\`
+  }
+  
+  // プリミティブ型
+  if (typeof value === 'string') {
+    return \`"\${value}"\`
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value)
+  }
+  
+  return String(value)
+};`,
+      `const show = (value: any): void => {
+  console.log(toString(value))
+};`,
       "",
       "const arrayToList = curry(<T>(arr: T[]): List<T> => {",
       "  let result: List<T> = Empty;",
@@ -683,7 +895,9 @@ class CodeGenerator {
       if (funcName === "print" || funcName === "putStrLn") {
         return `console.log(${arg})`
       } else if (funcName === "toString") {
-        return `String(${arg})`
+        return `toString(${arg})`
+      } else if (funcName === "show") {
+        return `show(${arg})`
       }
     }
 
@@ -719,7 +933,12 @@ class CodeGenerator {
         if (args.length !== 1) {
           throw new Error("toString requires exactly one argument")
         }
-        return `String(${args[0]})`
+        return `toString(${args[0]})`
+      case "show":
+        if (args.length !== 1) {
+          throw new Error("show requires exactly one argument")
+        }
+        return `show(${args[0]})`
       default:
         throw new Error(`Unknown builtin function: ${call.functionName}`)
     }
@@ -879,7 +1098,9 @@ class CodeGenerator {
       if (funcName === "print" || funcName === "putStrLn") {
         return `console.log(${right})`
       } else if (funcName === "toString") {
-        return `String(${right})`
+        return `toString(${right})`
+      } else if (funcName === "show") {
+        return `show(${right})`
       }
     }
 

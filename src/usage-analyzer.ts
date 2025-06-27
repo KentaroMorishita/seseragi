@@ -21,6 +21,7 @@ export interface UsageAnalysis {
     print: boolean
     putStrLn: boolean
     toString: boolean
+    show: boolean
     arrayToList: boolean
     listToArray: boolean
   }
@@ -43,6 +44,7 @@ export class UsageAnalyzer {
       print: false,
       putStrLn: false,
       toString: false,
+      show: false,
       arrayToList: false,
       listToArray: false,
     },
@@ -139,6 +141,30 @@ export class UsageAnalyzer {
       this.analysis.needsList = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
+    } else if (expr instanceof AST.RecordExpression) {
+      // レコード内の式を再帰的に解析
+      for (const field of expr.fields) {
+        this.analyzeExpression(field.value)
+      }
+    } else if (expr instanceof AST.ArrayLiteral) {
+      // 配列内の式を再帰的に解析
+      for (const element of expr.elements) {
+        this.analyzeExpression(element)
+      }
+    } else if (expr instanceof AST.RecordAccess) {
+      this.analyzeExpression(expr.record)
+    } else if (expr instanceof AST.ArrayAccess) {
+      this.analyzeExpression(expr.array)
+      this.analyzeExpression(expr.index)
+    } else if (expr instanceof AST.LambdaExpression) {
+      this.analyzeExpression(expr.body)
+    } else if (expr instanceof AST.BlockExpression) {
+      for (const stmt of expr.statements) {
+        this.analyzeStatement(stmt)
+      }
+      if (expr.expression) {
+        this.analyzeExpression(expr.expression)
+      }
     }
   }
 
@@ -178,9 +204,15 @@ export class UsageAnalyzer {
   private analyzeBuiltin(name: string): void {
     if (name === "print") {
       this.analysis.needsBuiltins.print = true
+      // printは内部でtoStringを使うので自動的に必要
+      this.analysis.needsBuiltins.toString = true
     } else if (name === "putStrLn") {
       this.analysis.needsBuiltins.putStrLn = true
     } else if (name === "toString") {
+      this.analysis.needsBuiltins.toString = true
+    } else if (name === "show") {
+      this.analysis.needsBuiltins.show = true
+      // showは内部でtoStringを使うので自動的に必要
       this.analysis.needsBuiltins.toString = true
     } else if (name === "arrayToList") {
       this.analysis.needsBuiltins.arrayToList = true

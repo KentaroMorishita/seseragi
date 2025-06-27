@@ -360,11 +360,242 @@ export const foldMonoid = <T>(
 // 組み込み関数
 // =============================================================================
 
-export const print = (value: any): void => console.log(value)
+export const print = (value: any): void => {
+  // Seseragi型の場合は美しく整形
+  if (value && typeof value === 'object' && (
+    value.tag === 'Just' || value.tag === 'Nothing' ||
+    value.tag === 'Left' || value.tag === 'Right' ||
+    value.tag === 'Cons' || value.tag === 'Empty'
+  )) {
+    console.log(toString(value))
+  } 
+  // 通常のオブジェクトはそのまま
+  else {
+    console.log(value)
+  }
+}
 
 export const putStrLn = (value: string): void => console.log(value)
 
-export const toString = (value: any): string => String(value)
+// show関数 - すべての値を美しく表示
+export const show = (value: any): void => {
+  console.log(prettyFormat(value))
+}
+
+// 美しくフォーマットする関数
+export const prettyFormat = (value: any): string => {
+  // プリミティブ型
+  if (typeof value === 'string') return `"${value}"`
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (value === null) return 'null'
+  if (value === undefined) return 'undefined'
+  
+  // オブジェクトの場合
+  if (typeof value === 'object') {
+    // まず構造を正規化
+    const normalized = normalizeStructure(value)
+    // JSON.stringifyで整形
+    const json = JSON.stringify(normalized, null, 2)
+    // Seseragi型の表記に変換
+    return beautifySeseragiTypes(json)
+  }
+  
+  return String(value)
+}
+
+// Seseragi型の構造を正規化
+function normalizeStructure(obj: any): any {
+  if (!obj || typeof obj !== 'object') return obj
+  
+  // List型 → 配列に変換
+  if (obj.tag === 'Empty') return []
+  if (obj.tag === 'Cons') {
+    const items = []
+    let current = obj
+    while (current && current.tag === 'Cons') {
+      items.push(normalizeStructure(current.head))
+      current = current.tail
+    }
+    return items
+  }
+  
+  // Maybe型
+  if (obj.tag === 'Just') {
+    return { '@@type': 'Just', value: normalizeStructure(obj.value) }
+  }
+  if (obj.tag === 'Nothing') {
+    return '@@Nothing'
+  }
+  
+  // Either型
+  if (obj.tag === 'Right') {
+    return { '@@type': 'Right', value: normalizeStructure(obj.value) }
+  }
+  if (obj.tag === 'Left') {
+    return { '@@type': 'Left', value: normalizeStructure(obj.value) }
+  }
+  
+  // 配列
+  if (Array.isArray(obj)) {
+    return obj.map(normalizeStructure)
+  }
+  
+  // 通常のオブジェクト
+  const result: any = {}
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      result[key] = normalizeStructure(obj[key])
+    }
+  }
+  return result
+}
+
+// JSON文字列をSeseragi型の美しい表記に変換
+function beautifySeseragiTypes(json: string): string {
+  // Maybe型の変換
+  json = json.replace(/\{\s*"@@type":\s*"Just",\s*"value":\s*(.+?)\s*\}/g, 'Just($1)')
+  json = json.replace(/"@@Nothing"/g, 'Nothing')
+  
+  // Either型の変換
+  json = json.replace(/\{\s*"@@type":\s*"Right",\s*"value":\s*(.+?)\s*\}/g, 'Right($1)')
+  json = json.replace(/\{\s*"@@type":\s*"Left",\s*"value":\s*(.+?)\s*\}/g, 'Left($1)')
+  
+  return json
+}
+
+export const toString = (value: any): string => {
+  // プリミティブ型は簡単に処理
+  if (typeof value === 'string') {
+    return `"${value}"`
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || value === null || value === undefined) {
+    return String(value)
+  }
+  
+  // オブジェクトと配列はJSON.stringifyしてから変換
+  if (typeof value === 'object') {
+    try {
+      // まずJSON文字列に変換
+      const jsonStr = JSON.stringify(value, null, 2)
+      
+      // Seseragi型のパターンを美しい表示に置換
+      let result = jsonStr
+      
+      // Maybe型の変換
+      result = result.replace(
+        /\{\s*"tag":\s*"Just",\s*"value":\s*([^}]+)\s*\}/g,
+        (_, val) => `Just(${val.trim()})`
+      )
+      result = result.replace(
+        /\{\s*"tag":\s*"Nothing"\s*\}/g,
+        'Nothing'
+      )
+      
+      // Either型の変換
+      result = result.replace(
+        /\{\s*"tag":\s*"Right",\s*"value":\s*([^}]+)\s*\}/g,
+        (_, val) => `Right(${val.trim()})`
+      )
+      result = result.replace(
+        /\{\s*"tag":\s*"Left",\s*"value":\s*([^}]+)\s*\}/g,
+        (_, val) => `Left(${val.trim()})`
+      )
+      
+      // List型の変換 - Consを配列に変換
+      const convertList = (str: string): string => {
+        // Empty を [] に変換
+        str = str.replace(/\{\s*"tag":\s*"Empty"\s*\}/g, '[]')
+        
+        // ConsパターンをJavaScript配列に変換する
+        // 複雑なので、一旦parseして処理
+        try {
+          const obj = JSON.parse(str)
+          if (obj && obj.tag === 'Cons') {
+            const items = []
+            let current = obj
+            while (current && current.tag === 'Cons') {
+              items.push(current.head)
+              current = current.tail
+            }
+            return JSON.stringify(items, null, 2)
+          }
+        } catch {
+          // パースできない場合はそのまま
+        }
+        
+        return str
+      }
+      
+      // リスト構造を検出して変換
+      if (result.includes('"tag": "Cons"') || result.includes('"tag": "Empty"')) {
+        try {
+          const parsed = JSON.parse(jsonStr)
+          const converted = convertListStructure(parsed)
+          result = JSON.stringify(converted, null, 2)
+        } catch {
+          // 変換失敗時はそのまま
+        }
+      }
+      
+      return result
+    } catch {
+      return String(value)
+    }
+  }
+  
+  return String(value)
+}
+
+// リスト構造を再帰的に変換するヘルパー関数
+function convertListStructure(obj: any): any {
+  if (!obj || typeof obj !== 'object') {
+    return obj
+  }
+  
+  // List型の場合
+  if (obj.tag === 'Empty') {
+    return []
+  }
+  if (obj.tag === 'Cons') {
+    const items = []
+    let current = obj
+    while (current && current.tag === 'Cons') {
+      items.push(convertListStructure(current.head))
+      current = current.tail
+    }
+    return items
+  }
+  
+  // Maybe型の場合
+  if (obj.tag === 'Just') {
+    return { __type: 'Just', value: convertListStructure(obj.value) }
+  }
+  if (obj.tag === 'Nothing') {
+    return { __type: 'Nothing' }
+  }
+  
+  // Either型の場合
+  if (obj.tag === 'Right') {
+    return { __type: 'Right', value: convertListStructure(obj.value) }
+  }
+  if (obj.tag === 'Left') {
+    return { __type: 'Left', value: convertListStructure(obj.value) }
+  }
+  
+  // 配列の場合
+  if (Array.isArray(obj)) {
+    return obj.map(convertListStructure)
+  }
+  
+  // 通常のオブジェクトの場合
+  const result: any = {}
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      result[key] = convertListStructure(obj[key])
+    }
+  }
+  return result
+}
 
 // =============================================================================
 // ユーティリティ
