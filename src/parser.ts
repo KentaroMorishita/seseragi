@@ -214,6 +214,7 @@ export class Parser {
     // Check if this is a union type (type Name = A | B | C) or struct type (type Name { field: Type })
     if (this.match(TokenType.ASSIGN)) {
       // Union type: type Color = Red | Green | Blue
+      this.skipNewlines() // Allow newlines after '='
       return this.parseUnionType(name)
     } else {
       // Struct type: type Point { x: Int, y: Int }
@@ -224,28 +225,50 @@ export class Parser {
   private parseUnionType(name: string): AST.TypeDeclaration {
     const variants: AST.TypeField[] = []
 
+    // Skip optional newlines and pipes at the beginning
+    this.skipNewlines()
+    if (this.match(TokenType.PIPE)) {
+      this.skipNewlines()
+    }
+
     // Parse first variant
     const firstVariant = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
+    
+    // Check if variant has associated data types
+    const firstVariantTypes = this.parseVariantDataTypes()
     variants.push(
       new AST.TypeField(
         firstVariant,
-        new AST.PrimitiveType("Unit", this.previous().line, this.previous().column), // Union variants are Unit types
+        firstVariantTypes.length > 0 
+          ? new AST.GenericType("Tuple", firstVariantTypes, this.previous().line, this.previous().column)
+          : new AST.PrimitiveType("Unit", this.previous().line, this.previous().column),
         this.previous().line,
         this.previous().column
       )
     )
 
     // Parse additional variants separated by '|'
-    while (this.match(TokenType.PIPE)) {
-      const variantName = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
-      variants.push(
-        new AST.TypeField(
-          variantName,
-          new AST.PrimitiveType("Unit", this.previous().line, this.previous().column),
-          this.previous().line,
-          this.previous().column
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.PIPE)) {
+        this.skipNewlines()
+        const variantName = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
+        
+        // Check if variant has associated data types
+        const variantTypes = this.parseVariantDataTypes()
+        variants.push(
+          new AST.TypeField(
+            variantName,
+            variantTypes.length > 0 
+              ? new AST.GenericType("Tuple", variantTypes, this.previous().line, this.previous().column)
+              : new AST.PrimitiveType("Unit", this.previous().line, this.previous().column),
+            this.previous().line,
+            this.previous().column
+          )
         )
-      )
+      } else {
+        break
+      }
     }
 
     return new AST.TypeDeclaration(
@@ -253,6 +276,31 @@ export class Parser {
       variants,
       this.previous().line,
       this.previous().column
+    )
+  }
+
+  private parseVariantDataTypes(): AST.Type[] {
+    const types: AST.Type[] = []
+    
+    // Parse type parameters for constructor variants (RGB Int Int Int)
+    while (this.check(TokenType.IDENTIFIER) && this.isTypeIdentifier()) {
+      types.push(this.parseType())
+    }
+    
+    return types
+  }
+
+  private isTypeIdentifier(): boolean {
+    const name = this.peek().value
+    // Check if it's a known type name (basic types or capitalized identifiers)
+    return (
+      name === "Int" ||
+      name === "Float" ||
+      name === "String" ||
+      name === "Bool" ||
+      name === "Unit" ||
+      name === "Char" ||
+      (name[0] === name[0].toUpperCase() && name !== this.tokens[this.current + 1]?.value)
     )
   }
 
@@ -553,6 +601,41 @@ export class Parser {
       )
     }
 
+    if (token.type === TokenType.LEFT_BRACE) {
+      // Record type { name: Type, age: Int }
+      const fields: AST.RecordField[] = []
+
+      if (!this.check(TokenType.RIGHT_BRACE)) {
+        do {
+          this.skipNewlines()
+          const fieldName = this.consume(
+            TokenType.IDENTIFIER,
+            "Expected field name"
+          ).value
+          this.skipNewlines()
+          this.consume(TokenType.COLON, "Expected ':' after field name")
+          this.skipNewlines()
+          const fieldType = this.parseType()
+
+          fields.push(
+            new AST.RecordField(
+              fieldName,
+              fieldType,
+              this.previous().line,
+              this.previous().column
+            )
+          )
+          this.skipNewlines()
+        } while (this.match(TokenType.COMMA))
+      }
+
+      this.skipNewlines()
+
+      this.consume(TokenType.RIGHT_BRACE, "Expected '}' after record fields")
+
+      return new AST.RecordType(fields, token.line, token.column)
+    }
+
     throw new ParseError("Expected type", token)
   }
 
@@ -630,11 +713,15 @@ export class Parser {
     if (this.check(TokenType.IDENTIFIER)) {
       const name = this.advance().value
 
-      // Constructor pattern
-      if (this.check(TokenType.IDENTIFIER)) {
+      // Check if this is a constructor pattern by looking ahead
+      // A constructor pattern has either more identifiers or is followed by ->
+      const isConstructor = this.isConstructorName(name)
+      
+      if (isConstructor && this.check(TokenType.IDENTIFIER)) {
+        // Constructor pattern with arguments
         const patterns: AST.Pattern[] = []
 
-        while (this.check(TokenType.IDENTIFIER)) {
+        while (this.check(TokenType.IDENTIFIER) && !this.checkAhead(TokenType.ARROW)) {
           patterns.push(this.pattern())
         }
 
@@ -644,8 +731,17 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+      } else if (isConstructor && !this.check(TokenType.IDENTIFIER)) {
+        // Constructor pattern without arguments (Red, Green, Blue)
+        return new AST.ConstructorPattern(
+          name,
+          [],
+          this.previous().line,
+          this.previous().column
+        )
       }
 
+      // Variable pattern
       return new AST.IdentifierPattern(
         name,
         this.previous().line,
@@ -894,7 +990,19 @@ export class Parser {
     let expr = this.primaryExpression()
 
     while (true) {
-      if (this.match(TokenType.LEFT_PAREN)) {
+      if (this.match(TokenType.DOT)) {
+        // Record field access: obj.field
+        const fieldName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected field name after '.'"
+        ).value
+        expr = new AST.RecordAccess(
+          expr,
+          fieldName,
+          this.previous().line,
+          this.previous().column
+        )
+      } else if (this.match(TokenType.LEFT_PAREN)) {
         // 括弧付き関数呼び出し
         const args: AST.Expression[] = []
 
@@ -1036,8 +1144,9 @@ export class Parser {
         ) {
           const args: AST.Expression[] = []
 
-          // 括弧付きの場合
-          if (this.check(TokenType.LEFT_PAREN)) {
+          // 関数呼び出し風の括弧付きの場合: Cons(1, 2)
+          // ただし、Cons (expr) のような場合は除外するため、先読みして判定
+          if (this.check(TokenType.LEFT_PAREN) && this.isActualFunctionCallSyntax()) {
             this.advance() // consume '('
 
             if (!this.check(TokenType.RIGHT_PAREN)) {
@@ -1051,20 +1160,35 @@ export class Parser {
               "Expected ')' after constructor arguments"
             )
           } else {
-            // 括弧なしで単一引数の場合
-            args.push(this.primaryExpression())
+            // 関数型言語風の括弧なしの場合: Cons 1 2 または Cons (expr) (expr)
+            let argCount = 0
+            const maxArgs = name === "Cons" ? 2 : (name === "Just" || name === "Left" || name === "Right" ? 1 : 0)
+            
+            while (
+              argCount < maxArgs &&
+              this.checkPrimaryStart() &&
+              !this.check(TokenType.ARROW) &&
+              !this.check(TokenType.PIPE) &&
+              !this.check(TokenType.NEWLINE) &&
+              !this.check(TokenType.EOF) &&
+              !this.check(TokenType.RIGHT_PAREN) &&
+              !this.check(TokenType.RIGHT_BRACE) &&
+              !this.check(TokenType.COMMA) &&
+              !this.check(TokenType.SEMICOLON) &&
+              !this.check(TokenType.LET) &&
+              !this.check(TokenType.FN)
+            ) {
+              args.push(this.primaryExpression())
+              argCount++
+            }
           }
 
           return new AST.ConstructorExpression(name, args, line, column)
         }
 
-        // 引数がない場合（Nothing等）はそのままコンストラクタ
-        if (
-          name === "Nothing" ||
-          name === "Just" ||
-          name === "Left" ||
-          name === "Right"
-        ) {
+        // 引数がない場合（Nothing, Empty等）はそのままコンストラクタ
+        // ただし、引数が必要なコンストラクタ（Just, Left, Right, Cons）は除外
+        if (name === "Nothing" || name === "Empty") {
           return new AST.ConstructorExpression(name, [], line, column)
         }
       }
@@ -1076,6 +1200,43 @@ export class Parser {
       const expr = this.expression()
       this.consume(TokenType.RIGHT_PAREN, "Expected ')' after expression")
       return expr
+    }
+
+    if (this.match(TokenType.LEFT_BRACE)) {
+      // Record literal { name: "John", age: 30 }
+      const fields: AST.RecordInitField[] = []
+      const line = this.previous().line
+      const column = this.previous().column
+
+      if (!this.check(TokenType.RIGHT_BRACE)) {
+        do {
+          this.skipNewlines()
+          const fieldName = this.consume(
+            TokenType.IDENTIFIER,
+            "Expected field name"
+          ).value
+          this.skipNewlines()
+          this.consume(TokenType.COLON, "Expected ':' after field name")
+          this.skipNewlines()
+          const fieldValue = this.expression()
+
+          fields.push(
+            new AST.RecordInitField(
+              fieldName,
+              fieldValue,
+              this.previous().line,
+              this.previous().column
+            )
+          )
+          this.skipNewlines()
+        } while (this.match(TokenType.COMMA))
+      }
+
+      this.skipNewlines()
+
+      this.consume(TokenType.RIGHT_BRACE, "Expected '}' after record fields")
+
+      return new AST.RecordExpression(fields, line, column)
     }
 
     throw new ParseError("Expected expression", this.peek())
@@ -1163,6 +1324,69 @@ export class Parser {
       type === TokenType.LAMBDA
     )
   }
+
+  private isUpperCaseIdentifier(): boolean {
+    if (this.peek().type !== TokenType.IDENTIFIER) {
+      return false
+    }
+    const value = this.peek().value
+    return value.length > 0 && value[0] === value[0].toUpperCase()
+  }
+
+  private isActualFunctionCallSyntax(): boolean {
+    // 先読みして関数呼び出し構文かどうかを判定
+    // Cons(1, 2) は true, Cons (expr) は false
+    if (!this.check(TokenType.LEFT_PAREN)) {
+      return false
+    }
+
+    // 現在位置を保存
+    const saved = this.current
+
+    try {
+      this.advance() // consume '('
+      
+      // 空の括弧の場合は関数呼び出し
+      if (this.check(TokenType.RIGHT_PAREN)) {
+        return true
+      }
+
+      // 最初の式をスキップ
+      this.skipExpression()
+
+      // コンマがあれば関数呼び出し、なければ単なる括弧付き式
+      const hasComma = this.check(TokenType.COMMA)
+      return hasComma
+
+    } catch {
+      // パースエラーの場合は関数呼び出しと仮定
+      return true
+    } finally {
+      // 位置を復元
+      this.current = saved
+    }
+  }
+
+  private skipExpression(): void {
+    // 簡単な式のスキップ（完全ではないが、このコンテキストでは十分）
+    let depth = 0
+    
+    while (!this.isAtEnd()) {
+      const token = this.peek()
+      
+      if (token.type === TokenType.LEFT_PAREN) {
+        depth++
+      } else if (token.type === TokenType.RIGHT_PAREN) {
+        if (depth === 0) break // 最上位の右括弧
+        depth--
+      } else if (depth === 0 && (token.type === TokenType.COMMA || token.type === TokenType.RIGHT_PAREN)) {
+        break
+      }
+      
+      this.advance()
+    }
+  }
+
 
   private blockExpression(): AST.BlockExpression {
     const statements: AST.Statement[] = []
@@ -1262,5 +1486,24 @@ export class Parser {
       type === TokenType.IMPORT ||
       type === TokenType.LET
     )
+  }
+
+  private isConstructorName(name: string): boolean {
+    // Constructor names start with uppercase letter
+    return name[0] === name[0].toUpperCase()
+  }
+
+  private checkAhead(type: TokenType): boolean {
+    // Look ahead to the next token without consuming
+    let lookahead = this.current
+    
+    // Skip whitespace and newlines
+    while (lookahead < this.tokens.length && 
+           (this.tokens[lookahead].type === TokenType.NEWLINE || 
+            this.tokens[lookahead].type === TokenType.WHITESPACE)) {
+      lookahead++
+    }
+    
+    return lookahead < this.tokens.length && this.tokens[lookahead].type === type
   }
 }

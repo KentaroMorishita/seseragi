@@ -62,6 +62,29 @@ export class GenericType extends Type {
   }
 }
 
+export class RecordField extends ASTNode {
+  kind = "RecordField"
+  name: string
+  type: Type
+
+  constructor(name: string, type: Type, line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.type = type
+  }
+}
+
+export class RecordType extends Type {
+  kind = "RecordType"
+  name = "Record"
+  fields: RecordField[]
+
+  constructor(fields: RecordField[], line: number, column: number) {
+    super(line, column)
+    this.fields = fields
+  }
+}
+
 // =============================================================================
 // Expressions
 // =============================================================================
@@ -367,6 +390,45 @@ export class LambdaExpression extends Expression {
     super(line, column)
     this.parameters = parameters
     this.body = body
+  }
+}
+
+export class RecordInitField extends ASTNode {
+  kind = "RecordInitField"
+  name: string
+  value: Expression
+
+  constructor(name: string, value: Expression, line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.value = value
+  }
+}
+
+export class RecordExpression extends Expression {
+  kind = "RecordExpression"
+  fields: RecordInitField[]
+
+  constructor(fields: RecordInitField[], line: number, column: number) {
+    super(line, column)
+    this.fields = fields
+  }
+}
+
+export class RecordAccess extends Expression {
+  kind = "RecordAccess"
+  record: Expression
+  fieldName: string
+
+  constructor(
+    record: Expression,
+    fieldName: string,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.record = record
+    this.fieldName = fieldName
   }
 }
 

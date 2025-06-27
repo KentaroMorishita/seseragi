@@ -24,10 +24,13 @@ import {
   FoldMonoid,
   FunctionApplicationOperator,
   LambdaExpression,
+  RecordExpression,
+  RecordAccess,
   Type,
   FunctionType,
   PrimitiveType,
   GenericType,
+  RecordType,
 } from "./ast"
 import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
 
@@ -190,7 +193,10 @@ class CodeGenerator {
         "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };"
       )
     }
-    if (this.usageAnalysis.needsMaybe || this.usageAnalysis.needsEither) {
+    if (this.usageAnalysis.needsList) {
+      lines.push("type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };")
+    }
+    if (this.usageAnalysis.needsMaybe || this.usageAnalysis.needsEither || this.usageAnalysis.needsList) {
       lines.push("")
     }
 
@@ -230,6 +236,13 @@ class CodeGenerator {
       )
       lines.push(
         "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });"
+      )
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsList) {
+      lines.push("const Empty: List<never> = { tag: 'Empty' };")
+      lines.push(
+        "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });"
       )
       lines.push("")
     }
@@ -314,6 +327,7 @@ class CodeGenerator {
       "",
       "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };",
       "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };",
+      "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };",
       "",
       ...this.generateCurryFunction(),
       "",
@@ -359,6 +373,9 @@ class CodeGenerator {
       "",
       "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });",
       "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });",
+      "",
+      "const Empty: List<never> = { tag: 'Empty' };",
+      "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });",
       "",
       "const print = (value: any): void => console.log(value);",
       "const putStrLn = (value: string): void => console.log(value);",
@@ -441,12 +458,56 @@ class CodeGenerator {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
 
     if (typeDecl.fields && typeDecl.fields.length > 0) {
-      // 構造体型として生成
-      const fields = typeDecl.fields
-        .map((f) => `  ${f.name}: ${this.generateType(f.type)}`)
-        .join(";\n")
+      // Check if this is a union type (ADT) or struct type
+      const isUnionType = typeDecl.fields.some(f => 
+        f.type instanceof PrimitiveType && f.type.name === "Unit" ||
+        f.type instanceof GenericType && f.type.name === "Tuple"
+      )
 
-      return `${indent}type ${typeDecl.name} = {\n${fields}\n};`
+      if (isUnionType) {
+        // Union type (ADT) - generate TypeScript discriminated union
+        const variants = typeDecl.fields.map(field => {
+          if (field.type instanceof PrimitiveType && field.type.name === "Unit") {
+            // Simple variant without data
+            return `{ type: '${field.name}' }`
+          } else if (field.type instanceof GenericType && field.type.name === "Tuple") {
+            // Variant with associated data
+            const dataTypes = field.type.typeArguments
+              .map((t, i) => `data${i}: ${this.generateType(t)}`)
+              .join(', ')
+            return `{ type: '${field.name}', ${dataTypes} }`
+          } else {
+            // Fallback
+            return `{ type: '${field.name}', data: ${this.generateType(field.type)} }`
+          }
+        }).join(' | ')
+
+        // Also generate constructor functions
+        const constructors = typeDecl.fields.map(field => {
+          if (field.type instanceof PrimitiveType && field.type.name === "Unit") {
+            return `${indent}const ${field.name} = { type: '${field.name}' as const };`
+          } else if (field.type instanceof GenericType && field.type.name === "Tuple") {
+            const params = field.type.typeArguments
+              .map((t, i) => `data${i}: ${this.generateType(t)}`)
+              .join(', ')
+            const dataFields = field.type.typeArguments
+              .map((_, i) => `data${i}`)
+              .join(', ')
+            return `${indent}const ${field.name} = (${params}) => ({ type: '${field.name}' as const, ${dataFields} });`
+          } else {
+            return `${indent}const ${field.name} = (data: ${this.generateType(field.type)}) => ({ type: '${field.name}' as const, data });`
+          }
+        }).join('\n')
+
+        return `${indent}type ${typeDecl.name} = ${variants};\n\n${constructors}`
+      } else {
+        // Struct type - generate interface
+        const fields = typeDecl.fields
+          .map((f) => `  ${f.name}: ${this.generateType(f.type)}`)
+          .join(";\n")
+
+        return `${indent}type ${typeDecl.name} = {\n${fields}\n};`
+      }
     } else {
       // 型エイリアスとして生成
       return `${indent}type ${typeDecl.name} = any; // TODO: implement type`
@@ -493,6 +554,10 @@ class CodeGenerator {
       return this.generateBlockExpression(expr)
     } else if (expr instanceof LambdaExpression) {
       return this.generateLambdaExpression(expr)
+    } else if (expr instanceof RecordExpression) {
+      return this.generateRecordExpression(expr)
+    } else if (expr instanceof RecordAccess) {
+      return this.generateRecordAccess(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -634,42 +699,49 @@ class CodeGenerator {
       return "true" // ワイルドカードパターン
     }
     
-    // リテラルパターンの場合
-    if (pattern.value !== undefined) {
-      if (typeof pattern.value === "string") {
-        return `${valueVar} === ${JSON.stringify(pattern.value)}`
-      } else {
-        return `${valueVar} === ${pattern.value}`
-      }
+    // ASTパターンの種類に基づいて処理
+    switch (pattern.kind) {
+      case "LiteralPattern":
+        if (typeof pattern.value === "string") {
+          return `${valueVar} === ${JSON.stringify(pattern.value)}`
+        } else {
+          return `${valueVar} === ${pattern.value}`
+        }
+      
+      case "IdentifierPattern":
+        if (pattern.name === "_") {
+          return "true" // ワイルドカードパターン
+        }
+        // 変数にバインドする場合（常に true）
+        return "true"
+      
+      case "ConstructorPattern":
+        // ADTコンストラクタパターン
+        return `${valueVar}.type === '${pattern.constructorName}'`
+      
+      default:
+        // 後方互換性のための古い形式をチェック
+        if (pattern.value !== undefined) {
+          if (typeof pattern.value === "string") {
+            return `${valueVar} === ${JSON.stringify(pattern.value)}`
+          } else {
+            return `${valueVar} === ${pattern.value}`
+          }
+        }
+        
+        if (pattern.name) {
+          if (pattern.name === "_") {
+            return "true"
+          }
+          return "true"
+        }
+        
+        if (pattern.constructor) {
+          return `${valueVar}.type === '${pattern.constructor}'`
+        }
+        
+        return `${valueVar} === ${JSON.stringify(pattern.toString())}`
     }
-    
-    // 識別子パターンの場合（変数バインディング）
-    if (pattern.name) {
-      if (pattern.name === "_") {
-        return "true" // ワイルドカードパターン
-      }
-      // 変数にバインドする場合（常に true だが、将来の拡張のため）
-      return "true"
-    }
-    
-    // コンストラクタパターンの場合（Maybe, Either等）
-    if (pattern.constructor) {
-      switch (pattern.constructor) {
-        case "Nothing":
-          return `${valueVar}.tag === 'Nothing'`
-        case "Just":
-          return `${valueVar}.tag === 'Just'`
-        case "Left":
-          return `${valueVar}.tag === 'Left'`
-        case "Right":
-          return `${valueVar}.tag === 'Right'`
-        default:
-          return `${valueVar}.tag === '${pattern.constructor}'`
-      }
-    }
-    
-    // デフォルト：toString を使用
-    return `${valueVar} === ${JSON.stringify(pattern.toString())}`
   }
 
   // パターンの生成（旧メソッド、下位互換性のため保持）
@@ -765,6 +837,10 @@ class CodeGenerator {
         return args.length > 0 ? `Left(${args[0]})` : "Left"
       case "Right":
         return args.length > 0 ? `Right(${args[0]})` : "Right"
+      case "Empty":
+        return "Empty"
+      case "Cons":
+        return args.length === 2 ? `Cons(${args[0]}, ${args[1]})` : "Cons"
       default:
         // 一般的なコンストラクタ
         return args.length > 0 ? `${name}(${args.join(", ")})` : name
@@ -806,6 +882,14 @@ class CodeGenerator {
         .map((p) => this.generateType(p))
         .join(", ")
       return `${this.generateGenericTypeName(type.name)}<${params}>`
+    } else if (type instanceof RecordType) {
+      if (type.fields.length === 0) {
+        return "{}"
+      }
+      const fields = type.fields
+        .map((field) => `${field.name}: ${this.generateType(field.type)}`)
+        .join(", ")
+      return `{ ${fields} }`
     }
 
     return "any"
@@ -821,7 +905,7 @@ class CodeGenerator {
       case "IO":
         return "IO"
       case "List":
-        return "Array"
+        return "List"
       case "Array":
         return "Array"
       default:
@@ -871,5 +955,25 @@ class CodeGenerator {
     }
 
     return result
+  }
+
+  // Record式の生成
+  generateRecordExpression(record: RecordExpression): string {
+    if (record.fields.length === 0) {
+      return "{}"
+    }
+
+    const fields = record.fields.map(field => {
+      const value = this.generateExpression(field.value)
+      return `${field.name}: ${value}`
+    })
+
+    return `{ ${fields.join(", ")} }`
+  }
+
+  // Recordアクセスの生成
+  generateRecordAccess(access: RecordAccess): string {
+    const record = this.generateExpression(access.record)
+    return `${record}.${access.fieldName}`
   }
 }

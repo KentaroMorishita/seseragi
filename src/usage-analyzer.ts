@@ -12,6 +12,7 @@ export interface UsageAnalysis {
   needsFunctionApplication: boolean
   needsMaybe: boolean
   needsEither: boolean
+  needsList: boolean
   needsFunctorMap: boolean
   needsApplicativeApply: boolean
   needsMonadBind: boolean
@@ -31,6 +32,7 @@ export class UsageAnalyzer {
     needsFunctionApplication: false,
     needsMaybe: false,
     needsEither: false,
+    needsList: false,
     needsFunctorMap: false,
     needsApplicativeApply: false,
     needsMonadBind: false,
@@ -134,6 +136,8 @@ export class UsageAnalyzer {
       this.analysis.needsMaybe = true
     } else if (name === "Left" || name === "Right") {
       this.analysis.needsEither = true
+    } else if (name === "Empty" || name === "Cons") {
+      this.analysis.needsList = true
     }
 
     // 引数の解析

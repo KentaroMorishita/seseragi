@@ -11,6 +11,7 @@ export type Maybe<T> = { tag: "Just"; value: T } | { tag: "Nothing" }
 export type Either<L, R> =
   | { tag: "Left"; value: L }
   | { tag: "Right"; value: R }
+export type List<T> = { tag: "Empty" } | { tag: "Cons"; head: T; tail: List<T> }
 
 // =============================================================================
 // カリー化関数
@@ -135,6 +136,195 @@ export const fromLeft = <L, R>(defaultValue: L, either: Either<L, R>): L =>
 
 export const fromRight = <L, R>(defaultValue: R, either: Either<L, R>): R =>
   either.tag === "Right" ? either.value : defaultValue
+
+// =============================================================================
+// List型 - Functor → Applicative → Monad
+// =============================================================================
+
+export const Empty: List<never> = { tag: "Empty" }
+
+export const Cons = <T>(head: T, tail: List<T>): List<T> => ({
+  tag: "Cons",
+  head,
+  tail,
+})
+
+// Functor: map (<$>)
+export const mapList = <T, U>(fa: List<T>, f: (a: T) => U): List<U> => {
+  const mapHelper = (list: List<T>): List<U> => {
+    if (list.tag === "Empty") {
+      return Empty
+    } else {
+      return Cons(f(list.head), mapHelper(list.tail))
+    }
+  }
+  return mapHelper(fa)
+}
+
+// Applicative: pure + apply (<*>)
+export const pureList = <T>(value: T): List<T> => Cons(value, Empty)
+
+export const applyList = <T, U>(
+  ff: List<(a: T) => U>,
+  fa: List<T>
+): List<U> => {
+  const applyHelper = (funcs: List<(a: T) => U>, values: List<T>): List<U> => {
+    if (funcs.tag === "Empty") {
+      return Empty
+    } else {
+      const mappedValues = mapList(values, funcs.head)
+      const restApplied = applyHelper(funcs.tail, values)
+      return concatList(mappedValues, restApplied)
+    }
+  }
+  return applyHelper(ff, fa)
+}
+
+// Monad: flatMap (>>=)
+export const bindList = <T, U>(
+  ma: List<T>,
+  f: (value: T) => List<U>
+): List<U> => {
+  const bindHelper = (list: List<T>): List<U> => {
+    if (list.tag === "Empty") {
+      return Empty
+    } else {
+      const headResult = f(list.head)
+      const tailResult = bindHelper(list.tail)
+      return concatList(headResult, tailResult)
+    }
+  }
+  return bindHelper(ma)
+}
+
+// Utility functions
+export const isEmpty = <T>(list: List<T>): list is { tag: "Empty" } =>
+  list.tag === "Empty"
+
+export const isCons = <T>(
+  list: List<T>
+): list is { tag: "Cons"; head: T; tail: List<T> } => list.tag === "Cons"
+
+export const headList = <T>(list: List<T>): T | undefined =>
+  list.tag === "Cons" ? list.head : undefined
+
+export const tailList = <T>(list: List<T>): List<T> =>
+  list.tag === "Cons" ? list.tail : Empty
+
+export const lengthList = <T>(list: List<T>): number => {
+  const lengthHelper = (l: List<T>, acc: number): number => {
+    if (l.tag === "Empty") {
+      return acc
+    } else {
+      return lengthHelper(l.tail, acc + 1)
+    }
+  }
+  return lengthHelper(list, 0)
+}
+
+export const concatList = <T>(list1: List<T>, list2: List<T>): List<T> => {
+  const concatHelper = (l1: List<T>): List<T> => {
+    if (l1.tag === "Empty") {
+      return list2
+    } else {
+      return Cons(l1.head, concatHelper(l1.tail))
+    }
+  }
+  return concatHelper(list1)
+}
+
+export const reverseList = <T>(list: List<T>): List<T> => {
+  const reverseHelper = (l: List<T>, acc: List<T>): List<T> => {
+    if (l.tag === "Empty") {
+      return acc
+    } else {
+      return reverseHelper(l.tail, Cons(l.head, acc))
+    }
+  }
+  return reverseHelper(list, Empty)
+}
+
+export const takeList = <T>(n: number, list: List<T>): List<T> => {
+  if (n <= 0 || list.tag === "Empty") {
+    return Empty
+  } else {
+    return Cons(list.head, takeList(n - 1, list.tail))
+  }
+}
+
+export const dropList = <T>(n: number, list: List<T>): List<T> => {
+  if (n <= 0) {
+    return list
+  } else if (list.tag === "Empty") {
+    return Empty
+  } else {
+    return dropList(n - 1, list.tail)
+  }
+}
+
+export const filterList = <T>(
+  predicate: (value: T) => boolean,
+  list: List<T>
+): List<T> => {
+  const filterHelper = (l: List<T>): List<T> => {
+    if (l.tag === "Empty") {
+      return Empty
+    } else {
+      const rest = filterHelper(l.tail)
+      return predicate(l.head) ? Cons(l.head, rest) : rest
+    }
+  }
+  return filterHelper(list)
+}
+
+export const foldLeftList = <T, U>(
+  f: (acc: U, value: T) => U,
+  initial: U,
+  list: List<T>
+): U => {
+  const foldHelper = (l: List<T>, acc: U): U => {
+    if (l.tag === "Empty") {
+      return acc
+    } else {
+      return foldHelper(l.tail, f(acc, l.head))
+    }
+  }
+  return foldHelper(list, initial)
+}
+
+export const foldRightList = <T, U>(
+  f: (value: T, acc: U) => U,
+  initial: U,
+  list: List<T>
+): U => {
+  const foldHelper = (l: List<T>): U => {
+    if (l.tag === "Empty") {
+      return initial
+    } else {
+      return f(l.head, foldHelper(l.tail))
+    }
+  }
+  return foldHelper(list)
+}
+
+// Convert from/to Array for interop
+export const fromArray = <T>(arr: T[]): List<T> => {
+  let result: List<T> = Empty
+  for (let i = arr.length - 1; i >= 0; i--) {
+    result = Cons(arr[i], result)
+  }
+  return result
+}
+
+export const toArray = <T>(list: List<T>): T[] => {
+  const result: T[] = []
+  let current = list
+  while (current.tag === "Cons") {
+    result.push(current.head)
+    current = current.tail
+  }
+  return result
+}
 
 // =============================================================================
 // モナド演算子
