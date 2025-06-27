@@ -459,6 +459,33 @@ export class ArrayAccess extends Expression {
   }
 }
 
+export class ListSugar extends Expression {
+  kind = "ListSugar"
+  elements: Expression[]
+
+  constructor(elements: Expression[], line: number, column: number) {
+    super(line, column)
+    this.elements = elements
+  }
+}
+
+export class ConsExpression extends Expression {
+  kind = "ConsExpression"
+  left: Expression
+  right: Expression
+
+  constructor(
+    left: Expression,
+    right: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.left = left
+    this.right = right
+  }
+}
+
 // =============================================================================
 // Pattern Matching
 // =============================================================================

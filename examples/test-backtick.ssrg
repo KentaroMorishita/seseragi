@@ -1,0 +1,6 @@
+// シンプルなバッククォートテスト
+
+let empty = `[]
+let simple = `[1, 2, 3]
+
+print "Test completed"

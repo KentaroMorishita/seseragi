@@ -7,6 +7,9 @@
       "include": "#comments"
     },
     {
+      "include": "#list-sugar"
+    },
+    {
       "include": "#keywords"
     },
     {
@@ -110,6 +113,18 @@
         {
           "name": "keyword.operator.arithmetic.seseragi",
           "match": "(\\+|-|\\*|/|%)"
+        },
+        {
+          "name": "keyword.operator.cons.seseragi",
+          "match": ":"
+        },
+        {
+          "name": "keyword.operator.map.seseragi",
+          "match": "<\\$>"
+        },
+        {
+          "name": "keyword.operator.apply.seseragi",
+          "match": "<\\*>"
         }
       ]
     },
@@ -228,6 +243,53 @@
         {
           "name": "punctuation.separator.colon.seseragi",
           "match": ":"
+        },
+        {
+          "name": "punctuation.backtick.seseragi",
+          "match": "`"
+        }
+      ]
+    },
+    "list-sugar": {
+      "patterns": [
+        {
+          "name": "meta.list-sugar.seseragi",
+          "begin": "`\\[",
+          "end": "\\]",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.list.begin.seseragi"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.list.end.seseragi"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#booleans"
+            },
+            {
+              "include": "#identifiers"
+            },
+            {
+              "include": "#list-sugar"
+            },
+            {
+              "name": "punctuation.separator.comma.seseragi",
+              "match": ","
+            }
+          ]
         }
       ]
     }

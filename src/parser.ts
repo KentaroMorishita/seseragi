@@ -676,7 +676,7 @@ export class Parser {
   }
 
   private matchExpression(): AST.MatchExpression {
-    const expr = this.binaryExpression()
+    const expr = this.primaryExpression()
 
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after match expression")
 
@@ -887,13 +887,13 @@ export class Parser {
   }
 
   private reversePipeExpression(): AST.Expression {
-    let expr = this.comparisonExpression()
+    let expr = this.consExpression()
 
     while (true) {
       this.skipNewlines()
       if (this.match(TokenType.REVERSE_PIPE)) {
         this.skipNewlines()
-        const right = this.comparisonExpression()
+        const right = this.consExpression()
         expr = new AST.ReversePipe(
           expr,
           right,
@@ -903,6 +903,25 @@ export class Parser {
       } else {
         break
       }
+    }
+
+    return expr
+  }
+
+  private consExpression(): AST.Expression {
+    let expr = this.comparisonExpression()
+
+    // Right associative CONS operator (:)
+    if (this.match(TokenType.COLON)) {
+      this.skipNewlines()
+      const right = this.consExpression() // Right associative - recurse to same level
+      expr = new AST.BinaryOperation(
+        expr,
+        ":",
+        right,
+        this.previous().line,
+        this.previous().column
+      )
     }
 
     return expr
@@ -1232,6 +1251,29 @@ export class Parser {
       this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array elements")
 
       return new AST.ArrayLiteral(elements, line, column)
+    }
+
+    if (this.match(TokenType.BACKTICK)) {
+      // List sugar `[1, 2, 3] or `[]
+      const line = this.previous().line
+      const column = this.previous().column
+
+      this.consume(TokenType.LEFT_BRACKET, "Expected '[' after '`'")
+      
+      const elements: AST.Expression[] = []
+      
+      if (!this.check(TokenType.RIGHT_BRACKET)) {
+        do {
+          this.skipNewlines()
+          elements.push(this.expression())
+          this.skipNewlines()
+        } while (this.match(TokenType.COMMA))
+      }
+
+      this.skipNewlines()
+      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list elements")
+
+      return new AST.ListSugar(elements, line, column)
     }
 
     if (this.match(TokenType.LEFT_BRACE)) {

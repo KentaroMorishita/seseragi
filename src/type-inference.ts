@@ -654,6 +654,20 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "ListSugar":
+        resultType = this.generateConstraintsForListSugar(
+          expr as AST.ListSugar,
+          env
+        )
+        break
+
+      case "ConsExpression":
+        resultType = this.generateConstraintsForConsExpression(
+          expr as AST.ConsExpression,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -874,6 +888,25 @@ export class TypeInferenceSystem {
           )
         )
         return boolType
+
+      case ":":
+        // CONS演算子: a : List<a> -> List<a>
+        // 左オペランドは要素、右オペランドはリスト、結果は同じ要素型のリスト
+        const expectedListType = new AST.GenericType("List", [leftType], binOp.right.line, binOp.right.column)
+        
+        // 右オペランドはList<leftType>型でなければならない
+        this.addConstraint(
+          new TypeConstraint(
+            rightType,
+            expectedListType,
+            binOp.right.line,
+            binOp.right.column,
+            `CONS operator (:) right operand must be List<${this.typeToString(leftType)}>`
+          )
+        )
+        
+        // 結果の型もList<leftType>
+        return expectedListType
 
       default:
         this.errors.push(
@@ -2579,5 +2612,60 @@ export class TypeInferenceSystem {
     )
 
     return elementType
+  }
+
+  private generateConstraintsForListSugar(
+    listSugar: AST.ListSugar,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    if (listSugar.elements.length === 0) {
+      // 空リストの場合、要素型は新しい型変数
+      const elementType = this.freshTypeVariable(listSugar.line, listSugar.column)
+      return new AST.GenericType("List", [elementType], listSugar.line, listSugar.column)
+    }
+
+    // 最初の要素の型を推論
+    const firstElementType = this.generateConstraintsForExpression(listSugar.elements[0], env)
+    
+    // すべての要素が同じ型であることを制約として追加
+    for (let i = 1; i < listSugar.elements.length; i++) {
+      const elementType = this.generateConstraintsForExpression(listSugar.elements[i], env)
+      this.addConstraint(
+        new TypeConstraint(
+          firstElementType,
+          elementType,
+          listSugar.elements[i].line,
+          listSugar.elements[i].column,
+          `List element type consistency`
+        )
+      )
+    }
+
+    return new AST.GenericType("List", [firstElementType], listSugar.line, listSugar.column)
+  }
+
+  private generateConstraintsForConsExpression(
+    consExpr: AST.ConsExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // head : tail の型推論
+    const headType = this.generateConstraintsForExpression(consExpr.left, env)
+    const tailType = this.generateConstraintsForExpression(consExpr.right, env)
+    
+    // tailはList<T>型でなければならない
+    const expectedTailType = new AST.GenericType("List", [headType], consExpr.right.line, consExpr.right.column)
+    
+    this.addConstraint(
+      new TypeConstraint(
+        tailType,
+        expectedTailType,
+        consExpr.right.line,
+        consExpr.right.column,
+        "Cons tail must be List type"
+      )
+    )
+
+    // 結果の型もList<T>
+    return new AST.GenericType("List", [headType], consExpr.line, consExpr.column)
   }
 }

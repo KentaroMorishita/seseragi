@@ -28,6 +28,8 @@ import {
   RecordAccess,
   ArrayLiteral,
   ArrayAccess,
+  ListSugar,
+  ConsExpression,
   Type,
   FunctionType,
   PrimitiveType,
@@ -564,6 +566,10 @@ class CodeGenerator {
       return this.generateArrayLiteral(expr)
     } else if (expr instanceof ArrayAccess) {
       return this.generateArrayAccess(expr)
+    } else if (expr instanceof ListSugar) {
+      return this.generateListSugar(expr)
+    } else if (expr instanceof ConsExpression) {
+      return this.generateConsExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -588,6 +594,11 @@ class CodeGenerator {
   generateBinaryOperation(binOp: BinaryOperation): string {
     const left = this.generateExpression(binOp.left)
     const right = this.generateExpression(binOp.right)
+
+    // CONS演算子の特別処理
+    if (binOp.operator === ":") {
+      return `Cons(${left}, ${right})`
+    }
 
     // 演算子の変換
     let operator = binOp.operator
@@ -1001,5 +1012,28 @@ class CodeGenerator {
     const array = this.generateExpression(arrayAccess.array)
     const index = this.generateExpression(arrayAccess.index)
     return `${array}[${index}]`
+  }
+
+  // リストシュガーの生成 [1, 2, 3] -> Cons(1, Cons(2, Cons(3, Empty)))
+  generateListSugar(listSugar: ListSugar): string {
+    if (listSugar.elements.length === 0) {
+      return "Empty"
+    }
+
+    // リストを右からConsで構築
+    let result = "Empty"
+    for (let i = listSugar.elements.length - 1; i >= 0; i--) {
+      const element = this.generateExpression(listSugar.elements[i])
+      result = `Cons(${element}, ${result})`
+    }
+
+    return result
+  }
+
+  // Cons式の生成 left : right -> Cons(left, right)
+  generateConsExpression(consExpr: ConsExpression): string {
+    const left = this.generateExpression(consExpr.left)
+    const right = this.generateExpression(consExpr.right)
+    return `Cons(${left}, ${right})`
   }
 }

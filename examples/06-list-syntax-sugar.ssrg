@@ -1,0 +1,89 @@
+// List型シンタックスシュガーデモ - 美しい List 構文
+
+// ========================================
+// 基本的なリスト構文
+// ========================================
+
+// 空のリスト
+let emptyList = `[]
+
+// 数値のリスト
+let numbers = `[1, 2, 3, 4, 5]
+
+// 文字列のリスト
+let words = `["hello", "beautiful", "world"]
+
+print "基本的なリスト構文:"
+print numbers
+print words
+
+// ========================================
+// CONS演算子 (右結合)
+// ========================================
+
+// Cons演算子を使ったリスト構築
+let consed = 1 : 2 : 3 : `[]
+
+// 混合構文 - CONS + シンタックスシュガー
+let mixed = 0 : `[1, 2, 3]
+
+print "CONS演算子の使用例:"
+print consed
+print mixed
+
+// ========================================
+// Array型 vs List型の比較
+// ========================================
+
+// JavaScript配列 (可変、インデックスアクセス)
+let jsArray = [1, 2, 3]
+
+// Seseragiリスト (不変、関数型操作)
+let seseragiList = `[1, 2, 3]
+
+print "Array vs List:"
+print jsArray
+print seseragiList
+
+// ========================================
+// ネストしたリスト
+// ========================================
+
+let matrix = `[`[1, 2], `[3, 4], `[5, 6]]
+let listOfWords = `[`["a", "b"], `["c", "d"]]
+
+print "ネストしたリスト:"
+print matrix
+print listOfWords
+
+// ========================================
+// 実用的な関数例
+// ========================================
+
+// 直接的なリスト操作例
+let result1 = 0 : `[1, 2, 3]
+let result2 = 10 : 20 : `[30, 40, 50]
+
+print "関数型操作:"
+print result1
+print result2
+
+// ========================================
+// パターンに基づく処理例
+// ========================================
+
+// 複雑なデータ構造
+let todoItems = `[
+  "Learn Seseragi syntax",
+  "Implement list functions",
+  "Write documentation"
+]
+
+let priorities = `[1, 2, 3, 4, 5]
+let importantTasks = 1 : 2 : priorities
+
+print "実用的なデータ構造:"
+print todoItems
+print importantTasks
+
+print "List Syntax Sugar Demo completed! ✨"

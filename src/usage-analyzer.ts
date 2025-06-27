@@ -126,6 +126,15 @@ export class UsageAnalyzer {
         this.analyzePattern(matchCase.pattern)
         this.analyzeExpression(matchCase.expression)
       }
+    } else if (expr instanceof AST.ListSugar) {
+      this.analysis.needsList = true
+      for (const element of expr.elements) {
+        this.analyzeExpression(element)
+      }
+    } else if (expr instanceof AST.ConsExpression) {
+      this.analysis.needsList = true
+      this.analyzeExpression(expr.left)
+      this.analyzeExpression(expr.right)
     }
   }
 
