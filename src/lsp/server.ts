@@ -22,10 +22,8 @@ import {
 
 import { TextDocument } from "vscode-languageserver-textdocument"
 import { URI } from "vscode-uri"
-import { Lexer } from "../formatter/lexer"
 import { Parser } from "../parser"
-import { TypeChecker } from "../typechecker"
-import { TypeInferenceSystem, TypeVariable } from "../type-inference"
+import { TypeInferenceSystem } from "../type-inference"
 import {
   formatSeseragiCode,
   removeExtraWhitespace,
@@ -237,6 +235,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
     if (error instanceof Error) {
       errorMessage = error.message
+      // Log the full error for debugging
+      connection.console.log(`Parser error: ${error.message}`)
+      connection.console.log(`Error stack: ${error.stack}`)
+      
       // Try to extract position information from error message if available
       const posMatch = error.message.match(/line (\d+), column (\d+)/)
       if (posMatch) {

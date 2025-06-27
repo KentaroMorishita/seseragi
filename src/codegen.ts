@@ -26,6 +26,8 @@ import {
   LambdaExpression,
   RecordExpression,
   RecordAccess,
+  ArrayLiteral,
+  ArrayAccess,
   Type,
   FunctionType,
   PrimitiveType,
@@ -558,6 +560,10 @@ class CodeGenerator {
       return this.generateRecordExpression(expr)
     } else if (expr instanceof RecordAccess) {
       return this.generateRecordAccess(expr)
+    } else if (expr instanceof ArrayLiteral) {
+      return this.generateArrayLiteral(expr)
+    } else if (expr instanceof ArrayAccess) {
+      return this.generateArrayAccess(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -975,5 +981,25 @@ class CodeGenerator {
   generateRecordAccess(access: RecordAccess): string {
     const record = this.generateExpression(access.record)
     return `${record}.${access.fieldName}`
+  }
+
+  // 配列リテラルの生成
+  generateArrayLiteral(arrayLiteral: ArrayLiteral): string {
+    if (arrayLiteral.elements.length === 0) {
+      return "[]"
+    }
+
+    const elements = arrayLiteral.elements.map(element => 
+      this.generateExpression(element)
+    )
+
+    return `[${elements.join(", ")}]`
+  }
+
+  // 配列アクセスの生成
+  generateArrayAccess(arrayAccess: ArrayAccess): string {
+    const array = this.generateExpression(arrayAccess.array)
+    const index = this.generateExpression(arrayAccess.index)
+    return `${array}[${index}]`
   }
 }

@@ -1002,6 +1002,16 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+      } else if (this.match(TokenType.LEFT_BRACKET)) {
+        // Array access: array[index]
+        const index = this.expression()
+        this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array index")
+        expr = new AST.ArrayAccess(
+          expr,
+          index,
+          this.previous().line,
+          this.previous().column
+        )
       } else if (this.match(TokenType.LEFT_PAREN)) {
         // 括弧付き関数呼び出し
         const args: AST.Expression[] = []
@@ -1049,6 +1059,8 @@ export class Parser {
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
       type === TokenType.LEFT_PAREN ||
+      type === TokenType.LEFT_BRACKET ||
+      type === TokenType.LEFT_BRACE ||
       type === TokenType.LAMBDA
     )
   }
@@ -1202,6 +1214,26 @@ export class Parser {
       return expr
     }
 
+    if (this.match(TokenType.LEFT_BRACKET)) {
+      // Array literal [1, 2, 3]
+      const elements: AST.Expression[] = []
+      const line = this.previous().line
+      const column = this.previous().column
+
+      if (!this.check(TokenType.RIGHT_BRACKET)) {
+        do {
+          this.skipNewlines()
+          elements.push(this.expression())
+          this.skipNewlines()
+        } while (this.match(TokenType.COMMA))
+      }
+
+      this.skipNewlines()
+      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array elements")
+
+      return new AST.ArrayLiteral(elements, line, column)
+    }
+
     if (this.match(TokenType.LEFT_BRACE)) {
       // Record literal { name: "John", age: 30 }
       const fields: AST.RecordInitField[] = []
@@ -1321,6 +1353,8 @@ export class Parser {
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
       type === TokenType.LEFT_PAREN ||
+      type === TokenType.LEFT_BRACKET ||
+      type === TokenType.LEFT_BRACE ||
       type === TokenType.LAMBDA
     )
   }
@@ -1379,7 +1413,7 @@ export class Parser {
       } else if (token.type === TokenType.RIGHT_PAREN) {
         if (depth === 0) break // 最上位の右括弧
         depth--
-      } else if (depth === 0 && (token.type === TokenType.COMMA || token.type === TokenType.RIGHT_PAREN)) {
+      } else if (depth === 0 && token.type === TokenType.COMMA) {
         break
       }
       

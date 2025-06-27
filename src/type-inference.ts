@@ -640,6 +640,20 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "ArrayLiteral":
+        resultType = this.generateConstraintsForArrayLiteral(
+          expr as AST.ArrayLiteral,
+          env
+        )
+        break
+
+      case "ArrayAccess":
+        resultType = this.generateConstraintsForArrayAccess(
+          expr as AST.ArrayAccess,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -2499,5 +2513,71 @@ export class TypeInferenceSystem {
     )
 
     return fieldType
+  }
+
+  private generateConstraintsForArrayLiteral(
+    arrayLiteral: AST.ArrayLiteral,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    if (arrayLiteral.elements.length === 0) {
+      // 空配列の場合、要素型は新しい型変数
+      const elementType = this.freshTypeVariable(arrayLiteral.line, arrayLiteral.column)
+      return new AST.GenericType("Array", [elementType], arrayLiteral.line, arrayLiteral.column)
+    }
+
+    // 最初の要素の型を推論
+    const firstElementType = this.generateConstraintsForExpression(arrayLiteral.elements[0], env)
+    
+    // すべての要素が同じ型であることを制約として追加
+    for (let i = 1; i < arrayLiteral.elements.length; i++) {
+      const elementType = this.generateConstraintsForExpression(arrayLiteral.elements[i], env)
+      this.addConstraint(
+        new TypeConstraint(
+          firstElementType,
+          elementType,
+          arrayLiteral.elements[i].line,
+          arrayLiteral.elements[i].column,
+          `Array element type consistency`
+        )
+      )
+    }
+
+    return new AST.GenericType("Array", [firstElementType], arrayLiteral.line, arrayLiteral.column)
+  }
+
+  private generateConstraintsForArrayAccess(
+    arrayAccess: AST.ArrayAccess,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const arrayType = this.generateConstraintsForExpression(arrayAccess.array, env)
+    const indexType = this.generateConstraintsForExpression(arrayAccess.index, env)
+    
+    // インデックスはInt型でなければならない
+    this.addConstraint(
+      new TypeConstraint(
+        indexType,
+        new AST.PrimitiveType("Int", arrayAccess.index.line, arrayAccess.index.column),
+        arrayAccess.index.line,
+        arrayAccess.index.column,
+        "Array index must be Int"
+      )
+    )
+
+    // 配列の要素型を取得
+    const elementType = this.freshTypeVariable(arrayAccess.line, arrayAccess.column)
+    const expectedArrayType = new AST.GenericType("Array", [elementType], arrayAccess.line, arrayAccess.column)
+    
+    // 配列がArray<T>型であることを制約として追加
+    this.addConstraint(
+      new TypeConstraint(
+        arrayType,
+        expectedArrayType,
+        arrayAccess.line,
+        arrayAccess.column,
+        "Array access type"
+      )
+    )
+
+    return elementType
   }
 }

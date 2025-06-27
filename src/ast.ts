@@ -432,6 +432,33 @@ export class RecordAccess extends Expression {
   }
 }
 
+export class ArrayLiteral extends Expression {
+  kind = "ArrayLiteral"
+  elements: Expression[]
+
+  constructor(elements: Expression[], line: number, column: number) {
+    super(line, column)
+    this.elements = elements
+  }
+}
+
+export class ArrayAccess extends Expression {
+  kind = "ArrayAccess"
+  array: Expression
+  index: Expression
+
+  constructor(
+    array: Expression,
+    index: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.array = array
+    this.index = index
+  }
+}
+
 // =============================================================================
 // Pattern Matching
 // =============================================================================
