@@ -61,6 +61,12 @@ export class TypeConstraint {
           .map((t) => this.typeToString(t))
           .join(", ")
         return `${gt.name}<${args}>`
+      case "RecordType":
+        const rt = type as AST.RecordType
+        const fields = rt.fields
+          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
+          .join(", ")
+        return `{${fields}}`
       default:
         return "Unknown"
     }
@@ -107,6 +113,21 @@ export class TypeSubstitution {
           gt.typeArguments.map((arg) => this.apply(arg)),
           gt.line,
           gt.column
+        )
+
+      case "RecordType":
+        const rt = type as AST.RecordType
+        return new AST.RecordType(
+          rt.fields.map((field) => 
+            new AST.RecordField(
+              field.name, 
+              this.apply(field.type), 
+              field.line, 
+              field.column
+            )
+          ),
+          rt.line,
+          rt.column
         )
 
       default:
@@ -196,6 +217,12 @@ export class TypeInferenceError {
   }
 }
 
+// 型推論結果インターフェース
+export interface InferenceResult {
+  errors: TypeInferenceError[]
+  inferredTypes?: Map<string, AST.Type>
+}
+
 // 型推論システムのメインクラス
 export class TypeInferenceSystem {
   private nextVarId = 0
@@ -206,6 +233,60 @@ export class TypeInferenceSystem {
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
     return new TypeVariable(this.nextVarId++, line, column)
+  }
+
+  // 多相型を具体化（インスタンス化）
+  instantiatePolymorphicType(type: AST.Type, line: number, column: number): AST.Type {
+    const substitutionMap = new Map<string, AST.Type>()
+    
+    const substitute = (t: AST.Type): AST.Type => {
+      switch (t.kind) {
+        case "PolymorphicTypeVariable":
+          const polyVar = t as PolymorphicTypeVariable
+          if (!substitutionMap.has(polyVar.name)) {
+            substitutionMap.set(polyVar.name, this.freshTypeVariable(line, column))
+          }
+          return substitutionMap.get(polyVar.name)!
+          
+        case "FunctionType":
+          const ft = t as AST.FunctionType
+          return new AST.FunctionType(
+            substitute(ft.paramType),
+            substitute(ft.returnType),
+            ft.line,
+            ft.column
+          )
+          
+        case "GenericType":
+          const gt = t as AST.GenericType
+          return new AST.GenericType(
+            gt.name,
+            gt.typeArguments.map(arg => substitute(arg)),
+            gt.line,
+            gt.column
+          )
+          
+        case "RecordType":
+          const rt = t as AST.RecordType
+          return new AST.RecordType(
+            rt.fields.map(field => 
+              new AST.RecordField(
+                field.name,
+                substitute(field.type),
+                field.line,
+                field.column
+              )
+            ),
+            rt.line,
+            rt.column
+          )
+          
+        default:
+          return t
+      }
+    }
+    
+    return substitute(type)
   }
 
   // 制約を追加
@@ -279,8 +360,69 @@ export class TypeInferenceSystem {
     )
     env.set("toString", toStringType)
 
-    // Maybe型のコンストラクタを削除（ConstructorExpressionで処理）
-    // Either型のコンストラクタを削除（ConstructorExpressionで処理）
+    // arrayToList: Array<'a> -> List<'a>
+    const aTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const arrayToListType = new AST.FunctionType(
+      new AST.GenericType("Array", [aTypeVar], 0, 0),
+      new AST.GenericType("List", [aTypeVar], 0, 0),
+      0,
+      0
+    )
+    env.set("arrayToList", arrayToListType)
+
+    // listToArray: List<'a> -> Array<'a>
+    const bTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const listToArrayType = new AST.FunctionType(
+      new AST.GenericType("List", [bTypeVar], 0, 0),
+      new AST.GenericType("Array", [bTypeVar], 0, 0),
+      0,
+      0
+    )
+    env.set("listToArray", listToArrayType)
+
+    // List constructors for pattern matching and expressions
+    // Empty : List<'a>
+    const emptyTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const emptyType = new AST.GenericType("List", [emptyTypeVar], 0, 0)
+    env.set("Empty", emptyType)
+
+    // Cons : 'a -> List<'a> -> List<'a>
+    const consTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const consListType = new AST.GenericType("List", [consTypeVar], 0, 0)
+    const consType = new AST.FunctionType(
+      consTypeVar,
+      new AST.FunctionType(consListType, consListType, 0, 0),
+      0,
+      0
+    )
+    env.set("Cons", consType)
+
+    // Maybe constructors for pattern matching and expressions
+    // Nothing : Maybe<'a>
+    const nothingTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const nothingType = new AST.GenericType("Maybe", [nothingTypeVar], 0, 0)
+    env.set("Nothing", nothingType)
+
+    // Just : 'a -> Maybe<'a>
+    const justTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const justMaybeType = new AST.GenericType("Maybe", [justTypeVar], 0, 0)
+    const justType = new AST.FunctionType(justTypeVar, justMaybeType, 0, 0)
+    env.set("Just", justType)
+
+    // Either constructors for pattern matching and expressions
+    // Left : 'a -> Either<'a, 'b>
+    const leftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const leftRightTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const leftEitherType = new AST.GenericType("Either", [leftTypeVar, leftRightTypeVar], 0, 0)
+    const leftType = new AST.FunctionType(leftTypeVar, leftEitherType, 0, 0)
+    env.set("Left", leftType)
+
+    // Right : 'b -> Either<'a, 'b>
+    const rightLeftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const rightTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const rightEitherType = new AST.GenericType("Either", [rightLeftTypeVar, rightTypeVar], 0, 0)
+    const rightType = new AST.FunctionType(rightTypeVar, rightEitherType, 0, 0)
+    env.set("Right", rightType)
 
     return env
   }
@@ -290,8 +432,21 @@ export class TypeInferenceSystem {
     program: AST.Program,
     env: Map<string, AST.Type>
   ): void {
+    // Two-pass approach to handle forward references:
+    // Pass 1: Process all function declarations and type declarations first
+    // This allows variables to reference functions defined later in the file
     for (const statement of program.statements) {
-      this.generateConstraintsForStatement(statement, env)
+      if (statement.kind === "FunctionDeclaration" || statement.kind === "TypeDeclaration") {
+        this.generateConstraintsForStatement(statement, env)
+      }
+    }
+    
+    // Pass 2: Process variable declarations and expression statements in original order
+    // At this point all functions and types are available in the environment
+    for (const statement of program.statements) {
+      if (statement.kind === "VariableDeclaration" || statement.kind === "ExpressionStatement") {
+        this.generateConstraintsForStatement(statement, env)
+      }
     }
   }
 
@@ -315,6 +470,12 @@ export class TypeInferenceSystem {
       case "ExpressionStatement":
         this.generateConstraintsForExpression(
           (statement as AST.ExpressionStatement).expression,
+          env
+        )
+        break
+      case "TypeDeclaration":
+        this.generateConstraintsForTypeDeclaration(
+          statement as AST.TypeDeclaration,
           env
         )
         break
@@ -347,12 +508,15 @@ export class TypeInferenceSystem {
     } else {
       // 引数ありの関数は通常のカリー化
       for (let i = func.parameters.length - 1; i >= 0; i--) {
-        const paramType =
-          func.parameters[i].type ||
-          this.freshTypeVariable(
-            func.parameters[i].line,
-            func.parameters[i].column
-          )
+        const param = func.parameters[i]
+        let paramType: AST.Type
+        
+        if (param.type) {
+          paramType = param.type
+        } else {
+          paramType = this.freshTypeVariable(param.line, param.column)
+        }
+        
         funcType = new AST.FunctionType(
           paramType,
           funcType,
@@ -368,8 +532,14 @@ export class TypeInferenceSystem {
     // 関数本体の型推論用の環境を作成
     const bodyEnv = new Map(env)
     for (const param of func.parameters) {
-      const paramType =
-        param.type || this.freshTypeVariable(param.line, param.column)
+      let paramType: AST.Type
+      
+      if (param.type) {
+        paramType = param.type
+      } else {
+        paramType = this.freshTypeVariable(param.line, param.column)
+      }
+      
       bodyEnv.set(param.name, paramType)
     }
 
@@ -426,6 +596,54 @@ export class TypeInferenceSystem {
     this.nodeTypeMap.set(varDecl.initializer, initType)
 
     return finalType
+  }
+
+  private generateConstraintsForTypeDeclaration(
+    typeDecl: AST.TypeDeclaration,
+    env: Map<string, AST.Type>
+  ): void {
+    // ADT型を環境に追加
+    const adtType = new AST.PrimitiveType(typeDecl.name, typeDecl.line, typeDecl.column)
+
+    // ADT型自体を環境に登録
+    env.set(typeDecl.name, adtType)
+
+    // 各バリアント（コンストラクタ）を環境に追加
+    for (const field of typeDecl.fields) {
+      const constructorType = this.createConstructorType(field, adtType)
+      env.set(field.name, constructorType)
+    }
+  }
+
+  private createConstructorType(field: AST.TypeField, adtType: AST.Type): AST.Type {
+    if (field.type instanceof AST.PrimitiveType && field.type.name === "Unit") {
+      // データなしのコンストラクタ (Red, Green, Blue)
+      return adtType
+    } else if (field.type instanceof AST.GenericType && field.type.name === "Tuple") {
+      // データ付きのコンストラクタ (RGB Int Int Int)
+      let resultType = adtType
+      
+      // 型引数から逆順でカリー化された関数型を構築
+      for (let i = field.type.typeArguments.length - 1; i >= 0; i--) {
+        const paramType = field.type.typeArguments[i]
+        resultType = new AST.FunctionType(
+          paramType,
+          resultType,
+          field.line,
+          field.column
+        )
+      }
+      
+      return resultType
+    } else {
+      // その他のケース（単一データ）
+      return new AST.FunctionType(
+        field.type,
+        adtType,
+        field.line,
+        field.column
+      )
+    }
   }
 
   public generateConstraintsForExpression(
@@ -551,6 +769,48 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "RecordExpression":
+        resultType = this.generateConstraintsForRecordExpression(
+          expr as AST.RecordExpression,
+          env
+        )
+        break
+
+      case "RecordAccess":
+        resultType = this.generateConstraintsForRecordAccess(
+          expr as AST.RecordAccess,
+          env
+        )
+        break
+
+      case "ArrayLiteral":
+        resultType = this.generateConstraintsForArrayLiteral(
+          expr as AST.ArrayLiteral,
+          env
+        )
+        break
+
+      case "ArrayAccess":
+        resultType = this.generateConstraintsForArrayAccess(
+          expr as AST.ArrayAccess,
+          env
+        )
+        break
+
+      case "ListSugar":
+        resultType = this.generateConstraintsForListSugar(
+          expr as AST.ListSugar,
+          env
+        )
+        break
+
+      case "ConsExpression":
+        resultType = this.generateConstraintsForConsExpression(
+          expr as AST.ConsExpression,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -587,6 +847,7 @@ export class TypeInferenceSystem {
     identifier: AST.Identifier,
     env: Map<string, AST.Type>
   ): AST.Type {
+    // Normal identifier lookup
     const type = env.get(identifier.name)
     if (!type) {
       this.errors.push(
@@ -598,7 +859,8 @@ export class TypeInferenceSystem {
       )
       return this.freshTypeVariable(identifier.line, identifier.column)
     }
-    return type
+    // Instantiate polymorphic types when looking up from environment
+    return this.instantiatePolymorphicType(type, identifier.line, identifier.column)
   }
 
   private generateConstraintsForBinaryOperation(
@@ -696,6 +958,25 @@ export class TypeInferenceSystem {
           )
         )
         return boolType
+
+      case ":":
+        // CONS演算子: a : List<a> -> List<a>
+        // 左オペランドは要素、右オペランドはリスト、結果は同じ要素型のリスト
+        const expectedListType = new AST.GenericType("List", [leftType], binOp.right.line, binOp.right.column)
+        
+        // 右オペランドはList<leftType>型でなければならない
+        this.addConstraint(
+          new TypeConstraint(
+            rightType,
+            expectedListType,
+            binOp.right.line,
+            binOp.right.column,
+            `CONS operator (:) right operand must be List<${this.typeToString(leftType)}>`
+          )
+        )
+        
+        // 結果の型もList<leftType>
+        return expectedListType
 
       default:
         this.errors.push(
@@ -827,7 +1108,8 @@ export class TypeInferenceSystem {
     }
 
     // 関数呼び出しの結果型
-    let resultType = funcType
+    // 多相型を具体化してから制約を生成
+    let resultType = this.instantiatePolymorphicType(funcType, call.line, call.column)
 
     // 各引数に対して関数適用の制約を生成
     for (const arg of call.arguments) {
@@ -1467,8 +1749,19 @@ export class TypeInferenceSystem {
             env
           )
           return new AST.GenericType("Maybe", [argType], ctor.line, ctor.column)
+        } else if (!ctor.arguments || ctor.arguments.length === 0) {
+          // Just without arguments - treat as a curried function
+          // Just : 'a -> Maybe<'a>
+          const elemType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
+          const maybeType = new AST.GenericType(
+            "Maybe",
+            [elemType],
+            ctor.line,
+            ctor.column
+          )
+          return new AST.FunctionType(elemType, maybeType, ctor.line, ctor.column)
         }
-        // Just without arguments - should be error
+        // Just with wrong number of arguments - should be error
         this.errors.push(
           new TypeInferenceError(
             "Just constructor requires exactly one argument",
@@ -1515,6 +1808,18 @@ export class TypeInferenceSystem {
             ctor.line,
             ctor.column
           )
+        } else if (!ctor.arguments || ctor.arguments.length === 0) {
+          // Right without arguments - treat as a curried function
+          // Right : 'b -> Either<'a, 'b>
+          const leftType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
+          const rightType = new PolymorphicTypeVariable("b", ctor.line, ctor.column)
+          const eitherType = new AST.GenericType(
+            "Either",
+            [leftType, rightType],
+            ctor.line,
+            ctor.column
+          )
+          return new AST.FunctionType(rightType, eitherType, ctor.line, ctor.column)
         }
         this.errors.push(
           new TypeInferenceError(
@@ -1546,6 +1851,18 @@ export class TypeInferenceSystem {
             ctor.line,
             ctor.column
           )
+        } else if (!ctor.arguments || ctor.arguments.length === 0) {
+          // Left without arguments - treat as a curried function
+          // Left : 'a -> Either<'a, 'b>
+          const leftType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
+          const rightType = new PolymorphicTypeVariable("b", ctor.line, ctor.column)
+          const eitherType = new AST.GenericType(
+            "Either",
+            [leftType, rightType],
+            ctor.line,
+            ctor.column
+          )
+          return new AST.FunctionType(leftType, eitherType, ctor.line, ctor.column)
         }
         this.errors.push(
           new TypeInferenceError(
@@ -1564,7 +1881,85 @@ export class TypeInferenceSystem {
           ctor.column
         )
 
+      case "Empty":
+        // Empty is polymorphic: List<'a>
+        return new AST.GenericType(
+          "List",
+          [new PolymorphicTypeVariable("a", ctor.line, ctor.column)],
+          ctor.line,
+          ctor.column
+        )
+
+      case "Cons":
+        if (ctor.arguments && ctor.arguments.length === 2) {
+          const headType = this.generateConstraintsForExpression(
+            ctor.arguments[0],
+            env
+          )
+          const tailType = this.generateConstraintsForExpression(
+            ctor.arguments[1],
+            env
+          )
+          
+          // Cons head tail should have type List<headType>
+          const expectedTailType = new AST.GenericType(
+            "List",
+            [headType],
+            ctor.line,
+            ctor.column
+          )
+          
+          // Add constraint that tail must be List<headType>
+          this.addConstraint(
+            new TypeConstraint(
+              tailType,
+              expectedTailType,
+              ctor.line,
+              ctor.column,
+              "Cons tail type"
+            )
+          )
+          
+          return expectedTailType
+        } else if (!ctor.arguments || ctor.arguments.length === 0) {
+          // Cons without arguments - treat as a curried function
+          // Cons : 'a -> List<'a> -> List<'a>
+          const elemType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
+          const listType = new AST.GenericType(
+            "List",
+            [elemType],
+            ctor.line,
+            ctor.column
+          )
+          return new AST.FunctionType(
+            elemType,
+            new AST.FunctionType(listType, listType, ctor.line, ctor.column),
+            ctor.line,
+            ctor.column
+          )
+        }
+        this.errors.push(
+          new TypeInferenceError(
+            "Cons constructor requires exactly two arguments (head and tail)",
+            ctor.line,
+            ctor.column
+          )
+        )
+        return new AST.GenericType(
+          "List",
+          [new PolymorphicTypeVariable("a", ctor.line, ctor.column)],
+          ctor.line,
+          ctor.column
+        )
+
       default:
+        // Check if this is an ADT constructor from the environment
+        const constructorType = env.get(constructorName)
+        if (constructorType) {
+          // This is a known ADT constructor
+          return this.applyConstructor(constructorType, ctor, env)
+        }
+        
         this.errors.push(
           new TypeInferenceError(
             `Unknown constructor: ${constructorName}`,
@@ -1574,6 +1969,55 @@ export class TypeInferenceSystem {
         )
         return this.freshTypeVariable(ctor.line, ctor.column)
     }
+  }
+
+  private applyConstructor(
+    constructorType: AST.Type,
+    ctor: AST.ConstructorExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // Extract parameter types and result type from constructor function type
+    let currentType = constructorType
+    const expectedParamTypes: AST.Type[] = []
+
+    // Traverse function type to get parameter types
+    while (currentType instanceof AST.FunctionType) {
+      expectedParamTypes.push(currentType.paramType)
+      currentType = currentType.returnType
+    }
+
+    // The final type should be the ADT type
+    const resultType = currentType
+
+    // Check argument count
+    if (ctor.arguments.length !== expectedParamTypes.length) {
+      this.errors.push(
+        new TypeInferenceError(
+          `Constructor ${ctor.constructorName} expects ${expectedParamTypes.length} arguments, but got ${ctor.arguments.length}`,
+          ctor.line,
+          ctor.column
+        )
+      )
+      return resultType
+    }
+
+    // Type check each argument
+    for (let i = 0; i < ctor.arguments.length; i++) {
+      const argType = this.generateConstraintsForExpression(ctor.arguments[i], env)
+      
+      // Add constraint that argument type matches expected parameter type
+      this.addConstraint(
+        new TypeConstraint(
+          argType,
+          expectedParamTypes[i],
+          ctor.arguments[i].line,
+          ctor.arguments[i].column,
+          `Constructor ${ctor.constructorName} argument ${i + 1}`
+        )
+      )
+    }
+
+    return resultType
   }
 
   private generateConstraintsForLambdaExpression(
@@ -1735,9 +2179,101 @@ export class TypeInferenceSystem {
       return result
     }
 
+    // Record型の場合
+    if (type1.kind === "RecordType" && type2.kind === "RecordType") {
+      const rt1 = type1 as AST.RecordType
+      const rt2 = type2 as AST.RecordType
+
+      // 構造的部分型：一方が他方のサブセットの場合は統一可能
+      // 長いレコードの方を基準にして、短いレコードがサブセットかチェック
+      const [largerRecord, smallerRecord] = rt1.fields.length >= rt2.fields.length ? [rt1, rt2] : [rt2, rt1]
+      const isSubset = this.isRecordSubset(smallerRecord, largerRecord)
+
+      if (isSubset) {
+        // サブセット関係がある場合、共通フィールドを統一
+        let result = substitution
+        for (const smallerField of smallerRecord.fields) {
+          const largerField = largerRecord.fields.find(f => f.name === smallerField.name)
+          if (largerField) {
+            const fieldSub = this.unify(
+              result.apply(smallerField.type),
+              result.apply(largerField.type)
+            )
+            result = result.compose(fieldSub)
+          }
+        }
+        return result
+      }
+
+      // サブセット関係がない場合、完全一致が必要
+      if (rt1.fields.length !== rt2.fields.length) {
+        throw new Error(
+          `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}: incompatible record structures`
+        )
+      }
+
+      // フィールド名でソートして比較
+      const fields1 = [...rt1.fields].sort((a, b) => a.name.localeCompare(b.name))
+      const fields2 = [...rt2.fields].sort((a, b) => a.name.localeCompare(b.name))
+
+      let result = substitution
+      for (let i = 0; i < fields1.length; i++) {
+        if (fields1[i].name !== fields2[i].name) {
+          throw new Error(
+            `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}: field names don't match`
+          )
+        }
+
+        const fieldSub = this.unify(
+          result.apply(fields1[i].type),
+          result.apply(fields2[i].type)
+        )
+        result = result.compose(fieldSub)
+      }
+
+      return result
+    }
+
+    // Record型と他の型の部分的統一（構造的部分型）
+    if (type1.kind === "RecordType" || type2.kind === "RecordType") {
+      // どちらか一方がRecordTypeの場合、構造的部分型をチェック
+      const recordType = type1.kind === "RecordType" ? type1 as AST.RecordType : type2 as AST.RecordType
+      const otherType = type1.kind === "RecordType" ? type2 : type1
+
+      if (otherType.kind === "TypeVariable") {
+        // 型変数の場合は通常の統一を行う
+        const tv = otherType as TypeVariable
+        if (this.occursCheck(tv.id, recordType)) {
+          throw new Error(
+            `Infinite type: ${tv.name} occurs in ${this.typeToString(recordType)}`
+          )
+        }
+        substitution.set(tv.id, recordType)
+        return substitution
+      }
+
+      // その他の場合は統一不可能
+      throw new Error(
+        `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+      )
+    }
+
     throw new Error(
       `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
     )
+  }
+
+  // 構造的部分型：小さいレコードが大きいレコードのサブセットかどうかチェック
+  private isRecordSubset(smallerRecord: AST.RecordType, largerRecord: AST.RecordType): boolean {
+    // 小さいレコードのすべてのフィールドが大きいレコードに存在するかチェック
+    for (const smallerField of smallerRecord.fields) {
+      const largerField = largerRecord.fields.find(f => f.name === smallerField.name)
+      if (!largerField) {
+        return false // フィールドが見つからない
+      }
+      // フィールドが見つかった場合、型の互換性は後で unify でチェックされる
+    }
+    return true
   }
 
   // Occurs Check: 型変数が型の中に現れるかチェック
@@ -1756,6 +2292,10 @@ export class TypeInferenceSystem {
       case "GenericType":
         const gt = type as AST.GenericType
         return gt.typeArguments.some((arg) => this.occursCheck(varId, arg))
+
+      case "RecordType":
+        const rt = type as AST.RecordType
+        return rt.fields.some((field) => this.occursCheck(varId, field.type))
 
       default:
         return false
@@ -1801,6 +2341,23 @@ export class TypeInferenceSystem {
           )
         )
 
+      case "RecordType":
+        const rt1 = type1 as AST.RecordType
+        const rt2 = type2 as AST.RecordType
+        
+        if (rt1.fields.length !== rt2.fields.length) {
+          return false
+        }
+
+        // フィールド名でソートして比較
+        const fields1 = [...rt1.fields].sort((a, b) => a.name.localeCompare(b.name))
+        const fields2 = [...rt2.fields].sort((a, b) => a.name.localeCompare(b.name))
+
+        return fields1.every((field1, i) => {
+          const field2 = fields2[i]
+          return field1.name === field2.name && this.typesEqual(field1.type, field2.type)
+        })
+
       default:
         return false
     }
@@ -1828,6 +2385,13 @@ export class TypeInferenceSystem {
           .map((t) => this.typeToString(t))
           .join(", ")
         return `${gt.name}<${args}>`
+
+      case "RecordType":
+        const rt = type as AST.RecordType
+        const fields = rt.fields
+          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
+          .join(", ")
+        return `{${fields}}`
 
       default:
         return "Unknown"
@@ -1934,21 +2498,63 @@ export class TypeInferenceSystem {
         // コンストラクタパターン: 代数的データ型のコンストラクタ
         const ctorPattern = pattern as AST.ConstructorPattern
         
-        // コンストラクタの型をチェック（簡易実装）
-        // ここでは期待する型がコンストラクタと一致することをチェック
+        // 環境からコンストラクタの型を取得
+        const constructorType = env.get(ctorPattern.constructorName)
+        if (!constructorType) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Unknown constructor: ${ctorPattern.constructorName}`,
+              pattern.line,
+              pattern.column
+            )
+          )
+          return
+        }
+
+        // コンストラクタがADT型を返すことを確認
+        let adtType = expectedType
+        let currentType = constructorType
+        const paramTypes: AST.Type[] = []
+
+        // 関数型を辿ってパラメータ型を抽出
+        while (currentType instanceof AST.FunctionType) {
+          paramTypes.push(currentType.paramType)
+          currentType = currentType.returnType
+        }
+
+        // 最終的な戻り値型（ADT型）
+        adtType = currentType
+
+        // 期待する型とADT型が一致することを確認
         this.addConstraint(
           new TypeConstraint(
             expectedType,
-            new AST.PrimitiveType(ctorPattern.constructorName, pattern.line, pattern.column),
+            adtType,
             pattern.line,
             pattern.column,
             `Constructor pattern type`
           )
         )
-        
-        // ネストしたパターンがあれば再帰的に処理
-        for (const nestedPattern of ctorPattern.patterns) {
-          this.generateConstraintsForPattern(nestedPattern, expectedType, env)
+
+        // パターンの引数と型パラメータの数が一致することを確認
+        if (ctorPattern.patterns.length !== paramTypes.length) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Constructor ${ctorPattern.constructorName} expects ${paramTypes.length} arguments, but got ${ctorPattern.patterns.length}`,
+              pattern.line,
+              pattern.column
+            )
+          )
+          return
+        }
+
+        // ネストしたパターンに対応する型で再帰的に処理
+        for (let i = 0; i < ctorPattern.patterns.length; i++) {
+          this.generateConstraintsForPattern(
+            ctorPattern.patterns[i], 
+            paramTypes[i], 
+            env
+          )
         }
         break
 
@@ -1962,4 +2568,205 @@ export class TypeInferenceSystem {
         )
     }
   }
+
+  private generateConstraintsForRecordExpression(
+    record: AST.RecordExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const fields: AST.RecordField[] = []
+
+    for (const initField of record.fields) {
+      const fieldType = this.generateConstraintsForExpression(initField.value, env)
+      fields.push(
+        new AST.RecordField(
+          initField.name,
+          fieldType,
+          initField.line,
+          initField.column
+        )
+      )
+    }
+
+    return new AST.RecordType(fields, record.line, record.column)
+  }
+
+  private generateConstraintsForRecordAccess(
+    access: AST.RecordAccess,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const recordType = this.generateConstraintsForExpression(access.record, env)
+    const fieldType = this.freshTypeVariable(access.line, access.column)
+
+    // Create a constraint that the record type must have the specified field
+    // This is a structural typing constraint
+    const expectedRecordType = new AST.RecordType(
+      [new AST.RecordField(access.fieldName, fieldType, access.line, access.column)],
+      access.line,
+      access.column
+    )
+
+    // Add constraint that record must be compatible with having this field
+    this.addConstraint(
+      new TypeConstraint(
+        recordType,
+        expectedRecordType,
+        access.line,
+        access.column,
+        `Record access .${access.fieldName}`
+      )
+    )
+
+    return fieldType
+  }
+
+  private generateConstraintsForArrayLiteral(
+    arrayLiteral: AST.ArrayLiteral,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    if (arrayLiteral.elements.length === 0) {
+      // 空配列の場合、要素型は新しい型変数
+      const elementType = this.freshTypeVariable(arrayLiteral.line, arrayLiteral.column)
+      return new AST.GenericType("Array", [elementType], arrayLiteral.line, arrayLiteral.column)
+    }
+
+    // 最初の要素の型を推論
+    const firstElementType = this.generateConstraintsForExpression(arrayLiteral.elements[0], env)
+    
+    // すべての要素が同じ型であることを制約として追加
+    for (let i = 1; i < arrayLiteral.elements.length; i++) {
+      const elementType = this.generateConstraintsForExpression(arrayLiteral.elements[i], env)
+      this.addConstraint(
+        new TypeConstraint(
+          firstElementType,
+          elementType,
+          arrayLiteral.elements[i].line,
+          arrayLiteral.elements[i].column,
+          `Array element type consistency`
+        )
+      )
+    }
+
+    return new AST.GenericType("Array", [firstElementType], arrayLiteral.line, arrayLiteral.column)
+  }
+
+  private generateConstraintsForArrayAccess(
+    arrayAccess: AST.ArrayAccess,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const arrayType = this.generateConstraintsForExpression(arrayAccess.array, env)
+    const indexType = this.generateConstraintsForExpression(arrayAccess.index, env)
+    
+    // インデックスはInt型でなければならない
+    this.addConstraint(
+      new TypeConstraint(
+        indexType,
+        new AST.PrimitiveType("Int", arrayAccess.index.line, arrayAccess.index.column),
+        arrayAccess.index.line,
+        arrayAccess.index.column,
+        "Array index must be Int"
+      )
+    )
+
+    // 配列の要素型を取得
+    const elementType = this.freshTypeVariable(arrayAccess.line, arrayAccess.column)
+    const expectedArrayType = new AST.GenericType("Array", [elementType], arrayAccess.line, arrayAccess.column)
+    
+    // 配列がArray<T>型であることを制約として追加
+    this.addConstraint(
+      new TypeConstraint(
+        arrayType,
+        expectedArrayType,
+        arrayAccess.line,
+        arrayAccess.column,
+        "Array access type"
+      )
+    )
+
+    return elementType
+  }
+
+  private generateConstraintsForListSugar(
+    listSugar: AST.ListSugar,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    if (listSugar.elements.length === 0) {
+      // 空リストの場合、要素型は新しい型変数
+      const elementType = this.freshTypeVariable(listSugar.line, listSugar.column)
+      return new AST.GenericType("List", [elementType], listSugar.line, listSugar.column)
+    }
+
+    // 最初の要素の型を推論
+    const firstElementType = this.generateConstraintsForExpression(listSugar.elements[0], env)
+    
+    // すべての要素が同じ型であることを制約として追加
+    for (let i = 1; i < listSugar.elements.length; i++) {
+      const elementType = this.generateConstraintsForExpression(listSugar.elements[i], env)
+      this.addConstraint(
+        new TypeConstraint(
+          firstElementType,
+          elementType,
+          listSugar.elements[i].line,
+          listSugar.elements[i].column,
+          `List element type consistency`
+        )
+      )
+    }
+
+    return new AST.GenericType("List", [firstElementType], listSugar.line, listSugar.column)
+  }
+
+  private generateConstraintsForConsExpression(
+    consExpr: AST.ConsExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // head : tail の型推論
+    const headType = this.generateConstraintsForExpression(consExpr.left, env)
+    const tailType = this.generateConstraintsForExpression(consExpr.right, env)
+    
+    // tailはList<T>型でなければならない
+    const expectedTailType = new AST.GenericType("List", [headType], consExpr.right.line, consExpr.right.column)
+    
+    this.addConstraint(
+      new TypeConstraint(
+        tailType,
+        expectedTailType,
+        consExpr.right.line,
+        consExpr.right.column,
+        "Cons tail must be List type"
+      )
+    )
+
+    // 結果の型もList<T>
+    return new AST.GenericType("List", [headType], consExpr.line, consExpr.column)
+  }
+}
+
+// Convenience function for type inference
+export function infer(statements: AST.Statement[]): InferenceResult {
+  const inference = new TypeInferenceSystem();
+  const program = new AST.Program(statements);
+  const result = inference.infer(program);
+  
+  // Transform the result to match InferenceResult interface
+  const inferredTypes = new Map<string, AST.Type>();
+  
+  // Extract inferred types for variables
+  for (const stmt of statements) {
+    if (stmt instanceof AST.VariableDeclaration) {
+      const type = result.nodeTypeMap.get(stmt);
+      if (type) {
+        inferredTypes.set(stmt.name, result.substitution.apply(type));
+      }
+    } else if (stmt instanceof AST.FunctionDeclaration) {
+      const type = result.nodeTypeMap.get(stmt);
+      if (type) {
+        inferredTypes.set(stmt.name, result.substitution.apply(type));
+      }
+    }
+  }
+  
+  return {
+    errors: result.errors,
+    inferredTypes
+  };
 }

@@ -77,6 +77,7 @@ export enum TokenType {
   RIGHT_BRACKET = "RIGHT_BRACKET", // ]
 
   // Special
+  BACKTICK = "BACKTICK", // `
   LAMBDA = "LAMBDA", // \
   NEWLINE = "NEWLINE",
   EOF = "EOF",
@@ -241,6 +242,8 @@ export class Lexer {
         )
       case "\\":
         return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
+      case "`":
+        return this.makeToken(TokenType.BACKTICK, char, startLine, startColumn)
       case "\n":
         this.line++
         this.column = 1
@@ -498,4 +501,10 @@ export class Lexer {
 
     return this.makeToken(TokenType.COMMENT, value, startLine, startColumn)
   }
+}
+
+// Convenience function for lexing
+export function lex(source: string): Token[] {
+  const lexer = new Lexer(source);
+  return lexer.tokenize();
 }

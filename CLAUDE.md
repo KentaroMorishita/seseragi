@@ -352,6 +352,87 @@ gh pr create --title "機能タイトル" --body "詳細説明"
 - `tests/`ディレクトリも含む
 - 一部厳密チェックを緩和（開発効率のため）
 
+## 言語機能追加時の必須手順
+
+**新しい言語機能（トークン、演算子、構文等）を追加する際は、必ず以下の手順を全て実行すること：**
+
+### ✅ 必須チェックリスト
+
+#### 1. コア実装
+- [ ] **Lexer更新** - 新しいトークンを `src/lexer.ts` の `TokenType` enum と `nextToken()` に追加
+- [ ] **Parser更新** - 新しい構文解析ルールを `src/parser.ts` に追加
+- [ ] **AST拡張** - 新しいノード型を `src/ast.ts` に定義
+- [ ] **CodeGen更新** - TypeScript出力ルールを `src/codegen.ts` に追加
+
+#### 2. 型推論システム更新（🚨重要🚨）
+- [ ] **型推論ルール追加** - `src/type-inference.ts` に新しい演算子・構文の型推論ルールを追加
+- [ ] **型制約処理** - 必要に応じて新しい型制約を実装
+- [ ] **エラーハンドリング** - 適切な型エラーメッセージを追加
+
+#### 3. VSCode拡張機能修正（🚨重要🚨）
+- [ ] **構文ハイライト** - `extensions/seseragi/syntaxes/seseragi.tmLanguage.json` を更新
+  - 新しいキーワード、演算子、構文パターンを追加
+  - パターンの優先順位を確認
+- [ ] **バージョンアップ** - `extensions/seseragi/package.json` のversion番号を上げる
+
+#### 4. VSCode拡張機能再ビルド（🚨重要🚨）
+```bash
+cd extensions/seseragi
+
+# 拡張機能再ビルド
+bun run compile
+
+# 古いパッケージ削除 & 新パッケージ作成
+rm -f *.vsix && vsce package
+
+# 古い拡張機能をアンインストール
+code --uninstall-extension seseragi-dev.seseragi-language-support
+
+# 新しい拡張機能をインストール
+code --install-extension seseragi-language-support-*.vsix
+
+# VSCodeをリロード（必須）
+# Command Palette → "Developer: Reload Window"
+```
+
+#### 5. テスト・検証
+- [ ] **テスト追加** - 新機能のテストケースを `tests/` に追加
+- [ ] **既存テスト確認** - `bun test` で全テストが通ることを確認
+- [ ] **コンパイル確認** - サンプルコードがコンパイルできることを確認
+- [ ] **VSCode動作確認** - 構文ハイライトとエラー表示が正しく動作することを確認
+
+#### 6. ドキュメント更新
+- [ ] **サンプルコード** - `examples/` ディレクトリに使用例を追加
+- [ ] **README更新** - 必要に応じて機能説明を追加
+
+### 🚨 よくある見落とし
+
+1. **型推論ルールの追加忘れ** → "Unknown binary operator" エラー
+2. **VSCode拡張機能の再ビルド忘れ** → 構文エラーが表示され続ける
+3. **VSCode拡張機能のバージョンアップ忘れ** → キャッシュにより更新されない
+4. **VSCodeのリロード忘れ** → 新しい構文ハイライトが適用されない
+
+### 💡 効率的な開発フロー
+
+```bash
+# 1. 実装フェーズ
+vi src/lexer.ts          # トークン追加
+vi src/parser.ts         # パーサー更新  
+vi src/ast.ts            # AST拡張
+vi src/type-inference.ts # 型推論追加（忘れやすい🚨）
+vi src/codegen.ts        # コード生成追加
+
+# 2. VSCode拡張フェーズ（忘れやすい🚨）
+vi extensions/seseragi/syntaxes/seseragi.tmLanguage.json  # 構文更新
+vi extensions/seseragi/package.json                       # version up
+cd extensions/seseragi && ./rebuild-extension.sh          # 再ビルド
+
+# 3. テスト・検証フェーズ
+bun test                 # 全テスト実行
+bun run src/cli.ts compile examples/test.ssrg  # コンパイル確認
+# VSCode → Command Palette → "Developer: Reload Window"  # 拡張機能確認
+```
+
 ## 特定開発タスク
 
 ### 単一テストファイル実行

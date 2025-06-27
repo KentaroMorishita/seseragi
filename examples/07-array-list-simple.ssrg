@@ -1,0 +1,33 @@
+// シンプルなArray↔List変換のサンプル
+
+// 基本的な変換
+let arr = [1, 2, 3, 4, 5]
+let list = arrayToList arr
+let back = listToArray list
+
+print "Original array:"
+print arr
+print "Converted to list:"
+print list
+print "Back to array:"
+print back
+
+// 空配列のテスト
+let empty = []
+let emptyList = arrayToList empty
+let emptyBack = listToArray emptyList
+
+print "\nEmpty array:"
+print empty
+print emptyList
+print emptyBack
+
+// 文字列配列
+let words = ["hello", "world", "seseragi"]
+let wordList = arrayToList words
+let wordsBack = listToArray wordList
+
+print "\nString array:"
+print words
+print wordList
+print wordsBack

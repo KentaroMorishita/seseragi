@@ -16,22 +16,22 @@ fn multiply x :Int -> y :Int -> Int = x * y
 let double = multiply 2
 let triple = multiply 3
 
-print $ toString $ double 15    // 30
-print $ toString $ triple 8     // 24
+print $ double 15    // 30
+print $ triple 8     // 24
 
 // 複雑な再帰関数
 fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
 fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
 
 print "=== Fibonacci sequence ==="
-print $ toString $ fibonacci 0   // 0
-print $ toString $ fibonacci 1   // 1
-print $ toString $ fibonacci 5   // 5
-print $ toString $ fibonacci 8   // 21
+print $ fibonacci 0   // 0
+print $ fibonacci 1   // 1
+print $ fibonacci 5   // 5
+print $ fibonacci 8   // 21
 
 print "=== Factorial examples ==="
-print $ toString $ factorial 5   // 120
-print $ toString $ factorial 3   // 6
+print $ factorial 5   // 120
+print $ factorial 3   // 6
 
 // =============================================================================
 // 将来実装予定の機能（サンプル）

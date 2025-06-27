@@ -1,0 +1,65 @@
+// List型のサンプルコード
+
+print "=== List Type Examples ==="
+
+// =============================================================================
+// 基本的なリスト操作
+// =============================================================================
+
+print "--- Basic List Operations ---"
+
+// 空のリスト
+let emptyList = Empty
+print emptyList
+
+// 要素を持つリスト
+let singletonList = Cons 42 Empty
+print singletonList
+
+let twoElementList = Cons 1 (Cons 2 Empty)
+print twoElementList
+
+let threeElementList = Cons 10 (Cons 20 (Cons 30 Empty))
+print threeElementList
+
+// =============================================================================
+// 様々な型のリスト
+// =============================================================================
+
+print "--- Different Types of Lists ---"
+
+// 文字列のリスト
+let stringList = Cons "hello" (Cons "world" Empty)
+print stringList
+
+// Maybe型を含むリスト
+let maybeList = Cons (Just 1) (Cons Nothing (Cons (Just 3) Empty))
+print maybeList
+
+// Either型を含むリスト
+let eitherList = Cons (Right 42) (Cons (Left "error") (Cons (Right 100) Empty))
+print eitherList
+
+// =============================================================================
+// 関数型スタイルでのリスト操作
+// =============================================================================
+
+print "--- Functional Style List Operations ---"
+
+// リストに要素を追加する関数
+fn prepend x :Int -> lst :List<Int> -> List<Int> = Cons x lst
+
+let originalList = Cons 2 (Cons 3 Empty)
+let prependedList = prepend 1 originalList
+print originalList
+print prependedList
+
+// リストの操作例
+let anotherList = Cons 99 (Cons 88 Empty)
+print anotherList
+
+// ネストしたリスト
+let nestedList = Cons (Cons 1 Empty) (Cons (Cons 2 (Cons 3 Empty)) Empty)
+print nestedList
+
+print "List examples completed!"

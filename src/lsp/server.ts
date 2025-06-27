@@ -22,10 +22,8 @@ import {
 
 import { TextDocument } from "vscode-languageserver-textdocument"
 import { URI } from "vscode-uri"
-import { Lexer } from "../formatter/lexer"
 import { Parser } from "../parser"
-import { TypeChecker } from "../typechecker"
-import { TypeInferenceSystem, TypeVariable } from "../type-inference"
+import { TypeInferenceSystem } from "../type-inference"
 import {
   formatSeseragiCode,
   removeExtraWhitespace,
@@ -237,6 +235,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
     if (error instanceof Error) {
       errorMessage = error.message
+      // Log the full error for debugging
+      connection.console.log(`Parser error: ${error.message}`)
+      connection.console.log(`Error stack: ${error.stack}`)
+      
       // Try to extract position information from error message if available
       const posMatch = error.message.match(/line (\d+), column (\d+)/)
       if (posMatch) {
@@ -1168,6 +1170,17 @@ function inferFunctionCallReturnType(call: any, ast?: any): any {
     complexCalculation: { kind: "PrimitiveType", name: "Int" },
     add: { kind: "PrimitiveType", name: "Int" },
     double: { kind: "PrimitiveType", name: "Int" },
+    // Array↔List conversion functions
+    arrayToList: (argType: any) => ({
+      kind: "GenericType",
+      name: "List",
+      typeArguments: [argType || { kind: "TypeVariable", name: "T" }],
+    }),
+    listToArray: (argType: any) => ({
+      kind: "GenericType",
+      name: "Array",
+      typeArguments: [argType || { kind: "TypeVariable", name: "T" }],
+    }),
     getMessage: { kind: "PrimitiveType", name: "String" },
     getNumber: { kind: "PrimitiveType", name: "Int" },
     max: { kind: "PrimitiveType", name: "Int" },

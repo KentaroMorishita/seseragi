@@ -267,6 +267,12 @@ export class TypeChecker {
       case "LambdaExpression":
         return this.checkLambda(expr as AST.LambdaExpression, env)
 
+      case "RecordExpression":
+        return this.checkRecordExpression(expr as AST.RecordExpression, env)
+
+      case "RecordAccess":
+        return this.checkRecordAccess(expr as AST.RecordAccess, env)
+
       default:
         this.addError(
           `Unhandled expression type: ${expr.kind}`,
@@ -888,26 +894,6 @@ export class TypeChecker {
     return this.typesEqual(expected, actual)
   }
 
-  private typeToString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-
-      case "FunctionType":
-        const ft = type as AST.FunctionType
-        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
-
-      case "GenericType":
-        const gt = type as AST.GenericType
-        const args = gt.typeArguments
-          .map((t) => this.typeToString(t))
-          .join(", ")
-        return `${gt.name}<${args}>`
-
-      default:
-        return "Unknown"
-    }
-  }
 
   private isNumericType(type: AST.Type): boolean {
     return this.isIntType(type) || this.isFloatType(type)
@@ -1003,5 +989,96 @@ export class TypeChecker {
     }
 
     return "Check the types of both operands"
+  }
+
+  private checkRecordExpression(
+    record: AST.RecordExpression,
+    env: TypeEnvironment
+  ): AST.Type {
+    const fields: AST.RecordField[] = []
+    const fieldNames = new Set<string>()
+
+    for (const initField of record.fields) {
+      // Check for duplicate field names
+      if (fieldNames.has(initField.name)) {
+        this.addError(
+          `Duplicate field name '${initField.name}' in record`,
+          initField.line,
+          initField.column,
+          `Field '${initField.name}' is defined multiple times`,
+          `Remove the duplicate field definition`
+        )
+      }
+      fieldNames.add(initField.name)
+
+      const fieldType = this.checkExpression(initField.value, env)
+      fields.push(
+        new AST.RecordField(
+          initField.name,
+          fieldType,
+          initField.line,
+          initField.column
+        )
+      )
+    }
+
+    return new AST.RecordType(fields, record.line, record.column)
+  }
+
+  private checkRecordAccess(
+    access: AST.RecordAccess,
+    env: TypeEnvironment
+  ): AST.Type {
+    const recordType = this.checkExpression(access.record, env)
+
+    if (recordType.kind !== "RecordType") {
+      this.addError(
+        `Cannot access field '${access.fieldName}' on non-record type '${this.typeToString(recordType)}'`,
+        access.line,
+        access.column,
+        `Type '${this.typeToString(recordType)}' is not a record`,
+        `Only record types support field access with dot notation`
+      )
+      return new AST.PrimitiveType("Unknown", access.line, access.column)
+    }
+
+    const rt = recordType as AST.RecordType
+    const field = rt.fields.find(f => f.name === access.fieldName)
+
+    if (!field) {
+      const availableFields = rt.fields.map(f => f.name).join(", ")
+      this.addError(
+        `Record does not have field '${access.fieldName}'`,
+        access.line,
+        access.column,
+        `Field '${access.fieldName}' is not defined in this record type`,
+        `Available fields: ${availableFields}`
+      )
+      return new AST.PrimitiveType("Unknown", access.line, access.column)
+    }
+
+    return field.type
+  }
+
+  private typeToString(type: AST.Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "FunctionType":
+        const ft = type as AST.FunctionType
+        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
+      case "GenericType":
+        const gt = type as AST.GenericType
+        const args = gt.typeArguments.map(t => this.typeToString(t)).join(", ")
+        return `${gt.name}<${args}>`
+      case "RecordType":
+        const rt = type as AST.RecordType
+        const fields = rt.fields
+          .map(field => `${field.name}: ${this.typeToString(field.type)}`)
+          .join(", ")
+        return `{${fields}}`
+      default:
+        return "Unknown"
+    }
   }
 }

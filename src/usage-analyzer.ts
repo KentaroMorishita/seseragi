@@ -12,6 +12,7 @@ export interface UsageAnalysis {
   needsFunctionApplication: boolean
   needsMaybe: boolean
   needsEither: boolean
+  needsList: boolean
   needsFunctorMap: boolean
   needsApplicativeApply: boolean
   needsMonadBind: boolean
@@ -20,6 +21,8 @@ export interface UsageAnalysis {
     print: boolean
     putStrLn: boolean
     toString: boolean
+    arrayToList: boolean
+    listToArray: boolean
   }
 }
 
@@ -31,6 +34,7 @@ export class UsageAnalyzer {
     needsFunctionApplication: false,
     needsMaybe: false,
     needsEither: false,
+    needsList: false,
     needsFunctorMap: false,
     needsApplicativeApply: false,
     needsMonadBind: false,
@@ -39,6 +43,8 @@ export class UsageAnalyzer {
       print: false,
       putStrLn: false,
       toString: false,
+      arrayToList: false,
+      listToArray: false,
     },
   }
 
@@ -124,6 +130,15 @@ export class UsageAnalyzer {
         this.analyzePattern(matchCase.pattern)
         this.analyzeExpression(matchCase.expression)
       }
+    } else if (expr instanceof AST.ListSugar) {
+      this.analysis.needsList = true
+      for (const element of expr.elements) {
+        this.analyzeExpression(element)
+      }
+    } else if (expr instanceof AST.ConsExpression) {
+      this.analysis.needsList = true
+      this.analyzeExpression(expr.left)
+      this.analyzeExpression(expr.right)
     }
   }
 
@@ -134,6 +149,8 @@ export class UsageAnalyzer {
       this.analysis.needsMaybe = true
     } else if (name === "Left" || name === "Right") {
       this.analysis.needsEither = true
+    } else if (name === "Empty" || name === "Cons") {
+      this.analysis.needsList = true
     }
 
     // 引数の解析
@@ -165,6 +182,14 @@ export class UsageAnalyzer {
       this.analysis.needsBuiltins.putStrLn = true
     } else if (name === "toString") {
       this.analysis.needsBuiltins.toString = true
+    } else if (name === "arrayToList") {
+      this.analysis.needsBuiltins.arrayToList = true
+      this.analysis.needsList = true  // List型も必要
+      this.analysis.needsCurrying = true  // カリー化も必要
+    } else if (name === "listToArray") {
+      this.analysis.needsBuiltins.listToArray = true
+      this.analysis.needsList = true  // List型も必要
+      this.analysis.needsCurrying = true  // カリー化も必要
     }
   }
 
