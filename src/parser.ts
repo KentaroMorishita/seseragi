@@ -1162,6 +1162,23 @@ export class Parser {
     return this.callExpression()
   }
 
+  // 関数適用の引数として使用する単項演算子専用のパーサー
+  private parseUnaryOnly(): AST.Expression {
+    if (this.match(TokenType.NOT, TokenType.MINUS)) {
+      const operator = this.previous().value
+      const expr = this.parseUnaryOnly()
+      return new AST.UnaryOperation(
+        operator,
+        expr,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return this.primaryExpression()
+  }
+
+
   private callExpression(): AST.Expression {
     let expr = this.primaryExpression()
 
@@ -1207,7 +1224,9 @@ export class Parser {
         )
       } else if (this.canStartExpression()) {
         // 括弧なし関数適用（関数型言語の標準）
-        const arg = this.primaryExpression()
+        const arg = this.check(TokenType.NOT) 
+          ? this.parseUnaryOnly() 
+          : this.primaryExpression()
         expr = new AST.FunctionApplication(
           expr,
           arg,
@@ -1237,11 +1256,13 @@ export class Parser {
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||
-      type === TokenType.LAMBDA
+      type === TokenType.LAMBDA ||
+      type === TokenType.NOT
     )
   }
 
   private primaryExpression(): AST.Expression {
+
     // Lambda expressions: \x -> expr or \x :Type -> expr
     if (this.match(TokenType.LAMBDA)) {
       return this.lambdaExpression()
