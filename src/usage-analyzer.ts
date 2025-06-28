@@ -85,6 +85,10 @@ export class UsageAnalyzer {
       this.analyzeExpression(expr.right)
     } else if (expr instanceof AST.FunctionApplicationOperator) {
       this.analysis.needsFunctionApplication = true
+      // ビルトイン関数の検出
+      if (expr.left instanceof AST.Identifier) {
+        this.analyzeBuiltin(expr.left.name as any)
+      }
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
     } else if (expr instanceof AST.MonadBind) {
@@ -115,6 +119,10 @@ export class UsageAnalyzer {
       this.analyzeExpression(expr.function)
       this.analyzeExpression(expr.argument)
     } else if (expr instanceof AST.FunctionCall) {
+      // ビルトイン関数の検出
+      if (expr.function instanceof AST.Identifier) {
+        this.analyzeBuiltin(expr.function.name as any)
+      }
       this.analyzeExpression(expr.function)
       for (const arg of expr.arguments) {
         this.analyzeExpression(arg)

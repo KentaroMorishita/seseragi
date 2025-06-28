@@ -1,3 +1,0 @@
-let squares = `[x * x | x <- 1..5]
-print "平方数:"
-show squares
