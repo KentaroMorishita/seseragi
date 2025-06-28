@@ -702,6 +702,11 @@ export class Parser {
     return this.conditionalExpression()
   }
 
+  // パイプライン演算子を処理しない式（配列リテラルの最初の要素用）
+  private expressionWithoutPipeline(): AST.Expression {
+    return this.conditionalExpressionWithoutPipeline()
+  }
+
   private conditionalExpression(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpression()
@@ -728,6 +733,34 @@ export class Parser {
     }
 
     return this.binaryExpression()
+  }
+
+  private conditionalExpressionWithoutPipeline(): AST.Expression {
+    if (this.match(TokenType.IF)) {
+      const condition = this.binaryExpressionWithoutPipeline()
+      this.skipNewlines()
+      this.consume(TokenType.THEN, "Expected 'then' after condition")
+      this.skipNewlines()
+      const thenExpr = this.conditionalExpressionWithoutPipeline()
+      this.skipNewlines()
+      this.consume(TokenType.ELSE, "Expected 'else' after then expression")
+      this.skipNewlines()
+      const elseExpr = this.conditionalExpressionWithoutPipeline()
+
+      return new AST.ConditionalExpression(
+        condition,
+        thenExpr,
+        elseExpr,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    if (this.match(TokenType.MATCH)) {
+      return this.matchExpression()
+    }
+
+    return this.binaryExpressionWithoutPipeline()
   }
 
   private matchExpression(): AST.MatchExpression {
@@ -831,6 +864,10 @@ export class Parser {
     return this.functionApplicationExpression()
   }
 
+  private binaryExpressionWithoutPipeline(): AST.Expression {
+    return this.functionApplicationExpressionWithoutPipeline()
+  }
+
   private functionApplicationExpression(): AST.Expression {
     let expr = this.pipelineExpression()
 
@@ -839,6 +876,28 @@ export class Parser {
       if (this.match(TokenType.FUNCTION_APPLICATION)) {
         this.skipNewlines()
         const right = this.functionApplicationExpression() // 右結合のため再帰
+        expr = new AST.FunctionApplicationOperator(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
+    }
+
+    return expr
+  }
+
+  private functionApplicationExpressionWithoutPipeline(): AST.Expression {
+    let expr = this.bindExpression() // パイプライン演算子をスキップ
+
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.FUNCTION_APPLICATION)) {
+        this.skipNewlines()
+        const right = this.functionApplicationExpressionWithoutPipeline() // 右結合のため再帰
         expr = new AST.FunctionApplicationOperator(
           expr,
           right,
@@ -964,7 +1023,7 @@ export class Parser {
   }
 
   private consExpression(): AST.Expression {
-    let expr = this.comparisonExpression()
+    let expr = this.rangeExpression()
 
     // Right associative CONS operator (:)
     if (this.match(TokenType.COLON)) {
@@ -974,6 +1033,24 @@ export class Parser {
         expr,
         ":",
         right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private rangeExpression(): AST.Expression {
+    let expr = this.comparisonExpression()
+
+    if (this.match(TokenType.RANGE, TokenType.RANGE_INCLUSIVE)) {
+      const inclusive = this.previous().type === TokenType.RANGE_INCLUSIVE
+      const end = this.comparisonExpression()
+      expr = new AST.RangeLiteral(
+        expr,
+        end,
+        inclusive,
         this.previous().line,
         this.previous().column
       )
@@ -1289,45 +1366,80 @@ export class Parser {
     }
 
     if (this.match(TokenType.LEFT_BRACKET)) {
-      // Array literal [1, 2, 3]
-      const elements: AST.Expression[] = []
+      // Array literal [1, 2, 3] or List comprehension [x * 2 | x <- range, filter]
       const line = this.previous().line
       const column = this.previous().column
 
-      if (!this.check(TokenType.RIGHT_BRACKET)) {
-        do {
-          this.skipNewlines()
-          elements.push(this.expression())
-          this.skipNewlines()
-        } while (this.match(TokenType.COMMA))
+      if (this.check(TokenType.RIGHT_BRACKET)) {
+        // Empty array []
+        this.advance()
+        return new AST.ArrayLiteral([], line, column)
       }
 
       this.skipNewlines()
-      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array elements")
+      const firstExpr = this.expressionWithoutPipeline()
+      this.skipNewlines()
 
+      // Check if this is a list comprehension (has |)
+      if (this.check(TokenType.PIPE)) {
+        this.advance() // consume |
+        return this.parseListComprehension(firstExpr, line, column)
+      }
+
+      // Regular array literal
+      const elements: AST.Expression[] = [firstExpr]
+      
+      while (this.match(TokenType.COMMA)) {
+        this.skipNewlines()
+        elements.push(this.expression())
+        this.skipNewlines()
+      }
+
+      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array elements")
       return new AST.ArrayLiteral(elements, line, column)
     }
 
     if (this.match(TokenType.BACKTICK)) {
-      // List sugar `[1, 2, 3] or `[]
+      // List sugar `[1, 2, 3] or `[] or list comprehension `[x * 2 | x <- range]
       const line = this.previous().line
       const column = this.previous().column
 
       this.consume(TokenType.LEFT_BRACKET, "Expected '[' after '`'")
       
-      const elements: AST.Expression[] = []
-      
-      if (!this.check(TokenType.RIGHT_BRACKET)) {
-        do {
-          this.skipNewlines()
-          elements.push(this.expression())
-          this.skipNewlines()
-        } while (this.match(TokenType.COMMA))
+      if (this.check(TokenType.RIGHT_BRACKET)) {
+        // Empty list `[]
+        this.advance()
+        return new AST.ListSugar([], line, column)
       }
 
       this.skipNewlines()
-      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list elements")
+      const firstExpr = this.expressionWithoutPipeline()
+      this.skipNewlines()
 
+      // Check if this is a list comprehension (has |)
+      if (this.check(TokenType.PIPE)) {
+        this.advance() // consume |
+        const listComp = this.parseListComprehension(firstExpr, line, column)
+        // Wrap in ListComprehensionSugar to distinguish from array comprehension
+        return new AST.ListComprehensionSugar(
+          listComp.expression,
+          listComp.generators,
+          listComp.filters,
+          line,
+          column
+        )
+      }
+
+      // Regular list literal
+      const elements: AST.Expression[] = [firstExpr]
+      
+      while (this.match(TokenType.COMMA)) {
+        this.skipNewlines()
+        elements.push(this.expression())
+        this.skipNewlines()
+      }
+
+      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list elements")
       return new AST.ListSugar(elements, line, column)
     }
 
@@ -1636,6 +1748,55 @@ export class Parser {
     }
     
     return lookahead < this.tokens.length && this.tokens[lookahead].type === type
+  }
+
+  private parseListComprehension(
+    expression: AST.Expression,
+    line: number,
+    column: number
+  ): AST.ListComprehension {
+    // Parse generators: x <- range, y <- list
+    const generators: AST.Generator[] = []
+    const filters: AST.Expression[] = []
+
+    do {
+      this.skipNewlines()
+
+      // Check if this is a generator or filter
+      // Need to check if we have "IDENTIFIER GENERATOR" pattern
+      if (this.check(TokenType.IDENTIFIER)) {
+        // Look ahead to see if there's a GENERATOR token
+        let lookahead = this.current + 1
+        while (lookahead < this.tokens.length && 
+               (this.tokens[lookahead].type === TokenType.NEWLINE || 
+                this.tokens[lookahead].type === TokenType.WHITESPACE)) {
+          lookahead++
+        }
+        
+        if (lookahead < this.tokens.length && this.tokens[lookahead].type === TokenType.GENERATOR) {
+          // Generator: x <- range
+          const variable = this.consume(TokenType.IDENTIFIER, "Expected variable name").value
+          this.consume(TokenType.GENERATOR, "Expected '<-' in generator")
+          const iterable = this.expression()
+
+          generators.push(new AST.Generator(variable, iterable, line, column))
+        } else {
+          // Filter: x % 2 == 0
+          const filterExpr = this.expression()
+          filters.push(filterExpr)
+        }
+      } else {
+        // Filter: expression
+        const filterExpr = this.expression()
+        filters.push(filterExpr)
+      }
+
+      this.skipNewlines()
+    } while (this.match(TokenType.COMMA))
+
+    this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list comprehension")
+
+    return new AST.ListComprehension(expression, generators, filters, line, column)
   }
 }
 

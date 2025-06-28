@@ -46,6 +46,9 @@ export enum TokenType {
   MAP = "MAP", // <$>
   APPLY = "APPLY", // <*>
   ARROW = "ARROW", // ->
+  RANGE = "RANGE", // ..
+  RANGE_INCLUSIVE = "RANGE_INCLUSIVE", // ..=
+  GENERATOR = "GENERATOR", // <-
   PLUS = "PLUS", // +
   MINUS = "MINUS", // -
   MULTIPLY = "MULTIPLY", // *
@@ -212,6 +215,15 @@ export class Lexer {
       case ":":
         return this.makeToken(TokenType.COLON, char, startLine, startColumn)
       case ".":
+        if (this.peek() === "." && this.peekNext() === "=") {
+          this.advance() // consume second .
+          this.advance() // consume =
+          return this.makeToken(TokenType.RANGE_INCLUSIVE, "..=", startLine, startColumn)
+        }
+        if (this.peek() === ".") {
+          this.advance() // consume second .
+          return this.makeToken(TokenType.RANGE, "..", startLine, startColumn)
+        }
         return this.makeToken(TokenType.DOT, char, startLine, startColumn)
       case "+":
         return this.makeToken(TokenType.PLUS, char, startLine, startColumn)
@@ -285,6 +297,10 @@ export class Lexer {
         this.advance() // consume *
         this.advance() // consume >
         return this.makeToken(TokenType.APPLY, "<*>", startLine, startColumn)
+      }
+      if (this.peek() === "-") {
+        this.advance() // consume -
+        return this.makeToken(TokenType.GENERATOR, "<-", startLine, startColumn)
       }
       if (this.peek() === "=") {
         this.advance()

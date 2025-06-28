@@ -165,6 +165,20 @@ export class UsageAnalyzer {
       if (expr.expression) {
         this.analyzeExpression(expr.expression)
       }
+    } else if (expr instanceof AST.ListComprehensionSugar) {
+      // ListComprehensionSugar uses arrayToList helper, curry, and List constructors
+      this.analysis.needsBuiltins.arrayToList = true
+      this.analysis.needsCurrying = true
+      this.analysis.needsList = true
+      
+      // Analyze comprehension expression and generators
+      this.analyzeExpression(expr.expression)
+      for (const generator of expr.generators) {
+        this.analyzeExpression(generator.iterable)
+      }
+      for (const filter of expr.filters) {
+        this.analyzeExpression(filter)
+      }
     }
   }
 

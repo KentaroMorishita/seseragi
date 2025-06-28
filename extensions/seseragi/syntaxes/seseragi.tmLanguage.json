@@ -79,6 +79,14 @@
     "operators": {
       "patterns": [
         {
+          "name": "keyword.operator.range.seseragi",
+          "match": "\\.\\.(=)?"
+        },
+        {
+          "name": "keyword.operator.generator.seseragi",
+          "match": "<-"
+        },
+        {
           "name": "keyword.operator.pipeline.seseragi",
           "match": "\\|"
         },

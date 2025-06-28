@@ -442,6 +442,78 @@ export class ArrayLiteral extends Expression {
   }
 }
 
+export class RangeLiteral extends Expression {
+  kind = "RangeLiteral"
+  start: Expression
+  end: Expression
+  inclusive: boolean
+
+  constructor(
+    start: Expression,
+    end: Expression,
+    inclusive: boolean,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.start = start
+    this.end = end
+    this.inclusive = inclusive
+  }
+}
+
+export class Generator extends ASTNode {
+  kind = "Generator"
+  variable: string
+  iterable: Expression
+
+  constructor(variable: string, iterable: Expression, line: number, column: number) {
+    super(line, column)
+    this.variable = variable
+    this.iterable = iterable
+  }
+}
+
+export class ListComprehension extends Expression {
+  kind = "ListComprehension"
+  expression: Expression
+  generators: Generator[]
+  filters: Expression[]
+
+  constructor(
+    expression: Expression,
+    generators: Generator[],
+    filters: Expression[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.expression = expression
+    this.generators = generators
+    this.filters = filters
+  }
+}
+
+export class ListComprehensionSugar extends Expression {
+  kind = "ListComprehensionSugar"
+  expression: Expression
+  generators: Generator[]
+  filters: Expression[]
+
+  constructor(
+    expression: Expression,
+    generators: Generator[],
+    filters: Expression[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.expression = expression
+    this.generators = generators
+    this.filters = filters
+  }
+}
+
 export class ArrayAccess extends Expression {
   kind = "ArrayAccess"
   array: Expression
