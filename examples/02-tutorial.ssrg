@@ -117,13 +117,13 @@ show "--- Block Functions ---"
 fn processNumber x :Int -> Int {
   let doubled = x * 2
   let incremented = doubled + 1
-    incremented
+  incremented
 }
 
 fn complexCalculation a :Int -> b :Int -> Int {
   let sum = a + b
   let product = a * b
-    if sum > product then sum else product
+  if sum > product then sum else product
 }
 
 let processed = processNumber 5

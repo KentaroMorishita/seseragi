@@ -1,51 +1,139 @@
 import { test, expect } from "bun:test"
-import {
-  formatSeseragiCode,
-  removeExtraWhitespace,
-  normalizeOperatorSpacing,
-} from "../src/formatter/index.js"
+import { formatSeseragiCode } from "../src/formatter/relative-indent-formatter.js"
 
-test("removeExtraWhitespace removes multiple spaces", () => {
-  const input = "fn   add  a   :Int -> b:Int->Int = a+b"
-  const expected = "fn add a :Int -> b:Int->Int = a+b"
-  expect(removeExtraWhitespace(input)).toBe(expected)
-})
-
-test("removeExtraWhitespace removes trailing whitespace", () => {
-  const input = "fn add a :Int -> Int = a + b   \n"
-  const expected = "fn add a :Int -> Int = a + b\n"
-  expect(removeExtraWhitespace(input)).toBe(expected)
-})
-
-test("normalizeOperatorSpacing adds proper spacing", () => {
-  const input = "fn add a:Int->b:Int->Int=a+b"
-  const expected = "fn add a :Int -> b :Int -> Int = a + b"
-  expect(normalizeOperatorSpacing(input)).toBe(expected)
-})
-
-test("normalizeOperatorSpacing handles pipe operators", () => {
-  const input = "x|double|square"
-  const expected = "x | double | square"
-  expect(normalizeOperatorSpacing(input)).toBe(expected)
-})
-
-test("simple function formatting", () => {
-  const input = "fn add a :Int -> b :Int -> Int = a + b"
-  const result = formatSeseragiCode(input)
-  expect(result).toContain("fn add")
-  expect(result).toContain("->")
-})
-
-test("basic whitespace cleanup", () => {
+test("format simple record", () => {
   const input = `
-
-fn   add   a   :Int   ->   b:Int->Int   =   a+b
-
-
-let   x   :Int   =   42   
-
+let person = { name: "Alice", age: 30 }
 `
-  const result = removeExtraWhitespace(input)
-  expect(result).not.toContain("   ")
-  expect(result).not.toMatch(/\n{3,}/)
+  const expected = `let person = { name: "Alice", age: 30 }
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format multi-line record", () => {
+  const input = `
+let person = {
+name: "Alice",
+age: 30,
+city: "Tokyo"
+}
+`
+  const expected = `let person = {
+  name: "Alice",
+  age: 30,
+  city: "Tokyo"
+}
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format nested record", () => {
+  const input = `
+let employee = {
+info: { name: "Bob", age: 25 },
+department: "Engineering",
+salary: 75000
+}
+`
+  const expected = `let employee = {
+  info: { name: "Bob", age: 25 },
+  department: "Engineering",
+  salary: 75000
+}
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format deeply nested record", () => {
+  const input = `
+let user = {
+profile: {
+personal: { firstName: "Carol", lastName: "Smith" },
+contact: { email: "carol@example.com", phone: "090-1234-5678" }
+},
+preferences: {
+theme: "dark",
+language: "ja",
+notifications: { email: True, push: False }
+},
+account: {
+id: 12345,
+created: "2024-01-15",
+verified: True
+}
+}
+`
+  const expected = `let user = {
+  profile: {
+    personal: { firstName: "Carol", lastName: "Smith" },
+    contact: { email: "carol@example.com", phone: "090-1234-5678" }
+  },
+  preferences: {
+    theme: "dark",
+    language: "ja",
+    notifications: { email: True, push: False }
+  },
+  account: {
+    id: 12345,
+    created: "2024-01-15",
+    verified: True
+  }
+}
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format code after record", () => {
+  const input = `
+let user = {
+name: "Alice"
+}
+
+show user
+
+let x = 42
+`
+  const expected = `let user = {
+  name: "Alice"
+}
+
+show user
+
+let x = 42
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format function block", () => {
+  const input = `
+fn processNumber x :Int -> Int {
+let doubled = x * 2
+let incremented = doubled + 1
+incremented
+}
+`
+  const expected = `fn processNumber x :Int -> Int {
+  let doubled = x * 2
+  let incremented = doubled + 1
+  incremented
+}
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format function with expression continuation", () => {
+  const input = `fn factorial n :Int -> Int =
+if n <= 1 then 1 else n * factorial (n - 1)
+
+fn getAge person :{ name: String, age: Int } -> Int =
+person.age`
+
+  const expected = `fn factorial n :Int -> Int =
+  if n <= 1 then 1 else n * factorial (n - 1)
+
+fn getAge person :{ name: String, age: Int } -> Int =
+  person.age
+`
+
+  expect(formatSeseragiCode(input)).toBe(expected)
 })

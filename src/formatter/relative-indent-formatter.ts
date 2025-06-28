@@ -40,6 +40,11 @@ function calculateIndentLevel(
   index: number,
   allLines: string[]
 ): number {
+  // レコード閉じ括弧の直後でトップレベル要素の場合
+  if (isTopLevelElement(line) && isAfterRecordClose(index, allLines)) {
+    return 0  // トップレベルに戻る
+  }
+
   // 現在のコンテキストレベルを取得
   const contextLevel = getCurrentContextLevel(index, allLines)
 
@@ -51,7 +56,44 @@ function calculateIndentLevel(
   // 要素タイプに応じた相対インデントを追加
   const relativeIndent = getRelativeIndent(line, index, allLines)
 
+
   return contextLevel + relativeIndent
+}
+
+function isAfterRecordClose(index: number, allLines: string[]): boolean {
+  if (index === 0) return false
+  
+  // 前の非空行を探す
+  for (let i = index - 1; i >= 0; i--) {
+    const prevLine = allLines[i].trim()
+    if (prevLine === "" || prevLine.startsWith("//")) continue
+    
+    // 単独の閉じ括弧の後
+    if (prevLine === "}") {
+      // その閉じ括弧がレコードの終了かチェック
+      let openBraces = 0
+      for (let j = 0; j <= i; j++) {
+        const line = allLines[j].trim()
+        if (line === "" || line.startsWith("//")) continue
+        
+        for (const char of line) {
+          if (char === '{') {
+            openBraces++
+          } else if (char === '}') {
+            openBraces = Math.max(0, openBraces - 1)
+          }
+        }
+      }
+      
+      // 閉じ括弧で括弧が全て閉じた場合
+      return openBraces === 0
+    }
+    
+    // 閉じ括弧以外の行があったら、閉じ括弧直後ではない
+    return false
+  }
+  
+  return false
 }
 
 function isTopLevelElement(line: string): boolean {
@@ -61,7 +103,8 @@ function isTopLevelElement(line: string): boolean {
     line.startsWith("type ") ||
     line.startsWith("impl ") ||
     line.startsWith("monoid ") ||
-    line.startsWith("effectful ")
+    line.startsWith("effectful ") ||
+    line.startsWith("show ")  // show文もトップレベル要素として扱う
   )
 }
 
@@ -74,24 +117,53 @@ function getCurrentContextLevel(index: number, allLines: string[]): number {
 
     if (line === "" || line.startsWith("//")) continue
 
-    // ブロック開始
-    if (line.endsWith("{")) {
-      level++
-    }
-
-    // ブロック終了
-    if (line === "}") {
-      level = Math.max(0, level - 1)
-    }
+    // 文字列リテラルを除外して括弧をカウント
+    const braceChange = countBracesInLine(line)
+    level = Math.max(0, level + braceChange)
   }
 
   // 現在の行が閉じブラケットの場合、レベルを1つ下げる
   const currentLine = allLines[index].trim()
-  if (currentLine === "}") {
+  if (currentLine === "}" || currentLine === "},") {
     level = Math.max(0, level - 1)
   }
 
   return level
+}
+
+function countBracesInLine(line: string): number {
+  let braceCount = 0
+  let inString = false
+  let escapeNext = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    
+    if (escapeNext) {
+      escapeNext = false
+      continue
+    }
+    
+    if (char === '\\') {
+      escapeNext = true
+      continue
+    }
+    
+    if (char === '"') {
+      inString = !inString
+      continue
+    }
+    
+    if (!inString) {
+      if (char === '{') {
+        braceCount++
+      } else if (char === '}') {
+        braceCount--
+      }
+    }
+  }
+
+  return braceCount
 }
 
 function getRelativeIndent(
@@ -99,6 +171,14 @@ function getRelativeIndent(
   index: number,
   allLines: string[]
 ): number {
+  // 閉じ括弧は相対インデントなし
+  if (line.trim() === "}") {
+    return 0
+  }
+
+  // 新しい実装では基本的に相対インデントは0
+  // getCurrentContextLevel が既に正しいインデントレベルを返す
+  
   // モナド演算子で始まる行（>>=, <*>, <$>）
   if (line.startsWith(">>=") || line.startsWith("<*>") || line.startsWith("<$>")) {
     return 1 // 親から +2スペース
@@ -134,15 +214,11 @@ function getRelativeIndent(
     return 1 // 親から +2スペース
   }
 
-  // ブロック内の要素（implブロック内のfnなど）で、トップレベル要素でない場合
-  const contextLevel = getCurrentContextLevel(index, allLines)
-  if (contextLevel > 0 && !isTopLevelElement(line)) {
-    return 1 // 親から +2スペース
-  }
-
   // その他はインデントなし（相対で0）
   return 0
 }
+
+
 
 function isArrowContinuation(index: number, allLines: string[]): boolean {
   if (index === 0) return false

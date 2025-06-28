@@ -1,0 +1,8 @@
+fn fizzbuzz f :Int -> b :Int -> x :Int -> String =
+  if x % (f * b) == 0 then "FizzBuzz"
+  else if x % f == 0 then "Fizz"
+  else if x % b == 0 then "Buzz"
+  else toString x
+
+show $ `[fizzbuzz 3 5 x | x <- 1..=100]
+
