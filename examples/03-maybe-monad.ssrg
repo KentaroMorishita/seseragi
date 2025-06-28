@@ -1,6 +1,6 @@
 // Maybe型と演算子のサンプル
 
-print "=== Maybe Type with Operators ==="
+show "=== Maybe Type with Operators ==="
 
 // =============================================================================
 // 基本的なMaybe値
@@ -9,28 +9,28 @@ print "=== Maybe Type with Operators ==="
 let someValue = Just 42
 let nothingValue = Nothing
 
-print someValue
-print nothingValue
+show someValue
+show nothingValue
 
 // =============================================================================
 // ファンクター演算子 (<$>)
 // =============================================================================
 
-print "--- Functor <$> ---"
+show "--- Functor <$> ---"
 
 fn double x :Int -> Int = x * 2
 
 let doubled = double <$> someValue
 let doubledNothing = double <$> nothingValue
 
-print doubled
-print doubledNothing
+show doubled
+show doubledNothing
 
 // =============================================================================
 // アプリカティブ演算子 (<*>)
 // =============================================================================
 
-print "--- Applicative <*> ---"
+show "--- Applicative <*> ---"
 
 fn add x :Int -> y :Int -> Int = x + y
 
@@ -40,21 +40,21 @@ let value2 = Just 5
 let addResult = Just add <*> value1 <*> value2
 let addWithNothing = Just add <*> value1 <*> nothingValue
 
-print addResult
-print addWithNothing
+show addResult
+show addWithNothing
 
 // =============================================================================
 // モナド演算子 (>>=)
 // =============================================================================
 
-print "--- Monad >>= ---"
+show "--- Monad >>= ---"
 
 fn safeDivide x :Int -> y :Int -> Maybe<Int> = if y == 0 then Nothing else Just (x / y)
 
 let chainResult = Just 20 >>= safeDivide 2 >>= safeDivide 2
 let chainError = Just 20 >>= safeDivide 0 >>= safeDivide 2
 
-print chainResult
-print chainError
+show chainResult
+show chainError
 
-print "Maybe operators sample completed!"
+show "Maybe operators sample completed!"

@@ -1,6 +1,6 @@
 // Either型と演算子のサンプル
 
-print "=== Either Type with Operators ==="
+show "=== Either Type with Operators ==="
 
 // =============================================================================
 // 基本的なEither値
@@ -9,28 +9,28 @@ print "=== Either Type with Operators ==="
 let successValue = Right 42
 let errorValue = Left "Something went wrong"
 
-print successValue
-print errorValue
+show successValue
+show errorValue
 
 // =============================================================================
 // ファンクター演算子 (<$>)
 // =============================================================================
 
-print "--- Functor <$> ---"
+show "--- Functor <$> ---"
 
 fn double x :Int -> Int = x * 2
 
 let doubled = double <$> successValue
 let doubledError = double <$> errorValue
 
-print doubled
-print doubledError
+show doubled
+show doubledError
 
 // =============================================================================
 // アプリカティブ演算子 (<*>)
 // =============================================================================
 
-print "--- Applicative <*> ---"
+show "--- Applicative <*> ---"
 
 fn add x :Int -> y :Int -> Int = x + y
 
@@ -41,14 +41,14 @@ let error1 = Left "First error"
 let addResult = Right add <*> num1 <*> num2
 let addError = Right add <*> error1 <*> num2
 
-print addResult
-print addError
+show addResult
+show addError
 
 // =============================================================================
 // モナド演算子 (>>=)
 // =============================================================================
 
-print "--- Monad >>= ---"
+show "--- Monad >>= ---"
 
 fn parseNumber str :String -> Either<String, Int> = if str == "42" then Right 42 else Left "Invalid number"
 
@@ -57,7 +57,7 @@ fn validatePositive x :Int -> Either<String, Int> = if x > 0 then Right x else L
 let chainResult = parseNumber "42" >>= validatePositive
 let chainError = parseNumber "0" >>= validatePositive
 
-print chainResult
-print chainError
+show chainResult
+show chainError
 
-print "Either operators sample completed!"
+show "Either operators sample completed!"

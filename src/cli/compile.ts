@@ -44,7 +44,21 @@ async function compile(options: CompileOptions): Promise<void> {
   // パースしてASTを生成
   console.log(`Parsing ${options.input}...`)
   const parser = new Parser(sourceCode)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
+
+  // パースエラーをチェック
+  if (parseResult.errors.length > 0) {
+    console.error("\n❌ Parsing failed:\n")
+    for (const error of parseResult.errors) {
+      console.error(error.message)
+      console.error("") // Empty line for readability
+    }
+    throw new Error(
+      `Parsing failed with ${parseResult.errors.length} error(s)`
+    )
+  }
+
+  const ast = { statements: parseResult.statements }
 
   // 型チェック
   if (!options.skipTypeCheck) {

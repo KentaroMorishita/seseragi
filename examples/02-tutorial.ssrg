@@ -1,12 +1,12 @@
 // Seseragi 言語チュートリアル - 実装済み構文のみ
 
-print "=== Seseragi Tutorial ==="
+show "=== Seseragi Tutorial ==="
 
 // =============================================================================
 // 基本型と変数
 // =============================================================================
 
-print "--- Basic Types ---"
+show "--- Basic Types ---"
 
 // 整数
 let intValue = 42
@@ -21,15 +21,15 @@ let emptyString = ""
 let trueValue = True
 let falseValue = False
 
-print intValue
-print stringValue
-print trueValue
+show intValue
+show stringValue
+show trueValue
 
 // =============================================================================
 // 算術演算
 // =============================================================================
 
-print "--- Arithmetic Operations ---"
+show "--- Arithmetic Operations ---"
 
 let sum = 10 + 5
 let difference = 20 - 8
@@ -37,17 +37,17 @@ let product = 6 * 7
 let quotient = 15 / 3
 let remainder = 17 % 5
 
-print sum
-print difference
-print product
-print quotient
-print remainder
+show sum
+show difference
+show product
+show quotient
+show remainder
 
 // =============================================================================
 // 比較演算
 // =============================================================================
 
-print "--- Comparison Operations ---"
+show "--- Comparison Operations ---"
 
 let isEqual = 5 == 5
 let isNotEqual = 5 != 3
@@ -56,16 +56,16 @@ let isGreater = 7 > 4
 let isLessOrEqual = 3 <= 3
 let isGreaterOrEqual = 8 >= 8
 
-print isEqual
-print isNotEqual
-print isLess
-print isGreater
+show isEqual
+show isNotEqual
+show isLess
+show isGreater
 
 // =============================================================================
 // 関数定義（引数なし）
 // =============================================================================
 
-print "--- Functions without Arguments ---"
+show "--- Functions without Arguments ---"
 
 fn getMessage -> String = "Hello from function!"
 fn getNumber -> Int = 42
@@ -73,14 +73,14 @@ fn getNumber -> Int = 42
 let message = getMessage()
 let number = getNumber()
 
-print message
-print number
+show message
+show number
 
 // =============================================================================
 // 関数定義（引数あり）
 // =============================================================================
 
-print "--- Functions with Arguments ---"
+show "--- Functions with Arguments ---"
 
 // 単一引数の関数
 fn double x :Int -> Int = x * 2
@@ -96,23 +96,23 @@ let doubled = double 7
 let negated = negate 10
 let positive = isPositive 5
 
-print doubled
-print negated
-print positive
+show doubled
+show negated
+show positive
 
 let sum2 = add 10 5
 let product2 = multiply 3 4
 let maximum = max 10 5
 
-print sum2
-print product2
-print maximum
+show sum2
+show product2
+show maximum
 
 // =============================================================================
 // ブロック形式の関数定義
 // =============================================================================
 
-print "--- Block Functions ---"
+show "--- Block Functions ---"
 
 fn processNumber x :Int -> Int {
   let doubled = x * 2
@@ -129,14 +129,14 @@ fn complexCalculation a :Int -> b :Int -> Int {
 let processed = processNumber 5
 let calculated = complexCalculation 5 6
 
-print processed
-print calculated
+show processed
+show calculated
 
 // =============================================================================
 // if-then-else
 // =============================================================================
 
-print "--- Conditionals ---"
+show "--- Conditionals ---"
 
 fn abs x :Int -> Int = if x < 0 then -x else x
 fn min x :Int -> y :Int -> Int = if x < y then x else y
@@ -144,14 +144,14 @@ fn min x :Int -> y :Int -> Int = if x < y then x else y
 let absolute = abs 42
 let minimum = min 10 5
 
-print absolute
-print minimum
+show absolute
+show minimum
 
 // =============================================================================
 // 再帰関数
 // =============================================================================
 
-print "--- Recursive Functions ---"
+show "--- Recursive Functions ---"
 
 fn factorial n :Int -> Int =
   if n <= 1 then 1 else n * factorial (n - 1)
@@ -163,20 +163,20 @@ fn fibonacci n :Int -> Int =
 let fact5 = factorial 5
 let fib7 = fibonacci 7
 
-print fact5
-print fib7
+show fact5
+show fib7
 
 // =============================================================================
 // Maybe型の基本
 // =============================================================================
 
-print "--- Maybe Type ---"
+show "--- Maybe Type ---"
 
 let someValue = Just 42
 let nothingValue = Nothing
 
-print someValue
-print nothingValue
+show someValue
+show nothingValue
 
 fn safeDivide x :Int -> y :Int -> Maybe<Int> =
   if y == 0 then Nothing else Just (x / y)
@@ -184,20 +184,20 @@ fn safeDivide x :Int -> y :Int -> Maybe<Int> =
 let divResult1 = safeDivide 10 2
 let divResult2 = safeDivide 10 0
 
-print divResult1
-print divResult2
+show divResult1
+show divResult2
 
 // =============================================================================
 // Either型の基本
 // =============================================================================
 
-print "--- Either Type ---"
+show "--- Either Type ---"
 
 let successValue = Right 42
 let errorValue = Left "Error occurred"
 
-print successValue
-print errorValue
+show successValue
+show errorValue
 
 fn parsePositive x :Int -> Either<String, Int> =
   if x > 0 then Right x else Left "Not a positive number"
@@ -205,14 +205,14 @@ fn parsePositive x :Int -> Either<String, Int> =
 let parsed1 = parsePositive 42
 let parsed2 = parsePositive (-5)
 
-print parsed1
-print parsed2
+show parsed1
+show parsed2
 
 // =============================================================================
 // パターンマッチング（基本）
 // =============================================================================
 
-print "--- Pattern Matching ---"
+show "--- Pattern Matching ---"
 
 // 簡単な条件分岐による数値判定（パターンマッチングの代わり）
 fn numberToString n :Int -> String =
@@ -224,8 +224,8 @@ fn numberToString n :Int -> String =
 let numStr1 = numberToString 1
 let numStr2 = numberToString 3
 
-print numStr1
-print numStr2
+show numStr1
+show numStr2
 
 // 文字列判定の例
 fn greet name :String -> String =
@@ -236,14 +236,14 @@ fn greet name :String -> String =
 let greeting1 = greet "Alice"
 let greeting2 = greet "Charlie"
 
-print greeting1
-print greeting2
+show greeting1
+show greeting2
 
 // =============================================================================
 // カリー化と部分適用
 // =============================================================================
 
-print "--- Currying and Partial Application ---"
+show "--- Currying and Partial Application ---"
 
 // カリー化された関数の部分適用
 let add10 = add 10
@@ -252,28 +252,28 @@ let multiplyBy2 = multiply 2
 let result1 = add10 5
 let result2 = multiplyBy2 7
 
-print result1
-print result2
+show result1
+show result2
 
 // =============================================================================
 // 演算子の使用
 // =============================================================================
 
-print "--- Operators ---"
+show "--- Operators ---"
 
 // パイプライン演算子
 let pipeResult = 10 | double | add 5
-print pipeResult
+show pipeResult
 
 // FlatMap演算子（モナド操作）
 let maybeResult = Just 10 >>= (\x :Int -> Just (x * 2))
-print maybeResult
+show maybeResult
 
 // =============================================================================
 // ラムダ式（無名関数）
 // =============================================================================
 
-print "--- Lambda Expressions ---"
+show "--- Lambda Expressions ---"
 
 // ラムダ式の基本形
 let addLambda = \x :Int -> \y :Int -> x + y
@@ -282,14 +282,14 @@ let squareLambda = \x :Int -> x * x
 let lambdaResult1 = addLambda 5 3
 let lambdaResult2 = squareLambda 7
 
-print lambdaResult1
-print lambdaResult2
+show lambdaResult1
+show lambdaResult2
 
 // =============================================================================
 // List型の基本
 // =============================================================================
 
-print "--- List Type ---"
+show "--- List Type ---"
 
 // 空のリスト
 let emptyList = Empty
@@ -298,91 +298,91 @@ let emptyList = Empty
 let singletonList = Cons 42 Empty
 let multipleList = Cons 1 (Cons 2 (Cons 3 Empty))
 
-print emptyList
-print singletonList
-print multipleList
+show emptyList
+show singletonList
+show multipleList
 
 // リストに要素を追加
 let newList = Cons 0 multipleList
-print newList
+show newList
 
 // 関数型プログラミングスタイルでのリスト構築
 let numberList = Cons 10 (Cons 20 (Cons 30 Empty))
 let stringList = Cons "hello" (Cons "world" Empty)
 
-print numberList
-print stringList
+show numberList
+show stringList
 
 // Maybe型とList型の組み合わせ
 let maybeList = Cons (Just 1) (Cons Nothing (Cons (Just 3) Empty))
-print maybeList
+show maybeList
 
 // Either型とList型の組み合わせ
 let eitherList = Cons (Right 42) (Cons (Left "error") (Cons (Right 100) Empty))
-print eitherList
+show eitherList
 
 // =============================================================================
 // List型を使った関数
 // =============================================================================
 
-print "--- List Functions ---"
+show "--- List Functions ---"
 
 // リストに要素を追加する関数
 fn prepend x :Int -> lst :List<Int> -> List<Int> = Cons x lst
 
 let prependedList = prepend 999 multipleList
-print prependedList
+show prependedList
 
 // より複雑なリスト構造
 let complexList = Cons 100 (Cons 200 (Cons 300 Empty))
 let veryComplexList = prepend 50 (prepend 25 complexList)
-print complexList
-print veryComplexList
+show complexList
+show veryComplexList
 
 // =============================================================================
 // List型の応用例
 // =============================================================================
 
-print "--- Advanced List Examples ---"
+show "--- Advanced List Examples ---"
 
 // ネストしたリスト（リストのリスト）
 let listOfLists = Cons (Cons 1 (Cons 2 Empty)) (Cons (Cons 3 (Cons 4 Empty)) Empty)
-print listOfLists
+show listOfLists
 
 // 異なる型のリストを組み合わせ
 fn wrapInMaybe x :Int -> Maybe<Int> = Just x
 
 let wrappedValue = wrapInMaybe 42
 let maybeWrappedList = Cons wrappedValue (Cons Nothing Empty)
-print maybeWrappedList
+show maybeWrappedList
 
 // =============================================================================
 // Record型の基本
 // =============================================================================
 
-print "--- Record Type ---"
+show "--- Record Type ---"
 
 // 基本的なRecord定義
 let person = { name: "Alice", age: 30, city: "Tokyo" }
 let laptop = { id: 1001, name: "Laptop", price: 89999 }
 
-print person
-print laptop
+show person
+show laptop
 
 // Recordフィールドアクセス
 let personName = person.name
 let personAge = person.age
 let laptopPrice = laptop.price
 
-print personName
-print personAge
-print laptopPrice
+show personName
+show personAge
+show laptopPrice
 
 // =============================================================================
 // 入れ子レコード
 // =============================================================================
 
-print "--- Nested Records ---"
+show "--- Nested Records ---"
 
 // 入れ子レコードの定義
 let employee = {
@@ -397,8 +397,8 @@ let company = {
   employees: 150
 }
 
-print employee
-print company
+show employee
+show company
 
 // 入れ子レコードのフィールドアクセス
 let employeeName = employee.info.name
@@ -406,16 +406,16 @@ let employeeAge = employee.info.age
 let companyCity = company.location.city
 let companyCountry = company.location.country
 
-print employeeName
-print employeeAge
-print companyCity
-print companyCountry
+show employeeName
+show employeeAge
+show companyCity
+show companyCountry
 
 // =============================================================================
 // 複雑な入れ子レコード
 // =============================================================================
 
-print "--- Complex Nested Records ---"
+show "--- Complex Nested Records ---"
 
 // より複雑な入れ子構造
 let user = {
@@ -435,7 +435,7 @@ let user = {
   }
 }
 
-print user
+show user
 
 // 深い階層のフィールドアクセス
 let firstName = user.profile.personal.firstName
@@ -444,17 +444,17 @@ let theme = user.preferences.theme
 let emailNotifications = user.preferences.notifications.email
 let accountId = user.account.id
 
-print firstName
-print email
-print theme
-print emailNotifications
-print accountId
+show firstName
+show email
+show theme
+show emailNotifications
+show accountId
 
 // =============================================================================
 // Recordと関数の組み合わせ
 // =============================================================================
 
-print "--- Records with Functions ---"
+show "--- Records with Functions ---"
 
 // Recordを受け取る関数（簡単な例）
 fn getAge person :{ name: String, age: Int } -> Int =
@@ -466,15 +466,15 @@ fn getPrice item :{ price: Int } -> Int =
 let ageResult = getAge person
 let priceResult = getPrice laptop
 
-print ageResult
-print priceResult
+show ageResult
+show priceResult
 
 // 新しいRecordを作成
 let newPerson = { name: "David", age: 28 }
 let smartphone = { id: 2001, name: "Smartphone", price: 65000 }
 
-print newPerson
-print smartphone
+show newPerson
+show smartphone
 
 // 作成したRecordのフィールドアクセス
 let newPersonName = newPerson.name
@@ -482,30 +482,30 @@ let newPersonAge = newPerson.age
 let smartphoneName = smartphone.name
 let smartphonePrice = smartphone.price
 
-print newPersonName
-print newPersonAge
-print smartphoneName
-print smartphonePrice
+show newPersonName
+show newPersonAge
+show smartphoneName
+show smartphonePrice
 
 // =============================================================================
 // Recordと他の型の組み合わせ
 // =============================================================================
 
-print "--- Records with Other Types ---"
+show "--- Records with Other Types ---"
 
 // Maybe型とRecord型の組み合わせ
 let maybeUser = Just ({ name: "Eve", score: 95 })
 let noUser = Nothing
 
-print maybeUser
-print noUser
+show maybeUser
+show noUser
 
 // Either型とRecord型の組み合わせ
 let validData = Right ({ status: "success", value: 42 })
 let errorData = Left "Invalid input"
 
-print validData
-print errorData
+show validData
+show errorData
 
 // List型とRecord型の組み合わせ
 let userRecord1 = { name: "Frank", level: 5 }
@@ -516,8 +516,8 @@ let scoreRecord1 = { player: "Alice", score: 1000 }
 let scoreRecord2 = { player: "Bob", score: 850 }
 let scoreList = Cons scoreRecord1 (Cons scoreRecord2 Empty)
 
-print userList
-print scoreList
+show userList
+show scoreList
 
-print "Tutorial completed!"
+show "Tutorial completed!"
 
