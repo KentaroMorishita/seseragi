@@ -471,6 +471,10 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
     // Parse the document
     const parser = new Parser(text)
     const ast = parser.parse()
+    
+    // Debug: log AST structure
+    connection.console.log(`=== LSP AST DEBUG ===`)
+    connection.console.log(`Parsed AST: ${JSON.stringify(ast, null, 2)}`)
 
     // Get hover information from the position
     const hoverInfo = getHoverInfo(ast, offset, text)
@@ -505,11 +509,19 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
   try {
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(ast)
+    connection.console.log(`[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`)
+    if (result.errors.length > 0) {
+      connection.console.log(`Type inference errors: ${JSON.stringify(result.errors, null, 2)}`)
+    }
     const typeInfo = getTypeInfoWithInference(ast, wordAtPosition, result)
     if (typeInfo) {
+      connection.console.log(`[SESERAGI LSP DEBUG] Returning type info: ${typeInfo}`)
       return typeInfo
+    } else {
+      connection.console.log(`[SESERAGI LSP DEBUG] No type info found from inference`)
     }
   } catch (error) {
+    connection.console.log(`[SESERAGI LSP DEBUG] Type inference failed: ${error}`)
     // Fall back to basic type info if type inference fails
   }
 
@@ -806,13 +818,24 @@ function findSymbolWithEnhancedInference(
 
     if (statement.kind === "VariableDeclaration" && statement.name === symbol) {
       // Debug: log all tracked types for this variable
-      connection.console.log(`Looking for variable ${symbol}`)
+      connection.console.log(`=== LSP DEBUG: Looking for variable ${symbol} ===`)
       connection.console.log(
         `Statement type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement)}`
       )
       connection.console.log(
         `Initializer type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement.initializer)}`
       )
+      
+      // Log the actual type from nodeTypeMap
+      const nodeType = inferenceResult.nodeTypeMap.get(statement)
+      if (nodeType) {
+        connection.console.log(`NodeTypeMap type for statement: ${JSON.stringify(nodeType, null, 2)}`)
+      }
+      
+      const initType = inferenceResult.nodeTypeMap.get(statement.initializer)
+      if (initType) {
+        connection.console.log(`NodeTypeMap type for initializer: ${JSON.stringify(initType, null, 2)}`)
+      }
 
       // Special handling for MonadBind expressions
       if (statement.initializer && statement.initializer.kind === "MonadBind") {
@@ -862,9 +885,12 @@ function findSymbolWithEnhancedInference(
         const originalType = finalType
         finalType = inferenceResult.substitution.apply(finalType)
         connection.console.log(
-          `Applied substitution: ${originalType.kind} -> ${finalType.kind}`
+          `Applied substitution: ${JSON.stringify(originalType, null, 2)} -> ${JSON.stringify(finalType, null, 2)}`
         )
       }
+      
+      connection.console.log(`=== FINAL TYPE FOR ${symbol}: ${JSON.stringify(finalType, null, 2)} ===`)
+      connection.console.log(`=== FORMATTED TYPE STRING: ${formatInferredTypeForDisplay(finalType)} ===`)
 
       return {
         type: "variable",
@@ -1105,19 +1131,20 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
       return null
 
     case "RangeLiteral":
-      // Range literals return List<Int>
+      // Range literals return Array<Int>
+      connection.console.log("=== RANGE LITERAL DETECTED IN LSP ===")
       return {
         kind: "GenericType",
-        name: "List",
+        name: "Array",
         typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
       }
 
     case "ListComprehension":
-      // List comprehensions return List<T> where T is the type of the expression
+      // Array comprehensions return Array<T> where T is the type of the expression
       const expressionType = inferTypeFromExpression(expr.expression, ast)
       return {
         kind: "GenericType",
-        name: "List",
+        name: "Array",
         typeArguments: [expressionType || { kind: "TypeVariable", name: "T" }],
       }
 

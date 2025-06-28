@@ -2188,10 +2188,15 @@ export class TypeInferenceSystem {
       const gt1 = type1 as AST.GenericType
       const gt2 = type2 as AST.GenericType
 
-      if (
+      // 特殊ケース: ArrayとListの相互変換を許可（内包表記のため）
+      const isArrayListCompatible = 
+        (gt1.name === "Array" && gt2.name === "List") ||
+        (gt1.name === "List" && gt2.name === "Array")
+
+      if (!isArrayListCompatible && (
         gt1.name !== gt2.name ||
         gt1.typeArguments.length !== gt2.typeArguments.length
-      ) {
+      )) {
         throw new Error(
           `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
         )
@@ -2802,8 +2807,8 @@ export class TypeInferenceSystem {
       )
     )
 
-    // 範囲リテラルはList<Int>を返す
-    return new AST.GenericType("List", [intType], range.line, range.column)
+    // 範囲リテラルはArray<Int>を返す
+    return new AST.GenericType("Array", [intType], range.line, range.column)
   }
 
   private generateConstraintsForListComprehension(
@@ -2818,17 +2823,18 @@ export class TypeInferenceSystem {
       // ジェネレータのiterableの型を推論
       const iterableType = this.generateConstraintsForExpression(generator.iterable, compEnv)
 
-      // iterableはリスト型でなければならない
+      // iterableはリスト型またはArray型でなければならない
       const elementType = this.freshTypeVariable(generator.line, generator.column)
-      const expectedListType = new AST.GenericType("List", [elementType], generator.line, generator.column)
-
+      const arrayType = new AST.GenericType("Array", [elementType], generator.line, generator.column)
+      
+      // 配列内包表記では範囲リテラル（Array型）を直接受け入れる
       this.addConstraint(
         new TypeConstraint(
           iterableType,
-          expectedListType,
+          arrayType,
           generator.line,
           generator.column,
-          `Generator iterable must be List type`
+          `Generator iterable must be Array type for array comprehensions`
         )
       )
 
@@ -2847,7 +2853,7 @@ export class TypeInferenceSystem {
           boolType,
           filter.line,
           filter.column,
-          "List comprehension filter must be Bool"
+          "Array comprehension filter must be Bool"
         )
       )
     }
@@ -2855,8 +2861,8 @@ export class TypeInferenceSystem {
     // 内包表記の式の型を推論
     const expressionType = this.generateConstraintsForExpression(comp.expression, compEnv)
 
-    // 結果はList<expressionType>
-    return new AST.GenericType("List", [expressionType], comp.line, comp.column)
+    // 結果はArray<expressionType>（配列内包表記なのでArrayを返す）
+    return new AST.GenericType("Array", [expressionType], comp.line, comp.column)
   }
 
   private generateConstraintsForListComprehensionSugar(
@@ -2872,17 +2878,19 @@ export class TypeInferenceSystem {
       // ジェネレータのiterableの型を推論
       const iterableType = this.generateConstraintsForExpression(generator.iterable, compEnv)
 
-      // iterableはリスト型でなければならない
+      // iterableはList型またはArray型を受け入れる（バッククォート記法でも配列を受け入れる）
       const elementType = this.freshTypeVariable(generator.line, generator.column)
       const expectedListType = new AST.GenericType("List", [elementType], generator.line, generator.column)
-
+      
+      // iterableがListまたはArrayであることを制約として追加
+      // 制約解決システムがArray<->List変換を処理する
       this.addConstraint(
         new TypeConstraint(
           iterableType,
           expectedListType,
           generator.line,
           generator.column,
-          `Generator iterable must be List type`
+          `Generator iterable must be List type (Array conversion allowed)`
         )
       )
 
