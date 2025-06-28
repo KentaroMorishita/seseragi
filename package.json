@@ -21,7 +21,8 @@
     "clean": "rm -rf dist",
     "seseragi": "bun run src/cli.ts",
     "seseragi:format": "bun run src/cli.ts format",
-    "seseragi:compile": "bun run src/cli.ts compile"
+    "seseragi:compile": "bun run src/cli.ts compile",
+    "vscode:rebuild": "./scripts/rebuild-vscode-extension.sh"
   },
   "keywords": [],
   "author": "",
