@@ -93,6 +93,7 @@ export interface Token {
   value: string
   line: number
   column: number
+  hasLeadingWhitespace?: boolean
 }
 
 export class Lexer {
@@ -152,6 +153,7 @@ export class Lexer {
   }
 
   private nextToken(): Token | null {
+    const hadWhitespace = this.hasWhitespace()
     this.skipWhitespace()
 
     if (this.isAtEnd()) {
@@ -266,9 +268,13 @@ export class Lexer {
     if (char === "-") {
       if (this.peek() === ">") {
         this.advance()
-        return this.makeToken(TokenType.ARROW, "->", startLine, startColumn)
+        return this.makeToken(TokenType.ARROW, "->", startLine, startColumn, hadWhitespace)
       }
-      return this.makeToken(TokenType.MINUS, char, startLine, startColumn)
+      // 負の数値リテラル: -123, -45.67
+      if (this.isDigit(this.peek())) {
+        return this.negativeNumber(startLine, startColumn)
+      }
+      return this.makeToken(TokenType.MINUS, char, startLine, startColumn, hadWhitespace)
     }
 
     if (char === "=") {
@@ -432,6 +438,32 @@ export class Lexer {
     )
   }
 
+  private negativeNumber(startLine: number, startColumn: number): Token {
+    let value = "-"
+    let isFloat = false
+
+    while (this.isDigit(this.peek())) {
+      value += this.advance()
+    }
+
+    // Look for decimal point
+    if (this.peek() === "." && this.isDigit(this.peekNext())) {
+      isFloat = true
+      value += this.advance() // consume '.'
+
+      while (this.isDigit(this.peek())) {
+        value += this.advance()
+      }
+    }
+
+    return this.makeToken(
+      isFloat ? TokenType.FLOAT : TokenType.INTEGER,
+      value,
+      startLine,
+      startColumn
+    )
+  }
+
   private identifier(startLine: number, startColumn: number): Token {
     // Back up to include the first character
     this.current--
@@ -445,6 +477,11 @@ export class Lexer {
 
     const tokenType = this.keywords.get(value) || TokenType.IDENTIFIER
     return this.makeToken(tokenType, value, startLine, startColumn)
+  }
+
+  private hasWhitespace(): boolean {
+    const char = this.peek()
+    return char === " " || char === "\r" || char === "\t"
   }
 
   private skipWhitespace(): void {
@@ -462,9 +499,10 @@ export class Lexer {
     type: TokenType,
     value: string,
     line: number,
-    column: number
+    column: number,
+    hasLeadingWhitespace?: boolean
   ): Token {
-    return { type, value, line, column }
+    return { type, value, line, column, hasLeadingWhitespace }
   }
 
   private isAtEnd(): boolean {

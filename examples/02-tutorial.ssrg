@@ -203,7 +203,7 @@ fn parsePositive x :Int -> Either<String, Int> =
   if x > 0 then Right x else Left "Not a positive number"
 
 let parsed1 = parsePositive 42
-let parsed2 = parsePositive (-5)
+let parsed2 = parsePositive -5
 
 show parsed1
 show parsed2
