@@ -246,21 +246,46 @@ export class Parser {
     // Look ahead to see if this identifier is followed by '=' or '{'
     // If so, it's a return type
     let lookahead = this.current + 1
+    let genericDepth = 0
     
-    // Skip the current identifier
-    while (
-      lookahead < this.tokens.length &&
-      this.tokens[lookahead].type !== TokenType.ASSIGN &&
-      this.tokens[lookahead].type !== TokenType.LEFT_BRACE &&
-      this.tokens[lookahead].type !== TokenType.IDENTIFIER
-    ) {
+    // Skip the current identifier and any generic type arguments
+    while (lookahead < this.tokens.length) {
+      const tokenType = this.tokens[lookahead].type
+      
+      // Track generic type depth
+      if (tokenType === TokenType.LESS_THAN) {
+        genericDepth++
+        lookahead++
+        continue
+      }
+      
+      if (tokenType === TokenType.GREATER_THAN) {
+        genericDepth--
+        lookahead++
+        continue
+      }
+      
+      // If we're inside a generic type, skip all tokens including identifiers
+      if (genericDepth > 0) {
+        lookahead++
+        continue
+      }
+      
+      // If we find '=' or '{', this is a return type
+      if (tokenType === TokenType.ASSIGN || tokenType === TokenType.LEFT_BRACE) {
+        return true
+      }
+      
+      // If we find another identifier outside of generics without encountering '=' or '{' first,
+      // this is likely a parameter name, not a return type
+      if (tokenType === TokenType.IDENTIFIER) {
+        return false
+      }
+      
       lookahead++
     }
 
-    // If we find '=' or '{' next, this identifier is the return type
-    return lookahead < this.tokens.length &&
-           (this.tokens[lookahead].type === TokenType.ASSIGN ||
-            this.tokens[lookahead].type === TokenType.LEFT_BRACE)
+    return false
   }
 
   private typeDeclaration(): AST.TypeDeclaration {

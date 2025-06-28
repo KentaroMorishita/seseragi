@@ -363,7 +363,7 @@ class CodeGenerator {
   
   // List型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Empty') {
-    return '[]'
+    return "\`[]"
   }
   if (value && typeof value === 'object' && value.tag === 'Cons') {
     const items = []
@@ -372,7 +372,7 @@ class CodeGenerator {
       items.push(toString(current.head))
       current = current.tail
     }
-    return \`[\${items.join(', ')}]\`
+    return "\`[" + items.join(', ') + "]"
   }
   
   // 配列の表示
@@ -397,8 +397,8 @@ class CodeGenerator {
 function normalizeStructure(obj) {
   if (!obj || typeof obj !== 'object') return obj
   
-  // List型 → 配列に変換
-  if (obj.tag === 'Empty') return []
+  // List型 → 特別なマーカー付き配列に変換
+  if (obj.tag === 'Empty') return { '@@type': 'List', value: [] }
   if (obj.tag === 'Cons') {
     const items = []
     let current = obj
@@ -406,7 +406,7 @@ function normalizeStructure(obj) {
       items.push(normalizeStructure(current.head))
       current = current.tail
     }
-    return items
+    return { '@@type': 'List', value: items }
   }
   
   // Maybe型
@@ -443,6 +443,17 @@ function normalizeStructure(obj) {
 // JSON文字列をSeseragi型の美しい表記に変換
 function beautifySeseragiTypes(json) {
   return json
+    // List型 - 空リスト
+    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[\\s*\\]\\s*\\}/g, '\`[]')
+    // List型 - 要素あり（ネスト対応、複数パスで処理）
+    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
+      const cleanContent = content.replace(/\\s+/g, ' ').trim()
+      return \`\\\`[\${cleanContent}]\`
+    })
+    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
+      const cleanContent = content.replace(/\\s+/g, ' ').trim()
+      return \`\\\`[\${cleanContent}]\`
+    })
     // Just型
     .replace(/"@@type":\\s*"Just",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Just(\${val.trim()})\`)
     .replace(/\\{\\s*Just\\(([^)]+)\\)\\s*\\}/g, 'Just($1)')
@@ -455,6 +466,7 @@ function beautifySeseragiTypes(json) {
     .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
     .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
 }
+
 
 // 美しくフォーマットする関数
 const prettyFormat = (value) => {
@@ -600,7 +612,7 @@ const show = (value) => {
   
   // List型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Empty') {
-    return '[]'
+    return "\`[]"
   }
   if (value && typeof value === 'object' && value.tag === 'Cons') {
     const items = []
@@ -609,7 +621,7 @@ const show = (value) => {
       items.push(toString(current.head))
       current = current.tail
     }
-    return \`[\${items.join(', ')}]\`
+    return "\`[" + items.join(', ') + "]"
   }
   
   // 配列の表示

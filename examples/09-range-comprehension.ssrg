@@ -8,9 +8,9 @@
 let numbers = 1..10        // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 let inclusive = 1..=5      // [1, 2, 3, 4, 5]
 
-print "範囲指定の例:"
-print numbers
-print inclusive
+show "範囲指定の例:"
+show numbers
+show inclusive
 
 // ========================================
 // 配列内包表記 (Array Comprehensions)
@@ -18,23 +18,23 @@ print inclusive
 
 // 基本的な内包表記（配列を生成）
 let squares = [x * x | x <- 1..5]
-print "平方数（配列）:"
-print squares
+show "平方数（配列）:"
+show squares
 
 // フィルタ付き内包表記
 let evens = [x | x <- 1..10, x % 2 == 0]
-print "偶数（配列）:"
-print evens
+show "偶数（配列）:"
+show evens
 
 // 複雑な変換
 let doubled = [x * 2 | x <- 1..5]
-print "2倍した数（配列）:"
-print doubled
+show "2倍した数（配列）:"
+show doubled
 
 // 複数のジェネレータ
 let pairs = [x + y | x <- 1..3, y <- 1..2]
-print "ペアの合計（配列）:"
-print pairs
+show "ペアの合計（配列）:"
+show pairs
 
 // ========================================
 // リスト内包表記 (List Comprehensions)
@@ -42,23 +42,23 @@ print pairs
 
 // バッククォート記法でSeseragiリストを生成
 let listSquares = `[x * x | x <- 1..5]
-print "平方数（リスト）:"
-print listSquares
+show "平方数（リスト）:"
+show listSquares
 
 // リストでのフィルタ付き内包表記
 let listEvens = `[x | x <- 1..10, x % 2 == 0]
-print "偶数（リスト）:"
-print listEvens
+show "偶数（リスト）:"
+show listEvens
 
 // リストでの複雑な変換
 let listDoubled = `[x * 2 | x <- 1..5]
-print "2倍した数（リスト）:"
-print listDoubled
+show "2倍した数（リスト）:"
+show listDoubled
 
 // リストでの複数ジェネレータ
 let listPairs = `[x + y | x <- 1..3, y <- 1..2]
-print "ペアの合計（リスト）:"
-print listPairs
+show "ペアの合計（リスト）:"
+show listPairs
 
 // ========================================
 // 配列 vs リストの比較
@@ -68,11 +68,11 @@ print listPairs
 let arrayResult = [x * 3 | x <- 1..4, x % 2 == 0]
 let listResult = `[x * 3 | x <- 1..4, x % 2 == 0]
 
-print "配列の結果:"
-print arrayResult     // JavaScript配列: [6, 12]
+show "配列の結果:"
+show arrayResult     // JavaScript配列: [6, 12]
 
-print "リストの結果:"
-print listResult      // Seseragiリスト: Cons構造
+show "リストの結果:"
+show listResult      // Seseragiリスト: Cons構造
 
 // ========================================
 // 実用的な例
@@ -80,12 +80,12 @@ print listResult      // Seseragiリスト: Cons構造
 
 // フィボナッチ数列の最初のn項（簡略版）
 let fibTerms = [x | x <- 1..10, x <= 8]
-print "フィボナッチ項数:"
-print fibTerms
+show "フィボナッチ項数:"
+show fibTerms
 
 // 素数っぽい数（簡単なフィルタ）
-let primeish = [x | x <- 2..20, x % 2 != 0, x % 3 != 0]
-print "素数っぽい数:"
-print primeish
+let primeish = 2 : 3 : `[x | x <- 2..20, x % 2 != 0, x % 3 != 0]
+show "素数っぽい数:"
+show primeish
 
-print "Range and List Comprehension Demo completed! 🎉"
+show "Range and List Comprehension Demo completed! 🎉"

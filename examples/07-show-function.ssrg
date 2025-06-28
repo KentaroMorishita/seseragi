@@ -1,29 +1,29 @@
 // 07. show関数 - 美しい出力で開発体験を向上
 
-print "=== SHOW FUNCTION DEMO ==="
-print ""
+show "=== SHOW FUNCTION DEMO ==="
+show ""
 
-print "【show vs print 比較】"
+show "【show vs show 比較】"
 
-// 同じデータをprintとshowで比較
+// 同じデータをshowとshowで比較
 let data = Just 42
 
-print "print出力:"
-print data
-
-print "show出力:"
+show "show出力:"
 show data
-print ""
+
+show "show出力:"
+show data
+show ""
 
 // リストの表示
 let list = `[1, 2, 3, 4, 5]
 
-print "リスト - print:"
-print list
-
-print "リスト - show:"
+show "リスト - show:"
 show list
-print ""
+
+show "リスト - show:"
+show list
+show ""
 
 // 複雑なデータ構造
 let complex = {
@@ -35,12 +35,12 @@ let complex = {
   }
 }
 
-print "複雑なデータ - print:"
-print complex
-
-print ""
-print "複雑なデータ - show:"
+show "複雑なデータ - show:"
 show complex
 
-print ""
-print "=== SHOW DEMO COMPLETE ==="
+show ""
+show "複雑なデータ - show:"
+show complex
+
+show ""
+show "=== SHOW DEMO COMPLETE ==="

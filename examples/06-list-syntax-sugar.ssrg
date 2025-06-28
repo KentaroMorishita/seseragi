@@ -13,9 +13,9 @@ let numbers = `[1, 2, 3, 4, 5]
 // 文字列のリスト
 let words = `["hello", "beautiful", "world"]
 
-print "基本的なリスト構文:"
-print numbers
-print words
+show "基本的なリスト構文:"
+show numbers
+show words
 
 // ========================================
 // CONS演算子 (右結合)
@@ -27,9 +27,9 @@ let consed = 1 : 2 : 3 : `[]
 // 混合構文 - CONS + シンタックスシュガー
 let mixed = 0 : `[1, 2, 3]
 
-print "CONS演算子の使用例:"
-print consed
-print mixed
+show "CONS演算子の使用例:"
+show consed
+show mixed
 
 // ========================================
 // Array型 vs List型の比較
@@ -41,9 +41,9 @@ let jsArray = [1, 2, 3]
 // Seseragiリスト (不変、関数型操作)
 let seseragiList = `[1, 2, 3]
 
-print "Array vs List:"
-print jsArray
-print seseragiList
+show "Array vs List:"
+show jsArray
+show seseragiList
 
 // ========================================
 // ネストしたリスト
@@ -52,9 +52,9 @@ print seseragiList
 let matrix = `[`[1, 2], `[3, 4], `[5, 6]]
 let listOfWords = `[`["a", "b"], `["c", "d"]]
 
-print "ネストしたリスト:"
-print matrix
-print listOfWords
+show "ネストしたリスト:"
+show matrix
+show listOfWords
 
 // ========================================
 // 実用的な関数例
@@ -64,9 +64,9 @@ print listOfWords
 let result1 = 0 : `[1, 2, 3]
 let result2 = 10 : 20 : `[30, 40, 50]
 
-print "関数型操作:"
-print result1
-print result2
+show "関数型操作:"
+show result1
+show result2
 
 // ========================================
 // パターンに基づく処理例
@@ -82,8 +82,8 @@ let todoItems = `[
 let priorities = `[1, 2, 3, 4, 5]
 let importantTasks = 1 : 2 : priorities
 
-print "実用的なデータ構造:"
-print todoItems
-print importantTasks
+show "実用的なデータ構造:"
+show todoItems
+show importantTasks
 
-print "List Syntax Sugar Demo completed! ✨"
+show "List Syntax Sugar Demo completed! ✨"

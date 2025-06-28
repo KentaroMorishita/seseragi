@@ -1,13 +1,13 @@
 // Seseragi 高度な機能のサンプル
 // 将来実装予定の機能を含む関数型プログラミングの応用例
 
-print "=== Seseragi Advanced Features ==="
+show "=== Seseragi Advanced Features ==="
 
 // =============================================================================
 // 現在実装済みの高度な例
 // =============================================================================
 
-print "--- Currently Implemented Advanced Features ---"
+show "--- Currently Implemented Advanced Features ---"
 
 // カリー化の活用
 fn multiply x :Int -> y :Int -> Int = x * y
@@ -16,28 +16,28 @@ fn multiply x :Int -> y :Int -> Int = x * y
 let double = multiply 2
 let triple = multiply 3
 
-print $ double 15    // 30
-print $ triple 8     // 24
+show $ double 15    // 30
+show $ triple 8     // 24
 
 // 複雑な再帰関数
 fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
 fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
 
-print "=== Fibonacci sequence ==="
-print $ fibonacci 0   // 0
-print $ fibonacci 1   // 1
-print $ fibonacci 5   // 5
-print $ fibonacci 8   // 21
+show "=== Fibonacci sequence ==="
+show $ fibonacci 0   // 0
+show $ fibonacci 1   // 1
+show $ fibonacci 5   // 5
+show $ fibonacci 8   // 21
 
-print "=== Factorial examples ==="
-print $ factorial 5   // 120
-print $ factorial 3   // 6
+show "=== Factorial examples ==="
+show $ factorial 5   // 120
+show $ factorial 3   // 6
 
 // =============================================================================
 // 将来実装予定の機能（サンプル）
 // =============================================================================
 
-print "--- Future Features (Commented Examples) ---"
+show "--- Future Features (Commented Examples) ---"
 
 // パターンマッチング（将来実装）
 // type Color = Red | Green | Blue | RGB Int Int Int
@@ -49,8 +49,8 @@ print "--- Future Features (Commented Examples) ---"
 //   RGB r g b -> "RGB(" + toString r + "," + toString g + "," + toString b + ")"
 // }
 //
-// print (colorToString Red)
-// print (colorToString (RGB 255 128 0))
+// show (colorToString Red)
+// show (colorToString (RGB 255 128 0))
 
 // Maybe型を使った安全な操作（将来実装）
 // type Maybe<T> = Just T | Nothing
@@ -62,7 +62,7 @@ print "--- Future Features (Commented Examples) ---"
 //   x >>= (fn val -> Just (val * y))
 //
 // let result = Just 10 >>= safeDivide 2 >>= safeMultiply 3
-// print (toString result)  // Just 15
+// show (toString result)  // Just 15
 
 // パイプライン演算子（将来実装）
 // let result = "hello"
@@ -70,7 +70,7 @@ print "--- Future Features (Commented Examples) ---"
 //   | reverse
 //   | addPrefix ">>> "
 //
-// print result
+// show result
 
 // リスト処理の関数型スタイル（将来実装）
 // let numbers = [1, 2, 3, 4, 5]
@@ -84,7 +84,7 @@ print "--- Future Features (Commented Examples) ---"
 //   | filter (fn x -> x > 5)
 //   | fold (+) 0
 //
-// print (toString result)
+// show (toString result)
 
 // 副作用のある関数（将来実装）
 // effectful fn readFile path :String -> IO<String> =
@@ -105,7 +105,7 @@ print "--- Future Features (Commented Examples) ---"
 // }
 //
 // let result = 5 <+> 3  // (5 + 3) * 2 = 16
-// print (toString result)
+// show (toString result)
 
 // 型クラス的な機能（将来実装）
 // impl String {
@@ -119,7 +119,7 @@ print "--- Future Features (Commented Examples) ---"
 // }
 //
 // let result = "Hello" >>> " " >>> "World"
-// print result  // "Hello World"
+// show result  // "Hello World"
 
-print "=== Advanced Features Preview Complete ==="
+show "=== Advanced Features Preview Complete ==="
 
