@@ -1104,6 +1104,48 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
       }
       return null
 
+    case "RangeLiteral":
+      // Range literals return List<Int>
+      return {
+        kind: "GenericType",
+        name: "List",
+        typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
+      }
+
+    case "ListComprehension":
+      // List comprehensions return List<T> where T is the type of the expression
+      const expressionType = inferTypeFromExpression(expr.expression, ast)
+      return {
+        kind: "GenericType",
+        name: "List",
+        typeArguments: [expressionType || { kind: "TypeVariable", name: "T" }],
+      }
+
+    case "ListComprehensionSugar":
+      // List comprehension sugar also returns List<T>
+      const sugarExpressionType = inferTypeFromExpression(expr.expression, ast)
+      return {
+        kind: "GenericType",
+        name: "List",
+        typeArguments: [sugarExpressionType || { kind: "TypeVariable", name: "T" }],
+      }
+
+    case "ArrayLiteral":
+      // Array literals return Array<T> where T is the type of the first element
+      if (expr.elements && expr.elements.length > 0) {
+        const elementType = inferTypeFromExpression(expr.elements[0], ast)
+        return {
+          kind: "GenericType",
+          name: "Array",
+          typeArguments: [elementType || { kind: "TypeVariable", name: "T" }],
+        }
+      }
+      return {
+        kind: "GenericType",
+        name: "Array",
+        typeArguments: [{ kind: "TypeVariable", name: "T" }],
+      }
+
     default:
       return null
   }
