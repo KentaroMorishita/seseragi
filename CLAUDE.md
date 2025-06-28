@@ -448,10 +448,29 @@ bun test --grep "Maybe monad"
 ```
 
 ### LSPサーバー開発・デバッグ
-```bash
-# LSPサーバーを独立起動（デバッグ用）
-bun run src/lsp/main.ts --stdio
 
+**🚨🚨🚨 LSPサーバー修正時の必須手順 🚨🚨🚨**
+
+**LSPサーバー（src/lsp/）を修正した場合は、以下を必ず実行：**
+
+```bash
+# 1. 【必須】プロジェクトビルド（LSPサーバーはdist/lsp/main.jsを使用）
+bun run build
+
+# 2. 【必須】VS Code完全再起動（アプリケーション自体を終了）
+# Command Palette → "Developer: Reload Window" だけでは不十分！
+
+# 3. デバッグ時のみ：LSPサーバーを独立起動
+bun run src/lsp/main.ts --stdio
+```
+
+**⚠️ 絶対に忘れてはいけないこと：**
+- LSPサーバーは `dist/lsp/main.js` を実行している
+- `src/lsp/` の変更は `bun run build` しないと反映されない
+- TypeScriptソースを修正してもJavaScriptビルドしないと無意味
+- VS Codeの "Reload Window" だけでは古いLSPサーバープロセスが残る場合がある
+
+```bash
 # VS Code拡張のリロードテスト
 cd extensions/seseragi
 bun run compile
