@@ -757,6 +757,27 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "RangeLiteral":
+        resultType = this.generateConstraintsForRangeLiteral(
+          expr as AST.RangeLiteral,
+          env
+        )
+        break
+
+      case "ListComprehension":
+        resultType = this.generateConstraintsForListComprehension(
+          expr as AST.ListComprehension,
+          env
+        )
+        break
+
+      case "ListComprehensionSugar":
+        resultType = this.generateConstraintsForListComprehensionSugar(
+          expr as AST.ListComprehensionSugar,
+          env
+        )
+        break
+
       case "FunctionApplicationOperator":
         resultType = this.generateConstraintsForFunctionApplicationOperator(
           expr as AST.FunctionApplicationOperator,
@@ -2747,6 +2768,149 @@ export class TypeInferenceSystem {
 
     // 結果の型もList<T>
     return new AST.GenericType("List", [headType], consExpr.line, consExpr.column)
+  }
+
+  private generateConstraintsForRangeLiteral(
+    range: AST.RangeLiteral,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // 範囲リテラルの開始と終了値の型を推論
+    const startType = this.generateConstraintsForExpression(range.start, env)
+    const endType = this.generateConstraintsForExpression(range.end, env)
+
+    // 開始と終了は同じ型でなければならない
+    this.addConstraint(
+      new TypeConstraint(
+        startType,
+        endType,
+        range.line,
+        range.column,
+        "Range start and end must have same type"
+      )
+    )
+
+    // 範囲は数値型（Int）のリストを返す
+    const intType = new AST.PrimitiveType("Int", range.line, range.column)
+    
+    this.addConstraint(
+      new TypeConstraint(
+        startType,
+        intType,
+        range.start.line,
+        range.start.column,
+        "Range values must be integers"
+      )
+    )
+
+    // 範囲リテラルはList<Int>を返す
+    return new AST.GenericType("List", [intType], range.line, range.column)
+  }
+
+  private generateConstraintsForListComprehension(
+    comp: AST.ListComprehension,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // 内包表記用の環境を作成
+    const compEnv = new Map(env)
+
+    // ジェネレータを処理してスコープに変数を追加
+    for (const generator of comp.generators) {
+      // ジェネレータのiterableの型を推論
+      const iterableType = this.generateConstraintsForExpression(generator.iterable, compEnv)
+
+      // iterableはリスト型でなければならない
+      const elementType = this.freshTypeVariable(generator.line, generator.column)
+      const expectedListType = new AST.GenericType("List", [elementType], generator.line, generator.column)
+
+      this.addConstraint(
+        new TypeConstraint(
+          iterableType,
+          expectedListType,
+          generator.line,
+          generator.column,
+          `Generator iterable must be List type`
+        )
+      )
+
+      // ジェネレータ変数をスコープに追加
+      compEnv.set(generator.variable, elementType)
+    }
+
+    // フィルタ条件の型チェック
+    for (const filter of comp.filters) {
+      const filterType = this.generateConstraintsForExpression(filter, compEnv)
+      const boolType = new AST.PrimitiveType("Bool", filter.line, filter.column)
+
+      this.addConstraint(
+        new TypeConstraint(
+          filterType,
+          boolType,
+          filter.line,
+          filter.column,
+          "List comprehension filter must be Bool"
+        )
+      )
+    }
+
+    // 内包表記の式の型を推論
+    const expressionType = this.generateConstraintsForExpression(comp.expression, compEnv)
+
+    // 結果はList<expressionType>
+    return new AST.GenericType("List", [expressionType], comp.line, comp.column)
+  }
+
+  private generateConstraintsForListComprehensionSugar(
+    comp: AST.ListComprehensionSugar,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // ListComprehensionSugarは通常のListComprehensionと同じ型推論を行う
+    // 内包表記用の環境を作成
+    const compEnv = new Map(env)
+
+    // ジェネレータを処理してスコープに変数を追加
+    for (const generator of comp.generators) {
+      // ジェネレータのiterableの型を推論
+      const iterableType = this.generateConstraintsForExpression(generator.iterable, compEnv)
+
+      // iterableはリスト型でなければならない
+      const elementType = this.freshTypeVariable(generator.line, generator.column)
+      const expectedListType = new AST.GenericType("List", [elementType], generator.line, generator.column)
+
+      this.addConstraint(
+        new TypeConstraint(
+          iterableType,
+          expectedListType,
+          generator.line,
+          generator.column,
+          `Generator iterable must be List type`
+        )
+      )
+
+      // ジェネレータ変数をスコープに追加
+      compEnv.set(generator.variable, elementType)
+    }
+
+    // フィルタ条件の型チェック
+    for (const filter of comp.filters) {
+      const filterType = this.generateConstraintsForExpression(filter, compEnv)
+      const boolType = new AST.PrimitiveType("Bool", filter.line, filter.column)
+
+      this.addConstraint(
+        new TypeConstraint(
+          filterType,
+          boolType,
+          filter.line,
+          filter.column,
+          "List comprehension filter must be Bool"
+        )
+      )
+    }
+
+    // 内包表記の式の型を推論
+    const expressionType = this.generateConstraintsForExpression(comp.expression, compEnv)
+
+    // 結果はList<expressionType>
+    return new AST.GenericType("List", [expressionType], comp.line, comp.column)
   }
 }
 
