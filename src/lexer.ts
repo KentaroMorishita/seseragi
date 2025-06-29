@@ -83,6 +83,7 @@ export enum TokenType {
   // Special
   BACKTICK = "BACKTICK", // `
   LAMBDA = "LAMBDA", // \
+  WILDCARD = "WILDCARD", // _
   NEWLINE = "NEWLINE",
   EOF = "EOF",
   WHITESPACE = "WHITESPACE",
@@ -376,6 +377,11 @@ export class Lexer {
     // Number literals
     if (this.isDigit(char)) {
       return this.number(startLine, startColumn)
+    }
+
+    // Wildcard pattern
+    if (char === "_") {
+      return this.makeToken(TokenType.WILDCARD, char, startLine, startColumn)
     }
 
     // Identifiers and keywords

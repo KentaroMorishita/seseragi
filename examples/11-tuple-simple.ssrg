@@ -1,0 +1,11 @@
+// Seseragi タプル機能の簡単なサンプル
+
+show "=== Simple Tuple Test ==="
+
+// 基本的なタプル作成
+let point = (10, 20)
+show "Tuple created"
+
+// タプル展開
+let (x, y) = point
+show "Tuple destructured"

@@ -217,6 +217,10 @@
     "identifiers": {
       "patterns": [
         {
+          "name": "constant.language.wildcard.seseragi",
+          "match": "\\b_\\b"
+        },
+        {
           "name": "variable.other.seseragi",
           "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
         }

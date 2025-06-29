@@ -40,6 +40,9 @@ import {
   PrimitiveType,
   GenericType,
   RecordType,
+  TupleType,
+  TupleExpression,
+  TupleDestructuring,
 } from "./ast"
 import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
 
@@ -75,10 +78,12 @@ export class CodeGenerator {
   options: CodeGenOptions
   indentLevel: number
   usageAnalysis?: UsageAnalysis
+  wildcardCounter: number
 
   constructor(options: CodeGenOptions) {
     this.options = options
     this.indentLevel = 0
+    this.wildcardCounter = 1
   }
 
   // プログラム全体の生成
@@ -690,6 +695,8 @@ const show = (value) => {
       return this.generateTypeDeclaration(stmt)
     } else if (stmt instanceof ExpressionStatement) {
       return this.generateExpressionStatement(stmt)
+    } else if (stmt instanceof TupleDestructuring) {
+      return this.generateTupleDestructuring(stmt)
     }
 
     return `// Unsupported statement: ${stmt.constructor.name}`
@@ -855,6 +862,8 @@ const show = (value) => {
       return this.generateListComprehension(expr)
     } else if (expr instanceof ListComprehensionSugar) {
       return this.generateListComprehensionSugar(expr)
+    } else if (expr instanceof TupleExpression) {
+      return this.generateTupleExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -1210,6 +1219,14 @@ const show = (value) => {
         .map((field) => `${field.name}: ${this.generateType(field.type)}`)
         .join(", ")
       return `{ ${fields} }`
+    } else if (type instanceof TupleType) {
+      if (type.elementTypes.length === 0) {
+        return "[]"
+      }
+      const elements = type.elementTypes
+        .map((elementType) => this.generateType(elementType))
+        .join(", ")
+      return `[${elements}]`
     }
 
     return "any"
@@ -1453,5 +1470,44 @@ const show = (value) => {
     
     // 配列をSeseragiリストに変換
     return `arrayToList(${arrayResult})`
+  }
+
+  // タプル式の生成
+  generateTupleExpression(tuple: TupleExpression): string {
+    const elements = tuple.elements
+      .map((element) => this.generateExpression(element))
+      .join(", ")
+    return `[${elements}]`
+  }
+
+  // タプル分解の生成
+  generateTupleDestructuring(stmt: TupleDestructuring): string {
+    const patternVars = this.extractTuplePatternVars(stmt.pattern)
+    const initializer = this.generateExpression(stmt.initializer)
+    return `const [${patternVars.join(", ")}] = ${initializer};`
+  }
+
+  // タプルパターンから変数名を抽出
+  private extractTuplePatternVars(pattern: any): string[] {
+    const vars: string[] = []
+    
+    for (const subPattern of pattern.patterns) {
+      if (subPattern.kind === "IdentifierPattern") {
+        if (subPattern.name === "_") {
+          // ワイルドカードの場合は一意な変数名を生成
+          vars.push(`_${this.wildcardCounter++}`)
+        } else {
+          vars.push(subPattern.name)
+        }
+      } else if (subPattern.kind === "WildcardPattern") {
+        // ワイルドカードパターンの場合は一意な変数名を生成
+        vars.push(`_${this.wildcardCounter++}`)
+      } else {
+        // より複雑なパターンは後で実装
+        vars.push("/* complex pattern */")
+      }
+    }
+    
+    return vars
   }
 }
