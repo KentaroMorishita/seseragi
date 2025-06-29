@@ -905,6 +905,34 @@ function findSymbolWithEnhancedInference(
       }
     }
 
+    // Handle type alias declarations
+    if (statement.kind === "TypeAliasDeclaration" && statement.name === symbol) {
+      connection.console.log(`=== LSP DEBUG: Found type alias ${symbol} ===`)
+      
+      // Apply substitution to the aliased type if available
+      let aliasedType = statement.aliasedType
+      if (
+        aliasedType &&
+        inferenceResult.substitution &&
+        inferenceResult.substitution.apply
+      ) {
+        const originalType = aliasedType
+        aliasedType = inferenceResult.substitution.apply(aliasedType)
+        connection.console.log(
+          `Applied substitution to type alias: ${JSON.stringify(originalType, null, 2)} -> ${JSON.stringify(aliasedType, null, 2)}`
+        )
+      }
+      
+      connection.console.log(`=== TYPE ALIAS ${symbol}: ${JSON.stringify(aliasedType, null, 2)} ===`)
+      
+      return {
+        type: "typealias",
+        name: symbol,
+        finalType: aliasedType,
+        aliasedType: aliasedType,
+      }
+    }
+
     // Handle tuple destructuring
     if (statement.kind === "TupleDestructuring") {
       const tupleDestr = statement as any // AST.TupleDestructuring
@@ -1488,6 +1516,10 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
       const varType = formatInferredTypeForDisplay(info.finalType)
 
       return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\`\n**Type:** ${typeAnnotation}`
+
+    case "typealias":
+      const aliasedType = formatInferredTypeForDisplay(info.aliasedType)
+      return `\`\`\`seseragi\ntype ${symbol} = ${aliasedType}\n\`\`\`\n**Type:** type alias`
 
     default:
       return null

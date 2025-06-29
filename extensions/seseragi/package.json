@@ -2,7 +2,7 @@
   "name": "seseragi-language-support",
   "displayName": "Seseragi Language Support",
   "description": "Syntax highlighting and language support for Seseragi functional programming language",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publisher": "seseragi-dev",
   "engines": {
     "vscode": "^1.74.0"

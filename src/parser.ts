@@ -300,14 +300,72 @@ export class Parser {
     return false
   }
 
-  private typeDeclaration(): AST.TypeDeclaration {
+  private typeDeclaration(): AST.TypeDeclaration | AST.TypeAliasDeclaration {
     const name = this.consume(TokenType.IDENTIFIER, "Expected type name").value
 
-    // Check if this is a union type (type Name = A | B | C) or struct type (type Name { field: Type })
+    // Check if this is a union type (type Name = A | B | C), type alias (type Name = Type), or struct type (type Name { field: Type })
     if (this.match(TokenType.ASSIGN)) {
-      // Union type: type Color = Red | Green | Blue
       this.skipNewlines() // Allow newlines after '='
-      return this.parseUnionType(name)
+      
+      // Look ahead to determine if this is a type alias or union type
+      // Save current position to backtrack if needed
+      const savedPosition = this.current
+      
+      // Try to parse the first part and look for a pipe separator
+      let isTypeAlias = true
+      try {
+        // Skip leading newlines/whitespace
+        this.skipNewlines()
+        
+        // Check for function type parentheses
+        if (this.check(TokenType.LEFT_PAREN)) {
+          // Function type like (Int -> Bool) - always a type alias
+          isTypeAlias = true
+        } else if (this.check(TokenType.IDENTIFIER)) {
+          this.advance() // consume the identifier
+          
+          // Parse any type arguments (e.g., Maybe<String>)
+          if (this.match(TokenType.LESS_THAN)) {
+            // Skip the generic arguments to look for pipes later
+            let bracketCount = 1
+            while (bracketCount > 0 && !this.isAtEnd()) {
+              if (this.check(TokenType.LESS_THAN)) {
+                bracketCount++
+              } else if (this.check(TokenType.GREATER_THAN)) {
+                bracketCount--
+              }
+              this.advance()
+            }
+          }
+          
+          // Parse any additional type arguments for constructor variants
+          this.parseVariantDataTypes()
+          
+          // Skip whitespace and check for pipe
+          this.skipNewlines()
+          if (this.check(TokenType.PIPE)) {
+            isTypeAlias = false // This is a union type
+          }
+        } else {
+          // Other type constructs are type aliases
+          isTypeAlias = true
+        }
+      } catch (e) {
+        // If parsing fails, assume it's a complex type alias
+        isTypeAlias = true
+      }
+      
+      // Restore position
+      this.current = savedPosition
+      
+      if (isTypeAlias) {
+        // Type alias: type UserId = Int
+        const aliasedType = this.parseType()
+        return new AST.TypeAliasDeclaration(name, aliasedType, this.previous().line, this.previous().column)
+      } else {
+        // Union type: type Color = Red | Green | Blue
+        return this.parseUnionType(name)
+      }
     } else {
       // Struct type: type Point { x: Int, y: Int }
       return this.parseStructType(name)
@@ -419,6 +477,16 @@ export class Parser {
           this.previous().column
         )
       )
+
+      // Handle optional comma and newlines between fields
+      if (this.check(TokenType.COMMA)) {
+        this.advance()
+      }
+      
+      // Skip newlines after comma or field
+      while (this.match(TokenType.NEWLINE)) {
+        continue
+      }
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after type fields")
@@ -669,34 +737,11 @@ export class Parser {
   // =============================================================================
 
   private parseType(): AST.Type {
-    const token = this.advance()
-
-    if (token.type === TokenType.IDENTIFIER) {
-      const name = token.value
-
-      // Check for generic types List<T>, Maybe<T>, etc.
-      if (this.match(TokenType.LESS_THAN)) {
-        const typeArgs: AST.Type[] = []
-
-        do {
-          typeArgs.push(this.parseType())
-        } while (this.match(TokenType.COMMA))
-
-        this.consume(
-          TokenType.GREATER_THAN,
-          "Expected '>' after type arguments"
-        )
-
-        return new AST.GenericType(name, typeArgs, token.line, token.column)
-      }
-
-      return new AST.PrimitiveType(name, token.line, token.column)
-    }
-
+    // Check for parenthesized types first (function types, tuple types, or parenthesized types)
     if (this.check(TokenType.LEFT_PAREN)) {
-      this.consume(TokenType.LEFT_PAREN, "Expected '('")
-      const line = this.previous().line
-      const column = this.previous().column
+      const token = this.advance() // consume '('
+      const line = token.line
+      const column = token.column
       
       const firstType = this.parseType()
       
@@ -727,6 +772,30 @@ export class Parser {
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after type")
         return firstType
       }
+    }
+
+    const token = this.advance()
+
+    if (token.type === TokenType.IDENTIFIER) {
+      const name = token.value
+
+      // Check for generic types List<T>, Maybe<T>, etc.
+      if (this.match(TokenType.LESS_THAN)) {
+        const typeArgs: AST.Type[] = []
+
+        do {
+          typeArgs.push(this.parseType())
+        } while (this.match(TokenType.COMMA))
+
+        this.consume(
+          TokenType.GREATER_THAN,
+          "Expected '>' after type arguments"
+        )
+
+        return new AST.GenericType(name, typeArgs, token.line, token.column)
+      }
+
+      return new AST.PrimitiveType(name, token.line, token.column)
     }
 
     if (token.type === TokenType.LEFT_BRACE) {

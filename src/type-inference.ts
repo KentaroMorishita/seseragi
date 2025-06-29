@@ -488,6 +488,7 @@ export class TypeInferenceSystem {
     nodeTypeMap: Map<any, AST.Type>
   } {
     this.constraints = []
+    this.currentEnvironment.clear() // 環境をクリア
     this.errors = []
     this.nextVarId = 1000  // Reset to 1000 to avoid conflicts with parser-generated type variables
     this.nodeTypeMap.clear()
@@ -637,7 +638,7 @@ export class TypeInferenceSystem {
     // Pass 1: Process all function declarations and type declarations first
     // This allows variables to reference functions defined later in the file
     for (const statement of program.statements) {
-      if (statement.kind === "FunctionDeclaration" || statement.kind === "TypeDeclaration") {
+      if (statement.kind === "FunctionDeclaration" || statement.kind === "TypeDeclaration" || statement.kind === "TypeAliasDeclaration") {
         this.generateConstraintsForStatement(statement, env)
       }
     }
@@ -677,6 +678,12 @@ export class TypeInferenceSystem {
       case "TypeDeclaration":
         this.generateConstraintsForTypeDeclaration(
           statement as AST.TypeDeclaration,
+          env
+        )
+        break
+      case "TypeAliasDeclaration":
+        this.generateConstraintsForTypeAliasDeclaration(
+          statement as AST.TypeAliasDeclaration,
           env
         )
         break
@@ -847,6 +854,18 @@ export class TypeInferenceSystem {
       const constructorType = this.createConstructorType(field, adtType)
       env.set(field.name, constructorType)
     }
+  }
+
+  private generateConstraintsForTypeAliasDeclaration(
+    typeAlias: AST.TypeAliasDeclaration,
+    env: Map<string, AST.Type>
+  ): void {
+    // 型エイリアスを環境に追加
+    // エイリアスされる型がそのままエイリアス名で参照される
+    env.set(typeAlias.name, typeAlias.aliasedType)
+    
+    // 型エイリアス解決用の環境にも追加
+    this.currentEnvironment.set(typeAlias.name, typeAlias.aliasedType)
   }
 
   private createConstructorType(field: AST.TypeField, adtType: AST.Type): AST.Type {
@@ -2413,47 +2432,51 @@ export class TypeInferenceSystem {
     // console.log(`🔍 Unifying: ${this.typeToString(type1)} with ${this.typeToString(type2)}`)
     const substitution = new TypeSubstitution()
 
+    // 型エイリアスを解決
+    const resolvedType1 = this.resolveTypeAlias(type1)
+    const resolvedType2 = this.resolveTypeAlias(type2)
+
     // 同じ型の場合
-    if (this.typesEqual(type1, type2)) {
+    if (this.typesEqual(resolvedType1, resolvedType2)) {
       return substitution
     }
 
-    // 型変数の場合
+    // 型変数の場合（解決前の元の型で処理）
     if (type1.kind === "TypeVariable") {
       const tv1 = type1 as TypeVariable
-      if (this.occursCheck(tv1.id, type2)) {
+      if (this.occursCheck(tv1.id, resolvedType2)) {
         throw new Error(
-          `Infinite type: ${tv1.name} occurs in ${this.typeToString(type2)}`
+          `Infinite type: ${tv1.name} occurs in ${this.typeToString(resolvedType2)}`
         )
       }
-      substitution.set(tv1.id, type2)
+      substitution.set(tv1.id, resolvedType2)
       return substitution
     }
 
     if (type2.kind === "TypeVariable") {
       const tv2 = type2 as TypeVariable
-      if (this.occursCheck(tv2.id, type1)) {
+      if (this.occursCheck(tv2.id, resolvedType1)) {
         throw new Error(
-          `Infinite type: ${tv2.name} occurs in ${this.typeToString(type1)}`
+          `Infinite type: ${tv2.name} occurs in ${this.typeToString(resolvedType1)}`
         )
       }
-      substitution.set(tv2.id, type1)
+      substitution.set(tv2.id, resolvedType1)
       return substitution
     }
 
     // 多相型変数の場合 - これらは常に多相のまま残す
     if (
-      type1.kind === "PolymorphicTypeVariable" ||
-      type2.kind === "PolymorphicTypeVariable"
+      resolvedType1.kind === "PolymorphicTypeVariable" ||
+      resolvedType2.kind === "PolymorphicTypeVariable"
     ) {
       // 多相型変数は統一しない（常に多相のまま）
       return substitution
     }
 
-    // プリミティブ型の場合
-    if (type1.kind === "PrimitiveType" && type2.kind === "PrimitiveType") {
-      const pt1 = type1 as AST.PrimitiveType
-      const pt2 = type2 as AST.PrimitiveType
+    // プリミティブ型の場合（解決後の型で比較）
+    if (resolvedType1.kind === "PrimitiveType" && resolvedType2.kind === "PrimitiveType") {
+      const pt1 = resolvedType1 as AST.PrimitiveType
+      const pt2 = resolvedType2 as AST.PrimitiveType
       if (pt1.name === pt2.name) {
         return substitution
       }
@@ -2615,6 +2638,24 @@ export class TypeInferenceSystem {
       `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
     )
   }
+
+  // 型エイリアスの解決
+  private resolveTypeAlias(type: AST.Type): AST.Type {
+    if (type.kind === "PrimitiveType") {
+      const pt = type as AST.PrimitiveType
+      // 現在の環境で型エイリアスをチェック
+      for (const [name, aliasedType] of this.currentEnvironment) {
+        if (name === pt.name) {
+          // 再帰的にエイリアスを解決
+          return this.resolveTypeAlias(aliasedType)
+        }
+      }
+    }
+    return type
+  }
+
+  // 環境を保持するためのフィールド（既に存在する可能性）
+  private currentEnvironment: Map<string, AST.Type> = new Map()
 
   // 構造的部分型：小さいレコードが大きいレコードのサブセットかどうかチェック
   private isRecordSubset(smallerRecord: AST.RecordType, largerRecord: AST.RecordType): boolean {

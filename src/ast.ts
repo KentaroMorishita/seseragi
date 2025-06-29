@@ -809,6 +809,18 @@ export class TypeDeclaration extends Statement {
   }
 }
 
+export class TypeAliasDeclaration extends Statement {
+  kind = "TypeAliasDeclaration"
+  name: string
+  aliasedType: Type
+
+  constructor(name: string, aliasedType: Type, line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.aliasedType = aliasedType
+  }
+}
+
 export class MethodDeclaration extends ASTNode {
   kind = "MethodDeclaration"
   name: string

@@ -5,6 +5,7 @@ import {
   FunctionDeclaration,
   VariableDeclaration,
   TypeDeclaration,
+  TypeAliasDeclaration,
   Literal,
   Identifier,
   BinaryOperation,
@@ -693,6 +694,8 @@ const show = (value) => {
       return this.generateVariableDeclaration(stmt)
     } else if (stmt instanceof TypeDeclaration) {
       return this.generateTypeDeclaration(stmt)
+    } else if (stmt instanceof TypeAliasDeclaration) {
+      return this.generateTypeAliasDeclaration(stmt)
     } else if (stmt instanceof ExpressionStatement) {
       return this.generateExpressionStatement(stmt)
     } else if (stmt instanceof TupleDestructuring) {
@@ -797,9 +800,16 @@ const show = (value) => {
         return `${indent}type ${typeDecl.name} = {\n${fields}\n};`
       }
     } else {
-      // 型エイリアスとして生成
-      return `${indent}type ${typeDecl.name} = any; // TODO: implement type`
+      // Empty type declaration fallback
+      return `${indent}type ${typeDecl.name} = never; // Empty type declaration`
     }
+  }
+
+  // 型エイリアス宣言の生成
+  generateTypeAliasDeclaration(typeAlias: TypeAliasDeclaration): string {
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+    const aliasedType = this.generateType(typeAlias.aliasedType)
+    return `${indent}type ${typeAlias.name} = ${aliasedType};`
   }
 
   // 式の生成

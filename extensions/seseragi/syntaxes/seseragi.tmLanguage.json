@@ -13,6 +13,9 @@
       "include": "#keywords"
     },
     {
+      "include": "#type-declarations"
+    },
+    {
       "include": "#types"
     },
     {
@@ -57,6 +60,38 @@
         {
           "name": "keyword.control.seseragi",
           "match": "\\b(fn|let|type|impl|monoid|operator|effectful|match|import|as|if|then|else)\\b"
+        }
+      ]
+    },
+    "type-declarations": {
+      "patterns": [
+        {
+          "name": "meta.type-declaration.seseragi",
+          "begin": "\\b(type)\\s+([A-Z][a-zA-Z0-9_]*)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.type.seseragi"
+            },
+            "2": {
+              "name": "entity.name.type.declaration.seseragi"
+            }
+          },
+          "end": "(?=\\n|//|/\\*)",
+          "patterns": [
+            {
+              "name": "keyword.operator.assignment.seseragi",
+              "match": "="
+            },
+            {
+              "include": "#types"
+            },
+            {
+              "include": "#operators"
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
         }
       ]
     },
