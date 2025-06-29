@@ -85,6 +85,17 @@ export class RecordType extends Type {
   }
 }
 
+export class TupleType extends Type {
+  kind = "TupleType"
+  name = "Tuple"
+  elementTypes: Type[]
+
+  constructor(elementTypes: Type[], line: number, column: number) {
+    super(line, column)
+    this.elementTypes = elementTypes
+  }
+}
+
 // =============================================================================
 // Expressions
 // =============================================================================
@@ -578,6 +589,16 @@ export class ConsExpression extends Expression {
   }
 }
 
+export class TupleExpression extends Expression {
+  kind = "TupleExpression"
+  elements: Expression[]
+
+  constructor(elements: Expression[], line: number, column: number) {
+    super(line, column)
+    this.elements = elements
+  }
+}
+
 // =============================================================================
 // Pattern Matching
 // =============================================================================
@@ -617,6 +638,24 @@ export class ConstructorPattern extends Pattern {
   ) {
     super(line, column)
     this.constructorName = constructorName
+    this.patterns = patterns
+  }
+}
+
+export class WildcardPattern extends Pattern {
+  kind = "WildcardPattern"
+
+  constructor(line: number, column: number) {
+    super(line, column)
+  }
+}
+
+export class TuplePattern extends Pattern {
+  kind = "TuplePattern"
+  patterns: Pattern[]
+
+  constructor(patterns: Pattern[], line: number, column: number) {
+    super(line, column)
     this.patterns = patterns
   }
 }
@@ -729,6 +768,23 @@ export class VariableDeclaration extends Statement {
   }
 }
 
+export class TupleDestructuring extends Statement {
+  kind = "TupleDestructuring"
+  pattern: TuplePattern
+  initializer: Expression
+
+  constructor(
+    pattern: TuplePattern,
+    initializer: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.pattern = pattern
+    this.initializer = initializer
+  }
+}
+
 export class TypeField extends ASTNode {
   kind = "TypeField"
   name: string
@@ -747,6 +803,30 @@ export class TypeDeclaration extends Statement {
   fields: TypeField[]
 
   constructor(name: string, fields: TypeField[], line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.fields = fields
+  }
+}
+
+export class TypeAliasDeclaration extends Statement {
+  kind = "TypeAliasDeclaration"
+  name: string
+  aliasedType: Type
+
+  constructor(name: string, aliasedType: Type, line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.aliasedType = aliasedType
+  }
+}
+
+export class StructDeclaration extends Statement {
+  kind = "StructDeclaration"
+  name: string
+  fields: StructField[]
+
+  constructor(name: string, fields: StructField[], line: number, column: number) {
     super(line, column)
     this.name = name
     this.fields = fields

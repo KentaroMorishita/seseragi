@@ -1,0 +1,7 @@
+// Test tuple type display in LSP
+let basicTuple = (1, "hello", true)
+let nestedTuple = ((1, 2), ("a", "b"))
+
+fn makeTuple x y = (x, y)
+
+let functionResult = makeTuple 42 "test"
