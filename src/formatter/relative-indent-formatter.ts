@@ -189,6 +189,11 @@ function getRelativeIndent(
     return 1 // 親から +2スペース
   }
 
+  // 三項演算子の継続行（: で始まる行）
+  if (isTernaryContinuation(line, index, allLines)) {
+    return 1 // 親から +2スペース（関数本体と同じレベル）
+  }
+
   // else文
   if (line === "else") {
     return 1 // 親から +2スペース
@@ -329,4 +334,64 @@ export function normalizeOperatorSpacing(code: string): string {
   })
 
   return processedLines.join("\n")
+}
+
+// 三項演算子の継続行かどうかを判定
+function isTernaryContinuation(
+  line: string,
+  index: number,
+  allLines: string[]
+): boolean {
+  // 直近の関数定義から三項演算子の文脈にいるかチェック
+  let inTernaryContext = false
+  let functionStart = -1
+  
+  // 関数定義の開始を探す
+  for (let i = index - 1; i >= 0; i--) {
+    const prevLine = allLines[i].trim()
+    if (prevLine === "" || prevLine.startsWith("//")) continue
+    
+    if (prevLine.startsWith("fn ") && prevLine.endsWith(" =")) {
+      functionStart = i
+      break
+    }
+    
+    // 他のトップレベル要素が見つかったら終了
+    if (prevLine.startsWith("let ") || prevLine.startsWith("type ") || 
+        prevLine.startsWith("show ")) {
+      return false
+    }
+  }
+  
+  if (functionStart === -1) return false
+  
+  // 関数定義以降で ? が見つかるかチェック
+  for (let i = functionStart; i < index; i++) {
+    const checkLine = allLines[i].trim()
+    if (checkLine === "" || checkLine.startsWith("//")) continue
+    
+    if (checkLine.includes("?")) {
+      inTernaryContext = true
+      break
+    }
+  }
+  
+  // 三項演算子のコンテキストにいて、
+  // 現在の行が : を含むか、または三項演算子の最終部分（toString x等）
+  if (inTernaryContext) {
+    // : を含む行
+    if (line.includes(":") && !line.includes("->") && !line.includes("::")) {
+      return true
+    }
+    
+    // 前の行が : で終わる場合の最終表現
+    if (index > 0) {
+      const prevLine = allLines[index - 1].trim()
+      if (prevLine.endsWith(":")) {
+        return true
+      }
+    }
+  }
+  
+  return false
 }

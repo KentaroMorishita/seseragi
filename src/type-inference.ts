@@ -722,6 +722,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "TernaryExpression":
+        resultType = this.generateConstraintsForTernary(
+          expr as AST.TernaryExpression,
+          env
+        )
+        break
+
       case "BlockExpression":
         resultType = this.generateConstraintsForBlockExpression(
           expr as AST.BlockExpression,
@@ -1303,6 +1310,49 @@ export class TypeInferenceSystem {
     )
 
     return thenType
+  }
+
+  private generateConstraintsForTernary(
+    ternary: AST.TernaryExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const condType = this.generateConstraintsForExpression(ternary.condition, env)
+    const trueType = this.generateConstraintsForExpression(
+      ternary.trueExpression,
+      env
+    )
+    const falseType = this.generateConstraintsForExpression(
+      ternary.falseExpression,
+      env
+    )
+
+    // 条件はBool型でなければならない
+    this.addConstraint(
+      new TypeConstraint(
+        condType,
+        new AST.PrimitiveType(
+          "Bool",
+          ternary.condition.line,
+          ternary.condition.column
+        ),
+        ternary.condition.line,
+        ternary.condition.column,
+        `Ternary expression condition`
+      )
+    )
+
+    // 真と偽の分岐は同じ型でなければならない
+    this.addConstraint(
+      new TypeConstraint(
+        trueType,
+        falseType,
+        ternary.line,
+        ternary.column,
+        `Ternary expression branches`
+      )
+    )
+
+    return trueType
   }
 
   private generateConstraintsForBlockExpression(

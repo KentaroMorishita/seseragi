@@ -13,6 +13,7 @@ import {
   FunctionApplication,
   BuiltinFunctionCall,
   ConditionalExpression,
+  TernaryExpression,
   MatchExpression,
   ConstructorExpression,
   BlockExpression,
@@ -70,7 +71,7 @@ export function generateTypeScript(
   return generator.generateProgram(statements)
 }
 
-class CodeGenerator {
+export class CodeGenerator {
   options: CodeGenOptions
   indentLevel: number
   usageAnalysis?: UsageAnalysis
@@ -812,6 +813,8 @@ const show = (value) => {
       return this.generateBuiltinFunctionCall(expr)
     } else if (expr instanceof ConditionalExpression) {
       return this.generateConditionalExpression(expr)
+    } else if (expr instanceof TernaryExpression) {
+      return this.generateTernaryExpression(expr)
     } else if (expr instanceof MatchExpression) {
       return this.generateMatchExpression(expr)
     } else if (expr instanceof Pipeline) {
@@ -973,6 +976,15 @@ const show = (value) => {
     const elseBranch = this.generateExpression(cond.elseExpression)
 
     return `(${condition} ? ${thenBranch} : ${elseBranch})`
+  }
+
+  // 三項演算子の生成
+  generateTernaryExpression(ternary: TernaryExpression): string {
+    const condition = this.generateExpression(ternary.condition)
+    const trueBranch = this.generateExpression(ternary.trueExpression)
+    const falseBranch = this.generateExpression(ternary.falseExpression)
+
+    return `(${condition} ? ${trueBranch} : ${falseBranch})`
   }
 
   // マッチ式の生成
