@@ -26,7 +26,7 @@ show y  // 20
 let (name, age, isActive) = person
 show "Person destructured:"
 show name      // "Alice"
-show age       // 25  
+show age       // 25
 show isActive  // true
 
 // =============================================================================

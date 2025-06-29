@@ -665,6 +665,11 @@ function formatTypeForDisplay(type: any): string {
     return typeArgs ? `${baseType}<${typeArgs}>` : baseType
   }
 
+  if (type.kind === "TupleType") {
+    const elementTypes = type.elementTypes?.map(formatTypeForDisplay).join(", ") || ""
+    return `(${elementTypes})`
+  }
+
   return type.name || "unknown"
 }
 
@@ -899,8 +904,78 @@ function findSymbolWithEnhancedInference(
         hasExplicitType: !!statement.type,
       }
     }
+
+    // Handle tuple destructuring
+    if (statement.kind === "TupleDestructuring") {
+      const tupleDestr = statement as any // AST.TupleDestructuring
+      
+      // Check if the symbol is one of the destructured variables
+      const foundVariable = findVariableInTuplePattern(tupleDestr.pattern, symbol)
+      if (foundVariable) {
+        connection.console.log(`=== LSP DEBUG: Found variable ${symbol} in tuple destructuring ===`)
+        
+        // Get the type of the initializer (the tuple being destructured)
+        const initType = inferenceResult.nodeTypeMap.get(tupleDestr.initializer)
+        connection.console.log(`Tuple initializer type: ${JSON.stringify(initType, null, 2)}`)
+        
+        // Extract the specific element type for this variable
+        let elementType = null
+        if (initType && initType.kind === "TupleType" && initType.elementTypes) {
+          const elementIndex = foundVariable.index
+          if (elementIndex < initType.elementTypes.length) {
+            elementType = initType.elementTypes[elementIndex]
+          }
+        }
+        
+        // Apply substitution if available
+        if (elementType && inferenceResult.substitution && inferenceResult.substitution.apply) {
+          const originalType = elementType
+          elementType = inferenceResult.substitution.apply(elementType)
+          connection.console.log(
+            `Applied substitution to tuple element: ${JSON.stringify(originalType, null, 2)} -> ${JSON.stringify(elementType, null, 2)}`
+          )
+        }
+        
+        connection.console.log(`=== FINAL TUPLE ELEMENT TYPE FOR ${symbol}: ${JSON.stringify(elementType, null, 2)} ===`)
+        connection.console.log(`=== FORMATTED TUPLE ELEMENT TYPE STRING: ${formatInferredTypeForDisplay(elementType)} ===`)
+        
+        return {
+          type: "variable",
+          name: symbol,
+          finalType: elementType,
+          hasExplicitType: false,
+          isTupleElement: true,
+          tupleIndex: foundVariable.index
+        }
+      }
+    }
   }
 
+  return null
+}
+
+// Helper function to find a variable in a tuple pattern
+function findVariableInTuplePattern(pattern: any, symbol: string): { index: number } | null {
+  if (pattern.kind !== "TuplePattern") {
+    return null
+  }
+  
+  for (let i = 0; i < pattern.patterns.length; i++) {
+    const subPattern = pattern.patterns[i]
+    
+    if (subPattern.kind === "IdentifierPattern" && subPattern.name === symbol) {
+      return { index: i }
+    }
+    
+    // Recursively search in nested tuple patterns
+    if (subPattern.kind === "TuplePattern") {
+      const found = findVariableInTuplePattern(subPattern, symbol)
+      if (found) {
+        return found // Note: For nested tuples, we might need to handle indexing differently
+      }
+    }
+  }
+  
   return null
 }
 
@@ -1137,6 +1212,22 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
         kind: "GenericType",
         name: "Array",
         typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
+      }
+
+    case "TupleExpression":
+      // Tuple expressions return TupleType with element types
+      if (expr.elements && expr.elements.length > 0) {
+        const elementTypes = expr.elements.map((element: any) => 
+          inferTypeFromExpression(element, ast) || { kind: "TypeVariable", name: "T" }
+        )
+        return {
+          kind: "TupleType",
+          elementTypes: elementTypes,
+        }
+      }
+      return {
+        kind: "TupleType",
+        elementTypes: [],
       }
 
     case "ListComprehension":
@@ -1444,6 +1535,11 @@ function formatInferredTypeForDisplay(type: any): string {
     const typeArgs =
       type.typeArguments?.map(formatInferredTypeForDisplay).join(", ") || ""
     return typeArgs ? `${baseType}<${typeArgs}>` : baseType
+  }
+
+  if (type.kind === "TupleType") {
+    const elementTypes = type.elementTypes?.map(formatInferredTypeForDisplay).join(", ") || ""
+    return `(${elementTypes})`
   }
 
   return type.name || "unknown"
