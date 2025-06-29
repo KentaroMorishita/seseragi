@@ -86,7 +86,7 @@ async function compile(options: CompileOptions): Promise<void> {
   const typeScriptCode = generateTypeScript(ast.statements, {
     generateComments: options.generateComments,
     useArrowFunctions: options.useArrowFunctions,
-    runtimeMode: options.runtimeMode || "minimal",
+    runtimeMode: options.runtimeMode || "embedded",
   })
 
   // TypeScriptコードを出力

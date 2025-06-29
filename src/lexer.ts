@@ -70,6 +70,7 @@ export enum TokenType {
   COMMA = "COMMA", // ,
   DOT = "DOT", // .
   ASSIGN = "ASSIGN", // =
+  QUESTION = "QUESTION", // ?
 
   // Brackets
   LEFT_PAREN = "LEFT_PAREN", // (
@@ -216,6 +217,8 @@ export class Lexer {
         return this.makeToken(TokenType.SEMICOLON, char, startLine, startColumn)
       case ":":
         return this.makeToken(TokenType.COLON, char, startLine, startColumn)
+      case "?":
+        return this.makeToken(TokenType.QUESTION, char, startLine, startColumn)
       case ".":
         if (this.peek() === "." && this.peekNext() === "=") {
           this.advance() // consume second .

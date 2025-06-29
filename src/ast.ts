@@ -376,6 +376,26 @@ export class ConditionalExpression extends Expression {
   }
 }
 
+export class TernaryExpression extends Expression {
+  kind = "TernaryExpression"
+  condition: Expression
+  trueExpression: Expression
+  falseExpression: Expression
+
+  constructor(
+    condition: Expression,
+    trueExpr: Expression,
+    falseExpr: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.condition = condition
+    this.trueExpression = trueExpr
+    this.falseExpression = falseExpr
+  }
+}
+
 export class LambdaExpression extends Expression {
   kind = "LambdaExpression"
   parameters: Parameter[]

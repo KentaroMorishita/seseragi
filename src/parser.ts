@@ -822,6 +822,56 @@ export class Parser {
     )
   }
 
+  private ternaryExpression(): AST.Expression {
+    let expr = this.functionApplicationExpression()
+
+    if (this.match(TokenType.QUESTION)) {
+      const startLine = this.previous().line
+      const startColumn = this.previous().column
+      
+      // cons演算子（:）との競合を避けるため、rangeExpressionレベルで解析
+      // cons演算子を使用する場合は括弧が必要: condition ? (head : tail) : []
+      const trueExpr = this.rangeExpression()
+      this.consume(TokenType.COLON, "Expected ':' after true expression in ternary operator")
+      const falseExpr = this.ternaryExpression()
+
+      expr = new AST.TernaryExpression(
+        expr,
+        trueExpr,
+        falseExpr,
+        startLine,
+        startColumn
+      )
+    }
+
+    return expr
+  }
+
+  private ternaryExpressionWithoutPipeline(): AST.Expression {
+    let expr = this.functionApplicationExpressionWithoutPipeline()
+
+    if (this.match(TokenType.QUESTION)) {
+      const startLine = this.previous().line
+      const startColumn = this.previous().column
+      
+      // cons演算子（:）との競合を避けるため、rangeExpressionレベルで解析
+      // cons演算子を使用する場合は括弧が必要: condition ? (head : tail) : []
+      const trueExpr = this.rangeExpression()
+      this.consume(TokenType.COLON, "Expected ':' after true expression in ternary operator")
+      const falseExpr = this.ternaryExpressionWithoutPipeline()
+
+      expr = new AST.TernaryExpression(
+        expr,
+        trueExpr,
+        falseExpr,
+        startLine,
+        startColumn
+      )
+    }
+
+    return expr
+  }
+
   private pattern(): AST.Pattern {
     if (this.check(TokenType.IDENTIFIER)) {
       const name = this.advance().value
@@ -886,11 +936,11 @@ export class Parser {
   }
 
   private binaryExpression(): AST.Expression {
-    return this.functionApplicationExpression()
+    return this.ternaryExpression()
   }
 
   private binaryExpressionWithoutPipeline(): AST.Expression {
-    return this.functionApplicationExpressionWithoutPipeline()
+    return this.ternaryExpressionWithoutPipeline()
   }
 
   private functionApplicationExpression(): AST.Expression {
