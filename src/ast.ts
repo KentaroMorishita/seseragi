@@ -821,6 +821,18 @@ export class TypeAliasDeclaration extends Statement {
   }
 }
 
+export class StructDeclaration extends Statement {
+  kind = "StructDeclaration"
+  name: string
+  fields: StructField[]
+
+  constructor(name: string, fields: StructField[], line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.fields = fields
+  }
+}
+
 export class MethodDeclaration extends ASTNode {
   kind = "MethodDeclaration"
   name: string

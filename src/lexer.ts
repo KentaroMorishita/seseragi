@@ -15,6 +15,7 @@ export enum TokenType {
   // Keywords
   FN = "FN",
   TYPE = "TYPE",
+  STRUCT = "STRUCT",
   LET = "LET",
   IMPL = "IMPL",
   MONOID = "MONOID",
@@ -107,6 +108,7 @@ export class Lexer {
   private keywords: Map<string, TokenType> = new Map([
     ["fn", TokenType.FN],
     ["type", TokenType.TYPE],
+    ["struct", TokenType.STRUCT],
     ["let", TokenType.LET],
     ["impl", TokenType.IMPL],
     ["monoid", TokenType.MONOID],
