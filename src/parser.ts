@@ -833,6 +833,7 @@ export class Parser {
       // cons演算子を使用する場合は括弧が必要: condition ? (head : tail) : []
       const trueExpr = this.rangeExpression()
       this.consume(TokenType.COLON, "Expected ':' after true expression in ternary operator")
+      this.skipNewlines() // コロンの後の改行をスキップ
       const falseExpr = this.ternaryExpression()
 
       expr = new AST.TernaryExpression(
@@ -858,6 +859,7 @@ export class Parser {
       // cons演算子を使用する場合は括弧が必要: condition ? (head : tail) : []
       const trueExpr = this.rangeExpression()
       this.consume(TokenType.COLON, "Expected ':' after true expression in ternary operator")
+      this.skipNewlines() // コロンの後の改行をスキップ
       const falseExpr = this.ternaryExpressionWithoutPipeline()
 
       expr = new AST.TernaryExpression(
