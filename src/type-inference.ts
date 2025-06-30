@@ -1344,27 +1344,46 @@ export class TypeInferenceSystem {
 
       case "&&":
       case "||":
-        // 論理演算: 両オペランドはBool、結果もBool
-        const boolType = new AST.PrimitiveType("Bool", binOp.line, binOp.column)
-        this.addConstraint(
-          new TypeConstraint(
-            leftType,
-            boolType,
-            binOp.left.line,
-            binOp.left.column,
-            `Logical operation ${binOp.operator} left operand`
+        // 論理演算: 基本的にはBool、ただし構造体のオーバーロードも考慮
+        const hasStructTypeLogical = this.isStructOrResolvesToStruct(leftType, env) || this.isStructOrResolvesToStruct(rightType, env)
+        
+        if (hasStructTypeLogical) {
+          // 構造体のオーバーロードが考えられる場合: 左右のオペランドが同じ型である制約のみ
+          this.addConstraint(
+            new TypeConstraint(
+              leftType,
+              rightType,
+              binOp.line,
+              binOp.column,
+              `Logical operation ${binOp.operator} operands must have same type (struct overload)`
+            )
           )
-        )
-        this.addConstraint(
-          new TypeConstraint(
-            rightType,
-            boolType,
-            binOp.right.line,
-            binOp.right.column,
-            `Logical operation ${binOp.operator} right operand`
+          // 結果の型は演算子オーバーロードによって決まるが、一般的にはBoolを返す
+          // 構造体オーバーロードでは通常Bool型を返すことが多い
+          return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+        } else {
+          // 通常の論理演算: 両オペランドはBool、結果もBool
+          const boolType = new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+          this.addConstraint(
+            new TypeConstraint(
+              leftType,
+              boolType,
+              binOp.left.line,
+              binOp.left.column,
+              `Logical operation ${binOp.operator} left operand`
+            )
           )
-        )
-        return boolType
+          this.addConstraint(
+            new TypeConstraint(
+              rightType,
+              boolType,
+              binOp.right.line,
+              binOp.right.column,
+              `Logical operation ${binOp.operator} right operand`
+            )
+          )
+          return boolType
+        }
 
       case ":":
         // CONS演算子: a : List<a> -> List<a>

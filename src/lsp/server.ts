@@ -1627,6 +1627,34 @@ function formatInferredTypeForDisplay(type: any): string {
     return `(${elementTypes})`
   }
 
+  if (type.kind === "StructType") {
+    const structType = type as any
+    if (structType.fields && structType.fields.length > 0) {
+      const fieldStrs = structType.fields.map((field: any) => {
+        const fieldType = formatInferredTypeForDisplay(field.type)
+        return `${field.name}: ${fieldType}`
+      })
+      
+      // Always use single line format for structs
+      return `${structType.name} { ${fieldStrs.join(', ')} }`
+    }
+    return structType.name || "Struct"
+  }
+
+  if (type.kind === "RecordType") {
+    const recordType = type as any
+    if (recordType.fields && recordType.fields.length > 0) {
+      const fieldStrs = recordType.fields.map((field: any) => {
+        const fieldType = formatInferredTypeForDisplay(field.type)
+        return `${field.name}: ${fieldType}`
+      })
+      
+      // Always use single line format for records
+      return `{ ${fieldStrs.join(', ')} }`
+    }
+    return "{}"
+  }
+
   return type.name || "unknown"
 }
 

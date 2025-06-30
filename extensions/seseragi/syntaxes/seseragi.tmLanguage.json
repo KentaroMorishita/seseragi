@@ -151,12 +151,12 @@
           "match": "<-"
         },
         {
-          "name": "keyword.operator.pipeline.seseragi",
-          "match": "\\|"
+          "name": "keyword.operator.logical.seseragi",
+          "match": "(&&|\\|\\|)"
         },
         {
-          "name": "keyword.operator.reverse-pipe.seseragi",
-          "match": "~"
+          "name": "keyword.operator.comparison.seseragi",
+          "match": "(==|!=|<=|>=|<|>)"
         },
         {
           "name": "keyword.operator.bind.seseragi",
@@ -171,16 +171,16 @@
           "match": "->"
         },
         {
+          "name": "keyword.operator.pipeline.seseragi",
+          "match": "\\|"
+        },
+        {
+          "name": "keyword.operator.reverse-pipe.seseragi",
+          "match": "~"
+        },
+        {
           "name": "keyword.operator.assignment.seseragi",
           "match": "="
-        },
-        {
-          "name": "keyword.operator.comparison.seseragi",
-          "match": "(==|!=|<=|>=|<|>)"
-        },
-        {
-          "name": "keyword.operator.logical.seseragi",
-          "match": "(&&|\\|\\|)"
         },
         {
           "name": "keyword.operator.arithmetic.seseragi",
