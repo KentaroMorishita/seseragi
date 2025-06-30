@@ -1,125 +1,127 @@
 // Seseragi 高度な機能のサンプル
-// 将来実装予定の機能を含む関数型プログラミングの応用例
+// 実装済みの関数型プログラミング機能を使った実用的な例
 
 show "=== Seseragi Advanced Features ==="
 
 // =============================================================================
-// 現在実装済みの高度な例
+// カリー化と部分適用の活用
 // =============================================================================
 
-show "--- Currently Implemented Advanced Features ---"
-
-// カリー化の活用
+// カリー化された関数の定義
 fn multiply x :Int -> y :Int -> Int = x * y
+fn power base :Int -> exp :Int -> Int =
+  if exp <= 0 then 1 else base * power base (exp - 1)
 
-// 部分適用を使った専用関数
+// 部分適用で専用関数を作成
 let double = multiply 2
 let triple = multiply 3
+let square = power 2
+let cube = power 3
 
+show "=== Currying and Partial Application ==="
 show $ double 15    // 30
 show $ triple 8     // 24
+show $ square 5     // 25
+show $ cube 4       // 64
 
-// 複雑な再帰関数
-fn fibonacci n :Int -> Int = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
-fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
+// =============================================================================
+// 高度な再帰とアルゴリズム
+// =============================================================================
 
-show "=== Fibonacci sequence ==="
-show $ fibonacci 0   // 0
-show $ fibonacci 1   // 1
-show $ fibonacci 5   // 5
+// フィボナッチ数列
+fn fibonacci n :Int -> Int =
+  if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
+
+// 階乗
+fn factorial n :Int -> Int =
+  if n <= 1 then 1 else n * factorial (n - 1)
+
+// ユークリッドの互除法
+fn gcd a :Int -> b :Int -> Int =
+  if b == 0 then a else gcd b (a % b)
+
+show "=== Advanced Recursion ==="
 show $ fibonacci 8   // 21
-
-show "=== Factorial examples ==="
 show $ factorial 5   // 120
-show $ factorial 3   // 6
+show $ gcd 48 18     // 6
 
 // =============================================================================
-// 将来実装予定の機能（サンプル）
+// モナド操作の実用例
 // =============================================================================
 
-show "--- Future Features (Commented Examples) ---"
+// 安全な計算チェーン
+fn safeDivide x :Int -> y :Int -> Maybe<Int> =
+  if y == 0 then Nothing else Just (x / y)
 
-// パターンマッチング（将来実装）
-// type Color = Red | Green | Blue | RGB Int Int Int
-//
-// fn colorToString color :Color -> String = match color {
-//   Red -> "Red"
-//   Green -> "Green"
-//   Blue -> "Blue"
-//   RGB r g b -> "RGB(" + toString r + "," + toString g + "," + toString b + ")"
-// }
-//
-// show (colorToString Red)
-// show (colorToString (RGB 255 128 0))
+fn safeRoot x :Int -> Maybe<Int> =
+  if x < 0 then Nothing else Just x  // 簡易版
 
-// Maybe型を使った安全な操作（将来実装）
-// type Maybe<T> = Just T | Nothing
-//
-// fn safeDivide x :Int -> y :Int -> Maybe<Int> =
-//   if y == 0 then Nothing else Just (x / y)
-//
-// fn safeMultiply x :Maybe<Int> -> y :Int -> Maybe<Int> =
-//   x >>= (fn val -> Just (val * y))
-//
-// let result = Just 10 >>= safeDivide 2 >>= safeMultiply 3
-// show (toString result)  // Just 15
+// モナドチェーンの例
+let calculation1 = Just 100 >>= safeDivide 5 >>= safeDivide 2  // Just 10
+let calculation2 = Just 100 >>= safeDivide 0 >>= safeDivide 2  // Nothing
 
-// パイプライン演算子（将来実装）
-// let result = "hello"
-//   | toUpperCase
-//   | reverse
-//   | addPrefix ">>> "
-//
-// show result
+show "=== Monadic Computations ==="
+show calculation1
+show calculation2
 
-// リスト処理の関数型スタイル（将来実装）
-// let numbers = [1, 2, 3, 4, 5]
-// let doubled = map double numbers
-// let evens = filter isEven numbers
-// let sum = fold (+) 0 numbers
-//
-// パイプラインでのリスト処理
-// let result = [1, 2, 3, 4, 5]
-//   | map double
-//   | filter (fn x -> x > 5)
-//   | fold (+) 0
-//
-// show (toString result)
+// =============================================================================
+// 関数合成とパイプライン
+// =============================================================================
 
-// 副作用のある関数（将来実装）
-// effectful fn readFile path :String -> IO<String> =
-//   -- ファイル読み込みの実装
-//
-// effectful fn writeFile path :String -> content :String -> IO<Unit> =
-//   -- ファイル書き込みの実装
-//
-// 使用例
-// let content = readFile "example.txt"
-// writeFile "output.txt" ("Processed: " + content)
+// パイプライン演算子の活用
+let pipeline1 = 10 | double | triple | square  // ((10 * 2) * 3)^2 = 3600
+let pipeline2 = 5 | factorial | double         // 5! * 2 = 240
 
-// カスタム演算子（将来実装）
-// impl Int {
-//   operator <+> (x, y :Int) -> Int {
-//     (x + y) * 2
-//   }
-// }
-//
-// let result = 5 <+> 3  // (5 + 3) * 2 = 16
-// show (toString result)
+show "=== Function Composition ==="
+show pipeline1
+show pipeline2
 
-// 型クラス的な機能（将来実装）
-// impl String {
-//   fn length s :String -> Int = -- 実装
-//   fn isEmpty s :String -> Bool = length s == 0
-//
-//   monoid {
-//     identity ""
-//     operator + (x, y :String) -> String { x + y }
-//   }
-// }
-//
-// let result = "Hello" >>> " " >>> "World"
-// show result  // "Hello World"
+// =============================================================================
+// 高度なリスト操作
+// =============================================================================
 
-show "=== Advanced Features Preview Complete ==="
+// リスト生成関数（手動構築）
+let emptyList = `[]
+let numberList = Cons 10 (Cons 20 (Cons 30 Empty))
+let simpleList1 = 1 : 2 : 3 : 4 : 5 : `[]
+let simpleList2 = `[1, 2, 3, 4, 5]
+let extendedList = Cons 0 simpleList1
+let comprehensionList = `[x | x <- 1..=10, x % 2 == 0]
+
+show "=== Advanced List Operations ==="
+show emptyList
+show numberList
+show simpleList1
+show simpleList2
+show extendedList
+show comprehensionList
+
+// =============================================================================
+// 複雑なデータ構造の活用
+// =============================================================================
+
+// ネストしたレコードとMaybe型の組み合わせ
+let complexData = {
+  user: { name: "Alice", age: 30 },
+  calculations: {
+    result1: Just 42,
+    result2: Nothing,
+    result3: Just 100
+  },
+  metadata: {
+    timestamp: "2024-01-01",
+    valid: True
+  }
+}
+
+show "=== Complex Data Structures ==="
+show complexData
+
+let userName = complexData.user.name
+let calculation = complexData.calculations.result1
+
+show userName
+show calculation
+
+show "=== Advanced Features Complete ==="
 

@@ -1278,6 +1278,10 @@ export class TypeInferenceSystem {
   ): AST.Type {
     const leftType = this.generateConstraintsForExpression(binOp.left, env)
     const rightType = this.generateConstraintsForExpression(binOp.right, env)
+    
+    // left/rightの式に型情報を設定
+    binOp.left.type = leftType
+    binOp.right.type = rightType
 
     switch (binOp.operator) {
       case "+":

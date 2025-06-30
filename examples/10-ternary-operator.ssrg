@@ -6,15 +6,15 @@ show isPositive  // "positive"
 
 // 関数内での使用
 fn abs x :Int -> Int = x < 0 ? -x : x
-show $ abs (-10)  // 10
+show $ abs -10  // 10
 show $ abs 5      // 5
 
 // ネストされた三項演算子
-fn classify x :Int -> String = 
+fn classify x :Int -> String =
   x > 0 ? "positive" : x < 0 ? "negative" : "zero"
 
 show $ classify 10   // "positive"
-show $ classify (-5) // "negative"
+show $ classify -5 // "negative"
 show $ classify 0    // "zero"
 
 // ブール値の切り替え
@@ -23,7 +23,7 @@ show $ toggle True   // false
 show $ toggle False  // true
 
 // 文字列の選択
-fn greeting isMorning :Bool -> String = 
+fn greeting isMorning :Bool -> String =
   isMorning ? "Good morning!" : "Good evening!"
 
 show $ greeting True   // "Good morning!"
@@ -38,19 +38,28 @@ let list2 = True ? (1 : 2 : 3 : `[]) : `[]
 show list2  // `[1, 2, 3]
 
 // Maybe型との組み合わせ
-fn safeDivide a :Int -> b :Int -> Maybe<Int> = 
+fn safeDivide a :Int -> b :Int -> Maybe<Int> =
   b == 0 ? Nothing : Just (a / b)
 
 show $ safeDivide 10 2  // Just(5)
 show $ safeDivide 10 0  // Nothing
 
 // FizzBuzzの実装（三項演算子を活用）
-fn fizzbuzz n :Int -> String = n % 15 == 0 ? "FizzBuzz" : n % 3 == 0 ? "Fizz" : n % 5 == 0 ? "Buzz" : toString n
+fn fizzbuzz n :Int -> String =
+  n % 15 == 0 ? "FizzBuzz" :
+  n % 3 == 0 ? "Fizz" :
+  n % 5 == 0 ? "Buzz" :
+  toString n
 
 show $ `[fizzbuzz n | n <- 1..=20]
 
 // 複雑な条件での使用
-fn scoreToGrade score :Int -> String = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : score >= 60 ? "D" : "F"
+fn scoreToGrade score :Int -> String =
+  score >= 90 ? "A" :
+  score >= 80 ? "B" :
+  score >= 70 ? "C" :
+  score >= 60 ? "D" :
+  "F"
 
 show $ scoreToGrade 95  // "A"
 show $ scoreToGrade 75  // "C"
@@ -60,3 +69,4 @@ show $ scoreToGrade 55  // "F"
 let numbers = [1, 2, 3, 4, 5]
 let classified = `[x % 2 == 0 ? "even" : "odd" | x <- numbers]
 show classified  // `["odd", "even", "odd", "even", "odd"]
+

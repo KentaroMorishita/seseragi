@@ -1,2 +1,0 @@
-show $ p1 && p2 // true (自作実装)
-// show $ p1 || p2 // true (自作実装)
