@@ -419,6 +419,28 @@ export class CodeGenerator {
     return String(value)
   }
   
+  // 普通のオブジェクト（構造体など）
+  if (typeof value === 'object' && value !== null) {
+    const pairs = []
+    for (const key in value) {
+      if (value.hasOwnProperty(key)) {
+        pairs.push(\`\${key}: \${toString(value[key])}\`)
+      }
+    }
+    
+    // 構造体名を取得（constructor.nameを使用）
+    const structName = value.constructor && value.constructor.name !== 'Object' 
+      ? value.constructor.name 
+      : ''
+    
+    // 複数フィールドがある場合はインデント表示
+    if (pairs.length > 2) {
+      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
+    } else {
+      return \`\${structName} { \${pairs.join(', ')} }\`
+    }
+  }
+  
   return String(value)
 };`)
     }
@@ -473,29 +495,59 @@ function normalizeStructure(obj) {
 
 // JSON文字列をSeseragi型の美しい表記に変換
 function beautifySeseragiTypes(json) {
+  let result = json
+  
+  // Seseragi特殊型の変換
+  result = beautifySpecialTypes(result)
+  
+  // 普通のオブジェクト（構造体など）の変換
+  result = beautifyStructObjects(result)
+  
+  return result
+}
+
+// Seseragi特殊型（Maybe、Either、List）の美しい変換
+function beautifySpecialTypes(json) {
   return json
-    // List型 - 空リスト
+    // List型
     .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[\\s*\\]\\s*\\}/g, '\`[]')
-    // List型 - 要素あり（ネスト対応、複数パスで処理）
     .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
       const cleanContent = content.replace(/\\s+/g, ' ').trim()
       return \`\\\`[\${cleanContent}]\`
     })
-    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
-      const cleanContent = content.replace(/\\s+/g, ' ').trim()
-      return \`\\\`[\${cleanContent}]\`
-    })
-    // Just型
+    // Maybe型
     .replace(/"@@type":\\s*"Just",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Just(\${val.trim()})\`)
     .replace(/\\{\\s*Just\\(([^)]+)\\)\\s*\\}/g, 'Just($1)')
-    // Nothing
     .replace(/"@@Nothing"/g, 'Nothing')
-    // Right型
+    // Either型
     .replace(/"@@type":\\s*"Right",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Right(\${val.trim()})\`)
     .replace(/\\{\\s*Right\\(([^)]+)\\)\\s*\\}/g, 'Right($1)')
-    // Left型
     .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
     .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
+}
+
+// 普通のオブジェクト（構造体）の美しい変換
+function beautifyStructObjects(json) {
+  return json.replace(/\\{([\\s\\S]*?)\\}/g, (match, content) => {
+    // 既に変換済みのSeseragi型は除外
+    if (match.includes('Just(') || match.includes('Right(') || match.includes('Left(') || match.includes('\`[')) {
+      return match
+    }
+    
+    // フィールドを解析
+    const fields = content.trim().split(',').filter(f => f.trim())
+    const jsFields = fields.map(field => {
+      const cleaned = field.trim().replace(/"(\\w+)":/g, '$1:')
+      return cleaned
+    })
+    
+    // 複数フィールドの場合はインデント表示を保持、少数フィールドは1行
+    if (jsFields.length > 2) {
+      return \`{\\n  \${jsFields.join(',\\n  ')}\\n}\`
+    } else {
+      return \`{ \${jsFields.join(', ')} }\`
+    }
+  })
 }
 
 
@@ -666,6 +718,28 @@ const show = (value) => {
   }
   if (typeof value === 'number' || typeof value === 'boolean') {
     return String(value)
+  }
+  
+  // 普通のオブジェクト（構造体など）
+  if (typeof value === 'object' && value !== null) {
+    const pairs = []
+    for (const key in value) {
+      if (value.hasOwnProperty(key)) {
+        pairs.push(\`\${key}: \${toString(value[key])}\`)
+      }
+    }
+    
+    // 構造体名を取得（constructor.nameを使用）
+    const structName = value.constructor && value.constructor.name !== 'Object' 
+      ? value.constructor.name 
+      : ''
+    
+    // 複数フィールドがある場合はインデント表示
+    if (pairs.length > 2) {
+      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
+    } else {
+      return \`\${structName} { \${pairs.join(', ')} }\`
+    }
   }
   
   return String(value)
