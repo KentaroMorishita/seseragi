@@ -1682,6 +1682,17 @@ ${indent}}`
         // ADTコンストラクタパターン
         return `${valueVar}.type === '${pattern.constructorName}'`
       
+      case "TuplePattern":
+        // タプルパターン
+        const tupleConditions = pattern.patterns.map((subPattern, i) => {
+          return this.generatePatternCondition(subPattern, `${valueVar}[${i}]`)
+        })
+        return tupleConditions.join(" && ")
+      
+      case "WildcardPattern":
+        // ワイルドカードパターン
+        return "true"
+      
       default:
         // 後方互換性のための古い形式をチェック
         if (pattern.value !== undefined) {
