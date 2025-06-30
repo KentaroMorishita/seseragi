@@ -1,9 +1,9 @@
-fn fizzbuzz f :Int -> b :Int -> x :Int -> String =
-  x % (f * b) == 0 ? "FizzBuzz" :
-  x % f == 0 ? "Fizz" :
-  x % b == 0 ? "Buzz" :
-  toString x
+fn fizzbuzz x :Int -> String = match (x % 3, x % 5) {
+  (0, 0) -> "FizzBuzz"
+  (0, _) -> "Fizz"
+  (_, 0) -> "Buzz"
+  _ -> toString x
+}
 
-let fb = fizzbuzz 3 5
-show $ `[fb x | x <- 1..=100]
+show $ `[fizzbuzz x | x <- 1..=100]
 
