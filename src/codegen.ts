@@ -91,6 +91,8 @@ export class CodeGenerator {
   wildcardCounter: number
   filePrefix: string
   currentStructContext: string | null = null  // 現在処理中の構造体名
+  structMethods: Map<string, Set<string>> = new Map()  // 構造体名 → メソッド名のセット
+  structOperators: Map<string, Set<string>> = new Map()  // 構造体名 → 演算子のセット
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -128,7 +130,64 @@ export class CodeGenerator {
     lines.push(...this.generateRuntime())
     lines.push("")
 
+    // まず構造体を処理してディスパッチテーブルを準備
     for (const stmt of statements) {
+      if (stmt instanceof ImplBlock) {
+        this.preProcessImplBlock(stmt)
+      }
+    }
+
+    // 構造体のメソッド・演算子ディスパッチテーブルを最初に生成
+    if (this.structMethods.size > 0 || this.structOperators.size > 0) {
+      lines.push(this.generateDispatchTables())
+      lines.push("")
+    }
+
+    // 構造体定義と実装を先に生成
+    const structStatements: Statement[] = []
+    const implStatements: Statement[] = []
+    const otherStatements: Statement[] = []
+
+    for (const stmt of statements) {
+      if (stmt instanceof StructDeclaration) {
+        structStatements.push(stmt)
+      } else if (stmt instanceof ImplBlock) {
+        implStatements.push(stmt)
+      } else {
+        otherStatements.push(stmt)
+      }
+    }
+
+    // 構造体定義
+    for (const stmt of structStatements) {
+      const code = this.generateStatement(stmt)
+      if (code.trim()) {
+        lines.push(code)
+        lines.push("")
+      }
+    }
+
+    // 実装ブロック
+    for (const stmt of implStatements) {
+      const code = this.generateStatement(stmt)
+      if (code.trim()) {
+        lines.push(code)
+        lines.push("")
+      }
+    }
+
+    // ディスパッチテーブル初期化（IIFEで即座に実行）
+    if (this.structMethods.size > 0 || this.structOperators.size > 0) {
+      lines.push("// Initialize dispatch tables immediately")
+      lines.push("(() => {")
+      const initCode = this.generateDispatchTableInitialization()
+      lines.push(...initCode.split("\n").map(line => line ? `  ${line}` : line))
+      lines.push("})();")
+      lines.push("")
+    }
+
+    // 残りの文
+    for (const stmt of otherStatements) {
       const code = this.generateStatement(stmt)
       if (code.trim()) {
         lines.push(code)
@@ -933,6 +992,17 @@ const show = (value) => {
     const oldContext = this.currentStructContext
     this.currentStructContext = implBlock.typeName
 
+    // 構造体のメソッドと演算子を登録
+    if (!this.structMethods.has(implBlock.typeName)) {
+      this.structMethods.set(implBlock.typeName, new Set())
+    }
+    if (!this.structOperators.has(implBlock.typeName)) {
+      this.structOperators.set(implBlock.typeName, new Set())
+    }
+
+    const methodSet = this.structMethods.get(implBlock.typeName)!
+    const operatorSet = this.structOperators.get(implBlock.typeName)!
+
     // グローバル関数として生成（namespaceを使わない）
     lines.push(`${indent}// ${implBlock.typeName} implementation`)
 
@@ -940,12 +1010,14 @@ const show = (value) => {
     for (const method of implBlock.methods) {
       const methodCode = this.generateMethodDeclaration(method)
       lines.push(methodCode)
+      methodSet.add(method.name)
     }
 
     // 演算子の生成
     for (const operator of implBlock.operators) {
       const operatorCode = this.generateOperatorDeclaration(operator)
       lines.push(operatorCode)
+      operatorSet.add(operator.operator)
     }
 
     // モノイドの生成
@@ -960,6 +1032,121 @@ const show = (value) => {
     return lines.join("\n")
   }
 
+  // impl ブロックを事前処理してディスパッチテーブル情報を収集
+  preProcessImplBlock(implBlock: ImplBlock): void {
+    // 構造体のメソッドと演算子を登録
+    if (!this.structMethods.has(implBlock.typeName)) {
+      this.structMethods.set(implBlock.typeName, new Set())
+    }
+    if (!this.structOperators.has(implBlock.typeName)) {
+      this.structOperators.set(implBlock.typeName, new Set())
+    }
+
+    const methodSet = this.structMethods.get(implBlock.typeName)!
+    const operatorSet = this.structOperators.get(implBlock.typeName)!
+
+    // メソッドを登録
+    for (const method of implBlock.methods) {
+      methodSet.add(method.name)
+    }
+
+    // 演算子を登録
+    for (const operator of implBlock.operators) {
+      operatorSet.add(operator.operator)
+    }
+  }
+
+  // 構造体のメソッド・演算子ディスパッチテーブルを生成
+  generateDispatchTables(): string {
+    const lines: string[] = []
+    
+    lines.push("// Struct method and operator dispatch tables")
+    
+    // 空のディスパッチテーブルを先に定義
+    lines.push("let __structMethods: Record<string, Record<string, Function>> = {};")
+    lines.push("let __structOperators: Record<string, Record<string, Function>> = {};")
+    lines.push("")
+    
+    // ディスパッチヘルパー関数を定義
+    lines.push("// Method dispatch helper")
+    lines.push("function __dispatchMethod(obj: any, methodName: string, ...args: any[]): any {")
+    lines.push("  const structName = obj.constructor.name;")
+    lines.push("  const structMethods = __structMethods[structName];")
+    lines.push("  if (structMethods && structMethods[methodName]) {")
+    lines.push("    return structMethods[methodName](obj, ...args);")
+    lines.push("  }")
+    lines.push("  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);")
+    lines.push("}")
+    lines.push("")
+    
+    lines.push("// Operator dispatch helper")
+    lines.push("function __dispatchOperator(left: any, operator: string, right: any): any {")
+    lines.push("  const structName = left.constructor.name;")
+    lines.push("  const structOperators = __structOperators[structName];")
+    lines.push("  if (structOperators && structOperators[operator]) {")
+    lines.push("    return structOperators[operator](left, right);")
+    lines.push("  }")
+    lines.push("  // Fall back to native JavaScript operator")
+    lines.push("  switch (operator) {")
+    lines.push("    case '+': return left + right;")
+    lines.push("    case '-': return left - right;")
+    lines.push("    case '*': return left * right;")
+    lines.push("    case '/': return left / right;")
+    lines.push("    case '%': return left % right;")
+    lines.push("    case '==': return left == right;")
+    lines.push("    case '!=': return left != right;")
+    lines.push("    case '<': return left < right;")
+    lines.push("    case '>': return left > right;")
+    lines.push("    case '<=': return left <= right;")
+    lines.push("    case '>=': return left >= right;")
+    lines.push("    case '&&': return left && right;")
+    lines.push("    case '||': return left || right;")
+    lines.push("    default: throw new Error(`Unknown operator: ${operator}`);")
+    lines.push("  }")
+    lines.push("}")
+    lines.push("")
+    
+    return lines.join("\n")
+  }
+
+  // ディスパッチテーブル初期化コードを生成
+  generateDispatchTableInitialization(): string {
+    const lines: string[] = []
+    
+    // メソッドディスパッチテーブル初期化
+    if (this.structMethods.size > 0) {
+      lines.push("// Initialize method dispatch table")
+      lines.push("__structMethods = {")
+      for (const [structName, methods] of this.structMethods) {
+        const methodEntries = Array.from(methods).map(methodName => {
+          const funcName = `__ssrg_${structName}_${this.filePrefix}_${methodName}`
+          return `    "${methodName}": ${funcName}`
+        }).join(",\n")
+        lines.push(`  "${structName}": {\n${methodEntries}\n  },`)
+      }
+      lines.push("};")
+      lines.push("")
+    }
+    
+    // 演算子ディスパッチテーブル初期化
+    if (this.structOperators.size > 0) {
+      lines.push("// Initialize operator dispatch table")
+      lines.push("__structOperators = {")
+      for (const [structName, operators] of this.structOperators) {
+        const operatorEntries = Array.from(operators).map(op => {
+          const opMethodName = this.operatorToMethodName(op)
+          const funcName = `__ssrg_${structName}_${this.filePrefix}_op_${opMethodName}`
+          return `    "${op}": ${funcName}`
+        }).join(",\n")
+        lines.push(`  "${structName}": {\n${operatorEntries}\n  },`)
+      }
+      lines.push("};")
+      lines.push("")
+    }
+    
+    return lines.join("\n")
+  }
+
   // メソッド宣言の生成（ファイルハッシュベース命名）
   generateMethodDeclaration(method: MethodDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
@@ -969,8 +1156,9 @@ const show = (value) => {
     const returnType = this.generateType(method.returnType)
     const body = this.generateExpression(method.body)
     
-    // ファイルハッシュベースの一意な名前を生成
-    const methodName = `__ssrg_${this.filePrefix}_${method.name}`
+    // 構造体名とファイルハッシュベースの一意な名前を生成
+    const structPrefix = this.currentStructContext ? `${this.currentStructContext}_` : ""
+    const methodName = `__ssrg_${structPrefix}${this.filePrefix}_${method.name}`
     
     return `${indent}function ${methodName}(${params}): ${returnType} {
 ${indent}  return ${body};
@@ -988,7 +1176,8 @@ ${indent}}`
     
     // 演算子名を安全な識別子に変換
     const opMethodName = this.operatorToMethodName(operator.operator)
-    const operatorName = `__ssrg_${this.filePrefix}_op_${opMethodName}`
+    const structPrefix = this.currentStructContext ? `${this.currentStructContext}_` : ""
+    const operatorName = `__ssrg_${structPrefix}${this.filePrefix}_op_${opMethodName}`
     
     return `${indent}function ${operatorName}(${params}): ${returnType} {
 ${indent}  return ${body};
@@ -1145,12 +1334,8 @@ ${indent}}`
 
   // 演算子ディスパッチの生成
   private generateOperatorDispatch(operator: string, left: string, right: string): string {
-    const opMethodName = this.operatorToMethodName(operator)
-    const operatorFuncName = `__ssrg_${this.filePrefix}_op_${opMethodName}`
-    
-    // 演算子オーバーロード関数が存在する場合はそれを使用、
-    // 存在しない場合は通常の演算子にフォールバック
-    return `(typeof ${operatorFuncName} === 'function' ? ${operatorFuncName}(${left}, ${right}) : (${left} ${operator} ${right}))`
+    // ディスパッチテーブルを使用した演算子呼び出し
+    return `__dispatchOperator(${left}, "${operator}", ${right})`
   }
 
   // 単項演算の生成
@@ -1746,16 +1931,9 @@ ${indent}}`
     const receiver = this.generateExpression(call.receiver)
     const args = call.arguments.map((arg) => this.generateExpression(arg))
     
-    // メソッド名をファイルハッシュベースの形式に変換
-    const methodName = `__ssrg_${this.filePrefix}_${call.methodName}`
-    
-    // カリー化された関数呼び出しとして生成
-    if (args.length === 0) {
-      return `${methodName}(${receiver})`
-    } else {
-      const allArgs = [receiver, ...args].join(", ")
-      return `${methodName}(${allArgs})`
-    }
+    // ディスパッチテーブルを使用したメソッド呼び出し
+    const allArgs = args.length === 0 ? "" : `, ${args.join(", ")}`
+    return `__dispatchMethod(${receiver}, "${call.methodName}"${allArgs})`
   }
 
   // タプル分解の生成
