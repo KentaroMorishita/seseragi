@@ -507,6 +507,9 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
 
   // Try to get type information using the type inference system
   try {
+    // Cache AST for struct definition lookup
+    cachedAST = ast
+    
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(ast)
     connection.console.log(`[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`)
@@ -547,6 +550,12 @@ function getTypeInfoWithInference(
   inferenceResult: any
 ): string | null {
   try {
+    // First check if this is a struct definition
+    const structInfo = findStructDefinition(symbol)
+    if (structInfo) {
+      return formatStructDefinitionInfo(symbol, structInfo)
+    }
+
     // Find the symbol in the AST and get its resolved type
     const symbolInfo = findSymbolWithEnhancedInference(
       ast,
@@ -1535,6 +1544,20 @@ function formatInferredTypeForDisplay(type: any): string {
   }
 
   if (type.kind === "PrimitiveType") {
+    // Check if this "primitive" is actually a struct
+    const structInfo = findStructDefinition(type.name)
+    if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
+      connection.console.log(`[DEBUG] PrimitiveType '${type.name}' is actually a struct, converting to detailed display`)
+      // Create a RecordType-like structure for consistent formatting
+      const structAsRecord = {
+        kind: "RecordType",
+        fields: structInfo.fields,
+        name: type.name
+      }
+      const result = formatTypeWithNestedStructures(structAsRecord, structInfo, 0, "")
+      connection.console.log(`[DEBUG] PrimitiveType->StructType formatted result: ${result}`)
+      return result
+    }
     return type.name
   }
 
@@ -1569,12 +1592,167 @@ function formatInferredTypeForDisplay(type: any): string {
     return typeArgs ? `${baseType}<${typeArgs}>` : baseType
   }
 
+  if (type.kind === "StructType") {
+    // Always try to show detailed struct information
+    connection.console.log(`[DEBUG] StructType detected: ${type.name}`)
+    const structInfo = findStructDefinition(type.name)
+    connection.console.log(`[DEBUG] StructInfo found: ${structInfo ? 'yes' : 'no'}`)
+    if (structInfo) {
+      connection.console.log(`[DEBUG] StructInfo fields: ${JSON.stringify(structInfo.fields)}`)
+    }
+    if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
+      // Create a RecordType-like structure for consistent formatting
+      const structAsRecord = {
+        kind: "RecordType",
+        fields: structInfo.fields,
+        name: type.name
+      }
+      const result = formatTypeWithNestedStructures(structAsRecord, structInfo, 0, "")
+      connection.console.log(`[DEBUG] StructType formatted result: ${result}`)
+      return result
+    }
+    connection.console.log(`[DEBUG] StructType returning simple name: ${type.name}`)
+    return type.name
+  }
+
+  if (type.kind === "RecordType") {
+    if (type.fields && type.fields.length > 0) {
+      return formatTypeWithNestedStructures(type, type, 0, "")
+    }
+    return "{}"
+  }
+
   if (type.kind === "TupleType") {
     const elementTypes = type.elementTypes?.map(formatInferredTypeForDisplay).join(", ") || ""
     return `(${elementTypes})`
   }
 
   return type.name || "unknown"
+}
+
+// Format types with nested structures and proper indentation
+function formatTypeWithNestedStructures(type: any, ast: any, depth: number = 0, indent: string = ""): string {
+  if (!type) return "unknown"
+
+  switch (type.kind) {
+    case "StructType":
+      let fields = []
+      if (ast && ast.fields) {
+        fields = ast.fields
+      } else {
+        const structInfo = findStructDefinition(type.name)
+        if (structInfo && structInfo.fields) {
+          fields = structInfo.fields
+        }
+      }
+
+      if (fields.length > 0) {
+        const fieldStrs = fields.map((field: any) => {
+          const fieldType = formatTypeWithNestedStructures(field.type, null, depth + 1, indent + "  ")
+          return `${field.name} :${fieldType}`
+        })
+        
+        // Check if we need multiline formatting
+        const hasNestedStructures = fields.some((field: any) => 
+          field.type && (field.type.kind === "StructType" || field.type.kind === "RecordType")
+        )
+        
+        if (hasNestedStructures || fields.length > 3) {
+          return `{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
+        } else {
+          return `{ ${fieldStrs.join(", ")} }`
+        }
+      }
+      return type.name || "{}"
+
+    case "RecordType":
+      if (type.fields && type.fields.length > 0) {
+        const fieldStrs = type.fields.map((field: any) => {
+          const fieldType = formatTypeWithNestedStructures(field.type, null, depth + 1, indent + "  ")
+          return `${field.name} :${fieldType}`
+        })
+        
+        // Check if we need multiline formatting
+        const hasNestedStructures = type.fields.some((field: any) => 
+          field.type && (field.type.kind === "StructType" || field.type.kind === "RecordType")
+        )
+        
+        if (hasNestedStructures || type.fields.length > 3) {
+          return `{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
+        } else {
+          return `{ ${fieldStrs.join(", ")} }`
+        }
+      }
+      return "{}"
+
+    case "PrimitiveType":
+      return type.name
+
+    case "FunctionType":
+      const paramType = formatTypeWithNestedStructures(type.paramType, null, depth, indent)
+      const returnType = formatTypeWithNestedStructures(type.returnType, null, depth, indent)
+      return `(${paramType} -> ${returnType})`
+
+    case "GenericType":
+      const baseType = type.name
+      const typeArgs = type.typeArguments?.map((t: any) => 
+        formatTypeWithNestedStructures(t, null, depth, indent)
+      ).join(", ")
+      return typeArgs ? `${baseType}<${typeArgs}>` : baseType
+
+    case "TupleType":
+      const elementTypes = type.elementTypes?.map((t: any) => 
+        formatTypeWithNestedStructures(t, null, depth, indent)
+      ).join(", ") || ""
+      return `(${elementTypes})`
+
+    default:
+      return type.name || "unknown"
+  }
+}
+
+// Format struct definition information for hover display
+function formatStructDefinitionInfo(structName: string, structInfo: any): string {
+  if (!structInfo || !structInfo.fields) {
+    return `**struct ${structName}**`
+  }
+
+  const fieldStrs = structInfo.fields.map((field: any) => {
+    const fieldType = formatInferredTypeForDisplay(field.type)
+    return `  ${field.name} :${fieldType}`
+  })
+
+  let structDef = `struct ${structName} {\n${fieldStrs.join(",\n")}\n}`
+  
+  // If it has nested structures or many fields, format with better spacing
+  const hasNestedStructures = structInfo.fields.some((field: any) => 
+    field.type && (field.type.kind === "StructType" || field.type.kind === "RecordType")
+  )
+  
+  if (hasNestedStructures) {
+    const detailedFields = structInfo.fields.map((field: any) => {
+      const fieldType = formatTypeWithNestedStructures(field.type, null, 1, "  ")
+      return `  ${field.name} :${fieldType}`
+    })
+    structDef = `struct ${structName} {\n${detailedFields.join(",\n")}\n}`
+  }
+
+  return `\`\`\`seseragi\n${structDef}\n\`\`\`\n**Type:** struct definition`
+}
+
+// Find struct definition in AST (helper function)
+let cachedAST: any = null
+function findStructDefinition(structName: string): any {
+  if (!cachedAST) return null
+  
+  if (cachedAST.statements) {
+    for (const statement of cachedAST.statements) {
+      if (statement.kind === "StructDeclaration" && statement.name === structName) {
+        return statement
+      }
+    }
+  }
+  return null
 }
 
 // This handler provides go to definition functionality.

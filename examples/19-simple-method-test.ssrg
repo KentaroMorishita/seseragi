@@ -1,15 +1,15 @@
 // シンプルなメソッド呼び出しテスト
 
 struct Point {
-  x: Int,
-  y: Int
+  x :Int,
+  y :Int
 }
 
 impl Point {
-  fn add self: Point -> other: Point -> Point =
+  fn add self -> other :Point -> Point =
     Point { x: self.x + other.x, y: self.y + other.y }
 
-  operator + self: Point -> other: Point -> Point = self add other
+  operator + self -> other :Point -> Point = self add other
 }
 
 let p1 = Point { x: 3, y: 4 }

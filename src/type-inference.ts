@@ -276,6 +276,7 @@ export class TypeInferenceSystem {
   private constraints: TypeConstraint[] = []
   private errors: TypeInferenceError[] = []
   private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
+  private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
@@ -2870,43 +2871,104 @@ export class TypeInferenceSystem {
       argTypes.push(this.generateConstraintsForExpression(arg, env))
     }
     
-    // メソッドの戻り値型
-    const resultType = this.freshTypeVariable(call.line, call.column)
+    // レシーバーの型名を取得
+    let receiverTypeName: string | null = null
+    if (receiverType.kind === "StructType") {
+      receiverTypeName = (receiverType as AST.StructType).name
+    } else if (receiverType.kind === "PrimitiveType") {
+      receiverTypeName = (receiverType as AST.PrimitiveType).name
+    } else if (receiverType.kind === "TypeVariable") {
+      // 型変数の場合、nodeTypeMapから解決を試みる
+      for (const [node, type] of this.nodeTypeMap.entries()) {
+        if (type === receiverType && type.kind === "StructType") {
+          receiverTypeName = (type as AST.StructType).name
+          break
+        }
+      }
+    }
     
-    // TODO: 実装時に構造体のimplブロックからメソッド型を解決する
-    // 現在は単純化のため、カリー化された関数型として扱う
-    let expectedMethodType: AST.Type = resultType
+    // implブロックからメソッドを検索
+    let methodReturnType: AST.Type | null = null
+    if (receiverTypeName) {
+      const methodKey = `${receiverTypeName}.${call.methodName}`
+      const methodInfo = this.methodEnvironment.get(methodKey)
+      
+      if (methodInfo && methodInfo.kind === "MethodDeclaration") {
+        const method = methodInfo as AST.MethodDeclaration
+        
+        // メソッドの戻り値型を取得
+        if (method.returnType) {
+          methodReturnType = method.returnType
+          
+          // 引数の型チェック（selfを除く）
+          const methodParams = method.parameters.filter(p => !p.isImplicitSelf)
+          if (methodParams.length === argTypes.length) {
+            // 各引数の型制約を追加
+            for (let i = 0; i < methodParams.length; i++) {
+              this.constraints.push(
+                new TypeConstraint(
+                  argTypes[i],
+                  methodParams[i].type,
+                  call.line,
+                  call.column,
+                  `Method argument ${i} type mismatch`
+                )
+              )
+            }
+          }
+          
+          // レシーバー型制約を追加
+          this.constraints.push(
+            new TypeConstraint(
+              receiverType,
+              new AST.StructType(receiverTypeName, [], call.line, call.column),
+              call.line,
+              call.column,
+              `Method receiver type mismatch`
+            )
+          )
+        }
+      }
+    }
     
-    // 引数を逆順でカリー化された関数型を構築
-    for (let i = argTypes.length - 1; i >= 0; i--) {
+    // メソッドが見つからない場合は新しい型変数を使用
+    if (!methodReturnType) {
+      methodReturnType = this.freshTypeVariable(call.line, call.column)
+      
+      // カリー化された関数型として制約を構築（従来の方法）
+      let expectedMethodType: AST.Type = methodReturnType
+      
+      for (let i = argTypes.length - 1; i >= 0; i--) {
+        expectedMethodType = new AST.FunctionType(
+          argTypes[i],
+          expectedMethodType,
+          call.line,
+          call.column
+        )
+      }
+      
       expectedMethodType = new AST.FunctionType(
-        argTypes[i],
+        receiverType,
         expectedMethodType,
         call.line,
         call.column
       )
+      
+      this.constraints.push(
+        new TypeConstraint(
+          expectedMethodType,
+          expectedMethodType,
+          call.line,
+          call.column,
+          `Method call ${call.methodName} on type ${this.formatType(receiverType)}`
+        )
+      )
     }
     
-    // selfパラメータ（レシーバー）を最初の引数として追加
-    expectedMethodType = new AST.FunctionType(
-      receiverType,
-      expectedMethodType,
-      call.line,
-      call.column
-    )
+    // MethodCallノードと型を関連付け（LSP hover用）
+    this.nodeTypeMap.set(call, methodReturnType)
     
-    // メソッド型制約を記録（後でimplブロック解決時に使用）
-    this.constraints.push(
-      new TypeConstraint(
-        expectedMethodType,
-        expectedMethodType, // 自己参照的制約として記録
-        call.line,
-        call.column,
-        `Method call ${call.methodName} on type ${this.formatType(receiverType)}`
-      )
-    )
-    
-    return resultType
+    return methodReturnType
   }
 
   // 型の等価性チェック
@@ -3112,6 +3174,13 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>,
     implType: AST.Type
   ): void {
+    // メソッドをmethodEnvironmentに登録
+    if (implType.kind === "StructType") {
+      const structType = implType as AST.StructType
+      const methodKey = `${structType.name}.${method.name}`
+      this.methodEnvironment.set(methodKey, method)
+    }
+    
     // メソッドを関数として処理
     const functionType = this.buildFunctionType(method.parameters, method.returnType)
     

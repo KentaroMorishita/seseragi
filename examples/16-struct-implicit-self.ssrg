@@ -7,11 +7,11 @@ struct Point {
 }
 
 impl Point {
-  fn distanceSquared self -> other :Point -> Int = 
+  fn distanceSquared self -> other :Point -> Int =
     (other.x - self.x) * (other.x - self.x) + (other.y - self.y) * (other.y - self.y)
-  
+
   fn magnitude self -> Int = self.x * self.x + self.y * self.y
-  
+
   fn add self -> other :Point -> Point =
     Point { x: self.x + other.x, y: self.y + other.y }
 }

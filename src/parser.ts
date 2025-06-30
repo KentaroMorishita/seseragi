@@ -587,11 +587,20 @@ export class Parser {
     const operators: AST.OperatorDeclaration[] = []
     let monoid: AST.MonoidDeclaration | undefined
 
+    // Initialize method registry for this type early
+    if (!this.methodRegistry.has(typeName)) {
+      this.methodRegistry.set(typeName, new Set())
+    }
+    const methodSet = this.methodRegistry.get(typeName)!
+
     while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
       if (this.match(TokenType.NEWLINE)) continue
 
       if (this.match(TokenType.FN)) {
-        methods.push(this.methodDeclaration(typeName))
+        const method = this.methodDeclaration(typeName)
+        methods.push(method)
+        // Register method immediately for use in subsequent operator declarations
+        methodSet.add(method.name)
       } else if (this.match(TokenType.OPERATOR)) {
         operators.push(this.operatorDeclaration(typeName))
       } else if (this.match(TokenType.MONOID)) {
@@ -605,15 +614,6 @@ export class Parser {
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after impl block")
-
-    // Register methods in the method registry
-    if (!this.methodRegistry.has(typeName)) {
-      this.methodRegistry.set(typeName, new Set())
-    }
-    const methodSet = this.methodRegistry.get(typeName)!
-    for (const method of methods) {
-      methodSet.add(method.name)
-    }
 
     return new AST.ImplBlock(
       typeName,
