@@ -586,7 +586,7 @@ export class Parser {
     let monoid: AST.MonoidDeclaration | undefined
 
     while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-      if (this.match(TokenType.NEWLINE)) continue
+      if (this.match(TokenType.NEWLINE) || this.match(TokenType.COMMENT)) continue
 
       if (this.match(TokenType.FN)) {
         methods.push(this.methodDeclaration(typeName))
@@ -639,8 +639,18 @@ export class Parser {
 
   private operatorDeclaration(): AST.OperatorDeclaration {
     // operator + self: Point -> other: Point -> Point = self add other
-    const operatorToken = this.advance() // consume operator symbol
-    const operator = operatorToken.value
+    // Check if current token is a valid operator
+    const current = this.peek()
+    let operator: string
+    
+    // Valid operator tokens
+    if (this.match(TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO,
+                   TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.LESS_THAN, TokenType.GREATER_THAN,
+                   TokenType.LESS_EQUAL, TokenType.GREATER_EQUAL, TokenType.AND, TokenType.OR)) {
+      operator = this.previous().value
+    } else {
+      throw new ParseError(`Invalid operator: ${current.value}`, current)
+    }
 
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters)
@@ -1313,15 +1323,51 @@ export class Parser {
   }
 
   private rangeExpression(): AST.Expression {
-    let expr = this.comparisonExpression()
+    let expr = this.logicalOrExpression()
 
     if (this.match(TokenType.RANGE, TokenType.RANGE_INCLUSIVE)) {
       const inclusive = this.previous().type === TokenType.RANGE_INCLUSIVE
-      const end = this.comparisonExpression()
+      const end = this.logicalOrExpression()
       expr = new AST.RangeLiteral(
         expr,
         end,
         inclusive,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private logicalOrExpression(): AST.Expression {
+    let expr = this.logicalAndExpression()
+
+    while (this.match(TokenType.OR)) {
+      const operator = this.previous().value
+      const right = this.logicalAndExpression()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private logicalAndExpression(): AST.Expression {
+    let expr = this.comparisonExpression()
+
+    while (this.match(TokenType.AND)) {
+      const operator = this.previous().value
+      const right = this.comparisonExpression()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
         this.previous().line,
         this.previous().column
       )

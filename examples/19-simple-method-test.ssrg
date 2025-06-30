@@ -21,5 +21,5 @@ let p3 = p1 add p2
 // 演算子オーバーロード構文
 let p4 = p1 + p2
 
-print p3
-print p4
+show p3
+show p4

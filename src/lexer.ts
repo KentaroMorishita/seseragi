@@ -244,8 +244,6 @@ export class Lexer {
         return this.makeToken(TokenType.DIVIDE, char, startLine, startColumn)
       case "%":
         return this.makeToken(TokenType.MODULO, char, startLine, startColumn)
-      case "|":
-        return this.makeToken(TokenType.PIPE, char, startLine, startColumn)
       case "~":
         return this.makeToken(
           TokenType.REVERSE_PIPE,
@@ -366,9 +364,12 @@ export class Lexer {
       return this.makeToken(TokenType.AND, "&&", startLine, startColumn)
     }
 
-    if (char === "|" && this.peek() === "|") {
-      this.advance()
-      return this.makeToken(TokenType.OR, "||", startLine, startColumn)
+    if (char === "|") {
+      if (this.peek() === "|") {
+        this.advance()
+        return this.makeToken(TokenType.OR, "||", startLine, startColumn)
+      }
+      return this.makeToken(TokenType.PIPE, char, startLine, startColumn)
     }
 
     // String literals
