@@ -11,6 +11,7 @@ import {
   BinaryOperation,
   UnaryOperation,
   FunctionCall,
+  MethodCall,
   FunctionApplication,
   BuiltinFunctionCall,
   ConditionalExpression,
@@ -44,6 +45,13 @@ import {
   TupleType,
   TupleExpression,
   TupleDestructuring,
+  StructDeclaration,
+  StructExpression,
+  StructType,
+  ImplBlock,
+  MethodDeclaration,
+  OperatorDeclaration,
+  MonoidDeclaration,
 } from "./ast"
 import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
 
@@ -57,6 +65,7 @@ export interface CodeGenOptions {
   useArrowFunctions?: boolean
   generateComments?: boolean
   runtimeMode?: "embedded" | "import" | "minimal"
+  filePath?: string  // ファイルパス（ハッシュ生成用）
 }
 
 const defaultOptions: CodeGenOptions = {
@@ -80,11 +89,26 @@ export class CodeGenerator {
   indentLevel: number
   usageAnalysis?: UsageAnalysis
   wildcardCounter: number
+  filePrefix: string
+  currentStructContext: string | null = null  // 現在処理中の構造体名
 
   constructor(options: CodeGenOptions) {
     this.options = options
     this.indentLevel = 0
     this.wildcardCounter = 1
+    this.filePrefix = this.generateFilePrefix(options.filePath || "unknown")
+  }
+
+  // ファイルパスからハッシュベースのプレフィックスを生成
+  private generateFilePrefix(filePath: string): string {
+    // ファイルパスの簡易ハッシュ（名前衝突回避用）
+    let hash = 0
+    for (let i = 0; i < filePath.length; i++) {
+      const char = filePath.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // Convert to 32-bit integer
+    }
+    return `f${Math.abs(hash).toString(36).slice(0, 6)}`
   }
 
   // プログラム全体の生成
@@ -700,6 +724,10 @@ const show = (value) => {
       return this.generateExpressionStatement(stmt)
     } else if (stmt instanceof TupleDestructuring) {
       return this.generateTupleDestructuring(stmt)
+    } else if (stmt instanceof StructDeclaration) {
+      return this.generateStructDeclaration(stmt)
+    } else if (stmt instanceof ImplBlock) {
+      return this.generateImplBlock(stmt)
     }
 
     return `// Unsupported statement: ${stmt.constructor.name}`
@@ -812,6 +840,120 @@ const show = (value) => {
     return `${indent}type ${typeAlias.name} = ${aliasedType};`
   }
 
+  // 構造体宣言の生成
+  generateStructDeclaration(structDecl: StructDeclaration): string {
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+    const fields = structDecl.fields
+      .map((f) => `public ${f.name}: ${this.generateType(f.type)}`)
+      .join(", ")
+    
+    return `${indent}class ${structDecl.name} {\n${indent}  constructor(${fields}) {}\n${indent}}`
+  }
+
+  // impl ブロックの生成
+  generateImplBlock(implBlock: ImplBlock): string {
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+    const lines: string[] = []
+
+    // 構造体コンテキストを設定
+    const oldContext = this.currentStructContext
+    this.currentStructContext = implBlock.typeName
+
+    // グローバル関数として生成（namespaceを使わない）
+    lines.push(`${indent}// ${implBlock.typeName} implementation`)
+
+    // メソッドの生成
+    for (const method of implBlock.methods) {
+      const methodCode = this.generateMethodDeclaration(method)
+      lines.push(methodCode)
+    }
+
+    // 演算子の生成
+    for (const operator of implBlock.operators) {
+      const operatorCode = this.generateOperatorDeclaration(operator)
+      lines.push(operatorCode)
+    }
+
+    // モノイドの生成
+    if (implBlock.monoid) {
+      const monoidCode = this.generateMonoidDeclaration(implBlock.monoid)
+      lines.push(monoidCode)
+    }
+
+    // コンテキストを復元
+    this.currentStructContext = oldContext
+
+    return lines.join("\n")
+  }
+
+  // メソッド宣言の生成（ファイルハッシュベース命名）
+  generateMethodDeclaration(method: MethodDeclaration): string {
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+    const params = method.parameters
+      .map((p) => `${p.name}: ${this.generateType(p.type)}`)
+      .join(", ")
+    const returnType = this.generateType(method.returnType)
+    const body = this.generateExpression(method.body)
+    
+    // ファイルハッシュベースの一意な名前を生成
+    const methodName = `__ssrg_${this.filePrefix}_${method.name}`
+    
+    return `${indent}function ${methodName}(${params}): ${returnType} {
+${indent}  return ${body};
+${indent}}`
+  }
+
+  // 演算子宣言の生成（ファイルハッシュベース命名）
+  generateOperatorDeclaration(operator: OperatorDeclaration): string {
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+    const params = operator.parameters
+      .map((p) => `${p.name}: ${this.generateType(p.type)}`)
+      .join(", ")
+    const returnType = this.generateType(operator.returnType)
+    const body = this.generateExpression(operator.body)
+    
+    // 演算子名を安全な識別子に変換
+    const opMethodName = this.operatorToMethodName(operator.operator)
+    const operatorName = `__ssrg_${this.filePrefix}_op_${opMethodName}`
+    
+    return `${indent}function ${operatorName}(${params}): ${returnType} {
+${indent}  return ${body};
+${indent}}`
+  }
+
+  // 演算子をメソッド名に変換
+  private operatorToMethodName(op: string): string {
+    const opMap: Record<string, string> = {
+      "+": "add",
+      "-": "sub", 
+      "*": "mul",
+      "/": "div",
+      "%": "mod",
+      "==": "eq",
+      "!=": "ne",
+      "<": "lt",
+      ">": "gt",
+      "<=": "le",
+      ">=": "ge",
+      "&&": "and",
+      "||": "or",
+      "!": "not"
+    }
+    return opMap[op] || op.replace(/[^a-zA-Z0-9]/g, '_')
+  }
+
+  // モノイド宣言の生成
+  generateMonoidDeclaration(monoid: MonoidDeclaration): string {
+    const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+    const lines: string[] = []
+    
+    lines.push(`${indent}// Monoid implementation`)
+    lines.push(`${indent}export const identity = ${this.generateExpression(monoid.identity)};`)
+    lines.push(this.generateOperatorDeclaration(monoid.operator))
+    
+    return lines.join("\n")
+  }
+
   // 式の生成
   generateExpression(expr: Expression): string {
     if (expr instanceof Literal) {
@@ -824,6 +966,8 @@ const show = (value) => {
       return this.generateUnaryOperation(expr)
     } else if (expr instanceof FunctionCall) {
       return this.generateFunctionCall(expr)
+    } else if (expr instanceof MethodCall) {
+      return this.generateMethodCall(expr)
     } else if (expr instanceof FunctionApplication) {
       return this.generateFunctionApplication(expr)
     } else if (expr instanceof BuiltinFunctionCall) {
@@ -874,6 +1018,8 @@ const show = (value) => {
       return this.generateListComprehensionSugar(expr)
     } else if (expr instanceof TupleExpression) {
       return this.generateTupleExpression(expr)
+    } else if (expr instanceof StructExpression) {
+      return this.generateStructExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -904,12 +1050,33 @@ const show = (value) => {
       return `Cons(${left}, ${right})`
     }
 
-    // 演算子の変換
-    let operator = binOp.operator
-    if (operator === "==") operator = "==="
-    if (operator === "!=") operator = "!=="
+    // 構造体のメソッド/演算子内では基本演算子を直接使用
+    if (this.currentStructContext && this.isBasicOperator(binOp.operator)) {
+      let operator = binOp.operator
+      if (operator === "==") operator = "==="
+      if (operator === "!=") operator = "!=="
+      return `(${left} ${operator} ${right})`
+    }
 
-    return `(${left} ${operator} ${right})`
+    // 構造体の演算子オーバーロードの可能性がある場合は演算子ディスパッチを使用
+    return this.generateOperatorDispatch(binOp.operator, left, right)
+  }
+
+  // 基本演算子かどうかをチェック
+  private isBasicOperator(op: string): boolean {
+    // プリミティブ型で直接使用できる演算子
+    const basicOps = ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"]
+    return basicOps.includes(op)
+  }
+
+  // 演算子ディスパッチの生成
+  private generateOperatorDispatch(operator: string, left: string, right: string): string {
+    const opMethodName = this.operatorToMethodName(operator)
+    const operatorFuncName = `__ssrg_${this.filePrefix}_op_${opMethodName}`
+    
+    // 演算子オーバーロード関数が存在する場合はそれを使用、
+    // 存在しない場合は通常の演算子にフォールバック
+    return `(typeof ${operatorFuncName} === 'function' ? ${operatorFuncName}(${left}, ${right}) : (${left} ${operator} ${right}))`
   }
 
   // 単項演算の生成
@@ -1237,6 +1404,8 @@ const show = (value) => {
         .map((elementType) => this.generateType(elementType))
         .join(", ")
       return `[${elements}]`
+    } else if (type instanceof StructType) {
+      return type.name
     }
 
     return "any"
@@ -1488,6 +1657,31 @@ const show = (value) => {
       .map((element) => this.generateExpression(element))
       .join(", ")
     return `[${elements}]`
+  }
+
+  // 構造体式の生成
+  generateStructExpression(structExpr: StructExpression): string {
+    const args = structExpr.fields
+      .map((field) => this.generateExpression(field.value))
+      .join(", ")
+    return `new ${structExpr.structName}(${args})`
+  }
+
+  // メソッド呼び出しの生成
+  generateMethodCall(call: MethodCall): string {
+    const receiver = this.generateExpression(call.receiver)
+    const args = call.arguments.map((arg) => this.generateExpression(arg))
+    
+    // メソッド名をファイルハッシュベースの形式に変換
+    const methodName = `__ssrg_${this.filePrefix}_${call.methodName}`
+    
+    // カリー化された関数呼び出しとして生成
+    if (args.length === 0) {
+      return `${methodName}(${receiver})`
+    } else {
+      const allArgs = [receiver, ...args].join(", ")
+      return `${methodName}(${allArgs})`
+    }
   }
 
   // タプル分解の生成

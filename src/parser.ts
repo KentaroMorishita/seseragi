@@ -82,6 +82,7 @@ export class Parser {
         case TokenType.FN:
         case TokenType.LET:
         case TokenType.TYPE:
+        case TokenType.STRUCT:
         case TokenType.IMPL:
         case TokenType.IMPORT:
           return
@@ -108,6 +109,10 @@ export class Parser {
 
       if (this.match(TokenType.TYPE)) {
         return this.typeDeclaration()
+      }
+
+      if (this.match(TokenType.STRUCT)) {
+        return this.structDeclaration()
       }
 
       if (this.match(TokenType.IMPL)) {
@@ -185,7 +190,10 @@ export class Parser {
     )
   }
 
-  private parseFunctionSignature(parameters: AST.Parameter[]): AST.Type {
+  private parseFunctionSignature(
+    parameters: AST.Parameter[], 
+    implContext?: string
+  ): AST.Type {
     // Check for immediate arrow (no parameters case: "fn name -> Type")
     if (this.check(TokenType.ARROW)) {
       this.advance() // consume ->
@@ -224,16 +232,45 @@ export class Parser {
         } else {
           // Untyped parameter
           const paramName = this.advance().value
-          parameters.push(
-            new AST.Parameter(
-              paramName,
-              this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
-              paramNameToken.line,
-              paramNameToken.column
+          
+          // 暗黙的selfの検出：implコンテキスト内で最初のパラメータが'self'の場合
+          const isImplicitSelf = implContext && paramName === "self" && parameters.length === 0
+          
+          if (isImplicitSelf) {
+            // 暗黙的selfパラメータ：型は後でimplコンテキストから解決される
+            parameters.push(
+              new AST.Parameter(
+                paramName,
+                this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
+                paramNameToken.line,
+                paramNameToken.column,
+                true  // isImplicitSelf = true
+              )
             )
-          )
+          } else {
+            // 通常の型なしパラメータ
+            parameters.push(
+              new AST.Parameter(
+                paramName,
+                this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
+                paramNameToken.line,
+                paramNameToken.column
+              )
+            )
+          }
+          
+          // 型なしパラメータの後に'->'がある場合は消費（次のパラメータまたは戻り値型）
+          if (this.check(TokenType.ARROW)) {
+            this.advance() // consume ->
+          }
         }
       }
+    }
+
+    // パラメータ解析ループが終了した後、明示的な戻り値型があるかチェック
+    if (this.check(TokenType.ARROW)) {
+      this.advance() // consume ->
+      return this.parseType()
     }
 
     // If we reach here and have no explicit return type, use fresh type variable for inference
@@ -454,6 +491,43 @@ export class Parser {
     )
   }
 
+  private structDeclaration(): AST.StructDeclaration {
+    const structToken = this.previous()
+    const name = this.consume(TokenType.IDENTIFIER, "Expected struct name").value
+    
+    this.consume(TokenType.LEFT_BRACE, "Expected '{' after struct name")
+    this.skipNewlines()
+    
+    const fields: AST.RecordField[] = []
+    
+    // Parse fields
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+      const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
+      this.consume(TokenType.COLON, "Expected ':' after field name")
+      const fieldType = this.parseType()
+      
+      fields.push(new AST.RecordField(fieldName, fieldType, this.previous().line, this.previous().column))
+      
+      // Check for comma or newline
+      if (this.match(TokenType.COMMA)) {
+        this.skipNewlines()
+      } else if (this.check(TokenType.NEWLINE)) {
+        this.skipNewlines()
+      } else if (!this.check(TokenType.RIGHT_BRACE)) {
+        throw new ParseError("Expected ',' or newline after struct field", this.peek())
+      }
+    }
+    
+    this.consume(TokenType.RIGHT_BRACE, "Expected '}' after struct fields")
+    
+    return new AST.StructDeclaration(
+      name,
+      fields,
+      structToken.line,
+      structToken.column
+    )
+  }
+
   private parseStructType(name: string): AST.TypeDeclaration {
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after type name")
 
@@ -515,7 +589,7 @@ export class Parser {
       if (this.match(TokenType.NEWLINE)) continue
 
       if (this.match(TokenType.FN)) {
-        methods.push(this.methodDeclaration())
+        methods.push(this.methodDeclaration(typeName))
       } else if (this.match(TokenType.OPERATOR)) {
         operators.push(this.operatorDeclaration())
       } else if (this.match(TokenType.MONOID)) {
@@ -540,14 +614,14 @@ export class Parser {
     )
   }
 
-  private methodDeclaration(): AST.MethodDeclaration {
+  private methodDeclaration(implTypeName?: string): AST.MethodDeclaration {
     const name = this.consume(
       TokenType.IDENTIFIER,
       "Expected method name"
     ).value
 
     const parameters: AST.Parameter[] = []
-    const returnType = this.parseFunctionSignature(parameters)
+    const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
     this.consume(TokenType.ASSIGN, "Expected '=' after method signature")
     this.skipNewlines()
@@ -564,50 +638,16 @@ export class Parser {
   }
 
   private operatorDeclaration(): AST.OperatorDeclaration {
-    const operator = this.advance().value // operator symbol
-
-    this.consume(TokenType.LEFT_PAREN, "Expected '(' after operator")
+    // operator + self: Point -> other: Point -> Point = self add other
+    const operatorToken = this.advance() // consume operator symbol
+    const operator = operatorToken.value
 
     const parameters: AST.Parameter[] = []
+    const returnType = this.parseFunctionSignature(parameters)
 
-    // Parse first parameter
-    const _firstParam = this.consume(
-      TokenType.IDENTIFIER,
-      "Expected parameter name"
-    ).value
-    this.consume(TokenType.COMMA, "Expected ',' after first parameter")
-    const secondParam = this.consume(
-      TokenType.IDENTIFIER,
-      "Expected second parameter name"
-    ).value
-    this.consume(TokenType.COLON, "Expected ':' after parameter name")
-    const paramType = this.parseType()
-
-    this.consume(TokenType.RIGHT_PAREN, "Expected ')' after parameters")
-    this.consume(TokenType.ARROW, "Expected '->' after parameters")
-
-    const returnType = this.parseType()
-
-    this.consume(TokenType.LEFT_BRACE, "Expected '{' before operator body")
+    this.consume(TokenType.ASSIGN, "Expected '=' after operator signature")
+    this.skipNewlines()
     const body = this.expression()
-    this.consume(TokenType.RIGHT_BRACE, "Expected '}' after operator body")
-
-    parameters.push(
-      new AST.Parameter(
-        "self",
-        paramType,
-        this.previous().line,
-        this.previous().column
-      )
-    )
-    parameters.push(
-      new AST.Parameter(
-        secondParam,
-        paramType,
-        this.previous().line,
-        this.previous().column
-      )
-    )
 
     return new AST.OperatorDeclaration(
       operator,
@@ -1428,6 +1468,34 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+      } else if (this.check(TokenType.IDENTIFIER) && this.isMethodCall()) {
+        // メソッド呼び出し構文: obj methodName arg1 arg2
+        const methodName = this.advance().value
+        const args: AST.Expression[] = []
+        
+        // メソッドの引数を収集
+        while (this.canStartExpression() && !this.check(TokenType.NEWLINE) && !this.isAtEnd()) {
+          const arg = this.check(TokenType.NOT) 
+            ? this.parseUnaryOnly() 
+            : this.primaryExpression()
+          args.push(arg)
+          
+          // 式の終了条件をチェック
+          if (this.check(TokenType.NEWLINE) || this.check(TokenType.SEMICOLON) || 
+              this.check(TokenType.RIGHT_PAREN) || this.check(TokenType.RIGHT_BRACE) ||
+              this.check(TokenType.COMMA) || this.check(TokenType.PIPE) ||
+              this.check(TokenType.REVERSE_PIPE) || this.check(TokenType.BIND)) {
+            break
+          }
+        }
+        
+        expr = new AST.MethodCall(
+          expr,
+          methodName,
+          args,
+          this.previous().line,
+          this.previous().column
+        )
       } else if (this.canStartExpression()) {
         // 括弧なし関数適用（関数型言語の標準）
         const arg = this.check(TokenType.NOT) 
@@ -1549,9 +1617,41 @@ export class Parser {
       const line = this.previous().line
       const column = this.previous().column
 
-      // 大文字で始まる場合はコンストラクタの可能性
+      // 大文字で始まる場合はコンストラクタまたは構造体インスタンスの可能性
       if (name[0] === name[0].toUpperCase()) {
-        // 引数がある場合
+        // 構造体インスタンス化: Person { name: "Alice", age: 30 }
+        if (this.check(TokenType.LEFT_BRACE)) {
+          this.advance() // consume '{'
+          const fields: AST.RecordInitField[] = []
+          
+          if (!this.check(TokenType.RIGHT_BRACE)) {
+            do {
+              this.skipNewlines()
+              const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
+              this.skipNewlines()
+              this.consume(TokenType.COLON, "Expected ':' after field name")
+              this.skipNewlines()
+              const fieldValue = this.expression()
+              
+              fields.push(
+                new AST.RecordInitField(
+                  fieldName,
+                  fieldValue,
+                  this.previous().line,
+                  this.previous().column
+                )
+              )
+              this.skipNewlines()
+            } while (this.match(TokenType.COMMA))
+          }
+          
+          this.skipNewlines()
+          this.consume(TokenType.RIGHT_BRACE, "Expected '}' after struct fields")
+          
+          return new AST.StructExpression(name, fields, line, column)
+        }
+        
+        // 通常のコンストラクタ引数がある場合
         if (
           this.checkPrimaryStart() &&
           !this.check(TokenType.ARROW) &&
@@ -2078,6 +2178,28 @@ export class Parser {
     this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list comprehension")
 
     return new AST.ListComprehension(expression, generators, filters, line, column)
+  }
+
+  // メソッド呼び出しかどうかを判定
+  private isMethodCall(): boolean {
+    // 現在の位置を保存
+    const savedPosition = this.current
+    
+    // 次のトークンがIDENTIFIERかチェック
+    if (!this.check(TokenType.IDENTIFIER)) {
+      return false
+    }
+    
+    // 次のトークンを消費
+    this.advance()
+    
+    // その後に式が続くかチェック
+    const hasArgument = this.canStartExpression()
+    
+    // 位置を復元
+    this.current = savedPosition
+    
+    return hasArgument
   }
 }
 
