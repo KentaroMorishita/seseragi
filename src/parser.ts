@@ -24,6 +24,8 @@ export class Parser {
   private tokens: Token[]
   private current: number = 0
   private typeVarCounter: number = 0
+  private methodRegistry: Map<string, Set<string>> = new Map() // typeName -> method names
+  private variableTypes: Map<string, string> = new Map() // variable name -> type name
 
   constructor(input: string | Token[]) {
     if (typeof input === "string") {
@@ -585,13 +587,22 @@ export class Parser {
     const operators: AST.OperatorDeclaration[] = []
     let monoid: AST.MonoidDeclaration | undefined
 
+    // Initialize method registry for this type early
+    if (!this.methodRegistry.has(typeName)) {
+      this.methodRegistry.set(typeName, new Set())
+    }
+    const methodSet = this.methodRegistry.get(typeName)!
+
     while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-      if (this.match(TokenType.NEWLINE)) continue
+      if (this.match(TokenType.NEWLINE) || this.match(TokenType.COMMENT)) continue
 
       if (this.match(TokenType.FN)) {
-        methods.push(this.methodDeclaration(typeName))
+        const method = this.methodDeclaration(typeName)
+        methods.push(method)
+        // Register method immediately for use in subsequent operator declarations
+        methodSet.add(method.name)
       } else if (this.match(TokenType.OPERATOR)) {
-        operators.push(this.operatorDeclaration())
+        operators.push(this.operatorDeclaration(typeName))
       } else if (this.match(TokenType.MONOID)) {
         monoid = this.monoidDeclaration()
       } else {
@@ -637,13 +648,23 @@ export class Parser {
     )
   }
 
-  private operatorDeclaration(): AST.OperatorDeclaration {
+  private operatorDeclaration(implTypeName?: string): AST.OperatorDeclaration {
     // operator + self: Point -> other: Point -> Point = self add other
-    const operatorToken = this.advance() // consume operator symbol
-    const operator = operatorToken.value
+    // Check if current token is a valid operator
+    const current = this.peek()
+    let operator: string
+    
+    // Valid operator tokens
+    if (this.match(TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO,
+                   TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.LESS_THAN, TokenType.GREATER_THAN,
+                   TokenType.LESS_EQUAL, TokenType.GREATER_EQUAL, TokenType.AND, TokenType.OR)) {
+      operator = this.previous().value
+    } else {
+      throw new ParseError(`Invalid operator: ${current.value}`, current)
+    }
 
     const parameters: AST.Parameter[] = []
-    const returnType = this.parseFunctionSignature(parameters)
+    const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
     this.consume(TokenType.ASSIGN, "Expected '=' after operator signature")
     this.skipNewlines()
@@ -1313,15 +1334,51 @@ export class Parser {
   }
 
   private rangeExpression(): AST.Expression {
-    let expr = this.comparisonExpression()
+    let expr = this.logicalOrExpression()
 
     if (this.match(TokenType.RANGE, TokenType.RANGE_INCLUSIVE)) {
       const inclusive = this.previous().type === TokenType.RANGE_INCLUSIVE
-      const end = this.comparisonExpression()
+      const end = this.logicalOrExpression()
       expr = new AST.RangeLiteral(
         expr,
         end,
         inclusive,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private logicalOrExpression(): AST.Expression {
+    let expr = this.logicalAndExpression()
+
+    while (this.match(TokenType.OR)) {
+      const operator = this.previous().value
+      const right = this.logicalAndExpression()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private logicalAndExpression(): AST.Expression {
+    let expr = this.comparisonExpression()
+
+    while (this.match(TokenType.AND)) {
+      const operator = this.previous().value
+      const right = this.comparisonExpression()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
         this.previous().line,
         this.previous().column
       )
@@ -1468,8 +1525,9 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
-      } else if (this.check(TokenType.IDENTIFIER) && this.isMethodCall()) {
+      } else if (this.check(TokenType.IDENTIFIER) && this.isMethodCall() && this.isActualMethodCall(expr)) {
         // メソッド呼び出し構文: obj methodName arg1 arg2
+        // Enhanced method call detection to avoid conflicts with function application
         const methodName = this.advance().value
         const args: AST.Expression[] = []
         
@@ -2190,7 +2248,6 @@ export class Parser {
       return false
     }
     
-    // 次のトークンを消費
     this.advance()
     
     // その後に式が続くかチェック
@@ -2200,6 +2257,28 @@ export class Parser {
     this.current = savedPosition
     
     return hasArgument
+  }
+
+  // Context-aware method call detection
+  private isActualMethodCall(receiver: AST.Expression): boolean {
+    // Check if the next identifier is a known method name from any struct impl block
+    if (!this.check(TokenType.IDENTIFIER)) {
+      return false
+    }
+    
+    const methodName = this.peek().value
+    
+    // Check if this method name exists in any registered impl block
+    for (const methodSet of this.methodRegistry.values()) {
+      if (methodSet.has(methodName)) {
+        // This is a known method name, so allow method call parsing
+        // The type checker will later verify the receiver type matches
+        return true
+      }
+    }
+    
+    // If the method name is not registered, treat as function application
+    return false
   }
 }
 

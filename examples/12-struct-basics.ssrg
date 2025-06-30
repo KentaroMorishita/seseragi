@@ -11,22 +11,22 @@ show "--- Struct Declaration ---"
 
 // 基本的な構造体定義
 struct Person {
-  name: String,
-  age: Int
+  name :String,
+  age :Int
 }
 
 struct Point {
-  x: Float,
-  y: Float
+  x :Float,
+  y :Float
 }
 
 // より複雑な構造体
 struct Employee {
-  id: Int,
-  personal: { name: String, email: String },
-  department: String,
-  salary: Int,
-  isActive: Bool
+  id :Int,
+  personal :{ name :String, email :String },
+  department :String,
+  salary :Int,
+  isActive :Bool
 }
 
 // =============================================================================
@@ -91,10 +91,10 @@ show employeeDept
 show "--- Functions with Structs ---"
 
 // 構造体を引数に取る関数
-fn getPersonInfo person: Person -> String =
+fn getPersonInfo person :Person -> String =
   person.name + " is " + toString(person.age) + " years old"
 
-fn distance p1: Point -> p2: Point -> Float {
+fn distance p1 :Point -> p2 :Point -> Float {
   let dx = p2.x - p1.x
   let dy = p2.y - p1.y
   // 簡略化のため、平方根は使わず二乗和を返す
@@ -110,10 +110,10 @@ show bobInfo
 show dist
 
 // 構造体を返す関数
-fn createPerson name: String -> age: Int -> Person =
+fn createPerson name :String -> age :Int -> Person =
   Person { name: name, age: age }
 
-fn midpoint p1: Point -> p2: Point -> Point =
+fn midpoint p1 :Point -> p2 :Point -> Point =
   Point {
     x: (p1.x + p2.x) / 2.0,
     y: (p1.y + p2.y) / 2.0
@@ -132,9 +132,9 @@ show mid
 show "--- Structs with Maybe ---"
 
 struct Contact {
-  name: String,
-  phone: Maybe<String>,
-  email: Maybe<String>
+  name :String,
+  phone :Maybe<String>,
+  email :Maybe<String>
 }
 
 let contact1 = Contact {

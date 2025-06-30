@@ -276,6 +276,7 @@ export class TypeInferenceSystem {
   private constraints: TypeConstraint[] = []
   private errors: TypeInferenceError[] = []
   private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
+  private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
@@ -1343,27 +1344,46 @@ export class TypeInferenceSystem {
 
       case "&&":
       case "||":
-        // 論理演算: 両オペランドはBool、結果もBool
-        const boolType = new AST.PrimitiveType("Bool", binOp.line, binOp.column)
-        this.addConstraint(
-          new TypeConstraint(
-            leftType,
-            boolType,
-            binOp.left.line,
-            binOp.left.column,
-            `Logical operation ${binOp.operator} left operand`
+        // 論理演算: 基本的にはBool、ただし構造体のオーバーロードも考慮
+        const hasStructTypeLogical = this.isStructOrResolvesToStruct(leftType, env) || this.isStructOrResolvesToStruct(rightType, env)
+        
+        if (hasStructTypeLogical) {
+          // 構造体のオーバーロードが考えられる場合: 左右のオペランドが同じ型である制約のみ
+          this.addConstraint(
+            new TypeConstraint(
+              leftType,
+              rightType,
+              binOp.line,
+              binOp.column,
+              `Logical operation ${binOp.operator} operands must have same type (struct overload)`
+            )
           )
-        )
-        this.addConstraint(
-          new TypeConstraint(
-            rightType,
-            boolType,
-            binOp.right.line,
-            binOp.right.column,
-            `Logical operation ${binOp.operator} right operand`
+          // 結果の型は演算子オーバーロードによって決まるが、一般的にはBoolを返す
+          // 構造体オーバーロードでは通常Bool型を返すことが多い
+          return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+        } else {
+          // 通常の論理演算: 両オペランドはBool、結果もBool
+          const boolType = new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+          this.addConstraint(
+            new TypeConstraint(
+              leftType,
+              boolType,
+              binOp.left.line,
+              binOp.left.column,
+              `Logical operation ${binOp.operator} left operand`
+            )
           )
-        )
-        return boolType
+          this.addConstraint(
+            new TypeConstraint(
+              rightType,
+              boolType,
+              binOp.right.line,
+              binOp.right.column,
+              `Logical operation ${binOp.operator} right operand`
+            )
+          )
+          return boolType
+        }
 
       case ":":
         // CONS演算子: a : List<a> -> List<a>
@@ -2870,43 +2890,104 @@ export class TypeInferenceSystem {
       argTypes.push(this.generateConstraintsForExpression(arg, env))
     }
     
-    // メソッドの戻り値型
-    const resultType = this.freshTypeVariable(call.line, call.column)
+    // レシーバーの型名を取得
+    let receiverTypeName: string | null = null
+    if (receiverType.kind === "StructType") {
+      receiverTypeName = (receiverType as AST.StructType).name
+    } else if (receiverType.kind === "PrimitiveType") {
+      receiverTypeName = (receiverType as AST.PrimitiveType).name
+    } else if (receiverType.kind === "TypeVariable") {
+      // 型変数の場合、nodeTypeMapから解決を試みる
+      for (const [node, type] of this.nodeTypeMap.entries()) {
+        if (type === receiverType && type.kind === "StructType") {
+          receiverTypeName = (type as AST.StructType).name
+          break
+        }
+      }
+    }
     
-    // TODO: 実装時に構造体のimplブロックからメソッド型を解決する
-    // 現在は単純化のため、カリー化された関数型として扱う
-    let expectedMethodType: AST.Type = resultType
+    // implブロックからメソッドを検索
+    let methodReturnType: AST.Type | null = null
+    if (receiverTypeName) {
+      const methodKey = `${receiverTypeName}.${call.methodName}`
+      const methodInfo = this.methodEnvironment.get(methodKey)
+      
+      if (methodInfo && methodInfo.kind === "MethodDeclaration") {
+        const method = methodInfo as AST.MethodDeclaration
+        
+        // メソッドの戻り値型を取得
+        if (method.returnType) {
+          methodReturnType = method.returnType
+          
+          // 引数の型チェック（selfを除く）
+          const methodParams = method.parameters.filter(p => !p.isImplicitSelf)
+          if (methodParams.length === argTypes.length) {
+            // 各引数の型制約を追加
+            for (let i = 0; i < methodParams.length; i++) {
+              this.constraints.push(
+                new TypeConstraint(
+                  argTypes[i],
+                  methodParams[i].type,
+                  call.line,
+                  call.column,
+                  `Method argument ${i} type mismatch`
+                )
+              )
+            }
+          }
+          
+          // レシーバー型制約を追加
+          this.constraints.push(
+            new TypeConstraint(
+              receiverType,
+              new AST.StructType(receiverTypeName, [], call.line, call.column),
+              call.line,
+              call.column,
+              `Method receiver type mismatch`
+            )
+          )
+        }
+      }
+    }
     
-    // 引数を逆順でカリー化された関数型を構築
-    for (let i = argTypes.length - 1; i >= 0; i--) {
+    // メソッドが見つからない場合は新しい型変数を使用
+    if (!methodReturnType) {
+      methodReturnType = this.freshTypeVariable(call.line, call.column)
+      
+      // カリー化された関数型として制約を構築（従来の方法）
+      let expectedMethodType: AST.Type = methodReturnType
+      
+      for (let i = argTypes.length - 1; i >= 0; i--) {
+        expectedMethodType = new AST.FunctionType(
+          argTypes[i],
+          expectedMethodType,
+          call.line,
+          call.column
+        )
+      }
+      
       expectedMethodType = new AST.FunctionType(
-        argTypes[i],
+        receiverType,
         expectedMethodType,
         call.line,
         call.column
       )
+      
+      this.constraints.push(
+        new TypeConstraint(
+          expectedMethodType,
+          expectedMethodType,
+          call.line,
+          call.column,
+          `Method call ${call.methodName} on type ${this.formatType(receiverType)}`
+        )
+      )
     }
     
-    // selfパラメータ（レシーバー）を最初の引数として追加
-    expectedMethodType = new AST.FunctionType(
-      receiverType,
-      expectedMethodType,
-      call.line,
-      call.column
-    )
+    // MethodCallノードと型を関連付け（LSP hover用）
+    this.nodeTypeMap.set(call, methodReturnType)
     
-    // メソッド型制約を記録（後でimplブロック解決時に使用）
-    this.constraints.push(
-      new TypeConstraint(
-        expectedMethodType,
-        expectedMethodType, // 自己参照的制約として記録
-        call.line,
-        call.column,
-        `Method call ${call.methodName} on type ${this.formatType(receiverType)}`
-      )
-    )
-    
-    return resultType
+    return methodReturnType
   }
 
   // 型の等価性チェック
@@ -3112,6 +3193,13 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>,
     implType: AST.Type
   ): void {
+    // メソッドをmethodEnvironmentに登録
+    if (implType.kind === "StructType") {
+      const structType = implType as AST.StructType
+      const methodKey = `${structType.name}.${method.name}`
+      this.methodEnvironment.set(methodKey, method)
+    }
+    
     // メソッドを関数として処理
     const functionType = this.buildFunctionType(method.parameters, method.returnType)
     
@@ -3619,6 +3707,27 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     const recordType = this.generateConstraintsForExpression(access.record, env)
+    
+    // まず、recordTypeがStructTypeかどうかを直接チェック
+    if (recordType.kind === "StructType") {
+      const structType = recordType as AST.StructType
+      const field = structType.fields.find(f => f.name === access.fieldName)
+      if (field) {
+        return field.type
+      } else {
+        this.errors.push(
+          new TypeInferenceError(
+            `Field '${access.fieldName}' does not exist on struct '${structType.name}'`,
+            access.line,
+            access.column,
+            `Field access .${access.fieldName}`
+          )
+        )
+        return this.freshTypeVariable(access.line, access.column)
+      }
+    }
+    
+    // 型変数やその他の場合は、従来の制約ベースのアプローチを使用
     const fieldType = this.freshTypeVariable(access.line, access.column)
 
     // 構造的制約を常に作成 - unificationプロセスで解決
