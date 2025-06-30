@@ -193,15 +193,16 @@ struct Point {
   y: Int
 }
 
-struct Person {
+struct Player {
   name: String,
   age: Int
 }
 
+
 // 構造体のインスタンス化
 let origin = Point { x: 0, y: 0 }
 let playerPos = Point { x: 10, y: 5 }
-let alice = Person { name: "Alice", age: 30 }
+let alice = Player { name: "Alice", age: 30 }
 
 show origin
 show playerPos
@@ -209,10 +210,10 @@ show alice
 
 // 構造体フィールドアクセス
 let posX = playerPos.x
-let playerName = alice.name
+let aliceName = alice.name
 
 show posX
-show playerName
+show aliceName
 
 // =============================================================================
 // 構造体を使った計算関数
@@ -229,14 +230,14 @@ fn createPoint x :Int -> y :Int -> Point {
   Point { x: x, y: y }
 }
 
-fn describePerson p :Person -> String {
-  p.name + " is " + toString p.age + " years old"
-}
+fn describePlayer p :Player -> String =
+  p.name + " is " + toString (p.age) + " years old"
+
 
 // 関数の呼び出し
 let distance = calculateDistance playerPos
 let newPoint = createPoint 15 25
-let description = describePerson alice
+let description = describePlayer alice
 
 show distance
 show newPoint
