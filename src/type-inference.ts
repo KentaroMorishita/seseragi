@@ -73,6 +73,9 @@ export class TypeConstraint {
           .map((elementType) => this.typeToString(elementType))
           .join(", ")
         return `(${elements})`
+      case "StructType":
+        const st = type as AST.StructType
+        return st.name
       default:
         return "Unknown"
     }
@@ -144,6 +147,22 @@ export class TypeSubstitution {
           tt.column
         )
 
+      case "StructType":
+        const st = type as AST.StructType
+        return new AST.StructType(
+          st.name,
+          st.fields.map((field) => 
+            new AST.RecordField(
+              field.name, 
+              this.apply(field.type), 
+              field.line, 
+              field.column
+            )
+          ),
+          st.line,
+          st.column
+        )
+
       default:
         return type
     }
@@ -207,6 +226,20 @@ export class TypeSubstitution {
           .map((t) => this.typeToString(t))
           .join(", ")
         return `${gt.name}<${args}>`
+      case "StructType":
+        return (type as AST.StructType).name
+      case "RecordType":
+        const rt = type as AST.RecordType
+        const fields = rt.fields
+          .map(f => `${f.name}: ${this.typeToString(f.type)}`)
+          .join(", ")
+        return `{ ${fields} }`
+      case "TupleType":
+        const tt = type as AST.TupleType
+        const elements = tt.elementTypes
+          .map(t => this.typeToString(t))
+          .join(", ")
+        return `(${elements})`
       default:
         return "Unknown"
     }
@@ -281,6 +314,9 @@ export class TypeInferenceSystem {
         const rt = type as AST.RecordType
         const fields = rt.fields.map(f => `${f.name}: ${this.formatType(f.type)}`).join(', ')
         return `{ ${fields} }`
+      case "StructType":
+        const st = type as AST.StructType
+        return st.name
       default:
         return `UnknownType(${type.kind})`
     }
@@ -336,6 +372,10 @@ export class TypeInferenceSystem {
           const rt = t as AST.RecordType
           rt.fields.forEach(field => collect(field.type))
           break
+        case "StructType":
+          const st = t as AST.StructType
+          st.fields.forEach(field => collect(field.type))
+          break
         // PolymorphicTypeVariable や PrimitiveType は処理不要
       }
     }
@@ -372,6 +412,9 @@ export class TypeInferenceSystem {
       case "RecordType":
         const rt = type as AST.RecordType
         return rt.fields.some(f => this.typeContainsVariable(f.type, varName))
+      case "StructType":
+        const st = type as AST.StructType
+        return st.fields.some(f => this.typeContainsVariable(f.type, varName))
       default:
         return false
     }
@@ -415,6 +458,19 @@ export class TypeInferenceSystem {
           })),
           rt.line,
           rt.column
+        )
+      case "StructType":
+        const st = type as AST.StructType
+        return new AST.StructType(
+          st.name,
+          st.fields.map(f => new AST.RecordField(
+            f.name,
+            this.substituteTypeVariables(f.type, substitutionMap),
+            f.line,
+            f.column
+          )),
+          st.line,
+          st.column
         )
       default:
         return type
@@ -465,6 +521,22 @@ export class TypeInferenceSystem {
             ),
             rt.line,
             rt.column
+          )
+        
+        case "StructType":
+          const st = t as AST.StructType
+          return new AST.StructType(
+            st.name,
+            st.fields.map(field => 
+              new AST.RecordField(
+                field.name,
+                substitute(field.type),
+                field.line,
+                field.column
+              )
+            ),
+            st.line,
+            st.column
           )
           
         default:
@@ -634,17 +706,27 @@ export class TypeInferenceSystem {
     program: AST.Program,
     env: Map<string, AST.Type>
   ): void {
+    // 現在の環境を設定（型エイリアス解決用）
+    this.currentEnvironment = env
+    
     // Two-pass approach to handle forward references:
-    // Pass 1: Process all function declarations and type declarations first
-    // This allows variables to reference functions defined later in the file
+    // Pass 1: Process all function declarations, type declarations, and struct declarations first
+    // This allows variables to reference functions and types defined later in the file
     for (const statement of program.statements) {
-      if (statement.kind === "FunctionDeclaration" || statement.kind === "TypeDeclaration" || statement.kind === "TypeAliasDeclaration") {
+      if (statement.kind === "FunctionDeclaration" || statement.kind === "TypeDeclaration" || statement.kind === "TypeAliasDeclaration" || statement.kind === "StructDeclaration") {
         this.generateConstraintsForStatement(statement, env)
       }
     }
     
-    // Pass 2: Process variable declarations and expression statements in original order
+    // Pass 2: Process impl blocks, variable declarations and expression statements in original order
     // At this point all functions and types are available in the environment
+    for (const statement of program.statements) {
+      if (statement.kind === "ImplBlock") {
+        this.generateConstraintsForStatement(statement, env)
+      }
+    }
+    
+    // Pass 3: Process variable declarations and expression statements
     for (const statement of program.statements) {
       if (statement.kind === "VariableDeclaration" || statement.kind === "ExpressionStatement" || statement.kind === "TupleDestructuring") {
         this.generateConstraintsForStatement(statement, env)
@@ -690,6 +772,18 @@ export class TypeInferenceSystem {
       case "TupleDestructuring":
         this.generateConstraintsForTupleDestructuring(
           statement as AST.TupleDestructuring,
+          env
+        )
+        break
+      case "StructDeclaration":
+        this.generateConstraintsForStructDeclaration(
+          statement as AST.StructDeclaration,
+          env
+        )
+        break
+      case "ImplBlock":
+        this.generateConstraintsForImplBlock(
+          statement as AST.ImplBlock,
           env
         )
         break
@@ -754,12 +848,14 @@ export class TypeInferenceSystem {
     // 関数本体の型推論用の環境を作成
     const bodyEnv = new Map(env)
     
-    // パラメータの型を環境に追加（関数型構築時と同じ型を使用）
+    // パラメータの型を環境に追加（型エイリアス解決後）
     for (let i = 0; i < func.parameters.length; i++) {
       const param = func.parameters[i]
       const paramType = paramTypes[i]
       
-      bodyEnv.set(param.name, paramType)
+      // パラメータ型も型エイリアス解決を行う
+      const resolvedParamType = this.resolveTypeAlias(paramType)
+      bodyEnv.set(param.name, resolvedParamType)
     }
 
     // 関数本体の型を推論
@@ -938,6 +1034,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "MethodCall":
+        resultType = this.generateConstraintsForMethodCall(
+          expr as AST.MethodCall,
+          env
+        )
+        break
+
       case "BuiltinFunctionCall":
         resultType = this.generateConstraintsForBuiltinFunctionCall(
           expr as AST.BuiltinFunctionCall,
@@ -1099,6 +1202,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "StructExpression":
+        resultType = this.generateConstraintsForStructExpression(
+          expr as AST.StructExpression,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -1191,29 +1301,27 @@ export class TypeInferenceSystem {
       case "*":
       case "/":
       case "%":
-        // 数値演算のみ: 両オペランドは Int または Float 型、結果も同じ型
-        const numIntType = new AST.PrimitiveType("Int", binOp.line, binOp.column)
+        // 数値演算: 両オペランドは同じ型でなければならず、結果も同じ型
+        // ただし、構造体型が関わっている場合は演算子オーバーロードの可能性があるため制約を緩める
         
-        // まず Int 型として制約を追加
-        this.addConstraint(
-          new TypeConstraint(
-            leftType,
-            numIntType,
-            binOp.left.line,
-            binOp.left.column,
-            `Binary operation ${binOp.operator} left operand`
+        // 構造体型が関わっているかチェック
+        const hasStructType = this.isStructOrResolvesToStruct(leftType, env) || this.isStructOrResolvesToStruct(rightType, env)
+        
+        if (!hasStructType) {
+          // 通常の数値演算の場合のみ、左右のオペランドが同じ型である制約を追加
+          this.addConstraint(
+            new TypeConstraint(
+              leftType,
+              rightType,
+              binOp.line,
+              binOp.column,
+              `Binary operation ${binOp.operator} operands must have same type`
+            )
           )
-        )
-        this.addConstraint(
-          new TypeConstraint(
-            rightType,
-            numIntType,
-            binOp.right.line,
-            binOp.right.column,
-            `Binary operation ${binOp.operator} right operand`
-          )
-        )
-        return numIntType
+        }
+        
+        // 結果の型は左のオペランドと同じ型（構造体の場合は演算子オーバーロードで決まる）
+        return leftType
 
       case "==":
       case "!=":
@@ -2610,6 +2718,50 @@ export class TypeInferenceSystem {
       return result
     }
 
+    // Struct型の場合
+    if (type1.kind === "StructType" && type2.kind === "StructType") {
+      const st1 = type1 as AST.StructType
+      const st2 = type2 as AST.StructType
+
+      // 同じ名前の構造体型でなければならない
+      if (st1.name !== st2.name) {
+        throw new Error(
+          `Cannot unify struct types ${st1.name} and ${st2.name}`
+        )
+      }
+
+      return substitution
+    }
+
+    // Struct型とRecord型の統一（構造的型付け）
+    if ((type1.kind === "StructType" && type2.kind === "RecordType") ||
+        (type1.kind === "RecordType" && type2.kind === "StructType")) {
+      const structType = type1.kind === "StructType" ? type1 as AST.StructType : type2 as AST.StructType
+      const recordType = type1.kind === "RecordType" ? type1 as AST.RecordType : type2 as AST.RecordType
+      
+      // レコード型が構造体のフィールドのサブセットかチェック
+      const structAsRecord = new AST.RecordType(structType.fields, structType.line, structType.column)
+      if (this.isRecordSubset(recordType, structAsRecord)) {
+        // 共通フィールドの型を統一
+        let result = substitution
+        for (const recordField of recordType.fields) {
+          const structField = structType.fields.find(f => f.name === recordField.name)
+          if (structField) {
+            const fieldSub = this.unify(
+              result.apply(recordField.type),
+              result.apply(structField.type)
+            )
+            result = result.compose(fieldSub)
+          }
+        }
+        return result
+      }
+      
+      throw new Error(
+        `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+      )
+    }
+
     // Record型と他の型の部分的統一（構造的部分型）
     if (type1.kind === "RecordType" || type2.kind === "RecordType") {
       // どちらか一方がRecordTypeの場合、構造的部分型をチェック
@@ -2695,9 +2847,66 @@ export class TypeInferenceSystem {
         const tt = type as AST.TupleType
         return tt.elementTypes.some((elementType) => this.occursCheck(varId, elementType))
 
+      case "StructType":
+        const st = type as AST.StructType
+        return st.fields.some((field) => this.occursCheck(varId, field.type))
+
       default:
         return false
     }
+  }
+
+  // メソッド呼び出しの型推論
+  private generateConstraintsForMethodCall(
+    call: AST.MethodCall,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // レシーバーの型を推論
+    const receiverType = this.generateConstraintsForExpression(call.receiver, env)
+    
+    // 引数の型を推論
+    const argTypes: AST.Type[] = []
+    for (const arg of call.arguments) {
+      argTypes.push(this.generateConstraintsForExpression(arg, env))
+    }
+    
+    // メソッドの戻り値型
+    const resultType = this.freshTypeVariable(call.line, call.column)
+    
+    // TODO: 実装時に構造体のimplブロックからメソッド型を解決する
+    // 現在は単純化のため、カリー化された関数型として扱う
+    let expectedMethodType: AST.Type = resultType
+    
+    // 引数を逆順でカリー化された関数型を構築
+    for (let i = argTypes.length - 1; i >= 0; i--) {
+      expectedMethodType = new AST.FunctionType(
+        argTypes[i],
+        expectedMethodType,
+        call.line,
+        call.column
+      )
+    }
+    
+    // selfパラメータ（レシーバー）を最初の引数として追加
+    expectedMethodType = new AST.FunctionType(
+      receiverType,
+      expectedMethodType,
+      call.line,
+      call.column
+    )
+    
+    // メソッド型制約を記録（後でimplブロック解決時に使用）
+    this.constraints.push(
+      new TypeConstraint(
+        expectedMethodType,
+        expectedMethodType, // 自己参照的制約として記録
+        call.line,
+        call.column,
+        `Method call ${call.methodName} on type ${this.formatType(receiverType)}`
+      )
+    )
+    
+    return resultType
   }
 
   // 型の等価性チェック
@@ -2756,6 +2965,23 @@ export class TypeInferenceSystem {
           return field1.name === field2.name && this.typesEqual(field1.type, field2.type)
         })
 
+      case "StructType":
+        const st1 = type1 as AST.StructType
+        const st2 = type2 as AST.StructType
+        return st1.name === st2.name
+
+      case "TupleType":
+        const tt1 = type1 as AST.TupleType
+        const tt2 = type2 as AST.TupleType
+        
+        if (tt1.elementTypes.length !== tt2.elementTypes.length) {
+          return false
+        }
+
+        return tt1.elementTypes.every((elementType, i) =>
+          this.typesEqual(elementType, tt2.elementTypes[i])
+        )
+
       default:
         return false
     }
@@ -2798,6 +3024,10 @@ export class TypeInferenceSystem {
           .join(", ")
         return `(${elements})`
 
+      case "StructType":
+        const st = type as AST.StructType
+        return st.name
+
       default:
         return "Unknown"
     }
@@ -2817,6 +3047,344 @@ export class TypeInferenceSystem {
     
     // タプル型を作成
     return new AST.TupleType(elementTypes, tuple.line, tuple.column)
+  }
+
+  private generateConstraintsForStructDeclaration(
+    structDecl: AST.StructDeclaration,
+    env: Map<string, AST.Type>
+  ): void {
+    // 構造体型を作成
+    const structType = new AST.StructType(
+      structDecl.name,
+      structDecl.fields,
+      structDecl.line,
+      structDecl.column
+    )
+    
+    // Debug: Log struct registration
+    console.log(`🔧 Registering struct ${structDecl.name}`)
+    console.log(`🔧 StructType kind: ${structType.kind}`)
+    console.log(`🔧 StructType name: ${structType.name}`)
+    console.log(`🔧 StructType: ${this.typeToString(structType)}`)
+    
+    // 環境に構造体型を登録
+    env.set(structDecl.name, structType)
+    
+    // nodeTypeMapにも登録
+    this.nodeTypeMap.set(structDecl, structType)
+  }
+
+  private generateConstraintsForImplBlock(
+    implBlock: AST.ImplBlock,
+    env: Map<string, AST.Type>
+  ): void {
+    // impl ブロックの型名が存在するかチェック
+    const implType = env.get(implBlock.typeName)
+    if (!implType) {
+      this.errors.push(
+        new TypeInferenceError(
+          `Unknown type for impl block: ${implBlock.typeName}`,
+          implBlock.line,
+          implBlock.column
+        )
+      )
+      return
+    }
+
+    // メソッドの制約を生成
+    for (const method of implBlock.methods) {
+      this.generateConstraintsForMethodDeclaration(method, env, implType)
+    }
+
+    // 演算子の制約を生成
+    for (const operator of implBlock.operators) {
+      this.generateConstraintsForOperatorDeclaration(operator, env, implType)
+    }
+
+    // モノイドの制約を生成
+    if (implBlock.monoid) {
+      this.generateConstraintsForMonoidDeclaration(implBlock.monoid, env, implType)
+    }
+  }
+
+  private generateConstraintsForMethodDeclaration(
+    method: AST.MethodDeclaration,
+    env: Map<string, AST.Type>,
+    implType: AST.Type
+  ): void {
+    // メソッドを関数として処理
+    const functionType = this.buildFunctionType(method.parameters, method.returnType)
+    
+    // 環境にメソッドを登録
+    env.set(`${method.name}`, functionType)
+    this.nodeTypeMap.set(method, functionType)
+
+    // メソッド本体を処理するために新しい環境を作成（元の環境をコピー）
+    const methodEnv = new Map(env)
+    
+    // 現在のimpl対象の型も環境に確実に追加
+    if (implType.kind === "StructType") {
+      const structType = implType as AST.StructType
+      methodEnv.set(structType.name, implType)
+    }
+    
+    // 全ての構造体型を環境に確実に追加
+    for (const [key, value] of env.entries()) {
+      if (value.kind === "StructType") {
+        methodEnv.set(key, value)
+      }
+    }
+    
+    // パラメータを環境に追加（型エイリアスを解決）
+    for (const param of method.parameters) {
+      let resolvedType: AST.Type
+      
+      // 暗黙的selfパラメータの場合は、impl対象の型を使用
+      if (param.isImplicitSelf) {
+        resolvedType = implType
+        // param.typeも更新しておく（後の処理のため）
+        param.type = implType
+      } else {
+        resolvedType = this.resolveTypeAlias(param.type)
+        
+        // 構造体型の場合は、環境から実際のStructTypeを取得
+        if (resolvedType.kind === "PrimitiveType") {
+          const structTypeFromEnv = env.get((resolvedType as AST.PrimitiveType).name)
+          if (structTypeFromEnv && structTypeFromEnv.kind === "StructType") {
+            resolvedType = structTypeFromEnv
+          }
+        }
+      }
+      
+      methodEnv.set(param.name, resolvedType)
+    }
+
+    // メソッド本体の制約を生成
+    const bodyType = this.generateConstraintsForExpression(method.body, methodEnv)
+    
+    // 戻り値型との制約を追加
+    this.addConstraint(
+      new TypeConstraint(
+        bodyType,
+        method.returnType,
+        method.line,
+        method.column,
+        `Method ${method.name} body type`
+      )
+    )
+  }
+
+  private generateConstraintsForOperatorDeclaration(
+    operator: AST.OperatorDeclaration,
+    env: Map<string, AST.Type>,
+    implType: AST.Type
+  ): void {
+    // 演算子を関数として処理
+    const functionType = this.buildFunctionType(operator.parameters, operator.returnType)
+    
+    // 環境に演算子を登録
+    env.set(`${operator.operator}`, functionType)
+    this.nodeTypeMap.set(operator, functionType)
+
+    // 演算子本体を処理するために新しい環境を作成（元の環境をコピー）
+    const operatorEnv = new Map(env)
+    
+    // 現在のimpl対象の型も環境に確実に追加
+    if (implType.kind === "StructType") {
+      const structType = implType as AST.StructType
+      operatorEnv.set(structType.name, implType)
+    }
+    
+    // 全ての構造体型を環境に確実に追加
+    for (const [key, value] of env.entries()) {
+      if (value.kind === "StructType") {
+        operatorEnv.set(key, value)
+      }
+    }
+    
+    // パラメータを環境に追加（型エイリアスを解決）
+    for (const param of operator.parameters) {
+      let resolvedType: AST.Type
+      
+      // 暗黙的selfパラメータの場合は、impl対象の型を使用
+      if (param.isImplicitSelf) {
+        resolvedType = implType
+        // param.typeも更新しておく（後の処理のため）
+        param.type = implType
+      } else {
+        resolvedType = this.resolveTypeAlias(param.type)
+        
+        // 構造体型の場合は、環境から実際のStructTypeを取得
+        if (resolvedType.kind === "PrimitiveType") {
+          const structTypeFromEnv = env.get((resolvedType as AST.PrimitiveType).name)
+          if (structTypeFromEnv && structTypeFromEnv.kind === "StructType") {
+            resolvedType = structTypeFromEnv
+          }
+        }
+      }
+      
+      operatorEnv.set(param.name, resolvedType)
+      this.nodeTypeMap.set(param, resolvedType)
+    }
+
+    // 演算子本体の制約を生成
+    const bodyType = this.generateConstraintsForExpression(operator.body, operatorEnv)
+    
+    // 戻り値型との制約を追加
+    this.addConstraint(
+      new TypeConstraint(
+        bodyType,
+        operator.returnType,
+        operator.line,
+        operator.column,
+        `Operator ${operator.operator} body type`
+      )
+    )
+  }
+
+  private generateConstraintsForMonoidDeclaration(
+    monoid: AST.MonoidDeclaration,
+    env: Map<string, AST.Type>,
+    implType: AST.Type
+  ): void {
+    // identity値の制約を生成
+    const identityType = this.generateConstraintsForExpression(monoid.identity, env)
+    
+    // identity値は型と一致する必要がある
+    this.addConstraint(
+      new TypeConstraint(
+        identityType,
+        implType,
+        monoid.line,
+        monoid.column,
+        "Monoid identity type"
+      )
+    )
+
+    // 演算子の制約を生成
+    this.generateConstraintsForOperatorDeclaration(monoid.operator, env, implType)
+  }
+
+  // 型が構造体型または構造体型に解決される型変数かをチェック
+  private isStructOrResolvesToStruct(type: AST.Type, env: Map<string, AST.Type>): boolean {
+    // 直接的に構造体型の場合
+    if (type.kind === "StructType") {
+      return true
+    }
+    
+    // プリミティブ型の場合、環境から構造体型を検索
+    if (type.kind === "PrimitiveType") {
+      const resolved = env.get((type as AST.PrimitiveType).name)
+      return resolved?.kind === "StructType"
+    }
+    
+    // 型変数の場合、現在の型置換を確認
+    // 注意: 制約生成段階では型変数は未解決のため、構造体型の可能性として扱う
+    if (type.kind === "TypeVariable") {
+      return true  // 保守的に true を返し、構造体の可能性を考慮
+    }
+    
+    return false
+  }
+
+  // パラメータリストから関数型を構築（カリー化）
+  private buildFunctionType(parameters: AST.Parameter[], returnType: AST.Type): AST.Type {
+    if (parameters.length === 0) {
+      return returnType
+    }
+
+    // 右結合でカリー化された関数型を構築
+    let result = returnType
+    for (let i = parameters.length - 1; i >= 0; i--) {
+      result = new AST.FunctionType(
+        parameters[i].type,
+        result,
+        parameters[i].line,
+        parameters[i].column
+      )
+    }
+    
+    return result
+  }
+
+  private generateConstraintsForStructExpression(
+    structExpr: AST.StructExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // 構造体型を環境から取得
+    const structType = env.get(structExpr.structName)
+    
+    if (!structType) {
+      this.errors.push(
+        new TypeInferenceError(
+          `Unknown struct type: ${structExpr.structName}`,
+          structExpr.line,
+          structExpr.column
+        )
+      )
+      return this.freshTypeVariable(structExpr.line, structExpr.column)
+    }
+    
+    if (structType.kind !== "StructType") {
+      this.errors.push(
+        new TypeInferenceError(
+          `${structExpr.structName} is not a struct type`,
+          structExpr.line,
+          structExpr.column
+        )
+      )
+      return this.freshTypeVariable(structExpr.line, structExpr.column)
+    }
+    
+    // フィールドの型チェック
+    const providedFields = new Map(
+      structExpr.fields.map(f => [f.name, f])
+    )
+    
+    // 必要なフィールドがすべて提供されているかチェック
+    for (const field of structType.fields) {
+      const providedField = providedFields.get(field.name)
+      
+      if (!providedField) {
+        this.errors.push(
+          new TypeInferenceError(
+            `Missing field '${field.name}' in struct ${structExpr.structName}`,
+            structExpr.line,
+            structExpr.column
+          )
+        )
+        continue
+      }
+      
+      // フィールドの値の型を推論
+      const valueType = this.generateConstraintsForExpression(providedField.value, env)
+      
+      // フィールドの型と値の型が一致することを制約として追加
+      this.constraints.push(
+        new TypeConstraint(
+          valueType,
+          field.type,
+          providedField.line,
+          providedField.column,
+          `Struct field ${field.name}`
+        )
+      )
+    }
+    
+    // 余分なフィールドがないかチェック
+    for (const [fieldName, _] of providedFields) {
+      if (!structType.fields.find(f => f.name === fieldName)) {
+        this.errors.push(
+          new TypeInferenceError(
+            `Unknown field '${fieldName}' in struct ${structExpr.structName}`,
+            structExpr.line,
+            structExpr.column
+          )
+        )
+      }
+    }
+    
+    return structType
   }
 
   private generateConstraintsForMatchExpression(
@@ -3053,22 +3621,22 @@ export class TypeInferenceSystem {
     const recordType = this.generateConstraintsForExpression(access.record, env)
     const fieldType = this.freshTypeVariable(access.line, access.column)
 
-    // Create a constraint that the record type must have the specified field
-    // This is a structural typing constraint
+    // 構造的制約を常に作成 - unificationプロセスで解決
+    // これにより、StructType と RecordType の両方が適切に処理される
     const expectedRecordType = new AST.RecordType(
       [new AST.RecordField(access.fieldName, fieldType, access.line, access.column)],
       access.line,
       access.column
     )
 
-    // Add constraint that record must be compatible with having this field
+    // レコードまたは構造体が指定フィールドと互換性があることを制約
     this.addConstraint(
       new TypeConstraint(
         recordType,
         expectedRecordType,
         access.line,
         access.column,
-        `Record access .${access.fieldName}`
+        `Field access .${access.fieldName}`
       )
     )
 
@@ -3372,3 +3940,5 @@ export function infer(statements: AST.Statement[]): InferenceResult {
     inferredTypes
   };
 }
+
+// MethodCall処理のためにTypeInferenceSystemクラスを拡張

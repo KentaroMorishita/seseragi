@@ -96,6 +96,18 @@ export class TupleType extends Type {
   }
 }
 
+export class StructType extends Type {
+  kind = "StructType"
+  name: string
+  fields: RecordField[]
+
+  constructor(name: string, fields: RecordField[], line: number, column: number) {
+    super(line, column)
+    this.name = name
+    this.fields = fields
+  }
+}
+
 // =============================================================================
 // Expressions
 // =============================================================================
@@ -198,6 +210,26 @@ export class BuiltinFunctionCall extends Expression {
   ) {
     super(line, column)
     this.functionName = functionName
+    this.arguments = args
+  }
+}
+
+export class MethodCall extends Expression {
+  kind = "MethodCall"
+  receiver: Expression
+  methodName: string
+  arguments: Expression[]
+
+  constructor(
+    receiver: Expression,
+    methodName: string,
+    args: Expression[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.receiver = receiver
+    this.methodName = methodName
     this.arguments = args
   }
 }
@@ -463,6 +495,23 @@ export class RecordAccess extends Expression {
   }
 }
 
+export class StructExpression extends Expression {
+  kind = "StructExpression"
+  structName: string
+  fields: RecordInitField[]
+
+  constructor(
+    structName: string,
+    fields: RecordInitField[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.structName = structName
+    this.fields = fields
+  }
+}
+
 export class ArrayLiteral extends Expression {
   kind = "ArrayLiteral"
   elements: Expression[]
@@ -714,11 +763,19 @@ export class Parameter extends ASTNode {
   kind = "Parameter"
   name: string
   type: Type
+  isImplicitSelf: boolean
 
-  constructor(name: string, type: Type, line: number, column: number) {
+  constructor(
+    name: string, 
+    type: Type, 
+    line: number, 
+    column: number, 
+    isImplicitSelf: boolean = false
+  ) {
     super(line, column)
     this.name = name
     this.type = type
+    this.isImplicitSelf = isImplicitSelf
   }
 }
 
@@ -824,9 +881,9 @@ export class TypeAliasDeclaration extends Statement {
 export class StructDeclaration extends Statement {
   kind = "StructDeclaration"
   name: string
-  fields: StructField[]
+  fields: RecordField[]
 
-  constructor(name: string, fields: StructField[], line: number, column: number) {
+  constructor(name: string, fields: RecordField[], line: number, column: number) {
     super(line, column)
     this.name = name
     this.fields = fields
