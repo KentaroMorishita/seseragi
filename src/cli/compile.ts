@@ -61,12 +61,13 @@ async function compile(options: CompileOptions): Promise<void> {
   const ast = { statements: parseResult.statements }
 
   // 型チェック
+  let inferenceResult: any = null
   if (!options.skipTypeCheck) {
     console.log("Type checking...")
 
     // 新しい型推論システムを使用
     const typeInference = new TypeInferenceSystem()
-    const inferenceResult = typeInference.infer(ast)
+    inferenceResult = typeInference.infer(ast)
 
     if (inferenceResult.errors.length > 0) {
       console.error("\n❌ Type checking failed:\n")
@@ -87,6 +88,7 @@ async function compile(options: CompileOptions): Promise<void> {
     generateComments: options.generateComments,
     useArrowFunctions: options.useArrowFunctions,
     runtimeMode: options.runtimeMode || "embedded",
+    typeInferenceResult: inferenceResult,
   })
 
   // TypeScriptコードを出力

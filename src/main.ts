@@ -8,6 +8,44 @@
 import { Parser } from "./parser"
 import { Lexer } from "./lexer"
 import { generateTypeScript } from "./codegen"
+import { TypeInferenceSystem } from "./type-inference"
+import { TypeChecker } from "./typechecker"
+import * as AST from "./ast"
+
+// テスト用のexport関数
+export function compileSeseragi(source: string): string {
+  const parser = new Parser(source)
+  const parseResult = parser.parse()
+  
+  if (parseResult.errors && parseResult.errors.length > 0) {
+    throw new Error(parseResult.errors.map(e => e.message).join("\n"))
+  }
+  
+  // 型推論
+  const typeInference = new TypeInferenceSystem()
+  const program: AST.Program = {
+    kind: "Program",
+    statements: parseResult.statements!,
+    line: 0,
+    column: 0
+  }
+  const inferenceResult = typeInference.infer(program)
+  
+  if (inferenceResult.errors.length > 0) {
+    throw new Error(inferenceResult.errors.map(e => e.message).join("\n"))
+  }
+  
+  // 型チェック
+  const typeChecker = new TypeChecker(inferenceResult.typeEnvironment)
+  const errors = typeChecker.check(program)
+  
+  if (errors.length > 0) {
+    throw new Error(errors.map(e => e.message).join("\n"))
+  }
+  
+  // コード生成
+  return generateTypeScript(parseResult.statements!)
+}
 
 console.log("Seseragi Compiler v1.0.0")
 

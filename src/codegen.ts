@@ -66,6 +66,7 @@ export interface CodeGenOptions {
   generateComments?: boolean
   runtimeMode?: "embedded" | "import" | "minimal"
   filePath?: string  // ファイルパス（ハッシュ生成用）
+  typeInferenceResult?: any  // 型推論結果
 }
 
 const defaultOptions: CodeGenOptions = {
@@ -93,11 +94,13 @@ export class CodeGenerator {
   currentStructContext: string | null = null  // 現在処理中の構造体名
   structMethods: Map<string, Set<string>> = new Map()  // 構造体名 → メソッド名のセット
   structOperators: Map<string, Set<string>> = new Map()  // 構造体名 → 演算子のセット
+  typeInferenceResult: any = null  // 型推論結果
 
   constructor(options: CodeGenOptions) {
     this.options = options
     this.indentLevel = 0
     this.wildcardCounter = 1
+    this.typeInferenceResult = options.typeInferenceResult
     this.filePrefix = this.generateFilePrefix(options.filePath || "unknown")
   }
 
@@ -137,8 +140,23 @@ export class CodeGenerator {
       }
     }
 
-    // 構造体のメソッド・演算子ディスパッチテーブルを最初に生成
-    if (this.structMethods.size > 0 || this.structOperators.size > 0) {
+    // 演算子ディスパッチを使用しているかどうかを判定
+    const usesOperatorDispatch = this.checkUsesOperatorDispatch(statements)
+    
+    // BinaryOperationがある場合は常にディスパッチテーブルを生成（安全のため）
+    const hasBinaryOperations = this.hasBinaryOperations(statements)
+    
+    // 構造体を使用している場合、または演算子ディスパッチを使用している場合はディスパッチテーブルを生成
+    const hasStructs = statements.some(stmt => 
+      stmt instanceof StructDeclaration || 
+      stmt instanceof ImplBlock ||
+      (stmt instanceof ExpressionStatement && stmt.expression instanceof StructExpression)
+    )
+    
+    // __dispatchOperatorが使用される可能性がある場合は常に生成
+    const needsDispatchTables = true // 暫定的に常に生成
+    
+    if (needsDispatchTables) {
       lines.push(this.generateDispatchTables())
       lines.push("")
     }
@@ -289,12 +307,10 @@ export class CodeGenerator {
 
     if (!this.usageAnalysis) return lines
 
-    // 型定義
-    if (this.usageAnalysis.needsMaybe) {
-      lines.push(
-        "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };"
-      )
-    }
+    // 型定義（常に生成）
+    lines.push(
+      "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };"
+    )
     if (this.usageAnalysis.needsEither) {
       lines.push(
         "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };"
@@ -330,13 +346,12 @@ export class CodeGenerator {
       )
       lines.push("")
     }
-    if (this.usageAnalysis.needsMaybe) {
-      lines.push(
-        "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });"
-      )
-      lines.push("const Nothing: Maybe<never> = { tag: 'Nothing' };")
-      lines.push("")
-    }
+    // Maybe constructors（常に生成）
+    lines.push(
+      "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });"
+    )
+    lines.push("const Nothing: Maybe<never> = { tag: 'Nothing' };")
+    lines.push("")
     if (this.usageAnalysis.needsEither) {
       lines.push(
         "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });"
@@ -1070,6 +1085,10 @@ const show = (value) => {
     // ディスパッチヘルパー関数を定義
     lines.push("// Method dispatch helper")
     lines.push("function __dispatchMethod(obj: any, methodName: string, ...args: any[]): any {")
+    lines.push("  // 構造体のフィールドアクセスの場合は直接返す")
+    lines.push("  if (args.length === 0 && obj.hasOwnProperty(methodName)) {")
+    lines.push("    return obj[methodName];")
+    lines.push("  }")
     lines.push("  const structName = obj.constructor.name;")
     lines.push("  const structMethods = __structMethods[structName];")
     lines.push("  if (structMethods && structMethods[methodName]) {")
@@ -1313,8 +1332,14 @@ ${indent}}`
       return `Cons(${left}, ${right})`
     }
 
-    // 構造体のメソッド/演算子内では基本演算子を直接使用
-    if (this.currentStructContext && this.isBasicOperator(binOp.operator)) {
+    // 解決済みの型を取得
+    const leftType = this.getResolvedType(binOp.left)
+    const rightType = this.getResolvedType(binOp.right)
+
+    // 両辺がプリミティブ型の場合は直接演算子を使用
+    if (this.isBasicOperator(binOp.operator) && 
+        this.isPrimitiveType(leftType) && 
+        this.isPrimitiveType(rightType)) {
       let operator = binOp.operator
       if (operator === "==") operator = "==="
       if (operator === "!=") operator = "!=="
@@ -1330,6 +1355,181 @@ ${indent}}`
     // プリミティブ型で直接使用できる演算子
     const basicOps = ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"]
     return basicOps.includes(op)
+  }
+
+  // 型推論結果から解決済みの型を取得
+  private getResolvedType(expr: Expression): Type | undefined {
+    if (this.typeInferenceResult && this.typeInferenceResult.nodeTypeMap) {
+      const resolvedType = this.typeInferenceResult.nodeTypeMap.get(expr)
+      if (resolvedType) {
+        return resolvedType
+      }
+    }
+    return expr.type
+  }
+
+  // プリミティブ型かどうかをチェック
+  private isPrimitiveType(type: Type | undefined): boolean {
+    if (!type || type.kind !== "PrimitiveType") {
+      return false
+    }
+    const primitiveTypes = ["Int", "Float", "Bool", "String", "Char", "Unit"]
+    return primitiveTypes.includes((type as PrimitiveType).name)
+  }
+
+  // 演算子ディスパッチを使用しているかチェック
+  private checkUsesOperatorDispatch(statements: Statement[]): boolean {
+    for (const stmt of statements) {
+      if (this.checkStatementUsesOperatorDispatch(stmt)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  // BinaryOperationが存在するかチェック
+  private hasBinaryOperations(statements: Statement[]): boolean {
+    for (const stmt of statements) {
+      if (this.statementHasBinaryOperations(stmt)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  private statementHasBinaryOperations(stmt: Statement): boolean {
+    if (stmt instanceof ExpressionStatement) {
+      return this.expressionHasBinaryOperations(stmt.expression)
+    } else if (stmt instanceof VariableDeclaration && stmt.value) {
+      return this.expressionHasBinaryOperations(stmt.value)
+    } else if (stmt instanceof FunctionDeclaration && stmt.body) {
+      return this.expressionHasBinaryOperations(stmt.body)
+    }
+    return false
+  }
+
+  private expressionHasBinaryOperations(expr: Expression): boolean {
+    if (expr instanceof BinaryOperation) {
+      return true
+    } else if (expr instanceof BlockExpression) {
+      for (const stmt of expr.statements) {
+        if (this.statementHasBinaryOperations(stmt)) {
+          return true
+        }
+      }
+      if (expr.returnExpression) {
+        return this.expressionHasBinaryOperations(expr.returnExpression)
+      }
+    } else if (expr instanceof ListComprehension) {
+      if (this.expressionHasBinaryOperations(expr.expression)) {
+        return true
+      }
+      for (const filter of expr.filters || []) {
+        if (this.expressionHasBinaryOperations(filter)) {
+          return true
+        }
+      }
+    } else if (expr instanceof FunctionCall) {
+      for (const arg of expr.arguments) {
+        if (this.expressionHasBinaryOperations(arg)) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  // リスト内包表記があるかチェック
+  private hasListComprehensions(statements: Statement[]): boolean {
+    for (const stmt of statements) {
+      if (this.statementHasListComprehensions(stmt)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  private statementHasListComprehensions(stmt: Statement): boolean {
+    if (stmt instanceof ExpressionStatement) {
+      return this.expressionHasListComprehensions(stmt.expression)
+    } else if (stmt instanceof VariableDeclaration && stmt.value) {
+      return this.expressionHasListComprehensions(stmt.value)
+    } else if (stmt instanceof FunctionDeclaration && stmt.body) {
+      return this.expressionHasListComprehensions(stmt.body)
+    }
+    return false
+  }
+
+  private expressionHasListComprehensions(expr: Expression): boolean {
+    if (expr instanceof ListComprehension) {
+      return true
+    } else if (expr instanceof BlockExpression) {
+      for (const stmt of expr.statements) {
+        if (this.statementHasListComprehensions(stmt)) {
+          return true
+        }
+      }
+      if (expr.returnExpression) {
+        return this.expressionHasListComprehensions(expr.returnExpression)
+      }
+    } else if (expr instanceof FunctionCall) {
+      for (const arg of expr.arguments) {
+        if (this.expressionHasListComprehensions(arg)) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  private checkStatementUsesOperatorDispatch(stmt: Statement): boolean {
+    if (stmt instanceof ExpressionStatement) {
+      return this.checkExpressionUsesOperatorDispatch(stmt.expression)
+    } else if (stmt instanceof VariableDeclaration && stmt.value) {
+      return this.checkExpressionUsesOperatorDispatch(stmt.value)
+    } else if (stmt instanceof FunctionDeclaration && stmt.body) {
+      return this.checkExpressionUsesOperatorDispatch(stmt.body)
+    }
+    return false
+  }
+
+  private checkExpressionUsesOperatorDispatch(expr: Expression): boolean {
+    if (expr instanceof BinaryOperation) {
+      // プリミティブ型同士の演算ではない場合のみ__dispatchOperatorを使用
+      if (!this.isBasicOperator(expr.operator) || 
+          !this.isPrimitiveType(expr.left.type) || 
+          !this.isPrimitiveType(expr.right.type)) {
+        return true
+      }
+    } else if (expr instanceof BlockExpression) {
+      for (const stmt of expr.statements) {
+        if (this.checkStatementUsesOperatorDispatch(stmt)) {
+          return true
+        }
+      }
+      if (expr.returnExpression) {
+        return this.checkExpressionUsesOperatorDispatch(expr.returnExpression)
+      }
+    } else if (expr instanceof ListComprehension) {
+      // リスト内包表記の式をチェック
+      if (this.checkExpressionUsesOperatorDispatch(expr.expression)) {
+        return true
+      }
+      for (const filter of expr.filters || []) {
+        if (this.checkExpressionUsesOperatorDispatch(filter)) {
+          return true
+        }
+      }
+    } else if (expr instanceof FunctionCall) {
+      // 関数呼び出しの引数をチェック
+      for (const arg of expr.arguments) {
+        if (this.checkExpressionUsesOperatorDispatch(arg)) {
+          return true
+        }
+      }
+    }
+    // 他の複合式も再帰的にチェック
+    return false
   }
 
   // 演算子ディスパッチの生成
