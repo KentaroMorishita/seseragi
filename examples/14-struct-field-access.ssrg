@@ -1,9 +1,9 @@
 // 関数パラメータのフィールドアクセステスト
 struct Point {
-  x: Int
+  x :Int
 }
 
-fn getX p: Point -> Int = p.x
+fn getX p :Point -> Int = p.x
 
 let p = Point { x: 1 }
 let x = getX p

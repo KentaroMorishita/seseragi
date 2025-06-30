@@ -3619,6 +3619,27 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     const recordType = this.generateConstraintsForExpression(access.record, env)
+    
+    // まず、recordTypeがStructTypeかどうかを直接チェック
+    if (recordType.kind === "StructType") {
+      const structType = recordType as AST.StructType
+      const field = structType.fields.find(f => f.name === access.fieldName)
+      if (field) {
+        return field.type
+      } else {
+        this.errors.push(
+          new TypeInferenceError(
+            `Field '${access.fieldName}' does not exist on struct '${structType.name}'`,
+            access.line,
+            access.column,
+            `Field access .${access.fieldName}`
+          )
+        )
+        return this.freshTypeVariable(access.line, access.column)
+      }
+    }
+    
+    // 型変数やその他の場合は、従来の制約ベースのアプローチを使用
     const fieldType = this.freshTypeVariable(access.line, access.column)
 
     // 構造的制約を常に作成 - unificationプロセスで解決

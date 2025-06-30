@@ -1,11 +1,11 @@
 // Float型構造体での算術演算テスト
 
 struct PointF {
-  x: Float,
-  y: Float
+  x :Float,
+  y :Float
 }
 
-fn distanceSquared p1: PointF -> p2: PointF -> Float {
+fn distanceSquared p1 :PointF -> p2 :PointF -> Float {
   let dx = p2.x - p1.x
   let dy = p2.y - p1.y
   dx * dx + dy * dy

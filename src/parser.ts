@@ -24,6 +24,8 @@ export class Parser {
   private tokens: Token[]
   private current: number = 0
   private typeVarCounter: number = 0
+  private methodRegistry: Map<string, Set<string>> = new Map() // typeName -> method names
+  private variableTypes: Map<string, string> = new Map() // variable name -> type name
 
   constructor(input: string | Token[]) {
     if (typeof input === "string") {
@@ -591,7 +593,7 @@ export class Parser {
       if (this.match(TokenType.FN)) {
         methods.push(this.methodDeclaration(typeName))
       } else if (this.match(TokenType.OPERATOR)) {
-        operators.push(this.operatorDeclaration())
+        operators.push(this.operatorDeclaration(typeName))
       } else if (this.match(TokenType.MONOID)) {
         monoid = this.monoidDeclaration()
       } else {
@@ -603,6 +605,15 @@ export class Parser {
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after impl block")
+
+    // Register methods in the method registry
+    if (!this.methodRegistry.has(typeName)) {
+      this.methodRegistry.set(typeName, new Set())
+    }
+    const methodSet = this.methodRegistry.get(typeName)!
+    for (const method of methods) {
+      methodSet.add(method.name)
+    }
 
     return new AST.ImplBlock(
       typeName,
@@ -637,13 +648,13 @@ export class Parser {
     )
   }
 
-  private operatorDeclaration(): AST.OperatorDeclaration {
+  private operatorDeclaration(implTypeName?: string): AST.OperatorDeclaration {
     // operator + self: Point -> other: Point -> Point = self add other
     const operatorToken = this.advance() // consume operator symbol
     const operator = operatorToken.value
 
     const parameters: AST.Parameter[] = []
-    const returnType = this.parseFunctionSignature(parameters)
+    const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
     this.consume(TokenType.ASSIGN, "Expected '=' after operator signature")
     this.skipNewlines()
@@ -1468,8 +1479,9 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
-      } else if (this.check(TokenType.IDENTIFIER) && this.isMethodCall()) {
+      } else if (this.check(TokenType.IDENTIFIER) && this.isMethodCall() && this.isActualMethodCall(expr)) {
         // メソッド呼び出し構文: obj methodName arg1 arg2
+        // Enhanced method call detection to avoid conflicts with function application
         const methodName = this.advance().value
         const args: AST.Expression[] = []
         
@@ -2190,7 +2202,6 @@ export class Parser {
       return false
     }
     
-    // 次のトークンを消費
     this.advance()
     
     // その後に式が続くかチェック
@@ -2200,6 +2211,28 @@ export class Parser {
     this.current = savedPosition
     
     return hasArgument
+  }
+
+  // Context-aware method call detection
+  private isActualMethodCall(receiver: AST.Expression): boolean {
+    // Check if the next identifier is a known method name from any struct impl block
+    if (!this.check(TokenType.IDENTIFIER)) {
+      return false
+    }
+    
+    const methodName = this.peek().value
+    
+    // Check if this method name exists in any registered impl block
+    for (const methodSet of this.methodRegistry.values()) {
+      if (methodSet.has(methodName)) {
+        // This is a known method name, so allow method call parsing
+        // The type checker will later verify the receiver type matches
+        return true
+      }
+    }
+    
+    // If the method name is not registered, treat as function application
+    return false
   }
 }
 

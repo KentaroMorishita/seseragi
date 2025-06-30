@@ -1,25 +1,25 @@
 // メソッド呼び出しと演算子オーバーロードのテスト
 
 struct Point {
-  x: Int,
-  y: Int
+  x :Int,
+  y :Int
 }
 
 impl Point {
-  fn add self: Point -> other: Point -> Point =
+  fn add self -> other :Point -> Point =
     Point { x: self.x + other.x, y: self.y + other.y }
 
-  fn sub self: Point -> other: Point -> Point =
+  fn sub self -> other :Point -> Point =
     Point { x: self.x - other.x, y: self.y - other.y }
 
   // fn scalarMultiply self: Point -> scalar: Int -> Point =
   //   Point { x: self.x * scalar, y: self.y * scalar }
 
   // 演算子オーバーロード
-  operator + self: Point -> other: Point -> Point = self add other
-  operator - self: Point -> other: Point -> Point = self sub other
+  operator + self -> other :Point -> Point = self add other
+  operator - self -> other :Point -> Point = self sub other
   // operator * self: Point -> scalar: Int -> Point = self scalarMultiply scalar
-  operator * self: Point -> scalar: Int -> Point =
+  operator * self -> scalar :Int -> Point =
     Point { x: self.x * scalar, y: self.y * scalar }
 }
 
