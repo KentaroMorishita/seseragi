@@ -262,13 +262,13 @@ export class CodeGenerator {
       imports.push("Left", "Right", "type Either")
     }
     if (this.usageAnalysis.needsFunctorMap) {
-      imports.push("map")
+      imports.push("mapMaybe", "mapList", "mapArray")
     }
     if (this.usageAnalysis.needsApplicativeApply) {
-      imports.push("applyWrapped")
+      imports.push("applyMaybe", "applyList", "applyArray")
     }
     if (this.usageAnalysis.needsMonadBind) {
-      imports.push("bind")
+      imports.push("bindMaybe", "bindList", "bindArray")
     }
     if (this.usageAnalysis.needsFoldMonoid) {
       imports.push("foldMonoid")
@@ -370,52 +370,92 @@ export class CodeGenerator {
     }
     if (this.usageAnalysis.needsFunctorMap) {
       lines.push(
-        "const map = <T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {"
+        "const mapMaybe = <T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> => {"
       )
-      lines.push("  if ('tag' in container) {")
+      lines.push("  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;")
+      lines.push("};")
+      lines.push("")
+      
       lines.push(
-        "    if (container.tag === 'Just') return Just(fn(container.value));"
+        "const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {"
       )
+      lines.push("  return fa.map(f);")
+      lines.push("};")
+      lines.push("")
+      
       lines.push(
-        "    if (container.tag === 'Right') return Right(fn(container.value));"
+        "const mapList = <T, U>(fa: any, f: (a: T) => U): any => {"
       )
-      lines.push("    if (container.tag === 'Nothing') return Nothing;")
-      lines.push("    if (container.tag === 'Left') return container;")
-      lines.push("  }")
-      lines.push("  return Nothing;")
+      lines.push("  if (fa.tag === 'Empty') return { tag: 'Empty' };")
+      lines.push("  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };")
       lines.push("};")
       lines.push("")
     }
     if (this.usageAnalysis.needsApplicativeApply) {
       lines.push(
-        "const applyWrapped = <T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {"
+        "const applyMaybe = <T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> => {"
       )
-      lines.push("  // Maybe types")
+      lines.push("  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;")
+      lines.push("};")
+      lines.push("")
+      
       lines.push(
-        "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;"
+        "const applyArray = <T, U>(ff: ((a: T) => U)[], fa: T[]): U[] => {"
       )
+      lines.push("  const result: U[] = [];")
+      lines.push("  for (const func of ff) {")
+      lines.push("    for (const value of fa) {")
+      lines.push("      result.push(func(value));")
+      lines.push("    }")
+      lines.push("  }")
+      lines.push("  return result;")
+      lines.push("};")
+      lines.push("")
+      
       lines.push(
-        "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));"
+        "const applyList = <T, U>(ff: any, fa: any): any => {"
       )
-      lines.push("  // Either types")
-      lines.push("  if (wrapped.tag === 'Left') return wrapped;")
-      lines.push("  if (container.tag === 'Left') return container;")
+      lines.push("  if (ff.tag === 'Empty') return { tag: 'Empty' };")
+      lines.push("  const mappedValues = mapList(fa, ff.head);")
+      lines.push("  const restApplied = applyList(ff.tail, fa);")
+      lines.push("  return concatList(mappedValues, restApplied);")
+      lines.push("};")
+      lines.push("")
+      
       lines.push(
-        "  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));"
+        "const concatList = <T>(list1: any, list2: any): any => {"
       )
-      lines.push("  return Nothing;")
+      lines.push("  if (list1.tag === 'Empty') return list2;")
+      lines.push("  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };")
       lines.push("};")
       lines.push("")
     }
     if (this.usageAnalysis.needsMonadBind) {
       lines.push(
-        "const bind = <T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> => {"
+        "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {"
       )
-      lines.push("  if (container.tag === 'Just') return fn(container.value);")
-      lines.push("  if (container.tag === 'Right') return fn(container.value);")
-      lines.push("  if (container.tag === 'Nothing') return Nothing;")
-      lines.push("  if (container.tag === 'Left') return container;")
-      lines.push("  return Nothing;")
+      lines.push("  return ma.tag === 'Just' ? f(ma.value) : Nothing;")
+      lines.push("};")
+      lines.push("")
+      
+      lines.push(
+        "const bindArray = <T, U>(ma: T[], f: (value: T) => U[]): U[] => {"
+      )
+      lines.push("  const result: U[] = [];")
+      lines.push("  for (const value of ma) {")
+      lines.push("    result.push(...f(value));")
+      lines.push("  }")
+      lines.push("  return result;")
+      lines.push("};")
+      lines.push("")
+      
+      lines.push(
+        "const bindList = <T, U>(ma: any, f: (value: T) => any): any => {"
+      )
+      lines.push("  if (ma.tag === 'Empty') return { tag: 'Empty' };")
+      lines.push("  const headResult = f(ma.head);")
+      lines.push("  const tailResult = bindList(ma.tail, f);")
+      lines.push("  return concatList(headResult, tailResult);")
       lines.push("};")
       lines.push("")
     }
@@ -724,6 +764,67 @@ const show = (value) => {
       "",
       "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {",
       "  return arr.reduce(combine, empty);",
+      "};",
+      "",
+      "// Array monadic functions",
+      "const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {",
+      "  return fa.map(f);",
+      "};",
+      "",
+      "const applyArray = <T, U>(ff: ((a: T) => U)[], fa: T[]): U[] => {",
+      "  const result: U[] = [];",
+      "  for (const func of ff) {",
+      "    for (const value of fa) {",
+      "      result.push(func(value));",
+      "    }",
+      "  }",
+      "  return result;",
+      "};",
+      "",
+      "const bindArray = <T, U>(ma: T[], f: (value: T) => U[]): U[] => {",
+      "  const result: U[] = [];",
+      "  for (const value of ma) {",
+      "    result.push(...f(value));",
+      "  }",
+      "  return result;",
+      "};",
+      "",
+      "// List monadic functions",
+      "const mapList = <T, U>(fa: any, f: (a: T) => U): any => {",
+      "  if (fa.tag === 'Empty') return { tag: 'Empty' };",
+      "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };",
+      "};",
+      "",
+      "const applyList = <T, U>(ff: any, fa: any): any => {",
+      "  if (ff.tag === 'Empty') return { tag: 'Empty' };",
+      "  const mappedValues = mapList(fa, ff.head);",
+      "  const restApplied = applyList(ff.tail, fa);",
+      "  return concatList(mappedValues, restApplied);",
+      "};",
+      "",
+      "const concatList = <T>(list1: any, list2: any): any => {",
+      "  if (list1.tag === 'Empty') return list2;",
+      "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };",
+      "};",
+      "",
+      "const bindList = <T, U>(ma: any, f: (value: T) => any): any => {",
+      "  if (ma.tag === 'Empty') return { tag: 'Empty' };",
+      "  const headResult = f(ma.head);",
+      "  const tailResult = bindList(ma.tail, f);",
+      "  return concatList(headResult, tailResult);",
+      "};",
+      "",
+      "// Maybe monadic functions",
+      "const mapMaybe = <T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> => {",
+      "  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;",
+      "};",
+      "",
+      "const applyMaybe = <T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> => {",
+      "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;",
+      "};",
+      "",
+      "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {",
+      "  return ma.tag === 'Just' ? f(ma.value) : Nothing;",
       "};",
       "",
       "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });",
@@ -1748,23 +1849,56 @@ ${indent}}`
     const func = this.generateExpression(map.left)
     const value = this.generateExpression(map.right)
 
-    return `map(${func}, ${value})`
+    // 型に基づいて適切なランタイム関数を選択
+    // 実際の型判定はランタイムで行う
+    return `(() => {
+      const _value = ${value};
+      if (Array.isArray(_value)) {
+        return mapArray(_value, ${func});
+      } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
+        return mapList(_value, ${func});
+      } else {
+        return mapMaybe(_value, ${func});
+      }
+    })()`
   }
 
   // アプリカティブ適用の生成
   generateApplicativeApply(apply: ApplicativeApply): string {
-    const wrapped = this.generateExpression(apply.left)
-    const value = this.generateExpression(apply.right)
+    const funcContainer = this.generateExpression(apply.left)
+    const valueContainer = this.generateExpression(apply.right)
 
-    return `applyWrapped(${wrapped}, ${value})`
+    // 型に基づいて適切なランタイム関数を選択
+    return `(() => {
+      const _funcs = ${funcContainer};
+      const _values = ${valueContainer};
+      if (Array.isArray(_funcs) && Array.isArray(_values)) {
+        return applyArray(_funcs, _values);
+      } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') && 
+                _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
+        return applyList(_funcs, _values);
+      } else {
+        return applyMaybe(_funcs, _values);
+      }
+    })()`
   }
 
   // モナドバインドの生成
   generateMonadBind(bind: MonadBind): string {
-    const left = this.generateExpression(bind.left)
-    const right = this.generateExpression(bind.right)
+    const monadValue = this.generateExpression(bind.left)
+    const bindFunc = this.generateExpression(bind.right)
 
-    return `bind(${left}, ${right})`
+    // 型に基づいて適切なランタイム関数を選択
+    return `(() => {
+      const _monad = ${monadValue};
+      if (Array.isArray(_monad)) {
+        return bindArray(_monad, ${bindFunc});
+      } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
+        return bindList(_monad, ${bindFunc});
+      } else {
+        return bindMaybe(_monad, ${bindFunc});
+      }
+    })()`
   }
 
   // 畳み込みモノイドの生成

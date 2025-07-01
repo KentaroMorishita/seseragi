@@ -1,0 +1,95 @@
+// Array型のモナド演算子サンプル - <$>, <*>, >>=
+
+show "=== Array Monad Operators Examples ==="
+
+// =============================================================================
+// Functor - map操作 (<$>)
+// =============================================================================
+
+show "--- Functor Map (<$>) ---"
+
+// 基本的なmap
+let numbers = [1, 2, 3, 4, 5]
+let doubled = (\x -> x * 2) <$> numbers
+show "Original array:"
+show numbers
+show "Doubled with <$>:"
+show doubled
+
+// より複雑な変換
+let strings = ["hello", "world", "seseragi"]
+let uppercased = (\s -> s) <$> strings  // 文字列処理は簡略化
+show "String array:"
+show strings
+show "Processed strings:"
+show uppercased
+
+// =============================================================================
+// Applicative - apply操作 (<*>)
+// =============================================================================
+
+show "--- Applicative Apply (<*>) ---"
+
+// 複数の関数を適用
+let funcs = [(\x -> x + 1), (\x -> x * 2), (\x -> x * x)]
+let values = [1, 2, 3]
+let applied = funcs <*> values
+show "Functions:"
+show funcs
+show "Values:"
+show values
+show "Functions applied to values:"
+show applied
+
+// カリー化された関数での使用
+let addFunc = (\x -> \y -> x + y)
+let firstArgs = [10, 20, 30]
+let secondArgs = [1, 2]
+let partiallyApplied = (addFunc <$> firstArgs) <*> secondArgs
+show "Curried function application:"
+show partiallyApplied
+
+// =============================================================================
+// Monad - bind操作 (>>=)
+// =============================================================================
+
+show "--- Monad Bind (>>=) ---"
+
+// 基本的なbind - 要素の複製
+let original = [1, 2, 3]
+let duplicated = original >>= (\x -> [x, x])
+show "Original:"
+show original
+show "Duplicated with >>=:"
+show duplicated
+
+// より複雑なbind - 範囲生成（簡略化）
+let ranges = [1, 2, 3] >>= (\n -> [n, n + 1])
+show "Range generation:"
+show ranges
+
+// ネストした配列の平坦化
+let nested = [[1, 2], [3, 4], [5, 6]]
+let flattened = nested >>= (\arr -> arr)
+show "Nested arrays:"
+show nested
+show "Flattened:"
+show flattened
+
+// =============================================================================
+// 組み合わせ使用例
+// =============================================================================
+
+show "--- Combined Usage ---"
+
+// map, apply, bindの組み合わせ
+let baseNumbers = [1, 2, 3]
+let processed = baseNumbers
+  >>= (\x -> [x, x + 10])
+  | (\arr -> (\n -> n * 2) <$> arr)
+  | (\arr -> [(\n -> n + 1)] <*> arr)
+
+show "Combined operations result:"
+show processed
+
+show "Array monad operators examples completed!"

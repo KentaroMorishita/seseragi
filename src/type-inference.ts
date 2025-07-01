@@ -2169,10 +2169,179 @@ export class TypeInferenceSystem {
           monadBind.line,
           monadBind.column
         )
+      } else if (monadGt.name === "List" && monadGt.typeArguments.length === 1) {
+        // List case: List<a> >>= (a -> List<b>) -> List<b>
+        this.addConstraint(
+          new TypeConstraint(
+            monadGt.typeArguments[0],
+            inputType,
+            monadBind.line,
+            monadBind.column,
+            `MonadBind List input type`
+          )
+        )
+
+        const outputMonadType = new AST.GenericType(
+          "List",
+          [outputType],
+          monadBind.line,
+          monadBind.column
+        )
+
+        this.addConstraint(
+          new TypeConstraint(
+            expectedOutputMonad,
+            outputMonadType,
+            monadBind.line,
+            monadBind.column,
+            `MonadBind List output type`
+          )
+        )
+
+        return new AST.GenericType(
+          "List",
+          [outputType],
+          monadBind.line,
+          monadBind.column
+        )
       }
     }
 
+    // Handle Array type (JavaScript arrays)
+    if (monadType.kind === "PrimitiveType" && (monadType as AST.PrimitiveType).name === "Array") {
+      // Array case: Array >>= (any -> Array) -> Array
+      return new AST.PrimitiveType("Array", monadBind.line, monadBind.column)
+    }
+
     // For unknown types, let constraint resolution figure it out
+    return resultType
+  }
+
+  private generateConstraintsForFunctorMap(
+    functorMap: AST.FunctorMap,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // <$> operator: f <$> fa
+    // Type signature: (a -> b) -> f a -> f b
+    const funcType = this.generateConstraintsForExpression(functorMap.left, env)
+    const functorType = this.generateConstraintsForExpression(functorMap.right, env)
+
+    const inputType = this.freshTypeVariable(functorMap.line, functorMap.column)
+    const outputType = this.freshTypeVariable(functorMap.line, functorMap.column)
+
+    // Function should be (a -> b)
+    const expectedFuncType = new AST.FunctionType(
+      inputType,
+      outputType,
+      functorMap.line,
+      functorMap.column
+    )
+
+    this.addConstraint(
+      new TypeConstraint(
+        funcType,
+        expectedFuncType,
+        functorMap.line,
+        functorMap.column,
+        `FunctorMap function type`
+      )
+    )
+
+    // Handle specific functor types
+    if (functorType.kind === "GenericType") {
+      const functorGt = functorType as AST.GenericType
+
+      if ((functorGt.name === "Maybe" || functorGt.name === "List") && functorGt.typeArguments.length === 1) {
+        this.addConstraint(
+          new TypeConstraint(
+            functorGt.typeArguments[0],
+            inputType,
+            functorMap.line,
+            functorMap.column,
+            `FunctorMap input type`
+          )
+        )
+
+        return new AST.GenericType(
+          functorGt.name,
+          [outputType],
+          functorMap.line,
+          functorMap.column
+        )
+      }
+    }
+
+    // Handle Array type
+    if (functorType.kind === "PrimitiveType" && (functorType as AST.PrimitiveType).name === "Array") {
+      // Array case: f <$> Array -> Array
+      return new AST.PrimitiveType("Array", functorMap.line, functorMap.column)
+    }
+
+    // For Array<T> type
+    const resultType = this.freshTypeVariable(functorMap.line, functorMap.column)
+    return resultType
+  }
+
+  private generateConstraintsForApplicativeApply(
+    applicativeApply: AST.ApplicativeApply,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // <*> operator: ff <*> fa
+    // Type signature: f (a -> b) -> f a -> f b
+    const funcFunctorType = this.generateConstraintsForExpression(applicativeApply.left, env)
+    const valueFunctorType = this.generateConstraintsForExpression(applicativeApply.right, env)
+
+    const inputType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
+    const outputType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
+
+    // Handle specific applicative types
+    if (funcFunctorType.kind === "GenericType" && valueFunctorType.kind === "GenericType") {
+      const funcGt = funcFunctorType as AST.GenericType
+      const valueGt = valueFunctorType as AST.GenericType
+
+      if (funcGt.name === valueGt.name && (funcGt.name === "Maybe" || funcGt.name === "List")) {
+        // Both should be the same functor type
+        if (funcGt.typeArguments.length === 1 && valueGt.typeArguments.length === 1) {
+          // Function functor should contain (a -> b)
+          const expectedFuncType = new AST.FunctionType(
+            inputType,
+            outputType,
+            applicativeApply.line,
+            applicativeApply.column
+          )
+
+          this.addConstraint(
+            new TypeConstraint(
+              funcGt.typeArguments[0],
+              expectedFuncType,
+              applicativeApply.line,
+              applicativeApply.column,
+              `ApplicativeApply function type`
+            )
+          )
+
+          this.addConstraint(
+            new TypeConstraint(
+              valueGt.typeArguments[0],
+              inputType,
+              applicativeApply.line,
+              applicativeApply.column,
+              `ApplicativeApply input type`
+            )
+          )
+
+          return new AST.GenericType(
+            funcGt.name,
+            [outputType],
+            applicativeApply.line,
+            applicativeApply.column
+          )
+        }
+      }
+    }
+
+    // For Array types, similar logic
+    const resultType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
     return resultType
   }
 
