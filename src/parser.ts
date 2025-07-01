@@ -689,9 +689,21 @@ export class Parser {
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
-    this.consume(TokenType.ASSIGN, "Expected '=' after method signature")
-    this.skipNewlines()
-    const body = this.expression()
+    let body: AST.Expression
+
+    if (this.match(TokenType.ASSIGN)) {
+      // ワンライナー形式: fn name params = expression
+      this.skipNewlines()
+      body = this.expression()
+    } else if (this.match(TokenType.LEFT_BRACE)) {
+      // ブロック形式: fn name params { statements }
+      body = this.blockExpression()
+    } else {
+      throw new ParseError(
+        "Expected '=' or '{' after method signature",
+        this.peek()
+      )
+    }
 
     return new AST.MethodDeclaration(
       name,
@@ -735,9 +747,21 @@ export class Parser {
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
-    this.consume(TokenType.ASSIGN, "Expected '=' after operator signature")
-    this.skipNewlines()
-    const body = this.expression()
+    let body: AST.Expression
+
+    if (this.match(TokenType.ASSIGN)) {
+      // ワンライナー形式: operator + params = expression
+      this.skipNewlines()
+      body = this.expression()
+    } else if (this.match(TokenType.LEFT_BRACE)) {
+      // ブロック形式: operator + params { statements }
+      body = this.blockExpression()
+    } else {
+      throw new ParseError(
+        "Expected '=' or '{' after operator signature",
+        this.peek()
+      )
+    }
 
     return new AST.OperatorDeclaration(
       operator,

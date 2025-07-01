@@ -289,4 +289,102 @@ p.x
     expect(output).toContain("__dispatchMethod")
     expect(output).toContain("__dispatchOperator")
   })
+
+  test("should parse impl block with method using block syntax", () => {
+    const source = `
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn add self -> other: Point -> Point {
+    let newX = self.x + other.x
+    let newY = self.y + other.y
+    Point { x: newX, y: newY }
+  }
+}
+`
+    const parser = new Parser(source)
+    const result = parser.parse()
+
+    expect(result.errors).toHaveLength(0)
+    expect(result.statements).toHaveLength(2)
+
+    const implBlock = result.statements![1] as AST.ImplBlock
+    expect(implBlock.kind).toBe("ImplBlock")
+    expect(implBlock.methods).toHaveLength(1)
+
+    const method = implBlock.methods[0]
+    expect(method.kind).toBe("MethodDeclaration")
+    expect(method.name).toBe("add")
+    expect(method.body.kind).toBe("BlockExpression")
+  })
+
+  test("should parse impl block with operator using block syntax", () => {
+    const source = `
+struct Vec2 {
+  x: Float,
+  y: Float
+}
+
+impl Vec2 {
+  operator + self: Vec2 -> other: Vec2 -> Vec2 {
+    let sumX = self.x + other.x
+    let sumY = self.y + other.y
+    Vec2 { x: sumX, y: sumY }
+  }
+}
+`
+    const parser = new Parser(source)
+    const result = parser.parse()
+
+    expect(result.errors).toHaveLength(0)
+    expect(result.statements).toHaveLength(2)
+
+    const implBlock = result.statements![1] as AST.ImplBlock
+    expect(implBlock.kind).toBe("ImplBlock")
+    expect(implBlock.operators).toHaveLength(1)
+
+    const operator = implBlock.operators[0]
+    expect(operator.kind).toBe("OperatorDeclaration")
+    expect(operator.operator).toBe("+")
+    expect(operator.body.kind).toBe("BlockExpression")
+  })
+
+  test("should compile impl block with mixed syntax (both = and {})", () => {
+    const source = `
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn simple self -> Point = self
+  
+  fn complex self -> other: Point -> Point {
+    let newX = self.x + other.x
+    let newY = self.y + other.y
+    Point { x: newX, y: newY }
+  }
+  
+  operator + self: Point -> other: Point -> Point = self complex other
+  
+  operator - self: Point -> other: Point -> Point {
+    Point { x: self.x - other.x, y: self.y - other.y }
+  }
+}
+
+let p1 = Point { x: 1, y: 2 }
+let p2 = Point { x: 3, y: 4 }
+p1 + p2
+`
+    const output = compileSeseragi(source)
+    
+    // エラーなくコンパイルできることを確認
+    expect(output).toContain("class Point")
+    expect(output).toContain("simple")
+    expect(output).toContain("complex")
+    expect(output).toContain("__dispatchOperator")
+  })
 })
