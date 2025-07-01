@@ -21,7 +21,7 @@ describe("Lambda Expression Tests", () => {
   })
 
   test("should parse lambda with type annotation", () => {
-    const parser = new Parser("\\x :Int -> x * 2")
+    const parser = new Parser("\\x: Int -> x * 2")
     const program = parser.parse()
 
     const stmt = program.statements[0] as AST.ExpressionStatement
@@ -47,7 +47,7 @@ describe("Lambda Expression Tests", () => {
   })
 
   test("should type check lambda expressions", () => {
-    const parser = new Parser("let f = \\x :Int -> x + 1")
+    const parser = new Parser("let f = \\x: Int -> x + 1")
     const program = parser.parse()
 
     const typeChecker = new TypeChecker()
@@ -67,7 +67,7 @@ describe("Lambda Expression Tests", () => {
   })
 
   test("should handle lambda application", () => {
-    const parser = new Parser("let result = (\\x :Int -> x + 1) 5")
+    const parser = new Parser("let result = (\\x: Int -> x + 1) 5")
     const program = parser.parse()
 
     const typeChecker = new TypeChecker()
@@ -104,7 +104,7 @@ describe("Lambda Expression Tests", () => {
   })
 
   test("should handle lambda with explicit types", () => {
-    const parser = new Parser("let typed = \\x :Int -> x + 100")
+    const parser = new Parser("let typed = \\x: Int -> x + 100")
     const program = parser.parse()
 
     const code = generateTypeScript(program.statements)

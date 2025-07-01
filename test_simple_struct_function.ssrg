@@ -1,9 +1,0 @@
-struct Point {
-  x: Float,
-  y: Float
-}
-
-fn usePoint p: Point -> Float = p.x
-
-let p1 = Point { x: 3.0, y: 0.0 }
-usePoint p1

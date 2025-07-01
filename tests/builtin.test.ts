@@ -58,7 +58,7 @@ describe("Builtin Functions", () => {
 
   it("should compile toString function to String()", async () => {
     const seseragiCode = `
-    let age :Int = 25
+    let age: Int = 25
     print(toString(age))
     `
 
@@ -78,8 +78,8 @@ describe("Builtin Functions", () => {
 
   it("should compile multiple builtin functions", async () => {
     const seseragiCode = `
-    let name :String = "Alice"
-    let age :Int = 30
+    let name: String = "Alice"
+    let age: Int = 30
     print("Name: " + name)
     putStrLn(toString(age))
     `
@@ -100,7 +100,7 @@ describe("Builtin Functions", () => {
 
   it("should handle builtin functions in function definitions", async () => {
     const seseragiCode = `
-    fn greet name :String -> Unit = print("Hello, " + name)
+    fn greet name: String -> Unit = print("Hello, " + name)
     `
 
     fs.writeFileSync(testInputFile, seseragiCode)

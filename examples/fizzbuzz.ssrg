@@ -1,5 +1,5 @@
 // FizzBuzz
-fn fizzbuzz x :Int -> String = match (x % 3, x % 5) {
+fn fizzbuzz x: Int -> String = match (x % 3, x % 5) {
   (0, 0) -> "FizzBuzz"
   (0, _) -> "Fizz"
   (_, 0) -> "Buzz"

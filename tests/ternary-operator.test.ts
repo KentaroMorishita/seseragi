@@ -66,7 +66,7 @@ describe("Ternary Operator", () => {
 
   test("should infer correct types for ternary expression", () => {
     const parser = new Parser(`
-      fn test x :Int -> String = x > 0 ? "positive" : "negative"
+      fn test x: Int -> String = x > 0 ? "positive" : "negative"
     `)
     const result = parser.parse()
 
@@ -81,7 +81,7 @@ describe("Ternary Operator", () => {
 
   test("should generate correct TypeScript code", () => {
     const parser = new Parser(`
-      fn test x :Int -> String = x > 0 ? "positive" : "negative"
+      fn test x: Int -> String = x > 0 ? "positive" : "negative"
     `)
     const result = parser.parse()
 
@@ -95,7 +95,7 @@ describe("Ternary Operator", () => {
 
   test("should handle ternary in function body", () => {
     const parser = new Parser(`
-      fn abs x :Int -> Int = x < 0 ? -x : x
+      fn abs x: Int -> Int = x < 0 ? -x : x
     `)
     const result = parser.parse()
 
@@ -109,7 +109,7 @@ describe("Ternary Operator", () => {
 
   test("should handle complex ternary expressions", () => {
     const parser = new Parser(`
-      fn classify x :Int -> String = 
+      fn classify x: Int -> String = 
         x > 0 ? "positive" : x < 0 ? "negative" : "zero"
     `)
     const result = parser.parse()
@@ -126,7 +126,7 @@ describe("Ternary Operator", () => {
 
   test("should handle boolean ternary", () => {
     const parser = new Parser(`
-      fn toggle flag :Bool -> Bool = flag ? False : True
+      fn toggle flag: Bool -> Bool = flag ? False : True
     `)
     const result = parser.parse()
 
@@ -141,7 +141,7 @@ describe("Ternary Operator", () => {
 
   test("should enforce type consistency in ternary branches", () => {
     const parser = new Parser(`
-      fn invalid x :Int -> String = x > 0 ? "text" : 42
+      fn invalid x: Int -> String = x > 0 ? "text" : 42
     `)
     const result = parser.parse()
 
@@ -157,7 +157,7 @@ describe("Ternary Operator", () => {
 
   test("should enforce boolean condition in ternary", () => {
     const parser = new Parser(`
-      fn invalid x :Int -> String = x ? "text" : "other"
+      fn invalid x: Int -> String = x ? "text" : "other"
     `)
     const result = parser.parse()
 
@@ -195,7 +195,7 @@ describe("Ternary Operator", () => {
 
   test("should work with dollar operator", () => {
     const parser = new Parser(`
-      fn test x :Int -> String = x > 0 ? "positive" : "negative"
+      fn test x: Int -> String = x > 0 ? "positive" : "negative"
       show $ test 5
     `)
     const result = parser.parse()

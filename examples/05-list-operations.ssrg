@@ -47,7 +47,7 @@ show eitherList
 show "--- Functional Style List Operations ---"
 
 // リストに要素を追加する関数
-fn prepend x :Int -> lst :List<Int> -> List<Int> = Cons x lst
+fn prepend x: Int -> lst: List<Int> -> List<Int> = Cons x lst
 
 let originalList = Cons 2 (Cons 3 Empty)
 let prependedList = prepend 1 originalList

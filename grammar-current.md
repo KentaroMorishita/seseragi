@@ -121,9 +121,9 @@ let name = "Alice"
 let flag = True
 
 // 明示的な型注釈（推奨）
-let count :Int = 100
-let message :String = "Hello"
-let isActive :Bool = False
+let count: Int = 100
+let message: String = "Hello"
+let isActive: Bool = False
 ```
 
 ### 4.2 制約
@@ -138,9 +138,9 @@ let isActive :Bool = False
 
 ```seseragi
 // 基本的な関数
-fn add x :Int -> y :Int -> Int = x + y
-fn double n :Int -> Int = n * 2
-fn greet name :String -> String = "Hello, " ++ name
+fn add x: Int -> y: Int -> Int = x + y
+fn double n: Int -> Int = n * 2
+fn greet name: String -> String = "Hello, " ++ name
 
 // 引数なし関数
 fn getMessage -> String = "Hello from function!"
@@ -150,12 +150,12 @@ fn getNumber -> Int = 42
 ### 5.2 ブロック形式
 
 ```seseragi
-fn processData input :String -> String {
+fn processData input: String -> String {
   let cleaned = input
   "Processed: " ++ cleaned
 }
 
-fn max x :Int -> y :Int -> Int {
+fn max x: Int -> y: Int -> Int {
   if x > y then x else y
 }
 ```
@@ -165,7 +165,7 @@ fn max x :Int -> y :Int -> Int {
 すべての関数は自動的にカリー化され、部分適用が可能です。
 
 ```seseragi
-fn add x :Int -> y :Int -> Int = x + y
+fn add x: Int -> y: Int -> Int = x + y
 
 let addFive = add 5    // Int -> Int（部分適用）
 let result = addFive 3 // 8
@@ -214,22 +214,22 @@ let greeting = "Hello" ++ " " ++ "World"  // "Hello World"
 
 #### 6.5.1 パイプライン演算子 (`|`)
 ```seseragi
-fn add1 x :Int -> Int = x + 1
-fn double x :Int -> Int = x * 2
+fn add1 x: Int -> Int = x + 1
+fn double x: Int -> Int = x * 2
 
 let result = 5 | add1 | double  // 12 ((5+1)*2)
 ```
 
 #### 6.5.2 逆パイプ演算子 (`~`)
 ```seseragi
-fn add x :Int -> y :Int -> Int = x + y
+fn add x: Int -> y: Int -> Int = x + y
 
 let result = 10 ~ add 5  // add 10 5 = 15
 ```
 
 #### 6.5.3 関数適用演算子 (`$`)
 ```seseragi
-fn toString x :Int -> String = x  // 仮の実装
+fn toString x: Int -> String = x  // 仮の実装
 
 let result = toString $ add 10 5  // toString (add 10 5)
 ```
@@ -288,7 +288,7 @@ let someValue = Just 42
 let nothingValue = Nothing
 
 // 基本的な使用
-fn safeDivide x :Int -> y :Int -> Maybe<Int> = 
+fn safeDivide x: Int -> y: Int -> Maybe<Int> = 
   if y == 0 then Nothing else Just (x / y)
 
 let result1 = safeDivide 10 2  // Just 5
@@ -303,7 +303,7 @@ let successValue = Right 42
 let errorValue = Left "Error occurred"
 
 // 基本的な使用
-fn parseNumber str :String -> Either<String, Int> = 
+fn parseNumber str: String -> Either<String, Int> = 
   if str == "42" then Right 42 else Left "Invalid number"
 
 let parsed1 = parseNumber "42"       // Right 42
@@ -377,20 +377,20 @@ let x = 42
 let y = 3.14
 let message = "Hello, Seseragi!"
 
-fn add a :Int -> b :Int -> Int = a + b
-fn greet name :String -> String = "Hello, " ++ name
+fn add a: Int -> b: Int -> Int = a + b
+fn greet name: String -> String = "Hello, " ++ name
 
 // if-then-else
-fn max a :Int -> b :Int -> Int = if a > b then a else b
+fn max a: Int -> b: Int -> Int = if a > b then a else b
 
 // パイプライン演算子
-fn double x :Int -> Int = x * 2
-fn increment x :Int -> Int = x + 1
+fn double x: Int -> Int = x * 2
+fn increment x: Int -> Int = x + 1
 
 let result = 5 | increment | double  // 12
 
 // Maybe型の使用
-fn safeDivide x :Int -> y :Int -> Maybe<Int> = 
+fn safeDivide x: Int -> y: Int -> Maybe<Int> = 
   if y == 0 then Nothing else Just (x / y)
 
 let division = safeDivide 10 2  // Just 5

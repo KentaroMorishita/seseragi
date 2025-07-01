@@ -60,7 +60,7 @@ describe("Lexer", () => {
   })
 
   it("should handle function definition", () => {
-    const source = "fn add a :Int -> b :Int -> Int = a + b"
+    const source = "fn add a: Int -> b: Int -> Int = a + b"
     const lexer = new Lexer(source)
     const tokens = lexer.tokenize()
 

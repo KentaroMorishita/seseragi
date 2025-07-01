@@ -2,12 +2,12 @@
 // 型の一致性を確認
 
 struct Point {
-  x :Int,
-  y :Int
+  x: Int,
+  y: Int
 }
 
 // Int型フィールドを使った算術演算 -> Int型の結果
-fn distanceSquared p1 :Point -> p2 :Point -> Int {
+fn distanceSquared p1: Point -> p2: Point -> Int {
   let dx = p2.x - p1.x
   let dy = p2.y - p1.y
   // 簡略化のため、平方根は使わず二乗和を返す

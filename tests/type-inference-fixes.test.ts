@@ -66,7 +66,7 @@ let errorValue = Left "Error occurred"
 
 test("Curried function partial application", () => {
   const content = `
-fn complexCalculation a :Int -> b :Int -> Int {
+fn complexCalculation a: Int -> b: Int -> Int {
   let sum = a + b
   let product = a * b
   if sum > product then sum else product
@@ -95,7 +95,7 @@ let calculatedA = complexCalculation 3
 
 test("Curried function full application", () => {
   const content = `
-fn complexCalculation a :Int -> b :Int -> Int {
+fn complexCalculation a: Int -> b: Int -> Int {
   let sum = a + b
   let product = a * b
   if sum > product then sum else product
@@ -123,8 +123,8 @@ let calculatedB = complexCalculation 5 6
 
 test("Complex type inference scenario", () => {
   const content = `
-fn add x :Int -> y :Int -> Int = x + y
-fn safeDivide x :Int -> y :Int -> Maybe<Int> = if y == 0 then Nothing else Just (x / y)
+fn add x: Int -> y: Int -> Int = x + y
+fn safeDivide x: Int -> y: Int -> Maybe<Int> = if y == 0 then Nothing else Just (x / y)
 
 let addFive = add 5
 let result1 = addFive 3

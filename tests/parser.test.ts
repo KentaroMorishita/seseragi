@@ -20,7 +20,7 @@ describe("Parser", () => {
   })
 
   it("should parse function declaration", () => {
-    const source = "fn add a :Int -> b :Int -> Int = a + b"
+    const source = "fn add a: Int -> b: Int -> Int = a + b"
     const parser = new Parser(source)
     const program = parser.parse()
 
@@ -35,7 +35,7 @@ describe("Parser", () => {
   })
 
   it("should parse effectful function declaration", () => {
-    const source = "effectful fn printMessage msg :String -> IO = msg"
+    const source = "effectful fn printMessage msg: String -> IO = msg"
     const parser = new Parser(source)
     const program = parser.parse()
 
@@ -46,8 +46,8 @@ describe("Parser", () => {
 
   it("should parse type declaration", () => {
     const source = `type Person {
-      name :String
-      age :Int
+      name: String
+      age: Int
     }`
     const parser = new Parser(source)
     const program = parser.parse()
@@ -157,7 +157,7 @@ describe("Parser", () => {
   })
 
   it("should parse generic types", () => {
-    const source = "let items :List<Int> = items"
+    const source = "let items: List<Int> = items"
     const parser = new Parser(source)
     const program = parser.parse()
 

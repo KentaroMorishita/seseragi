@@ -115,7 +115,7 @@ let errorValue = Left "Error occurred"
 
 test("Curried functions still work correctly", () => {
   const content = `
-fn complexCalculation a :Int -> b :Int -> Int {
+fn complexCalculation a: Int -> b: Int -> Int {
   let sum = a + b
   let product = a * b
   if sum > product then sum else product

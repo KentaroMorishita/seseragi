@@ -1,12 +1,12 @@
 // 構造体とimplブロックのテスト
 
 struct Point {
-  x :Int,
-  y :Int
+  x: Int,
+  y: Int
 }
 
 impl Point {
-  fn add self -> other :Point -> Point =
+  fn add self -> other: Point -> Point =
     Point { x: self.x + other.x, y: self.y + other.y }
 
   fn distanceSquared self -> Int =

@@ -26,7 +26,7 @@ describe("Compile Command", () => {
 
   it("should compile simple function to TypeScript", async () => {
     // テスト用のSeseragiソースコード
-    const seseragiCode = `fn add a :Int -> b :Int -> Int = a + b`
+    const seseragiCode = `fn add a: Int -> b: Int -> Int = a + b`
 
     fs.writeFileSync(testInputFile, seseragiCode)
 
@@ -45,7 +45,7 @@ describe("Compile Command", () => {
   })
 
   it("should compile variable declaration to TypeScript", async () => {
-    const seseragiCode = `let greeting :String = "Hello, Seseragi!"`
+    const seseragiCode = `let greeting: String = "Hello, Seseragi!"`
 
     fs.writeFileSync(testInputFile, seseragiCode)
 
@@ -64,7 +64,7 @@ describe("Compile Command", () => {
   })
 
   it("should use default output filename when not specified", async () => {
-    const seseragiCode = `fn double x :Int -> Int = x * 2`
+    const seseragiCode = `fn double x: Int -> Int = x * 2`
 
     fs.writeFileSync(testInputFile, seseragiCode)
 
@@ -93,7 +93,7 @@ describe("Compile Command", () => {
   })
 
   it("should compile with function declarations when useArrowFunctions is false", async () => {
-    const seseragiCode = `fn multiply x :Int -> y :Int -> Int = x * y`
+    const seseragiCode = `fn multiply x: Int -> y: Int -> Int = x * y`
 
     fs.writeFileSync(testInputFile, seseragiCode)
 

@@ -1,33 +1,33 @@
 // シンプルなメソッド呼び出しテスト
 
 struct Point {
-  x :Int,
-  y :Int
+  x: Int,
+  y: Int
 }
 
 impl Point {
-  fn add self -> other :Point -> Point =
+  fn add self -> other: Point -> Point =
     Point { x: self.x + other.x, y: self.y + other.y }
 
-  operator + self -> other :Point -> Point = self add other
+  operator + self -> other: Point -> Point = self add other
 }
 
 struct Point3D {
-  x :Int,
-  y :Int,
-  z :Int
+  x: Int,
+  y: Int,
+  z: Int
 }
 
 impl Point3D {
-  fn add self -> other :Point3D -> Point3D =
+  fn add self -> other: Point3D -> Point3D =
     Point3D { x: self.x + other.x, y: self.y + other.y, z: self.z + other.z }
 
-  operator + self -> other :Point3D -> Point3D = self add other
+  operator + self -> other: Point3D -> Point3D = self add other
 
-  fn sub self -> other :Point3D -> Point3D =
+  fn sub self -> other: Point3D -> Point3D =
     Point3D { x: self.x - other.x, y: self.y - other.y, z: self.z - other.z }
 
-  operator - self -> other :Point3D -> Point3D = self sub other
+  operator - self -> other: Point3D -> Point3D = self sub other
 }
 
 let p1 = Point { x: 3, y: 4 }

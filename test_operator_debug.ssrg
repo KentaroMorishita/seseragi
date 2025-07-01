@@ -1,8 +1,0 @@
-struct Point {
-  x: Int,
-  y: Int
-}
-
-impl Point {
-  operator + self: Point -> other: Point -> Point = Point { x: self.x + other.x, y: self.y + other.y }
-}

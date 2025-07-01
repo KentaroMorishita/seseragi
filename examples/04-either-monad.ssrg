@@ -18,7 +18,7 @@ show errorValue
 
 show "--- Functor <$> ---"
 
-fn double x :Int -> Int = x * 2
+fn double x: Int -> Int = x * 2
 
 let doubled = double <$> successValue
 let doubledError = double <$> errorValue
@@ -32,7 +32,7 @@ show doubledError
 
 show "--- Applicative <*> ---"
 
-fn add x :Int -> y :Int -> Int = x + y
+fn add x: Int -> y: Int -> Int = x + y
 
 let num1 = Right 10
 let num2 = Right 5
@@ -50,9 +50,9 @@ show addError
 
 show "--- Monad >>= ---"
 
-fn parseNumber str :String -> Either<String, Int> = if str == "42" then Right 42 else Left "Invalid number"
+fn parseNumber str: String -> Either<String, Int> = if str == "42" then Right 42 else Left "Invalid number"
 
-fn validatePositive x :Int -> Either<String, Int> = if x > 0 then Right x else Left "Must be positive"
+fn validatePositive x: Int -> Either<String, Int> = if x > 0 then Right x else Left "Must be positive"
 
 let chainResult = parseNumber "42" >>= validatePositive
 let chainError = parseNumber "0" >>= validatePositive

@@ -3,7 +3,7 @@ import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 
 test("Either - should parse Left constructor", () => {
-  const source = 'let errorValue :Either<String, Int> = Left "Error message"'
+  const source = 'let errorValue: Either<String, Int> = Left "Error message"'
   const parser = new Parser(source)
   const ast = parser.parse()
 
@@ -13,7 +13,7 @@ test("Either - should parse Left constructor", () => {
 })
 
 test("Either - should parse Right constructor", () => {
-  const source = "let successValue :Either<String, Int> = Right 42"
+  const source = "let successValue: Either<String, Int> = Right 42"
   const parser = new Parser(source)
   const ast = parser.parse()
 

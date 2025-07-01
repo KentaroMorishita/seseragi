@@ -2,17 +2,17 @@
 // この構文が正常に動作します
 
 struct Point {
-  x :Int,
-  y :Int
+  x: Int,
+  y: Int
 }
 
 impl Point {
-  fn distanceSquared self -> other :Point -> Int =
+  fn distanceSquared self -> other: Point -> Int =
     (other.x - self.x) * (other.x - self.x) + (other.y - self.y) * (other.y - self.y)
 
   fn magnitude self -> Int = self.x * self.x + self.y * self.y
 
-  fn add self -> other :Point -> Point =
+  fn add self -> other: Point -> Point =
     Point { x: self.x + other.x, y: self.y + other.y }
 }
 

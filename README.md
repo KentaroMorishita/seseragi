@@ -37,10 +37,10 @@ Seseragi言語（`.ssrg`）のサンプル：
 
 ```seseragi
 // 基本的な関数定義
-fn add a :Int -> b :Int -> Int = a + b
+fn add a: Int -> b: Int -> Int = a + b
 
 // 関数適用演算子の使用例
-fn double x :Int -> Int = x * 2
+fn double x: Int -> Int = x * 2
 
 // Maybe型による安全な処理
 let someValue = Just 42
@@ -185,9 +185,9 @@ Generating TypeScript code...
 ### モナド演算子の例
 
 ```seseragi
-fn double x :Int -> Int = x * 2
-fn add a :Int -> b :Int -> Int = a + b
-fn increment x :Int -> Maybe<Int> = Just (x + 1)
+fn double x: Int -> Int = x * 2
+fn add a: Int -> b: Int -> Int = a + b
+fn increment x: Int -> Maybe<Int> = Just (x + 1)
 
 // ファンクター演算子 (<$>)
 let doubled = double <$> Just 21    // Just 42
