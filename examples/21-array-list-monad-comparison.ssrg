@@ -1,0 +1,89 @@
+// Array vs List のモナド演算子比較
+
+show "=== Array vs List Monad Operators Comparison ==="
+
+// =============================================================================
+// 同じ演算子で異なる型の動作比較
+// =============================================================================
+
+show "--- Map Operator Comparison ---"
+
+// Array版
+let arrayData = [1, 2, 3]
+let arrayDoubled = (\x -> x * 2) <$> arrayData
+show "Array map:"
+show arrayData
+show arrayDoubled
+
+// List版
+let listData = Cons 1 (Cons 2 (Cons 3 Empty))
+let listDoubled = (\x -> x * 2) <$> listData
+show "List map:"
+show listData
+show listDoubled
+
+show "--- Apply Operator Comparison ---"
+
+// Array版 Apply
+let arrayFuncs = [(\x -> x + 1), (\x -> x * 2)]
+let arrayVals = [10, 20]
+let arrayApplied = arrayFuncs <*> arrayVals
+show "Array apply:"
+show arrayApplied
+
+// List版 Apply
+let listFuncs = Cons (\x -> x + 1) (Cons (\x -> x * 2) Empty)
+let listVals = Cons 10 (Cons 20 Empty)
+let listApplied = listFuncs <*> listVals
+show "List apply:"
+show listApplied
+
+show "--- Bind Operator Comparison ---"
+
+// Array版 Bind
+let arrayInput = [1, 2]
+let arrayBound = arrayInput >>= (\x -> [x, x * 10])
+show "Array bind:"
+show arrayInput
+show arrayBound
+
+// List版 Bind
+let listInput = Cons 1 (Cons 2 Empty)
+let listBound = listInput >>= (\x -> Cons x (Cons (x * 10) Empty))
+show "List bind:"
+show listInput
+show listBound
+
+// =============================================================================
+// 型変換を使った相互変換
+// =============================================================================
+
+show "--- Array ↔ List Conversion with Monads ---"
+
+// Array → List → Array
+let originalArray = [1, 2, 3, 4, 5]
+let convertedToList = arrayToList originalArray
+let processedList = (\x -> x * x) <$> convertedToList
+let backToArray = listToArray processedList
+
+show "Original Array:"
+show originalArray
+show "Converted to List and squared:"
+show processedList
+show "Back to Array:"
+show backToArray
+
+// List → Array → List
+let originalList = Cons 5 (Cons 10 (Cons 15 Empty))
+let convertedToArray = listToArray originalList
+let processedArray = convertedToArray >>= (\x -> [x, x / 5])
+let backToList = arrayToList processedArray
+
+show "Original List:"
+show originalList
+show "Converted to Array and processed:"
+show processedArray
+show "Back to List:"
+show backToList
+
+show "Comparison examples completed!"

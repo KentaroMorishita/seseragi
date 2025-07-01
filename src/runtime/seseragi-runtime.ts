@@ -332,6 +332,43 @@ export const arrayToList = curry(<T>(arr: T[]): List<T> => fromArray(arr))
 export const listToArray = curry(<T>(list: List<T>): T[] => toArray(list))
 
 // =============================================================================
+// Array型 - Functor → Applicative → Monad
+// =============================================================================
+
+// Functor: map (<$>)
+export const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {
+  return fa.map(f)
+}
+
+// Applicative: pure + apply (<*>)
+export const pureArray = <T>(value: T): T[] => [value]
+
+export const applyArray = <T, U>(
+  ff: ((a: T) => U)[],
+  fa: T[]
+): U[] => {
+  const result: U[] = []
+  for (const func of ff) {
+    for (const value of fa) {
+      result.push(func(value))
+    }
+  }
+  return result
+}
+
+// Monad: flatMap (>>=)
+export const bindArray = <T, U>(
+  ma: T[],
+  f: (value: T) => U[]
+): U[] => {
+  const result: U[] = []
+  for (const value of ma) {
+    result.push(...f(value))
+  }
+  return result
+}
+
+// =============================================================================
 // モナド演算子
 // =============================================================================
 

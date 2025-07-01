@@ -163,6 +163,14 @@
           "match": ">>="
         },
         {
+          "name": "keyword.operator.map.seseragi",
+          "match": "<\\$>"
+        },
+        {
+          "name": "keyword.operator.apply.seseragi",
+          "match": "<\\*>"
+        },
+        {
           "name": "keyword.operator.fold-monoid.seseragi",
           "match": ">>>"
         },

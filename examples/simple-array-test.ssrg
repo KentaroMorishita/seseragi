@@ -1,0 +1,5 @@
+// シンプルなArray演算子テスト
+
+let numbers = [1, 2, 3]
+let doubled = (\x -> x * 2) <$> numbers
+show doubled
