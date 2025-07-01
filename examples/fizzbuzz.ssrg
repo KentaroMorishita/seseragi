@@ -7,3 +7,4 @@ fn fizzbuzz x :Int -> String = match (x % 3, x % 5) {
 }
 
 show $ fizzbuzz <$> 1..=100
+

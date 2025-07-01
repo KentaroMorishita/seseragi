@@ -113,11 +113,10 @@ show dist
 fn createPerson name :String -> age :Int -> Person =
   Person { name: name, age: age }
 
-fn midpoint p1 :Point -> p2 :Point -> Point =
-  Point {
-    x: (p1.x + p2.x) / 2.0,
-    y: (p1.y + p2.y) / 2.0
-  }
+fn midpoint p1 :Point -> p2 :Point -> Point = Point {
+  x: (p1.x + p2.x) / 2.0,
+  y: (p1.y + p2.y) / 2.0
+}
 
 let david = createPerson "David" 35
 let mid = midpoint origin point1
@@ -196,3 +195,4 @@ show structPerson
 // recordPersonは{ name: String, age: Int }型として扱われる
 
 show "Tutorial completed!"
+

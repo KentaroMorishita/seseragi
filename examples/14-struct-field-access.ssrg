@@ -8,3 +8,4 @@ fn getX p :Point -> Int = p.x
 let p = Point { x: 1 }
 let x = getX p
 show x
+

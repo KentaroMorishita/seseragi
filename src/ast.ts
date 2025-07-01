@@ -101,7 +101,12 @@ export class StructType extends Type {
   name: string
   fields: RecordField[]
 
-  constructor(name: string, fields: RecordField[], line: number, column: number) {
+  constructor(
+    name: string,
+    fields: RecordField[],
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.name = name
     this.fields = fields
@@ -547,7 +552,12 @@ export class Generator extends ASTNode {
   variable: string
   iterable: Expression
 
-  constructor(variable: string, iterable: Expression, line: number, column: number) {
+  constructor(
+    variable: string,
+    iterable: Expression,
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.variable = variable
     this.iterable = iterable
@@ -766,10 +776,10 @@ export class Parameter extends ASTNode {
   isImplicitSelf: boolean
 
   constructor(
-    name: string, 
-    type: Type, 
-    line: number, 
-    column: number, 
+    name: string,
+    type: Type,
+    line: number,
+    column: number,
     isImplicitSelf: boolean = false
   ) {
     super(line, column)
@@ -883,7 +893,12 @@ export class StructDeclaration extends Statement {
   name: string
   fields: RecordField[]
 
-  constructor(name: string, fields: RecordField[], line: number, column: number) {
+  constructor(
+    name: string,
+    fields: RecordField[],
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.name = name
     this.fields = fields

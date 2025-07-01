@@ -65,9 +65,16 @@ export class TypeChecker {
   private errors: TypeError[] = []
   private globalEnv: TypeEnvironment
 
-  constructor() {
+  constructor(typeEnvironment?: Map<string, AST.Type>) {
     this.globalEnv = new TypeEnvironment()
     this.initializeBuiltins()
+
+    // Add types from type inference system if provided
+    if (typeEnvironment) {
+      for (const [name, type] of typeEnvironment) {
+        this.globalEnv.define(name, type)
+      }
+    }
   }
 
   // Initialize built-in functions
@@ -141,6 +148,9 @@ export class TypeChecker {
       case "TypeDeclaration":
         this.checkTypeDeclaration(statement as AST.TypeDeclaration, env)
         break
+      case "StructDeclaration":
+        this.checkStructDeclaration(statement as AST.StructDeclaration, env)
+        break
       case "ExpressionStatement":
         this.checkExpression(
           (statement as AST.ExpressionStatement).expression,
@@ -165,8 +175,18 @@ export class TypeChecker {
 
     // Build function type from parameters (right to left for currying)
     for (let i = func.parameters.length - 1; i >= 0; i--) {
+      // Resolve parameter type aliases
+      let paramType = func.parameters[i].type
+      if (paramType.kind === "PrimitiveType") {
+        const typeName = (paramType as AST.PrimitiveType).name
+        const resolvedType = env.lookup(typeName)
+        if (resolvedType && resolvedType.kind === "StructType") {
+          paramType = resolvedType
+        }
+      }
+
       funcType = new AST.FunctionType(
-        func.parameters[i].type,
+        paramType,
         funcType,
         func.line,
         func.column
@@ -179,7 +199,19 @@ export class TypeChecker {
     // Check function body in extended environment
     const bodyEnv = env.extend()
     for (const param of func.parameters) {
-      bodyEnv.define(param.name, param.type)
+      // Resolve type aliases for parameters
+      let resolvedType = param.type
+      if (param.type.kind === "PrimitiveType") {
+        const typeName = (param.type as AST.PrimitiveType).name
+
+        // Try to resolve it to a struct type from the environment
+        const structType = env.lookup(typeName)
+        if (structType && structType.kind === "StructType") {
+          resolvedType = structType
+        }
+      }
+
+      bodyEnv.define(param.name, resolvedType)
     }
 
     const bodyType = this.checkExpression(func.body, bodyEnv)
@@ -284,6 +316,9 @@ export class TypeChecker {
       case "RecordAccess":
         return this.checkRecordAccess(expr as AST.RecordAccess, env)
 
+      case "StructExpression":
+        return this.checkStructExpression(expr as AST.StructExpression, env)
+
       default:
         this.addError(
           `Unhandled expression type: ${expr.kind}`,
@@ -328,6 +363,13 @@ export class TypeChecker {
   ): AST.Type {
     const leftType = this.checkExpression(binOp.left, env)
     const rightType = this.checkExpression(binOp.right, env)
+
+    // Check for struct operator overloading first
+    if (leftType.kind === "StructType") {
+      // For struct operations, assume operator overloading is handled
+      // Return the left struct type as a default (this could be improved)
+      return leftType
+    }
 
     // Type rules for operators
     switch (binOp.operator) {
@@ -697,12 +739,13 @@ export class TypeChecker {
     const newEnv = env.extend()
 
     switch (pattern.kind) {
-      case "IdentifierPattern":
+      case "IdentifierPattern": {
         const idPat = pattern as AST.IdentifierPattern
         newEnv.define(idPat.name, matchedType)
         break
+      }
 
-      case "LiteralPattern":
+      case "LiteralPattern": {
         // Check literal type matches
         const litPat = pattern as AST.LiteralPattern
         const litType =
@@ -720,12 +763,14 @@ export class TypeChecker {
           )
         }
         break
+      }
 
-      case "ConstructorPattern":
+      case "ConstructorPattern": {
         // Handle constructor patterns (simplified for now)
         const ctorPat = pattern as AST.ConstructorPattern
         // TODO: Full implementation would check constructor types
         break
+      }
     }
 
     return newEnv
@@ -737,7 +782,7 @@ export class TypeChecker {
   ): AST.Type {
     // Handle Maybe and Either constructors
     switch (ctor.constructorName) {
-      case "Just":
+      case "Just": {
         if (ctor.arguments.length !== 1) {
           this.addError(
             "Just expects exactly 1 argument",
@@ -748,6 +793,7 @@ export class TypeChecker {
         }
         const argType = this.checkExpression(ctor.arguments[0], env)
         return new AST.GenericType("Maybe", [argType], ctor.line, ctor.column)
+      }
 
       case "Nothing":
         if (ctor.arguments.length !== 0) {
@@ -762,7 +808,7 @@ export class TypeChecker {
         )
 
       case "Left":
-      case "Right":
+      case "Right": {
         if (ctor.arguments.length !== 1) {
           this.addError(
             `${ctor.constructorName} expects exactly 1 argument`,
@@ -787,6 +833,7 @@ export class TypeChecker {
           ctor.line,
           ctor.column
         )
+      }
 
       default:
         this.addError(
@@ -827,14 +874,16 @@ export class TypeChecker {
     // Add parameters to the lambda environment
     for (const param of lambda.parameters) {
       let paramType = param.type
-      
+
       // If parameter type is placeholder "_", we'll use type inference
-      if (paramType.kind === "PrimitiveType" && 
-          (paramType as AST.PrimitiveType).name === "_") {
+      if (
+        paramType.kind === "PrimitiveType" &&
+        (paramType as AST.PrimitiveType).name === "_"
+      ) {
         // Create a type variable for inference
         paramType = new AST.PrimitiveType("a", param.line, param.column)
       }
-      
+
       lambdaEnv.define(param.name, paramType)
     }
 
@@ -845,13 +894,19 @@ export class TypeChecker {
     let resultType: AST.Type = bodyType
     for (let i = lambda.parameters.length - 1; i >= 0; i--) {
       let paramType = lambda.parameters[i].type
-      
+
       // Handle placeholder types for inference
-      if (paramType.kind === "PrimitiveType" && 
-          (paramType as AST.PrimitiveType).name === "_") {
-        paramType = new AST.PrimitiveType("a", lambda.parameters[i].line, lambda.parameters[i].column)
+      if (
+        paramType.kind === "PrimitiveType" &&
+        (paramType as AST.PrimitiveType).name === "_"
+      ) {
+        paramType = new AST.PrimitiveType(
+          "a",
+          lambda.parameters[i].line,
+          lambda.parameters[i].column
+        )
       }
-      
+
       resultType = new AST.FunctionType(
         paramType,
         resultType,
@@ -868,7 +923,7 @@ export class TypeChecker {
     if (t1.kind !== t2.kind) return false
 
     switch (t1.kind) {
-      case "PrimitiveType":
+      case "PrimitiveType": {
         const p1 = t1 as AST.PrimitiveType
         const p2 = t2 as AST.PrimitiveType
         // Type variables (single lowercase letters) are compatible with any type
@@ -876,16 +931,18 @@ export class TypeChecker {
           return true
         }
         return p1.name === p2.name
+      }
 
-      case "FunctionType":
+      case "FunctionType": {
         const f1 = t1 as AST.FunctionType
         const f2 = t2 as AST.FunctionType
         return (
           this.typesEqual(f1.paramType, f2.paramType) &&
           this.typesEqual(f1.returnType, f2.returnType)
         )
+      }
 
-      case "GenericType":
+      case "GenericType": {
         const g1 = t1 as AST.GenericType
         const g2 = t2 as AST.GenericType
         if (g1.name !== g2.name) return false
@@ -893,6 +950,24 @@ export class TypeChecker {
         return g1.typeArguments.every((arg, i) =>
           this.typesEqual(arg, g2.typeArguments[i])
         )
+      }
+
+      case "StructType": {
+        const s1 = t1 as AST.StructType
+        const s2 = t2 as AST.StructType
+        return s1.name === s2.name
+      }
+
+      case "RecordType": {
+        const r1 = t1 as AST.RecordType
+        const r2 = t2 as AST.RecordType
+        if (r1.fields.length !== r2.fields.length) return false
+        return r1.fields.every(
+          (field, i) =>
+            field.name === r2.fields[i].name &&
+            this.typesEqual(field.type, r2.fields[i].type)
+        )
+      }
 
       default:
         return false
@@ -917,7 +992,6 @@ export class TypeChecker {
     // Otherwise use normal type equality
     return this.typesEqual(expected, actual)
   }
-
 
   private isNumericType(type: AST.Type): boolean {
     return this.isIntType(type) || this.isFloatType(type)
@@ -1055,52 +1129,178 @@ export class TypeChecker {
   ): AST.Type {
     const recordType = this.checkExpression(access.record, env)
 
-    if (recordType.kind !== "RecordType") {
+    // Support both RecordType and StructType for field access
+    if (recordType.kind === "RecordType") {
+      const rt = recordType as AST.RecordType
+      const field = rt.fields.find((f) => f.name === access.fieldName)
+
+      if (!field) {
+        const availableFields = rt.fields.map((f) => f.name).join(", ")
+        this.addError(
+          `Record does not have field '${access.fieldName}'`,
+          access.line,
+          access.column,
+          `Field '${access.fieldName}' is not defined in this record type`,
+          `Available fields: ${availableFields}`
+        )
+        return new AST.PrimitiveType("Unknown", access.line, access.column)
+      }
+
+      return field.type
+    } else if (recordType.kind === "StructType") {
+      const st = recordType as AST.StructType
+      const field = st.fields.find((f) => f.name === access.fieldName)
+
+      if (!field) {
+        const availableFields = st.fields.map((f) => f.name).join(", ")
+        this.addError(
+          `Struct does not have field '${access.fieldName}'`,
+          access.line,
+          access.column,
+          `Field '${access.fieldName}' is not defined in this struct type`,
+          `Available fields: ${availableFields}`
+        )
+        return new AST.PrimitiveType("Unknown", access.line, access.column)
+      }
+
+      return field.type
+    } else {
       this.addError(
         `Cannot access field '${access.fieldName}' on non-record type '${this.typeToString(recordType)}'`,
         access.line,
         access.column,
-        `Type '${this.typeToString(recordType)}' is not a record`,
-        `Only record types support field access with dot notation`
+        `Type '${this.typeToString(recordType)}' is not a record or struct`,
+        `Only record and struct types support field access with dot notation`
       )
       return new AST.PrimitiveType("Unknown", access.line, access.column)
     }
+  }
 
-    const rt = recordType as AST.RecordType
-    const field = rt.fields.find(f => f.name === access.fieldName)
+  private checkStructExpression(
+    structExpr: AST.StructExpression,
+    env: TypeEnvironment
+  ): AST.Type {
+    // Look up the struct type in the environment
+    const structType = env.lookup(structExpr.structName)
 
-    if (!field) {
-      const availableFields = rt.fields.map(f => f.name).join(", ")
+    if (!structType) {
       this.addError(
-        `Record does not have field '${access.fieldName}'`,
-        access.line,
-        access.column,
-        `Field '${access.fieldName}' is not defined in this record type`,
-        `Available fields: ${availableFields}`
+        `Unknown struct type: ${structExpr.structName}`,
+        structExpr.line,
+        structExpr.column,
+        `Struct '${structExpr.structName}' is not defined`,
+        `Check that the struct is declared before use`
       )
-      return new AST.PrimitiveType("Unknown", access.line, access.column)
+      return new AST.PrimitiveType(
+        "Unknown",
+        structExpr.line,
+        structExpr.column
+      )
     }
 
-    return field.type
+    if (structType.kind !== "StructType") {
+      this.addError(
+        `'${structExpr.structName}' is not a struct type`,
+        structExpr.line,
+        structExpr.column,
+        `Expected a struct type, but got ${structType.kind}`,
+        `Only struct types can be used in struct expressions`
+      )
+      return new AST.PrimitiveType(
+        "Unknown",
+        structExpr.line,
+        structExpr.column
+      )
+    }
+
+    const st = structType as AST.StructType
+
+    // Check that all required fields are provided
+    for (const structField of st.fields) {
+      const providedField = structExpr.fields.find(
+        (f) => f.name === structField.name
+      )
+      if (!providedField) {
+        this.addError(
+          `Missing field '${structField.name}' in struct expression`,
+          structExpr.line,
+          structExpr.column,
+          `Struct '${structExpr.structName}' requires field '${structField.name}'`,
+          `Add the missing field: ${structField.name}: <value>`
+        )
+      }
+    }
+
+    // Check that all provided fields exist and have correct types
+    for (const providedField of structExpr.fields) {
+      const structField = st.fields.find((f) => f.name === providedField.name)
+      if (!structField) {
+        this.addError(
+          `Unknown field '${providedField.name}' in struct '${structExpr.structName}'`,
+          providedField.line,
+          providedField.column,
+          `Field '${providedField.name}' is not defined in struct '${structExpr.structName}'`,
+          `Available fields: ${st.fields.map((f) => f.name).join(", ")}`
+        )
+      } else {
+        // Check field type
+        const valueType = this.checkExpression(providedField.value, env)
+        if (!this.typesEqual(valueType, structField.type)) {
+          this.addError(
+            `Field '${providedField.name}' type mismatch`,
+            providedField.line,
+            providedField.column,
+            `Expected '${this.typeToString(structField.type)}', but got '${this.typeToString(valueType)}'`,
+            `Ensure the field value matches the declared type`
+          )
+        }
+      }
+    }
+
+    return structType
+  }
+
+  private checkStructDeclaration(
+    structDecl: AST.StructDeclaration,
+    env: TypeEnvironment
+  ): void {
+    // Create StructType and add it to the environment
+    const structType = new AST.StructType(
+      structDecl.name,
+      structDecl.fields,
+      structDecl.line,
+      structDecl.column
+    )
+
+    env.define(structDecl.name, structType)
   }
 
   private typeToString(type: AST.Type): string {
     switch (type.kind) {
       case "PrimitiveType":
         return (type as AST.PrimitiveType).name
-      case "FunctionType":
+      case "FunctionType": {
         const ft = type as AST.FunctionType
         return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
-      case "GenericType":
+      }
+      case "GenericType": {
         const gt = type as AST.GenericType
-        const args = gt.typeArguments.map(t => this.typeToString(t)).join(", ")
+        const args = gt.typeArguments
+          .map((t) => this.typeToString(t))
+          .join(", ")
         return `${gt.name}<${args}>`
-      case "RecordType":
+      }
+      case "RecordType": {
         const rt = type as AST.RecordType
         const fields = rt.fields
-          .map(field => `${field.name}: ${this.typeToString(field.type)}`)
+          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
           .join(", ")
         return `{${fields}}`
+      }
+      case "StructType": {
+        const st = type as AST.StructType
+        return st.name
+      }
       default:
         return "Unknown"
     }

@@ -1,4 +1,4 @@
-import { Lexer, Token, TokenType } from "../lexer.js"
+import { Lexer, type Token, TokenType } from "../lexer.js"
 
 export interface FormatterOptions {
   indentSize: number

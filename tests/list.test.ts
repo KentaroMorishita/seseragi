@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import {
-  List,
+  type List,
   Empty,
   Cons,
   mapList,
@@ -100,7 +100,10 @@ describe("List型", () => {
     })
 
     test("applicative apply で関数を適用", () => {
-      const funcs = Cons((x: number) => x * 2, Cons((x: number) => x + 1, Empty))
+      const funcs = Cons(
+        (x: number) => x * 2,
+        Cons((x: number) => x + 1, Empty)
+      )
       const values = Cons(1, Cons(2, Empty))
       const result = applyList(funcs, values)
       // [(*2), (+1)] <*> [1, 2] = [2, 4, 2, 3]

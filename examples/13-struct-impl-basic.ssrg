@@ -18,3 +18,4 @@ let p2 = Point { x: 1, y: 2 }
 
 show p1
 show p2
+

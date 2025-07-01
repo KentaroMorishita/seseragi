@@ -178,12 +178,12 @@ describe("Parser", () => {
 
     const varDecl = program.statements[0] as AST.VariableDeclaration
     const expr = varDecl.initializer as AST.BinaryOperation
-    
+
     // Should be parsed as 1 : (2 : 3) due to right associativity
     expect(expr.kind).toBe("BinaryOperation")
     expect(expr.operator).toBe(":")
     expect((expr.left as AST.Literal).value).toBe(1)
-    
+
     const rightSide = expr.right as AST.BinaryOperation
     expect(rightSide.kind).toBe("BinaryOperation")
     expect(rightSide.operator).toBe(":")

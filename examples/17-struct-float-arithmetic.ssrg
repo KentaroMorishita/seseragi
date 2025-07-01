@@ -15,3 +15,4 @@ let p1 = PointF { x: 1.5, y: 2.5 }
 let p2 = PointF { x: 4.5, y: 6.5 }
 let d = distanceSquared p1 p2
 show d
+

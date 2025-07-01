@@ -178,7 +178,7 @@ export class UsageAnalyzer {
       this.analysis.needsBuiltins.arrayToList = true
       this.analysis.needsCurrying = true
       this.analysis.needsList = true
-      
+
       // Analyze comprehension expression and generators
       this.analyzeExpression(expr.expression)
       for (const generator of expr.generators) {
@@ -238,12 +238,12 @@ export class UsageAnalyzer {
       this.analysis.needsBuiltins.toString = true
     } else if (name === "arrayToList") {
       this.analysis.needsBuiltins.arrayToList = true
-      this.analysis.needsList = true  // List型も必要
-      this.analysis.needsCurrying = true  // カリー化も必要
+      this.analysis.needsList = true // List型も必要
+      this.analysis.needsCurrying = true // カリー化も必要
     } else if (name === "listToArray") {
       this.analysis.needsBuiltins.listToArray = true
-      this.analysis.needsList = true  // List型も必要
-      this.analysis.needsCurrying = true  // カリー化も必要
+      this.analysis.needsList = true // List型も必要
+      this.analysis.needsCurrying = true // カリー化も必要
     }
   }
 

@@ -14,7 +14,7 @@ function formatLine(line: string): string {
   }
 
   // 基本的なスペース正規化
-  let formatted = line
+  const formatted = line
     // 複数スペースを1つに
     .replace(/\s+/g, " ")
     // 演算子周りのスペース

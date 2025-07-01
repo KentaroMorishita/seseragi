@@ -18,3 +18,4 @@ let p1 = Point { x: 1, y: 2 }
 let p2 = Point { x: 4, y: 6 }
 let d = distanceSquared p1 p2
 show d
+

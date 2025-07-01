@@ -198,7 +198,6 @@ struct Player {
   age: Int
 }
 
-
 // 構造体のインスタンス化
 let origin = Point { x: 0, y: 0 }
 let playerPos = Point { x: 10, y: 5 }
@@ -233,7 +232,6 @@ fn createPoint x :Int -> y :Int -> Point {
 fn describePlayer p :Player -> String =
   p.name + " is " + toString (p.age) + " years old"
 
-
 // 関数の呼び出し
 let distance = calculateDistance playerPos
 let newPoint = createPoint 15 25
@@ -242,7 +240,6 @@ let description = describePlayer alice
 show distance
 show newPoint
 show description
-
 
 // =============================================================================
 // 実用的な例：小さな計算機
