@@ -45,6 +45,12 @@ function calculateIndentLevel(
     return 0  // トップレベルに戻る
   }
 
+  // match式のケース行はmatch式の開き括弧から+1レベル（2スペース）
+  if (isMatchCase(line, index, allLines)) {
+    const matchContextLevel = getMatchContextLevel(index, allLines)
+    return matchContextLevel + 1
+  }
+
   // 現在のコンテキストレベルを取得
   const contextLevel = getCurrentContextLevel(index, allLines)
 
@@ -106,6 +112,40 @@ function isTopLevelElement(line: string): boolean {
     line.startsWith("effectful ") ||
     line.startsWith("show ")  // show文もトップレベル要素として扱う
   )
+}
+
+function getMatchContextLevel(index: number, allLines: string[]): number {
+  // match式の開始行のコンテキストレベルを計算
+  // match式の{による増加は含まない
+  
+  let level = 0
+  let matchStartIndex = -1
+
+  // match式の開始行を探す
+  for (let i = index - 1; i >= 0; i--) {
+    const line = allLines[i].trim()
+    if (line === "" || line.startsWith("//")) continue
+
+    if (line.includes("match ") && line.includes("{")) {
+      matchStartIndex = i
+      break
+    }
+  }
+
+  if (matchStartIndex === -1) {
+    return getCurrentContextLevel(index, allLines)
+  }
+
+  // match式の開始行より前のコンテキストレベルを計算
+  for (let i = 0; i < matchStartIndex; i++) {
+    const line = allLines[i].trim()
+    if (line === "" || line.startsWith("//")) continue
+
+    const braceChange = countBracesInLine(line)
+    level = Math.max(0, level + braceChange)
+  }
+
+  return level
 }
 
 function getCurrentContextLevel(index: number, allLines: string[]): number {
@@ -209,6 +249,11 @@ function getRelativeIndent(
     return 1 // 親から +2スペース
   }
 
+  // match式のケース行（パターン -> 式）
+  if (isMatchCase(line, index, allLines)) {
+    return 0 // getCurrentContextLevel で既に適切なインデントが計算されている
+  }
+
   // 矢印の後の継続行
   if (isArrowContinuation(index, allLines)) {
     return 2 // 矢印から +4スペース（match caseから +2スペース）
@@ -235,6 +280,13 @@ function isArrowContinuation(index: number, allLines: string[]): boolean {
 function isExpressionContinuation(index: number, allLines: string[]): boolean {
   if (index === 0) return false
 
+  const currentLine = allLines[index].trim()
+  
+  // match式のケース行は式の継続ではない（別途処理される）
+  if (currentLine.includes(" -> ") && isMatchCase(currentLine, index, allLines)) {
+    return false
+  }
+
   // 直前の行をチェック
   for (let i = index - 1; i >= 0; i--) {
     const prevLine = allLines[i].trim()
@@ -249,9 +301,19 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
       return true
     }
 
-    // match文の後
-    if (prevLine.includes("match ")) {
-      return true
+    // match文の後（ただし、match式のケース行は除外）
+    if (prevLine.includes("match ") && prevLine.includes("{")) {
+      // match式の最初の行だけをtrueとする
+      // すでにmatch式のケースが始まっている場合はfalse
+      let hasMatchCase = false
+      for (let j = i + 1; j < index; j++) {
+        const checkLine = allLines[j].trim()
+        if (checkLine !== "" && !checkLine.startsWith("//") && checkLine.includes(" -> ")) {
+          hasMatchCase = true
+          break
+        }
+      }
+      return !hasMatchCase
     }
 
     // then文の後（elseでない限り）
@@ -334,6 +396,38 @@ export function normalizeOperatorSpacing(code: string): string {
   })
 
   return processedLines.join("\n")
+}
+
+// match式のケース行かどうかを判定
+function isMatchCase(
+  line: string,
+  index: number,
+  allLines: string[]
+): boolean {
+  // パターン -> 式 の形式をチェック
+  if (!line.includes(" -> ")) {
+    return false
+  }
+
+  // match式のコンテキスト内にいるかチェック
+  let matchDepth = 0
+  for (let i = 0; i < index; i++) {
+    const prevLine = allLines[i].trim()
+    if (prevLine === "" || prevLine.startsWith("//")) continue
+    
+    // match式の開始を検出
+    if (prevLine.includes("match ") && prevLine.includes("{")) {
+      matchDepth++
+    }
+    
+    // ブロックの終了を検出
+    const braceChange = countBracesInLine(prevLine)
+    if (braceChange < 0 && matchDepth > 0) {
+      matchDepth += braceChange
+    }
+  }
+  
+  return matchDepth > 0
 }
 
 // 三項演算子の継続行かどうかを判定
