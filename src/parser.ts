@@ -1778,6 +1778,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
+      type === TokenType.HEAD ||
+      type === TokenType.TAIL ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||
@@ -1834,12 +1836,14 @@ export class Parser {
 
     // ビルトイン関数
     if (
-      this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING)
+      this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING, TokenType.HEAD, TokenType.TAIL)
     ) {
       const functionName = this.previous().value as
         | "print"
         | "putStrLn"
         | "toString"
+        | "head"
+        | "tail"
       const line = this.previous().line
       const column = this.previous().column
 
@@ -2271,6 +2275,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
+      type === TokenType.HEAD ||
+      type === TokenType.TAIL ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||

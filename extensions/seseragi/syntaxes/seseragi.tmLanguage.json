@@ -212,15 +212,15 @@
       "patterns": [
         {
           "name": "support.function.builtin.io.seseragi",
-          "match": "\\b(print|putStrLn|toString|show)(?=\\s*\\()"
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*\\()"
         },
         {
           "name": "support.function.builtin.io.functional.seseragi",
-          "match": "\\b(print|putStrLn|toString|show)(?=\\s+[^\\(])"
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s+[^\\(])"
         },
         {
           "name": "support.function.builtin.io.standalone.seseragi",
-          "match": "\\b(print|putStrLn|toString|show)(?=\\s*$)"
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*$)"
         },
         {
           "name": "entity.name.function.definition.seseragi",

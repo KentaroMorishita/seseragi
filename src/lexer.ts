@@ -37,6 +37,8 @@ export enum TokenType {
   PRINT = "PRINT",
   PUT_STR_LN = "PUT_STR_LN",
   TO_STRING = "TO_STRING",
+  HEAD = "HEAD",
+  TAIL = "TAIL",
 
   // Operators
   PIPE = "PIPE", // |
@@ -129,6 +131,8 @@ export class Lexer {
     ["print", TokenType.PRINT],
     ["putStrLn", TokenType.PUT_STR_LN],
     ["toString", TokenType.TO_STRING],
+    ["head", TokenType.HEAD],
+    ["tail", TokenType.TAIL],
     ["True", TokenType.BOOLEAN],
     ["False", TokenType.BOOLEAN],
   ])

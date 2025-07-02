@@ -87,6 +87,41 @@ export class TypeConstraint {
   }
 }
 
+// ArrayAccess用の特別な制約クラス
+export class ArrayAccessConstraint {
+  constructor(
+    public arrayType: AST.Type,
+    public resultType: AST.Type,
+    public line: number,
+    public column: number,
+    public context?: string
+  ) {}
+
+  toString(): string {
+    return `ArrayAccess(${this.typeToString(this.arrayType)}) -> ${this.typeToString(this.resultType)}`
+  }
+
+  private typeToString(type: AST.Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "TypeVariable":
+        return (type as TypeVariable).name
+      case "TupleType":
+        const tt = type as AST.TupleType
+        return `(${tt.elementTypes.map(t => this.typeToString(t)).join(", ")})`
+      case "GenericType":
+        const gt = type as AST.GenericType
+        if (gt.typeArguments.length === 0) {
+          return gt.name
+        }
+        return `${gt.name}<${gt.typeArguments.map(t => this.typeToString(t)).join(", ")}>`
+      default:
+        return "Unknown"
+    }
+  }
+}
+
 // 型置換を表現するクラス
 export class TypeSubstitution {
   private substitutions: Map<number, AST.Type> = new Map()
@@ -291,7 +326,7 @@ export interface InferenceResult {
 // 型推論システムのメインクラス
 export class TypeInferenceSystem {
   private nextVarId = 1000 // Start from 1000 to avoid conflicts with parser-generated type variables
-  private constraints: TypeConstraint[] = []
+  private constraints: (TypeConstraint | ArrayAccessConstraint)[] = []
   private errors: TypeInferenceError[] = []
   private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
@@ -1763,6 +1798,67 @@ export class TypeInferenceSystem {
         }
         return new AST.PrimitiveType("String", call.line, call.column)
 
+      case "head":
+        // Type: List<T> -> Maybe<T>
+        if (call.arguments.length === 1) {
+          const listType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const elementType = this.freshTypeVariable(call.line, call.column)
+          
+          // 引数はList<T>型でなければならない
+          const expectedListType = new AST.GenericType(
+            "List",
+            [elementType],
+            call.line,
+            call.column
+          )
+          this.addConstraint(
+            new TypeConstraint(
+              listType,
+              expectedListType,
+              call.line,
+              call.column,
+              "head function requires List<T> argument"
+            )
+          )
+          
+          // 戻り値はMaybe<T>型
+          return new AST.GenericType(
+            "Maybe",
+            [elementType],
+            call.line,
+            call.column
+          )
+        }
+        throw new Error("head function requires exactly one argument")
+
+      case "tail":
+        // Type: List<T> -> List<T>
+        if (call.arguments.length === 1) {
+          const listType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const elementType = this.freshTypeVariable(call.line, call.column)
+          
+          // 引数はList<T>型でなければならない
+          const expectedListType = new AST.GenericType(
+            "List",
+            [elementType],
+            call.line,
+            call.column
+          )
+          this.addConstraint(
+            new TypeConstraint(
+              listType,
+              expectedListType,
+              call.line,
+              call.column,
+              "tail function requires List<T> argument"
+            )
+          )
+          
+          // 戻り値も同じList<T>型
+          return expectedListType
+        }
+        throw new Error("tail function requires exactly one argument")
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -2808,11 +2904,21 @@ export class TypeInferenceSystem {
 
     for (const constraint of this.constraints) {
       try {
-        const constraintSub = this.unify(
-          substitution.apply(constraint.type1),
-          substitution.apply(constraint.type2)
-        )
-        substitution = substitution.compose(constraintSub)
+        if (constraint instanceof ArrayAccessConstraint) {
+          // ArrayAccessConstraintの特別な処理
+          const constraintSub = this.solveArrayAccessConstraint(
+            constraint,
+            substitution
+          )
+          substitution = substitution.compose(constraintSub)
+        } else {
+          // 通常のTypeConstraint処理
+          const constraintSub = this.unify(
+            substitution.apply(constraint.type1),
+            substitution.apply(constraint.type2)
+          )
+          substitution = substitution.compose(constraintSub)
+        }
       } catch (error) {
         this.errors.push(
           new TypeInferenceError(
@@ -2826,6 +2932,58 @@ export class TypeInferenceSystem {
     }
 
     return substitution
+  }
+
+  // ArrayAccess制約の特別な解決
+  private solveArrayAccessConstraint(
+    constraint: ArrayAccessConstraint,
+    currentSubstitution: TypeSubstitution
+  ): TypeSubstitution {
+    const arrayType = currentSubstitution.apply(constraint.arrayType)
+    const resultType = constraint.resultType
+
+    // Array<T>の場合
+    if (arrayType.kind === "GenericType") {
+      const gt = arrayType as AST.GenericType
+      if (gt.name === "Array" && gt.typeArguments.length === 1) {
+        // Array<T>[index] -> T
+        return this.unify(resultType, gt.typeArguments[0])
+      }
+    }
+
+    // Tuple型の場合
+    if (arrayType.kind === "TupleType") {
+      const tt = arrayType as AST.TupleType
+      if (tt.elementTypes.length > 0) {
+        // タプルアクセスの場合、TypeScriptの挙動に合わせて
+        // すべての要素型のunion型として扱う
+        // ただし、型安全性のため、結果型を任意の型変数とする
+        const unionType = this.freshTypeVariable(constraint.line, constraint.column)
+        return this.unify(resultType, unionType)
+      }
+    }
+
+    // 型変数の場合、Array<T>またはTuple型として推論
+    if (arrayType.kind === "TypeVariable") {
+      const tv = arrayType as TypeVariable
+      const elementType = this.freshTypeVariable(constraint.line, constraint.column)
+      
+      // Array<T>として推論
+      const arrayGenericType = new AST.GenericType(
+        "Array",
+        [elementType],
+        constraint.line,
+        constraint.column
+      )
+      
+      const sub1 = this.unify(arrayType, arrayGenericType)
+      const sub2 = this.unify(resultType, elementType)
+      return sub1.compose(sub2)
+    }
+
+    throw new Error(
+      `Array access requires Array<T> or Tuple type, got ${this.typeToString(arrayType)}`
+    )
   }
 
   // 単一化アルゴリズム
@@ -4370,35 +4528,39 @@ export class TypeInferenceSystem {
           arrayAccess.index.column
         ),
         arrayAccess.index.line,
-        arrayAccess.index.column,
+        arrayAccess.column,
         "Array index must be Int"
       )
     )
 
-    // 配列の要素型を取得
-    const elementType = this.freshTypeVariable(
-      arrayAccess.line,
-      arrayAccess.column
-    )
-    const expectedArrayType = new AST.GenericType(
-      "Array",
-      [elementType],
+    // 戻り値の型変数を作成
+    const resultType = this.freshTypeVariable(
       arrayAccess.line,
       arrayAccess.column
     )
 
-    // 配列がArray<T>型であることを制約として追加
-    this.addConstraint(
-      new TypeConstraint(
-        arrayType,
-        expectedArrayType,
-        arrayAccess.line,
-        arrayAccess.column,
-        "Array access type"
-      )
-    )
+    // ArrayAccessに対する特別な制約を追加
+    this.addArrayOrTupleAccessConstraint(arrayType, resultType, arrayAccess)
 
-    return elementType
+    return resultType
+  }
+
+  private addArrayOrTupleAccessConstraint(
+    arrayType: AST.Type,
+    resultType: AST.Type,
+    arrayAccess: AST.ArrayAccess
+  ): void {
+    // ArrayAccessConstraintという特別な制約タイプを作成
+    // この制約は統一化時に特別に処理される
+    const constraint = new ArrayAccessConstraint(
+      arrayType,
+      resultType,
+      arrayAccess.line,
+      arrayAccess.column,
+      "Array or Tuple access"
+    )
+    
+    this.constraints.push(constraint)
   }
 
   private generateConstraintsForListSugar(

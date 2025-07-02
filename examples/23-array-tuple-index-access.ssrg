@@ -1,0 +1,113 @@
+// Array and Tuple Index Access Examples
+// 配列とタプルの要素アクセス例
+
+// =================================================================
+// 1. Basic Array Access / 基本的な配列アクセス
+// =================================================================
+
+let numbers = [1, 2, 3, 4, 5]
+let first = numbers[0]    // 1
+let third = numbers[2]    // 3
+let last = numbers[4]     // 5
+
+// =================================================================
+// 2. Basic Tuple Access / 基本的なタプルアクセス
+// =================================================================
+
+let point = (10, 20)
+let x = point[0]          // 10
+let y = point[1]          // 20
+
+// Mixed types tuple / 混合型タプル
+let person = ("Alice", 25, true)
+let name = person[0]      // "Alice" : String
+let age = person[1]       // 25 : Int
+let isActive = person[2]  // true : Bool
+
+// =================================================================
+// 3. Nested Access / ネストしたアクセス
+// =================================================================
+
+// 2D Array / 2次元配列
+let matrix = [[1, 2], [3, 4], [5, 6]]
+let element = matrix[1][0]  // 3
+
+// Array of tuples / タプルの配列
+let points = [(0, 0), (1, 1), (2, 4)]
+let secondPoint = points[1]     // (1, 1)
+let secondX = points[1][0]      // 1
+let secondY = points[1][1]      // 1
+
+// Complex nested structure / 複雑なネスト構造
+let data = [
+  ("user1", [100, 200, 300]),
+  ("user2", [150, 250, 350])
+]
+let user1Name = data[0][0]        // "user1"
+let user1Score = data[0][1][2]    // 300
+let user2FirstScore = data[1][1][0]  // 150
+
+// =================================================================
+// 4. Functions with Index Access / インデックスアクセスを使う関数
+// =================================================================
+
+fn getFirst arr = arr[0]
+
+fn getTupleSum tuple =
+  tuple[0] + tuple[1]
+
+// Function usage / 関数の使用例
+let firstNumber = getFirst ([10, 20, 30])  // 10
+let sum = getTupleSum ((5, 7))             // 12
+
+// =================================================================
+// 5. Type Annotations / 型注釈の例
+// =================================================================
+
+let coordinates: (Int, Int) = (42, 84)
+let latitude: Int = coordinates[0]
+let longitude: Int = coordinates[1]
+
+// =================================================================
+// 6. Output / 出力
+// =================================================================
+
+show first
+show x
+show y
+show element
+show sum
+
+// =================================================================
+// 7. List Operations (head/tail) / リスト操作
+// =================================================================
+
+// Lists do NOT support index access, use head/tail instead
+// リストはインデックスアクセスをサポートしない（代わりにhead/tailを使用）
+
+let list = Cons 1 (Cons 2 (Cons 3 Empty))
+let firstItem = head(list)    // Just 1 : Maybe<Int>
+let rest = tail(list)         // Cons 2 (Cons 3 Empty) : List<Int>
+
+// Empty list case / 空リストの場合
+let emptyList = Empty
+let headOfEmpty = head(emptyList)  // Nothing : Maybe<never>
+let tailOfEmpty = tail(emptyList)  // Empty : List<never>
+
+show firstItem
+show rest
+show headOfEmpty
+show tailOfEmpty
+
+// =================================================================
+// Notes / 注意事項
+// =================================================================
+
+// Error cases (would cause compilation errors):
+// エラーケース（コンパイルエラーになる例）：
+//
+// let invalid = numbers[10]     // Index out of bounds (runtime error)
+// let wrongType = point["x"]    // String index on Int-indexed type
+// let listAccess = list[0]      // Lists don't support index access!
+
+
