@@ -67,6 +67,9 @@ export enum TokenType {
   AND = "AND", // &&
   OR = "OR", // ||
   NOT = "NOT", // !
+  HEAD_OP = "HEAD_OP", // ^
+  TAIL_OP = "TAIL_OP", // >>
+  DOT_TAIL_OP = "DOT_TAIL_OP", // .>>
 
   // Punctuation
   COLON = "COLON", // :
@@ -243,6 +246,11 @@ export class Lexer {
           this.advance() // consume third .
           return this.makeToken(TokenType.SPREAD, "...", startLine, startColumn)
         }
+        if (this.peek() === ">" && this.peekNext() === ">") {
+          this.advance() // consume first >
+          this.advance() // consume second >
+          return this.makeToken(TokenType.DOT_TAIL_OP, ".>>", startLine, startColumn)
+        }
         if (this.peek() === ".") {
           this.advance() // consume second .
           return this.makeToken(TokenType.RANGE, "..", startLine, startColumn)
@@ -277,6 +285,8 @@ export class Lexer {
         return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
       case "`":
         return this.makeToken(TokenType.BACKTICK, char, startLine, startColumn)
+      case "^":
+        return this.makeToken(TokenType.HEAD_OP, char, startLine, startColumn)
       case "\n":
         this.line++
         this.column = 1
@@ -377,6 +387,10 @@ export class Lexer {
           startLine,
           startColumn
         )
+      }
+      if (this.peek() === ">") {
+        this.advance() // second >
+        return this.makeToken(TokenType.TAIL_OP, ">>", startLine, startColumn)
       }
       return this.makeToken(
         TokenType.GREATER_THAN,

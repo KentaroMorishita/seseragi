@@ -191,6 +191,18 @@
           "match": "~"
         },
         {
+          "name": "keyword.operator.head.seseragi",
+          "match": "\\^"
+        },
+        {
+          "name": "keyword.operator.tail.seseragi",
+          "match": ">>"
+        },
+        {
+          "name": "keyword.operator.dot-tail.seseragi",
+          "match": "\\.>>"
+        },
+        {
           "name": "keyword.operator.assignment.seseragi",
           "match": "="
         },
