@@ -220,8 +220,7 @@ export class Parser {
         // 型ありパラメータでも暗黙的selfとotherをチェック
         const isImplicitSelf =
           implContext && paramName === "self" && parameters.length === 0
-        const isImplicitOther =
-          implContext && paramName === "other"
+        const isImplicitOther = implContext && paramName === "other"
 
         parameters.push(
           new AST.Parameter(
@@ -246,10 +245,9 @@ export class Parser {
           // 暗黙的selfの検出：implコンテキスト内で最初のパラメータが'self'の場合
           const isImplicitSelf =
             implContext && paramName === "self" && parameters.length === 0
-          
+
           // 暗黙的otherの検出：implコンテキスト内で'other'パラメータの場合
-          const isImplicitOther =
-            implContext && paramName === "other"
+          const isImplicitOther = implContext && paramName === "other"
 
           if (isImplicitSelf) {
             // 暗黙的selfパラメータ：型は後でimplコンテキストから解決される
@@ -359,7 +357,10 @@ export class Parser {
         tokenType === TokenType.LEFT_BRACE
       ) {
         // Check if this identifier was preceded by -> (indicating return type)
-        if (this.current > 0 && this.tokens[this.current - 1].type === TokenType.ARROW) {
+        if (
+          this.current > 0 &&
+          this.tokens[this.current - 1].type === TokenType.ARROW
+        ) {
           return true // This is a return type
         }
         return hasTypedParameters
@@ -897,7 +898,10 @@ export class Parser {
       return new AST.RecordDestructuring(pattern, initializer, line, column)
     }
     // Check if this is struct destructuring with struct name
-    else if (this.check(TokenType.IDENTIFIER) && this.checkAhead(TokenType.LEFT_BRACE)) {
+    else if (
+      this.check(TokenType.IDENTIFIER) &&
+      this.checkAhead(TokenType.LEFT_BRACE)
+    ) {
       // Struct destructuring: let Person {name, age} = person
       const structName = this.advance().value
       const pattern = this.structPattern(structName)
@@ -907,8 +911,7 @@ export class Parser {
       const initializer = this.expression()
 
       return new AST.StructDestructuring(pattern, initializer, line, column)
-    }
-    else {
+    } else {
       // Regular variable declaration: let x = value
       const name = this.consume(
         TokenType.IDENTIFIER,
@@ -1697,15 +1700,18 @@ export class Parser {
         // 引数なしの括弧付きメソッド呼び出しをチェック: obj method()
         if (this.check(TokenType.LEFT_PAREN)) {
           this.advance() // consume '('
-          
+
           if (!this.check(TokenType.RIGHT_PAREN)) {
             // 括弧内に引数がある場合
             do {
               args.push(this.expression())
             } while (this.match(TokenType.COMMA))
           }
-          
-          this.consume(TokenType.RIGHT_PAREN, "Expected ')' after method arguments")
+
+          this.consume(
+            TokenType.RIGHT_PAREN,
+            "Expected ')' after method arguments"
+          )
         } else {
           // メソッドの引数を収集（スペース区切り）
           while (
@@ -1871,14 +1877,20 @@ export class Parser {
           if (!this.check(TokenType.RIGHT_BRACE)) {
             do {
               this.skipNewlines()
-              
+
               // Check for spread syntax
               if (this.match(TokenType.SPREAD)) {
                 const spreadLine = this.previous().line
                 const spreadColumn = this.previous().column
                 const spreadExpr = this.expression()
-                const spreadAst = new AST.SpreadExpression(spreadExpr, spreadLine, spreadColumn)
-                fields.push(new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn))
+                const spreadAst = new AST.SpreadExpression(
+                  spreadExpr,
+                  spreadLine,
+                  spreadColumn
+                )
+                fields.push(
+                  new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn)
+                )
               } else {
                 // Check for shorthand property notation
                 const fieldToken = this.peek()
@@ -1886,18 +1898,28 @@ export class Parser {
                   const fieldName = this.advance().value
                   const fieldLine = this.previous().line
                   const fieldColumn = this.previous().column
-                  
+
                   this.skipNewlines()
-                  
+
                   // Check if this is shorthand notation (no colon follows)
-                  if (this.check(TokenType.COMMA) || this.check(TokenType.RIGHT_BRACE)) {
+                  if (
+                    this.check(TokenType.COMMA) ||
+                    this.check(TokenType.RIGHT_BRACE)
+                  ) {
                     // Shorthand: Person { name, age }
                     fields.push(
-                      new AST.RecordShorthandField(fieldName, fieldLine, fieldColumn)
+                      new AST.RecordShorthandField(
+                        fieldName,
+                        fieldLine,
+                        fieldColumn
+                      )
                     )
                   } else {
                     // Regular field: Person { name: value }
-                    this.consume(TokenType.COLON, "Expected ':' after field name")
+                    this.consume(
+                      TokenType.COLON,
+                      "Expected ':' after field name"
+                    )
                     this.skipNewlines()
                     const fieldValue = this.expression()
 
@@ -2120,14 +2142,20 @@ export class Parser {
       if (!this.check(TokenType.RIGHT_BRACE)) {
         do {
           this.skipNewlines()
-          
+
           // Check for spread syntax
           if (this.match(TokenType.SPREAD)) {
             const spreadLine = this.previous().line
             const spreadColumn = this.previous().column
             const spreadExpr = this.expression()
-            const spreadAst = new AST.SpreadExpression(spreadExpr, spreadLine, spreadColumn)
-            fields.push(new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn))
+            const spreadAst = new AST.SpreadExpression(
+              spreadExpr,
+              spreadLine,
+              spreadColumn
+            )
+            fields.push(
+              new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn)
+            )
           } else {
             // Check for shorthand property notation
             const fieldToken = this.peek()
@@ -2135,14 +2163,21 @@ export class Parser {
               const fieldName = this.advance().value
               const fieldLine = this.previous().line
               const fieldColumn = this.previous().column
-              
+
               this.skipNewlines()
-              
+
               // Check if this is shorthand notation (no colon follows)
-              if (this.check(TokenType.COMMA) || this.check(TokenType.RIGHT_BRACE)) {
+              if (
+                this.check(TokenType.COMMA) ||
+                this.check(TokenType.RIGHT_BRACE)
+              ) {
                 // Shorthand: { name, age }
                 fields.push(
-                  new AST.RecordShorthandField(fieldName, fieldLine, fieldColumn)
+                  new AST.RecordShorthandField(
+                    fieldName,
+                    fieldLine,
+                    fieldColumn
+                  )
                 )
               } else {
                 // Regular field: { name: value }
@@ -2218,7 +2253,6 @@ export class Parser {
 
     throw new ParseError(message, this.peek())
   }
-
 
   private skipNewlines(): void {
     while (this.check(TokenType.NEWLINE) || this.check(TokenType.COMMENT)) {
@@ -2544,26 +2578,38 @@ export class Parser {
     if (!this.check(TokenType.RIGHT_BRACE)) {
       do {
         this.skipNewlines()
-        const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
-        
+        const fieldName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected field name"
+        ).value
+
         let alias: string | undefined
         // Check for alias syntax: {x: posX}
         if (this.match(TokenType.COLON)) {
-          alias = this.consume(TokenType.IDENTIFIER, "Expected alias name").value
+          alias = this.consume(
+            TokenType.IDENTIFIER,
+            "Expected alias name"
+          ).value
         }
 
-        fields.push(new AST.RecordPatternField(
-          fieldName,
-          this.previous().line,
-          this.previous().column,
-          alias
-        ))
+        fields.push(
+          new AST.RecordPatternField(
+            fieldName,
+            this.previous().line,
+            this.previous().column,
+            alias
+          )
+        )
         this.skipNewlines()
       } while (this.match(TokenType.COMMA))
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' to close record pattern")
-    return new AST.RecordPattern(fields, this.previous().line, this.previous().column)
+    return new AST.RecordPattern(
+      fields,
+      this.previous().line,
+      this.previous().column
+    )
   }
 
   private structPattern(structName: string): AST.StructPattern {
@@ -2573,26 +2619,39 @@ export class Parser {
     if (!this.check(TokenType.RIGHT_BRACE)) {
       do {
         this.skipNewlines()
-        const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
-        
+        const fieldName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected field name"
+        ).value
+
         let alias: string | undefined
         // Check for alias syntax: {x: posX}
         if (this.match(TokenType.COLON)) {
-          alias = this.consume(TokenType.IDENTIFIER, "Expected alias name").value
+          alias = this.consume(
+            TokenType.IDENTIFIER,
+            "Expected alias name"
+          ).value
         }
 
-        fields.push(new AST.RecordPatternField(
-          fieldName,
-          this.previous().line,
-          this.previous().column,
-          alias
-        ))
+        fields.push(
+          new AST.RecordPatternField(
+            fieldName,
+            this.previous().line,
+            this.previous().column,
+            alias
+          )
+        )
         this.skipNewlines()
       } while (this.match(TokenType.COMMA))
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' to close struct pattern")
-    return new AST.StructPattern(structName, fields, this.previous().line, this.previous().column)
+    return new AST.StructPattern(
+      structName,
+      fields,
+      this.previous().line,
+      this.previous().column
+    )
   }
 }
 

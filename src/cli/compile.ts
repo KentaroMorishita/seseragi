@@ -3,6 +3,7 @@ import * as path from "node:path"
 import { Parser } from "../parser.js"
 import { generateTypeScript } from "../codegen.js"
 import { TypeInferenceSystem } from "../type-inference.js"
+import { Program } from "../ast.js"
 
 export interface CompileOptions {
   input: string
@@ -63,7 +64,7 @@ async function compile(options: CompileOptions): Promise<void> {
 
     // 新しい型推論システムを使用
     const typeInference = new TypeInferenceSystem()
-    inferenceResult = typeInference.infer(ast)
+    inferenceResult = typeInference.infer(new Program(ast.statements!, 1, 1))
 
     if (inferenceResult.errors.length > 0) {
       console.error("\n❌ Type checking failed:\n")

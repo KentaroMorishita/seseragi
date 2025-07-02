@@ -1122,8 +1122,11 @@ export class TypeChecker {
         )
       } else if (field.kind === "RecordSpreadField") {
         const spreadField = field as AST.RecordSpreadField
-        const spreadType = this.checkExpression(spreadField.spreadExpression.expression, env)
-        
+        const spreadType = this.checkExpression(
+          spreadField.spreadExpression.expression,
+          env
+        )
+
         // Handle spread fields - add their types to the current record
         if (spreadType.kind === "RecordType") {
           const recordType = spreadType as AST.RecordType
@@ -1235,7 +1238,9 @@ export class TypeChecker {
     // Check that all required fields are provided
     for (const structField of st.fields) {
       const providedField = structExpr.fields.find(
-        (f) => f.kind === "RecordInitField" && (f as AST.RecordInitField).name === structField.name
+        (f) =>
+          f.kind === "RecordInitField" &&
+          (f as AST.RecordInitField).name === structField.name
       )
       if (!providedField) {
         this.addError(
@@ -1277,9 +1282,15 @@ export class TypeChecker {
       } else if (field.kind === "RecordSpreadField") {
         // Handle spread fields
         const spreadField = field as AST.RecordSpreadField
-        const spreadType = this.checkExpression(spreadField.spreadExpression.expression, env)
-        
-        if (spreadType.kind !== "StructType" && spreadType.kind !== "RecordType") {
+        const spreadType = this.checkExpression(
+          spreadField.spreadExpression.expression,
+          env
+        )
+
+        if (
+          spreadType.kind !== "StructType" &&
+          spreadType.kind !== "RecordType"
+        ) {
           this.addError(
             `Cannot spread non-struct/record type in struct literal`,
             spreadField.line,

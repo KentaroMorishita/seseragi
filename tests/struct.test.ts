@@ -380,7 +380,7 @@ let p2 = Point { x: 3, y: 4 }
 p1 + p2
 `
     const output = compileSeseragi(source)
-    
+
     // エラーなくコンパイルできることを確認
     expect(output).toContain("class Point")
     expect(output).toContain("simple")
@@ -445,7 +445,7 @@ show (p magnitude())
 show (p double())
 `
     const output = compileSeseragi(source)
-    
+
     // エラーなくコンパイルできることを確認
     expect(output).toContain("class Point")
     expect(output).toContain("magnitude")
@@ -472,7 +472,7 @@ show (p1 magnitude())      // 括弧付きメソッド呼び出し
 show (p1 add p2)           // スペース区切りメソッド呼び出し
 `
     const output = compileSeseragi(source)
-    
+
     // 両方の構文がサポートされることを確認
     expect(output).toContain("__dispatchMethod")
     expect(output).toContain("magnitude")

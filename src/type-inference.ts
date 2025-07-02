@@ -1007,7 +1007,7 @@ export class TypeInferenceSystem {
           resolvedType = aliasedType
         }
       }
-      
+
       // 制約を追加（解決された型で）
       this.addConstraint(
         new TypeConstraint(
@@ -2396,8 +2396,6 @@ export class TypeInferenceSystem {
     // For unknown types, let constraint resolution figure it out
     return resultType
   }
-
-
 
   private generateConstraintsForFunctionApplicationOperator(
     funcApp: AST.FunctionApplicationOperator,
@@ -3793,22 +3791,28 @@ export class TypeInferenceSystem {
     }
 
     // フィールドの型チェック
-    const providedFieldMap = new Map<string, { field: AST.RecordInitField | AST.RecordSpreadField, type: AST.Type }>()
+    const providedFieldMap = new Map<
+      string,
+      { field: AST.RecordInitField | AST.RecordSpreadField; type: AST.Type }
+    >()
 
     // まずスプレッドフィールドを処理
     for (const field of structExpr.fields) {
       if (field.kind === "RecordSpreadField") {
         const spreadField = field as AST.RecordSpreadField
-        const spreadType = this.generateConstraintsForExpression(spreadField.spreadExpression.expression, env)
-        
+        const spreadType = this.generateConstraintsForExpression(
+          spreadField.spreadExpression.expression,
+          env
+        )
+
         // スプレッド元が同じ構造体型であることを確認
         if (spreadType.kind === "StructType") {
           const sourceStruct = spreadType as AST.StructType
           // スプレッド元のフィールドをすべて追加
           for (const sourceField of sourceStruct.fields) {
-            providedFieldMap.set(sourceField.name, { 
-              field: spreadField, 
-              type: sourceField.type 
+            providedFieldMap.set(sourceField.name, {
+              field: spreadField,
+              type: sourceField.type,
             })
           }
         } else {
@@ -3827,8 +3831,14 @@ export class TypeInferenceSystem {
     for (const field of structExpr.fields) {
       if (field.kind === "RecordInitField") {
         const initField = field as AST.RecordInitField
-        const fieldType = this.generateConstraintsForExpression(initField.value, env)
-        providedFieldMap.set(initField.name, { field: initField, type: fieldType })
+        const fieldType = this.generateConstraintsForExpression(
+          initField.value,
+          env
+        )
+        providedFieldMap.set(initField.name, {
+          field: initField,
+          type: fieldType,
+        })
       } else if (field.kind === "RecordShorthandField") {
         const shorthandField = field as AST.RecordShorthandField
         // 変数名と同じ名前の変数を環境から検索
@@ -3842,10 +3852,19 @@ export class TypeInferenceSystem {
             )
           )
           // エラーの場合はTypeVariableをフォールバック
-          const fallbackType = this.freshTypeVariable(shorthandField.line, shorthandField.column)
-          providedFieldMap.set(shorthandField.name, { field: shorthandField, type: fallbackType })
+          const fallbackType = this.freshTypeVariable(
+            shorthandField.line,
+            shorthandField.column
+          )
+          providedFieldMap.set(shorthandField.name, {
+            field: shorthandField,
+            type: fallbackType,
+          })
         } else {
-          providedFieldMap.set(shorthandField.name, { field: shorthandField, type: variableType })
+          providedFieldMap.set(shorthandField.name, {
+            field: shorthandField,
+            type: variableType,
+          })
         }
       }
     }
@@ -4145,12 +4164,15 @@ export class TypeInferenceSystem {
           env
         )
         // 同名フィールドは上書き
-        fieldMap.set(initField.name, new AST.RecordField(
+        fieldMap.set(
           initField.name,
-          fieldType,
-          initField.line,
-          initField.column
-        ))
+          new AST.RecordField(
+            initField.name,
+            fieldType,
+            initField.line,
+            initField.column
+          )
+        )
       } else if (field.kind === "RecordShorthandField") {
         const shorthandField = field as AST.RecordShorthandField
         // 変数名と同じ名前の変数を環境から検索
@@ -4164,20 +4186,29 @@ export class TypeInferenceSystem {
             )
           )
           // エラーの場合はTypeVariableをフォールバック
-          const fallbackType = this.freshTypeVariable(shorthandField.line, shorthandField.column)
-          fieldMap.set(shorthandField.name, new AST.RecordField(
-            shorthandField.name,
-            fallbackType,
+          const fallbackType = this.freshTypeVariable(
             shorthandField.line,
             shorthandField.column
-          ))
+          )
+          fieldMap.set(
+            shorthandField.name,
+            new AST.RecordField(
+              shorthandField.name,
+              fallbackType,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
         } else {
-          fieldMap.set(shorthandField.name, new AST.RecordField(
+          fieldMap.set(
             shorthandField.name,
-            variableType,
-            shorthandField.line,
-            shorthandField.column
-          ))
+            new AST.RecordField(
+              shorthandField.name,
+              variableType,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
         }
       } else if (field.kind === "RecordSpreadField") {
         const spreadField = field as AST.RecordSpreadField
@@ -4185,7 +4216,7 @@ export class TypeInferenceSystem {
           spreadField.spreadExpression,
           env
         )
-        
+
         // スプレッド元がレコード型であることを確認
         if (spreadType.kind === "RecordType") {
           const recordType = spreadType as AST.RecordType
@@ -4655,7 +4686,7 @@ export class TypeInferenceSystem {
     for (const field of recordDestr.pattern.fields) {
       const variableName = field.alias || field.fieldName
       const fieldType = this.freshTypeVariable(field.line, field.column)
-      
+
       // フィールド変数を環境に追加
       env.set(variableName, fieldType)
       this.nodeTypeMap.set(field, fieldType)
@@ -4664,7 +4695,14 @@ export class TypeInferenceSystem {
       // レコードフィールドアクセスと同等の制約を作成
       const recordFieldType = this.freshTypeVariable(field.line, field.column)
       const expectedRecordType = new AST.RecordType(
-        [new AST.RecordField(field.fieldName, recordFieldType, field.line, field.column)],
+        [
+          new AST.RecordField(
+            field.fieldName,
+            recordFieldType,
+            field.line,
+            field.column
+          ),
+        ],
         recordDestr.line,
         recordDestr.column
       )
@@ -4720,14 +4758,16 @@ export class TypeInferenceSystem {
       const structType = expectedStructType as AST.StructType
       for (const field of structDestr.pattern.fields) {
         const variableName = field.alias || field.fieldName
-        
+
         // 構造体定義から該当フィールドの型を取得
-        const structField = structType.fields.find(f => f.name === field.fieldName)
+        const structField = structType.fields.find(
+          (f) => f.name === field.fieldName
+        )
         if (structField) {
           // フィールドの実際の型を使用
           env.set(variableName, structField.type)
           this.nodeTypeMap.set(field, structField.type)
-          
+
           // 分割代入された変数を追跡するために、仮想的な変数宣言ノードを作成してnodeTypeMapに追加
           const virtualVarDecl = {
             kind: "VariableDeclaration",
@@ -4735,7 +4775,7 @@ export class TypeInferenceSystem {
             type: structField.type,
             line: field.line,
             column: field.column,
-            isDestructured: true
+            isDestructured: true,
           }
           this.nodeTypeMap.set(virtualVarDecl, structField.type)
         } else {

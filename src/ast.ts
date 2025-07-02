@@ -487,7 +487,11 @@ export class RecordExpression extends Expression {
   kind = "RecordExpression"
   fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[]
 
-  constructor(fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[], line: number, column: number) {
+  constructor(
+    fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[],
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.fields = fields
   }
@@ -682,12 +686,15 @@ export class RecordSpreadField extends ASTNode {
   kind = "RecordSpreadField"
   spreadExpression: SpreadExpression
 
-  constructor(spreadExpression: SpreadExpression, line: number, column: number) {
+  constructor(
+    spreadExpression: SpreadExpression,
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.spreadExpression = spreadExpression
   }
 }
-
 
 // =============================================================================
 // Pattern Matching
@@ -753,8 +760,8 @@ export class TuplePattern extends Pattern {
 export class RecordPatternField extends ASTNode {
   kind = "RecordPatternField"
   fieldName: string
-  alias?: string  // for {x: posX} syntax
-  pattern?: Pattern  // for nested patterns
+  alias?: string // for {x: posX} syntax
+  pattern?: Pattern // for nested patterns
 
   constructor(
     fieldName: string,

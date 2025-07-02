@@ -10,7 +10,7 @@ import { Lexer } from "./lexer"
 import { generateTypeScript } from "./codegen"
 import { infer } from "./type-inference"
 import { TypeChecker } from "./typechecker"
-import type * as AST from "./ast"
+import * as AST from "./ast"
 
 // テスト用のexport関数
 export function compileSeseragi(source: string): string {
@@ -29,12 +29,7 @@ export function compileSeseragi(source: string): string {
   }
 
   // 型チェック
-  const program: AST.Program = {
-    kind: "Program",
-    statements: parseResult.statements!,
-    line: 0,
-    column: 0,
-  }
+  const program = new AST.Program(parseResult.statements!, 1, 1)
   const typeChecker = new TypeChecker(inferenceResult.typeEnvironment)
   const errors = typeChecker.check(program)
 
