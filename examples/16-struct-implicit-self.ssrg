@@ -17,7 +17,8 @@ impl Point {
   }
 
   // 単純な計算はワンライナーで記述
-  fn magnitude self -> Int = self.x * self.x + self.y * self.y
+  fn magnitude1 self -> Int = self.x * self.x + self.y * self.y
+  fn magnitude2 self -> Int = self magnitude1()
 
   // ブロック構文で詳細な処理を記述
   fn add self -> other: Point -> Point {
@@ -55,4 +56,8 @@ show (p1 + p2)
 show (p1 - p2)
 show (p1 scale 3)
 show (p1 distanceSquared p2)
+
+// 括弧付きメソッド呼び出し（引数なしメソッド用）
+show (p1 magnitude1())
+show (p2 magnitude2())
 

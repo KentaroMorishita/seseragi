@@ -41,6 +41,7 @@ show isGreater  // True
 show "--- Functions ---"
 
 // 基本的な関数
+fn hello -> String = "Hello world"
 fn double x: Int -> Int = x * 2
 fn greet name: String -> String = "Hello, " + name + "!"
 
@@ -48,6 +49,7 @@ fn greet name: String -> String = "Hello, " + name + "!"
 fn add x: Int -> y: Int -> Int = x + y
 fn multiply x: Int -> y: Int -> Int = x * y
 
+show $ hello()          // "Hello world"
 show $ double 21        // 42
 show $ greet "World"    // "Hello, World!"
 show $ add 10 15        // 25

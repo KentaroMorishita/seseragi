@@ -387,4 +387,95 @@ p1 + p2
     expect(output).toContain("complex")
     expect(output).toContain("__dispatchOperator")
   })
+
+  test("should parse method call with parentheses for zero-argument methods", () => {
+    const source = `
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn magnitude self -> Int = self.x * self.x + self.y * self.y
+  fn getX self -> Int = self.x
+}
+
+let p = Point { x: 3, y: 4 }
+p magnitude()
+p getX()
+`
+    const parser = new Parser(source)
+    const result = parser.parse()
+
+    expect(result.errors).toHaveLength(0)
+    expect(result.statements).toHaveLength(5)
+
+    // 最後の2つの文は p magnitude() と p getX() の呼び出し
+    const magnitudeCall = result.statements![3] as AST.ExpressionStatement
+    const getXCall = result.statements![4] as AST.ExpressionStatement
+
+    expect(magnitudeCall.expression.kind).toBe("MethodCall")
+    expect(getXCall.expression.kind).toBe("MethodCall")
+
+    const magnitudeMethodCall = magnitudeCall.expression as AST.MethodCall
+    const getXMethodCall = getXCall.expression as AST.MethodCall
+
+    expect(magnitudeMethodCall.methodName).toBe("magnitude")
+    expect(magnitudeMethodCall.arguments).toHaveLength(0)
+    expect(getXMethodCall.methodName).toBe("getX")
+    expect(getXMethodCall.arguments).toHaveLength(0)
+  })
+
+  test("should compile and run method call with parentheses", () => {
+    const source = `
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn magnitude self -> Int = self.x * self.x + self.y * self.y
+  fn double self -> Point {
+    Point { x: self.x * 2, y: self.y * 2 }
+  }
+}
+
+let p = Point { x: 3, y: 4 }
+show (p magnitude())
+show (p double())
+`
+    const output = compileSeseragi(source)
+    
+    // エラーなくコンパイルできることを確認
+    expect(output).toContain("class Point")
+    expect(output).toContain("magnitude")
+    expect(output).toContain("double")
+    expect(output).toContain("__dispatchMethod")
+  })
+
+  test("should support both parentheses and space-separated method calls", () => {
+    const source = `
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn magnitude self -> Int = self.x * self.x + self.y * self.y
+  fn add self -> other: Point -> Point = Point { x: self.x + other.x, y: self.y + other.y }
+}
+
+let p1 = Point { x: 3, y: 4 }
+let p2 = Point { x: 1, y: 2 }
+
+show (p1 magnitude())      // 括弧付きメソッド呼び出し
+show (p1 add p2)           // スペース区切りメソッド呼び出し
+`
+    const output = compileSeseragi(source)
+    
+    // 両方の構文がサポートされることを確認
+    expect(output).toContain("__dispatchMethod")
+    expect(output).toContain("magnitude")
+    expect(output).toContain("add")
+  })
 })

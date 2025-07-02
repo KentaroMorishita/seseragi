@@ -1636,29 +1636,43 @@ export class Parser {
         const methodName = this.advance().value
         const args: AST.Expression[] = []
 
-        // メソッドの引数を収集
-        while (
-          this.canStartExpression() &&
-          !this.check(TokenType.NEWLINE) &&
-          !this.isAtEnd()
-        ) {
-          const arg = this.check(TokenType.NOT)
-            ? this.parseUnaryOnly()
-            : this.primaryExpression()
-          args.push(arg)
-
-          // 式の終了条件をチェック
-          if (
-            this.check(TokenType.NEWLINE) ||
-            this.check(TokenType.SEMICOLON) ||
-            this.check(TokenType.RIGHT_PAREN) ||
-            this.check(TokenType.RIGHT_BRACE) ||
-            this.check(TokenType.COMMA) ||
-            this.check(TokenType.PIPE) ||
-            this.check(TokenType.REVERSE_PIPE) ||
-            this.check(TokenType.BIND)
+        // 引数なしの括弧付きメソッド呼び出しをチェック: obj method()
+        if (this.check(TokenType.LEFT_PAREN)) {
+          this.advance() // consume '('
+          
+          if (!this.check(TokenType.RIGHT_PAREN)) {
+            // 括弧内に引数がある場合
+            do {
+              args.push(this.expression())
+            } while (this.match(TokenType.COMMA))
+          }
+          
+          this.consume(TokenType.RIGHT_PAREN, "Expected ')' after method arguments")
+        } else {
+          // メソッドの引数を収集（スペース区切り）
+          while (
+            this.canStartExpression() &&
+            !this.check(TokenType.NEWLINE) &&
+            !this.isAtEnd()
           ) {
-            break
+            const arg = this.check(TokenType.NOT)
+              ? this.parseUnaryOnly()
+              : this.primaryExpression()
+            args.push(arg)
+
+            // 式の終了条件をチェック
+            if (
+              this.check(TokenType.NEWLINE) ||
+              this.check(TokenType.SEMICOLON) ||
+              this.check(TokenType.RIGHT_PAREN) ||
+              this.check(TokenType.RIGHT_BRACE) ||
+              this.check(TokenType.COMMA) ||
+              this.check(TokenType.PIPE) ||
+              this.check(TokenType.REVERSE_PIPE) ||
+              this.check(TokenType.BIND)
+            ) {
+              break
+            }
           }
         }
 
