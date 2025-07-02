@@ -768,6 +768,26 @@ export class TypeInferenceSystem {
     )
     env.set("listToArray", listToArrayType)
 
+    // head: List<'a> -> Maybe<'a>
+    const headTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const headType = new AST.FunctionType(
+      new AST.GenericType("List", [headTypeVar], 0, 0),
+      new AST.GenericType("Maybe", [headTypeVar], 0, 0),
+      0,
+      0
+    )
+    env.set("head", headType)
+
+    // tail: List<'a> -> List<'a>
+    const tailTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const tailType = new AST.FunctionType(
+      new AST.GenericType("List", [tailTypeVar], 0, 0),
+      new AST.GenericType("List", [tailTypeVar], 0, 0),
+      0,
+      0
+    )
+    env.set("tail", tailType)
+
     // List constructors for pattern matching and expressions
     // Empty : List<'a>
     const emptyTypeVar = new PolymorphicTypeVariable("a", 0, 0)

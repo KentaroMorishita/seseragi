@@ -51,7 +51,7 @@ let user2FirstScore = data[1][1][0]  // 150
 // 4. Functions with Index Access / インデックスアクセスを使う関数
 // =================================================================
 
-fn getFirst arr = arr[0]
+fn getFirst arr: Array<Int> -> Int = arr[0]
 
 fn getTupleSum tuple =
   tuple[0] + tuple[1]
@@ -85,14 +85,14 @@ show sum
 // Lists do NOT support index access, use head/tail instead
 // リストはインデックスアクセスをサポートしない（代わりにhead/tailを使用）
 
-let list = Cons 1 (Cons 2 (Cons 3 Empty))
-let firstItem = head(list)    // Just 1 : Maybe<Int>
-let rest = tail(list)         // Cons 2 (Cons 3 Empty) : List<Int>
+let list = 1 : 2 : 3 : `[]
+let firstItem = head list    // Just 1 : Maybe<Int>
+let rest = tail list         // `[2, 3] : List<Int>
 
 // Empty list case / 空リストの場合
 let emptyList = Empty
-let headOfEmpty = head(emptyList)  // Nothing : Maybe<never>
-let tailOfEmpty = tail(emptyList)  // Empty : List<never>
+let headOfEmpty = head emptyList  // Nothing : Maybe<never>
+let tailOfEmpty = tail emptyList  // Empty : List<never>
 
 show firstItem
 show rest
