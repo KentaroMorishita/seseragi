@@ -542,17 +542,20 @@ export class CodeGenerator {
     return "\`[" + items.join(', ') + "]"
   }
   
-  // 配列の表示
+  // 配列の表示（タプル形式）
   if (Array.isArray(value)) {
-    return \`[\${value.map(toString).join(', ')}]\`
+    return \`(\${value.map(toString).join(', ')})\`
   }
   
   // プリミティブ型
   if (typeof value === 'string') {
     return \`"\${value}"\`
   }
-  if (typeof value === 'number' || typeof value === 'boolean') {
+  if (typeof value === 'number') {
     return String(value)
+  }
+  if (typeof value === 'boolean') {
+    return value ? 'True' : 'False'
   }
   
   // 普通のオブジェクト（構造体など）
@@ -584,6 +587,10 @@ export class CodeGenerator {
       // prettyFormat関数も必要
       lines.push(`// Seseragi型の構造を正規化
 function normalizeStructure(obj) {
+  // プリミティブ型の処理
+  if (typeof obj === 'boolean') {
+    return { '@@type': 'Boolean', value: obj }
+  }
   if (!obj || typeof obj !== 'object') return obj
   
   // List型 → 特別なマーカー付き配列に変換
@@ -614,9 +621,9 @@ function normalizeStructure(obj) {
     return { '@@type': 'Left', value: normalizeStructure(obj.value) }
   }
   
-  // 配列
+  // 配列（タプル）
   if (Array.isArray(obj)) {
-    return obj.map(normalizeStructure)
+    return { '@@type': 'Tuple', value: obj.map(normalizeStructure) }
   }
   
   // 通常のオブジェクト
@@ -660,6 +667,15 @@ function beautifySpecialTypes(json) {
     .replace(/\\{\\s*Right\\(([^)]+)\\)\\s*\\}/g, 'Right($1)')
     .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
     .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
+    // タプル型
+    .replace(/\\{\\s*"@@type":\\s*"Tuple",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
+      const cleanContent = content.replace(/\\s+/g, ' ').trim()
+      return \`(\${cleanContent})\`
+    })
+    // ブール値型
+    .replace(/\\{\\s*"@@type":\\s*"Boolean",\\s*"value":\\s*(true|false)\\s*\\}/g, (match, value) => {
+      return value === 'true' ? 'True' : 'False'
+    })
 }
 
 // 普通のオブジェクト（構造体）の美しい変換
@@ -691,18 +707,65 @@ function beautifyStructObjects(json) {
 const prettyFormat = (value) => {
   // プリミティブ型
   if (typeof value === 'string') return \`"\${value}"\`
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (typeof value === 'number') return String(value)
+  if (typeof value === 'boolean') return value ? 'True' : 'False'
   if (value === null) return 'null'
   if (value === undefined) return 'undefined'
   
-  // オブジェクトの場合
-  if (typeof value === 'object') {
-    // まず構造を正規化
-    const normalized = normalizeStructure(value)
-    // JSON.stringifyで整形
-    const json = JSON.stringify(normalized, null, 2)
-    // Seseragi型の表記に変換
-    return beautifySeseragiTypes(json)
+  // Seseragi特殊型とオブジェクトの場合
+  if (value && typeof value === 'object') {
+    // Maybe型
+    if (value.tag === 'Just') {
+      return \`Just(\${prettyFormat(value.value)})\`
+    }
+    if (value.tag === 'Nothing') {
+      return 'Nothing'
+    }
+    
+    // Either型
+    if (value.tag === 'Left') {
+      return \`Left(\${prettyFormat(value.value)})\`
+    }
+    if (value.tag === 'Right') {
+      return \`Right(\${prettyFormat(value.value)})\`
+    }
+    
+    // List型
+    if (value.tag === 'Empty') {
+      return '\`[]'
+    }
+    if (value.tag === 'Cons') {
+      const items = []
+      let current = value
+      while (current.tag === 'Cons') {
+        items.push(prettyFormat(current.head))
+        current = current.tail
+      }
+      return \`\\\`[\${items.join(', ')}]\`
+    }
+    
+    // タプル（配列）
+    if (Array.isArray(value)) {
+      return \`(\${value.map(prettyFormat).join(', ')})\`
+    }
+    
+    // 構造体・普通のオブジェクト
+    const pairs = []
+    for (const key in value) {
+      if (value.hasOwnProperty(key)) {
+        pairs.push(\`\${key}: \${prettyFormat(value[key])}\`)
+      }
+    }
+    
+    const structName = value.constructor && value.constructor.name !== 'Object' 
+      ? value.constructor.name 
+      : ''
+    
+    if (pairs.length > 2) {
+      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
+    } else {
+      return \`\${structName} { \${pairs.join(', ')} }\`
+    }
   }
   
   return String(value)
@@ -907,17 +970,20 @@ const show = (value) => {
     return "\`[" + items.join(', ') + "]"
   }
   
-  // 配列の表示
+  // 配列の表示（タプル形式）
   if (Array.isArray(value)) {
-    return \`[\${value.map(toString).join(', ')}]\`
+    return \`(\${value.map(toString).join(', ')})\`
   }
   
   // プリミティブ型
   if (typeof value === 'string') {
     return \`"\${value}"\`
   }
-  if (typeof value === 'number' || typeof value === 'boolean') {
+  if (typeof value === 'number') {
     return String(value)
+  }
+  if (typeof value === 'boolean') {
+    return value ? 'True' : 'False'
   }
   
   // 普通のオブジェクト（構造体など）
