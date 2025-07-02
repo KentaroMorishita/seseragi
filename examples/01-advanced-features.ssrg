@@ -108,7 +108,33 @@ show maybePositive1 // Just 25
 show maybePositive2 // Nothing
 
 // =============================================================================
-// 6. パイプライン演算子と関数合成
+// 6. Either型エラーハンドリング
+// =============================================================================
+
+fn safeDivision divisor: Int -> numerator: Int -> Either<String, Int> =
+  if divisor == 0 then Left "Division by zero" else Right (numerator / divisor)
+
+fn validatePositive value: Int -> Either<String, Int> =
+  if value <= 0 then Left "Must be positive" else Right value
+
+// Either モナド演算子
+let eitherResult1 = Right 20 >>= safeDivision 4    // Right 5
+let eitherResult2 = Right 20 >>= safeDivision 0    // Left "Division by zero"
+let eitherChain = Right 100 >>= safeDivision 5 >>= validatePositive  // Right 20
+
+// Either ファンクター演算子
+let eitherMapped1 = (\x -> x * 2) <$> Right 15     // Right 30
+let eitherMapped2 = (\x -> x * 2) <$> Left "error" // Left "error"
+
+show "=== Either Error Handling ==="
+show eitherResult1 // Right 5
+show eitherResult2 // Left "Division by zero"
+show eitherChain   // Right 20
+show eitherMapped1 // Right 30
+show eitherMapped2 // Left "error"
+
+// =============================================================================
+// 7. パイプライン演算子と関数合成
 // =============================================================================
 
 fn addFifteen input: Int -> Int = input + 5
