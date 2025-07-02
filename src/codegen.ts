@@ -280,13 +280,13 @@ export class CodeGenerator {
       imports.push("Left", "Right", "type Either")
     }
     if (this.usageAnalysis.needsFunctorMap) {
-      imports.push("mapMaybe", "mapList", "mapArray")
+      imports.push("mapMaybe", "mapEither", "mapList", "mapArray")
     }
     if (this.usageAnalysis.needsApplicativeApply) {
-      imports.push("applyMaybe", "applyList", "applyArray")
+      imports.push("applyMaybe", "applyEither", "applyList", "applyArray")
     }
     if (this.usageAnalysis.needsMonadBind) {
-      imports.push("bindMaybe", "bindList", "bindArray")
+      imports.push("bindMaybe", "bindEither", "bindList", "bindArray")
     }
     if (this.usageAnalysis.needsFoldMonoid) {
       imports.push("foldMonoid")
@@ -400,6 +400,13 @@ export class CodeGenerator {
       lines.push("};")
       lines.push("")
 
+      lines.push(
+        "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {"
+      )
+      lines.push("  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;")
+      lines.push("};")
+      lines.push("")
+
       lines.push("const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {")
       lines.push("  return fa.map(f);")
       lines.push("};")
@@ -420,6 +427,16 @@ export class CodeGenerator {
       lines.push(
         "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;"
       )
+      lines.push("};")
+      lines.push("")
+
+      lines.push(
+        "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {"
+      )
+      lines.push(
+        "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :"
+      )
+      lines.push("         ef.tag === 'Left' ? ef : ea;")
       lines.push("};")
       lines.push("")
 
@@ -457,6 +474,13 @@ export class CodeGenerator {
         "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {"
       )
       lines.push("  return ma.tag === 'Just' ? f(ma.value) : Nothing;")
+      lines.push("};")
+      lines.push("")
+
+      lines.push(
+        "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {"
+      )
+      lines.push("  return ea.tag === 'Right' ? f(ea.value) : ea;")
       lines.push("};")
       lines.push("")
 
@@ -928,6 +952,20 @@ const show = (value) => {
       "",
       "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {",
       "  return ma.tag === 'Just' ? f(ma.value) : Nothing;",
+      "};",
+      "",
+      "// Either monadic functions",
+      "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {",
+      "  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;",
+      "};",
+      "",
+      "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {",
+      "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :",
+      "         ef.tag === 'Left' ? ef : ea;",
+      "};",
+      "",
+      "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {",
+      "  return ea.tag === 'Right' ? f(ea.value) : ea;",
       "};",
       "",
       "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });",
@@ -2074,6 +2112,8 @@ ${indent}}`
         return mapArray(_value, ${func});
       } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
         return mapList(_value, ${func});
+      } else if (_value && (_value.tag === 'Left' || _value.tag === 'Right')) {
+        return mapEither(_value, ${func});
       } else {
         return mapMaybe(_value, ${func});
       }
@@ -2094,6 +2134,9 @@ ${indent}}`
       } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') && 
                 _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
         return applyList(_funcs, _values);
+      } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
+                _values && (_values.tag === 'Left' || _values.tag === 'Right')) {
+        return applyEither(_funcs, _values);
       } else {
         return applyMaybe(_funcs, _values);
       }
@@ -2115,6 +2158,8 @@ ${indent}}`
         return bindArray(_monad, ${bindFunc});
       } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
         return bindList(_monad, ${bindFunc});
+      } else if (_monad && (_monad.tag === 'Left' || _monad.tag === 'Right')) {
+        return bindEither(_monad, ${bindFunc});
       } else {
         return bindMaybe(_monad, ${bindFunc});
       }
