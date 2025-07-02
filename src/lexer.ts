@@ -69,7 +69,6 @@ export enum TokenType {
   NOT = "NOT", // !
   HEAD_OP = "HEAD_OP", // ^
   TAIL_OP = "TAIL_OP", // >>
-  DOT_TAIL_OP = "DOT_TAIL_OP", // .>>
 
   // Punctuation
   COLON = "COLON", // :
@@ -245,11 +244,6 @@ export class Lexer {
           this.advance() // consume second .
           this.advance() // consume third .
           return this.makeToken(TokenType.SPREAD, "...", startLine, startColumn)
-        }
-        if (this.peek() === ">" && this.peekNext() === ">") {
-          this.advance() // consume first >
-          this.advance() // consume second >
-          return this.makeToken(TokenType.DOT_TAIL_OP, ".>>", startLine, startColumn)
         }
         if (this.peek() === ".") {
           this.advance() // consume second .

@@ -1632,7 +1632,19 @@ export class Parser {
       const column = operator.column
       const functionName = operator.type === TokenType.HEAD_OP ? "head" : "tail"
       
-      // Parse the argument
+      // Check for tail chaining pattern: >> . >> list
+      if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
+        // Start building the chain
+        let expr = new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.parseTailChain(),
+          line,
+          column
+        )
+        return expr
+      }
+      
+      // Parse the argument normally
       const arg = this.unaryExpression()
       
       // Return as a FunctionApplication
@@ -1644,25 +1656,6 @@ export class Parser {
       )
     }
 
-    // Handle dot-tail operator .>> for chaining
-    if (this.match(TokenType.DOT_TAIL_OP)) {
-      const operator = this.previous()
-      const line = operator.line
-      const column = operator.column
-      
-      // Parse the rest as unary expression which might have more .>>
-      let expr = this.unaryExpression()
-      
-      // Wrap in tail function application
-      expr = new AST.FunctionApplication(
-        new AST.Identifier("tail", line, column),
-        expr,
-        line,
-        column
-      )
-      
-      return expr
-    }
 
     return this.callExpression()
   }
@@ -1687,7 +1680,19 @@ export class Parser {
       const column = operator.column
       const functionName = operator.type === TokenType.HEAD_OP ? "head" : "tail"
       
-      // Parse the argument
+      // Check for tail chaining pattern: >> . >> list
+      if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
+        // Start building the chain
+        let expr = new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.parseTailChain(),
+          line,
+          column
+        )
+        return expr
+      }
+      
+      // Parse the argument normally
       const arg = this.parseUnaryOnly()
       
       // Return as a FunctionApplication
@@ -1699,27 +1704,43 @@ export class Parser {
       )
     }
 
-    // Handle dot-tail operator .>> for chaining
-    if (this.match(TokenType.DOT_TAIL_OP)) {
-      const operator = this.previous()
-      const line = operator.line
-      const column = operator.column
-      
-      // Parse the rest as unary expression which might have more .>>
-      let expr = this.parseUnaryOnly()
-      
-      // Wrap in tail function application
-      expr = new AST.FunctionApplication(
-        new AST.Identifier("tail", line, column),
-        expr,
-        line,
-        column
-      )
-      
-      return expr
-    }
 
     return this.primaryExpression()
+  }
+
+  // Parse tail chaining pattern: . >> . >> list
+  private parseTailChain(): AST.Expression {
+    // We expect: . >> [. >> ...] list
+    
+    // Consume the first dot
+    this.consume(TokenType.DOT, "Expected '.' in tail chain")
+    
+    // Check if we have another >> 
+    if (this.match(TokenType.TAIL_OP)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      
+      // Check if there's another dot (continuing the chain)
+      if (this.check(TokenType.DOT)) {
+        // Recursive chain: tail(parseTailChain())
+        return new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.parseTailChain(),
+          line,
+          column
+        )
+      } else {
+        // End of chain: tail(expression)
+        return new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.unaryExpression(),
+          line,
+          column
+        )
+      }
+    } else {
+      throw new Error(`Expected '>>' after '.' in tail chain at line ${this.peek().line}`)
+    }
   }
 
   private callExpression(): AST.Expression {
