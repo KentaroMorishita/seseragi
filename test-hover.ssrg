@@ -1,0 +1,51 @@
+struct RGB {
+  red: Int
+  green: Int
+  blue: Int
+}
+
+impl RGB {
+  fn max self -> x: Int -> Int = x >= 255 ? 255 : x
+  fn min self -> x: Int -> Int = x <= 0 ? 0 : x
+
+  operator + self -> other: RGB -> RGB {
+    let red = self max (self.red + other.red)
+    let green = self max (self.green + other.green)
+    let blue = self max (self.blue + other.blue)
+
+    RGB { red: red, green: green, blue: blue }
+  }
+
+  operator - self -> other: RGB -> RGB {
+    let red = self min (self.red - other.red)
+    let green = self min (self.green - other.green)
+    let blue = self min (self.blue - other.blue)
+
+    RGB { red: red, green: green, blue: blue }
+  }
+
+  operator == self -> other: RGB -> Bool {
+    let RGB { red: r1, green: g1, blue: b1 } = self
+    let RGB { red: r2, green: g2, blue: b2 } = other
+    r1 == r2 && g1 == g2 && b1 == b2
+  }
+}
+
+let id = RGB { red: 0, green: 0, blue: 0 }
+let c1 = RGB { red: 100, green: 150, blue: 150 }
+let c2 = RGB { red: 50, green: 100, blue: 170 }
+
+print "identity"
+show $ id
+show $ id + c1 + id
+show $ (id + c1) + id
+show $ id + (c1 + id)
+show $ id + c1 == c1 + id
+
+print "c1 + c2: // expected RGB { red: 150, green: 250, blue: 255 }"
+show $ c1 + c2
+print "c1 - c2: // expected RGB { red: 50, green: 50, blue: 0 }"
+show $ c1 - c2
+
+print "c1 + c2 + (c1 - c2): // expected RGB { red: 200, green: 255, blue: 255 }"
+show $ c1 + c2 + (c1 - c2)

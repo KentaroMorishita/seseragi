@@ -999,18 +999,27 @@ export class TypeInferenceSystem {
 
     let finalType: AST.Type
     if (varDecl.type) {
-      // 明示的な型注釈がある場合は制約を追加
+      // 明示的な型注釈がある場合は型エイリアスを解決
+      let resolvedType = varDecl.type
+      if (varDecl.type.kind === "PrimitiveType") {
+        const aliasedType = env.get(varDecl.type.name)
+        if (aliasedType) {
+          resolvedType = aliasedType
+        }
+      }
+      
+      // 制約を追加（解決された型で）
       this.addConstraint(
         new TypeConstraint(
           initType,
-          varDecl.type,
+          resolvedType,
           varDecl.line,
           varDecl.column,
           `Variable ${varDecl.name} type annotation`
         )
       )
-      env.set(varDecl.name, varDecl.type)
-      finalType = varDecl.type
+      env.set(varDecl.name, resolvedType)
+      finalType = resolvedType
     } else {
       // 型注釈がない場合は推論された型を使用
       // 型変数、ジェネリック型、関数型すべてを正しく保持
@@ -3560,8 +3569,8 @@ export class TypeInferenceSystem {
     for (const param of method.parameters) {
       let resolvedType: AST.Type
 
-      // 暗黙的selfパラメータの場合は、impl対象の型を使用
-      if (param.isImplicitSelf) {
+      // 暗黙的selfまたはotherパラメータの場合は、impl対象の型を使用
+      if (param.isImplicitSelf || param.isImplicitOther) {
         resolvedType = implType
         // param.typeも更新しておく（後の処理のため）
         param.type = implType
@@ -3635,8 +3644,8 @@ export class TypeInferenceSystem {
     for (const param of operator.parameters) {
       let resolvedType: AST.Type
 
-      // 暗黙的selfパラメータの場合は、impl対象の型を使用
-      if (param.isImplicitSelf) {
+      // 暗黙的selfまたはotherパラメータの場合は、impl対象の型を使用
+      if (param.isImplicitSelf || param.isImplicitOther) {
         resolvedType = implType
         // param.typeも更新しておく（後の処理のため）
         param.type = implType
@@ -4596,14 +4605,45 @@ export class TypeInferenceSystem {
       env
     )
 
-    // パターン内の各フィールドを環境に追加
+    // パターン内の各フィールドを環境に追加し、適切な型制約を設定
     for (const field of recordDestr.pattern.fields) {
       const variableName = field.alias || field.fieldName
       const fieldType = this.freshTypeVariable(field.line, field.column)
+      
+      // フィールド変数を環境に追加
       env.set(variableName, fieldType)
+      this.nodeTypeMap.set(field, fieldType)
 
       // 初期化式がレコード型で、該当フィールドを持つことを制約として追加
-      // 実際の制約は単一化時に処理される
+      // レコードフィールドアクセスと同等の制約を作成
+      const recordFieldType = this.freshTypeVariable(field.line, field.column)
+      const expectedRecordType = new AST.RecordType(
+        [new AST.RecordField(field.fieldName, recordFieldType, field.line, field.column)],
+        recordDestr.line,
+        recordDestr.column
+      )
+
+      // 初期化式のレコード型に該当フィールドが存在することを制約として追加
+      this.addConstraint(
+        new TypeConstraint(
+          initType,
+          expectedRecordType,
+          field.line,
+          field.column,
+          `Record destructuring field ${field.fieldName}`
+        )
+      )
+
+      // フィールド変数の型とレコードフィールドの型が一致することを制約として追加
+      this.addConstraint(
+        new TypeConstraint(
+          fieldType,
+          recordFieldType,
+          field.line,
+          field.column,
+          `Record destructuring field type ${field.fieldName}`
+        )
+      )
     }
   }
 
@@ -4617,16 +4657,9 @@ export class TypeInferenceSystem {
       env
     )
 
-    // パターン内の各フィールドを環境に追加
-    for (const field of structDestr.pattern.fields) {
-      const variableName = field.alias || field.fieldName
-      const fieldType = this.freshTypeVariable(field.line, field.column)
-      env.set(variableName, fieldType)
-    }
-
     // 初期化式が指定された構造体型であることを制約として追加
     const expectedStructType = env.get(structDestr.pattern.structName)
-    if (expectedStructType) {
+    if (expectedStructType && expectedStructType.kind === "StructType") {
       this.addConstraint(
         new TypeConstraint(
           initType,
@@ -4636,6 +4669,49 @@ export class TypeInferenceSystem {
           `Struct destructuring of ${structDestr.pattern.structName}`
         )
       )
+
+      // パターン内の各フィールドを環境に追加し、適切な型制約を設定
+      const structType = expectedStructType as AST.StructType
+      for (const field of structDestr.pattern.fields) {
+        const variableName = field.alias || field.fieldName
+        
+        // 構造体定義から該当フィールドの型を取得
+        const structField = structType.fields.find(f => f.name === field.fieldName)
+        if (structField) {
+          // フィールドの実際の型を使用
+          env.set(variableName, structField.type)
+          this.nodeTypeMap.set(field, structField.type)
+          
+          // 分割代入された変数を追跡するために、仮想的な変数宣言ノードを作成してnodeTypeMapに追加
+          const virtualVarDecl = {
+            kind: "VariableDeclaration",
+            name: variableName,
+            type: structField.type,
+            line: field.line,
+            column: field.column,
+            isDestructured: true
+          }
+          this.nodeTypeMap.set(virtualVarDecl, structField.type)
+        } else {
+          // フィールドが見つからない場合はエラー
+          this.errors.push(
+            new TypeInferenceError(
+              `Field '${field.fieldName}' does not exist in struct ${structDestr.pattern.structName}`,
+              field.line,
+              field.column
+            )
+          )
+          const fieldType = this.freshTypeVariable(field.line, field.column)
+          env.set(variableName, fieldType)
+        }
+      }
+    } else {
+      // 構造体型が見つからない場合はfreshTypeVariableで処理
+      for (const field of structDestr.pattern.fields) {
+        const variableName = field.alias || field.fieldName
+        const fieldType = this.freshTypeVariable(field.line, field.column)
+        env.set(variableName, fieldType)
+      }
     }
   }
 }

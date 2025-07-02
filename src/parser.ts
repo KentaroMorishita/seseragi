@@ -217,12 +217,20 @@ export class Parser {
         const paramType = this.parseType()
         this.consume(TokenType.ARROW, "Expected '->' after parameter type")
 
+        // 型ありパラメータでも暗黙的selfとotherをチェック
+        const isImplicitSelf =
+          implContext && paramName === "self" && parameters.length === 0
+        const isImplicitOther =
+          implContext && paramName === "other"
+
         parameters.push(
           new AST.Parameter(
             paramName,
             paramType,
             paramNameToken.line,
-            paramNameToken.column
+            paramNameToken.column,
+            isImplicitSelf,
+            isImplicitOther
           )
         )
       } else {
@@ -238,6 +246,10 @@ export class Parser {
           // 暗黙的selfの検出：implコンテキスト内で最初のパラメータが'self'の場合
           const isImplicitSelf =
             implContext && paramName === "self" && parameters.length === 0
+          
+          // 暗黙的otherの検出：implコンテキスト内で'other'パラメータの場合
+          const isImplicitOther =
+            implContext && paramName === "other"
 
           if (isImplicitSelf) {
             // 暗黙的selfパラメータ：型は後でimplコンテキストから解決される
@@ -250,7 +262,23 @@ export class Parser {
                 ),
                 paramNameToken.line,
                 paramNameToken.column,
-                true // isImplicitSelf = true
+                true, // isImplicitSelf = true
+                false // isImplicitOther = false
+              )
+            )
+          } else if (isImplicitOther) {
+            // 暗黙的otherパラメータ：型は後でimplコンテキストから解決される
+            parameters.push(
+              new AST.Parameter(
+                paramName,
+                this.freshTypeVariable(
+                  paramNameToken.line,
+                  paramNameToken.column
+                ),
+                paramNameToken.line,
+                paramNameToken.column,
+                false, // isImplicitSelf = false
+                true // isImplicitOther = true
               )
             )
           } else {
@@ -263,7 +291,9 @@ export class Parser {
                   paramNameToken.column
                 ),
                 paramNameToken.line,
-                paramNameToken.column
+                paramNameToken.column,
+                false, // isImplicitSelf = false
+                false // isImplicitOther = false
               )
             )
           }
@@ -323,11 +353,15 @@ export class Parser {
       // - In typed functions (e.g., "fn add a :Int -> b :Int -> Int = ..."),
       //   this identifier is a return type
       // - In untyped functions (e.g., "fn add x y = ..."),
-      //   this identifier is a parameter name
+      //   this identifier is also a return type if preceded by ->
       if (
         tokenType === TokenType.ASSIGN ||
         tokenType === TokenType.LEFT_BRACE
       ) {
+        // Check if this identifier was preceded by -> (indicating return type)
+        if (this.current > 0 && this.tokens[this.current - 1].type === TokenType.ARROW) {
+          return true // This is a return type
+        }
         return hasTypedParameters
       }
 

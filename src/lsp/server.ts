@@ -499,6 +499,12 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
 
 // Helper function to get hover information at a specific offset
 function getHoverInfo(ast: any, offset: number, text: string): string | null {
+  // Check if this is a field access first
+  const fieldAccessInfo = getFieldAccessInfo(text, offset)
+  if (fieldAccessInfo) {
+    return handleFieldAccessHover(ast, fieldAccessInfo)
+  }
+
   // Find the token/node at the given offset
   const wordAtPosition = getWordAtPosition(text, offset)
   if (!wordAtPosition) {
@@ -716,6 +722,92 @@ function getWordAtPosition(text: string, offset: number): string | null {
   return null
 }
 
+// Check if the position is in a field access expression (e.g., self.x)
+function getFieldAccessInfo(text: string, offset: number): {objectName: string, fieldName: string} | null {
+  if (offset < 0 || offset >= text.length) {
+    return null
+  }
+
+  const before = text.substring(0, offset)
+  const after = text.substring(offset)
+
+  // Get the current word (field name)
+  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*$/)
+  const afterMatch = after.match(/^[a-zA-Z0-9_]*/)
+
+  if (!beforeMatch) {
+    return null
+  }
+
+  const fieldName = beforeMatch[0] + (afterMatch ? afterMatch[0] : "")
+  
+  // Look for the pattern: objectName.fieldName
+  // Find the dot before the current field name
+  const beforeField = before.substring(0, before.length - beforeMatch[0].length)
+  const dotMatch = beforeField.match(/([a-zA-Z_][a-zA-Z0-9_]*)\s*\.\s*$/)
+  
+  if (dotMatch) {
+    const objectName = dotMatch[1]
+    connection.console.log(`[SESERAGI LSP DEBUG] Detected field access: ${objectName}.${fieldName}`)
+    return { objectName, fieldName }
+  }
+
+  return null
+}
+
+// Handle hover for field access expressions
+function handleFieldAccessHover(ast: any, fieldAccessInfo: {objectName: string, fieldName: string}): string | null {
+  try {
+    // Get type inference result
+    const typeInference = new TypeInferenceSystem()
+    const result = typeInference.infer(ast)
+    
+    // Find the object's type
+    const objectTypeInfo = findSymbolWithEnhancedInference(ast, fieldAccessInfo.objectName, result)
+    if (!objectTypeInfo) {
+      connection.console.log(`[SESERAGI LSP DEBUG] Object ${fieldAccessInfo.objectName} not found`)
+      return null
+    }
+
+    connection.console.log(`[SESERAGI LSP DEBUG] Object type: ${JSON.stringify(objectTypeInfo.finalType, null, 2)}`)
+
+    // Get the struct definition for this type
+    let structType = objectTypeInfo.finalType
+    if (structType.kind === "StructType") {
+      const fieldInfo = getFieldTypeFromStruct(structType, fieldAccessInfo.fieldName)
+      if (fieldInfo) {
+        return formatFieldAccessInfo(fieldAccessInfo.objectName, fieldAccessInfo.fieldName, fieldInfo, structType.name)
+      }
+    }
+
+    connection.console.log(`[SESERAGI LSP DEBUG] No field info found for ${fieldAccessInfo.fieldName}`)
+    return null
+  } catch (error) {
+    connection.console.log(`[SESERAGI LSP DEBUG] Field access hover error: ${error}`)
+    return null
+  }
+}
+
+// Get field type from struct definition
+function getFieldTypeFromStruct(structType: any, fieldName: string): any | null {
+  if (structType.kind !== "StructType" || !structType.fields) {
+    return null
+  }
+
+  for (const field of structType.fields) {
+    if (field.name === fieldName) {
+      return field.type
+    }
+  }
+  return null
+}
+
+// Format field access information for hover display
+function formatFieldAccessInfo(objectName: string, fieldName: string, fieldType: any, structName: string): string {
+  const typeDisplay = formatTypeWithNestedStructures(fieldType)
+  return `\`\`\`seseragi\n${objectName}.${fieldName}: ${typeDisplay}\n\`\`\`\n\nField \`${fieldName}\` of struct \`${structName}\``
+}
+
 // Get type information for a symbol (basic implementation)
 function getTypeInfoForSymbol(ast: any, symbol: string): string | null {
   // This is a simplified implementation
@@ -786,6 +878,156 @@ function getKeywordInfo(keyword: string): string | null {
   return keywordDocs[keyword] || null
 }
 
+// Find symbol within an expression (for method bodies, etc.)
+function findSymbolInExpression(expression: any, symbol: string, inferenceResult: any): any {
+  if (!expression) {
+    return null;
+  }
+
+  connection.console.log(`=== LSP DEBUG: Searching for ${symbol} in expression ${expression.kind} ===`);
+
+  switch (expression.kind) {
+    case "BlockExpression":
+      // Search in block statements
+      for (const stmt of expression.statements || []) {
+        const result = findSymbolInStatement(stmt, symbol, inferenceResult);
+        if (result) {
+          return result;
+        }
+      }
+      break;
+
+    case "VariableDeclaration":
+      if (expression.name === symbol) {
+        // Get the type of this variable from nodeTypeMap
+        let varType = inferenceResult.nodeTypeMap.get(expression);
+        if (!varType && expression.initializer) {
+          varType = inferenceResult.nodeTypeMap.get(expression.initializer);
+        }
+        
+        // Apply substitution if available
+        if (varType && inferenceResult.substitution && inferenceResult.substitution.apply) {
+          varType = inferenceResult.substitution.apply(varType);
+        }
+
+        connection.console.log(`Found variable ${symbol} with type: ${JSON.stringify(varType, null, 2)}`);
+        
+        return {
+          type: "variable",
+          name: symbol,
+          finalType: varType,
+          hasExplicitType: !!expression.type,
+        };
+      }
+      break;
+
+    case "RecordDestructuring":
+      // Check if the symbol is one of the destructured variables
+      const foundField = findVariableInRecordPattern(expression.pattern, symbol);
+      if (foundField) {
+        // Get the type of the initializer (the record being destructured)
+        const initType = inferenceResult.nodeTypeMap.get(expression.initializer);
+        
+        if (initType && initType.kind === "RecordType") {
+          const recordType = initType as any;
+          const fieldType = recordType.fields.find((f: any) => f.name === foundField.fieldName)?.type;
+
+          if (fieldType) {
+            let finalFieldType = fieldType;
+            if (inferenceResult.substitution && inferenceResult.substitution.apply) {
+              finalFieldType = inferenceResult.substitution.apply(fieldType);
+            }
+
+            return {
+              type: "variable",
+              name: symbol,
+              finalType: finalFieldType,
+              hasExplicitType: false,
+              isRecordField: true,
+              fieldName: foundField.fieldName,
+            };
+          }
+        }
+      }
+      break;
+
+    case "StructDestructuring":
+      // Check if the symbol is one of the destructured variables
+      const foundStructField = findVariableInStructPattern(expression.pattern, symbol);
+      if (foundStructField) {
+        // Get the type of the initializer (the struct being destructured)
+        const initType = inferenceResult.nodeTypeMap.get(expression.initializer);
+        
+        if (initType && initType.kind === "StructType") {
+          const structType = initType as any;
+          const fieldType = structType.fields.find((f: any) => f.name === foundStructField.fieldName)?.type;
+
+          if (fieldType) {
+            let finalFieldType = fieldType;
+            if (inferenceResult.substitution && inferenceResult.substitution.apply) {
+              finalFieldType = inferenceResult.substitution.apply(fieldType);
+            }
+
+            return {
+              type: "variable",
+              name: symbol,
+              finalType: finalFieldType,
+              hasExplicitType: false,
+              isStructField: true,
+              fieldName: foundStructField.fieldName,
+              structName: expression.pattern.structName,
+            };
+          }
+        }
+      }
+      break;
+
+    default:
+      // For other expression types, recursively search any nested expressions
+      if (expression.statements) {
+        for (const stmt of expression.statements) {
+          const result = findSymbolInExpression(stmt, symbol, inferenceResult);
+          if (result) return result;
+        }
+      }
+      if (expression.initializer) {
+        const result = findSymbolInExpression(expression.initializer, symbol, inferenceResult);
+        if (result) return result;
+      }
+      if (expression.body) {
+        const result = findSymbolInExpression(expression.body, symbol, inferenceResult);
+        if (result) return result;
+      }
+      break;
+  }
+
+  return null;
+}
+
+// Find symbol in a statement (for block expressions)
+function findSymbolInStatement(statement: any, symbol: string, inferenceResult: any): any {
+  if (!statement) {
+    return null;
+  }
+
+  switch (statement.kind) {
+    case "VariableDeclaration":
+    case "RecordDestructuring":
+    case "StructDestructuring":
+    case "TupleDestructuring":
+      return findSymbolInExpression(statement, symbol, inferenceResult);
+    
+    default:
+      // For other statement types, check if they contain expressions
+      if (statement.body) {
+        return findSymbolInExpression(statement.body, symbol, inferenceResult);
+      }
+      break;
+  }
+
+  return null;
+}
+
 // Find symbol with inferred type information
 function findSymbolWithEnhancedInference(
   ast: any,
@@ -839,6 +1081,179 @@ function findSymbolWithEnhancedInference(
             finalType: paramType,
             hasExplicitType: true,
           }
+        }
+      }
+    }
+
+    // Check impl block method and operator parameters for the symbol
+    if (statement.kind === "ImplBlock") {
+      const implBlock = statement as any // AST.ImplBlock
+      
+      // Check method parameters
+      for (const method of implBlock.methods || []) {
+        if (method.parameters) {
+          for (const param of method.parameters) {
+            if (param.name === symbol) {
+              let paramType = param.type
+              
+              // Handle implicit self or other parameter - use the impl type
+              if ((param.isImplicitSelf || param.isImplicitOther) && implBlock.typeName) {
+                // Try to find the struct type from the environment
+                const structType = inferenceResult.environment?.[implBlock.typeName]
+                if (structType) {
+                  paramType = structType
+                } else {
+                  // Fallback: create a primitive type reference
+                  paramType = {
+                    kind: "PrimitiveType",
+                    name: implBlock.typeName,
+                    line: param.line || 0,
+                    column: param.column || 0
+                  }
+                }
+              }
+              
+              // Apply substitution to resolve type variables
+              if (
+                paramType &&
+                inferenceResult.substitution &&
+                inferenceResult.substitution.apply
+              ) {
+                paramType = inferenceResult.substitution.apply(paramType)
+              }
+              
+              connection.console.log(
+                `=== LSP DEBUG: Found method parameter ${symbol} in impl ${implBlock.typeName} ===`
+              )
+              connection.console.log(
+                `Parameter type: ${JSON.stringify(paramType, null, 2)}`
+              )
+              
+              return {
+                type: "parameter",
+                name: symbol,
+                finalType: paramType,
+                hasExplicitType: true,
+                context: `impl ${implBlock.typeName} method ${method.name}`,
+              }
+            }
+          }
+        }
+        
+        // Check variables inside method body
+        const methodBodySymbol = findSymbolInExpression(method.body, symbol, inferenceResult)
+        if (methodBodySymbol) {
+          connection.console.log(
+            `=== LSP DEBUG: Found symbol ${symbol} in method ${method.name} body ===`
+          )
+          methodBodySymbol.context = `impl ${implBlock.typeName} method ${method.name}`
+          return methodBodySymbol
+        }
+      }
+      
+      // Check operator parameters
+      for (const operator of implBlock.operators || []) {
+        if (operator.parameters) {
+          for (const param of operator.parameters) {
+            if (param.name === symbol) {
+              let paramType = param.type
+              
+              // Handle implicit self or other parameter - use the impl type
+              if ((param.isImplicitSelf || param.isImplicitOther) && implBlock.typeName) {
+                // Try to find the struct type from the environment
+                const structType = inferenceResult.environment?.[implBlock.typeName]
+                if (structType) {
+                  paramType = structType
+                } else {
+                  // Fallback: create a primitive type reference
+                  paramType = {
+                    kind: "PrimitiveType",
+                    name: implBlock.typeName,
+                    line: param.line || 0,
+                    column: param.column || 0
+                  }
+                }
+              }
+              
+              // Apply substitution to resolve type variables
+              if (
+                paramType &&
+                inferenceResult.substitution &&
+                inferenceResult.substitution.apply
+              ) {
+                paramType = inferenceResult.substitution.apply(paramType)
+              }
+              
+              connection.console.log(
+                `=== LSP DEBUG: Found operator parameter ${symbol} in impl ${implBlock.typeName} ===`
+              )
+              connection.console.log(
+                `Parameter type: ${JSON.stringify(paramType, null, 2)}`
+              )
+              
+              return {
+                type: "parameter",
+                name: symbol,
+                finalType: paramType,
+                hasExplicitType: true,
+                context: `impl ${implBlock.typeName} operator ${operator.operator}`,
+              }
+            }
+          }
+        }
+        
+        // Check variables inside operator body
+        const operatorBodySymbol = findSymbolInExpression(operator.body, symbol, inferenceResult)
+        if (operatorBodySymbol) {
+          connection.console.log(
+            `=== LSP DEBUG: Found symbol ${symbol} in operator ${operator.operator} body ===`
+          )
+          operatorBodySymbol.context = `impl ${implBlock.typeName} operator ${operator.operator}`
+          return operatorBodySymbol
+        }
+      }
+    }
+
+    // Check for method calls in this statement - look for method definitions
+    const methodCallInStatement = findMethodCallInNode(statement, symbol)
+    if (methodCallInStatement) {
+      connection.console.log(
+        `=== LSP DEBUG: Found method call ${symbol} in statement ===`
+      )
+      
+      // Find the method definition
+      const methodDef = findMethodDefinition(ast, symbol)
+      if (methodDef) {
+        connection.console.log(
+          `=== LSP DEBUG: Found method definition for ${symbol} ===`
+        )
+        
+        // Build the method type signature
+        let methodType = methodDef.method.returnType
+        for (let i = methodDef.method.parameters.length - 1; i >= 0; i--) {
+          methodType = {
+            kind: "FunctionType",
+            paramType: methodDef.method.parameters[i].type,
+            returnType: methodType,
+          }
+        }
+
+        // Apply substitution to resolve type variables
+        const finalType = inferenceResult.substitution?.apply
+          ? inferenceResult.substitution.apply(methodType)
+          : methodType
+
+        connection.console.log(
+          `Method type: ${JSON.stringify(finalType, null, 2)}`
+        )
+
+        return {
+          type: "function",
+          name: symbol,
+          parameters: methodDef.method.parameters,
+          finalType: finalType,
+          context: methodDef.context,
+          isMethod: true,
         }
       }
     }
@@ -925,6 +1340,17 @@ function findSymbolWithEnhancedInference(
       connection.console.log(
         `=== FINAL TYPE FOR ${symbol}: ${JSON.stringify(finalType, null, 2)} ===`
       )
+      connection.console.log(
+        `=== FINAL TYPE KIND: ${finalType ? finalType.kind : "null"} ===`
+      )
+      if (finalType && finalType.kind === "StructType") {
+        connection.console.log(
+          `=== STRUCT TYPE NAME: ${finalType.name} ===`
+        )
+        connection.console.log(
+          `=== STRUCT TYPE FIELDS: ${JSON.stringify(finalType.fields, null, 2)} ===`
+        )
+      }
       connection.console.log(
         `=== FORMATTED TYPE STRING: ${formatInferredTypeForDisplay(finalType)} ===`
       )
@@ -1033,6 +1459,99 @@ function findSymbolWithEnhancedInference(
         }
       }
     }
+
+    // Handle record destructuring
+    if (statement.kind === "RecordDestructuring") {
+      const recordDestr = statement as any // AST.RecordDestructuring
+
+      // Check if the symbol is one of the destructured variables
+      const foundField = findVariableInRecordPattern(
+        recordDestr.pattern,
+        symbol
+      )
+      if (foundField) {
+        connection.console.log(
+          `=== LSP DEBUG: Found variable ${symbol} in record destructuring ===`
+        )
+
+        // Get the type of the initializer (the record being destructured)
+        const initType = inferenceResult.nodeTypeMap.get(recordDestr.initializer)
+        connection.console.log(
+          `Record initializer type: ${JSON.stringify(initType, null, 2)}`
+        )
+
+        if (initType && initType.kind === "RecordType") {
+          const recordType = initType as any
+          const fieldType = recordType.fields.find((f: any) => f.name === foundField.fieldName)?.type
+
+          if (fieldType) {
+            let finalFieldType = fieldType
+            if (
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
+              finalFieldType = inferenceResult.substitution.apply(fieldType)
+            }
+
+            return {
+              type: "variable",
+              name: symbol,
+              finalType: finalFieldType,
+              hasExplicitType: false,
+              isRecordField: true,
+              fieldName: foundField.fieldName,
+            }
+          }
+        }
+      }
+    }
+
+    // Handle struct destructuring
+    if (statement.kind === "StructDestructuring") {
+      const structDestr = statement as any // AST.StructDestructuring
+
+      // Check if the symbol is one of the destructured variables
+      const foundField = findVariableInStructPattern(
+        structDestr.pattern,
+        symbol
+      )
+      if (foundField) {
+        connection.console.log(
+          `=== LSP DEBUG: Found variable ${symbol} in struct destructuring ===`
+        )
+
+        // Get the type of the initializer (the struct being destructured)
+        const initType = inferenceResult.nodeTypeMap.get(structDestr.initializer)
+        connection.console.log(
+          `Struct initializer type: ${JSON.stringify(initType, null, 2)}`
+        )
+
+        if (initType && initType.kind === "StructType") {
+          const structType = initType as any
+          const fieldType = structType.fields.find((f: any) => f.name === foundField.fieldName)?.type
+
+          if (fieldType) {
+            let finalFieldType = fieldType
+            if (
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
+              finalFieldType = inferenceResult.substitution.apply(fieldType)
+            }
+
+            return {
+              type: "variable",
+              name: symbol,
+              finalType: finalFieldType,
+              hasExplicitType: false,
+              isStructField: true,
+              fieldName: foundField.fieldName,
+              structName: structDestr.pattern.structName,
+            }
+          }
+        }
+      }
+    }
   }
 
   return null
@@ -1059,6 +1578,137 @@ function findVariableInTuplePattern(
       const found = findVariableInTuplePattern(subPattern, symbol)
       if (found) {
         return found // Note: For nested tuples, we might need to handle indexing differently
+      }
+    }
+  }
+
+  return null
+}
+
+// Helper function to find a variable in a record pattern
+function findVariableInRecordPattern(
+  pattern: any,
+  symbol: string
+): { fieldName: string } | null {
+  if (pattern.kind !== "RecordPattern") {
+    return null
+  }
+
+  for (const field of pattern.fields) {
+    const variableName = field.alias || field.fieldName
+    if (variableName === symbol) {
+      return { fieldName: field.fieldName }
+    }
+  }
+
+  return null
+}
+
+// Helper function to find a variable in a struct pattern
+function findVariableInStructPattern(
+  pattern: any,
+  symbol: string
+): { fieldName: string } | null {
+  if (pattern.kind !== "StructPattern") {
+    return null
+  }
+
+  for (const field of pattern.fields) {
+    const variableName = field.alias || field.fieldName
+    if (variableName === symbol) {
+      return { fieldName: field.fieldName }
+    }
+  }
+
+  return null
+}
+
+// Helper function to find a type alias definition by name
+function findTypeAliasDefinition(typeName: string): any {
+  if (!cachedAST || !cachedAST.statements) {
+    return null
+  }
+
+  for (const statement of cachedAST.statements) {
+    if (statement.kind === "TypeAliasDeclaration" && statement.name === typeName) {
+      return statement
+    }
+  }
+
+  return null
+}
+
+// Helper function to find a variable declaration by name
+function findVariableDeclaration(varName: string): any {
+  if (!cachedAST || !cachedAST.statements) {
+    return null
+  }
+
+  for (const statement of cachedAST.statements) {
+    if (statement.kind === "VariableDeclaration" && statement.name === varName) {
+      return statement
+    }
+  }
+
+  return null
+}
+
+// Helper function to recursively search for method calls in an AST node
+function findMethodCallInNode(node: any, methodName: string): any {
+  if (!node) {
+    return null
+  }
+
+  // Check if this node is a MethodCall with the target method name
+  if (node.kind === "MethodCall" && node.methodName === methodName) {
+    return node
+  }
+
+  // Recursively search in all properties of the node
+  for (const key in node) {
+    if (node.hasOwnProperty(key) && typeof node[key] === "object") {
+      const value = node[key]
+      
+      if (Array.isArray(value)) {
+        // Search in array elements
+        for (const item of value) {
+          const result = findMethodCallInNode(item, methodName)
+          if (result) {
+            return result
+          }
+        }
+      } else {
+        // Search in object properties
+        const result = findMethodCallInNode(value, methodName)
+        if (result) {
+          return result
+        }
+      }
+    }
+  }
+
+  return null
+}
+
+// Helper function to find method definition in impl blocks
+function findMethodDefinition(ast: any, methodName: string): any {
+  if (!ast.statements) {
+    return null
+  }
+
+  for (const statement of ast.statements) {
+    if (statement.kind === "ImplBlock") {
+      const implBlock = statement as any // AST.ImplBlock
+      
+      // Check methods
+      for (const method of implBlock.methods || []) {
+        if (method.name === methodName) {
+          return {
+            method: method,
+            implType: implBlock.typeName,
+            context: `impl ${implBlock.typeName} method`
+          }
+        }
       }
     }
   }
@@ -1572,21 +2222,48 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
         funcSignature += ` -> ${returnType}`
       }
 
+      // Add context information for methods
+      const contextInfo = info.isMethod && info.context ? `\n**Context:** ${info.context}` : ""
+      
       // For display, we don't need to show the full curried type again
       // Just show the function signature
-      return `\`\`\`seseragi\n${funcSignature}\n\`\`\``
+      return `\`\`\`seseragi\n${funcSignature}\n\`\`\`${contextInfo}`
     }
 
     case "parameter": {
       const paramType = formatInferredTypeForDisplay(info.finalType)
-      return `\`\`\`seseragi\n${symbol}: ${paramType}\n\`\`\`\n**Type:** function parameter`
+      const context = info.context ? info.context : "function parameter"
+      return `\`\`\`seseragi\n${symbol}: ${paramType}\n\`\`\`\n**Type:** ${context}`
     }
 
     case "variable": {
       const typeAnnotation = info.hasExplicitType ? "explicit" : "inferred"
-      const varType = formatInferredTypeForDisplay(info.finalType)
+      let varType = formatInferredTypeForDisplay(info.finalType)
+      
+      // Check if this is a type alias and format accordingly
+      if (info.hasExplicitType) {
+        // Try to find the original type annotation from the AST
+        const varDecl = findVariableDeclaration(symbol)
+        if (varDecl && varDecl.type && varDecl.type.kind === "PrimitiveType") {
+          const typeAlias = findTypeAliasDefinition(varDecl.type.name)
+          if (typeAlias && typeAlias.aliasedType) {
+            const aliasedTypeStr = formatInferredTypeForDisplay(typeAlias.aliasedType)
+            varType = `${varDecl.type.name} = ${aliasedTypeStr}`
+          }
+        }
+      }
+      
+      // Add context for destructured variables
+      let context = ""
+      if (info.isTupleElement) {
+        context = `\n**Context:** Destructured from tuple (index ${info.tupleIndex})`
+      } else if (info.isRecordField) {
+        context = `\n**Context:** Destructured from record field '${info.fieldName}'`
+      } else if (info.isStructField) {
+        context = `\n**Context:** Destructured from struct ${info.structName} field '${info.fieldName}'`
+      }
 
-      return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\`\n**Type:** ${typeAnnotation}`
+      return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\`\n**Type:** ${typeAnnotation}${context}`
     }
 
     case "typealias": {
@@ -1772,7 +2449,7 @@ function formatTypeWithNestedStructures(
             depth + 1,
             indent + "  "
           )
-          return `${field.name} :${fieldType}`
+          return `${field.name}: ${fieldType}`
         })
 
         // Check if we need multiline formatting
@@ -1784,9 +2461,9 @@ function formatTypeWithNestedStructures(
         )
 
         if (hasNestedStructures || fields.length > 3) {
-          return `{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
+          return `${type.name} {\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
         } else {
-          return `{ ${fieldStrs.join(", ")} }`
+          return `${type.name} { ${fieldStrs.join(", ")} }`
         }
       }
       return type.name || "{}"
@@ -1801,7 +2478,7 @@ function formatTypeWithNestedStructures(
             depth + 1,
             indent + "  "
           )
-          return `${field.name} :${fieldType}`
+          return `${field.name}: ${fieldType}`
         })
 
         // Check if we need multiline formatting
@@ -1812,10 +2489,13 @@ function formatTypeWithNestedStructures(
               field.type.kind === "RecordType")
         )
 
+        // If this RecordType has a name (i.e., it's a struct converted to RecordType), show the struct name
+        const structPrefix = type.name ? `${type.name} ` : ""
+        
         if (hasNestedStructures || type.fields.length > 3) {
-          return `{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
+          return `${structPrefix}{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
         } else {
-          return `{ ${fieldStrs.join(", ")} }`
+          return `${structPrefix}{ ${fieldStrs.join(", ")} }`
         }
       }
       return "{}"

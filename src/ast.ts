@@ -842,18 +842,21 @@ export class Parameter extends ASTNode {
   name: string
   type: Type
   isImplicitSelf: boolean
+  isImplicitOther: boolean
 
   constructor(
     name: string,
     type: Type,
     line: number,
     column: number,
-    isImplicitSelf: boolean = false
+    isImplicitSelf: boolean = false,
+    isImplicitOther: boolean = false
   ) {
     super(line, column)
     this.name = name
     this.type = type
     this.isImplicitSelf = isImplicitSelf
+    this.isImplicitOther = isImplicitOther
   }
 }
 
