@@ -199,10 +199,6 @@
           "match": ">>"
         },
         {
-          "name": "keyword.operator.dot-tail.seseragi",
-          "match": "\\.>>"
-        },
-        {
           "name": "keyword.operator.assignment.seseragi",
           "match": "="
         },
