@@ -1,0 +1,183 @@
+// Seseragi Spread Syntax and Destructuring Examples
+// スプレッド構文と分割代入の使用例
+
+show "=== Spread and Destructuring Examples ==="
+
+// =============================================================================
+// Record Spread Syntax
+// =============================================================================
+
+show "--- Record Spread Syntax ---"
+
+// 基本的なレコード
+type Point = { x: Int, y: Int }
+
+let point1: Point = { x: 1, y: 2 }
+let point2 = { x: 3, y: 4 }
+
+show point1
+show point2
+
+// スプレッド構文を使ったレコードの拡張
+let point3 = { ...point1, y: 10 }
+let point4 = { ...point2, x: 20, z: 5 }
+
+show point3  // { x: 1, y: 10 }
+show point4  // { x: 20, y: 4, z: 5 }
+
+// 複数のレコードを組み合わせ
+let combinedPoint = { ...point1, ...point2, w: 100 }
+show combinedPoint  // { x: 3, y: 4, w: 100 }
+
+// =============================================================================
+// Struct Spread Syntax
+// =============================================================================
+
+show "--- Struct Spread Syntax ---"
+
+// 構造体定義
+struct Person {
+  name: String,
+  age: Int,
+  city: String
+}
+
+struct Employee {
+  name: String,
+  age: Int,
+  department: String,
+  salary: Int
+}
+
+// 基本的な構造体インスタンス
+let alice = Person { name: "Alice", age: 25, city: "Tokyo" }
+let bob = Person { name: "Bob", age: 30, city: "Osaka" }
+
+show alice
+show bob
+
+// スプレッド構文を使った構造体の更新
+let aliceOlder = Person { ...alice, age: 26 }
+let bobMoved = Person { ...bob, city: "Kyoto" }
+
+show aliceOlder  // Person { name: "Alice", age: 26, city: "Tokyo" }
+show bobMoved    // Person { name: "Bob", age: 30, city: "Kyoto" }
+
+// 別の構造体への変換（共通フィールドを流用）
+// 注意: PersonからEmployeeへは共通フィールドのみ使用
+let emp1 = Employee { name: alice.name, age: alice.age, department: "Engineering", salary: 75000 }
+show emp1
+
+// =============================================================================
+// Record Destructuring
+// =============================================================================
+
+show "--- Record Destructuring ---"
+
+// 基本的な分割代入
+let {x, y} = point1
+show x  // 1
+show y  // 2
+
+// エイリアス付き分割代入
+let {x: posX, y: posY} = point2
+show posX  // 3
+show posY  // 4
+
+// 複雑なレコードの分割代入
+let contact = {
+  name: "Charlie",
+  email: "charlie@example.com",
+  address: { street: "123 Main St", city: "Tokyo" }
+}
+
+let {email} = contact
+show email  // "charlie@example.com"
+
+let {name: contactName, email: contactEmail} = contact
+show contactName   // "Charlie"
+show contactEmail  // "charlie@example.com"
+
+// =============================================================================
+// Struct Destructuring
+// =============================================================================
+
+show "--- Struct Destructuring ---"
+
+// 基本的な構造体分割代入
+let Person {name: personName, age: personAge} = alice
+show personName  // "Alice"
+show personAge   // 25
+
+// エイリアスなしの構造体分割代入
+let Person {name, age, city} = bob
+show name  // "Bob"
+show age   // 30
+show city  // "Osaka"
+
+// 従業員情報の分割代入
+let Employee {name: empName, department, salary} = emp1
+show empName     // "Alice"
+show department  // "Engineering"
+show salary      // 75000
+
+// =============================================================================
+// Practical Examples
+// =============================================================================
+
+show "--- Practical Examples ---"
+
+// 設定オブジェクトのデフォルト値オーバーライド
+let defaultConfig = { host: "localhost", port: 3000, ssl: False }
+let productionConfig = { ...defaultConfig, host: "api.example.com", ssl: True }
+
+show defaultConfig
+show productionConfig
+
+// ユーザー情報の更新
+let userProfile = {
+  username: "user123",
+  email: "user@example.com",
+  preferences: { theme: "dark", language: "en" }
+}
+
+let updatedProfile = {
+  ...userProfile,
+  email: "newemail@example.com",
+  lastLogin: "2024-01-15"
+}
+
+show userProfile
+show updatedProfile
+
+// プロファイル情報の抽出
+let {username, email: userEmail} = updatedProfile
+show username   // "user123"
+show userEmail  // "newemail@example.com"
+
+// =============================================================================
+// Function Parameters with Destructuring
+// =============================================================================
+
+show "--- Function Parameters with Destructuring ---"
+
+// レコードを受け取る関数
+type Point = { x: Int, y: Int }
+fn displayPoint point: Point -> String {
+  let {x, y} = point
+  "Point(" + toString x + ", " + toString y + ")"
+}
+
+let pointStr = displayPoint point1
+show pointStr
+
+// 構造体を受け取る関数
+fn getPersonInfo person: Person -> String {
+  let Person {name, age, city} = person
+  name + " is " + toString age + " years old and lives in " + city
+}
+
+let aliceInfo = getPersonInfo alice
+show aliceInfo
+
+show "=== All Examples Completed ==="

@@ -48,6 +48,13 @@ import {
   StructDeclaration,
   StructExpression,
   StructType,
+  SpreadExpression,
+  RecordSpreadField,
+  RecordDestructuring,
+  StructDestructuring,
+  RecordPattern,
+  StructPattern,
+  RecordPatternField,
   ImplBlock,
   type MethodDeclaration,
   type OperatorDeclaration,
@@ -273,13 +280,13 @@ export class CodeGenerator {
       imports.push("Left", "Right", "type Either")
     }
     if (this.usageAnalysis.needsFunctorMap) {
-      imports.push("mapMaybe", "mapList", "mapArray")
+      imports.push("mapMaybe", "mapEither", "mapList", "mapArray")
     }
     if (this.usageAnalysis.needsApplicativeApply) {
-      imports.push("applyMaybe", "applyList", "applyArray")
+      imports.push("applyMaybe", "applyEither", "applyList", "applyArray")
     }
     if (this.usageAnalysis.needsMonadBind) {
-      imports.push("bindMaybe", "bindList", "bindArray")
+      imports.push("bindMaybe", "bindEither", "bindList", "bindArray")
     }
     if (this.usageAnalysis.needsFoldMonoid) {
       imports.push("foldMonoid")
@@ -393,6 +400,13 @@ export class CodeGenerator {
       lines.push("};")
       lines.push("")
 
+      lines.push(
+        "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {"
+      )
+      lines.push("  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;")
+      lines.push("};")
+      lines.push("")
+
       lines.push("const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {")
       lines.push("  return fa.map(f);")
       lines.push("};")
@@ -413,6 +427,16 @@ export class CodeGenerator {
       lines.push(
         "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;"
       )
+      lines.push("};")
+      lines.push("")
+
+      lines.push(
+        "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {"
+      )
+      lines.push(
+        "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :"
+      )
+      lines.push("         ef.tag === 'Left' ? ef : ea;")
       lines.push("};")
       lines.push("")
 
@@ -450,6 +474,13 @@ export class CodeGenerator {
         "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {"
       )
       lines.push("  return ma.tag === 'Just' ? f(ma.value) : Nothing;")
+      lines.push("};")
+      lines.push("")
+
+      lines.push(
+        "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {"
+      )
+      lines.push("  return ea.tag === 'Right' ? f(ea.value) : ea;")
       lines.push("};")
       lines.push("")
 
@@ -535,6 +566,11 @@ export class CodeGenerator {
     return "\`[" + items.join(', ') + "]"
   }
   
+  // Tuple型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Tuple') {
+    return \`(\${value.elements.map(toString).join(', ')})\`
+  }
+  
   // 配列の表示
   if (Array.isArray(value)) {
     return \`[\${value.map(toString).join(', ')}]\`
@@ -544,8 +580,11 @@ export class CodeGenerator {
   if (typeof value === 'string') {
     return \`"\${value}"\`
   }
-  if (typeof value === 'number' || typeof value === 'boolean') {
+  if (typeof value === 'number') {
     return String(value)
+  }
+  if (typeof value === 'boolean') {
+    return value ? 'True' : 'False'
   }
   
   // 普通のオブジェクト（構造体など）
@@ -577,6 +616,10 @@ export class CodeGenerator {
       // prettyFormat関数も必要
       lines.push(`// Seseragi型の構造を正規化
 function normalizeStructure(obj) {
+  // プリミティブ型の処理
+  if (typeof obj === 'boolean') {
+    return { '@@type': 'Boolean', value: obj }
+  }
   if (!obj || typeof obj !== 'object') return obj
   
   // List型 → 特別なマーカー付き配列に変換
@@ -605,6 +648,11 @@ function normalizeStructure(obj) {
   }
   if (obj.tag === 'Left') {
     return { '@@type': 'Left', value: normalizeStructure(obj.value) }
+  }
+  
+  // Tuple型
+  if (obj.tag === 'Tuple') {
+    return { '@@type': 'Tuple', value: obj.elements.map(normalizeStructure) }
   }
   
   // 配列
@@ -653,6 +701,15 @@ function beautifySpecialTypes(json) {
     .replace(/\\{\\s*Right\\(([^)]+)\\)\\s*\\}/g, 'Right($1)')
     .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
     .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
+    // タプル型
+    .replace(/\\{\\s*"@@type":\\s*"Tuple",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
+      const cleanContent = content.replace(/\\s+/g, ' ').trim()
+      return \`(\${cleanContent})\`
+    })
+    // ブール値型
+    .replace(/\\{\\s*"@@type":\\s*"Boolean",\\s*"value":\\s*(true|false)\\s*\\}/g, (match, value) => {
+      return value === 'true' ? 'True' : 'False'
+    })
 }
 
 // 普通のオブジェクト（構造体）の美しい変換
@@ -684,18 +741,70 @@ function beautifyStructObjects(json) {
 const prettyFormat = (value) => {
   // プリミティブ型
   if (typeof value === 'string') return \`"\${value}"\`
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (typeof value === 'number') return String(value)
+  if (typeof value === 'boolean') return value ? 'True' : 'False'
   if (value === null) return 'null'
   if (value === undefined) return 'undefined'
   
-  // オブジェクトの場合
-  if (typeof value === 'object') {
-    // まず構造を正規化
-    const normalized = normalizeStructure(value)
-    // JSON.stringifyで整形
-    const json = JSON.stringify(normalized, null, 2)
-    // Seseragi型の表記に変換
-    return beautifySeseragiTypes(json)
+  // Seseragi特殊型とオブジェクトの場合
+  if (value && typeof value === 'object') {
+    // Maybe型
+    if (value.tag === 'Just') {
+      return \`Just(\${prettyFormat(value.value)})\`
+    }
+    if (value.tag === 'Nothing') {
+      return 'Nothing'
+    }
+    
+    // Either型
+    if (value.tag === 'Left') {
+      return \`Left(\${prettyFormat(value.value)})\`
+    }
+    if (value.tag === 'Right') {
+      return \`Right(\${prettyFormat(value.value)})\`
+    }
+    
+    // List型
+    if (value.tag === 'Empty') {
+      return '\`[]'
+    }
+    if (value.tag === 'Cons') {
+      const items = []
+      let current = value
+      while (current.tag === 'Cons') {
+        items.push(prettyFormat(current.head))
+        current = current.tail
+      }
+      return \`\\\`[\${items.join(', ')}]\`
+    }
+    
+    // Tuple型
+    if (value.tag === 'Tuple') {
+      return \`(\${value.elements.map(prettyFormat).join(', ')})\`
+    }
+    
+    // 配列
+    if (Array.isArray(value)) {
+      return \`[\${value.map(prettyFormat).join(', ')}]\`
+    }
+    
+    // 構造体・普通のオブジェクト
+    const pairs = []
+    for (const key in value) {
+      if (value.hasOwnProperty(key)) {
+        pairs.push(\`\${key}: \${prettyFormat(value[key])}\`)
+      }
+    }
+    
+    const structName = value.constructor && value.constructor.name !== 'Object' 
+      ? value.constructor.name 
+      : ''
+    
+    if (pairs.length > 2) {
+      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
+    } else {
+      return \`\${structName} { \${pairs.join(', ')} }\`
+    }
   }
   
   return String(value)
@@ -845,6 +954,20 @@ const show = (value) => {
       "  return ma.tag === 'Just' ? f(ma.value) : Nothing;",
       "};",
       "",
+      "// Either monadic functions",
+      "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {",
+      "  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;",
+      "};",
+      "",
+      "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {",
+      "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :",
+      "         ef.tag === 'Left' ? ef : ea;",
+      "};",
+      "",
+      "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {",
+      "  return ea.tag === 'Right' ? f(ea.value) : ea;",
+      "};",
+      "",
       "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });",
       "const Nothing: Maybe<never> = { tag: 'Nothing' };",
       "",
@@ -900,6 +1023,11 @@ const show = (value) => {
     return "\`[" + items.join(', ') + "]"
   }
   
+  // Tuple型の美しい表示
+  if (value && typeof value === 'object' && value.tag === 'Tuple') {
+    return \`(\${value.elements.map(toString).join(', ')})\`
+  }
+  
   // 配列の表示
   if (Array.isArray(value)) {
     return \`[\${value.map(toString).join(', ')}]\`
@@ -909,8 +1037,11 @@ const show = (value) => {
   if (typeof value === 'string') {
     return \`"\${value}"\`
   }
-  if (typeof value === 'number' || typeof value === 'boolean') {
+  if (typeof value === 'number') {
     return String(value)
+  }
+  if (typeof value === 'boolean') {
+    return value ? 'True' : 'False'
   }
   
   // 普通のオブジェクト（構造体など）
@@ -991,6 +1122,10 @@ const show = (value) => {
       return this.generateExpressionStatement(stmt)
     } else if (stmt instanceof TupleDestructuring) {
       return this.generateTupleDestructuring(stmt)
+    } else if (stmt instanceof RecordDestructuring) {
+      return this.generateRecordDestructuring(stmt)
+    } else if (stmt instanceof StructDestructuring) {
+      return this.generateStructDestructuring(stmt)
     } else if (stmt instanceof StructDeclaration) {
       return this.generateStructDeclaration(stmt)
     } else if (stmt instanceof ImplBlock) {
@@ -1019,11 +1154,15 @@ const show = (value) => {
     // カリー化された関数として生成
     if (func.parameters.length > 1) {
       const body = this.generateExpression(func.body)
-      return `${indent}const ${func.name} = curry((${params}): ${returnType} => ${body});`
+      // オブジェクトリテラルの場合は括弧で囲む
+      const wrappedBody = body.startsWith("{") ? `(${body})` : body
+      return `${indent}const ${func.name} = curry((${params}): ${returnType} => ${wrappedBody});`
     } else {
       const body = this.generateExpression(func.body)
       if (this.options.useArrowFunctions) {
-        return `${indent}const ${func.name} = (${params}): ${returnType} => ${body};`
+        // オブジェクトリテラルの場合は括弧で囲む
+        const wrappedBody = body.startsWith("{") ? `(${body})` : body
+        return `${indent}const ${func.name} = (${params}): ${returnType} => ${wrappedBody};`
       } else {
         return `${indent}function ${func.name}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
       }
@@ -1458,6 +1597,8 @@ ${indent}}`
       return this.generateTupleExpression(expr)
     } else if (expr instanceof StructExpression) {
       return this.generateStructExpression(expr)
+    } else if (expr instanceof SpreadExpression) {
+      return this.generateSpreadExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -1965,10 +2106,14 @@ ${indent}}`
     // 実際の型判定はランタイムで行う
     return `(() => {
       const _value = ${value};
-      if (Array.isArray(_value)) {
+      if (_value && _value.tag === 'Tuple') {
+        return { tag: 'Tuple', elements: mapArray(_value.elements, ${func}) };
+      } else if (Array.isArray(_value)) {
         return mapArray(_value, ${func});
       } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
         return mapList(_value, ${func});
+      } else if (_value && (_value.tag === 'Left' || _value.tag === 'Right')) {
+        return mapEither(_value, ${func});
       } else {
         return mapMaybe(_value, ${func});
       }
@@ -1989,6 +2134,9 @@ ${indent}}`
       } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') && 
                 _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
         return applyList(_funcs, _values);
+      } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
+                _values && (_values.tag === 'Left' || _values.tag === 'Right')) {
+        return applyEither(_funcs, _values);
       } else {
         return applyMaybe(_funcs, _values);
       }
@@ -2003,10 +2151,15 @@ ${indent}}`
     // 型に基づいて適切なランタイム関数を選択
     return `(() => {
       const _monad = ${monadValue};
-      if (Array.isArray(_monad)) {
+      if (_monad && _monad.tag === 'Tuple') {
+        const results = bindArray(_monad.elements, ${bindFunc});
+        return { tag: 'Tuple', elements: results };
+      } else if (Array.isArray(_monad)) {
         return bindArray(_monad, ${bindFunc});
       } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
         return bindList(_monad, ${bindFunc});
+      } else if (_monad && (_monad.tag === 'Left' || _monad.tag === 'Right')) {
+        return bindEither(_monad, ${bindFunc});
       } else {
         return bindMaybe(_monad, ${bindFunc});
       }
@@ -2195,12 +2348,26 @@ ${indent}}`
       return "{}"
     }
 
-    const fields = record.fields.map((field) => {
-      const value = this.generateExpression(field.value)
-      return `${field.name}: ${value}`
+    const fieldStrings = record.fields.map((field) => {
+      if (field.kind === "RecordInitField") {
+        const initField = field as any // AST.RecordInitField
+        const value = this.generateExpression(initField.value)
+        return `${initField.name}: ${value}`
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as any // AST.RecordShorthandField
+        // JavaScript/TypeScript shorthand property notation
+        return shorthandField.name
+      } else if (field.kind === "RecordSpreadField") {
+        const spreadField = field as any // AST.RecordSpreadField
+        const spreadValue = this.generateExpression(
+          spreadField.spreadExpression.expression
+        )
+        return `...${spreadValue}`
+      }
+      return ""
     })
 
-    return `{ ${fields.join(", ")} }`
+    return `{ ${fieldStrings.join(", ")} }`
   }
 
   // Recordアクセスの生成
@@ -2226,7 +2393,8 @@ ${indent}}`
   generateArrayAccess(arrayAccess: ArrayAccess): string {
     const array = this.generateExpression(arrayAccess.array)
     const index = this.generateExpression(arrayAccess.index)
-    return `${array}[${index}]`
+    // タプル型の場合はelementsから取り出す
+    return `(${array}.tag === 'Tuple' ? ${array}.elements : ${array})[${index}]`
   }
 
   // リストシュガーの生成 [1, 2, 3] -> Cons(1, Cons(2, Cons(3, Empty)))
@@ -2372,13 +2540,86 @@ ${indent}}`
     const elements = tuple.elements
       .map((element) => this.generateExpression(element))
       .join(", ")
-    return `[${elements}]`
+    return `{ tag: 'Tuple', elements: [${elements}] }`
   }
 
   // 構造体式の生成
   generateStructExpression(structExpr: StructExpression): string {
+    // スプレッド構文または省略記法がある場合
+    const hasSpread = structExpr.fields.some(
+      (field) => field.kind === "RecordSpreadField"
+    )
+    const hasShorthand = structExpr.fields.some(
+      (field) => field.kind === "RecordShorthandField"
+    )
+
+    if (hasSpread || hasShorthand) {
+      // スプレッドフィールドとイニシャライザーフィールドを収集
+      const spreadExpressions: string[] = []
+      const initFields: { name: string; value: string }[] = []
+
+      for (const field of structExpr.fields) {
+        if (field.kind === "RecordSpreadField") {
+          const spreadField = field as any // AST.RecordSpreadField
+          const spreadValue = this.generateExpression(
+            spreadField.spreadExpression.expression
+          )
+          spreadExpressions.push(spreadValue)
+        } else if (field.kind === "RecordInitField") {
+          const initField = field as any // AST.RecordInitField
+          const value = this.generateExpression(initField.value)
+          initFields.push({ name: initField.name, value })
+        } else if (field.kind === "RecordShorthandField") {
+          const shorthandField = field as any // AST.RecordShorthandField
+          // Shorthand property: use variable name directly
+          initFields.push({
+            name: shorthandField.name,
+            value: shorthandField.name,
+          })
+        }
+      }
+
+      // オブジェクトから新しい構造体インスタンスを作成
+      const spreadPart = spreadExpressions
+        .map((expr) => `...${expr}`)
+        .join(", ")
+      const fieldsPart = initFields
+        .map((f) => `${f.name}: ${f.value}`)
+        .join(", ")
+
+      let allFields = ""
+      if (spreadPart && fieldsPart) {
+        allFields = `${spreadPart}, ${fieldsPart}`
+      } else if (spreadPart) {
+        allFields = spreadPart
+      } else if (fieldsPart) {
+        allFields = fieldsPart
+      }
+
+      if (allFields) {
+        // 一時オブジェクトを作成し、構造体定義の順序に従ってコンストラクタ引数を構築
+        const tempVar = `__tmp${Math.random().toString(36).substring(2, 8)}`
+
+        // 構造体の型定義から必要なフィールド順序を取得する必要があるが、
+        // 現時点では型情報が利用できないので、Object.assignアプローチを使用
+        return `(() => { const ${tempVar} = { ${allFields} }; return Object.assign(Object.create(${structExpr.structName}.prototype), ${tempVar}); })()`
+      }
+    }
+
+    // 従来のコンストラクタ形式（スプレッドなし）
     const args = structExpr.fields
-      .map((field) => this.generateExpression(field.value))
+      .map((field) => {
+        if (field.kind === "RecordInitField") {
+          const initField = field as any // AST.RecordInitField
+          return this.generateExpression(initField.value)
+        } else if (field.kind === "RecordShorthandField") {
+          const shorthandField = field as any // AST.RecordShorthandField
+          // Use the variable name directly
+          return shorthandField.name
+        }
+        return ""
+      })
+      .filter((arg) => arg !== "")
       .join(", ")
     return `new ${structExpr.structName}(${args})`
   }
@@ -2397,7 +2638,8 @@ ${indent}}`
   generateTupleDestructuring(stmt: TupleDestructuring): string {
     const patternVars = this.extractTuplePatternVars(stmt.pattern)
     const initializer = this.generateExpression(stmt.initializer)
-    return `const [${patternVars.join(", ")}] = ${initializer};`
+    // タプル型の場合はelementsから取り出す
+    return `const [${patternVars.join(", ")}] = ${initializer}.tag === 'Tuple' ? ${initializer}.elements : ${initializer};`
   }
 
   // タプルパターンから変数名を抽出
@@ -2422,5 +2664,37 @@ ${indent}}`
     }
 
     return vars
+  }
+
+  // スプレッド式の生成
+  generateSpreadExpression(spread: SpreadExpression): string {
+    // スプレッド式は通常直接使われることはないが、TypeScriptのスプレッド構文と同じ
+    return `...${this.generateExpression(spread.expression)}`
+  }
+
+  // レコード分割代入の生成
+  generateRecordDestructuring(stmt: RecordDestructuring): string {
+    const initializer = this.generateExpression(stmt.initializer)
+    const fieldPatterns = stmt.pattern.fields.map((field) => {
+      if (field.alias) {
+        return `${field.fieldName}: ${field.alias}`
+      } else {
+        return field.fieldName
+      }
+    })
+    return `const { ${fieldPatterns.join(", ")} } = ${initializer};`
+  }
+
+  // 構造体分割代入の生成
+  generateStructDestructuring(stmt: StructDestructuring): string {
+    const initializer = this.generateExpression(stmt.initializer)
+    const fieldPatterns = stmt.pattern.fields.map((field) => {
+      if (field.alias) {
+        return `${field.fieldName}: ${field.alias}`
+      } else {
+        return field.fieldName
+      }
+    })
+    return `const { ${fieldPatterns.join(", ")} } = ${initializer};`
   }
 }

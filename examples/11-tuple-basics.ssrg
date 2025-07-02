@@ -75,9 +75,12 @@ show str   // "hello"
 show flag  // true
 show pi    // 3.14
 
-// ネストしたタプル（将来実装予定）
-// let nested = ((1, 2), (3, 4))
-// let ((a, b), (c, d)) = nested
+// ネストしたタプル
+let nested = ((1, 2), (3, 4))
+let (a, b) = nested
+
+show a  // (1, 2)
+show b  // (3, 4)
 
 show "=== Tuple Examples Complete ==="
 

@@ -141,7 +141,7 @@ describe("Tuple Feature Tests", () => {
       const stmt = parseResult.statements![0] as AST.ExpressionStatement
       const code = generator.generateExpression(stmt.expression)
 
-      expect(code).toBe("[1, 2, 3]")
+      expect(code).toBe("{ tag: 'Tuple', elements: [1, 2, 3] }")
     })
 
     test("should generate tuple destructuring", () => {
@@ -152,7 +152,9 @@ describe("Tuple Feature Tests", () => {
       const stmt = parseResult.statements![0]
       const code = generator.generateStatement(stmt)
 
-      expect(code).toBe("const [x, y] = [1, 2];")
+      expect(code).toBe(
+        "const [x, y] = { tag: 'Tuple', elements: [1, 2] }.tag === 'Tuple' ? { tag: 'Tuple', elements: [1, 2] }.elements : { tag: 'Tuple', elements: [1, 2] };"
+      )
     })
 
     test("should generate destructuring with wildcard", () => {
@@ -163,7 +165,9 @@ describe("Tuple Feature Tests", () => {
       const stmt = parseResult.statements![0]
       const code = generator.generateStatement(stmt)
 
-      expect(code).toBe("const [x, _1] = [1, 2];")
+      expect(code).toBe(
+        "const [x, _1] = { tag: 'Tuple', elements: [1, 2] }.tag === 'Tuple' ? { tag: 'Tuple', elements: [1, 2] }.elements : { tag: 'Tuple', elements: [1, 2] };"
+      )
     })
 
     test("should generate unique names for multiple wildcards", () => {
@@ -174,7 +178,9 @@ describe("Tuple Feature Tests", () => {
       const stmt = parseResult.statements![0]
       const code = generator.generateStatement(stmt)
 
-      expect(code).toBe("const [_1, x, _2, y, _3] = [1, 2, 3, 4, 5];")
+      expect(code).toBe(
+        "const [_1, x, _2, y, _3] = { tag: 'Tuple', elements: [1, 2, 3, 4, 5] }.tag === 'Tuple' ? { tag: 'Tuple', elements: [1, 2, 3, 4, 5] }.elements : { tag: 'Tuple', elements: [1, 2, 3, 4, 5] };"
+      )
     })
 
     test("should generate globally unique wildcard names across statements", () => {
@@ -188,8 +194,12 @@ describe("Tuple Feature Tests", () => {
       const code1 = generator.generateStatement(parseResult.statements![0])
       const code2 = generator.generateStatement(parseResult.statements![1])
 
-      expect(code1).toBe("const [_1, x, _2] = [1, 2, 3];")
-      expect(code2).toBe("const [_3, y, _4] = [4, 5, 6];")
+      expect(code1).toBe(
+        "const [_1, x, _2] = { tag: 'Tuple', elements: [1, 2, 3] }.tag === 'Tuple' ? { tag: 'Tuple', elements: [1, 2, 3] }.elements : { tag: 'Tuple', elements: [1, 2, 3] };"
+      )
+      expect(code2).toBe(
+        "const [_3, y, _4] = { tag: 'Tuple', elements: [4, 5, 6] }.tag === 'Tuple' ? { tag: 'Tuple', elements: [4, 5, 6] }.elements : { tag: 'Tuple', elements: [4, 5, 6] };"
+      )
     })
   })
 

@@ -151,6 +151,10 @@
           "match": "<\\*>"
         },
         {
+          "name": "keyword.operator.spread.seseragi",
+          "match": "\\.\\.\\."
+        },
+        {
           "name": "keyword.operator.range.seseragi",
           "match": "\\.\\.(=)?"
         },

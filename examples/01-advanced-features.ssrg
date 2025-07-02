@@ -1,127 +1,149 @@
-// Seseragi 高度な機能のサンプル
-// 実装済みの関数型プログラミング機能を使った実用的な例
-
-show "=== Seseragi Advanced Features ==="
+// Seseragi Advanced Features - 機能デモンストレーション
+show "=== Seseragi Advanced Features Showcase ==="
 
 // =============================================================================
-// カリー化と部分適用の活用
+// 1. 構造体 + impl blocks + 演算子オーバーロード
 // =============================================================================
 
-// カリー化された関数の定義
-fn multiply x: Int -> y: Int -> Int = x * y
-fn power base: Int -> exp: Int -> Int =
-  if exp <= 0 then 1 else base * power base (exp - 1)
+struct Vector2D {
+  x: Int,
+  y: Int
+}
 
-// 部分適用で専用関数を作成
-let double = multiply 2
-let triple = multiply 3
-let square = power 2
-let cube = power 3
+impl Vector2D {
+  fn magnitude self -> Int {
+    let Vector2D {x, y} = self
+    x * x + y * y
+  }
 
-show "=== Currying and Partial Application ==="
-show $ double 15    // 30
-show $ triple 8     // 24
-show $ square 5     // 25
-show $ cube 4       // 64
+  operator + self other: Vector2D -> Vector2D {
+    let x = self.x + other.x
+    let y = self.y + other.y
+    Vector2D { x, y }
+  }
 
-// =============================================================================
-// 高度な再帰とアルゴリズム
-// =============================================================================
-
-// フィボナッチ数列
-fn fibonacci n: Int -> Int =
-  if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
-
-// 階乗
-fn factorial n: Int -> Int =
-  if n <= 1 then 1 else n * factorial (n - 1)
-
-// ユークリッドの互除法
-fn gcd a: Int -> b: Int -> Int =
-  if b == 0 then a else gcd b (a % b)
-
-show "=== Advanced Recursion ==="
-show $ fibonacci 8   // 21
-show $ factorial 5   // 120
-show $ gcd 48 18     // 6
-
-// =============================================================================
-// モナド操作の実用例
-// =============================================================================
-
-// 安全な計算チェーン
-fn safeDivide x: Int -> y: Int -> Maybe<Int> =
-  if y == 0 then Nothing else Just (x / y)
-
-fn safeRoot x: Int -> Maybe<Int> =
-  if x < 0 then Nothing else Just x  // 簡易版
-
-// モナドチェーンの例
-let calculation1 = Just 100 >>= safeDivide 5 >>= safeDivide 2  // Just 10
-let calculation2 = Just 100 >>= safeDivide 0 >>= safeDivide 2  // Nothing
-
-show "=== Monadic Computations ==="
-show calculation1
-show calculation2
-
-// =============================================================================
-// 関数合成とパイプライン
-// =============================================================================
-
-// パイプライン演算子の活用
-let pipeline1 = 10 | double | triple | square  // ((10 * 2) * 3)^2 = 3600
-let pipeline2 = 5 | factorial | double         // 5! * 2 = 240
-
-show "=== Function Composition ==="
-show pipeline1
-show pipeline2
-
-// =============================================================================
-// 高度なリスト操作
-// =============================================================================
-
-// リスト生成関数（手動構築）
-let emptyList = `[]
-let numberList = Cons 10 (Cons 20 (Cons 30 Empty))
-let simpleList1 = 1 : 2 : 3 : 4 : 5 : `[]
-let simpleList2 = `[1, 2, 3, 4, 5]
-let extendedList = Cons 0 simpleList1
-let comprehensionList = `[x | x <- 1..=10, x % 2 == 0]
-
-show "=== Advanced List Operations ==="
-show emptyList
-show numberList
-show simpleList1
-show simpleList2
-show extendedList
-show comprehensionList
-
-// =============================================================================
-// 複雑なデータ構造の活用
-// =============================================================================
-
-// ネストしたレコードとMaybe型の組み合わせ
-let complexData = {
-  user: { name: "Alice", age: 30 },
-  calculations: {
-    result1: Just 42,
-    result2: Nothing,
-    result3: Just 100
-  },
-  metadata: {
-    timestamp: "2024-01-01",
-    valid: True
+  operator * self -> factor: Int -> Vector2D {
+    let x = self.x * factor
+    let y = self.y * factor
+    Vector2D { x, y }
   }
 }
 
-show "=== Complex Data Structures ==="
-show complexData
+// shorthand記法でベクター作成
+let x = 3
+let y = 4
+let firstVector = Vector2D { x, y }
+let secondVector = Vector2D { x: 1, y: 2 }
 
-let userName = complexData.user.name
-let calculation = complexData.calculations.result1
+// spread + shorthand
+let thirdVector = Vector2D { ...firstVector, y: 10 }
 
-show userName
-show calculation
+// メソッド + 演算子
+let vectorMagnitude = firstVector magnitude()
+let vectorSum = firstVector + secondVector
+let scaledVector = firstVector * 2
 
-show "=== Advanced Features Complete ==="
+show "=== Vector Operations ==="
+show firstVector // Vector2D { x: 3, y: 4 }
+show secondVector // Vector2D { x: 1, y: 2 }
+show thirdVector // Vector2D { x: 3, y: 10 }
+show vectorMagnitude // 25
+show vectorSum // Vector2D { x: 4, y: 6 }
+show scaledVector // Vector2D { x: 6, y: 8 }
+
+// =============================================================================
+// 2. タプルと分割代入
+// =============================================================================
+
+let coordinatePair = (100, 200)
+let (coordX, coordY) = coordinatePair
+
+let userInfo = ("Bob", 30, False)
+let (userName, userAge, isUserActive) = userInfo
+
+show "=== Tuple Destructuring ==="
+show coordinatePair // (100, 200)
+show coordX // 100
+show coordY // 200
+show userInfo // ("Bob", 30, False)
+show userName // "Bob"
+show userAge // 30
+show isUserActive // False
+
+// =============================================================================
+// 3. Array 内包表記, モナド
+// =============================================================================
+
+let integerList = [x * 10 | x <- 1..=5] // == [10, 20, 30, 40, 50]
+fn triple x: Int -> Int = x * 3
+let multipliedList = triple <$> integerList
+
+show "=== Array Monad Operations ==="
+show integerList // [10, 20, 30, 40, 50]
+show multipliedList // [30, 60, 90, 120, 150]
+
+// =============================================================================
+// 4. List 内包表記
+// =============================================================================
+
+let cubeNumbers = `[val * val * val | val <- 1..=4]
+let coordinateGrid = `[(x, y) | x <- 1..=3, y <- 1..=3]
+
+show "=== List Comprehension ==="
+show cubeNumbers // `[1, 8, 27, 64]
+show coordinateGrid // `[[1, 1], [1, 2], [1, 3], [2, 1], [2, 2], [2, 3], [3, 1], [3, 2], [3, 3]]
+
+// =============================================================================
+// 5. Maybe型チェーン
+// =============================================================================
+
+fn positiveOnly input: Int -> Maybe<Int> =
+  if input < 0 then Nothing else Just input
+
+let maybePositive1 = Just 25 >>= positiveOnly
+let maybePositive2 = Just -10 >>= positiveOnly
+
+show "=== Maybe Chaining ==="
+show maybePositive1 // Just 25
+show maybePositive2 // Nothing
+
+// =============================================================================
+// 6. Either型エラーハンドリング
+// =============================================================================
+
+fn safeDivision divisor: Int -> numerator: Int -> Either<String, Int> =
+  if divisor == 0 then Left "Division by zero" else Right (numerator / divisor)
+
+fn validatePositive value: Int -> Either<String, Int> =
+  if value <= 0 then Left "Must be positive" else Right value
+
+// Either モナド演算子
+let eitherResult1 = Right 20 >>= safeDivision 4    // Right 5
+let eitherResult2 = Right 20 >>= safeDivision 0    // Left "Division by zero"
+let eitherChain = Right 100 >>= safeDivision 5 >>= validatePositive  // Right 20
+
+// Either ファンクター演算子
+let eitherMapped1 = (\x -> x * 2) <$> Right 15     // Right 30
+let eitherMapped2 = (\x -> x * 2) <$> Left "error" // Left "error"
+
+show "=== Either Error Handling ==="
+show eitherResult1 // Right 5
+show eitherResult2 // Left "Division by zero"
+show eitherChain   // Right 20
+show eitherMapped1 // Right 30
+show eitherMapped2 // Left "error"
+
+// =============================================================================
+// 7. パイプライン演算子と関数合成
+// =============================================================================
+
+fn addFifteen input: Int -> Int = input + 5
+fn tripleValue input: Int -> Int = input * 3
+
+let pipelineCalculation = 7 | addFifteen | tripleValue // (7 + 5) * 3 = 36
+
+show "=== Pipeline Operators ==="
+show pipelineCalculation // 36
+
+show "=== 全機能デモ完了 ==="
 

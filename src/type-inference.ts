@@ -830,7 +830,9 @@ export class TypeInferenceSystem {
       if (
         statement.kind === "VariableDeclaration" ||
         statement.kind === "ExpressionStatement" ||
-        statement.kind === "TupleDestructuring"
+        statement.kind === "TupleDestructuring" ||
+        statement.kind === "RecordDestructuring" ||
+        statement.kind === "StructDestructuring"
       ) {
         this.generateConstraintsForStatement(statement, env)
       }
@@ -875,6 +877,18 @@ export class TypeInferenceSystem {
       case "TupleDestructuring":
         this.generateConstraintsForTupleDestructuring(
           statement as AST.TupleDestructuring,
+          env
+        )
+        break
+      case "RecordDestructuring":
+        this.generateConstraintsForRecordDestructuring(
+          statement as AST.RecordDestructuring,
+          env
+        )
+        break
+      case "StructDestructuring":
+        this.generateConstraintsForStructDestructuring(
+          statement as AST.StructDestructuring,
           env
         )
         break
@@ -985,18 +999,27 @@ export class TypeInferenceSystem {
 
     let finalType: AST.Type
     if (varDecl.type) {
-      // 明示的な型注釈がある場合は制約を追加
+      // 明示的な型注釈がある場合は型エイリアスを解決
+      let resolvedType = varDecl.type
+      if (varDecl.type.kind === "PrimitiveType") {
+        const aliasedType = env.get(varDecl.type.name)
+        if (aliasedType) {
+          resolvedType = aliasedType
+        }
+      }
+
+      // 制約を追加（解決された型で）
       this.addConstraint(
         new TypeConstraint(
           initType,
-          varDecl.type,
+          resolvedType,
           varDecl.line,
           varDecl.column,
           `Variable ${varDecl.name} type annotation`
         )
       )
-      env.set(varDecl.name, varDecl.type)
-      finalType = varDecl.type
+      env.set(varDecl.name, resolvedType)
+      finalType = resolvedType
     } else {
       // 型注釈がない場合は推論された型を使用
       // 型変数、ジェネリック型、関数型すべてを正しく保持
@@ -1306,6 +1329,13 @@ export class TypeInferenceSystem {
       case "StructExpression":
         resultType = this.generateConstraintsForStructExpression(
           expr as AST.StructExpression,
+          env
+        )
+        break
+
+      case "SpreadExpression":
+        resultType = this.generateConstraintsForSpreadExpression(
+          expr as AST.SpreadExpression,
           env
         )
         break
@@ -2364,173 +2394,6 @@ export class TypeInferenceSystem {
     }
 
     // For unknown types, let constraint resolution figure it out
-    return resultType
-  }
-
-  private generateConstraintsForFunctorMap(
-    functorMap: AST.FunctorMap,
-    env: Map<string, AST.Type>
-  ): AST.Type {
-    // <$> operator: f <$> fa
-    // Type signature: (a -> b) -> f a -> f b
-    const funcType = this.generateConstraintsForExpression(functorMap.left, env)
-    const functorType = this.generateConstraintsForExpression(
-      functorMap.right,
-      env
-    )
-
-    const inputType = this.freshTypeVariable(functorMap.line, functorMap.column)
-    const outputType = this.freshTypeVariable(
-      functorMap.line,
-      functorMap.column
-    )
-
-    // Function should be (a -> b)
-    const expectedFuncType = new AST.FunctionType(
-      inputType,
-      outputType,
-      functorMap.line,
-      functorMap.column
-    )
-
-    this.addConstraint(
-      new TypeConstraint(
-        funcType,
-        expectedFuncType,
-        functorMap.line,
-        functorMap.column,
-        `FunctorMap function type`
-      )
-    )
-
-    // Handle specific functor types
-    if (functorType.kind === "GenericType") {
-      const functorGt = functorType as AST.GenericType
-
-      if (
-        (functorGt.name === "Maybe" || functorGt.name === "List") &&
-        functorGt.typeArguments.length === 1
-      ) {
-        this.addConstraint(
-          new TypeConstraint(
-            functorGt.typeArguments[0],
-            inputType,
-            functorMap.line,
-            functorMap.column,
-            `FunctorMap input type`
-          )
-        )
-
-        return new AST.GenericType(
-          functorGt.name,
-          [outputType],
-          functorMap.line,
-          functorMap.column
-        )
-      }
-    }
-
-    // Handle Array type
-    if (
-      functorType.kind === "PrimitiveType" &&
-      (functorType as AST.PrimitiveType).name === "Array"
-    ) {
-      // Array case: f <$> Array -> Array
-      return new AST.PrimitiveType("Array", functorMap.line, functorMap.column)
-    }
-
-    // For Array<T> type
-    const resultType = this.freshTypeVariable(
-      functorMap.line,
-      functorMap.column
-    )
-    return resultType
-  }
-
-  private generateConstraintsForApplicativeApply(
-    applicativeApply: AST.ApplicativeApply,
-    env: Map<string, AST.Type>
-  ): AST.Type {
-    // <*> operator: ff <*> fa
-    // Type signature: f (a -> b) -> f a -> f b
-    const funcFunctorType = this.generateConstraintsForExpression(
-      applicativeApply.left,
-      env
-    )
-    const valueFunctorType = this.generateConstraintsForExpression(
-      applicativeApply.right,
-      env
-    )
-
-    const inputType = this.freshTypeVariable(
-      applicativeApply.line,
-      applicativeApply.column
-    )
-    const outputType = this.freshTypeVariable(
-      applicativeApply.line,
-      applicativeApply.column
-    )
-
-    // Handle specific applicative types
-    if (
-      funcFunctorType.kind === "GenericType" &&
-      valueFunctorType.kind === "GenericType"
-    ) {
-      const funcGt = funcFunctorType as AST.GenericType
-      const valueGt = valueFunctorType as AST.GenericType
-
-      if (
-        funcGt.name === valueGt.name &&
-        (funcGt.name === "Maybe" || funcGt.name === "List")
-      ) {
-        // Both should be the same functor type
-        if (
-          funcGt.typeArguments.length === 1 &&
-          valueGt.typeArguments.length === 1
-        ) {
-          // Function functor should contain (a -> b)
-          const expectedFuncType = new AST.FunctionType(
-            inputType,
-            outputType,
-            applicativeApply.line,
-            applicativeApply.column
-          )
-
-          this.addConstraint(
-            new TypeConstraint(
-              funcGt.typeArguments[0],
-              expectedFuncType,
-              applicativeApply.line,
-              applicativeApply.column,
-              `ApplicativeApply function type`
-            )
-          )
-
-          this.addConstraint(
-            new TypeConstraint(
-              valueGt.typeArguments[0],
-              inputType,
-              applicativeApply.line,
-              applicativeApply.column,
-              `ApplicativeApply input type`
-            )
-          )
-
-          return new AST.GenericType(
-            funcGt.name,
-            [outputType],
-            applicativeApply.line,
-            applicativeApply.column
-          )
-        }
-      }
-    }
-
-    // For Array types, similar logic
-    const resultType = this.freshTypeVariable(
-      applicativeApply.line,
-      applicativeApply.column
-    )
     return resultType
   }
 
@@ -3704,8 +3567,8 @@ export class TypeInferenceSystem {
     for (const param of method.parameters) {
       let resolvedType: AST.Type
 
-      // 暗黙的selfパラメータの場合は、impl対象の型を使用
-      if (param.isImplicitSelf) {
+      // 暗黙的selfまたはotherパラメータの場合は、impl対象の型を使用
+      if (param.isImplicitSelf || param.isImplicitOther) {
         resolvedType = implType
         // param.typeも更新しておく（後の処理のため）
         param.type = implType
@@ -3779,8 +3642,8 @@ export class TypeInferenceSystem {
     for (const param of operator.parameters) {
       let resolvedType: AST.Type
 
-      // 暗黙的selfパラメータの場合は、impl対象の型を使用
-      if (param.isImplicitSelf) {
+      // 暗黙的selfまたはotherパラメータの場合は、impl対象の型を使用
+      if (param.isImplicitSelf || param.isImplicitOther) {
         resolvedType = implType
         // param.typeも更新しておく（後の処理のため）
         param.type = implType
@@ -3928,13 +3791,89 @@ export class TypeInferenceSystem {
     }
 
     // フィールドの型チェック
-    const providedFields = new Map(structExpr.fields.map((f) => [f.name, f]))
+    const providedFieldMap = new Map<
+      string,
+      { field: AST.RecordInitField | AST.RecordSpreadField; type: AST.Type }
+    >()
+
+    // まずスプレッドフィールドを処理
+    for (const field of structExpr.fields) {
+      if (field.kind === "RecordSpreadField") {
+        const spreadField = field as AST.RecordSpreadField
+        const spreadType = this.generateConstraintsForExpression(
+          spreadField.spreadExpression.expression,
+          env
+        )
+
+        // スプレッド元が同じ構造体型であることを確認
+        if (spreadType.kind === "StructType") {
+          const sourceStruct = spreadType as AST.StructType
+          // スプレッド元のフィールドをすべて追加
+          for (const sourceField of sourceStruct.fields) {
+            providedFieldMap.set(sourceField.name, {
+              field: spreadField,
+              type: sourceField.type,
+            })
+          }
+        } else {
+          this.errors.push(
+            new TypeInferenceError(
+              `Cannot spread non-struct type in struct literal`,
+              spreadField.line,
+              spreadField.column
+            )
+          )
+        }
+      }
+    }
+
+    // 次に明示的なフィールドで上書き
+    for (const field of structExpr.fields) {
+      if (field.kind === "RecordInitField") {
+        const initField = field as AST.RecordInitField
+        const fieldType = this.generateConstraintsForExpression(
+          initField.value,
+          env
+        )
+        providedFieldMap.set(initField.name, {
+          field: initField,
+          type: fieldType,
+        })
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as AST.RecordShorthandField
+        // 変数名と同じ名前の変数を環境から検索
+        const variableType = env.get(shorthandField.name)
+        if (!variableType) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Undefined variable '${shorthandField.name}' in shorthand property`,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
+          // エラーの場合はTypeVariableをフォールバック
+          const fallbackType = this.freshTypeVariable(
+            shorthandField.line,
+            shorthandField.column
+          )
+          providedFieldMap.set(shorthandField.name, {
+            field: shorthandField,
+            type: fallbackType,
+          })
+        } else {
+          providedFieldMap.set(shorthandField.name, {
+            field: shorthandField,
+            type: variableType,
+          })
+        }
+      }
+    }
 
     // 必要なフィールドがすべて提供されているかチェック
     for (const field of structType.fields) {
-      const providedField = providedFields.get(field.name)
+      const providedData = providedFieldMap.get(field.name)
 
-      if (!providedField) {
+      if (!providedData) {
         this.errors.push(
           new TypeInferenceError(
             `Missing field '${field.name}' in struct ${structExpr.structName}`,
@@ -3945,26 +3884,20 @@ export class TypeInferenceSystem {
         continue
       }
 
-      // フィールドの値の型を推論
-      const valueType = this.generateConstraintsForExpression(
-        providedField.value,
-        env
-      )
-
       // フィールドの型と値の型が一致することを制約として追加
       this.constraints.push(
         new TypeConstraint(
-          valueType,
+          providedData.type,
           field.type,
-          providedField.line,
-          providedField.column,
+          providedData.field.line,
+          providedData.field.column,
           `Struct field ${field.name}`
         )
       )
     }
 
     // 余分なフィールドがないかチェック
-    for (const [fieldName, _] of providedFields) {
+    for (const [fieldName, _] of providedFieldMap) {
       if (!structType.fields.find((f) => f.name === fieldName)) {
         this.errors.push(
           new TypeInferenceError(
@@ -4220,23 +4153,91 @@ export class TypeInferenceSystem {
     record: AST.RecordExpression,
     env: Map<string, AST.Type>
   ): AST.Type {
-    const fields: AST.RecordField[] = []
+    // Mapを使って重複フィールドを避ける（後から来たフィールドで上書き）
+    const fieldMap = new Map<string, AST.RecordField>()
 
-    for (const initField of record.fields) {
-      const fieldType = this.generateConstraintsForExpression(
-        initField.value,
-        env
-      )
-      fields.push(
-        new AST.RecordField(
-          initField.name,
-          fieldType,
-          initField.line,
-          initField.column
+    for (const field of record.fields) {
+      if (field.kind === "RecordInitField") {
+        const initField = field as AST.RecordInitField
+        const fieldType = this.generateConstraintsForExpression(
+          initField.value,
+          env
         )
-      )
+        // 同名フィールドは上書き
+        fieldMap.set(
+          initField.name,
+          new AST.RecordField(
+            initField.name,
+            fieldType,
+            initField.line,
+            initField.column
+          )
+        )
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as AST.RecordShorthandField
+        // 変数名と同じ名前の変数を環境から検索
+        const variableType = env.get(shorthandField.name)
+        if (!variableType) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Undefined variable '${shorthandField.name}' in shorthand property`,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
+          // エラーの場合はTypeVariableをフォールバック
+          const fallbackType = this.freshTypeVariable(
+            shorthandField.line,
+            shorthandField.column
+          )
+          fieldMap.set(
+            shorthandField.name,
+            new AST.RecordField(
+              shorthandField.name,
+              fallbackType,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
+        } else {
+          fieldMap.set(
+            shorthandField.name,
+            new AST.RecordField(
+              shorthandField.name,
+              variableType,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
+        }
+      } else if (field.kind === "RecordSpreadField") {
+        const spreadField = field as AST.RecordSpreadField
+        const spreadType = this.generateConstraintsForExpression(
+          spreadField.spreadExpression,
+          env
+        )
+
+        // スプレッド元がレコード型であることを確認
+        if (spreadType.kind === "RecordType") {
+          const recordType = spreadType as AST.RecordType
+          // スプレッド元のフィールドをマージ（後から来たフィールドで上書き）
+          for (const sourceField of recordType.fields) {
+            fieldMap.set(sourceField.name, sourceField)
+          }
+        } else {
+          this.errors.push(
+            new TypeInferenceError(
+              `Cannot spread non-record type in record literal`,
+              spreadField.line,
+              spreadField.column
+            )
+          )
+        }
+      }
     }
 
+    // Mapから配列に変換
+    const fields = Array.from(fieldMap.values())
     return new AST.RecordType(fields, record.line, record.column)
   }
 
@@ -4661,6 +4662,143 @@ export class TypeInferenceSystem {
 
     // 結果はList<expressionType>
     return new AST.GenericType("List", [expressionType], comp.line, comp.column)
+  }
+
+  private generateConstraintsForSpreadExpression(
+    spread: AST.SpreadExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // スプレッド式自体は中身の式の型と同じ
+    return this.generateConstraintsForExpression(spread.expression, env)
+  }
+
+  private generateConstraintsForRecordDestructuring(
+    recordDestr: AST.RecordDestructuring,
+    env: Map<string, AST.Type>
+  ): void {
+    // 初期化式の型を推論
+    const initType = this.generateConstraintsForExpression(
+      recordDestr.initializer,
+      env
+    )
+
+    // パターン内の各フィールドを環境に追加し、適切な型制約を設定
+    for (const field of recordDestr.pattern.fields) {
+      const variableName = field.alias || field.fieldName
+      const fieldType = this.freshTypeVariable(field.line, field.column)
+
+      // フィールド変数を環境に追加
+      env.set(variableName, fieldType)
+      this.nodeTypeMap.set(field, fieldType)
+
+      // 初期化式がレコード型で、該当フィールドを持つことを制約として追加
+      // レコードフィールドアクセスと同等の制約を作成
+      const recordFieldType = this.freshTypeVariable(field.line, field.column)
+      const expectedRecordType = new AST.RecordType(
+        [
+          new AST.RecordField(
+            field.fieldName,
+            recordFieldType,
+            field.line,
+            field.column
+          ),
+        ],
+        recordDestr.line,
+        recordDestr.column
+      )
+
+      // 初期化式のレコード型に該当フィールドが存在することを制約として追加
+      this.addConstraint(
+        new TypeConstraint(
+          initType,
+          expectedRecordType,
+          field.line,
+          field.column,
+          `Record destructuring field ${field.fieldName}`
+        )
+      )
+
+      // フィールド変数の型とレコードフィールドの型が一致することを制約として追加
+      this.addConstraint(
+        new TypeConstraint(
+          fieldType,
+          recordFieldType,
+          field.line,
+          field.column,
+          `Record destructuring field type ${field.fieldName}`
+        )
+      )
+    }
+  }
+
+  private generateConstraintsForStructDestructuring(
+    structDestr: AST.StructDestructuring,
+    env: Map<string, AST.Type>
+  ): void {
+    // 初期化式の型を推論
+    const initType = this.generateConstraintsForExpression(
+      structDestr.initializer,
+      env
+    )
+
+    // 初期化式が指定された構造体型であることを制約として追加
+    const expectedStructType = env.get(structDestr.pattern.structName)
+    if (expectedStructType && expectedStructType.kind === "StructType") {
+      this.addConstraint(
+        new TypeConstraint(
+          initType,
+          expectedStructType,
+          structDestr.line,
+          structDestr.column,
+          `Struct destructuring of ${structDestr.pattern.structName}`
+        )
+      )
+
+      // パターン内の各フィールドを環境に追加し、適切な型制約を設定
+      const structType = expectedStructType as AST.StructType
+      for (const field of structDestr.pattern.fields) {
+        const variableName = field.alias || field.fieldName
+
+        // 構造体定義から該当フィールドの型を取得
+        const structField = structType.fields.find(
+          (f) => f.name === field.fieldName
+        )
+        if (structField) {
+          // フィールドの実際の型を使用
+          env.set(variableName, structField.type)
+          this.nodeTypeMap.set(field, structField.type)
+
+          // 分割代入された変数を追跡するために、仮想的な変数宣言ノードを作成してnodeTypeMapに追加
+          const virtualVarDecl = {
+            kind: "VariableDeclaration",
+            name: variableName,
+            type: structField.type,
+            line: field.line,
+            column: field.column,
+            isDestructured: true,
+          }
+          this.nodeTypeMap.set(virtualVarDecl, structField.type)
+        } else {
+          // フィールドが見つからない場合はエラー
+          this.errors.push(
+            new TypeInferenceError(
+              `Field '${field.fieldName}' does not exist in struct ${structDestr.pattern.structName}`,
+              field.line,
+              field.column
+            )
+          )
+          const fieldType = this.freshTypeVariable(field.line, field.column)
+          env.set(variableName, fieldType)
+        }
+      }
+    } else {
+      // 構造体型が見つからない場合はfreshTypeVariableで処理
+      for (const field of structDestr.pattern.fields) {
+        const variableName = field.alias || field.fieldName
+        const fieldType = this.freshTypeVariable(field.line, field.column)
+        env.set(variableName, fieldType)
+      }
+    }
   }
 }
 

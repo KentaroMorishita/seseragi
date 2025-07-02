@@ -204,11 +204,11 @@ export class FunctionCall extends Expression {
 
 export class BuiltinFunctionCall extends Expression {
   kind = "BuiltinFunctionCall"
-  functionName: "print" | "putStrLn" | "toString"
+  functionName: "print" | "putStrLn" | "toString" | "show"
   arguments: Expression[]
 
   constructor(
-    functionName: "print" | "putStrLn" | "toString",
+    functionName: "print" | "putStrLn" | "toString" | "show",
     args: Expression[],
     line: number,
     column: number
@@ -473,11 +473,25 @@ export class RecordInitField extends ASTNode {
   }
 }
 
+export class RecordShorthandField extends ASTNode {
+  kind = "RecordShorthandField"
+  name: string
+
+  constructor(name: string, line: number, column: number) {
+    super(line, column)
+    this.name = name
+  }
+}
+
 export class RecordExpression extends Expression {
   kind = "RecordExpression"
-  fields: RecordInitField[]
+  fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[]
 
-  constructor(fields: RecordInitField[], line: number, column: number) {
+  constructor(
+    fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[],
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.fields = fields
   }
@@ -503,11 +517,11 @@ export class RecordAccess extends Expression {
 export class StructExpression extends Expression {
   kind = "StructExpression"
   structName: string
-  fields: RecordInitField[]
+  fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[]
 
   constructor(
     structName: string,
-    fields: RecordInitField[],
+    fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[],
     line: number,
     column: number
   ) {
@@ -658,6 +672,30 @@ export class TupleExpression extends Expression {
   }
 }
 
+export class SpreadExpression extends Expression {
+  kind = "SpreadExpression"
+  expression: Expression
+
+  constructor(expression: Expression, line: number, column: number) {
+    super(line, column)
+    this.expression = expression
+  }
+}
+
+export class RecordSpreadField extends ASTNode {
+  kind = "RecordSpreadField"
+  spreadExpression: SpreadExpression
+
+  constructor(
+    spreadExpression: SpreadExpression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.spreadExpression = spreadExpression
+  }
+}
+
 // =============================================================================
 // Pattern Matching
 // =============================================================================
@@ -719,6 +757,53 @@ export class TuplePattern extends Pattern {
   }
 }
 
+export class RecordPatternField extends ASTNode {
+  kind = "RecordPatternField"
+  fieldName: string
+  alias?: string // for {x: posX} syntax
+  pattern?: Pattern // for nested patterns
+
+  constructor(
+    fieldName: string,
+    line: number,
+    column: number,
+    alias?: string,
+    pattern?: Pattern
+  ) {
+    super(line, column)
+    this.fieldName = fieldName
+    this.alias = alias
+    this.pattern = pattern
+  }
+}
+
+export class RecordPattern extends Pattern {
+  kind = "RecordPattern"
+  fields: RecordPatternField[]
+
+  constructor(fields: RecordPatternField[], line: number, column: number) {
+    super(line, column)
+    this.fields = fields
+  }
+}
+
+export class StructPattern extends Pattern {
+  kind = "StructPattern"
+  structName: string
+  fields: RecordPatternField[]
+
+  constructor(
+    structName: string,
+    fields: RecordPatternField[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.structName = structName
+    this.fields = fields
+  }
+}
+
 export class MatchCase extends ASTNode {
   kind = "MatchCase"
   pattern: Pattern
@@ -774,18 +859,21 @@ export class Parameter extends ASTNode {
   name: string
   type: Type
   isImplicitSelf: boolean
+  isImplicitOther: boolean
 
   constructor(
     name: string,
     type: Type,
     line: number,
     column: number,
-    isImplicitSelf: boolean = false
+    isImplicitSelf: boolean = false,
+    isImplicitOther: boolean = false
   ) {
     super(line, column)
     this.name = name
     this.type = type
     this.isImplicitSelf = isImplicitSelf
+    this.isImplicitOther = isImplicitOther
   }
 }
 
@@ -842,6 +930,40 @@ export class TupleDestructuring extends Statement {
 
   constructor(
     pattern: TuplePattern,
+    initializer: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.pattern = pattern
+    this.initializer = initializer
+  }
+}
+
+export class RecordDestructuring extends Statement {
+  kind = "RecordDestructuring"
+  pattern: RecordPattern
+  initializer: Expression
+
+  constructor(
+    pattern: RecordPattern,
+    initializer: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.pattern = pattern
+    this.initializer = initializer
+  }
+}
+
+export class StructDestructuring extends Statement {
+  kind = "StructDestructuring"
+  pattern: StructPattern
+  initializer: Expression
+
+  constructor(
+    pattern: StructPattern,
     initializer: Expression,
     line: number,
     column: number

@@ -1096,28 +1096,48 @@ export class TypeChecker {
     const fields: AST.RecordField[] = []
     const fieldNames = new Set<string>()
 
-    for (const initField of record.fields) {
-      // Check for duplicate field names
-      if (fieldNames.has(initField.name)) {
-        this.addError(
-          `Duplicate field name '${initField.name}' in record`,
-          initField.line,
-          initField.column,
-          `Field '${initField.name}' is defined multiple times`,
-          `Remove the duplicate field definition`
-        )
-      }
-      fieldNames.add(initField.name)
+    for (const field of record.fields) {
+      if (field.kind === "RecordInitField") {
+        const initField = field as AST.RecordInitField
+        // Check for duplicate field names
+        if (fieldNames.has(initField.name)) {
+          this.addError(
+            `Duplicate field name '${initField.name}' in record`,
+            initField.line,
+            initField.column,
+            `Field '${initField.name}' is defined multiple times`,
+            `Remove the duplicate field definition`
+          )
+        }
+        fieldNames.add(initField.name)
 
-      const fieldType = this.checkExpression(initField.value, env)
-      fields.push(
-        new AST.RecordField(
-          initField.name,
-          fieldType,
-          initField.line,
-          initField.column
+        const fieldType = this.checkExpression(initField.value, env)
+        fields.push(
+          new AST.RecordField(
+            initField.name,
+            fieldType,
+            initField.line,
+            initField.column
+          )
         )
-      )
+      } else if (field.kind === "RecordSpreadField") {
+        const spreadField = field as AST.RecordSpreadField
+        const spreadType = this.checkExpression(
+          spreadField.spreadExpression.expression,
+          env
+        )
+
+        // Handle spread fields - add their types to the current record
+        if (spreadType.kind === "RecordType") {
+          const recordType = spreadType as AST.RecordType
+          for (const sourceField of recordType.fields) {
+            if (!fieldNames.has(sourceField.name)) {
+              fields.push(sourceField)
+              fieldNames.add(sourceField.name)
+            }
+          }
+        }
+      }
     }
 
     return new AST.RecordType(fields, record.line, record.column)
@@ -1218,7 +1238,9 @@ export class TypeChecker {
     // Check that all required fields are provided
     for (const structField of st.fields) {
       const providedField = structExpr.fields.find(
-        (f) => f.name === structField.name
+        (f) =>
+          f.kind === "RecordInitField" &&
+          (f as AST.RecordInitField).name === structField.name
       )
       if (!providedField) {
         this.addError(
@@ -1232,26 +1254,49 @@ export class TypeChecker {
     }
 
     // Check that all provided fields exist and have correct types
-    for (const providedField of structExpr.fields) {
-      const structField = st.fields.find((f) => f.name === providedField.name)
-      if (!structField) {
-        this.addError(
-          `Unknown field '${providedField.name}' in struct '${structExpr.structName}'`,
-          providedField.line,
-          providedField.column,
-          `Field '${providedField.name}' is not defined in struct '${structExpr.structName}'`,
-          `Available fields: ${st.fields.map((f) => f.name).join(", ")}`
-        )
-      } else {
-        // Check field type
-        const valueType = this.checkExpression(providedField.value, env)
-        if (!this.typesEqual(valueType, structField.type)) {
+    for (const field of structExpr.fields) {
+      if (field.kind === "RecordInitField") {
+        const providedField = field as AST.RecordInitField
+        const structField = st.fields.find((f) => f.name === providedField.name)
+        if (!structField) {
           this.addError(
-            `Field '${providedField.name}' type mismatch`,
+            `Unknown field '${providedField.name}' in struct '${structExpr.structName}'`,
             providedField.line,
             providedField.column,
-            `Expected '${this.typeToString(structField.type)}', but got '${this.typeToString(valueType)}'`,
-            `Ensure the field value matches the declared type`
+            `Field '${providedField.name}' is not defined in struct '${structExpr.structName}'`,
+            `Available fields: ${st.fields.map((f) => f.name).join(", ")}`
+          )
+        } else {
+          // Check field type
+          const valueType = this.checkExpression(providedField.value, env)
+          if (!this.typesEqual(valueType, structField.type)) {
+            this.addError(
+              `Field '${providedField.name}' type mismatch`,
+              providedField.line,
+              providedField.column,
+              `Expected '${this.typeToString(structField.type)}', but got '${this.typeToString(valueType)}'`,
+              `Ensure the field value matches the declared type`
+            )
+          }
+        }
+      } else if (field.kind === "RecordSpreadField") {
+        // Handle spread fields
+        const spreadField = field as AST.RecordSpreadField
+        const spreadType = this.checkExpression(
+          spreadField.spreadExpression.expression,
+          env
+        )
+
+        if (
+          spreadType.kind !== "StructType" &&
+          spreadType.kind !== "RecordType"
+        ) {
+          this.addError(
+            `Cannot spread non-struct/record type in struct literal`,
+            spreadField.line,
+            spreadField.column,
+            `Expected struct or record type for spread operator`,
+            `Use a struct or record expression instead`
           )
         }
       }
