@@ -850,7 +850,31 @@ export class Parser {
       const initializer = this.expression()
 
       return new AST.TupleDestructuring(pattern, initializer, line, column)
-    } else {
+    }
+    // Check if this is record destructuring
+    else if (this.check(TokenType.LEFT_BRACE)) {
+      // Record destructuring: let {x, y} = record
+      const pattern = this.recordPattern()
+
+      this.consume(TokenType.ASSIGN, "Expected '=' after record pattern")
+      this.skipNewlines()
+      const initializer = this.expression()
+
+      return new AST.RecordDestructuring(pattern, initializer, line, column)
+    }
+    // Check if this is struct destructuring with struct name
+    else if (this.check(TokenType.IDENTIFIER) && this.checkAhead(TokenType.LEFT_BRACE)) {
+      // Struct destructuring: let Person {name, age} = person
+      const structName = this.advance().value
+      const pattern = this.structPattern(structName)
+
+      this.consume(TokenType.ASSIGN, "Expected '=' after struct pattern")
+      this.skipNewlines()
+      const initializer = this.expression()
+
+      return new AST.StructDestructuring(pattern, initializer, line, column)
+    }
+    else {
       // Regular variable declaration: let x = value
       const name = this.consume(
         TokenType.IDENTIFIER,
@@ -1808,28 +1832,39 @@ export class Parser {
         // 構造体インスタンス化: Person { name: "Alice", age: 30 }
         if (this.check(TokenType.LEFT_BRACE)) {
           this.advance() // consume '{'
-          const fields: AST.RecordInitField[] = []
+          const fields: (AST.RecordInitField | AST.RecordSpreadField)[] = []
 
           if (!this.check(TokenType.RIGHT_BRACE)) {
             do {
               this.skipNewlines()
-              const fieldName = this.consume(
-                TokenType.IDENTIFIER,
-                "Expected field name"
-              ).value
-              this.skipNewlines()
-              this.consume(TokenType.COLON, "Expected ':' after field name")
-              this.skipNewlines()
-              const fieldValue = this.expression()
+              
+              // Check for spread syntax
+              if (this.match(TokenType.SPREAD)) {
+                const spreadLine = this.previous().line
+                const spreadColumn = this.previous().column
+                const spreadExpr = this.expression()
+                const spreadAst = new AST.SpreadExpression(spreadExpr, spreadLine, spreadColumn)
+                fields.push(new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn))
+              } else {
+                // Regular field
+                const fieldName = this.consume(
+                  TokenType.IDENTIFIER,
+                  "Expected field name"
+                ).value
+                this.skipNewlines()
+                this.consume(TokenType.COLON, "Expected ':' after field name")
+                this.skipNewlines()
+                const fieldValue = this.expression()
 
-              fields.push(
-                new AST.RecordInitField(
-                  fieldName,
-                  fieldValue,
-                  this.previous().line,
-                  this.previous().column
+                fields.push(
+                  new AST.RecordInitField(
+                    fieldName,
+                    fieldValue,
+                    this.previous().line,
+                    this.previous().column
+                  )
                 )
-              )
+              }
               this.skipNewlines()
             } while (this.match(TokenType.COMMA))
           }
@@ -2028,31 +2063,42 @@ export class Parser {
     }
 
     if (this.match(TokenType.LEFT_BRACE)) {
-      // Record literal { name: "John", age: 30 }
-      const fields: AST.RecordInitField[] = []
+      // Record literal { name: "John", age: 30, ...other }
+      const fields: (AST.RecordInitField | AST.RecordSpreadField)[] = []
       const line = this.previous().line
       const column = this.previous().column
 
       if (!this.check(TokenType.RIGHT_BRACE)) {
         do {
           this.skipNewlines()
-          const fieldName = this.consume(
-            TokenType.IDENTIFIER,
-            "Expected field name"
-          ).value
-          this.skipNewlines()
-          this.consume(TokenType.COLON, "Expected ':' after field name")
-          this.skipNewlines()
-          const fieldValue = this.expression()
+          
+          // Check for spread syntax
+          if (this.match(TokenType.SPREAD)) {
+            const spreadLine = this.previous().line
+            const spreadColumn = this.previous().column
+            const spreadExpr = this.expression()
+            const spreadAst = new AST.SpreadExpression(spreadExpr, spreadLine, spreadColumn)
+            fields.push(new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn))
+          } else {
+            // Regular field
+            const fieldName = this.consume(
+              TokenType.IDENTIFIER,
+              "Expected field name"
+            ).value
+            this.skipNewlines()
+            this.consume(TokenType.COLON, "Expected ':' after field name")
+            this.skipNewlines()
+            const fieldValue = this.expression()
 
-          fields.push(
-            new AST.RecordInitField(
-              fieldName,
-              fieldValue,
-              this.previous().line,
-              this.previous().column
+            fields.push(
+              new AST.RecordInitField(
+                fieldName,
+                fieldValue,
+                this.previous().line,
+                this.previous().column
+              )
             )
-          )
+          }
           this.skipNewlines()
         } while (this.match(TokenType.COMMA))
       }
@@ -2109,24 +2155,6 @@ export class Parser {
     throw new ParseError(message, this.peek())
   }
 
-  private synchronize(): void {
-    this.advance()
-
-    while (!this.isAtEnd()) {
-      if (this.previous().type === TokenType.SEMICOLON) return
-
-      switch (this.peek().type) {
-        case TokenType.FN:
-        case TokenType.TYPE:
-        case TokenType.LET:
-        case TokenType.IMPL:
-        case TokenType.IMPORT:
-          return
-      }
-
-      this.advance()
-    }
-  }
 
   private skipNewlines(): void {
     while (this.check(TokenType.NEWLINE) || this.check(TokenType.COMMENT)) {
@@ -2320,7 +2348,7 @@ export class Parser {
 
   private checkAhead(type: TokenType): boolean {
     // Look ahead to the next token without consuming
-    let lookahead = this.current
+    let lookahead = this.current + 1
 
     // Skip whitespace and newlines
     while (
@@ -2443,6 +2471,64 @@ export class Parser {
 
     // If the method name is not registered, treat as function application
     return false
+  }
+
+  private recordPattern(): AST.RecordPattern {
+    this.consume(TokenType.LEFT_BRACE, "Expected '{' to start record pattern")
+    const fields: AST.RecordPatternField[] = []
+
+    if (!this.check(TokenType.RIGHT_BRACE)) {
+      do {
+        this.skipNewlines()
+        const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
+        
+        let alias: string | undefined
+        // Check for alias syntax: {x: posX}
+        if (this.match(TokenType.COLON)) {
+          alias = this.consume(TokenType.IDENTIFIER, "Expected alias name").value
+        }
+
+        fields.push(new AST.RecordPatternField(
+          fieldName,
+          this.previous().line,
+          this.previous().column,
+          alias
+        ))
+        this.skipNewlines()
+      } while (this.match(TokenType.COMMA))
+    }
+
+    this.consume(TokenType.RIGHT_BRACE, "Expected '}' to close record pattern")
+    return new AST.RecordPattern(fields, this.previous().line, this.previous().column)
+  }
+
+  private structPattern(structName: string): AST.StructPattern {
+    this.consume(TokenType.LEFT_BRACE, "Expected '{' to start struct pattern")
+    const fields: AST.RecordPatternField[] = []
+
+    if (!this.check(TokenType.RIGHT_BRACE)) {
+      do {
+        this.skipNewlines()
+        const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
+        
+        let alias: string | undefined
+        // Check for alias syntax: {x: posX}
+        if (this.match(TokenType.COLON)) {
+          alias = this.consume(TokenType.IDENTIFIER, "Expected alias name").value
+        }
+
+        fields.push(new AST.RecordPatternField(
+          fieldName,
+          this.previous().line,
+          this.previous().column,
+          alias
+        ))
+        this.skipNewlines()
+      } while (this.match(TokenType.COMMA))
+    }
+
+    this.consume(TokenType.RIGHT_BRACE, "Expected '}' to close struct pattern")
+    return new AST.StructPattern(structName, fields, this.previous().line, this.previous().column)
   }
 }
 

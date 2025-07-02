@@ -49,6 +49,7 @@ export enum TokenType {
   ARROW = "ARROW", // ->
   RANGE = "RANGE", // ..
   RANGE_INCLUSIVE = "RANGE_INCLUSIVE", // ..=
+  SPREAD = "SPREAD", // ...
   GENERATOR = "GENERATOR", // <-
   PLUS = "PLUS", // +
   MINUS = "MINUS", // -
@@ -232,6 +233,11 @@ export class Lexer {
             startLine,
             startColumn
           )
+        }
+        if (this.peek() === "." && this.peekNext() === ".") {
+          this.advance() // consume second .
+          this.advance() // consume third .
+          return this.makeToken(TokenType.SPREAD, "...", startLine, startColumn)
         }
         if (this.peek() === ".") {
           this.advance() // consume second .
@@ -553,6 +559,11 @@ export class Lexer {
   private peekNext(): string {
     if (this.current + 1 >= this.source.length) return "\0"
     return this.source.charAt(this.current + 1)
+  }
+
+  private peekThird(): string {
+    if (this.current + 2 >= this.source.length) return "\0"
+    return this.source.charAt(this.current + 2)
   }
 
   private isDigit(char: string): boolean {

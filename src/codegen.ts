@@ -48,6 +48,13 @@ import {
   StructDeclaration,
   StructExpression,
   StructType,
+  SpreadExpression,
+  RecordSpreadField,
+  RecordDestructuring,
+  StructDestructuring,
+  RecordPattern,
+  StructPattern,
+  RecordPatternField,
   ImplBlock,
   type MethodDeclaration,
   type OperatorDeclaration,
@@ -991,6 +998,10 @@ const show = (value) => {
       return this.generateExpressionStatement(stmt)
     } else if (stmt instanceof TupleDestructuring) {
       return this.generateTupleDestructuring(stmt)
+    } else if (stmt instanceof RecordDestructuring) {
+      return this.generateRecordDestructuring(stmt)
+    } else if (stmt instanceof StructDestructuring) {
+      return this.generateStructDestructuring(stmt)
     } else if (stmt instanceof StructDeclaration) {
       return this.generateStructDeclaration(stmt)
     } else if (stmt instanceof ImplBlock) {
@@ -1458,6 +1469,8 @@ ${indent}}`
       return this.generateTupleExpression(expr)
     } else if (expr instanceof StructExpression) {
       return this.generateStructExpression(expr)
+    } else if (expr instanceof SpreadExpression) {
+      return this.generateSpreadExpression(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -2195,12 +2208,20 @@ ${indent}}`
       return "{}"
     }
 
-    const fields = record.fields.map((field) => {
-      const value = this.generateExpression(field.value)
-      return `${field.name}: ${value}`
+    const fieldStrings = record.fields.map((field) => {
+      if (field.kind === "RecordInitField") {
+        const initField = field as any // AST.RecordInitField
+        const value = this.generateExpression(initField.value)
+        return `${initField.name}: ${value}`
+      } else if (field.kind === "RecordSpreadField") {
+        const spreadField = field as any // AST.RecordSpreadField
+        const spreadValue = this.generateExpression(spreadField.spreadExpression.expression)
+        return `...${spreadValue}`
+      }
+      return ""
     })
 
-    return `{ ${fields.join(", ")} }`
+    return `{ ${fieldStrings.join(", ")} }`
   }
 
   // Recordアクセスの生成
@@ -2377,8 +2398,45 @@ ${indent}}`
 
   // 構造体式の生成
   generateStructExpression(structExpr: StructExpression): string {
+    // スプレッド構文がある場合
+    const hasSpread = structExpr.fields.some((field) => field.kind === "RecordSpreadField")
+    
+    if (hasSpread) {
+      // スプレッドフィールドとイニシャライザーフィールドを収集
+      const spreadExpressions: string[] = []
+      const initFields: { name: string, value: string }[] = []
+      
+      for (const field of structExpr.fields) {
+        if (field.kind === "RecordSpreadField") {
+          const spreadField = field as any // AST.RecordSpreadField
+          const spreadValue = this.generateExpression(spreadField.spreadExpression.expression)
+          spreadExpressions.push(spreadValue)
+        } else if (field.kind === "RecordInitField") {
+          const initField = field as any // AST.RecordInitField
+          const value = this.generateExpression(initField.value)
+          initFields.push({ name: initField.name, value })
+        }
+      }
+      
+      // スプレッドされたオブジェクトから新しい構造体インスタンスを作成
+      if (spreadExpressions.length > 0) {
+        // 一時的なオブジェクトにスプレッドとフィールドをマージしてからコンストラクタを呼び出し
+        const spreadPart = spreadExpressions.map(expr => `...${expr}`).join(", ")
+        const fieldsPart = initFields.map(f => `${f.name}: ${f.value}`).join(", ")
+        const allFields = fieldsPart ? `${spreadPart}, ${fieldsPart}` : spreadPart
+        
+        // 一時オブジェクトを作成し、構造体定義の順序に従ってコンストラクタ引数を構築
+        const tempVar = `__tmp${Math.random().toString(36).substring(2, 8)}`
+        
+        // 構造体の型定義から必要なフィールド順序を取得する必要があるが、
+        // 現時点では型情報が利用できないので、Object.assignアプローチを使用
+        return `(() => { const ${tempVar} = { ${allFields} }; return Object.assign(Object.create(${structExpr.structName}.prototype), ${tempVar}); })()`
+      }
+    }
+    
+    // 従来のコンストラクタ形式（スプレッドなし）
     const args = structExpr.fields
-      .map((field) => this.generateExpression(field.value))
+      .map((field) => this.generateExpression((field as any).value))
       .join(", ")
     return `new ${structExpr.structName}(${args})`
   }
@@ -2422,5 +2480,37 @@ ${indent}}`
     }
 
     return vars
+  }
+
+  // スプレッド式の生成
+  generateSpreadExpression(spread: SpreadExpression): string {
+    // スプレッド式は通常直接使われることはないが、TypeScriptのスプレッド構文と同じ
+    return `...${this.generateExpression(spread.expression)}`
+  }
+
+  // レコード分割代入の生成
+  generateRecordDestructuring(stmt: RecordDestructuring): string {
+    const initializer = this.generateExpression(stmt.initializer)
+    const fieldPatterns = stmt.pattern.fields.map((field) => {
+      if (field.alias) {
+        return `${field.fieldName}: ${field.alias}`
+      } else {
+        return field.fieldName
+      }
+    })
+    return `const { ${fieldPatterns.join(", ")} } = ${initializer};`
+  }
+
+  // 構造体分割代入の生成
+  generateStructDestructuring(stmt: StructDestructuring): string {
+    const initializer = this.generateExpression(stmt.initializer)
+    const fieldPatterns = stmt.pattern.fields.map((field) => {
+      if (field.alias) {
+        return `${field.fieldName}: ${field.alias}`
+      } else {
+        return field.fieldName
+      }
+    })
+    return `const { ${fieldPatterns.join(", ")} } = ${initializer};`
   }
 }
