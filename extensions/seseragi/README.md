@@ -47,20 +47,20 @@
 
 ```seseragi
 // 基本的な関数定義
-fn add a :Int -> b :Int -> Int = a + b
+fn add a: Int -> b: Int -> Int = a + b
 
 // パイプライン演算子
-fn processNumber x :Int -> Int = 
+fn processNumber x: Int -> Int = 
   x | double | square
 
 // Maybe型
-fn safeDivide a :Int -> b :Int -> Maybe<Int> =
+fn safeDivide a: Int -> b: Int -> Maybe<Int> =
   if b == 0 then Nothing else Just (a / b)
 
 // パターンマッチング
 type Color = Red | Green | Blue
 
-fn colorName color :Color -> String = match color
+fn colorName color: Color -> String = match color
   | Red -> "赤"
   | Green -> "緑" 
   | Blue -> "青"

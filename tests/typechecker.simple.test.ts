@@ -22,7 +22,7 @@ describe("TypeChecker - Basic Tests", () => {
 
   test("should detect type mismatch", () => {
     const errors = checkTypes(`
-      let x :String = 42
+      let x: String = 42
     `)
     expect(errors).toHaveLength(1)
     expect(errors[0].message).toBe("Variable 'x' type mismatch")
@@ -30,14 +30,14 @@ describe("TypeChecker - Basic Tests", () => {
 
   test("should type check simple functions", () => {
     const errors = checkTypes(`
-      fn add x :Int -> y :Int -> Int = x + y
+      fn add x: Int -> y: Int -> Int = x + y
     `)
     expect(errors).toHaveLength(0)
   })
 
   test("should detect function return type mismatch", () => {
     const errors = checkTypes(`
-      fn bad x :Int -> String = x + 1
+      fn bad x: Int -> String = x + 1
     `)
     expect(errors).toHaveLength(1)
     expect(errors[0].message).toBe("Function 'bad' return type mismatch")

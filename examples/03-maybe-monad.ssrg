@@ -18,7 +18,7 @@ show nothingValue
 
 show "--- Functor <$> ---"
 
-fn double x :Int -> Int = x * 2
+fn double x: Int -> Int = x * 2
 
 let doubled = double <$> someValue
 let doubledNothing = double <$> nothingValue
@@ -32,7 +32,7 @@ show doubledNothing
 
 show "--- Applicative <*> ---"
 
-fn add x :Int -> y :Int -> Int = x + y
+fn add x: Int -> y: Int -> Int = x + y
 
 let value1 = Just 10
 let value2 = Just 5
@@ -49,7 +49,7 @@ show addWithNothing
 
 show "--- Monad >>= ---"
 
-fn safeDivide x :Int -> y :Int -> Maybe<Int> = if y == 0 then Nothing else Just (x / y)
+fn safeDivide x: Int -> y: Int -> Maybe<Int> = if y == 0 then Nothing else Just (x / y)
 
 let chainResult = Just 20 >>= safeDivide 2 >>= safeDivide 2
 let chainError = Just 20 >>= safeDivide 0 >>= safeDivide 2
@@ -58,3 +58,4 @@ show chainResult
 show chainError
 
 show "Maybe operators sample completed!"
+

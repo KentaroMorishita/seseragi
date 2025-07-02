@@ -5,7 +5,7 @@
 import { describe, test, expect } from "bun:test"
 import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Range Literals", () => {
   test("basic range parsing", () => {
@@ -20,7 +20,7 @@ describe("Range Literals", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.RangeLiteral
-    
+
     expect(expr.kind).toBe("RangeLiteral")
     expect(expr.inclusive).toBe(false)
     expect((expr.start as AST.Literal).value).toBe(1)
@@ -39,7 +39,7 @@ describe("Range Literals", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.RangeLiteral
-    
+
     expect(expr.kind).toBe("RangeLiteral")
     expect(expr.inclusive).toBe(true)
     expect((expr.start as AST.Literal).value).toBe(1)
@@ -58,7 +58,7 @@ describe("Range Literals", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.RangeLiteral
-    
+
     expect(expr.kind).toBe("RangeLiteral")
     expect(expr.inclusive).toBe(false)
     expect((expr.start as AST.Identifier).name).toBe("start")
@@ -75,19 +75,22 @@ describe("List Comprehensions", () => {
     const result = parser.parse()
 
     if (result.errors.length > 0) {
-      console.log("Parse errors:", result.errors.map(e => e.message))
+      console.log(
+        "Parse errors:",
+        result.errors.map((e) => e.message)
+      )
     }
     console.log("Parsed statements:", result.statements?.length)
     if (result.statements && result.statements.length > 0) {
       console.log("First statement:", result.statements[0])
     }
-    
+
     expect(result.errors).toHaveLength(0)
     expect(result.statements).toHaveLength(1)
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.ListComprehension
-    
+
     expect(expr.kind).toBe("ListComprehension")
     expect((expr.expression as AST.Identifier).name).toBe("x")
     expect(expr.generators).toHaveLength(1)
@@ -108,9 +111,9 @@ describe("List Comprehensions", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.ListComprehension
-    
+
     expect(expr.kind).toBe("ListComprehension")
-    
+
     const mulExpr = expr.expression as AST.BinaryOperation
     expect(mulExpr.kind).toBe("BinaryOperation")
     expect(mulExpr.operator).toBe("*")
@@ -130,11 +133,11 @@ describe("List Comprehensions", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.ListComprehension
-    
+
     expect(expr.kind).toBe("ListComprehension")
     expect(expr.generators).toHaveLength(1)
     expect(expr.filters).toHaveLength(1)
-    
+
     const filter = expr.filters[0] as AST.BinaryOperation
     expect(filter.operator).toBe("==")
   })
@@ -151,14 +154,14 @@ describe("List Comprehensions", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.ListComprehension
-    
+
     expect(expr.kind).toBe("ListComprehension")
     expect(expr.generators).toHaveLength(1)
-    
+
     const generator = expr.generators[0]
     expect(generator.variable).toBe("x")
     expect(generator.iterable.kind).toBe("RangeLiteral")
-    
+
     const range = generator.iterable as AST.RangeLiteral
     expect((range.start as AST.Literal).value).toBe(1)
     expect((range.end as AST.Literal).value).toBe(10)
@@ -176,7 +179,7 @@ describe("List Comprehensions", () => {
 
     const stmt = result.statements![0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.ListComprehension
-    
+
     expect(expr.kind).toBe("ListComprehension")
     expect(expr.generators).toHaveLength(2)
     expect(expr.generators[0].variable).toBe("x")

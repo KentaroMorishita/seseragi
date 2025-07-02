@@ -106,13 +106,13 @@ let x = 42
 
 test("format function block", () => {
   const input = `
-fn processNumber x :Int -> Int {
+fn processNumber x: Int -> Int {
 let doubled = x * 2
 let incremented = doubled + 1
 incremented
 }
 `
-  const expected = `fn processNumber x :Int -> Int {
+  const expected = `fn processNumber x: Int -> Int {
   let doubled = x * 2
   let incremented = doubled + 1
   incremented
@@ -122,13 +122,13 @@ incremented
 })
 
 test("format function with expression continuation", () => {
-  const input = `fn factorial n :Int -> Int =
+  const input = `fn factorial n: Int -> Int =
 if n <= 1 then 1 else n * factorial (n - 1)
 
 fn getAge person :{ name: String, age: Int } -> Int =
 person.age`
 
-  const expected = `fn factorial n :Int -> Int =
+  const expected = `fn factorial n: Int -> Int =
   if n <= 1 then 1 else n * factorial (n - 1)
 
 fn getAge person :{ name: String, age: Int } -> Int =

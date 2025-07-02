@@ -74,9 +74,9 @@ show result2
 
 // 複雑なデータ構造
 let todoItems = `[
-  "Learn Seseragi syntax",
-  "Implement list functions",
-  "Write documentation"
+"Learn Seseragi syntax",
+"Implement list functions",
+"Write documentation"
 ]
 
 let priorities = `[1, 2, 3, 4, 5]
@@ -87,3 +87,4 @@ show todoItems
 show importantTasks
 
 show "List Syntax Sugar Demo completed! ✨"
+

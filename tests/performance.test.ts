@@ -4,7 +4,7 @@ import { generateTypeScript } from "../src/codegen.js"
 
 test("Performance test - Large factorial calculation", () => {
   const source = `
-    fn factorial n :Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
+    fn factorial n: Int -> Int = if n <= 1 then 1 else n * factorial (n - 1)
     
     let result1 = factorial 5
     let result2 = factorial 10
@@ -25,8 +25,8 @@ test("Performance test - Large factorial calculation", () => {
 
 test("Performance test - Complex nested expressions", () => {
   const source = `
-    fn add x :Int -> y :Int -> Int = x + y
-    fn multiply x :Int -> y :Int -> Int = x * y
+    fn add x: Int -> y: Int -> Int = x + y
+    fn multiply x: Int -> y: Int -> Int = x * y
     
     let result = add (multiply 5 3) (multiply 2 4) | add 10 | multiply 2
     print result
@@ -45,7 +45,7 @@ test("Performance test - Complex nested expressions", () => {
 
 test("Performance test - Currying and partial application", () => {
   const source = `
-    fn add x :Int -> y :Int -> z :Int -> Int = x + y + z
+    fn add x: Int -> y: Int -> z: Int -> Int = x + y + z
     
     let addTen = add 10
     let addTenFive = addTen 5

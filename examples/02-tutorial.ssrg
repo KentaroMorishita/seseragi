@@ -41,13 +41,15 @@ show isGreater  // True
 show "--- Functions ---"
 
 // 基本的な関数
-fn double x :Int -> Int = x * 2
-fn greet name :String -> String = "Hello, " + name + "!"
+fn hello -> String = "Hello world"
+fn double x: Int -> Int = x * 2
+fn greet name: String -> String = "Hello, " + name + "!"
 
 // カリー化された関数
-fn add x :Int -> y :Int -> Int = x + y
-fn multiply x :Int -> y :Int -> Int = x * y
+fn add x: Int -> y: Int -> Int = x + y
+fn multiply x: Int -> y: Int -> Int = x * y
 
+show $ hello()          // "Hello world"
 show $ double 21        // 42
 show $ greet "World"    // "Hello, World!"
 show $ add 10 15        // 25
@@ -65,8 +67,8 @@ show $ triple 7         // 21
 
 show "--- Conditionals and Recursion ---"
 
-fn abs x :Int -> Int = if x < 0 then -x else x
-fn factorial n :Int -> Int =
+fn abs x: Int -> Int = if x < 0 then -x else x
+fn factorial n: Int -> Int =
   if n <= 1 then 1 else n * factorial (n - 1)
 
 show $ abs (-15)        // 15
@@ -78,7 +80,7 @@ show $ factorial 5      // 120
 
 show "--- Maybe Type ---"
 
-fn safeDivide x :Int -> y :Int -> Maybe<Int> =
+fn safeDivide x: Int -> y: Int -> Maybe<Int> =
   if y == 0 then Nothing else Just (x / y)
 
 let result1 = safeDivide 10 2  // Just 5
@@ -93,7 +95,7 @@ show result2
 
 show "--- Either Type ---"
 
-fn parsePositive x :Int -> Either<String, Int> =
+fn parsePositive x: Int -> Either<String, Int> =
   if x > 0 then Right x else Left "Not positive"
 
 let success = parsePositive 42
@@ -198,7 +200,6 @@ struct Player {
   age: Int
 }
 
-
 // 構造体のインスタンス化
 let origin = Point { x: 0, y: 0 }
 let playerPos = Point { x: 10, y: 5 }
@@ -222,17 +223,16 @@ show aliceName
 show "--- Functions with Structs ---"
 
 // 構造体を引数に取る関数
-fn calculateDistance p :Point -> Int {
+fn calculateDistance p: Point -> Int {
   (p.x * p.x) + (p.y * p.y)  // 距離の二乗
 }
 
-fn createPoint x :Int -> y :Int -> Point {
+fn createPoint x: Int -> y: Int -> Point {
   Point { x: x, y: y }
 }
 
-fn describePlayer p :Player -> String =
+fn describePlayer p: Player -> String =
   p.name + " is " + toString (p.age) + " years old"
-
 
 // 関数の呼び出し
 let distance = calculateDistance playerPos
@@ -243,14 +243,13 @@ show distance
 show newPoint
 show description
 
-
 // =============================================================================
 // 実用的な例：小さな計算機
 // =============================================================================
 
 show "--- Practical Example: Calculator ---"
 
-fn calculate operation :String -> a :Int -> b :Int -> Maybe<Int> =
+fn calculate operation: String -> a: Int -> b: Int -> Maybe<Int> =
   operation == "add" ? Just (a + b) :
   operation == "multiply" ? Just (a * b) :
   operation == "divide" ? safeDivide a b :

@@ -11,7 +11,7 @@ function getTypeErrors(code: string) {
 
 describe("TypeChecker - Enhanced Error Messages", () => {
   test("should provide helpful error for variable type mismatch", () => {
-    const errors = getTypeErrors(`let x :String = 42`)
+    const errors = getTypeErrors(`let x: String = 42`)
 
     expect(errors).toHaveLength(1)
     expect(errors[0].message).toBe("Variable 'x' type mismatch")
@@ -46,7 +46,7 @@ describe("TypeChecker - Enhanced Error Messages", () => {
   })
 
   test("should provide helpful error for function return type mismatch", () => {
-    const errors = getTypeErrors(`fn bad x :Int -> String = x + 1`)
+    const errors = getTypeErrors(`fn bad x: Int -> String = x + 1`)
 
     expect(errors).toHaveLength(1)
     expect(errors[0].message).toBe("Function 'bad' return type mismatch")
@@ -71,7 +71,7 @@ describe("TypeChecker - Enhanced Error Messages", () => {
 
   test("should provide helpful error for function argument type mismatch", () => {
     const errors = getTypeErrors(`
-      fn addOne x :Int -> Int = x + 1
+      fn addOne x: Int -> Int = x + 1
       let result = addOne "hello"
     `)
 
@@ -82,7 +82,7 @@ describe("TypeChecker - Enhanced Error Messages", () => {
   })
 
   test("should format error messages properly", () => {
-    const errors = getTypeErrors(`let x :String = 42`)
+    const errors = getTypeErrors(`let x: String = 42`)
 
     const formatted = errors[0].toString()
     expect(formatted).toContain("Error at line")
@@ -91,7 +91,7 @@ describe("TypeChecker - Enhanced Error Messages", () => {
   })
 
   test("should provide suggestions for Float/Int conversion", () => {
-    const errors = getTypeErrors(`let x :Float = 42`)
+    const errors = getTypeErrors(`let x: Float = 42`)
 
     expect(errors).toHaveLength(1)
     expect(errors[0].suggestion).toContain("Add a decimal point (e.g., 42.0)")

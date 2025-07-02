@@ -190,7 +190,7 @@ let x = 42  // 行末コメント
 // 各行に // を記述します
 // このようにシンプルで一貫性があります
 
-fn calculateArea radius :Float -> Float {
+fn calculateArea radius: Float -> Float {
   // 円の面積を計算
   // πr² の公式を使用
   let pi = 3.14159
@@ -229,18 +229,18 @@ fn calculateArea radius :Float -> Float {
 #### 3.2.1 ジェネリック型定義
 ```seseragi
 type Container<T> {
-  value :T
-  metadata :String
+  value: T
+  metadata: String
 }
 
 type Pair<A, B> {
-  first :A
-  second :B
+  first: A
+  second: B
 }
 
 // 制約付きジェネリクス（将来機能）
 type Comparable<T: Ord> {
-  value :T
+  value: T
 }
 ```
 
@@ -289,13 +289,13 @@ let map f list = List.map f list // <A,B> (A -> B) -> List<A> -> List<B>
 #### 3.4.2 型注釈の推奨パターン
 ```seseragi
 // トップレベル関数は型注釈推奨
-fn processUser :UserId -> IO<UserInfo>
+fn processUser: UserId -> IO<UserInfo>
 
 // 複雑な型は明示的に
-fn complexTransform :List<Either<Error, User>> -> Maybe<List<User>>
+fn complexTransform: List<Either<Error, User>> -> Maybe<List<User>>
 
 // ローカル変数は推論に任せる
-fn example user :User -> String {
+fn example user: User -> String {
   let name = user.name        // String に推論
   let age = user.age          // Int に推論
   name ++ " (" ++ toString age ++ ")"
@@ -317,14 +317,14 @@ let name = "Seseragi"
 let flag = True
 
 // 明示的な型注釈
-let count :Int = 100
-let message :String = "Hello"
-let isActive :Bool = False
+let count: Int = 100
+let message: String = "Hello"
+let isActive: Bool = False
 
 // 複雑な型
-let numbers :List<Int> = [1, 2, 3, 4, 5]
-let result :Maybe<String> = Just "success"
-let userMap :Map<String, User> = Map.empty
+let numbers: List<Int> = [1, 2, 3, 4, 5]
+let result: Maybe<String> = Just "success"
+let userMap: Map<String, User> = Map.empty
 ```
 
 ### 4.2 パターンマッチングによる束縛
@@ -351,7 +351,7 @@ match maybeValue {
 ```seseragi
 let global = 42
 
-fn example input :Int -> Int {
+fn example input: Int -> Int {
   let local = global * 2    // 外側のスコープにアクセス
   let result = local + input
 
@@ -373,20 +373,20 @@ fn example input :Int -> Int {
 
 #### 5.1.1 ワンライナー形式（推奨）
 ```seseragi
-fn add x :Int -> y :Int -> Int = x + y
-fn double n :Int -> Int = n * 2
-fn greet name :String -> String = "Hello, " ++ name
+fn add x: Int -> y: Int -> Int = x + y
+fn double n: Int -> Int = n * 2
+fn greet name: String -> String = "Hello, " ++ name
 ```
 
 #### 5.1.2 ブロック形式
 ```seseragi
-fn processData input :String -> String {
+fn processData input: String -> String {
   let cleaned = String.trim input
   let processed = String.toUpper cleaned
   "Processed: " ++ processed
 }
 
-fn calculateSum numbers :List<Int> -> Int {
+fn calculateSum numbers: List<Int> -> Int {
   let filtered = List.filter (\x -> x > 0) numbers
   List.fold (+) 0 filtered
 }
@@ -394,7 +394,7 @@ fn calculateSum numbers :List<Int> -> Int {
 
 #### 5.1.3 明示的return
 ```seseragi
-fn findMax list :List<Int> -> Maybe<Int> {
+fn findMax list: List<Int> -> Maybe<Int> {
   if List.isEmpty list then {
     return Nothing
   } else {
@@ -406,8 +406,8 @@ fn findMax list :List<Int> -> Maybe<Int> {
 #### 5.1.4 シグネチャ分離形式
 ```seseragi
 // 型シグネチャを事前に宣言
-fn fibonacci :Int -> Int
-fn factorial :Int -> Int
+fn fibonacci: Int -> Int
+fn factorial: Int -> Int
 
 // 実装を後で定義
 fn fibonacci n = if n <= 1 then n else fibonacci (n - 1) + fibonacci (n - 2)
@@ -418,14 +418,14 @@ fn factorial n = if n <= 1 then 1 else n * factorial (n - 1)
 
 #### 5.2.1 関数を引数とする関数
 ```seseragi
-fn applyTwice f :(Int -> Int) -> x :Int -> Int = f (f x)
-fn map f :(a -> b) -> list :List<a> -> List<b> = List.map f list
-fn filter predicate :(a -> Bool) -> list :List<a> -> List<a> = List.filter predicate list
+fn applyTwice f :(Int -> Int) -> x: Int -> Int = f (f x)
+fn map f :(a -> b) -> list: List<a> -> List<b> = List.map f list
+fn filter predicate :(a -> Bool) -> list: List<a> -> List<a> = List.filter predicate list
 ```
 
 #### 5.2.2 関数を返す関数
 ```seseragi
-fn makeAdder n :Int -> (Int -> Int) = \x -> x + n
+fn makeAdder n: Int -> (Int -> Int) = \x -> x + n
 fn compose f :(b -> c) -> g :(a -> b) -> (a -> c) = \x -> f (g x)
 ```
 
@@ -448,7 +448,7 @@ let processUser = \user -> {
 #### 5.3.1 パターンマッチング関数
 ```seseragi
 // 複数のパターンで同じ関数を定義
-fn length :List<a> -> Int
+fn length: List<a> -> Int
 fn length [] = 0
 fn length (_ :: xs) = 1 + length xs
 
@@ -460,13 +460,13 @@ fn fromMaybe _ (Just value) = value
 
 #### 5.3.2 ガード付き関数
 ```seseragi
-fn fibonacci :Int -> Int
+fn fibonacci: Int -> Int
 fn fibonacci n
   | n <= 0 = 0
   | n == 1 = 1
   | otherwise = fibonacci (n - 1) + fibonacci (n - 2)
 
-fn classify :Int -> String
+fn classify: Int -> String
 fn classify x
   | x < 0 = "negative"
   | x == 0 = "zero"
@@ -477,8 +477,8 @@ fn classify x
 #### 5.3.3 相互再帰関数
 ```seseragi
 // シグネチャを事前に宣言（必須）
-fn isEven :Int -> Bool
-fn isOdd :Int -> Bool
+fn isEven: Int -> Bool
+fn isOdd: Int -> Bool
 
 // 相互再帰の実装
 fn isEven n = if n == 0 then True else isOdd (n - 1)
@@ -489,7 +489,7 @@ fn isOdd n = if n == 0 then False else isEven (n - 1)
 
 ```seseragi
 // すべての関数は自動的にカリー化される
-fn add x :Int -> y :Int -> z :Int -> Int = x + y + z
+fn add x: Int -> y: Int -> z: Int -> Int = x + y + z
 
 // 部分適用
 let addTen = add 10        // Int -> Int -> Int
@@ -604,7 +604,7 @@ let processed = users
 #### 6.6.2 逆パイプ演算子 (`~`)
 ```seseragi
 // 右から左の部分適用
-fn add3 x :Int -> y :Int -> z :Int -> Int = x + y + z
+fn add3 x: Int -> y: Int -> z: Int -> Int = x + y + z
 
 let result = 10 ~ add3 20 30  // add3 10 20 30 = 60
 ```
@@ -626,7 +626,7 @@ let mapped = (\x -> x ++ "!") <$> ["hello", "world"]  // ["hello!", "world!"]
 #### 6.6.5 アプリカティブ演算子 (`<*>`)
 ```seseragi
 // アプリカティブファンクター
-fn add x :Int -> y :Int -> Int = x + y
+fn add x: Int -> y: Int -> Int = x + y
 
 let result = Just add <*> Just 5 <*> Just 3  // Just 8
 let combined = [add] <*> [1, 2] <*> [10, 20] // [11, 21, 12, 22]
@@ -635,7 +635,7 @@ let combined = [add] <*> [1, 2] <*> [10, 20] // [11, 21, 12, 22]
 #### 6.6.6 モナドバインド演算子 (`>>=`)
 ```seseragi
 // モナドチェーン
-fn safeDivide x :Int -> y :Int -> Maybe<Int> =
+fn safeDivide x: Int -> y: Int -> Maybe<Int> =
   if y == 0 then Nothing else Just (x / y)
 
 let result = Just 20
@@ -752,7 +752,7 @@ match list {
 ```seseragi
 type Shape = Circle Float | Rectangle Float Float | Triangle Float Float Float
 
-fn area shape :Shape -> Float {
+fn area shape: Shape -> Float {
   match shape {
     Circle radius -> pi * radius * radius
     Rectangle width height -> width * height
@@ -787,11 +787,11 @@ Seseragiは純粋関数型言語のため、従来のループは提供せず、
 
 #### 7.3.1 再帰による反復
 ```seseragi
-fn factorial n :Int -> Int {
+fn factorial n: Int -> Int {
   if n <= 1 then 1 else n * factorial (n - 1)
 }
 
-fn fibonacci n :Int -> Int = match n {
+fn fibonacci n: Int -> Int = match n {
   0 -> 0
   1 -> 1
   n -> fibonacci (n - 1) + fibonacci (n - 2)
@@ -818,21 +818,21 @@ let naturals = List.unfold (\n -> Just (n, n + 1)) 1  // [1, 2, 3, ...]
 #### 8.1.1 基本的なレコード定義
 ```seseragi
 type Person {
-  name :String
-  age :Int
-  email :String
+  name: String
+  age: Int
+  email: String
 }
 
 type Point {
-  x :Float
-  y :Float
+  x: Float
+  y: Float
 }
 
 type User {
-  id :Int
-  person :Person
-  isActive :Bool
-  joinedAt :String
+  id: Int
+  person: Person
+  isActive: Bool
+  joinedAt: String
 }
 ```
 
@@ -1020,7 +1020,7 @@ let someValue = Just 42
 let nothingValue = Nothing
 
 // 安全な演算
-fn safeDivide x :Int -> y :Int -> Maybe<Int> =
+fn safeDivide x: Int -> y: Int -> Maybe<Int> =
   if y == 0 then Nothing else Just (x / y)
 
 let result1 = safeDivide 10 2  // Just 5
@@ -1064,7 +1064,7 @@ type ValidationError =
   | InvalidAge
   | InvalidEmail
 
-fn validateUser name :String -> age :Int -> email :String -> Either<ValidationError, User> {
+fn validateUser name: String -> age: Int -> email: String -> Either<ValidationError, User> {
   if String.isEmpty name then Left EmptyName
   else if age < 0 || age > 150 then Left InvalidAge
   else if not (String.contains "@" email) then Left InvalidEmail
@@ -1092,12 +1092,12 @@ match processUser rawData {
 #### 9.3.1 副作用の管理
 ```seseragi
 // IOアクションの定義
-effectful fn readFile path :String -> IO<String>
-effectful fn writeFile path :String -> content :String -> IO<Unit>
-effectful fn println message :String -> IO<Unit>
+effectful fn readFile path: String -> IO<String>
+effectful fn writeFile path: String -> content: String -> IO<Unit>
+effectful fn println message: String -> IO<Unit>
 
 // IOアクションの合成
-fn copyFile source :String -> dest :String -> IO<Unit> = do {
+fn copyFile source: String -> dest: String -> IO<Unit> = do {
   content <- readFile source
   writeFile dest content
   println ("Copied " ++ source ++ " to " ++ dest)
@@ -1106,7 +1106,7 @@ fn copyFile source :String -> dest :String -> IO<Unit> = do {
 
 #### 9.3.2 純粋関数内でのIO
 ```seseragi
-fn processData data :String -> IO<String> {
+fn processData data: String -> IO<String> {
   elevate (println "Processing data...") >>=
   (\_ -> IO.pure (String.toUpper data)) >>=
   (\result -> elevate (println "Processing complete") >>=
@@ -1121,20 +1121,20 @@ fn processData data :String -> IO<String> {
 type State<S, A> = S -> (A, S)
 
 impl State<S, A> {
-  fn run state :S -> self :State<S, A> -> (A, S) = self state
+  fn run state: S -> self: State<S, A> -> (A, S) = self state
 
-  fn get :State<S, S> = \s -> (s, s)
+  fn get: State<S, S> = \s -> (s, s)
 
-  fn put newState :S -> State<S, Unit> = \_ -> ((), newState)
+  fn put newState: S -> State<S, Unit> = \_ -> ((), newState)
 
   fn modify f :(S -> S) -> State<S, Unit> = \s -> ((), f s)
 }
 
 // Monadインスタンス
 impl State<S, A> {
-  fn pure value :A -> State<S, A> = \s -> (value, s)
+  fn pure value: A -> State<S, A> = \s -> (value, s)
 
-  fn bind f :(A -> State<S, B>) -> self :State<S, A> -> State<S, B> =
+  fn bind f :(A -> State<S, B>) -> self: State<S, A> -> State<S, B> =
     \s -> let (a, s') = self s in f a s'
 }
 ```
@@ -1144,9 +1144,9 @@ impl State<S, A> {
 type Reader<R, A> = R -> A
 
 impl Reader<R, A> {
-  fn run env :R -> self :Reader<R, A> -> A = self env
+  fn run env: R -> self: Reader<R, A> -> A = self env
 
-  fn ask :Reader<R, R> = \r -> r
+  fn ask: Reader<R, R> = \r -> r
 
   fn asks f :(R -> A) -> Reader<R, A> = \r -> f r
 }
@@ -1161,11 +1161,11 @@ impl Reader<R, A> {
 #### 10.1.1 effectful関数の定義
 ```seseragi
 // 副作用を持つ関数は明示的にマーク
-effectful fn printMessage message :String -> IO<Unit> {
+effectful fn printMessage message: String -> IO<Unit> {
   IO.perform (systemPrint message)
 }
 
-effectful fn readUserInput prompt :String -> IO<String> {
+effectful fn readUserInput prompt: String -> IO<String> {
   IO.perform (systemPrompt prompt)
 }
 
@@ -1177,16 +1177,16 @@ effectful fn getCurrentTime -> IO<String> {
 #### 10.1.2 純粋関数と効果的関数の分離
 ```seseragi
 // 純粋関数 - 副作用なし、常に同じ入力で同じ出力
-fn calculateTax amount :Float -> rate :Float -> Float = amount * rate
+fn calculateTax amount: Float -> rate: Float -> Float = amount * rate
 
 // 効果的関数 - 副作用あり
-effectful fn saveTaxRecord amount :Float -> tax :Float -> IO<Unit> {
+effectful fn saveTaxRecord amount: Float -> tax: Float -> IO<Unit> {
   let record = TaxRecord { amount: amount, tax: tax, timestamp: getCurrentTime() }
   writeToDatabase record
 }
 
 // 効果の合成
-effectful fn processPayment amount :Float -> IO<Unit> = do {
+effectful fn processPayment amount: Float -> IO<Unit> = do {
   tax <- calculateTax amount 0.08  // 純粋関数の呼び出し
   saveTaxRecord amount tax         // 効果的関数の呼び出し
   printMessage ("Payment processed: " ++ toString amount)
@@ -1197,7 +1197,7 @@ effectful fn processPayment amount :Float -> IO<Unit> = do {
 
 #### 10.2.1 純粋関数内での効果の使用
 ```seseragi
-fn processUserData data :UserData -> IO<ProcessedData> {
+fn processUserData data: UserData -> IO<ProcessedData> {
   // 純粋な処理
   let validated = validateData data
   let normalized = normalizeData validated
@@ -1214,7 +1214,7 @@ fn processUserData data :UserData -> IO<ProcessedData> {
 
 #### 10.2.2 効果の制御フロー
 ```seseragi
-fn safeFileOperation filename :String -> IO<Either<String, String>> = do {
+fn safeFileOperation filename: String -> IO<Either<String, String>> = do {
   fileExists <- elevate (checkFileExists filename)
   if fileExists then {
     content <- elevate (readFile filename)
@@ -1230,20 +1230,20 @@ fn safeFileOperation filename :String -> IO<Either<String, String>> = do {
 #### 10.3.1 基本的なIO操作
 ```seseragi
 // ファイルシステム操作
-effectful fn readTextFile path :String -> IO<String>
-effectful fn writeTextFile path :String -> content :String -> IO<Unit>
-effectful fn appendToFile path :String -> content :String -> IO<Unit>
-effectful fn deleteFile path :String -> IO<Unit>
-effectful fn createDirectory path :String -> IO<Unit>
+effectful fn readTextFile path: String -> IO<String>
+effectful fn writeTextFile path: String -> content: String -> IO<Unit>
+effectful fn appendToFile path: String -> content: String -> IO<Unit>
+effectful fn deleteFile path: String -> IO<Unit>
+effectful fn createDirectory path: String -> IO<Unit>
 
 // ネットワーク操作
-effectful fn httpGet url :String -> IO<String>
-effectful fn httpPost url :String -> body :String -> IO<String>
+effectful fn httpGet url: String -> IO<String>
+effectful fn httpPost url: String -> body: String -> IO<String>
 
 // システム操作
-effectful fn getEnvironmentVariable name :String -> IO<Maybe<String>>
+effectful fn getEnvironmentVariable name: String -> IO<Maybe<String>>
 effectful fn getCurrentDirectory -> IO<String>
-effectful fn executeCommand command :String -> IO<String>
+effectful fn executeCommand command: String -> IO<String>
 ```
 
 #### 10.3.2 エラーハンドリングを伴うIO
@@ -1254,7 +1254,7 @@ type IOError =
   | NetworkError String
   | UnknownError String
 
-effectful fn safeReadFile path :String -> IO<Either<IOError, String>> = do {
+effectful fn safeReadFile path: String -> IO<Either<IOError, String>> = do {
   try {
     content <- readTextFile path
     return (Right content)
@@ -1271,11 +1271,11 @@ effectful fn safeReadFile path :String -> IO<Either<IOError, String>> = do {
 #### 10.4.1 非同期IO操作
 ```seseragi
 // 非同期操作の定義
-effectful fn asyncReadFile path :String -> IO<Promise<String>>
-effectful fn asyncHttpGet url :String -> IO<Promise<String>>
+effectful fn asyncReadFile path: String -> IO<Promise<String>>
+effectful fn asyncHttpGet url: String -> IO<Promise<String>>
 
 // 並行実行
-effectful fn fetchMultipleUrls urls :List<String> -> IO<List<String>> = do {
+effectful fn fetchMultipleUrls urls: List<String> -> IO<List<String>> = do {
   promises <- List.map asyncHttpGet urls | sequence
   results <- Promise.all promises
   return results
@@ -1285,7 +1285,7 @@ effectful fn fetchMultipleUrls urls :List<String> -> IO<List<String>> = do {
 #### 10.4.2 リソース管理
 ```seseragi
 // リソースの安全な管理
-effectful fn withFile path :String -> action :(FileHandle -> IO<A>) -> IO<A> = do {
+effectful fn withFile path: String -> action :(FileHandle -> IO<A>) -> IO<A> = do {
   handle <- openFile path
   try {
     result <- action handle
@@ -1296,7 +1296,7 @@ effectful fn withFile path :String -> action :(FileHandle -> IO<A>) -> IO<A> = d
 }
 
 // 使用例
-effectful fn processLargeFile path :String -> IO<Int> =
+effectful fn processLargeFile path: String -> IO<Int> =
   withFile path (\handle -> do {
     content <- readFromHandle handle
     let lineCount = countLines content
@@ -1313,8 +1313,8 @@ effectful fn processLargeFile path :String -> IO<Int> =
 #### 11.1.1 基本的なメソッド定義
 ```seseragi
 type Person {
-  name :String
-  age :Int
+  name: String
+  age: Int
 }
 
 impl Person {
@@ -1325,7 +1325,7 @@ impl Person {
   fn haveBirthday self -> Person =
     self { age: self.age + 1 }
 
-  fn introduce self -> other :Person -> String =
+  fn introduce self -> other: Person -> String =
     self.greet() ++ ". Nice to meet you, " ++ other.name
 }
 
@@ -1340,13 +1340,13 @@ let older = alice.haveBirthday()       // Person { name: "Alice", age: 26 }
 ```seseragi
 impl Person {
   // コンストラクタ的な静的メソッド
-  fn create name :String -> age :Int -> Person =
+  fn create name: String -> age: Int -> Person =
     Person { name: name, age: age }
 
-  fn createChild name :String -> Person =
+  fn createChild name: String -> Person =
     Person.create name 0
 
-  fn createAdult name :String -> Person =
+  fn createAdult name: String -> Person =
     Person.create name 18
 }
 
@@ -1361,12 +1361,12 @@ let child = Person.createChild "Charlie"
 ```seseragi
 // Show型クラスの定義（標準ライブラリ）
 trait Show<T> {
-  fn show :T -> String
+  fn show: T -> String
 }
 
 // Person型にShowを実装
 impl Show<Person> {
-  fn show person :Person -> String =
+  fn show person: Person -> String =
     "Person { name: \"" ++ person.name ++ "\", age: " ++ toString person.age ++ " }"
 }
 
@@ -1378,18 +1378,18 @@ let displayed = show alice  // "Person { name: \"Alice\", age: 25 }"
 #### 11.2.2 Eq型クラス
 ```seseragi
 trait Eq<T> {
-  fn equal :T -> T -> Bool
-  fn notEqual :T -> T -> Bool = \x y -> not (equal x y)
+  fn equal: T -> T -> Bool
+  fn notEqual: T -> T -> Bool = \x y -> not (equal x y)
 }
 
 impl Eq<Person> {
-  fn equal p1 :Person -> p2 :Person -> Bool =
+  fn equal p1: Person -> p2: Person -> Bool =
     p1.name == p2.name && p1.age == p2.age
 }
 
 // 演算子のオーバーロード
-operator == <T: Eq<T>> (left :T, right :T) -> Bool = equal left right
-operator != <T: Eq<T>> (left :T, right :T) -> Bool = notEqual left right
+operator == <T: Eq<T>> (left: T, right: T) -> Bool = equal left right
+operator != <T: Eq<T>> (left: T, right: T) -> Bool = notEqual left right
 ```
 
 #### 11.2.3 Ord型クラス
@@ -1397,15 +1397,15 @@ operator != <T: Eq<T>> (left :T, right :T) -> Bool = notEqual left right
 type Ordering = LT | EQ | GT
 
 trait Ord<T> extends Eq<T> {
-  fn compare :T -> T -> Ordering
-  fn lessThan :T -> T -> Bool = \x y -> compare x y == LT
-  fn greaterThan :T -> T -> Bool = \x y -> compare x y == GT
-  fn lessEqual :T -> T -> Bool = \x y -> compare x y != GT
-  fn greaterEqual :T -> T -> Bool = \x y -> compare x y != LT
+  fn compare: T -> T -> Ordering
+  fn lessThan: T -> T -> Bool = \x y -> compare x y == LT
+  fn greaterThan: T -> T -> Bool = \x y -> compare x y == GT
+  fn lessEqual: T -> T -> Bool = \x y -> compare x y != GT
+  fn greaterEqual: T -> T -> Bool = \x y -> compare x y != LT
 }
 
 impl Ord<Person> {
-  fn compare p1 :Person -> p2 :Person -> Ordering =
+  fn compare p1: Person -> p2: Person -> Ordering =
     let nameComparison = compare p1.name p2.name
     if nameComparison == EQ
     then compare p1.age p2.age
@@ -1418,20 +1418,20 @@ impl Ord<Person> {
 #### 11.3.1 Monoid型クラス
 ```seseragi
 trait Monoid<T> {
-  fn empty :T
-  fn append :T -> T -> T
+  fn empty: T
+  fn append: T -> T -> T
 }
 
 // Stringのモノイドインスタンス
 impl Monoid<String> {
   fn empty = ""
-  fn append s1 :String -> s2 :String -> String = s1 ++ s2
+  fn append s1: String -> s2: String -> String = s1 ++ s2
 }
 
 // List<T>のモノイドインスタンス
 impl Monoid<List<T>> {
   fn empty = []
-  fn append l1 :List<T> -> l2 :List<T> -> List<T> = l1 ++ l2
+  fn append l1: List<T> -> l2: List<T> -> List<T> = l1 ++ l2
 }
 ```
 
@@ -1442,7 +1442,7 @@ let concatenated = ["hello", " ", "world", "!"] >>> append  // "hello world!"
 let combined = [[1, 2], [3, 4], [5, 6]] >>> append         // [1, 2, 3, 4, 5, 6]
 
 // mconcat関数
-fn mconcat<T: Monoid<T>> :List<T> -> T = List.fold append empty
+fn mconcat<T: Monoid<T>>: List<T> -> T = List.fold append empty
 
 let result = mconcat ["a", "b", "c"]  // "abc"
 ```
@@ -1453,25 +1453,25 @@ let result = mconcat ["a", "b", "c"]  // "abc"
 ```seseragi
 // カスタム型での演算子定義
 type Vector {
-  x :Float
-  y :Float
+  x: Float
+  y: Float
 }
 
 impl Vector {
   // ベクトル加算
-  operator + (v1 :Vector, v2 :Vector) -> Vector =
+  operator + (v1: Vector, v2: Vector) -> Vector =
     Vector { x: v1.x + v2.x, y: v1.y + v2.y }
 
   // ベクトル減算
-  operator - (v1 :Vector, v2 :Vector) -> Vector =
+  operator - (v1: Vector, v2: Vector) -> Vector =
     Vector { x: v1.x - v2.x, y: v1.y - v2.y }
 
   // スカラー倍
-  operator * (scalar :Float, v :Vector) -> Vector =
+  operator * (scalar: Float, v: Vector) -> Vector =
     Vector { x: scalar * v.x, y: scalar * v.y }
 
   // 内積
-  operator · (v1 :Vector, v2 :Vector) -> Float =
+  operator · (v1: Vector, v2: Vector) -> Float =
     v1.x * v2.x + v1.y * v2.y
 }
 
@@ -1505,20 +1505,20 @@ module Math.Vector
 
 // 公開する型
 export type Vector {
-  x :Float
-  y :Float
+  x: Float
+  y: Float
 }
 
 // 公開する関数
-export fn create x :Float -> y :Float -> Vector = Vector { x: x, y: y }
-export fn magnitude v :Vector -> Float = sqrt (v.x * v.x + v.y * v.y)
-export fn normalize v :Vector -> Vector = {
+export fn create x: Float -> y: Float -> Vector = Vector { x: x, y: y }
+export fn magnitude v: Vector -> Float = sqrt (v.x * v.x + v.y * v.y)
+export fn normalize v: Vector -> Vector = {
   let mag = magnitude v
   Vector { x: v.x / mag, y: v.y / mag }
 }
 
 // プライベート関数（exportしない）
-fn helper x :Float -> Float = x * 2.0
+fn helper x: Float -> Float = x * 2.0
 ```
 
 #### 12.1.2 選択的エクスポート
@@ -1527,9 +1527,9 @@ module Utils.String
 
 // 型のエクスポート
 export type TextProcessingOptions {
-  trimWhitespace :Bool
-  toLowerCase :Bool
-  removeSpecialChars :Bool
+  trimWhitespace: Bool
+  toLowerCase: Bool
+  removeSpecialChars: Bool
 }
 
 // 関数の選択的エクスポート
@@ -1539,14 +1539,14 @@ export {
   joinWords
 }
 
-fn processText options :TextProcessingOptions -> text :String -> String =
+fn processText options: TextProcessingOptions -> text: String -> String =
   text
   | (if options.trimWhitespace then String.trim else identity)
   | (if options.toLowerCase then String.toLower else identity)
   | (if options.removeSpecialChars then removeSpecialChars else identity)
 
 // プライベート関数
-fn removeSpecialChars text :String -> String =
+fn removeSpecialChars text: String -> String =
   String.filter Char.isAlphaNumeric text
 ```
 
@@ -1573,7 +1573,7 @@ import Database.User as UserDB
 import Database.Product as ProductDB
 import Utils.Logger::{logInfo, logError, LogLevel}
 
-fn fetchAndSaveUser userId :String -> IO<Either<String, Unit>> = do {
+fn fetchAndSaveUser userId: String -> IO<Either<String, Unit>> = do {
   userResult <- get ("https://api.example.com/users/" ++ userId)
   match userResult {
     Left (HttpError msg) -> {
@@ -1670,7 +1670,7 @@ export type Statement =
 module Interfaces.Renderable
 
 export trait Renderable<T> {
-  fn render :T -> String
+  fn render: T -> String
 }
 
 // ファイル: UI/Component.ssrg
@@ -1679,12 +1679,12 @@ module UI.Component
 import Interfaces.Renderable::{Renderable}
 
 export type Component {
-  name :String
-  children :List<Component>
+  name: String
+  children: List<Component>
 }
 
 impl Renderable<Component> {
-  fn render component :Component -> String =
+  fn render component: Component -> String =
     "<" ++ component.name ++ ">" ++
     (component.children | List.map render | String.join "") ++
     "</" ++ component.name ++ ">"
@@ -1713,15 +1713,15 @@ let stringLength = String.length     // String -> Int
 #### 13.1.2 型注釈による制約
 ```seseragi
 // 明示的な型注釈で型を制約
-fn processNumbers :List<Int> -> Int =
+fn processNumbers: List<Int> -> Int =
   List.fold (+) 0  // Intに制約されるため(+)はInt -> Int -> Int
 
 // ジェネリック型の制約
-fn sortBy<T> compareFn :(T -> T -> Ordering) -> list :List<T> -> List<T> =
+fn sortBy<T> compareFn :(T -> T -> Ordering) -> list: List<T> -> List<T> =
   List.sortWith compareFn list
 
 // 型クラス制約
-fn showAll<T: Show<T>> :List<T> -> String =
+fn showAll<T: Show<T>>: List<T> -> String =
   List.map show >> String.join ", "
 ```
 
@@ -1739,7 +1739,7 @@ type Transformer<F<_>, T> = F<T>     // Transformer :: (* -> *) -> * -> *
 // 高階関数での使用
 fn liftTransformer<F<_>: Functor<F>, T, U>
   f :(T -> U) ->
-  transformer :Transformer<F, T> ->
+  transformer: Transformer<F, T> ->
   Transformer<F, U> =
   fmap f transformer
 ```
@@ -1767,7 +1767,7 @@ macro type Add<N, M> = /* 型レベル計算 */
 macro type Length<L> = /* リストの長さを型レベルで計算 */
 
 // 依存型的な使用（将来機能）
-fn safeIndex<N: Nat, T> index :N -> list :List<T> ->
+fn safeIndex<N: Nat, T> index: N -> list: List<T> ->
   where Length<List<T>> > N -> T =
   List.unsafeIndex index list  // 境界チェック不要
 ```
@@ -1777,14 +1777,14 @@ fn safeIndex<N: Nat, T> index :N -> list :List<T> ->
 #### 13.4.1 軽量スレッド（Green Threads）
 ```seseragi
 // 非同期計算の定義
-effectful fn asyncComputation x :Int -> Async<Int> = do {
+effectful fn asyncComputation x: Int -> Async<Int> = do {
   yield  // 他のタスクに制御を譲る
   let result = expensiveCalculation x
   return result
 }
 
 // 並行実行
-effectful fn runConcurrently computations :List<Async<Int>> -> IO<List<Int>> = do {
+effectful fn runConcurrently computations: List<Async<Int>> -> IO<List<Int>> = do {
   results <- Async.parallel computations
   return results
 }
@@ -1793,7 +1793,7 @@ effectful fn runConcurrently computations :List<Async<Int>> -> IO<List<Int>> = d
 #### 13.4.2 チャネル通信
 ```seseragi
 // チャネルベースの通信
-effectful fn producer channel :Channel<Int> -> IO<Unit> = do {
+effectful fn producer channel: Channel<Int> -> IO<Unit> = do {
   for (i in [1..100]) {
     Channel.send channel i
     yield
@@ -1801,7 +1801,7 @@ effectful fn producer channel :Channel<Int> -> IO<Unit> = do {
   Channel.close channel
 }
 
-effectful fn consumer channel :Channel<Int> -> IO<List<Int>> = do {
+effectful fn consumer channel: Channel<Int> -> IO<List<Int>> = do {
   results <- Channel.collect channel
   return results
 }
@@ -1819,20 +1819,20 @@ effectful fn pipeline -> IO<List<Int>> = do {
 #### 13.5.1 末尾呼び出し最適化
 ```seseragi
 // 末尾再帰関数は自動的に最適化される
-fn factorial n :Int -> Int = factorialHelper n 1
+fn factorial n: Int -> Int = factorialHelper n 1
   where
     factorialHelper 0 acc = acc
     factorialHelper n acc = factorialHelper (n - 1) (n * acc)
 
 // 相互末尾再帰も最適化
-fn isEven n :Int -> Bool = if n == 0 then True else isOdd (n - 1)
-fn isOdd n :Int -> Bool = if n == 0 then False else isEven (n - 1)
+fn isEven n: Int -> Bool = if n == 0 then True else isOdd (n - 1)
+fn isOdd n: Int -> Bool = if n == 0 then False else isEven (n - 1)
 ```
 
 #### 13.5.2 インライン化
 ```seseragi
 // 小さな関数は自動的にインライン化
-inline fn square x :Int -> Int = x * x
+inline fn square x: Int -> Int = x * x
 
 // 使用箇所で展開される
 let result = square 5  // -> let result = 5 * 5
@@ -1841,8 +1841,8 @@ let result = square 5  // -> let result = 5 * 5
 #### 13.5.3 デッドコード除去
 ```seseragi
 // 使用されない関数や変数は自動的に除去
-fn usedFunction x :Int -> Int = x * 2
-fn unusedFunction x :Int -> Int = x * 3  // コンパイル時に除去
+fn usedFunction x: Int -> Int = x * 2
+fn unusedFunction x: Int -> Int = x * 3  // コンパイル時に除去
 
 let usedVariable = 42
 let unusedVariable = 100  // コンパイル時に除去
@@ -1860,40 +1860,40 @@ let result = if True then 42 else 0  // -> let result = 42
 #### 14.1.1 基本型操作
 ```seseragi
 module Core.Int
-export fn toString :Int -> String
-export fn fromString :String -> Maybe<Int>
-export fn abs :Int -> Int
-export fn sign :Int -> Int
-export fn max :Int -> Int -> Int
-export fn min :Int -> Int -> Int
+export fn toString: Int -> String
+export fn fromString: String -> Maybe<Int>
+export fn abs: Int -> Int
+export fn sign: Int -> Int
+export fn max: Int -> Int -> Int
+export fn min: Int -> Int -> Int
 
 module Core.Float
-export fn toString :Float -> String
-export fn fromString :String -> Maybe<Float>
-export fn round :Float -> Int
-export fn ceiling :Float -> Int
-export fn floor :Float -> Int
-export fn isNaN :Float -> Bool
-export fn isInfinite :Float -> Bool
+export fn toString: Float -> String
+export fn fromString: String -> Maybe<Float>
+export fn round: Float -> Int
+export fn ceiling: Float -> Int
+export fn floor: Float -> Int
+export fn isNaN: Float -> Bool
+export fn isInfinite: Float -> Bool
 
 module Core.String
-export fn length :String -> Int
-export fn isEmpty :String -> Bool
-export fn trim :String -> String
-export fn split :String -> String -> List<String>
-export fn join :String -> List<String> -> String
-export fn contains :String -> String -> Bool
-export fn startsWith :String -> String -> Bool
-export fn endsWith :String -> String -> Bool
-export fn toUpper :String -> String
-export fn toLower :String -> String
+export fn length: String -> Int
+export fn isEmpty: String -> Bool
+export fn trim: String -> String
+export fn split: String -> String -> List<String>
+export fn join: String -> List<String> -> String
+export fn contains: String -> String -> Bool
+export fn startsWith: String -> String -> Bool
+export fn endsWith: String -> String -> Bool
+export fn toUpper: String -> String
+export fn toLower: String -> String
 ```
 
 #### 14.1.2 関数操作
 ```seseragi
 module Core.Function
-export fn identity<T> :T -> T = \x -> x
-export fn const<T, U> :T -> U -> T = \x _ -> x
+export fn identity<T>: T -> T = \x -> x
+export fn const<T, U>: T -> U -> T = \x _ -> x
 export fn flip<A, B, C> :(A -> B -> C) -> B -> A -> C = \f x y -> f y x
 export fn compose<A, B, C> :(B -> C) -> (A -> B) -> A -> C = \f g x -> f (g x)
 export fn curry<A, B, C> :((A, B) -> C) -> A -> B -> C = \f x y -> f (x, y)
@@ -1907,44 +1907,44 @@ export fn uncurry<A, B, C> :(A -> B -> C) -> (A, B) -> C = \f (x, y) -> f x y
 module Data.List
 
 // 基本操作
-export fn empty<T> :List<T> = []
-export fn singleton<T> :T -> List<T> = \x -> [x]
-export fn cons<T> :T -> List<T> -> List<T> = \x xs -> x :: xs
-export fn head<T> :List<T> -> Maybe<T>
-export fn tail<T> :List<T> -> Maybe<List<T>>
-export fn length<T> :List<T> -> Int
-export fn isEmpty<T> :List<T> -> Bool
+export fn empty<T>: List<T> = []
+export fn singleton<T>: T -> List<T> = \x -> [x]
+export fn cons<T>: T -> List<T> -> List<T> = \x xs -> x :: xs
+export fn head<T>: List<T> -> Maybe<T>
+export fn tail<T>: List<T> -> Maybe<List<T>>
+export fn length<T>: List<T> -> Int
+export fn isEmpty<T>: List<T> -> Bool
 
 // 変換
 export fn map<A, B> :(A -> B) -> List<A> -> List<B>
 export fn filter<T> :(T -> Bool) -> List<T> -> List<T>
 export fn fold<A, B> :(A -> B -> A) -> A -> List<B> -> A
 export fn foldRight<A, B> :(A -> B -> B) -> B -> List<A> -> B
-export fn reverse<T> :List<T> -> List<T>
+export fn reverse<T>: List<T> -> List<T>
 
 // 組み合わせ
-export fn append<T> :List<T> -> List<T> -> List<T>
-export fn concat<T> :List<List<T>> -> List<T>
-export fn zip<A, B> :List<A> -> List<B> -> List<(A, B)>
+export fn append<T>: List<T> -> List<T> -> List<T>
+export fn concat<T>: List<List<T>> -> List<T>
+export fn zip<A, B>: List<A> -> List<B> -> List<(A, B)>
 export fn zipWith<A, B, C> :(A -> B -> C) -> List<A> -> List<B> -> List<C>
 
 // 検索
 export fn find<T> :(T -> Bool) -> List<T> -> Maybe<T>
 export fn findIndex<T> :(T -> Bool) -> List<T> -> Maybe<Int>
-export fn elem<T: Eq<T>> :T -> List<T> -> Bool
-export fn notElem<T: Eq<T>> :T -> List<T> -> Bool
+export fn elem<T: Eq<T>>: T -> List<T> -> Bool
+export fn notElem<T: Eq<T>>: T -> List<T> -> Bool
 
 // ソート
-export fn sort<T: Ord<T>> :List<T> -> List<T>
+export fn sort<T: Ord<T>>: List<T> -> List<T>
 export fn sortBy<T> :(T -> T -> Ordering) -> List<T> -> List<T>
 export fn sortOn<T, U: Ord<U>> :(T -> U) -> List<T> -> List<T>
 
 // 部分リスト
-export fn take<T> :Int -> List<T> -> List<T>
-export fn drop<T> :Int -> List<T> -> List<T>
+export fn take<T>: Int -> List<T> -> List<T>
+export fn drop<T>: Int -> List<T> -> List<T>
 export fn takeWhile<T> :(T -> Bool) -> List<T> -> List<T>
 export fn dropWhile<T> :(T -> Bool) -> List<T> -> List<T>
-export fn slice<T> :Int -> Int -> List<T> -> List<T>
+export fn slice<T>: Int -> Int -> List<T> -> List<T>
 ```
 
 #### 14.2.2 Map モジュール
@@ -1954,19 +1954,19 @@ module Data.Map
 export type Map<K, V>
 
 // 構築
-export fn empty<K, V> :Map<K, V>
-export fn singleton<K, V> :K -> V -> Map<K, V>
-export fn fromList<K: Ord<K>, V> :List<(K, V)> -> Map<K, V>
+export fn empty<K, V>: Map<K, V>
+export fn singleton<K, V>: K -> V -> Map<K, V>
+export fn fromList<K: Ord<K>, V>: List<(K, V)> -> Map<K, V>
 
 // 更新
-export fn insert<K: Ord<K>, V> :K -> V -> Map<K, V> -> Map<K, V>
-export fn delete<K: Ord<K>, V> :K -> Map<K, V> -> Map<K, V>
+export fn insert<K: Ord<K>, V>: K -> V -> Map<K, V> -> Map<K, V>
+export fn delete<K: Ord<K>, V>: K -> Map<K, V> -> Map<K, V>
 export fn update<K: Ord<K>, V> :(Maybe<V> -> Maybe<V>) -> K -> Map<K, V> -> Map<K, V>
 
 // 検索
-export fn lookup<K: Ord<K>, V> :K -> Map<K, V> -> Maybe<V>
-export fn member<K: Ord<K>, V> :K -> Map<K, V> -> Bool
-export fn size<K, V> :Map<K, V> -> Int
+export fn lookup<K: Ord<K>, V>: K -> Map<K, V> -> Maybe<V>
+export fn member<K: Ord<K>, V>: K -> Map<K, V> -> Bool
+export fn size<K, V>: Map<K, V> -> Int
 
 // 変換
 export fn map<K, A, B> :(A -> B) -> Map<K, A> -> Map<K, B>
@@ -1975,14 +1975,14 @@ export fn filter<K, V> :(V -> Bool) -> Map<K, V> -> Map<K, V>
 export fn filterWithKey<K, V> :(K -> V -> Bool) -> Map<K, V> -> Map<K, V>
 
 // 変換
-export fn keys<K, V> :Map<K, V> -> List<K>
-export fn values<K, V> :Map<K, V> -> List<V>
-export fn toList<K, V> :Map<K, V> -> List<(K, V)>
+export fn keys<K, V>: Map<K, V> -> List<K>
+export fn values<K, V>: Map<K, V> -> List<V>
+export fn toList<K, V>: Map<K, V> -> List<(K, V)>
 
 // 集合操作
-export fn union<K: Ord<K>, V> :Map<K, V> -> Map<K, V> -> Map<K, V>
-export fn intersection<K: Ord<K>, V> :Map<K, V> -> Map<K, V> -> Map<K, V>
-export fn difference<K: Ord<K>, V> :Map<K, V> -> Map<K, V> -> Map<K, V>
+export fn union<K: Ord<K>, V>: Map<K, V> -> Map<K, V> -> Map<K, V>
+export fn intersection<K: Ord<K>, V>: Map<K, V> -> Map<K, V> -> Map<K, V>
+export fn difference<K: Ord<K>, V>: Map<K, V> -> Map<K, V> -> Map<K, V>
 ```
 
 ### 14.3 IO とファイルシステム
@@ -1992,29 +1992,29 @@ export fn difference<K: Ord<K>, V> :Map<K, V> -> Map<K, V> -> Map<K, V>
 module System.IO
 
 // 標準入出力
-effectful export fn print :String -> IO<Unit>
-effectful export fn println :String -> IO<Unit>
+effectful export fn print: String -> IO<Unit>
+effectful export fn println: String -> IO<Unit>
 effectful export fn readLine -> IO<String>
 effectful export fn readChar -> IO<Char>
 
 // ファイル操作
-effectful export fn readFile :String -> IO<String>
-effectful export fn writeFile :String -> String -> IO<Unit>
-effectful export fn appendFile :String -> String -> IO<Unit>
-effectful export fn deleteFile :String -> IO<Unit>
+effectful export fn readFile: String -> IO<String>
+effectful export fn writeFile: String -> String -> IO<Unit>
+effectful export fn appendFile: String -> String -> IO<Unit>
+effectful export fn deleteFile: String -> IO<Unit>
 
 // ディレクトリ操作
-effectful export fn createDirectory :String -> IO<Unit>
-effectful export fn removeDirectory :String -> IO<Unit>
-effectful export fn listDirectory :String -> IO<List<String>>
+effectful export fn createDirectory: String -> IO<Unit>
+effectful export fn removeDirectory: String -> IO<Unit>
+effectful export fn listDirectory: String -> IO<List<String>>
 effectful export fn getCurrentDirectory -> IO<String>
-effectful export fn setCurrentDirectory :String -> IO<Unit>
+effectful export fn setCurrentDirectory: String -> IO<Unit>
 
 // ファイル情報
-effectful export fn fileExists :String -> IO<Bool>
-effectful export fn directoryExists :String -> IO<Bool>
-effectful export fn fileSize :String -> IO<Int>
-effectful export fn getModificationTime :String -> IO<String>
+effectful export fn fileExists: String -> IO<Bool>
+effectful export fn directoryExists: String -> IO<Bool>
+effectful export fn fileSize: String -> IO<Int>
+effectful export fn getModificationTime: String -> IO<String>
 ```
 
 #### 14.3.2 Process モジュール
@@ -2024,19 +2024,19 @@ module System.Process
 export type ExitCode = Success | Failure Int
 
 // プロセス実行
-effectful export fn execute :String -> IO<ExitCode>
-effectful export fn executeWithOutput :String -> IO<(ExitCode, String, String)>
-effectful export fn spawn :String -> List<String> -> IO<ProcessHandle>
+effectful export fn execute: String -> IO<ExitCode>
+effectful export fn executeWithOutput: String -> IO<(ExitCode, String, String)>
+effectful export fn spawn: String -> List<String> -> IO<ProcessHandle>
 
 // 環境変数
-effectful export fn getEnv :String -> IO<Maybe<String>>
-effectful export fn setEnv :String -> String -> IO<Unit>
+effectful export fn getEnv: String -> IO<Maybe<String>>
+effectful export fn setEnv: String -> String -> IO<Unit>
 effectful export fn getAllEnv -> IO<Map<String, String>>
 
 // システム情報
 effectful export fn getArgs -> IO<List<String>>
 effectful export fn getProgName -> IO<String>
-effectful export fn exitWith :ExitCode -> IO<Unit>
+effectful export fn exitWith: ExitCode -> IO<Unit>
 ```
 
 ### 14.4 ネットワーク
@@ -2061,16 +2061,16 @@ export type HttpResponse {
 }
 
 // HTTP リクエスト
-effectful export fn request :HttpRequest -> IO<Either<String, HttpResponse>>
-effectful export fn get :String -> IO<Either<String, HttpResponse>>
-effectful export fn post :String -> String -> IO<Either<String, HttpResponse>>
-effectful export fn put :String -> String -> IO<Either<String, HttpResponse>>
-effectful export fn delete :String -> IO<Either<String, HttpResponse>>
+effectful export fn request: HttpRequest -> IO<Either<String, HttpResponse>>
+effectful export fn get: String -> IO<Either<String, HttpResponse>>
+effectful export fn post: String -> String -> IO<Either<String, HttpResponse>>
+effectful export fn put: String -> String -> IO<Either<String, HttpResponse>>
+effectful export fn delete: String -> IO<Either<String, HttpResponse>>
 
 // ヘルパー関数
-export fn withHeaders :HttpHeaders -> HttpRequest -> HttpRequest
-export fn withAuth :String -> HttpRequest -> HttpRequest
-export fn withTimeout :Int -> HttpRequest -> HttpRequest
+export fn withHeaders: HttpHeaders -> HttpRequest -> HttpRequest
+export fn withAuth: String -> HttpRequest -> HttpRequest
+export fn withTimeout: Int -> HttpRequest -> HttpRequest
 ```
 
 ### 14.5 JSON処理
@@ -2088,26 +2088,26 @@ export type JSON =
   | JObject (Map<String, JSON>)
 
 // パース
-export fn parse :String -> Either<String, JSON>
-export fn parseWith :JSONConfig -> String -> Either<String, JSON>
+export fn parse: String -> Either<String, JSON>
+export fn parseWith: JSONConfig -> String -> Either<String, JSON>
 
 // エンコード
-export fn encode :JSON -> String
-export fn encodePretty :JSON -> String
+export fn encode: JSON -> String
+export fn encodePretty: JSON -> String
 
 // アクセス
-export fn get :String -> JSON -> Maybe<JSON>
-export fn getIn :List<String> -> JSON -> Maybe<JSON>
-export fn set :String -> JSON -> JSON -> JSON
-export fn update :String -> (JSON -> JSON) -> JSON -> JSON
+export fn get: String -> JSON -> Maybe<JSON>
+export fn getIn: List<String> -> JSON -> Maybe<JSON>
+export fn set: String -> JSON -> JSON -> JSON
+export fn update: String -> (JSON -> JSON) -> JSON -> JSON
 
 // 型安全なデコーダー
 export trait FromJSON<T> {
-  fn fromJSON :JSON -> Either<String, T>
+  fn fromJSON: JSON -> Either<String, T>
 }
 
 export trait ToJSON<T> {
-  fn toJSON :T -> JSON
+  fn toJSON: T -> JSON
 }
 
 // 基本型のインスタンス
@@ -2135,16 +2135,16 @@ Seseragiは純粋関数型言語として、例外によるエラーハンドリ
 #### 15.2.1 基本的な使用
 ```seseragi
 // 失敗する可能性のある操作
-fn safeDivide x :Float -> y :Float -> Maybe<Float> =
+fn safeDivide x: Float -> y: Float -> Maybe<Float> =
   if y == 0.0 then Nothing else Just (x / y)
 
-fn safeHead list :List<T> -> Maybe<T> = match list {
+fn safeHead list: List<T> -> Maybe<T> = match list {
   [] -> Nothing
   x :: _ -> Just x
 }
 
 // チェーン操作
-fn calculateSafely a :Float -> b :Float -> c :Float -> Maybe<Float> =
+fn calculateSafely a: Float -> b: Float -> c: Float -> Maybe<Float> =
   safeDivide a b >>= \result1 ->
   safeDivide result1 c >>= \result2 ->
   Just (result2 * 2.0)
@@ -2164,12 +2164,12 @@ type ValidationError =
   | InvalidFormat String      // フィールド名
   | OutOfRange String Int Int // フィールド名、最小値、最大値
 
-fn parseInteger input :String -> Either<ParseError, Int> =
+fn parseInteger input: String -> Either<ParseError, Int> =
   if String.isEmpty input then Left (InvalidSyntax "Empty input" 1)
   else if String.all Char.isDigit input then Right (String.toInt input)
   else Left (InvalidSyntax "Non-digit character found" 1)
 
-fn validateAge age :Int -> Either<ValidationError, Int> =
+fn validateAge age: Int -> Either<ValidationError, Int> =
   if age < 0 then Left (OutOfRange "age" 0 150)
   else if age > 150 then Left (OutOfRange "age" 0 150)
   else Right age
@@ -2180,7 +2180,7 @@ fn validateAge age :Int -> Either<ValidationError, Int> =
 // 複数のエラーを蓄積
 type ValidationResult<T> = Either<List<ValidationError>, T>
 
-fn validateUser name :String -> age :Int -> email :String -> ValidationResult<User> =
+fn validateUser name: String -> age: Int -> email: String -> ValidationResult<User> =
   let nameResult = validateName name
   let ageResult = validateAge age
   let emailResult = validateEmail email
@@ -2189,12 +2189,12 @@ fn validateUser name :String -> age :Int -> email :String -> ValidationResult<Us
   User <$> nameResult <*> ageResult <*> emailResult
 
 // エラーメッセージの生成
-fn formatValidationErrors errors :List<ValidationError> -> String =
+fn formatValidationErrors errors: List<ValidationError> -> String =
   errors
   | List.map formatSingleError
   | String.join "; "
 
-fn formatSingleError error :ValidationError -> String = match error {
+fn formatSingleError error: ValidationError -> String = match error {
   Required field -> field ++ " is required"
   InvalidFormat field -> field ++ " has invalid format"
   OutOfRange field min max -> field ++ " must be between " ++ toString min ++ " and " ++ toString max
@@ -2208,12 +2208,12 @@ fn formatSingleError error :ValidationError -> String = match error {
 type Result<T, E> = Ok T | Error E
 
 // Eitherとの相互変換
-fn fromEither either :Either<E, T> -> Result<T, E> = match either {
+fn fromEither either: Either<E, T> -> Result<T, E> = match either {
   Left e -> Error e
   Right t -> Ok t
 }
 
-fn toEither result :Result<T, E> -> Either<E, T> = match result {
+fn toEither result: Result<T, E> -> Either<E, T> = match result {
   Ok t -> Right t
   Error e -> Left e
 }
@@ -2226,7 +2226,7 @@ type IOError =
   | PermissionDenied String
   | NetworkError String
 
-effectful fn safeReadFile path :String -> IO<Result<String, IOError>> = do {
+effectful fn safeReadFile path: String -> IO<Result<String, IOError>> = do {
   try {
     content <- readFile path
     return (Ok content)
@@ -2238,7 +2238,7 @@ effectful fn safeReadFile path :String -> IO<Result<String, IOError>> = do {
 }
 
 // エラーハンドリングのパターン
-effectful fn processFile path :String -> IO<Unit> = do {
+effectful fn processFile path: String -> IO<Unit> = do {
   result <- safeReadFile path
   match result {
     Ok content -> {
@@ -2271,19 +2271,19 @@ export type LogEntry {
   module: String
 }
 
-effectful export fn log :LogLevel -> String -> IO<Unit>
-effectful export fn debug :String -> IO<Unit> = log Debug
-effectful export fn info :String -> IO<Unit> = log Info
-effectful export fn warning :String -> IO<Unit> = log Warning
-effectful export fn error :String -> IO<Unit> = log Error
+effectful export fn log: LogLevel -> String -> IO<Unit>
+effectful export fn debug: String -> IO<Unit> = log Debug
+effectful export fn info: String -> IO<Unit> = log Info
+effectful export fn warning: String -> IO<Unit> = log Warning
+effectful export fn error: String -> IO<Unit> = log Error
 
 // 条件付きログ
-effectful export fn logWhen :Bool -> LogLevel -> String -> IO<Unit> =
+effectful export fn logWhen: Bool -> LogLevel -> String -> IO<Unit> =
   \condition level message ->
     if condition then log level message else IO.pure ()
 
 // デバッグビルドでのみ有効
-effectful export fn debugLog :String -> IO<Unit> =
+effectful export fn debugLog: String -> IO<Unit> =
   when BuildConfig.isDebug (debug message)
 ```
 
@@ -2292,7 +2292,7 @@ effectful export fn debugLog :String -> IO<Unit> =
 module Debug.Assert
 
 // 開発時のアサーション（プロダクションでは無効化）
-fn assert condition :Bool -> message :String -> Unit =
+fn assert condition: Bool -> message: String -> Unit =
   when BuildConfig.isDebug {
     if not condition then
       panic ("Assertion failed: " ++ message)
@@ -2300,11 +2300,11 @@ fn assert condition :Bool -> message :String -> Unit =
       ()
   }
 
-fn assertEq<T: Eq<T>> expected :T -> actual :T -> String -> Unit =
+fn assertEq<T: Eq<T>> expected: T -> actual: T -> String -> Unit =
   assert (expected == actual) ("Expected " ++ show expected ++ ", got " ++ show actual)
 
 // 使用例
-fn safeDivide x :Float -> y :Float -> Float =
+fn safeDivide x: Float -> y: Float -> Float =
   assert (y != 0.0) "Division by zero"
   x / y
 ```

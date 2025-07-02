@@ -1,10 +1,8 @@
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from "node:fs"
+import * as path from "node:path"
 import { Parser } from "../parser.js"
 import { generateTypeScript } from "../codegen.js"
-import { TypeChecker } from "../typechecker.js"
 import { TypeInferenceSystem } from "../type-inference.js"
-import { Lexer } from "../lexer.js"
 
 export interface CompileOptions {
   input: string
@@ -53,9 +51,7 @@ async function compile(options: CompileOptions): Promise<void> {
       console.error(error.message)
       console.error("") // Empty line for readability
     }
-    throw new Error(
-      `Parsing failed with ${parseResult.errors.length} error(s)`
-    )
+    throw new Error(`Parsing failed with ${parseResult.errors.length} error(s)`)
   }
 
   const ast = { statements: parseResult.statements }

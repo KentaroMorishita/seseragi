@@ -1,6 +1,6 @@
 import {
-  Statement,
-  Expression,
+  type Statement,
+  type Expression,
   ExpressionStatement,
   FunctionDeclaration,
   VariableDeclaration,
@@ -37,7 +37,7 @@ import {
   ListComprehension,
   ListComprehensionSugar,
   Generator,
-  Type,
+  type Type,
   FunctionType,
   PrimitiveType,
   GenericType,
@@ -49,9 +49,9 @@ import {
   StructExpression,
   StructType,
   ImplBlock,
-  MethodDeclaration,
-  OperatorDeclaration,
-  MonoidDeclaration,
+  type MethodDeclaration,
+  type OperatorDeclaration,
+  type MonoidDeclaration,
 } from "./ast"
 import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
 
@@ -65,8 +65,8 @@ export interface CodeGenOptions {
   useArrowFunctions?: boolean
   generateComments?: boolean
   runtimeMode?: "embedded" | "import" | "minimal"
-  filePath?: string  // ファイルパス（ハッシュ生成用）
-  typeInferenceResult?: any  // 型推論結果
+  filePath?: string // ファイルパス（ハッシュ生成用）
+  typeInferenceResult?: any // 型推論結果
 }
 
 const defaultOptions: CodeGenOptions = {
@@ -91,10 +91,10 @@ export class CodeGenerator {
   usageAnalysis?: UsageAnalysis
   wildcardCounter: number
   filePrefix: string
-  currentStructContext: string | null = null  // 現在処理中の構造体名
-  structMethods: Map<string, Set<string>> = new Map()  // 構造体名 → メソッド名のセット
-  structOperators: Map<string, Set<string>> = new Map()  // 構造体名 → 演算子のセット
-  typeInferenceResult: any = null  // 型推論結果
+  currentStructContext: string | null = null // 現在処理中の構造体名
+  structMethods: Map<string, Set<string>> = new Map() // 構造体名 → メソッド名のセット
+  structOperators: Map<string, Set<string>> = new Map() // 構造体名 → 演算子のセット
+  typeInferenceResult: any = null // 型推論結果
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -110,7 +110,7 @@ export class CodeGenerator {
     let hash = 0
     for (let i = 0; i < filePath.length; i++) {
       const char = filePath.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash = hash & hash // Convert to 32-bit integer
     }
     return `f${Math.abs(hash).toString(36).slice(0, 6)}`
@@ -142,20 +142,29 @@ export class CodeGenerator {
 
     // 演算子ディスパッチを使用しているかどうかを判定
     const usesOperatorDispatch = this.checkUsesOperatorDispatch(statements)
-    
+
     // BinaryOperationがある場合は常にディスパッチテーブルを生成（安全のため）
     const hasBinaryOperations = this.hasBinaryOperations(statements)
-    
+
     // 構造体を使用している場合、または演算子ディスパッチを使用している場合はディスパッチテーブルを生成
-    const hasStructs = statements.some(stmt => 
-      stmt instanceof StructDeclaration || 
-      stmt instanceof ImplBlock ||
-      (stmt instanceof ExpressionStatement && stmt.expression instanceof StructExpression)
+    const hasStructs = statements.some(
+      (stmt) =>
+        stmt instanceof StructDeclaration ||
+        stmt instanceof ImplBlock ||
+        (stmt instanceof ExpressionStatement &&
+          stmt.expression instanceof StructExpression)
     )
-    
-    // __dispatchOperatorが使用される可能性がある場合は常に生成
-    const needsDispatchTables = true // 暫定的に常に生成
-    
+
+    // __dispatchOperatorが使用される可能性がある場合のみ生成
+    // 構造体があるか、二項演算があるか、演算子ディスパッチが使用されている場合に生成
+    // 安全のため、`__dispatchOperator`の使用がある場合は常に生成
+    const hasDispatchOperatorUsage = this.hasDispatchOperatorUsage(statements)
+    const needsDispatchTables =
+      hasStructs ||
+      hasBinaryOperations ||
+      usesOperatorDispatch ||
+      hasDispatchOperatorUsage
+
     if (needsDispatchTables) {
       lines.push(this.generateDispatchTables())
       lines.push("")
@@ -199,7 +208,9 @@ export class CodeGenerator {
       lines.push("// Initialize dispatch tables immediately")
       lines.push("(() => {")
       const initCode = this.generateDispatchTableInitialization()
-      lines.push(...initCode.split("\n").map(line => line ? `  ${line}` : line))
+      lines.push(
+        ...initCode.split("\n").map((line) => (line ? `  ${line}` : line))
+      )
       lines.push("})();")
       lines.push("")
     }
@@ -317,9 +328,15 @@ export class CodeGenerator {
       )
     }
     if (this.usageAnalysis.needsList) {
-      lines.push("type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };")
+      lines.push(
+        "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };"
+      )
     }
-    if (this.usageAnalysis.needsMaybe || this.usageAnalysis.needsEither || this.usageAnalysis.needsList) {
+    if (
+      this.usageAnalysis.needsMaybe ||
+      this.usageAnalysis.needsEither ||
+      this.usageAnalysis.needsList
+    ) {
       lines.push("")
     }
 
@@ -375,19 +392,17 @@ export class CodeGenerator {
       lines.push("  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;")
       lines.push("};")
       lines.push("")
-      
-      lines.push(
-        "const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {"
-      )
+
+      lines.push("const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {")
       lines.push("  return fa.map(f);")
       lines.push("};")
       lines.push("")
-      
-      lines.push(
-        "const mapList = <T, U>(fa: any, f: (a: T) => U): any => {"
-      )
+
+      lines.push("const mapList = <T, U>(fa: any, f: (a: T) => U): any => {")
       lines.push("  if (fa.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push("  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };")
+      lines.push(
+        "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };"
+      )
       lines.push("};")
       lines.push("")
     }
@@ -395,10 +410,12 @@ export class CodeGenerator {
       lines.push(
         "const applyMaybe = <T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> => {"
       )
-      lines.push("  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;")
+      lines.push(
+        "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;"
+      )
       lines.push("};")
       lines.push("")
-      
+
       lines.push(
         "const applyArray = <T, U>(ff: ((a: T) => U)[], fa: T[]): U[] => {"
       )
@@ -411,22 +428,20 @@ export class CodeGenerator {
       lines.push("  return result;")
       lines.push("};")
       lines.push("")
-      
-      lines.push(
-        "const applyList = <T, U>(ff: any, fa: any): any => {"
-      )
+
+      lines.push("const applyList = <T, U>(ff: any, fa: any): any => {")
       lines.push("  if (ff.tag === 'Empty') return { tag: 'Empty' };")
       lines.push("  const mappedValues = mapList(fa, ff.head);")
       lines.push("  const restApplied = applyList(ff.tail, fa);")
       lines.push("  return concatList(mappedValues, restApplied);")
       lines.push("};")
       lines.push("")
-      
-      lines.push(
-        "const concatList = <T>(list1: any, list2: any): any => {"
-      )
+
+      lines.push("const concatList = <T>(list1: any, list2: any): any => {")
       lines.push("  if (list1.tag === 'Empty') return list2;")
-      lines.push("  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };")
+      lines.push(
+        "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };"
+      )
       lines.push("};")
       lines.push("")
     }
@@ -437,7 +452,7 @@ export class CodeGenerator {
       lines.push("  return ma.tag === 'Just' ? f(ma.value) : Nothing;")
       lines.push("};")
       lines.push("")
-      
+
       lines.push(
         "const bindArray = <T, U>(ma: T[], f: (value: T) => U[]): U[] => {"
       )
@@ -448,7 +463,7 @@ export class CodeGenerator {
       lines.push("  return result;")
       lines.push("};")
       lines.push("")
-      
+
       lines.push(
         "const bindList = <T, U>(ma: any, f: (value: T) => any): any => {"
       )
@@ -690,7 +705,10 @@ const show = (value) => {
   console.log(prettyFormat(value))
 };`)
     }
-    if (this.usageAnalysis.needsBuiltins.arrayToList || this.usageAnalysis.needsBuiltins.listToArray) {
+    if (
+      this.usageAnalysis.needsBuiltins.arrayToList ||
+      this.usageAnalysis.needsBuiltins.listToArray
+    ) {
       lines.push("")
       if (this.usageAnalysis.needsBuiltins.arrayToList) {
         lines.push("const arrayToList = curry(<T>(arr: T[]): List<T> => {")
@@ -1027,45 +1045,62 @@ const show = (value) => {
 
     if (typeDecl.fields && typeDecl.fields.length > 0) {
       // Check if this is a union type (ADT) or struct type
-      const isUnionType = typeDecl.fields.some(f => 
-        f.type instanceof PrimitiveType && f.type.name === "Unit" ||
-        f.type instanceof GenericType && f.type.name === "Tuple"
+      const isUnionType = typeDecl.fields.some(
+        (f) =>
+          (f.type instanceof PrimitiveType && f.type.name === "Unit") ||
+          (f.type instanceof GenericType && f.type.name === "Tuple")
       )
 
       if (isUnionType) {
         // Union type (ADT) - generate TypeScript discriminated union
-        const variants = typeDecl.fields.map(field => {
-          if (field.type instanceof PrimitiveType && field.type.name === "Unit") {
-            // Simple variant without data
-            return `{ type: '${field.name}' }`
-          } else if (field.type instanceof GenericType && field.type.name === "Tuple") {
-            // Variant with associated data
-            const dataTypes = field.type.typeArguments
-              .map((t, i) => `data${i}: ${this.generateType(t)}`)
-              .join(', ')
-            return `{ type: '${field.name}', ${dataTypes} }`
-          } else {
-            // Fallback
-            return `{ type: '${field.name}', data: ${this.generateType(field.type)} }`
-          }
-        }).join(' | ')
+        const variants = typeDecl.fields
+          .map((field) => {
+            if (
+              field.type instanceof PrimitiveType &&
+              field.type.name === "Unit"
+            ) {
+              // Simple variant without data
+              return `{ type: '${field.name}' }`
+            } else if (
+              field.type instanceof GenericType &&
+              field.type.name === "Tuple"
+            ) {
+              // Variant with associated data
+              const dataTypes = field.type.typeArguments
+                .map((t, i) => `data${i}: ${this.generateType(t)}`)
+                .join(", ")
+              return `{ type: '${field.name}', ${dataTypes} }`
+            } else {
+              // Fallback
+              return `{ type: '${field.name}', data: ${this.generateType(field.type)} }`
+            }
+          })
+          .join(" | ")
 
         // Also generate constructor functions
-        const constructors = typeDecl.fields.map(field => {
-          if (field.type instanceof PrimitiveType && field.type.name === "Unit") {
-            return `${indent}const ${field.name} = { type: '${field.name}' as const };`
-          } else if (field.type instanceof GenericType && field.type.name === "Tuple") {
-            const params = field.type.typeArguments
-              .map((t, i) => `data${i}: ${this.generateType(t)}`)
-              .join(', ')
-            const dataFields = field.type.typeArguments
-              .map((_, i) => `data${i}`)
-              .join(', ')
-            return `${indent}const ${field.name} = (${params}) => ({ type: '${field.name}' as const, ${dataFields} });`
-          } else {
-            return `${indent}const ${field.name} = (data: ${this.generateType(field.type)}) => ({ type: '${field.name}' as const, data });`
-          }
-        }).join('\n')
+        const constructors = typeDecl.fields
+          .map((field) => {
+            if (
+              field.type instanceof PrimitiveType &&
+              field.type.name === "Unit"
+            ) {
+              return `${indent}const ${field.name} = { type: '${field.name}' as const };`
+            } else if (
+              field.type instanceof GenericType &&
+              field.type.name === "Tuple"
+            ) {
+              const params = field.type.typeArguments
+                .map((t, i) => `data${i}: ${this.generateType(t)}`)
+                .join(", ")
+              const dataFields = field.type.typeArguments
+                .map((_, i) => `data${i}`)
+                .join(", ")
+              return `${indent}const ${field.name} = (${params}) => ({ type: '${field.name}' as const, ${dataFields} });`
+            } else {
+              return `${indent}const ${field.name} = (data: ${this.generateType(field.type)}) => ({ type: '${field.name}' as const, data });`
+            }
+          })
+          .join("\n")
 
         return `${indent}type ${typeDecl.name} = ${variants};\n\n${constructors}`
       } else {
@@ -1095,7 +1130,7 @@ const show = (value) => {
     const fields = structDecl.fields
       .map((f) => `public ${f.name}: ${this.generateType(f.type)}`)
       .join(", ")
-    
+
     return `${indent}class ${structDecl.name} {\n${indent}  constructor(${fields}) {}\n${indent}}`
   }
 
@@ -1175,17 +1210,23 @@ const show = (value) => {
   // 構造体のメソッド・演算子ディスパッチテーブルを生成
   generateDispatchTables(): string {
     const lines: string[] = []
-    
+
     lines.push("// Struct method and operator dispatch tables")
-    
+
     // 空のディスパッチテーブルを先に定義
-    lines.push("let __structMethods: Record<string, Record<string, Function>> = {};")
-    lines.push("let __structOperators: Record<string, Record<string, Function>> = {};")
+    lines.push(
+      "let __structMethods: Record<string, Record<string, Function>> = {};"
+    )
+    lines.push(
+      "let __structOperators: Record<string, Record<string, Function>> = {};"
+    )
     lines.push("")
-    
+
     // ディスパッチヘルパー関数を定義
     lines.push("// Method dispatch helper")
-    lines.push("function __dispatchMethod(obj: any, methodName: string, ...args: any[]): any {")
+    lines.push(
+      "function __dispatchMethod(obj: any, methodName: string, ...args: any[]): any {"
+    )
     lines.push("  // 構造体のフィールドアクセスの場合は直接返す")
     lines.push("  if (args.length === 0 && obj.hasOwnProperty(methodName)) {")
     lines.push("    return obj[methodName];")
@@ -1195,12 +1236,16 @@ const show = (value) => {
     lines.push("  if (structMethods && structMethods[methodName]) {")
     lines.push("    return structMethods[methodName](obj, ...args);")
     lines.push("  }")
-    lines.push("  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);")
+    lines.push(
+      "  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);"
+    )
     lines.push("}")
     lines.push("")
-    
+
     lines.push("// Operator dispatch helper")
-    lines.push("function __dispatchOperator(left: any, operator: string, right: any): any {")
+    lines.push(
+      "function __dispatchOperator(left: any, operator: string, right: any): any {"
+    )
     lines.push("  const structName = left.constructor.name;")
     lines.push("  const structOperators = __structOperators[structName];")
     lines.push("  if (structOperators && structOperators[operator]) {")
@@ -1225,45 +1270,49 @@ const show = (value) => {
     lines.push("  }")
     lines.push("}")
     lines.push("")
-    
+
     return lines.join("\n")
   }
 
   // ディスパッチテーブル初期化コードを生成
   generateDispatchTableInitialization(): string {
     const lines: string[] = []
-    
+
     // メソッドディスパッチテーブル初期化
     if (this.structMethods.size > 0) {
       lines.push("// Initialize method dispatch table")
       lines.push("__structMethods = {")
       for (const [structName, methods] of this.structMethods) {
-        const methodEntries = Array.from(methods).map(methodName => {
-          const funcName = `__ssrg_${structName}_${this.filePrefix}_${methodName}`
-          return `    "${methodName}": ${funcName}`
-        }).join(",\n")
+        const methodEntries = Array.from(methods)
+          .map((methodName) => {
+            const funcName = `__ssrg_${structName}_${this.filePrefix}_${methodName}`
+            return `    "${methodName}": ${funcName}`
+          })
+          .join(",\n")
         lines.push(`  "${structName}": {\n${methodEntries}\n  },`)
       }
       lines.push("};")
       lines.push("")
     }
-    
+
     // 演算子ディスパッチテーブル初期化
     if (this.structOperators.size > 0) {
       lines.push("// Initialize operator dispatch table")
       lines.push("__structOperators = {")
       for (const [structName, operators] of this.structOperators) {
-        const operatorEntries = Array.from(operators).map(op => {
-          const opMethodName = this.operatorToMethodName(op)
-          const funcName = `__ssrg_${structName}_${this.filePrefix}_op_${opMethodName}`
-          return `    "${op}": ${funcName}`
-        }).join(",\n")
+        const operatorEntries = Array.from(operators)
+          .map((op) => {
+            const opMethodName = this.operatorToMethodName(op)
+            const funcName = `__ssrg_${structName}_${this.filePrefix}_op_${opMethodName}`
+            return `    "${op}": ${funcName}`
+          })
+          .join(",\n")
         lines.push(`  "${structName}": {\n${operatorEntries}\n  },`)
       }
       lines.push("};")
       lines.push("")
     }
-    
+
     return lines.join("\n")
   }
 
@@ -1275,11 +1324,13 @@ const show = (value) => {
       .join(", ")
     const returnType = this.generateType(method.returnType)
     const body = this.generateExpression(method.body)
-    
+
     // 構造体名とファイルハッシュベースの一意な名前を生成
-    const structPrefix = this.currentStructContext ? `${this.currentStructContext}_` : ""
+    const structPrefix = this.currentStructContext
+      ? `${this.currentStructContext}_`
+      : ""
     const methodName = `__ssrg_${structPrefix}${this.filePrefix}_${method.name}`
-    
+
     return `${indent}function ${methodName}(${params}): ${returnType} {
 ${indent}  return ${body};
 ${indent}}`
@@ -1293,12 +1344,14 @@ ${indent}}`
       .join(", ")
     const returnType = this.generateType(operator.returnType)
     const body = this.generateExpression(operator.body)
-    
+
     // 演算子名を安全な識別子に変換
     const opMethodName = this.operatorToMethodName(operator.operator)
-    const structPrefix = this.currentStructContext ? `${this.currentStructContext}_` : ""
+    const structPrefix = this.currentStructContext
+      ? `${this.currentStructContext}_`
+      : ""
     const operatorName = `__ssrg_${structPrefix}${this.filePrefix}_op_${opMethodName}`
-    
+
     return `${indent}function ${operatorName}(${params}): ${returnType} {
 ${indent}  return ${body};
 ${indent}}`
@@ -1308,7 +1361,7 @@ ${indent}}`
   private operatorToMethodName(op: string): string {
     const opMap: Record<string, string> = {
       "+": "add",
-      "-": "sub", 
+      "-": "sub",
       "*": "mul",
       "/": "div",
       "%": "mod",
@@ -1320,20 +1373,22 @@ ${indent}}`
       ">=": "ge",
       "&&": "and",
       "||": "or",
-      "!": "not"
+      "!": "not",
     }
-    return opMap[op] || op.replace(/[^a-zA-Z0-9]/g, '_')
+    return opMap[op] || op.replace(/[^a-zA-Z0-9]/g, "_")
   }
 
   // モノイド宣言の生成
   generateMonoidDeclaration(monoid: MonoidDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
     const lines: string[] = []
-    
+
     lines.push(`${indent}// Monoid implementation`)
-    lines.push(`${indent}export const identity = ${this.generateExpression(monoid.identity)};`)
+    lines.push(
+      `${indent}export const identity = ${this.generateExpression(monoid.identity)};`
+    )
     lines.push(this.generateOperatorDeclaration(monoid.operator))
-    
+
     return lines.join("\n")
   }
 
@@ -1438,9 +1493,11 @@ ${indent}}`
     const rightType = this.getResolvedType(binOp.right)
 
     // 両辺がプリミティブ型の場合は直接演算子を使用
-    if (this.isBasicOperator(binOp.operator) && 
-        this.isPrimitiveType(leftType) && 
-        this.isPrimitiveType(rightType)) {
+    if (
+      this.isBasicOperator(binOp.operator) &&
+      this.isPrimitiveType(leftType) &&
+      this.isPrimitiveType(rightType)
+    ) {
       let operator = binOp.operator
       if (operator === "==") operator = "==="
       if (operator === "!=") operator = "!=="
@@ -1454,7 +1511,21 @@ ${indent}}`
   // 基本演算子かどうかをチェック
   private isBasicOperator(op: string): boolean {
     // プリミティブ型で直接使用できる演算子
-    const basicOps = ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"]
+    const basicOps = [
+      "+",
+      "-",
+      "*",
+      "/",
+      "%",
+      "==",
+      "!=",
+      "<",
+      ">",
+      "<=",
+      ">=",
+      "&&",
+      "||",
+    ]
     return basicOps.includes(op)
   }
 
@@ -1536,6 +1607,39 @@ ${indent}}`
           return true
         }
       }
+    } else if (expr instanceof LambdaExpression) {
+      // ラムダ式内の二項演算も検出
+      return this.expressionHasBinaryOperations(expr.body)
+    } else if (expr instanceof FunctorMap) {
+      // map演算子内の関数に二項演算があるかチェック
+      return this.expressionHasBinaryOperations(expr.function)
+    } else if (expr instanceof MonadBind) {
+      // bind演算子内の関数に二項演算があるかチェック
+      return this.expressionHasBinaryOperations(expr.function)
+    } else if (expr instanceof ApplicativeApply) {
+      // apply演算子内の関数に二項演算があるかチェック
+      if (this.expressionHasBinaryOperations(expr.function)) {
+        return true
+      }
+      return this.expressionHasBinaryOperations(expr.value)
+    } else if (expr instanceof FunctionApplication) {
+      // 関数適用での引数に二項演算があるかチェック
+      if (this.expressionHasBinaryOperations(expr.function)) {
+        return true
+      }
+      return this.expressionHasBinaryOperations(expr.argument)
+    }
+    return false
+  }
+
+  // __dispatchOperatorの使用があるかチェック
+  private hasDispatchOperatorUsage(statements: Statement[]): boolean {
+    // 簡単なアプローチ: 生成されるコードに __dispatchOperator が含まれるかチェック
+    for (const stmt of statements) {
+      const code = this.generateStatement(stmt)
+      if (code.includes("__dispatchOperator")) {
+        return true
+      }
     }
     return false
   }
@@ -1597,9 +1701,11 @@ ${indent}}`
   private checkExpressionUsesOperatorDispatch(expr: Expression): boolean {
     if (expr instanceof BinaryOperation) {
       // プリミティブ型同士の演算ではない場合のみ__dispatchOperatorを使用
-      if (!this.isBasicOperator(expr.operator) || 
-          !this.isPrimitiveType(expr.left.type) || 
-          !this.isPrimitiveType(expr.right.type)) {
+      if (
+        !this.isBasicOperator(expr.operator) ||
+        !this.isPrimitiveType(expr.left.type) ||
+        !this.isPrimitiveType(expr.right.type)
+      ) {
         return true
       }
     } else if (expr instanceof BlockExpression) {
@@ -1634,7 +1740,11 @@ ${indent}}`
   }
 
   // 演算子ディスパッチの生成
-  private generateOperatorDispatch(operator: string, left: string, right: string): string {
+  private generateOperatorDispatch(
+    operator: string,
+    left: string,
+    right: string
+  ): string {
     // ディスパッチテーブルを使用した演算子呼び出し
     return `__dispatchOperator(${left}, "${operator}", ${right})`
   }
@@ -1642,7 +1752,7 @@ ${indent}}`
   // 単項演算の生成
   generateUnaryOperation(unaryOp: UnaryOperation): string {
     const operand = this.generateExpression(unaryOp.operand)
-    
+
     // 演算子をそのまま使用（TypeScriptと同じ）
     return `(${unaryOp.operator}${operand})`
   }
@@ -1740,20 +1850,21 @@ ${indent}}`
     // if-else チェーンとして生成（柔軟性を向上）
     const cases = match.cases
     let result = "(() => {\n  const matchValue = " + expr + ";\n"
-    
+
     for (let i = 0; i < cases.length; i++) {
       const c = cases[i]
       const condition = this.generatePatternCondition(c.pattern, "matchValue")
       const body = this.generateExpression(c.expression)
-      
+
       if (i === 0) {
         result += `  if (${condition}) {\n    return ${body};\n  }`
       } else {
         result += ` else if (${condition}) {\n    return ${body};\n  }`
       }
     }
-    
-    result += " else {\n    throw new Error('Non-exhaustive pattern match');\n  }\n})()"
+
+    result +=
+      " else {\n    throw new Error('Non-exhaustive pattern match');\n  }\n})()"
     return result
   }
 
@@ -1762,7 +1873,7 @@ ${indent}}`
     if (!pattern) {
       return "true" // ワイルドカードパターン
     }
-    
+
     // ASTパターンの種類に基づいて処理
     switch (pattern.kind) {
       case "LiteralPattern":
@@ -1771,29 +1882,30 @@ ${indent}}`
         } else {
           return `${valueVar} === ${pattern.value}`
         }
-      
+
       case "IdentifierPattern":
         if (pattern.name === "_") {
           return "true" // ワイルドカードパターン
         }
         // 変数にバインドする場合（常に true）
         return "true"
-      
+
       case "ConstructorPattern":
         // ADTコンストラクタパターン
         return `${valueVar}.type === '${pattern.constructorName}'`
-      
-      case "TuplePattern":
+
+      case "TuplePattern": {
         // タプルパターン
         const tupleConditions = pattern.patterns.map((subPattern, i) => {
           return this.generatePatternCondition(subPattern, `${valueVar}[${i}]`)
         })
         return tupleConditions.join(" && ")
-      
+      }
+
       case "WildcardPattern":
         // ワイルドカードパターン
         return "true"
-      
+
       default:
         // 後方互換性のための古い形式をチェック
         if (pattern.value !== undefined) {
@@ -1803,18 +1915,18 @@ ${indent}}`
             return `${valueVar} === ${pattern.value}`
           }
         }
-        
+
         if (pattern.name) {
           if (pattern.name === "_") {
             return "true"
           }
           return "true"
         }
-        
+
         if (pattern.constructor) {
           return `${valueVar}.type === '${pattern.constructor}'`
         }
-        
+
         return `${valueVar} === ${JSON.stringify(pattern.toString())}`
     }
   }
@@ -1976,7 +2088,7 @@ ${indent}}`
         case "Unit":
           return "void"
         case "_":
-          return "any"  // Placeholder type for inference
+          return "any" // Placeholder type for inference
         default:
           return type.name
       }
@@ -2083,7 +2195,7 @@ ${indent}}`
       return "{}"
     }
 
-    const fields = record.fields.map(field => {
+    const fields = record.fields.map((field) => {
       const value = this.generateExpression(field.value)
       return `${field.name}: ${value}`
     })
@@ -2103,7 +2215,7 @@ ${indent}}`
       return "[]"
     }
 
-    const elements = arrayLiteral.elements.map(element => 
+    const elements = arrayLiteral.elements.map((element) =>
       this.generateExpression(element)
     )
 
@@ -2144,7 +2256,7 @@ ${indent}}`
   generateRangeLiteral(range: RangeLiteral): string {
     const start = this.generateExpression(range.start)
     const end = this.generateExpression(range.end)
-    
+
     if (range.inclusive) {
       // 1..=5 -> Array.from({length: 5 - 1 + 1}, (_, i) => i + 1)
       return `Array.from({length: ${end} - ${start} + 1}, (_, i) => i + ${start})`
@@ -2156,23 +2268,23 @@ ${indent}}`
 
   // リスト内包表記の生成
   generateListComprehension(comp: ListComprehension): string {
-    // [x * 2 | x <- range, x % 2 == 0] -> 
+    // [x * 2 | x <- range, x % 2 == 0] ->
     // range.filter(x => x % 2 == 0).map(x => x * 2)
-    
+
     let result = ""
-    
+
     // 最初のジェネレータから開始
     if (comp.generators.length > 0) {
       const firstGenerator = comp.generators[0]
       result = this.generateExpression(firstGenerator.iterable)
-      
+
       // 追加のジェネレータがある場合はflatMapを使用
       for (let i = 1; i < comp.generators.length; i++) {
         const generator = comp.generators[i]
         const iterable = this.generateExpression(generator.iterable)
         result = `${result}.flatMap(${firstGenerator.variable} => ${iterable}.map(${generator.variable} => [${firstGenerator.variable}, ${generator.variable}]))`
       }
-      
+
       // フィルタを適用
       for (const filter of comp.filters) {
         const filterExpr = this.generateExpression(filter)
@@ -2182,24 +2294,24 @@ ${indent}}`
         } else {
           // 複数ジェネレータの場合は複雑になるので簡略化
           result = `${result}.filter(tuple => {
-            const [${comp.generators.map(g => g.variable).join(', ')}] = tuple;
+            const [${comp.generators.map((g) => g.variable).join(", ")}] = tuple;
             return ${filterExpr};
           })`
         }
       }
-      
+
       // 最終的な式をマップ
       const expression = this.generateExpression(comp.expression)
       if (comp.generators.length === 1) {
         result = `${result}.map(${comp.generators[0].variable} => ${expression})`
       } else {
         result = `${result}.map(tuple => {
-          const [${comp.generators.map(g => g.variable).join(', ')}] = tuple;
+          const [${comp.generators.map((g) => g.variable).join(", ")}] = tuple;
           return ${expression};
         })`
       }
     }
-    
+
     return result || "[]"
   }
 
@@ -2207,19 +2319,19 @@ ${indent}}`
   generateListComprehensionSugar(comp: ListComprehensionSugar): string {
     // まず通常の配列内包表記を生成
     let arrayResult = ""
-    
+
     // 最初のジェネレータから開始
     if (comp.generators.length > 0) {
       const firstGenerator = comp.generators[0]
       arrayResult = this.generateExpression(firstGenerator.iterable)
-      
+
       // 追加のジェネレータがある場合はflatMapを使用
       for (let i = 1; i < comp.generators.length; i++) {
         const generator = comp.generators[i]
         const iterable = this.generateExpression(generator.iterable)
         arrayResult = `${arrayResult}.flatMap(${firstGenerator.variable} => ${iterable}.map(${generator.variable} => [${firstGenerator.variable}, ${generator.variable}]))`
       }
-      
+
       // フィルタを適用
       for (const filter of comp.filters) {
         const filterExpr = this.generateExpression(filter)
@@ -2229,28 +2341,28 @@ ${indent}}`
         } else {
           // 複数ジェネレータの場合は複雑になるので簡略化
           arrayResult = `${arrayResult}.filter(tuple => {
-            const [${comp.generators.map(g => g.variable).join(', ')}] = tuple;
+            const [${comp.generators.map((g) => g.variable).join(", ")}] = tuple;
             return ${filterExpr};
           })`
         }
       }
-      
+
       // 最終的な式をマップ
       const expression = this.generateExpression(comp.expression)
       if (comp.generators.length === 1) {
         arrayResult = `${arrayResult}.map(${comp.generators[0].variable} => ${expression})`
       } else {
         arrayResult = `${arrayResult}.map(tuple => {
-          const [${comp.generators.map(g => g.variable).join(', ')}] = tuple;
+          const [${comp.generators.map((g) => g.variable).join(", ")}] = tuple;
           return ${expression};
         })`
       }
     }
-    
+
     if (!arrayResult) {
       return "Empty"
     }
-    
+
     // 配列をSeseragiリストに変換
     return `arrayToList(${arrayResult})`
   }
@@ -2275,7 +2387,7 @@ ${indent}}`
   generateMethodCall(call: MethodCall): string {
     const receiver = this.generateExpression(call.receiver)
     const args = call.arguments.map((arg) => this.generateExpression(arg))
-    
+
     // ディスパッチテーブルを使用したメソッド呼び出し
     const allArgs = args.length === 0 ? "" : `, ${args.join(", ")}`
     return `__dispatchMethod(${receiver}, "${call.methodName}"${allArgs})`
@@ -2291,7 +2403,7 @@ ${indent}}`
   // タプルパターンから変数名を抽出
   private extractTuplePatternVars(pattern: any): string[] {
     const vars: string[] = []
-    
+
     for (const subPattern of pattern.patterns) {
       if (subPattern.kind === "IdentifierPattern") {
         if (subPattern.name === "_") {
@@ -2308,7 +2420,7 @@ ${indent}}`
         vars.push("/* complex pattern */")
       }
     }
-    
+
     return vars
   }
 }

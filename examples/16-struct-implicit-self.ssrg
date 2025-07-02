@@ -1,22 +1,63 @@
-// 暗黙的self型付けのデモ（実装完了！）
-// この構文が正常に動作します
+// 暗黙的self型付けと複数行ブロック構文のデモ（実装完了！）
+// ワンライナー（=）とブロック構文（{}）の両方をサポート
 
 struct Point {
-  x :Int,
-  y :Int
+  x: Int,
+  y: Int
 }
 
 impl Point {
-  fn distanceSquared self -> other :Point -> Int =
-    (other.x - self.x) * (other.x - self.x) + (other.y - self.y) * (other.y - self.y)
+  // 複雑な計算はブロック構文で記述
+  fn distanceSquared self -> other: Point -> Int {
+    let deltaX = other.x - self.x
+    let deltaY = other.y - self.y
+    let xSquared = deltaX * deltaX
+    let ySquared = deltaY * deltaY
+    xSquared + ySquared
+  }
 
-  fn magnitude self -> Int = self.x * self.x + self.y * self.y
+  // 単純な計算はワンライナーで記述
+  fn magnitude1 self -> Int = self.x * self.x + self.y * self.y
+  fn magnitude2 self -> Int = self magnitude1()
 
-  fn add self -> other :Point -> Point =
-    Point { x: self.x + other.x, y: self.y + other.y }
+  // ブロック構文で詳細な処理を記述
+  fn add self -> other: Point -> Point {
+    let newX = self.x + other.x
+    let newY = self.y + other.y
+    Point { x: newX, y: newY }
+  }
+
+  // 複数の処理ステップを含む関数
+  fn scale self -> factor: Int -> Point {
+    let scaledX = self.x * factor
+    let scaledY = self.y * factor
+    Point { x: scaledX, y: scaledY }
+  }
+
+  // 演算子オーバーロードもブロック構文で
+  operator + self -> other: Point -> Point {
+    let resultX = self.x + other.x
+    let resultY = self.y + other.y
+    Point { x: resultX, y: resultY }
+  }
+
+  // 単純な演算子はワンライナーで
+  operator - self -> other: Point -> Point =
+    Point { x: self.x - other.x, y: self.y - other.y }
 }
 
 let p1 = Point { x: 1, y: 2 }
 let p2 = Point { x: 4, y: 6 }
+
 show p1
 show p2
+show (p1 add p2)
+show (p1 + p2)
+show (p1 - p2)
+show (p1 scale 3)
+show (p1 distanceSquared p2)
+
+// 括弧付きメソッド呼び出し（引数なしメソッド用）
+show (p1 magnitude1())
+show (p2 magnitude2())
+

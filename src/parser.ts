@@ -74,12 +74,12 @@ export class Parser {
 
   private synchronize(): void {
     this.advance()
-    
+
     while (!this.isAtEnd()) {
       if (this.previous().type === TokenType.NEWLINE) {
         return
       }
-      
+
       switch (this.peek().type) {
         case TokenType.FN:
         case TokenType.LET:
@@ -89,7 +89,7 @@ export class Parser {
         case TokenType.IMPORT:
           return
       }
-      
+
       this.advance()
     }
   }
@@ -193,7 +193,7 @@ export class Parser {
   }
 
   private parseFunctionSignature(
-    parameters: AST.Parameter[], 
+    parameters: AST.Parameter[],
     implContext?: string
   ): AST.Type {
     // Check for immediate arrow (no parameters case: "fn name -> Type")
@@ -234,19 +234,23 @@ export class Parser {
         } else {
           // Untyped parameter
           const paramName = this.advance().value
-          
+
           // 暗黙的selfの検出：implコンテキスト内で最初のパラメータが'self'の場合
-          const isImplicitSelf = implContext && paramName === "self" && parameters.length === 0
-          
+          const isImplicitSelf =
+            implContext && paramName === "self" && parameters.length === 0
+
           if (isImplicitSelf) {
             // 暗黙的selfパラメータ：型は後でimplコンテキストから解決される
             parameters.push(
               new AST.Parameter(
                 paramName,
-                this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
+                this.freshTypeVariable(
+                  paramNameToken.line,
+                  paramNameToken.column
+                ),
                 paramNameToken.line,
                 paramNameToken.column,
-                true  // isImplicitSelf = true
+                true // isImplicitSelf = true
               )
             )
           } else {
@@ -254,13 +258,16 @@ export class Parser {
             parameters.push(
               new AST.Parameter(
                 paramName,
-                this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
+                this.freshTypeVariable(
+                  paramNameToken.line,
+                  paramNameToken.column
+                ),
                 paramNameToken.line,
                 paramNameToken.column
               )
             )
           }
-          
+
           // 型なしパラメータの後に'->'がある場合は消費（次のパラメータまたは戻り値型）
           if (this.check(TokenType.ARROW)) {
             this.advance() // consume ->
@@ -288,51 +295,54 @@ export class Parser {
     // Look ahead to see what comes after this identifier
     let lookahead = this.current + 1
     let genericDepth = 0
-    
+
     // Skip the current identifier and any generic type arguments
     while (lookahead < this.tokens.length) {
       const tokenType = this.tokens[lookahead].type
-      
+
       // Track generic type depth
       if (tokenType === TokenType.LESS_THAN) {
         genericDepth++
         lookahead++
         continue
       }
-      
+
       if (tokenType === TokenType.GREATER_THAN) {
         genericDepth--
         lookahead++
         continue
       }
-      
+
       // If we're inside a generic type, skip all tokens including identifiers
       if (genericDepth > 0) {
         lookahead++
         continue
       }
-      
+
       // If we find '=' or '{' after this identifier:
-      // - In typed functions (e.g., "fn add a :Int -> b :Int -> Int = ..."), 
+      // - In typed functions (e.g., "fn add a :Int -> b :Int -> Int = ..."),
       //   this identifier is a return type
-      // - In untyped functions (e.g., "fn add x y = ..."), 
+      // - In untyped functions (e.g., "fn add x y = ..."),
       //   this identifier is a parameter name
-      if (tokenType === TokenType.ASSIGN || tokenType === TokenType.LEFT_BRACE) {
+      if (
+        tokenType === TokenType.ASSIGN ||
+        tokenType === TokenType.LEFT_BRACE
+      ) {
         return hasTypedParameters
       }
-      
+
       // If we find '->' after this identifier, this is NOT a return type
       // (it's a parameter type, and the return type comes later)
       if (tokenType === TokenType.ARROW) {
         return false
       }
-      
+
       // If we find another identifier outside of generics without encountering anything definitive,
       // this is likely a parameter name, not a return type
       if (tokenType === TokenType.IDENTIFIER) {
         return false
       }
-      
+
       lookahead++
     }
 
@@ -345,24 +355,24 @@ export class Parser {
     // Check if this is a union type (type Name = A | B | C), type alias (type Name = Type), or struct type (type Name { field: Type })
     if (this.match(TokenType.ASSIGN)) {
       this.skipNewlines() // Allow newlines after '='
-      
+
       // Look ahead to determine if this is a type alias or union type
       // Save current position to backtrack if needed
       const savedPosition = this.current
-      
+
       // Try to parse the first part and look for a pipe separator
       let isTypeAlias = true
       try {
         // Skip leading newlines/whitespace
         this.skipNewlines()
-        
+
         // Check for function type parentheses
         if (this.check(TokenType.LEFT_PAREN)) {
           // Function type like (Int -> Bool) - always a type alias
           isTypeAlias = true
         } else if (this.check(TokenType.IDENTIFIER)) {
           this.advance() // consume the identifier
-          
+
           // Parse any type arguments (e.g., Maybe<String>)
           if (this.match(TokenType.LESS_THAN)) {
             // Skip the generic arguments to look for pipes later
@@ -376,10 +386,10 @@ export class Parser {
               this.advance()
             }
           }
-          
+
           // Parse any additional type arguments for constructor variants
           this.parseVariantDataTypes()
-          
+
           // Skip whitespace and check for pipe
           this.skipNewlines()
           if (this.check(TokenType.PIPE)) {
@@ -393,14 +403,19 @@ export class Parser {
         // If parsing fails, assume it's a complex type alias
         isTypeAlias = true
       }
-      
+
       // Restore position
       this.current = savedPosition
-      
+
       if (isTypeAlias) {
         // Type alias: type UserId = Int
         const aliasedType = this.parseType()
-        return new AST.TypeAliasDeclaration(name, aliasedType, this.previous().line, this.previous().column)
+        return new AST.TypeAliasDeclaration(
+          name,
+          aliasedType,
+          this.previous().line,
+          this.previous().column
+        )
       } else {
         // Union type: type Color = Red | Green | Blue
         return this.parseUnionType(name)
@@ -421,16 +436,28 @@ export class Parser {
     }
 
     // Parse first variant
-    const firstVariant = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
-    
+    const firstVariant = this.consume(
+      TokenType.IDENTIFIER,
+      "Expected variant name"
+    ).value
+
     // Check if variant has associated data types
     const firstVariantTypes = this.parseVariantDataTypes()
     variants.push(
       new AST.TypeField(
         firstVariant,
-        firstVariantTypes.length > 0 
-          ? new AST.GenericType("Tuple", firstVariantTypes, this.previous().line, this.previous().column)
-          : new AST.PrimitiveType("Unit", this.previous().line, this.previous().column),
+        firstVariantTypes.length > 0
+          ? new AST.GenericType(
+              "Tuple",
+              firstVariantTypes,
+              this.previous().line,
+              this.previous().column
+            )
+          : new AST.PrimitiveType(
+              "Unit",
+              this.previous().line,
+              this.previous().column
+            ),
         this.previous().line,
         this.previous().column
       )
@@ -441,16 +468,28 @@ export class Parser {
       this.skipNewlines()
       if (this.match(TokenType.PIPE)) {
         this.skipNewlines()
-        const variantName = this.consume(TokenType.IDENTIFIER, "Expected variant name").value
-        
+        const variantName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected variant name"
+        ).value
+
         // Check if variant has associated data types
         const variantTypes = this.parseVariantDataTypes()
         variants.push(
           new AST.TypeField(
             variantName,
-            variantTypes.length > 0 
-              ? new AST.GenericType("Tuple", variantTypes, this.previous().line, this.previous().column)
-              : new AST.PrimitiveType("Unit", this.previous().line, this.previous().column),
+            variantTypes.length > 0
+              ? new AST.GenericType(
+                  "Tuple",
+                  variantTypes,
+                  this.previous().line,
+                  this.previous().column
+                )
+              : new AST.PrimitiveType(
+                  "Unit",
+                  this.previous().line,
+                  this.previous().column
+                ),
             this.previous().line,
             this.previous().column
           )
@@ -470,12 +509,12 @@ export class Parser {
 
   private parseVariantDataTypes(): AST.Type[] {
     const types: AST.Type[] = []
-    
+
     // Parse type parameters for constructor variants (RGB Int Int Int)
     while (this.check(TokenType.IDENTIFIER) && this.isTypeIdentifier()) {
       types.push(this.parseType())
     }
-    
+
     return types
   }
 
@@ -489,39 +528,56 @@ export class Parser {
       name === "Bool" ||
       name === "Unit" ||
       name === "Char" ||
-      (name[0] === name[0].toUpperCase() && name !== this.tokens[this.current + 1]?.value)
+      (name[0] === name[0].toUpperCase() &&
+        name !== this.tokens[this.current + 1]?.value)
     )
   }
 
   private structDeclaration(): AST.StructDeclaration {
     const structToken = this.previous()
-    const name = this.consume(TokenType.IDENTIFIER, "Expected struct name").value
-    
+    const name = this.consume(
+      TokenType.IDENTIFIER,
+      "Expected struct name"
+    ).value
+
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after struct name")
     this.skipNewlines()
-    
+
     const fields: AST.RecordField[] = []
-    
+
     // Parse fields
     while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-      const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
+      const fieldName = this.consume(
+        TokenType.IDENTIFIER,
+        "Expected field name"
+      ).value
       this.consume(TokenType.COLON, "Expected ':' after field name")
       const fieldType = this.parseType()
-      
-      fields.push(new AST.RecordField(fieldName, fieldType, this.previous().line, this.previous().column))
-      
+
+      fields.push(
+        new AST.RecordField(
+          fieldName,
+          fieldType,
+          this.previous().line,
+          this.previous().column
+        )
+      )
+
       // Check for comma or newline
       if (this.match(TokenType.COMMA)) {
         this.skipNewlines()
       } else if (this.check(TokenType.NEWLINE)) {
         this.skipNewlines()
       } else if (!this.check(TokenType.RIGHT_BRACE)) {
-        throw new ParseError("Expected ',' or newline after struct field", this.peek())
+        throw new ParseError(
+          "Expected ',' or newline after struct field",
+          this.peek()
+        )
       }
     }
-    
+
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after struct fields")
-    
+
     return new AST.StructDeclaration(
       name,
       fields,
@@ -558,11 +614,9 @@ export class Parser {
       if (this.check(TokenType.COMMA)) {
         this.advance()
       }
-      
+
       // Skip newlines after comma or field
-      while (this.match(TokenType.NEWLINE)) {
-        continue
-      }
+      while (this.match(TokenType.NEWLINE)) {}
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after type fields")
@@ -594,7 +648,8 @@ export class Parser {
     const methodSet = this.methodRegistry.get(typeName)!
 
     while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-      if (this.match(TokenType.NEWLINE) || this.match(TokenType.COMMENT)) continue
+      if (this.match(TokenType.NEWLINE) || this.match(TokenType.COMMENT))
+        continue
 
       if (this.match(TokenType.FN)) {
         const method = this.methodDeclaration(typeName)
@@ -634,9 +689,21 @@ export class Parser {
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
-    this.consume(TokenType.ASSIGN, "Expected '=' after method signature")
-    this.skipNewlines()
-    const body = this.expression()
+    let body: AST.Expression
+
+    if (this.match(TokenType.ASSIGN)) {
+      // ワンライナー形式: fn name params = expression
+      this.skipNewlines()
+      body = this.expression()
+    } else if (this.match(TokenType.LEFT_BRACE)) {
+      // ブロック形式: fn name params { statements }
+      body = this.blockExpression()
+    } else {
+      throw new ParseError(
+        "Expected '=' or '{' after method signature",
+        this.peek()
+      )
+    }
 
     return new AST.MethodDeclaration(
       name,
@@ -653,11 +720,25 @@ export class Parser {
     // Check if current token is a valid operator
     const current = this.peek()
     let operator: string
-    
+
     // Valid operator tokens
-    if (this.match(TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO,
-                   TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.LESS_THAN, TokenType.GREATER_THAN,
-                   TokenType.LESS_EQUAL, TokenType.GREATER_EQUAL, TokenType.AND, TokenType.OR)) {
+    if (
+      this.match(
+        TokenType.PLUS,
+        TokenType.MINUS,
+        TokenType.MULTIPLY,
+        TokenType.DIVIDE,
+        TokenType.MODULO,
+        TokenType.EQUAL,
+        TokenType.NOT_EQUAL,
+        TokenType.LESS_THAN,
+        TokenType.GREATER_THAN,
+        TokenType.LESS_EQUAL,
+        TokenType.GREATER_EQUAL,
+        TokenType.AND,
+        TokenType.OR
+      )
+    ) {
       operator = this.previous().value
     } else {
       throw new ParseError(`Invalid operator: ${current.value}`, current)
@@ -666,9 +747,21 @@ export class Parser {
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters, implTypeName)
 
-    this.consume(TokenType.ASSIGN, "Expected '=' after operator signature")
-    this.skipNewlines()
-    const body = this.expression()
+    let body: AST.Expression
+
+    if (this.match(TokenType.ASSIGN)) {
+      // ワンライナー形式: operator + params = expression
+      this.skipNewlines()
+      body = this.expression()
+    } else if (this.match(TokenType.LEFT_BRACE)) {
+      // ブロック形式: operator + params { statements }
+      body = this.blockExpression()
+    } else {
+      throw new ParseError(
+        "Expected '=' or '{' after operator signature",
+        this.peek()
+      )
+    }
 
     return new AST.OperatorDeclaration(
       operator,
@@ -751,11 +844,11 @@ export class Parser {
     if (this.check(TokenType.LEFT_PAREN)) {
       // Tuple destructuring: let (x, y) = tuple
       const pattern = this.pattern() as AST.TuplePattern
-      
+
       this.consume(TokenType.ASSIGN, "Expected '=' after tuple pattern")
       this.skipNewlines()
       const initializer = this.expression()
-      
+
       return new AST.TupleDestructuring(pattern, initializer, line, column)
     } else {
       // Regular variable declaration: let x = value
@@ -773,13 +866,7 @@ export class Parser {
       this.skipNewlines()
       const initializer = this.expression()
 
-      return new AST.VariableDeclaration(
-        name,
-        initializer,
-        type,
-        line,
-        column
-      )
+      return new AST.VariableDeclaration(name, initializer, type, line, column)
     }
   }
 
@@ -803,30 +890,33 @@ export class Parser {
       const token = this.advance() // consume '('
       const line = token.line
       const column = token.column
-      
+
       const firstType = this.parseType()
-      
+
       // Check if this is a tuple type (has comma) or function type (has arrow)
       if (this.match(TokenType.COMMA)) {
         // Tuple type (Type1, Type2, Type3)
         const elementTypes = [firstType]
-        
+
         do {
           elementTypes.push(this.parseType())
         } while (this.match(TokenType.COMMA))
-        
+
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after tuple type")
-        
+
         if (elementTypes.length < 2) {
-          throw new ParseError("Tuple types must have at least 2 elements", this.previous())
+          throw new ParseError(
+            "Tuple types must have at least 2 elements",
+            this.previous()
+          )
         }
-        
+
         return new AST.TupleType(elementTypes, line, column)
       } else if (this.match(TokenType.ARROW)) {
         // Function type (Param -> Return)
         const returnType = this.parseType()
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after function type")
-        
+
         return new AST.FunctionType(firstType, returnType, line, column)
       } else {
         // Single type in parentheses
@@ -1006,11 +1096,14 @@ export class Parser {
     if (this.match(TokenType.QUESTION)) {
       const startLine = this.previous().line
       const startColumn = this.previous().column
-      
+
       // cons演算子（:）との競合を避けるため、rangeExpressionレベルで解析
       // cons演算子を使用する場合は括弧が必要: condition ? (head : tail) : []
       const trueExpr = this.rangeExpression()
-      this.consume(TokenType.COLON, "Expected ':' after true expression in ternary operator")
+      this.consume(
+        TokenType.COLON,
+        "Expected ':' after true expression in ternary operator"
+      )
       this.skipNewlines() // コロンの後の改行をスキップ
       const falseExpr = this.ternaryExpression()
 
@@ -1032,11 +1125,14 @@ export class Parser {
     if (this.match(TokenType.QUESTION)) {
       const startLine = this.previous().line
       const startColumn = this.previous().column
-      
+
       // cons演算子（:）との競合を避けるため、rangeExpressionレベルで解析
       // cons演算子を使用する場合は括弧が必要: condition ? (head : tail) : []
       const trueExpr = this.rangeExpression()
-      this.consume(TokenType.COLON, "Expected ':' after true expression in ternary operator")
+      this.consume(
+        TokenType.COLON,
+        "Expected ':' after true expression in ternary operator"
+      )
       this.skipNewlines() // コロンの後の改行をスキップ
       const falseExpr = this.ternaryExpressionWithoutPipeline()
 
@@ -1065,28 +1161,31 @@ export class Parser {
     if (this.match(TokenType.LEFT_PAREN)) {
       const line = this.previous().line
       const column = this.previous().column
-      
+
       const patterns: AST.Pattern[] = []
-      
+
       // Parse first pattern
       patterns.push(this.pattern())
-      
+
       // Must have comma for tuple pattern
       if (!this.match(TokenType.COMMA)) {
         throw new ParseError("Expected ',' in tuple pattern", this.peek())
       }
-      
+
       // Parse remaining patterns
       do {
         patterns.push(this.pattern())
       } while (this.match(TokenType.COMMA))
-      
+
       this.consume(TokenType.RIGHT_PAREN, "Expected ')' after tuple pattern")
-      
+
       if (patterns.length < 2) {
-        throw new ParseError("Tuple patterns must have at least 2 elements", this.previous())
+        throw new ParseError(
+          "Tuple patterns must have at least 2 elements",
+          this.previous()
+        )
       }
-      
+
       return new AST.TuplePattern(patterns, line, column)
     }
 
@@ -1096,12 +1195,15 @@ export class Parser {
       // Check if this is a constructor pattern by looking ahead
       // A constructor pattern has either more identifiers or is followed by ->
       const isConstructor = this.isConstructorName(name)
-      
+
       if (isConstructor && this.check(TokenType.IDENTIFIER)) {
         // Constructor pattern with arguments
         const patterns: AST.Pattern[] = []
 
-        while (this.check(TokenType.IDENTIFIER) && !this.checkAhead(TokenType.ARROW)) {
+        while (
+          this.check(TokenType.IDENTIFIER) &&
+          !this.checkAhead(TokenType.ARROW)
+        ) {
           patterns.push(this.pattern())
         }
 
@@ -1481,7 +1583,6 @@ export class Parser {
     return this.primaryExpression()
   }
 
-
   private callExpression(): AST.Expression {
     let expr = this.primaryExpression()
 
@@ -1525,28 +1626,56 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
-      } else if (this.check(TokenType.IDENTIFIER) && this.isMethodCall() && this.isActualMethodCall(expr)) {
+      } else if (
+        this.check(TokenType.IDENTIFIER) &&
+        this.isMethodCall() &&
+        this.isActualMethodCall(expr)
+      ) {
         // メソッド呼び出し構文: obj methodName arg1 arg2
         // Enhanced method call detection to avoid conflicts with function application
         const methodName = this.advance().value
         const args: AST.Expression[] = []
-        
-        // メソッドの引数を収集
-        while (this.canStartExpression() && !this.check(TokenType.NEWLINE) && !this.isAtEnd()) {
-          const arg = this.check(TokenType.NOT) 
-            ? this.parseUnaryOnly() 
-            : this.primaryExpression()
-          args.push(arg)
+
+        // 引数なしの括弧付きメソッド呼び出しをチェック: obj method()
+        if (this.check(TokenType.LEFT_PAREN)) {
+          this.advance() // consume '('
           
-          // 式の終了条件をチェック
-          if (this.check(TokenType.NEWLINE) || this.check(TokenType.SEMICOLON) || 
-              this.check(TokenType.RIGHT_PAREN) || this.check(TokenType.RIGHT_BRACE) ||
-              this.check(TokenType.COMMA) || this.check(TokenType.PIPE) ||
-              this.check(TokenType.REVERSE_PIPE) || this.check(TokenType.BIND)) {
-            break
+          if (!this.check(TokenType.RIGHT_PAREN)) {
+            // 括弧内に引数がある場合
+            do {
+              args.push(this.expression())
+            } while (this.match(TokenType.COMMA))
+          }
+          
+          this.consume(TokenType.RIGHT_PAREN, "Expected ')' after method arguments")
+        } else {
+          // メソッドの引数を収集（スペース区切り）
+          while (
+            this.canStartExpression() &&
+            !this.check(TokenType.NEWLINE) &&
+            !this.isAtEnd()
+          ) {
+            const arg = this.check(TokenType.NOT)
+              ? this.parseUnaryOnly()
+              : this.primaryExpression()
+            args.push(arg)
+
+            // 式の終了条件をチェック
+            if (
+              this.check(TokenType.NEWLINE) ||
+              this.check(TokenType.SEMICOLON) ||
+              this.check(TokenType.RIGHT_PAREN) ||
+              this.check(TokenType.RIGHT_BRACE) ||
+              this.check(TokenType.COMMA) ||
+              this.check(TokenType.PIPE) ||
+              this.check(TokenType.REVERSE_PIPE) ||
+              this.check(TokenType.BIND)
+            ) {
+              break
+            }
           }
         }
-        
+
         expr = new AST.MethodCall(
           expr,
           methodName,
@@ -1556,8 +1685,8 @@ export class Parser {
         )
       } else if (this.canStartExpression()) {
         // 括弧なし関数適用（関数型言語の標準）
-        const arg = this.check(TokenType.NOT) 
-          ? this.parseUnaryOnly() 
+        const arg = this.check(TokenType.NOT)
+          ? this.parseUnaryOnly()
           : this.primaryExpression()
         expr = new AST.FunctionApplication(
           expr,
@@ -1594,7 +1723,6 @@ export class Parser {
   }
 
   private primaryExpression(): AST.Expression {
-
     // Lambda expressions: \x -> expr or \x :Type -> expr
     if (this.match(TokenType.LAMBDA)) {
       return this.lambdaExpression()
@@ -1681,16 +1809,19 @@ export class Parser {
         if (this.check(TokenType.LEFT_BRACE)) {
           this.advance() // consume '{'
           const fields: AST.RecordInitField[] = []
-          
+
           if (!this.check(TokenType.RIGHT_BRACE)) {
             do {
               this.skipNewlines()
-              const fieldName = this.consume(TokenType.IDENTIFIER, "Expected field name").value
+              const fieldName = this.consume(
+                TokenType.IDENTIFIER,
+                "Expected field name"
+              ).value
               this.skipNewlines()
               this.consume(TokenType.COLON, "Expected ':' after field name")
               this.skipNewlines()
               const fieldValue = this.expression()
-              
+
               fields.push(
                 new AST.RecordInitField(
                   fieldName,
@@ -1702,13 +1833,16 @@ export class Parser {
               this.skipNewlines()
             } while (this.match(TokenType.COMMA))
           }
-          
+
           this.skipNewlines()
-          this.consume(TokenType.RIGHT_BRACE, "Expected '}' after struct fields")
-          
+          this.consume(
+            TokenType.RIGHT_BRACE,
+            "Expected '}' after struct fields"
+          )
+
           return new AST.StructExpression(name, fields, line, column)
         }
-        
+
         // 通常のコンストラクタ引数がある場合
         if (
           this.checkPrimaryStart() &&
@@ -1719,7 +1853,10 @@ export class Parser {
 
           // 関数呼び出し風の括弧付きの場合: Cons(1, 2)
           // ただし、Cons (expr) のような場合は除外するため、先読みして判定
-          if (this.check(TokenType.LEFT_PAREN) && this.isActualFunctionCallSyntax()) {
+          if (
+            this.check(TokenType.LEFT_PAREN) &&
+            this.isActualFunctionCallSyntax()
+          ) {
             this.advance() // consume '('
 
             if (!this.check(TokenType.RIGHT_PAREN)) {
@@ -1735,8 +1872,13 @@ export class Parser {
           } else {
             // 関数型言語風の括弧なしの場合: Cons 1 2 または Cons (expr) (expr)
             let argCount = 0
-            const maxArgs = name === "Cons" ? 2 : (name === "Just" || name === "Left" || name === "Right" ? 1 : 0)
-            
+            const maxArgs =
+              name === "Cons"
+                ? 2
+                : name === "Just" || name === "Left" || name === "Right"
+                  ? 1
+                  : 0
+
             while (
               argCount < maxArgs &&
               this.checkPrimaryStart() &&
@@ -1772,33 +1914,36 @@ export class Parser {
     if (this.match(TokenType.LEFT_PAREN)) {
       const line = this.previous().line
       const column = this.previous().column
-      
+
       // Check for empty tuple () - not allowed in our design
       if (this.check(TokenType.RIGHT_PAREN)) {
         throw new ParseError("Empty tuples are not supported", this.peek())
       }
-      
+
       const firstExpr = this.expression()
-      
+
       // Check if this is a tuple (has comma)
       if (this.match(TokenType.COMMA)) {
         const elements = [firstExpr]
-        
+
         // Parse remaining tuple elements
         do {
           elements.push(this.expression())
         } while (this.match(TokenType.COMMA))
-        
+
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after tuple elements")
-        
+
         // Enforce minimum 2 elements for tuples
         if (elements.length < 2) {
-          throw new ParseError("Tuples must have at least 2 elements", this.previous())
+          throw new ParseError(
+            "Tuples must have at least 2 elements",
+            this.previous()
+          )
         }
-        
+
         return new AST.TupleExpression(elements, line, column)
       }
-      
+
       // Single expression in parentheses
       this.consume(TokenType.RIGHT_PAREN, "Expected ')' after expression")
       return firstExpr
@@ -1827,7 +1972,7 @@ export class Parser {
 
       // Regular array literal
       const elements: AST.Expression[] = [firstExpr]
-      
+
       while (this.match(TokenType.COMMA)) {
         this.skipNewlines()
         elements.push(this.expression())
@@ -1844,7 +1989,7 @@ export class Parser {
       const column = this.previous().column
 
       this.consume(TokenType.LEFT_BRACKET, "Expected '[' after '`'")
-      
+
       if (this.check(TokenType.RIGHT_BRACKET)) {
         // Empty list `[]
         this.advance()
@@ -1871,7 +2016,7 @@ export class Parser {
 
       // Regular list literal
       const elements: AST.Expression[] = [firstExpr]
-      
+
       while (this.match(TokenType.COMMA)) {
         this.skipNewlines()
         elements.push(this.expression())
@@ -2027,7 +2172,7 @@ export class Parser {
 
     try {
       this.advance() // consume '('
-      
+
       // 空の括弧の場合は関数呼び出し
       if (this.check(TokenType.RIGHT_PAREN)) {
         return true
@@ -2039,7 +2184,6 @@ export class Parser {
       // コンマがあれば関数呼び出し、なければ単なる括弧付き式
       const hasComma = this.check(TokenType.COMMA)
       return hasComma
-
     } catch {
       // パースエラーの場合は関数呼び出しと仮定
       return true
@@ -2052,10 +2196,10 @@ export class Parser {
   private skipExpression(): void {
     // 簡単な式のスキップ（完全ではないが、このコンテキストでは十分）
     let depth = 0
-    
+
     while (!this.isAtEnd()) {
       const token = this.peek()
-      
+
       if (token.type === TokenType.LEFT_PAREN) {
         depth++
       } else if (token.type === TokenType.RIGHT_PAREN) {
@@ -2064,11 +2208,10 @@ export class Parser {
       } else if (depth === 0 && token.type === TokenType.COMMA) {
         break
       }
-      
+
       this.advance()
     }
   }
-
 
   private blockExpression(): AST.BlockExpression {
     const statements: AST.Statement[] = []
@@ -2178,15 +2321,19 @@ export class Parser {
   private checkAhead(type: TokenType): boolean {
     // Look ahead to the next token without consuming
     let lookahead = this.current
-    
+
     // Skip whitespace and newlines
-    while (lookahead < this.tokens.length && 
-           (this.tokens[lookahead].type === TokenType.NEWLINE || 
-            this.tokens[lookahead].type === TokenType.WHITESPACE)) {
+    while (
+      lookahead < this.tokens.length &&
+      (this.tokens[lookahead].type === TokenType.NEWLINE ||
+        this.tokens[lookahead].type === TokenType.WHITESPACE)
+    ) {
       lookahead++
     }
-    
-    return lookahead < this.tokens.length && this.tokens[lookahead].type === type
+
+    return (
+      lookahead < this.tokens.length && this.tokens[lookahead].type === type
+    )
   }
 
   private parseListComprehension(
@@ -2206,15 +2353,23 @@ export class Parser {
       if (this.check(TokenType.IDENTIFIER)) {
         // Look ahead to see if there's a GENERATOR token
         let lookahead = this.current + 1
-        while (lookahead < this.tokens.length && 
-               (this.tokens[lookahead].type === TokenType.NEWLINE || 
-                this.tokens[lookahead].type === TokenType.WHITESPACE)) {
+        while (
+          lookahead < this.tokens.length &&
+          (this.tokens[lookahead].type === TokenType.NEWLINE ||
+            this.tokens[lookahead].type === TokenType.WHITESPACE)
+        ) {
           lookahead++
         }
-        
-        if (lookahead < this.tokens.length && this.tokens[lookahead].type === TokenType.GENERATOR) {
+
+        if (
+          lookahead < this.tokens.length &&
+          this.tokens[lookahead].type === TokenType.GENERATOR
+        ) {
           // Generator: x <- range
-          const variable = this.consume(TokenType.IDENTIFIER, "Expected variable name").value
+          const variable = this.consume(
+            TokenType.IDENTIFIER,
+            "Expected variable name"
+          ).value
           this.consume(TokenType.GENERATOR, "Expected '<-' in generator")
           const iterable = this.expression()
 
@@ -2233,29 +2388,38 @@ export class Parser {
       this.skipNewlines()
     } while (this.match(TokenType.COMMA))
 
-    this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list comprehension")
+    this.consume(
+      TokenType.RIGHT_BRACKET,
+      "Expected ']' after list comprehension"
+    )
 
-    return new AST.ListComprehension(expression, generators, filters, line, column)
+    return new AST.ListComprehension(
+      expression,
+      generators,
+      filters,
+      line,
+      column
+    )
   }
 
   // メソッド呼び出しかどうかを判定
   private isMethodCall(): boolean {
     // 現在の位置を保存
     const savedPosition = this.current
-    
+
     // 次のトークンがIDENTIFIERかチェック
     if (!this.check(TokenType.IDENTIFIER)) {
       return false
     }
-    
+
     this.advance()
-    
+
     // その後に式が続くかチェック
     const hasArgument = this.canStartExpression()
-    
+
     // 位置を復元
     this.current = savedPosition
-    
+
     return hasArgument
   }
 
@@ -2265,9 +2429,9 @@ export class Parser {
     if (!this.check(TokenType.IDENTIFIER)) {
       return false
     }
-    
+
     const methodName = this.peek().value
-    
+
     // Check if this method name exists in any registered impl block
     for (const methodSet of this.methodRegistry.values()) {
       if (methodSet.has(methodName)) {
@@ -2276,7 +2440,7 @@ export class Parser {
         return true
       }
     }
-    
+
     // If the method name is not registered, treat as function application
     return false
   }
@@ -2284,6 +2448,6 @@ export class Parser {
 
 // Convenience function for parsing
 export function parse(tokens: Token[]): ParseResult {
-  const parser = new Parser(tokens);
-  return parser.parse();
+  const parser = new Parser(tokens)
+  return parser.parse()
 }

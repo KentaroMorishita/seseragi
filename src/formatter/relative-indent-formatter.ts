@@ -42,7 +42,7 @@ function calculateIndentLevel(
 ): number {
   // レコード閉じ括弧の直後でトップレベル要素の場合
   if (isTopLevelElement(line) && isAfterRecordClose(index, allLines)) {
-    return 0  // トップレベルに戻る
+    return 0 // トップレベルに戻る
   }
 
   // match式のケース行はmatch式の開き括弧から+1レベル（2スペース）
@@ -62,18 +62,17 @@ function calculateIndentLevel(
   // 要素タイプに応じた相対インデントを追加
   const relativeIndent = getRelativeIndent(line, index, allLines)
 
-
   return contextLevel + relativeIndent
 }
 
 function isAfterRecordClose(index: number, allLines: string[]): boolean {
   if (index === 0) return false
-  
+
   // 前の非空行を探す
   for (let i = index - 1; i >= 0; i--) {
     const prevLine = allLines[i].trim()
     if (prevLine === "" || prevLine.startsWith("//")) continue
-    
+
     // 単独の閉じ括弧の後
     if (prevLine === "}") {
       // その閉じ括弧がレコードの終了かチェック
@@ -81,24 +80,24 @@ function isAfterRecordClose(index: number, allLines: string[]): boolean {
       for (let j = 0; j <= i; j++) {
         const line = allLines[j].trim()
         if (line === "" || line.startsWith("//")) continue
-        
+
         for (const char of line) {
-          if (char === '{') {
+          if (char === "{") {
             openBraces++
-          } else if (char === '}') {
+          } else if (char === "}") {
             openBraces = Math.max(0, openBraces - 1)
           }
         }
       }
-      
+
       // 閉じ括弧で括弧が全て閉じた場合
       return openBraces === 0
     }
-    
+
     // 閉じ括弧以外の行があったら、閉じ括弧直後ではない
     return false
   }
-  
+
   return false
 }
 
@@ -110,14 +109,14 @@ function isTopLevelElement(line: string): boolean {
     line.startsWith("impl ") ||
     line.startsWith("monoid ") ||
     line.startsWith("effectful ") ||
-    line.startsWith("show ")  // show文もトップレベル要素として扱う
+    line.startsWith("show ") // show文もトップレベル要素として扱う
   )
 }
 
 function getMatchContextLevel(index: number, allLines: string[]): number {
   // match式の開始行のコンテキストレベルを計算
   // match式の{による増加は含まない
-  
+
   let level = 0
   let matchStartIndex = -1
 
@@ -178,26 +177,26 @@ function countBracesInLine(line: string): number {
 
   for (let i = 0; i < line.length; i++) {
     const char = line[i]
-    
+
     if (escapeNext) {
       escapeNext = false
       continue
     }
-    
-    if (char === '\\') {
+
+    if (char === "\\") {
       escapeNext = true
       continue
     }
-    
+
     if (char === '"') {
       inString = !inString
       continue
     }
-    
+
     if (!inString) {
-      if (char === '{') {
+      if (char === "{") {
         braceCount++
-      } else if (char === '}') {
+      } else if (char === "}") {
         braceCount--
       }
     }
@@ -218,9 +217,13 @@ function getRelativeIndent(
 
   // 新しい実装では基本的に相対インデントは0
   // getCurrentContextLevel が既に正しいインデントレベルを返す
-  
+
   // モナド演算子で始まる行（>>=, <*>, <$>）
-  if (line.startsWith(">>=") || line.startsWith("<*>") || line.startsWith("<$>")) {
+  if (
+    line.startsWith(">>=") ||
+    line.startsWith("<*>") ||
+    line.startsWith("<$>")
+  ) {
     return 1 // 親から +2スペース
   }
 
@@ -268,8 +271,6 @@ function getRelativeIndent(
   return 0
 }
 
-
-
 function isArrowContinuation(index: number, allLines: string[]): boolean {
   if (index === 0) return false
 
@@ -281,9 +282,12 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
   if (index === 0) return false
 
   const currentLine = allLines[index].trim()
-  
+
   // match式のケース行は式の継続ではない（別途処理される）
-  if (currentLine.includes(" -> ") && isMatchCase(currentLine, index, allLines)) {
+  if (
+    currentLine.includes(" -> ") &&
+    isMatchCase(currentLine, index, allLines)
+  ) {
     return false
   }
 
@@ -308,7 +312,11 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
       let hasMatchCase = false
       for (let j = i + 1; j < index; j++) {
         const checkLine = allLines[j].trim()
-        if (checkLine !== "" && !checkLine.startsWith("//") && checkLine.includes(" -> ")) {
+        if (
+          checkLine !== "" &&
+          !checkLine.startsWith("//") &&
+          checkLine.includes(" -> ")
+        ) {
           hasMatchCase = true
           break
         }
@@ -373,9 +381,9 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/(?<![<>=-])\s*<\s*(?![=*$])/g, " < ")
       .replace(/(?<![><=-])\s*>\s*(?![=>])/g, " > ")
       // 代入演算子 =（==, >=, <=, >>=, != でない場合のみ）
-      .replace(/(?<![\!<>=>])\s*=\s*(?!=)/g, " = ")
+      .replace(/(?<![!<>=>])\s*=\s*(?!=)/g, " = ")
       // 加算演算子 +
-      .replace(/(?<=[^\+])\s*\+\s*(?=[^\+=])/g, " + ")
+      .replace(/(?<=[^+])\s*\+\s*(?=[^+=])/g, " + ")
       // 乗算演算子 * (<*> でない場合のみ)
       .replace(/(?<![<])\s*\*\s*(?![>])/g, " * ")
       // 除算演算子 / （コメント // でない場合のみ）
@@ -399,11 +407,7 @@ export function normalizeOperatorSpacing(code: string): string {
 }
 
 // match式のケース行かどうかを判定
-function isMatchCase(
-  line: string,
-  index: number,
-  allLines: string[]
-): boolean {
+function isMatchCase(line: string, index: number, allLines: string[]): boolean {
   // パターン -> 式 の形式をチェック
   if (!line.includes(" -> ")) {
     return false
@@ -414,19 +418,19 @@ function isMatchCase(
   for (let i = 0; i < index; i++) {
     const prevLine = allLines[i].trim()
     if (prevLine === "" || prevLine.startsWith("//")) continue
-    
+
     // match式の開始を検出
     if (prevLine.includes("match ") && prevLine.includes("{")) {
       matchDepth++
     }
-    
+
     // ブロックの終了を検出
     const braceChange = countBracesInLine(prevLine)
     if (braceChange < 0 && matchDepth > 0) {
       matchDepth += braceChange
     }
   }
-  
+
   return matchDepth > 0
 }
 
@@ -439,37 +443,40 @@ function isTernaryContinuation(
   // 直近の関数定義から三項演算子の文脈にいるかチェック
   let inTernaryContext = false
   let functionStart = -1
-  
+
   // 関数定義の開始を探す
   for (let i = index - 1; i >= 0; i--) {
     const prevLine = allLines[i].trim()
     if (prevLine === "" || prevLine.startsWith("//")) continue
-    
+
     if (prevLine.startsWith("fn ") && prevLine.endsWith(" =")) {
       functionStart = i
       break
     }
-    
+
     // 他のトップレベル要素が見つかったら終了
-    if (prevLine.startsWith("let ") || prevLine.startsWith("type ") || 
-        prevLine.startsWith("show ")) {
+    if (
+      prevLine.startsWith("let ") ||
+      prevLine.startsWith("type ") ||
+      prevLine.startsWith("show ")
+    ) {
       return false
     }
   }
-  
+
   if (functionStart === -1) return false
-  
+
   // 関数定義以降で ? が見つかるかチェック
   for (let i = functionStart; i < index; i++) {
     const checkLine = allLines[i].trim()
     if (checkLine === "" || checkLine.startsWith("//")) continue
-    
+
     if (checkLine.includes("?")) {
       inTernaryContext = true
       break
     }
   }
-  
+
   // 三項演算子のコンテキストにいて、
   // 現在の行が : を含むか、または三項演算子の最終部分（toString x等）
   if (inTernaryContext) {
@@ -477,7 +484,7 @@ function isTernaryContinuation(
     if (line.includes(":") && !line.includes("->") && !line.includes("::")) {
       return true
     }
-    
+
     // 前の行が : で終わる場合の最終表現
     if (index > 0) {
       const prevLine = allLines[index - 1].trim()
@@ -486,6 +493,6 @@ function isTernaryContinuation(
       }
     }
   }
-  
+
   return false
 }

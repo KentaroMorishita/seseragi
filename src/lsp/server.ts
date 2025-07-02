@@ -1,23 +1,23 @@
 import {
   createConnection,
   TextDocuments,
-  Diagnostic,
+  type Diagnostic,
   DiagnosticSeverity,
   ProposedFeatures,
-  InitializeParams,
+  type InitializeParams,
   DidChangeConfigurationNotification,
-  CompletionItem,
+  type CompletionItem,
   CompletionItemKind,
-  TextDocumentPositionParams,
+  type TextDocumentPositionParams,
   TextDocumentSyncKind,
-  InitializeResult,
-  Hover,
+  type InitializeResult,
+  type Hover,
   MarkupKind,
-  DocumentFormattingParams,
-  TextEdit,
-  DefinitionParams,
-  Definition,
-  Location,
+  type DocumentFormattingParams,
+  type TextEdit,
+  type DefinitionParams,
+  type Definition,
+  type Location,
 } from "vscode-languageserver/node"
 
 import { TextDocument } from "vscode-languageserver-textdocument"
@@ -238,7 +238,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
       // Log the full error for debugging
       connection.console.log(`Parser error: ${error.message}`)
       connection.console.log(`Error stack: ${error.stack}`)
-      
+
       // Try to extract position information from error message if available
       const posMatch = error.message.match(/line (\d+), column (\d+)/)
       if (posMatch) {
@@ -471,7 +471,7 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
     // Parse the document
     const parser = new Parser(text)
     const ast = parser.parse()
-    
+
     // Debug: log AST structure
     connection.console.log(`=== LSP AST DEBUG ===`)
     connection.console.log(`Parsed AST: ${JSON.stringify(ast, null, 2)}`)
@@ -509,22 +509,32 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
   try {
     // Cache AST for struct definition lookup
     cachedAST = ast
-    
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(ast)
-    connection.console.log(`[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`)
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`
+    )
     if (result.errors.length > 0) {
-      connection.console.log(`Type inference errors: ${JSON.stringify(result.errors, null, 2)}`)
+      connection.console.log(
+        `Type inference errors: ${JSON.stringify(result.errors, null, 2)}`
+      )
     }
     const typeInfo = getTypeInfoWithInference(ast, wordAtPosition, result)
     if (typeInfo) {
-      connection.console.log(`[SESERAGI LSP DEBUG] Returning type info: ${typeInfo}`)
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Returning type info: ${typeInfo}`
+      )
       return typeInfo
     } else {
-      connection.console.log(`[SESERAGI LSP DEBUG] No type info found from inference`)
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] No type info found from inference`
+      )
     }
   } catch (error) {
-    connection.console.log(`[SESERAGI LSP DEBUG] Type inference failed: ${error}`)
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Type inference failed: ${error}`
+    )
     // Fall back to basic type info if type inference fails
   }
 
@@ -623,7 +633,7 @@ function findSymbolWithType(
 // Format type information for hover display
 function formatTypeInfo(symbol: string, info: any): string {
   switch (info.type) {
-    case "function":
+    case "function": {
       const params =
         info.parameters
           ?.map((p: any) => {
@@ -636,10 +646,12 @@ function formatTypeInfo(symbol: string, info: any): string {
       const effectful = info.isEffectful ? "effectful " : ""
 
       return `\`\`\`seseragi\n${effectful}fn ${symbol}(${params}) -> ${returnType}\n\`\`\``
+    }
 
-    case "variable":
+    case "variable": {
       const varType = formatTypeForDisplay(info.varType)
       return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\``
+    }
 
     case "type":
       return `\`\`\`seseragi\ntype ${symbol}\n\`\`\`\n\nUser-defined type`
@@ -675,7 +687,8 @@ function formatTypeForDisplay(type: any): string {
   }
 
   if (type.kind === "TupleType") {
-    const elementTypes = type.elementTypes?.map(formatTypeForDisplay).join(", ") || ""
+    const elementTypes =
+      type.elementTypes?.map(formatTypeForDisplay).join(", ") || ""
     return `(${elementTypes})`
   }
 
@@ -832,23 +845,29 @@ function findSymbolWithEnhancedInference(
 
     if (statement.kind === "VariableDeclaration" && statement.name === symbol) {
       // Debug: log all tracked types for this variable
-      connection.console.log(`=== LSP DEBUG: Looking for variable ${symbol} ===`)
+      connection.console.log(
+        `=== LSP DEBUG: Looking for variable ${symbol} ===`
+      )
       connection.console.log(
         `Statement type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement)}`
       )
       connection.console.log(
         `Initializer type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement.initializer)}`
       )
-      
+
       // Log the actual type from nodeTypeMap
       const nodeType = inferenceResult.nodeTypeMap.get(statement)
       if (nodeType) {
-        connection.console.log(`NodeTypeMap type for statement: ${JSON.stringify(nodeType, null, 2)}`)
+        connection.console.log(
+          `NodeTypeMap type for statement: ${JSON.stringify(nodeType, null, 2)}`
+        )
       }
-      
+
       const initType = inferenceResult.nodeTypeMap.get(statement.initializer)
       if (initType) {
-        connection.console.log(`NodeTypeMap type for initializer: ${JSON.stringify(initType, null, 2)}`)
+        connection.console.log(
+          `NodeTypeMap type for initializer: ${JSON.stringify(initType, null, 2)}`
+        )
       }
 
       // Special handling for MonadBind expressions
@@ -902,9 +921,13 @@ function findSymbolWithEnhancedInference(
           `Applied substitution: ${JSON.stringify(originalType, null, 2)} -> ${JSON.stringify(finalType, null, 2)}`
         )
       }
-      
-      connection.console.log(`=== FINAL TYPE FOR ${symbol}: ${JSON.stringify(finalType, null, 2)} ===`)
-      connection.console.log(`=== FORMATTED TYPE STRING: ${formatInferredTypeForDisplay(finalType)} ===`)
+
+      connection.console.log(
+        `=== FINAL TYPE FOR ${symbol}: ${JSON.stringify(finalType, null, 2)} ===`
+      )
+      connection.console.log(
+        `=== FORMATTED TYPE STRING: ${formatInferredTypeForDisplay(finalType)} ===`
+      )
 
       return {
         type: "variable",
@@ -915,9 +938,12 @@ function findSymbolWithEnhancedInference(
     }
 
     // Handle type alias declarations
-    if (statement.kind === "TypeAliasDeclaration" && statement.name === symbol) {
+    if (
+      statement.kind === "TypeAliasDeclaration" &&
+      statement.name === symbol
+    ) {
       connection.console.log(`=== LSP DEBUG: Found type alias ${symbol} ===`)
-      
+
       // Apply substitution to the aliased type if available
       let aliasedType = statement.aliasedType
       if (
@@ -931,9 +957,11 @@ function findSymbolWithEnhancedInference(
           `Applied substitution to type alias: ${JSON.stringify(originalType, null, 2)} -> ${JSON.stringify(aliasedType, null, 2)}`
         )
       }
-      
-      connection.console.log(`=== TYPE ALIAS ${symbol}: ${JSON.stringify(aliasedType, null, 2)} ===`)
-      
+
+      connection.console.log(
+        `=== TYPE ALIAS ${symbol}: ${JSON.stringify(aliasedType, null, 2)} ===`
+      )
+
       return {
         type: "typealias",
         name: symbol,
@@ -945,44 +973,63 @@ function findSymbolWithEnhancedInference(
     // Handle tuple destructuring
     if (statement.kind === "TupleDestructuring") {
       const tupleDestr = statement as any // AST.TupleDestructuring
-      
+
       // Check if the symbol is one of the destructured variables
-      const foundVariable = findVariableInTuplePattern(tupleDestr.pattern, symbol)
+      const foundVariable = findVariableInTuplePattern(
+        tupleDestr.pattern,
+        symbol
+      )
       if (foundVariable) {
-        connection.console.log(`=== LSP DEBUG: Found variable ${symbol} in tuple destructuring ===`)
-        
+        connection.console.log(
+          `=== LSP DEBUG: Found variable ${symbol} in tuple destructuring ===`
+        )
+
         // Get the type of the initializer (the tuple being destructured)
         const initType = inferenceResult.nodeTypeMap.get(tupleDestr.initializer)
-        connection.console.log(`Tuple initializer type: ${JSON.stringify(initType, null, 2)}`)
-        
+        connection.console.log(
+          `Tuple initializer type: ${JSON.stringify(initType, null, 2)}`
+        )
+
         // Extract the specific element type for this variable
         let elementType = null
-        if (initType && initType.kind === "TupleType" && initType.elementTypes) {
+        if (
+          initType &&
+          initType.kind === "TupleType" &&
+          initType.elementTypes
+        ) {
           const elementIndex = foundVariable.index
           if (elementIndex < initType.elementTypes.length) {
             elementType = initType.elementTypes[elementIndex]
           }
         }
-        
+
         // Apply substitution if available
-        if (elementType && inferenceResult.substitution && inferenceResult.substitution.apply) {
+        if (
+          elementType &&
+          inferenceResult.substitution &&
+          inferenceResult.substitution.apply
+        ) {
           const originalType = elementType
           elementType = inferenceResult.substitution.apply(elementType)
           connection.console.log(
             `Applied substitution to tuple element: ${JSON.stringify(originalType, null, 2)} -> ${JSON.stringify(elementType, null, 2)}`
           )
         }
-        
-        connection.console.log(`=== FINAL TUPLE ELEMENT TYPE FOR ${symbol}: ${JSON.stringify(elementType, null, 2)} ===`)
-        connection.console.log(`=== FORMATTED TUPLE ELEMENT TYPE STRING: ${formatInferredTypeForDisplay(elementType)} ===`)
-        
+
+        connection.console.log(
+          `=== FINAL TUPLE ELEMENT TYPE FOR ${symbol}: ${JSON.stringify(elementType, null, 2)} ===`
+        )
+        connection.console.log(
+          `=== FORMATTED TUPLE ELEMENT TYPE STRING: ${formatInferredTypeForDisplay(elementType)} ===`
+        )
+
         return {
           type: "variable",
           name: symbol,
           finalType: elementType,
           hasExplicitType: false,
           isTupleElement: true,
-          tupleIndex: foundVariable.index
+          tupleIndex: foundVariable.index,
         }
       }
     }
@@ -992,18 +1039,21 @@ function findSymbolWithEnhancedInference(
 }
 
 // Helper function to find a variable in a tuple pattern
-function findVariableInTuplePattern(pattern: any, symbol: string): { index: number } | null {
+function findVariableInTuplePattern(
+  pattern: any,
+  symbol: string
+): { index: number } | null {
   if (pattern.kind !== "TuplePattern") {
     return null
   }
-  
+
   for (let i = 0; i < pattern.patterns.length; i++) {
     const subPattern = pattern.patterns[i]
-    
+
     if (subPattern.kind === "IdentifierPattern" && subPattern.name === symbol) {
       return { index: i }
     }
-    
+
     // Recursively search in nested tuple patterns
     if (subPattern.kind === "TuplePattern") {
       const found = findVariableInTuplePattern(subPattern, symbol)
@@ -1012,7 +1062,7 @@ function findVariableInTuplePattern(pattern: any, symbol: string): { index: numb
       }
     }
   }
-  
+
   return null
 }
 
@@ -1130,7 +1180,7 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
           return null
       }
 
-    case "ConstructorExpression":
+    case "ConstructorExpression": {
       // Handle Maybe and Either constructors
       const ctor = expr as any
       switch (ctor.constructorName) {
@@ -1199,6 +1249,7 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
         default:
           return null
       }
+    }
 
     case "BinaryOperation":
       // For binary operations, try to infer numeric types
@@ -1230,7 +1281,7 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
       }
       return null
 
-    case "Identifier":
+    case "Identifier": {
       // Handle constructor calls
       const name = expr.name
       if (name === "Nothing") {
@@ -1241,6 +1292,7 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
         }
       }
       return null
+    }
 
     case "RangeLiteral":
       // Range literals return Array<Int>
@@ -1254,8 +1306,12 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
     case "TupleExpression":
       // Tuple expressions return TupleType with element types
       if (expr.elements && expr.elements.length > 0) {
-        const elementTypes = expr.elements.map((element: any) => 
-          inferTypeFromExpression(element, ast) || { kind: "TypeVariable", name: "T" }
+        const elementTypes = expr.elements.map(
+          (element: any) =>
+            inferTypeFromExpression(element, ast) || {
+              kind: "TypeVariable",
+              name: "T",
+            }
         )
         return {
           kind: "TupleType",
@@ -1267,7 +1323,7 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
         elementTypes: [],
       }
 
-    case "ListComprehension":
+    case "ListComprehension": {
       // Array comprehensions return Array<T> where T is the type of the expression
       const expressionType = inferTypeFromExpression(expr.expression, ast)
       return {
@@ -1275,15 +1331,19 @@ function inferTypeFromExpression(expr: any, ast?: any): any {
         name: "Array",
         typeArguments: [expressionType || { kind: "TypeVariable", name: "T" }],
       }
+    }
 
-    case "ListComprehensionSugar":
+    case "ListComprehensionSugar": {
       // List comprehension sugar also returns List<T>
       const sugarExpressionType = inferTypeFromExpression(expr.expression, ast)
       return {
         kind: "GenericType",
         name: "List",
-        typeArguments: [sugarExpressionType || { kind: "TypeVariable", name: "T" }],
+        typeArguments: [
+          sugarExpressionType || { kind: "TypeVariable", name: "T" },
+        ],
       }
+    }
 
     case "ArrayLiteral":
       // Array literals return Array<T> where T is the type of the first element
@@ -1485,7 +1545,7 @@ function inferCurriedFunctionType(expr: any, ast?: any): any {
 // Format inferred type information for hover display
 function formatInferredTypeInfo(symbol: string, info: any): string {
   switch (info.type) {
-    case "function":
+    case "function": {
       const effectful = info.isEffectful ? "effectful " : ""
 
       // Build curried function signature from parameters
@@ -1515,20 +1575,24 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
       // For display, we don't need to show the full curried type again
       // Just show the function signature
       return `\`\`\`seseragi\n${funcSignature}\n\`\`\``
+    }
 
-    case "parameter":
+    case "parameter": {
       const paramType = formatInferredTypeForDisplay(info.finalType)
       return `\`\`\`seseragi\n${symbol}: ${paramType}\n\`\`\`\n**Type:** function parameter`
+    }
 
-    case "variable":
+    case "variable": {
       const typeAnnotation = info.hasExplicitType ? "explicit" : "inferred"
       const varType = formatInferredTypeForDisplay(info.finalType)
 
       return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\`\n**Type:** ${typeAnnotation}`
+    }
 
-    case "typealias":
+    case "typealias": {
       const aliasedType = formatInferredTypeForDisplay(info.aliasedType)
       return `\`\`\`seseragi\ntype ${symbol} = ${aliasedType}\n\`\`\`\n**Type:** type alias`
+    }
 
     default:
       return null
@@ -1547,15 +1611,24 @@ function formatInferredTypeForDisplay(type: any): string {
     // Check if this "primitive" is actually a struct
     const structInfo = findStructDefinition(type.name)
     if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
-      connection.console.log(`[DEBUG] PrimitiveType '${type.name}' is actually a struct, converting to detailed display`)
+      connection.console.log(
+        `[DEBUG] PrimitiveType '${type.name}' is actually a struct, converting to detailed display`
+      )
       // Create a RecordType-like structure for consistent formatting
       const structAsRecord = {
         kind: "RecordType",
         fields: structInfo.fields,
-        name: type.name
+        name: type.name,
       }
-      const result = formatTypeWithNestedStructures(structAsRecord, structInfo, 0, "")
-      connection.console.log(`[DEBUG] PrimitiveType->StructType formatted result: ${result}`)
+      const result = formatTypeWithNestedStructures(
+        structAsRecord,
+        structInfo,
+        0,
+        ""
+      )
+      connection.console.log(
+        `[DEBUG] PrimitiveType->StructType formatted result: ${result}`
+      )
       return result
     }
     return type.name
@@ -1596,22 +1669,33 @@ function formatInferredTypeForDisplay(type: any): string {
     // Always try to show detailed struct information
     connection.console.log(`[DEBUG] StructType detected: ${type.name}`)
     const structInfo = findStructDefinition(type.name)
-    connection.console.log(`[DEBUG] StructInfo found: ${structInfo ? 'yes' : 'no'}`)
+    connection.console.log(
+      `[DEBUG] StructInfo found: ${structInfo ? "yes" : "no"}`
+    )
     if (structInfo) {
-      connection.console.log(`[DEBUG] StructInfo fields: ${JSON.stringify(structInfo.fields)}`)
+      connection.console.log(
+        `[DEBUG] StructInfo fields: ${JSON.stringify(structInfo.fields)}`
+      )
     }
     if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
       // Create a RecordType-like structure for consistent formatting
       const structAsRecord = {
         kind: "RecordType",
         fields: structInfo.fields,
-        name: type.name
+        name: type.name,
       }
-      const result = formatTypeWithNestedStructures(structAsRecord, structInfo, 0, "")
+      const result = formatTypeWithNestedStructures(
+        structAsRecord,
+        structInfo,
+        0,
+        ""
+      )
       connection.console.log(`[DEBUG] StructType formatted result: ${result}`)
       return result
     }
-    connection.console.log(`[DEBUG] StructType returning simple name: ${type.name}`)
+    connection.console.log(
+      `[DEBUG] StructType returning simple name: ${type.name}`
+    )
     return type.name
   }
 
@@ -1623,7 +1707,8 @@ function formatInferredTypeForDisplay(type: any): string {
   }
 
   if (type.kind === "TupleType") {
-    const elementTypes = type.elementTypes?.map(formatInferredTypeForDisplay).join(", ") || ""
+    const elementTypes =
+      type.elementTypes?.map(formatInferredTypeForDisplay).join(", ") || ""
     return `(${elementTypes})`
   }
 
@@ -1634,9 +1719,9 @@ function formatInferredTypeForDisplay(type: any): string {
         const fieldType = formatInferredTypeForDisplay(field.type)
         return `${field.name}: ${fieldType}`
       })
-      
+
       // Always use single line format for structs
-      return `${structType.name} { ${fieldStrs.join(', ')} }`
+      return `${structType.name} { ${fieldStrs.join(", ")} }`
     }
     return structType.name || "Struct"
   }
@@ -1648,9 +1733,9 @@ function formatInferredTypeForDisplay(type: any): string {
         const fieldType = formatInferredTypeForDisplay(field.type)
         return `${field.name}: ${fieldType}`
       })
-      
+
       // Always use single line format for records
-      return `{ ${fieldStrs.join(', ')} }`
+      return `{ ${fieldStrs.join(", ")} }`
     }
     return "{}"
   }
@@ -1659,11 +1744,16 @@ function formatInferredTypeForDisplay(type: any): string {
 }
 
 // Format types with nested structures and proper indentation
-function formatTypeWithNestedStructures(type: any, ast: any, depth: number = 0, indent: string = ""): string {
+function formatTypeWithNestedStructures(
+  type: any,
+  ast: any,
+  depth: number = 0,
+  indent: string = ""
+): string {
   if (!type) return "unknown"
 
   switch (type.kind) {
-    case "StructType":
+    case "StructType": {
       let fields = []
       if (ast && ast.fields) {
         fields = ast.fields
@@ -1676,15 +1766,23 @@ function formatTypeWithNestedStructures(type: any, ast: any, depth: number = 0, 
 
       if (fields.length > 0) {
         const fieldStrs = fields.map((field: any) => {
-          const fieldType = formatTypeWithNestedStructures(field.type, null, depth + 1, indent + "  ")
+          const fieldType = formatTypeWithNestedStructures(
+            field.type,
+            null,
+            depth + 1,
+            indent + "  "
+          )
           return `${field.name} :${fieldType}`
         })
-        
+
         // Check if we need multiline formatting
-        const hasNestedStructures = fields.some((field: any) => 
-          field.type && (field.type.kind === "StructType" || field.type.kind === "RecordType")
+        const hasNestedStructures = fields.some(
+          (field: any) =>
+            field.type &&
+            (field.type.kind === "StructType" ||
+              field.type.kind === "RecordType")
         )
-        
+
         if (hasNestedStructures || fields.length > 3) {
           return `{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
         } else {
@@ -1692,19 +1790,28 @@ function formatTypeWithNestedStructures(type: any, ast: any, depth: number = 0, 
         }
       }
       return type.name || "{}"
+    }
 
     case "RecordType":
       if (type.fields && type.fields.length > 0) {
         const fieldStrs = type.fields.map((field: any) => {
-          const fieldType = formatTypeWithNestedStructures(field.type, null, depth + 1, indent + "  ")
+          const fieldType = formatTypeWithNestedStructures(
+            field.type,
+            null,
+            depth + 1,
+            indent + "  "
+          )
           return `${field.name} :${fieldType}`
         })
-        
+
         // Check if we need multiline formatting
-        const hasNestedStructures = type.fields.some((field: any) => 
-          field.type && (field.type.kind === "StructType" || field.type.kind === "RecordType")
+        const hasNestedStructures = type.fields.some(
+          (field: any) =>
+            field.type &&
+            (field.type.kind === "StructType" ||
+              field.type.kind === "RecordType")
         )
-        
+
         if (hasNestedStructures || type.fields.length > 3) {
           return `{\n${indent}  ${fieldStrs.join(`,\n${indent}  `)}\n${indent}}`
         } else {
@@ -1716,23 +1823,41 @@ function formatTypeWithNestedStructures(type: any, ast: any, depth: number = 0, 
     case "PrimitiveType":
       return type.name
 
-    case "FunctionType":
-      const paramType = formatTypeWithNestedStructures(type.paramType, null, depth, indent)
-      const returnType = formatTypeWithNestedStructures(type.returnType, null, depth, indent)
+    case "FunctionType": {
+      const paramType = formatTypeWithNestedStructures(
+        type.paramType,
+        null,
+        depth,
+        indent
+      )
+      const returnType = formatTypeWithNestedStructures(
+        type.returnType,
+        null,
+        depth,
+        indent
+      )
       return `(${paramType} -> ${returnType})`
+    }
 
-    case "GenericType":
+    case "GenericType": {
       const baseType = type.name
-      const typeArgs = type.typeArguments?.map((t: any) => 
-        formatTypeWithNestedStructures(t, null, depth, indent)
-      ).join(", ")
+      const typeArgs = type.typeArguments
+        ?.map((t: any) =>
+          formatTypeWithNestedStructures(t, null, depth, indent)
+        )
+        .join(", ")
       return typeArgs ? `${baseType}<${typeArgs}>` : baseType
+    }
 
-    case "TupleType":
-      const elementTypes = type.elementTypes?.map((t: any) => 
-        formatTypeWithNestedStructures(t, null, depth, indent)
-      ).join(", ") || ""
+    case "TupleType": {
+      const elementTypes =
+        type.elementTypes
+          ?.map((t: any) =>
+            formatTypeWithNestedStructures(t, null, depth, indent)
+          )
+          .join(", ") || ""
       return `(${elementTypes})`
+    }
 
     default:
       return type.name || "unknown"
@@ -1740,7 +1865,10 @@ function formatTypeWithNestedStructures(type: any, ast: any, depth: number = 0, 
 }
 
 // Format struct definition information for hover display
-function formatStructDefinitionInfo(structName: string, structInfo: any): string {
+function formatStructDefinitionInfo(
+  structName: string,
+  structInfo: any
+): string {
   if (!structInfo || !structInfo.fields) {
     return `**struct ${structName}**`
   }
@@ -1751,15 +1879,22 @@ function formatStructDefinitionInfo(structName: string, structInfo: any): string
   })
 
   let structDef = `struct ${structName} {\n${fieldStrs.join(",\n")}\n}`
-  
+
   // If it has nested structures or many fields, format with better spacing
-  const hasNestedStructures = structInfo.fields.some((field: any) => 
-    field.type && (field.type.kind === "StructType" || field.type.kind === "RecordType")
+  const hasNestedStructures = structInfo.fields.some(
+    (field: any) =>
+      field.type &&
+      (field.type.kind === "StructType" || field.type.kind === "RecordType")
   )
-  
+
   if (hasNestedStructures) {
     const detailedFields = structInfo.fields.map((field: any) => {
-      const fieldType = formatTypeWithNestedStructures(field.type, null, 1, "  ")
+      const fieldType = formatTypeWithNestedStructures(
+        field.type,
+        null,
+        1,
+        "  "
+      )
       return `  ${field.name} :${fieldType}`
     })
     structDef = `struct ${structName} {\n${detailedFields.join(",\n")}\n}`
@@ -1772,10 +1907,13 @@ function formatStructDefinitionInfo(structName: string, structInfo: any): string
 let cachedAST: any = null
 function findStructDefinition(structName: string): any {
   if (!cachedAST) return null
-  
+
   if (cachedAST.statements) {
     for (const statement of cachedAST.statements) {
-      if (statement.kind === "StructDeclaration" && statement.name === structName) {
+      if (
+        statement.kind === "StructDeclaration" &&
+        statement.name === structName
+      ) {
         return statement
       }
     }

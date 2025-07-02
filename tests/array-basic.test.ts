@@ -2,7 +2,7 @@ import { describe, test, expect } from "bun:test"
 import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Array Basic Implementation", () => {
   test("Array literal parsing", () => {
@@ -14,7 +14,7 @@ describe("Array Basic Implementation", () => {
     const stmt = ast.statements[0] as AST.VariableDeclaration
     expect(stmt.kind).toBe("VariableDeclaration")
     expect(stmt.initializer.kind).toBe("ArrayLiteral")
-    
+
     const arrayLiteral = stmt.initializer as AST.ArrayLiteral
     expect(arrayLiteral.elements).toHaveLength(3)
     expect((arrayLiteral.elements[0] as AST.Literal).value).toBe(1)
@@ -29,7 +29,7 @@ describe("Array Basic Implementation", () => {
 
     const stmt = ast.statements[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("ArrayAccess")
-    
+
     const arrayAccess = stmt.initializer as AST.ArrayAccess
     expect((arrayAccess.array as AST.Identifier).name).toBe("arr")
     expect((arrayAccess.index as AST.Literal).value).toBe(0)
@@ -42,7 +42,7 @@ describe("Array Basic Implementation", () => {
 
     const stmt = ast.statements[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("ArrayLiteral")
-    
+
     const arrayLiteral = stmt.initializer as AST.ArrayLiteral
     expect(arrayLiteral.elements).toHaveLength(0)
   })
@@ -69,10 +69,10 @@ describe("Array Basic Implementation", () => {
 
     const stmt = ast.statements[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("ArrayAccess")
-    
+
     const outerAccess = stmt.initializer as AST.ArrayAccess
     expect(outerAccess.array.kind).toBe("ArrayAccess")
-    
+
     const innerAccess = outerAccess.array as AST.ArrayAccess
     expect((innerAccess.array as AST.Identifier).name).toBe("matrix")
     expect((innerAccess.index as AST.Literal).value).toBe(0)

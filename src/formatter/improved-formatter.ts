@@ -1,7 +1,7 @@
 export function formatSeseragiCode(code: string): string {
   const lines = code.split("\n")
   const formatted: string[] = []
-  let inMultilineExpression = false
+  const inMultilineExpression = false
   let indentLevel = 0
 
   for (let i = 0; i < lines.length; i++) {

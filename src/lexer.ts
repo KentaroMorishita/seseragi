@@ -226,7 +226,12 @@ export class Lexer {
         if (this.peek() === "." && this.peekNext() === "=") {
           this.advance() // consume second .
           this.advance() // consume =
-          return this.makeToken(TokenType.RANGE_INCLUSIVE, "..=", startLine, startColumn)
+          return this.makeToken(
+            TokenType.RANGE_INCLUSIVE,
+            "..=",
+            startLine,
+            startColumn
+          )
         }
         if (this.peek() === ".") {
           this.advance() // consume second .
@@ -272,13 +277,25 @@ export class Lexer {
     if (char === "-") {
       if (this.peek() === ">") {
         this.advance()
-        return this.makeToken(TokenType.ARROW, "->", startLine, startColumn, hadWhitespace)
+        return this.makeToken(
+          TokenType.ARROW,
+          "->",
+          startLine,
+          startColumn,
+          hadWhitespace
+        )
       }
       // 負の数値リテラル: -123, -45.67
       if (this.isDigit(this.peek())) {
         return this.negativeNumber(startLine, startColumn)
       }
-      return this.makeToken(TokenType.MINUS, char, startLine, startColumn, hadWhitespace)
+      return this.makeToken(
+        TokenType.MINUS,
+        char,
+        startLine,
+        startColumn,
+        hadWhitespace
+      )
     }
 
     if (char === "=") {
@@ -571,6 +588,6 @@ export class Lexer {
 
 // Convenience function for lexing
 export function lex(source: string): Token[] {
-  const lexer = new Lexer(source);
-  return lexer.tokenize();
+  const lexer = new Lexer(source)
+  return lexer.tokenize()
 }

@@ -62,8 +62,8 @@ let mixed = 1 : `[2, 3]           // 既存リストに追加
 
 ### 3.1 変換関数の追加
 ```seseragi
-fn arrayToList arr :Array<a> -> List<a>
-fn listToArray lst :List<a> -> Array<a>
+fn arrayToList arr: Array<a> -> List<a>
+fn listToArray lst: List<a> -> Array<a>
 ```
 
 ### 3.2 ランタイム実装

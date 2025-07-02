@@ -22,7 +22,8 @@ print arr
 print list
 print arr2
 `,
-      expectedOutput: "[ 1, 2, 3, 4, 5 ]\n{ tag: 'Cons', head: 1, tail: { tag: 'Cons', head: 2, tail: { tag: 'Cons', head: 3, tail: { tag: 'Cons', head: 4, tail: { tag: 'Cons', head: 5, tail: { tag: 'Empty' } } } } } }\n[ 1, 2, 3, 4, 5 ]\n",
+      expectedOutput:
+        "[ 1, 2, 3, 4, 5 ]\n{ tag: 'Cons', head: 1, tail: { tag: 'Cons', head: 2, tail: { tag: 'Cons', head: 3, tail: { tag: 'Cons', head: 4, tail: { tag: 'Cons', head: 5, tail: { tag: 'Empty' } } } } } }\n[ 1, 2, 3, 4, 5 ]\n",
     },
     {
       name: "List operations after arrayToList",
@@ -69,7 +70,8 @@ print words
 print wordList
 print wordsBack
 `,
-      expectedOutput: '[ "hello", "world", "seseragi" ]\n{ tag: \'Cons\', head: "hello", tail: { tag: \'Cons\', head: "world", tail: { tag: \'Cons\', head: "seseragi", tail: { tag: \'Empty\' } } } }\n[ "hello", "world", "seseragi" ]\n',
+      expectedOutput:
+        '[ "hello", "world", "seseragi" ]\n{ tag: \'Cons\', head: "hello", tail: { tag: \'Cons\', head: "world", tail: { tag: \'Cons\', head: "seseragi", tail: { tag: \'Empty\' } } } }\n[ "hello", "world", "seseragi" ]\n',
     },
     {
       name: "Mixed with backtick list syntax",
@@ -123,7 +125,7 @@ print arr2
         const output = execSync(`bun run ${tempFile}`, {
           encoding: "utf-8",
         }).toString()
-        
+
         expect(output).toBe(testCase.expectedOutput)
       } finally {
         // クリーンアップ
@@ -155,22 +157,22 @@ let backToStrArray = listToArray strList    // Array<String>
 
     // 型推論結果の確認
     const types = typeResult.inferredTypes!
-    
+
     // intListの型はList<Int>であるべき
     const intListType = types.get("intList")
     expect(intListType).toBeDefined()
     expect(intListType?.toString()).toContain("List")
-    
+
     // strListの型はList<String>であるべき
     const strListType = types.get("strList")
     expect(strListType).toBeDefined()
     expect(strListType?.toString()).toContain("List")
-    
+
     // backToIntArrayの型はArray<Int>であるべき
     const backToIntArrayType = types.get("backToIntArray")
     expect(backToIntArrayType).toBeDefined()
     expect(backToIntArrayType?.toString()).toContain("Array")
-    
+
     // backToStrArrayの型はArray<String>であるべき
     const backToStrArrayType = types.get("backToStrArray")
     expect(backToStrArrayType).toBeDefined()

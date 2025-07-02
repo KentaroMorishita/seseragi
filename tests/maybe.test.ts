@@ -3,7 +3,7 @@ import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 
 test("Maybe - should parse Just constructor", () => {
-  const source = "let maybeValue :Maybe<Int> = Just 42"
+  const source = "let maybeValue: Maybe<Int> = Just 42"
   const parser = new Parser(source)
   const ast = parser.parse()
 
@@ -13,7 +13,7 @@ test("Maybe - should parse Just constructor", () => {
 })
 
 test("Maybe - should parse Nothing constructor", () => {
-  const source = "let emptyValue :Maybe<Int> = Nothing"
+  const source = "let emptyValue: Maybe<Int> = Nothing"
   const parser = new Parser(source)
   const ast = parser.parse()
 
