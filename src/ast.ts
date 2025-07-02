@@ -473,11 +473,21 @@ export class RecordInitField extends ASTNode {
   }
 }
 
+export class RecordShorthandField extends ASTNode {
+  kind = "RecordShorthandField"
+  name: string
+
+  constructor(name: string, line: number, column: number) {
+    super(line, column)
+    this.name = name
+  }
+}
+
 export class RecordExpression extends Expression {
   kind = "RecordExpression"
-  fields: (RecordInitField | RecordSpreadField)[]
+  fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[]
 
-  constructor(fields: (RecordInitField | RecordSpreadField)[], line: number, column: number) {
+  constructor(fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[], line: number, column: number) {
     super(line, column)
     this.fields = fields
   }
@@ -503,11 +513,11 @@ export class RecordAccess extends Expression {
 export class StructExpression extends Expression {
   kind = "StructExpression"
   structName: string
-  fields: (RecordInitField | RecordSpreadField)[]
+  fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[]
 
   constructor(
     structName: string,
-    fields: (RecordInitField | RecordSpreadField)[],
+    fields: (RecordInitField | RecordShorthandField | RecordSpreadField)[],
     line: number,
     column: number
   ) {

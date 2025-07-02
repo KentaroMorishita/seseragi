@@ -1880,24 +1880,39 @@ export class Parser {
                 const spreadAst = new AST.SpreadExpression(spreadExpr, spreadLine, spreadColumn)
                 fields.push(new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn))
               } else {
-                // Regular field
-                const fieldName = this.consume(
-                  TokenType.IDENTIFIER,
-                  "Expected field name"
-                ).value
-                this.skipNewlines()
-                this.consume(TokenType.COLON, "Expected ':' after field name")
-                this.skipNewlines()
-                const fieldValue = this.expression()
+                // Check for shorthand property notation
+                const fieldToken = this.peek()
+                if (fieldToken.type === TokenType.IDENTIFIER) {
+                  const fieldName = this.advance().value
+                  const fieldLine = this.previous().line
+                  const fieldColumn = this.previous().column
+                  
+                  this.skipNewlines()
+                  
+                  // Check if this is shorthand notation (no colon follows)
+                  if (this.check(TokenType.COMMA) || this.check(TokenType.RIGHT_BRACE)) {
+                    // Shorthand: Person { name, age }
+                    fields.push(
+                      new AST.RecordShorthandField(fieldName, fieldLine, fieldColumn)
+                    )
+                  } else {
+                    // Regular field: Person { name: value }
+                    this.consume(TokenType.COLON, "Expected ':' after field name")
+                    this.skipNewlines()
+                    const fieldValue = this.expression()
 
-                fields.push(
-                  new AST.RecordInitField(
-                    fieldName,
-                    fieldValue,
-                    this.previous().line,
-                    this.previous().column
-                  )
-                )
+                    fields.push(
+                      new AST.RecordInitField(
+                        fieldName,
+                        fieldValue,
+                        fieldLine,
+                        fieldColumn
+                      )
+                    )
+                  }
+                } else {
+                  throw new ParseError("Expected field name", fieldToken)
+                }
               }
               this.skipNewlines()
             } while (this.match(TokenType.COMMA))
@@ -2114,24 +2129,39 @@ export class Parser {
             const spreadAst = new AST.SpreadExpression(spreadExpr, spreadLine, spreadColumn)
             fields.push(new AST.RecordSpreadField(spreadAst, spreadLine, spreadColumn))
           } else {
-            // Regular field
-            const fieldName = this.consume(
-              TokenType.IDENTIFIER,
-              "Expected field name"
-            ).value
-            this.skipNewlines()
-            this.consume(TokenType.COLON, "Expected ':' after field name")
-            this.skipNewlines()
-            const fieldValue = this.expression()
+            // Check for shorthand property notation
+            const fieldToken = this.peek()
+            if (fieldToken.type === TokenType.IDENTIFIER) {
+              const fieldName = this.advance().value
+              const fieldLine = this.previous().line
+              const fieldColumn = this.previous().column
+              
+              this.skipNewlines()
+              
+              // Check if this is shorthand notation (no colon follows)
+              if (this.check(TokenType.COMMA) || this.check(TokenType.RIGHT_BRACE)) {
+                // Shorthand: { name, age }
+                fields.push(
+                  new AST.RecordShorthandField(fieldName, fieldLine, fieldColumn)
+                )
+              } else {
+                // Regular field: { name: value }
+                this.consume(TokenType.COLON, "Expected ':' after field name")
+                this.skipNewlines()
+                const fieldValue = this.expression()
 
-            fields.push(
-              new AST.RecordInitField(
-                fieldName,
-                fieldValue,
-                this.previous().line,
-                this.previous().column
-              )
-            )
+                fields.push(
+                  new AST.RecordInitField(
+                    fieldName,
+                    fieldValue,
+                    fieldLine,
+                    fieldColumn
+                  )
+                )
+              }
+            } else {
+              throw new ParseError("Expected field name", fieldToken)
+            }
           }
           this.skipNewlines()
         } while (this.match(TokenType.COMMA))

@@ -3829,6 +3829,24 @@ export class TypeInferenceSystem {
         const initField = field as AST.RecordInitField
         const fieldType = this.generateConstraintsForExpression(initField.value, env)
         providedFieldMap.set(initField.name, { field: initField, type: fieldType })
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as AST.RecordShorthandField
+        // 変数名と同じ名前の変数を環境から検索
+        const variableType = env.get(shorthandField.name)
+        if (!variableType) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Undefined variable '${shorthandField.name}' in shorthand property`,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
+          // エラーの場合はTypeVariableをフォールバック
+          const fallbackType = this.freshTypeVariable(shorthandField.line, shorthandField.column)
+          providedFieldMap.set(shorthandField.name, { field: shorthandField, type: fallbackType })
+        } else {
+          providedFieldMap.set(shorthandField.name, { field: shorthandField, type: variableType })
+        }
       }
     }
 
@@ -4133,6 +4151,34 @@ export class TypeInferenceSystem {
           initField.line,
           initField.column
         ))
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as AST.RecordShorthandField
+        // 変数名と同じ名前の変数を環境から検索
+        const variableType = env.get(shorthandField.name)
+        if (!variableType) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Undefined variable '${shorthandField.name}' in shorthand property`,
+              shorthandField.line,
+              shorthandField.column
+            )
+          )
+          // エラーの場合はTypeVariableをフォールバック
+          const fallbackType = this.freshTypeVariable(shorthandField.line, shorthandField.column)
+          fieldMap.set(shorthandField.name, new AST.RecordField(
+            shorthandField.name,
+            fallbackType,
+            shorthandField.line,
+            shorthandField.column
+          ))
+        } else {
+          fieldMap.set(shorthandField.name, new AST.RecordField(
+            shorthandField.name,
+            variableType,
+            shorthandField.line,
+            shorthandField.column
+          ))
+        }
       } else if (field.kind === "RecordSpreadField") {
         const spreadField = field as AST.RecordSpreadField
         const spreadType = this.generateConstraintsForExpression(

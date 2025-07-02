@@ -2213,6 +2213,10 @@ ${indent}}`
         const initField = field as any // AST.RecordInitField
         const value = this.generateExpression(initField.value)
         return `${initField.name}: ${value}`
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as any // AST.RecordShorthandField
+        // JavaScript/TypeScript shorthand property notation
+        return shorthandField.name
       } else if (field.kind === "RecordSpreadField") {
         const spreadField = field as any // AST.RecordSpreadField
         const spreadValue = this.generateExpression(spreadField.spreadExpression.expression)
@@ -2398,10 +2402,11 @@ ${indent}}`
 
   // 構造体式の生成
   generateStructExpression(structExpr: StructExpression): string {
-    // スプレッド構文がある場合
+    // スプレッド構文または省略記法がある場合
     const hasSpread = structExpr.fields.some((field) => field.kind === "RecordSpreadField")
+    const hasShorthand = structExpr.fields.some((field) => field.kind === "RecordShorthandField")
     
-    if (hasSpread) {
+    if (hasSpread || hasShorthand) {
       // スプレッドフィールドとイニシャライザーフィールドを収集
       const spreadExpressions: string[] = []
       const initFields: { name: string, value: string }[] = []
@@ -2415,16 +2420,27 @@ ${indent}}`
           const initField = field as any // AST.RecordInitField
           const value = this.generateExpression(initField.value)
           initFields.push({ name: initField.name, value })
+        } else if (field.kind === "RecordShorthandField") {
+          const shorthandField = field as any // AST.RecordShorthandField
+          // Shorthand property: use variable name directly
+          initFields.push({ name: shorthandField.name, value: shorthandField.name })
         }
       }
       
-      // スプレッドされたオブジェクトから新しい構造体インスタンスを作成
-      if (spreadExpressions.length > 0) {
-        // 一時的なオブジェクトにスプレッドとフィールドをマージしてからコンストラクタを呼び出し
-        const spreadPart = spreadExpressions.map(expr => `...${expr}`).join(", ")
-        const fieldsPart = initFields.map(f => `${f.name}: ${f.value}`).join(", ")
-        const allFields = fieldsPart ? `${spreadPart}, ${fieldsPart}` : spreadPart
-        
+      // オブジェクトから新しい構造体インスタンスを作成
+      const spreadPart = spreadExpressions.map(expr => `...${expr}`).join(", ")
+      const fieldsPart = initFields.map(f => `${f.name}: ${f.value}`).join(", ")
+      
+      let allFields = ""
+      if (spreadPart && fieldsPart) {
+        allFields = `${spreadPart}, ${fieldsPart}`
+      } else if (spreadPart) {
+        allFields = spreadPart
+      } else if (fieldsPart) {
+        allFields = fieldsPart
+      }
+      
+      if (allFields) {
         // 一時オブジェクトを作成し、構造体定義の順序に従ってコンストラクタ引数を構築
         const tempVar = `__tmp${Math.random().toString(36).substring(2, 8)}`
         
@@ -2436,7 +2452,18 @@ ${indent}}`
     
     // 従来のコンストラクタ形式（スプレッドなし）
     const args = structExpr.fields
-      .map((field) => this.generateExpression((field as any).value))
+      .map((field) => {
+        if (field.kind === "RecordInitField") {
+          const initField = field as any // AST.RecordInitField
+          return this.generateExpression(initField.value)
+        } else if (field.kind === "RecordShorthandField") {
+          const shorthandField = field as any // AST.RecordShorthandField
+          // Use the variable name directly
+          return shorthandField.name
+        }
+        return ""
+      })
+      .filter(arg => arg !== "")
       .join(", ")
     return `new ${structExpr.structName}(${args})`
   }
