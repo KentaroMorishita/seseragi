@@ -24,6 +24,8 @@ export interface UsageAnalysis {
     show: boolean
     arrayToList: boolean
     listToArray: boolean
+    head: boolean
+    tail: boolean
   }
 }
 
@@ -47,6 +49,8 @@ export class UsageAnalyzer {
       show: false,
       arrayToList: false,
       listToArray: false,
+      head: false,
+      tail: false,
     },
   }
 
@@ -243,6 +247,13 @@ export class UsageAnalyzer {
     } else if (name === "listToArray") {
       this.analysis.needsBuiltins.listToArray = true
       this.analysis.needsList = true // List型も必要
+    } else if (name === "head") {
+      this.analysis.needsBuiltins.head = true
+      this.analysis.needsList = true // List型が必要
+      this.analysis.needsMaybe = true // Maybe型が必要（戻り値型）
+    } else if (name === "tail") {
+      this.analysis.needsBuiltins.tail = true
+      this.analysis.needsList = true // List型が必要
       this.analysis.needsCurrying = true // カリー化も必要
     }
   }

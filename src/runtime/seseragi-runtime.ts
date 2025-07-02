@@ -203,8 +203,8 @@ export const isCons = <T>(
   list: List<T>
 ): list is { tag: "Cons"; head: T; tail: List<T> } => list.tag === "Cons"
 
-export const headList = <T>(list: List<T>): T | undefined =>
-  list.tag === "Cons" ? list.head : undefined
+export const headList = <T>(list: List<T>): Maybe<T> =>
+  list.tag === "Cons" ? Just(list.head) : Nothing
 
 export const tailList = <T>(list: List<T>): List<T> =>
   list.tag === "Cons" ? list.tail : Empty

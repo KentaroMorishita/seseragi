@@ -191,6 +191,14 @@
           "match": "~"
         },
         {
+          "name": "keyword.operator.head.seseragi",
+          "match": "\\^"
+        },
+        {
+          "name": "keyword.operator.tail.seseragi",
+          "match": ">>"
+        },
+        {
           "name": "keyword.operator.assignment.seseragi",
           "match": "="
         },
@@ -212,15 +220,15 @@
       "patterns": [
         {
           "name": "support.function.builtin.io.seseragi",
-          "match": "\\b(print|putStrLn|toString|show)(?=\\s*\\()"
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*\\()"
         },
         {
           "name": "support.function.builtin.io.functional.seseragi",
-          "match": "\\b(print|putStrLn|toString|show)(?=\\s+[^\\(])"
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s+[^\\(])"
         },
         {
           "name": "support.function.builtin.io.standalone.seseragi",
-          "match": "\\b(print|putStrLn|toString|show)(?=\\s*$)"
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*$)"
         },
         {
           "name": "entity.name.function.definition.seseragi",

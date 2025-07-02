@@ -309,6 +309,12 @@ export class CodeGenerator {
     if (this.usageAnalysis.needsBuiltins.listToArray) {
       imports.push("listToArray")
     }
+    if (this.usageAnalysis.needsBuiltins.head) {
+      imports.push("headList")
+    }
+    if (this.usageAnalysis.needsBuiltins.tail) {
+      imports.push("tailList")
+    }
 
     if (imports.length > 0) {
       lines.push(
@@ -390,6 +396,19 @@ export class CodeGenerator {
       lines.push(
         "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });"
       )
+      lines.push("")
+    }
+    if (this.usageAnalysis.needsBuiltins.head) {
+      lines.push(
+        "const headList = <T>(list: List<T>): Maybe<T> => list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' };"
+      )
+    }
+    if (this.usageAnalysis.needsBuiltins.tail) {
+      lines.push(
+        "const tailList = <T>(list: List<T>): List<T> => list.tag === 'Cons' ? list.tail : Empty;"
+      )
+    }
+    if (this.usageAnalysis.needsBuiltins.head || this.usageAnalysis.needsBuiltins.tail) {
       lines.push("")
     }
     if (this.usageAnalysis.needsFunctorMap) {
@@ -976,6 +995,9 @@ const show = (value) => {
       "",
       "const Empty: List<never> = { tag: 'Empty' };",
       "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });",
+      "",
+      "const headList = <T>(list: List<T>): Maybe<T> => list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' };",
+      "const tailList = <T>(list: List<T>): List<T> => list.tag === 'Cons' ? list.tail : Empty;",
       "",
       `const print = (value: any): void => {
   // Seseragi型の場合は美しく整形
@@ -1918,6 +1940,10 @@ ${indent}}`
         return `console.log(${arg})`
       } else if (funcName === "toString") {
         return `toString(${arg})`
+      } else if (funcName === "head") {
+        return `headList(${arg})`
+      } else if (funcName === "tail") {
+        return `tailList(${arg})`
       } else if (funcName === "show") {
         return `show(${arg})`
       }
@@ -1956,6 +1982,16 @@ ${indent}}`
           throw new Error("toString requires exactly one argument")
         }
         return `toString(${args[0]})`
+      case "head":
+        if (args.length !== 1) {
+          throw new Error("head requires exactly one argument")
+        }
+        return `headList(${args[0]})`
+      case "tail":
+        if (args.length !== 1) {
+          throw new Error("tail requires exactly one argument")
+        }
+        return `tailList(${args[0]})`
       case "show":
         if (args.length !== 1) {
           throw new Error("show requires exactly one argument")

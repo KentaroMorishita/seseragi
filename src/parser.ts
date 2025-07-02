@@ -1625,6 +1625,38 @@ export class Parser {
       )
     }
 
+    // Handle prefix operators ^ and >> as function applications
+    if (this.match(TokenType.HEAD_OP, TokenType.TAIL_OP)) {
+      const operator = this.previous()
+      const line = operator.line
+      const column = operator.column
+      const functionName = operator.type === TokenType.HEAD_OP ? "head" : "tail"
+      
+      // Check for tail chaining pattern: >> . >> list
+      if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
+        // Start building the chain
+        let expr = new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.parseTailChain(),
+          line,
+          column
+        )
+        return expr
+      }
+      
+      // Parse the argument normally
+      const arg = this.unaryExpression()
+      
+      // Return as a FunctionApplication
+      return new AST.FunctionApplication(
+        new AST.Identifier(functionName, line, column),
+        arg,
+        line,
+        column
+      )
+    }
+
+
     return this.callExpression()
   }
 
@@ -1641,7 +1673,74 @@ export class Parser {
       )
     }
 
+    // Handle prefix operators ^ and >> as function applications
+    if (this.match(TokenType.HEAD_OP, TokenType.TAIL_OP)) {
+      const operator = this.previous()
+      const line = operator.line
+      const column = operator.column
+      const functionName = operator.type === TokenType.HEAD_OP ? "head" : "tail"
+      
+      // Check for tail chaining pattern: >> . >> list
+      if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
+        // Start building the chain
+        let expr = new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.parseTailChain(),
+          line,
+          column
+        )
+        return expr
+      }
+      
+      // Parse the argument normally
+      const arg = this.parseUnaryOnly()
+      
+      // Return as a FunctionApplication
+      return new AST.FunctionApplication(
+        new AST.Identifier(functionName, line, column),
+        arg,
+        line,
+        column
+      )
+    }
+
+
     return this.primaryExpression()
+  }
+
+  // Parse tail chaining pattern: . >> . >> list
+  private parseTailChain(): AST.Expression {
+    // We expect: . >> [. >> ...] list
+    
+    // Consume the first dot
+    this.consume(TokenType.DOT, "Expected '.' in tail chain")
+    
+    // Check if we have another >> 
+    if (this.match(TokenType.TAIL_OP)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      
+      // Check if there's another dot (continuing the chain)
+      if (this.check(TokenType.DOT)) {
+        // Recursive chain: tail(parseTailChain())
+        return new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.parseTailChain(),
+          line,
+          column
+        )
+      } else {
+        // End of chain: tail(expression)
+        return new AST.FunctionApplication(
+          new AST.Identifier("tail", line, column),
+          this.unaryExpression(),
+          line,
+          column
+        )
+      }
+    } else {
+      throw new Error(`Expected '>>' after '.' in tail chain at line ${this.peek().line}`)
+    }
   }
 
   private callExpression(): AST.Expression {
@@ -1778,6 +1877,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
+      type === TokenType.HEAD ||
+      type === TokenType.TAIL ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||
@@ -1834,12 +1935,14 @@ export class Parser {
 
     // ビルトイン関数
     if (
-      this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING)
+      this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING, TokenType.HEAD, TokenType.TAIL)
     ) {
       const functionName = this.previous().value as
         | "print"
         | "putStrLn"
         | "toString"
+        | "head"
+        | "tail"
       const line = this.previous().line
       const column = this.previous().column
 
@@ -2271,6 +2374,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
+      type === TokenType.HEAD ||
+      type === TokenType.TAIL ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||

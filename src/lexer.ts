@@ -37,6 +37,8 @@ export enum TokenType {
   PRINT = "PRINT",
   PUT_STR_LN = "PUT_STR_LN",
   TO_STRING = "TO_STRING",
+  HEAD = "HEAD",
+  TAIL = "TAIL",
 
   // Operators
   PIPE = "PIPE", // |
@@ -65,6 +67,8 @@ export enum TokenType {
   AND = "AND", // &&
   OR = "OR", // ||
   NOT = "NOT", // !
+  HEAD_OP = "HEAD_OP", // ^
+  TAIL_OP = "TAIL_OP", // >>
 
   // Punctuation
   COLON = "COLON", // :
@@ -129,6 +133,8 @@ export class Lexer {
     ["print", TokenType.PRINT],
     ["putStrLn", TokenType.PUT_STR_LN],
     ["toString", TokenType.TO_STRING],
+    ["head", TokenType.HEAD],
+    ["tail", TokenType.TAIL],
     ["True", TokenType.BOOLEAN],
     ["False", TokenType.BOOLEAN],
   ])
@@ -273,6 +279,8 @@ export class Lexer {
         return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
       case "`":
         return this.makeToken(TokenType.BACKTICK, char, startLine, startColumn)
+      case "^":
+        return this.makeToken(TokenType.HEAD_OP, char, startLine, startColumn)
       case "\n":
         this.line++
         this.column = 1
@@ -373,6 +381,10 @@ export class Lexer {
           startLine,
           startColumn
         )
+      }
+      if (this.peek() === ">") {
+        this.advance() // second >
+        return this.makeToken(TokenType.TAIL_OP, ">>", startLine, startColumn)
       }
       return this.makeToken(
         TokenType.GREATER_THAN,

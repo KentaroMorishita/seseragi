@@ -1,0 +1,67 @@
+// Testing head and tail operators ^ and >>
+
+// Create lists using list sugar
+let list1 = 1 : 2 : 3 : `[]
+let list2 = `[10, 20, 30, 40, 50]
+
+// Head operator ^ - gets first element (returns Maybe<T>)
+let first1 = ^list1         // Just 1
+let first2 = ^list2         // Just 10
+
+// Tail operator >> - gets rest of list (returns List<T>)
+let rest1 = >>list1         // `[2, 3]
+let rest2 = >>list2         // `[20, 30, 40, 50]
+
+// Empty list cases
+let empty = `[]
+let headEmpty = ^empty      // Nothing
+let tailEmpty = >>empty     // `[]
+
+// Nested operations (old syntax with parentheses)
+let second = ^>>list1       // Just 2
+let third = ^(>>(>>list2))  // Just 30
+let lastTwo = >>(>>(>>list2))   // `[40, 50]
+
+// NEW: Dot-tail operator .>> for cleaner chaining (no parentheses needed!)
+let thirdNew = ^>>.>>list2      // Just 30 (same as above, cleaner syntax)
+let lastTwoNew = >>.>>.>>list2  // `[40, 50] (same as above, cleaner syntax)
+
+// More examples of dot-tail chaining
+let fourthElement = ^>>.>>.>>list2   // Just 40
+let lastElement = ^>>.>>.>>.>>list2  // Just 50
+
+// Combining with function application
+let maybeSecond = ^(>>list2)  // Just 20
+
+show "Original lists:"
+show list1
+show list2
+show ""
+
+show "Head operations:"
+show first1
+show first2
+show headEmpty
+show ""
+
+show "Tail operations:"
+show rest1
+show rest2
+show tailEmpty
+show ""
+
+show "Nested operations (old syntax):"
+show second
+show third
+show lastTwo
+show ""
+
+show "NEW dot-tail syntax (cleaner!):"
+show thirdNew
+show lastTwoNew
+show fourthElement
+show lastElement
+show ""
+
+show "Combined operations:"
+show maybeSecond

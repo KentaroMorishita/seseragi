@@ -1,0 +1,20 @@
+// List head and tail functions test
+
+// Create a simple list
+let list = Cons 1 (Cons 2 (Cons 3 Empty))
+
+// Get head (first element)
+let firstElement = head list  // Just 1
+
+// Get tail (rest of list)
+let restOfList = tail list    // Cons 2 (Cons 3 Empty)
+
+// Empty list case
+let emptyList = Empty
+let headOfEmpty = head emptyList  // Nothing
+let tailOfEmpty = tail emptyList  // Empty
+
+show firstElement
+show restOfList
+show headOfEmpty
+show tailOfEmpty
