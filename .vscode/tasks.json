@@ -32,10 +32,7 @@
       "args": [
         "run",
         "${workspaceFolder}/src/cli.ts",
-        "compile",
-        "${file}",
-        "--output",
-        "${fileDirname}/${fileBasenameNoExtension}.ts"
+        "${file}"
       ],
       "group": "build",
       "presentation": {
@@ -54,10 +51,7 @@
       "args": [
         "run",
         "${workspaceFolder}/src/cli.ts",
-        "compile",
         "${file}",
-        "--output",
-        "${fileDirname}/${fileBasenameNoExtension}.ts",
         "--watch"
       ],
       "group": "build",

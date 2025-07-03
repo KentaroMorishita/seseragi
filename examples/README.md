@@ -108,11 +108,14 @@ seseragi run examples/01-advanced-features.ssrg
 
 ### 📂 コンパイル後実行
 ```bash
-# コンパイル
-seseragi compile examples/tutorial.ssrg --output examples/compiled/tutorial.ts
+# コンパイル（シンプル版）
+seseragi examples/02-tutorial.ssrg  # examples/02-tutorial.ts に出力
+
+# コンパイル（出力先指定）
+seseragi examples/02-tutorial.ssrg -o examples/compiled/tutorial.ts
 
 # 実行
-bun examples/compiled/tutorial.ts
+bun examples/02-tutorial.ts
 ```
 
 ## 学習の進め方

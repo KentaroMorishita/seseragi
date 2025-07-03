@@ -2077,7 +2077,10 @@ ${indent}}`
       case "TuplePattern": {
         // タプルパターン
         const tupleConditions = pattern.patterns.map((subPattern, i) => {
-          return this.generatePatternCondition(subPattern, `${valueVar}.elements[${i}]`)
+          return this.generatePatternCondition(
+            subPattern,
+            `${valueVar}.elements[${i}]`
+          )
         })
         return tupleConditions.join(" && ")
       }
