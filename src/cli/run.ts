@@ -55,10 +55,11 @@ async function watchAndRun(options: RunOptions): Promise<void> {
   })
 
   // プロセスを継続
-  return new Promise(() => {
+  return new Promise<void>((resolve) => {
     process.on("SIGINT", () => {
       console.log("\nStopping watch mode...")
-      process.exit(0)
+      fs.unwatchFile(options.input)
+      resolve()
     })
   })
 }
