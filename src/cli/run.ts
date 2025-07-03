@@ -9,9 +9,18 @@ export interface RunOptions {
   input: string
   tempDir?: string
   keepTemp?: boolean
+  watch?: boolean
 }
 
 export async function runCommand(options: RunOptions): Promise<void> {
+  if (options.watch) {
+    await watchAndRun(options)
+  } else {
+    await runOnce(options)
+  }
+}
+
+async function runOnce(options: RunOptions): Promise<void> {
   const tempFile = await compileToTemp(options)
 
   try {
@@ -22,6 +31,36 @@ export async function runCommand(options: RunOptions): Promise<void> {
       fs.unlinkSync(tempFile)
     }
   }
+}
+
+async function watchAndRun(options: RunOptions): Promise<void> {
+  console.log(`Watching ${options.input} for changes...`)
+
+  // 初回実行
+  await runOnce(options)
+
+  // ファイル監視
+  fs.watchFile(options.input, { interval: 1000 }, async (curr, prev) => {
+    if (curr.mtime !== prev.mtime) {
+      console.log(`\nFile changed: ${options.input}`)
+      try {
+        await runOnce(options)
+      } catch (error) {
+        console.error(
+          "Execution failed:",
+          error instanceof Error ? error.message : error
+        )
+      }
+    }
+  })
+
+  // プロセスを継続
+  return new Promise(() => {
+    process.on("SIGINT", () => {
+      console.log("\nStopping watch mode...")
+      process.exit(0)
+    })
+  })
 }
 
 async function compileToTemp(options: RunOptions): Promise<string> {

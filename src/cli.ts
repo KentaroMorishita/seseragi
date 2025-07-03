@@ -71,12 +71,14 @@ program
     "Directory for temporary files (default: system temp)"
   )
   .option("--keep-temp", "Keep temporary TypeScript file for debugging")
+  .option("-w, --watch", "Watch for file changes and re-run")
   .action(async (file, options) => {
     try {
       await runCommand({
         input: file,
         tempDir: options.tempDir,
         keepTemp: options.keepTemp,
+        watch: options.watch,
       })
     } catch (error) {
       console.error(
