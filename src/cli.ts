@@ -15,7 +15,7 @@ program
 program
   .argument("[file]", "Seseragi source file to compile")
   .option("-o, --output <file>", "Output TypeScript file")
-  .option("-w, --watch", "Watch for file changes and recompile")
+  .option("--auto", "Auto-recompile on file changes")
   .option("--no-comments", "Do not generate comments in output")
   .option(
     "--function-declarations",
@@ -34,7 +34,7 @@ program
     await compileCommand({
       input: file,
       output: options.output,
-      watch: options.watch,
+      watch: options.auto,
       generateComments: !options.noComments,
       useArrowFunctions: !options.functionDeclarations,
       runtimeMode: options.runtime,
@@ -71,14 +71,14 @@ program
     "Directory for temporary files (default: system temp)"
   )
   .option("--keep-temp", "Keep temporary TypeScript file for debugging")
-  .option("--auto", "Watch for file changes and re-run")
+  .option("-w, --watch", "Watch for file changes and re-run")
   .action(async (file, options) => {
     try {
       await runCommand({
         input: file,
         tempDir: options.tempDir,
         keepTemp: options.keepTemp,
-        watch: options.auto,
+        watch: options.watch,
       })
     } catch (error) {
       console.error(
