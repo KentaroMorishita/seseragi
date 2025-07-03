@@ -12,9 +12,11 @@ dist/
 .env.*.local
 
 # IDE
+!.vscode
+!.vscode/extension
+!.vscode/launch.json
+!.vscode/tasks.json
 .vscode/settings.json
-.vscode/launch.json
-.vscode/tasks.json
 .vscode/*.code-workspace
 .idea/
 *.swp
