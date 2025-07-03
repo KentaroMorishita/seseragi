@@ -22,8 +22,8 @@ export function formatSeseragiCode(code: string): string {
       continue
     }
 
-    // 基本的なクリーンアップ
-    const cleaned = trimmed
+    // 基本的なクリーンアップとスペーシング正規化
+    const cleaned = normalizeOperatorSpacing(trimmed)
 
     // 相対的なインデントレベルを計算
     const indentLevel = calculateIndentLevel(cleaned, i, lines)
@@ -356,48 +356,81 @@ export function normalizeOperatorSpacing(code: string): string {
       return line
     }
 
-    // 文字列リテラルの部分を一時的に保護
-    const stringParts: string[] = []
-    let processed = line.replace(/"[^"]*"/g, (match) => {
-      const index = stringParts.length
-      stringParts.push(match)
-      return `__STRING_${index}__`
-    })
+    // 文字列リテラル、ジェネリック型、モナド演算子を一時的に保護
+    const protectedParts: string[] = []
+    let processed = line
+      // 文字列リテラルを保護
+      .replace(/"[^"]*"/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push(match)
+        return `__PROTECTED_${index}__`
+      })
+      // ジェネリック型を保護 Maybe<Int>, List<String> など
+      .replace(/\b[A-Z]\w*<[^>]+>/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push(match)
+        return `__PROTECTED_${index}__`
+      })
+      // モナド演算子を保護（スペースも含めて）
+      .replace(/\s*<\$>\s*/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push(" <$> ") // 適切なスペーシングで保存
+        return `__PROTECTED_${index}__`
+      })
+      .replace(/\s*<\*>\s*/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push(" <*> ") // 適切なスペーシングで保存
+        return `__PROTECTED_${index}__`
+      })
 
     // その他の行は演算子のスペーシングを正規化
     processed = processed
-      // コロンの処理（型注釈）
-      .replace(/(\w+)\s*:\s*/g, "$1 :")
-      // 複数文字演算子を最初に処理
+      // 複数文字演算子
       .replace(/\s*>>=\s*/g, " >>= ") // バインド演算子
       .replace(/\s*->\s*/g, " -> ") // 関数矢印
       .replace(/\s*==\s*/g, " == ") // 等価演算子
       .replace(/\s*!=\s*/g, " != ") // 不等価演算子
       .replace(/\s*<=\s*/g, " <= ") // 以下演算子
       .replace(/\s*>=\s*/g, " >= ") // 以上演算子
-      .replace(/\s*<\$>\s*/g, " <$> ") // ファンクター演算子
-      .replace(/\s*<\*>\s*/g, " <*> ") // アプリカティブ演算子
-      // 比較演算子 < > (矢印以外の場合)
-      .replace(/(?<![<>=-])\s*<\s*(?![=*$])/g, " < ")
-      .replace(/(?<![><=-])\s*>\s*(?![=>])/g, " > ")
+      // コロンのスペーシング（型注釈以外は前後にスペース）
+      .replace(/\s*:\s*/g, " : ") // まず全てのコロンに前後スペース
+      .replace(/\s*:\s*$/g, " :") // 行末の場合は後ろのスペースなし
+      // 型注釈と構造体フィールドの修正（前にスペースなし）
+      .replace(/(let\s+\w+)\s:\s/g, "$1: ") // let name : Type
+      .replace(/(\w+)\s:\s([A-Z])/g, "$1: $2") // name : Type  
+      .replace(/(\w+)\s:\s(?=\s*\w)/g, "$1: ") // 構造体フィールド name : value
+      .replace(/{\s*(\w+)\s:\s/g, "{ $1: ") // 構造体内 { name : value
+      // 三項演算子の特別処理（? の後の : は前後にスペース）
+      .replace(/\?\s*([^:?]*?[^:\s])\s*:\s*/g, "? $1 : ")
       // 代入演算子 =（==, >=, <=, >>=, != でない場合のみ）
       .replace(/(?<![!<>=>])\s*=\s*(?!=)/g, " = ")
-      // 加算演算子 +
-      .replace(/(?<=[^+])\s*\+\s*(?=[^+=])/g, " + ")
-      // 乗算演算子 * (<*> でない場合のみ)
-      .replace(/(?<![<])\s*\*\s*(?![>])/g, " * ")
-      // 除算演算子 / （コメント // でない場合のみ）
+      // 算術演算子
+      .replace(/\s*\+\s*/g, " + ")
+      .replace(/\s*\*\s*/g, " * ")
       .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
-      // パイプライン演算子 |
+      // その他の演算子
       .replace(/\s*\|\s*/g, " | ")
-      // 逆パイプ演算子 ~
       .replace(/\s*~\s*/g, " ~ ")
-      // 関数適用演算子 $ (単独の場合のみ)
-      .replace(/(?<![<>])\s*\$\s*(?![>])/g, " $ ")
+      .replace(/\s*\$\s*/g, " $ ")
+      // 単一行の構造体のスペーシング - 複数回適用でネスト対応
+    
+    // 内側から処理するため、複数回適用
+    let prevProcessed = ""
+    while (prevProcessed !== processed) {
+      prevProcessed = processed
+      // まず内側の最も単純な構造体を処理
+      processed = processed.replace(/(\w+\s*)?\{\s*([^{}]+)\s*\}/g, (match, prefix, content) => {
+        if (content.includes("\n")) return match // 複数行は除外
+        const formattedContent = content.trim()
+          .replace(/,\s*/g, ", ") // カンマの後にスペース
+          .replace(/(\w+)\s:\s/g, "$1: ") // 構造体内のフィールド名: value
+        return (prefix || "") + "{ " + formattedContent + " }"
+      })
+    }
 
-    // 文字列リテラルを復元
-    stringParts.forEach((str, index) => {
-      processed = processed.replace(`__STRING_${index}__`, str)
+    // 保護された部分を復元
+    protectedParts.forEach((str, index) => {
+      processed = processed.replace(`__PROTECTED_${index}__`, str)
     })
 
     return processed

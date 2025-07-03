@@ -44,6 +44,28 @@ salary: 75000
   expect(formatSeseragiCode(input.trim())).toBe(expected)
 })
 
+test("format struct destructuring", () => {
+  const input = `
+  operator * self -> scalar: Int -> Vector {
+    let Vector {x,y} = self
+    Vector {x:x * scalar, y:y * scalar}
+  }
+`
+  const expected = `operator * self -> scalar: Int -> Vector {
+  let Vector { x, y } = self
+  Vector { x: x * scalar, y: y * scalar }
+}
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format struct with mixed spacing", () => {
+  const input = `let point = {x:10,y:20}`
+  const expected = `let point = { x: 10, y: 20 }
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
 test("format deeply nested record", () => {
   const input = `
 let user = {
