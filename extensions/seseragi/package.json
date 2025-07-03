@@ -1,7 +1,7 @@
 {
   "name": "seseragi-language-support",
   "displayName": "Seseragi Language Support",
-  "description": "Syntax highlighting and language support for Seseragi functional programming language",
+  "description": "Syntax highlighting and language support for Seseragi programming language",
   "version": "0.7.4",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",

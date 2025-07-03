@@ -1,38 +1,52 @@
 # Seseragi Extensions
 
-このディレクトリには、Seseragiプログラミング言語用の開発ツールと拡張機能が含まれています。
+Seseragiプログラミング言語の開発ツールと拡張機能です。
 
 ## VS Code拡張 (seseragi)
 
-Seseragi言語用のVS Code拡張機能です。シンタックスハイライト、自動補完、言語設定などを提供します。
-
-### インストール方法
-
-1. このディレクトリを VS Code の拡張機能ディレクトリにシンボリックリンクを作成：
-   ```bash
-   # プロジェクトルートで実行
-   ln -sf ../../extensions .vscode/extensions
-   ```
-
-2. VS Code を再起動
-
-3. `.ssrg` ファイルを開くと自動的にSeseragiのシンタックスハイライトが適用されます
-
-### 開発用セットアップ
-
-開発環境では、`.vscode/extensions` がプロジェクトルートの `extensions/` ディレクトリにシンボリックリンクされているため、拡張機能の変更が即座にVS Codeに反映されます。
+Seseragi言語用のVS Code拡張機能。シンタックスハイライト、LSPサーバー統合、自動フォーマットを提供します。
 
 ### 機能
 
-- ✅ シンタックスハイライト
-- ✅ 括弧の自動補完  
-- ✅ コメントサポート
-- ✅ インデント規則
-- ✅ 言語固有の設定
+- ✅ **シンタックスハイライト** - 全言語要素をサポート
+- ✅ **Language Server Protocol** - リアルタイム型チェック・エラー診断
+- ✅ **自動フォーマット** - 保存時コード整形
+- ✅ **型情報表示** - Hindley-Milner型推論結果をホバー表示
 
-### 今後の予定
+### クイックスタート
 
-- [ ] IntelliSense（自動補完）
-- [ ] エラー診断
-- [ ] 定義へのジャンプ
-- [ ] コードフォーマット
+```bash
+# プロジェクトルートで実行
+bun run build
+
+# VS Code再起動後、.ssrgファイルで拡張機能が有効化
+```
+
+### 開発
+
+```bash
+# 拡張機能のみ再ビルド
+./scripts/vscode.sh
+
+# 手動ビルド
+cd extensions/seseragi
+bun run compile
+vsce package
+code --install-extension seseragi-extension.vsix
+```
+
+## ディレクトリ構造
+
+```
+extensions/
+├── README.md                    # この文書  
+└── seseragi/                    # VS Code拡張機能
+    ├── package.json             # 拡張機能設定
+    ├── syntaxes/                # TextMate文法定義
+    ├── src/extension.ts         # 拡張機能エントリーポイント
+    └── README.md                # 拡張機能詳細
+```
+
+## ライセンス
+
+Apache-2.0

@@ -1,84 +1,50 @@
-# Seseragi Language Support for VS Code
+# Seseragi Language Support
 
-このVS Code拡張は、Seseragi関数型プログラミング言語（.ssrg）のシンタックスハイライトと基本的な言語サポートを提供します。
+Language support for Seseragi - a programming language that compiles to TypeScript.
 
-## 機能
+## Features
 
-- ✅ シンタックスハイライト
-- ✅ 括弧の自動補完
-- ✅ コメントサポート
-- ✅ インデント規則
-- ✅ 言語固有の設定
+- **Syntax Highlighting** - Rich syntax highlighting for `.ssrg` files
+- **Error Diagnostics** - Real-time error detection and type checking
+- **IntelliSense** - Code completion and hover information
+- **Auto-formatting** - Format code automatically on save
+- **Language Server** - Powered by Hindley-Milner type inference
 
-## サポートされる言語機能
 
-### キーワード
-- `fn`, `let`, `type`, `impl`, `monoid`
-- `effectful`, `match`, `import`, `as`
-- `if`, `then`, `else`
+## Installation
 
-### 型システム
-- **基本型**: `Int`, `Float`, `Bool`, `String`, `Char`, `Unit`
-- **ジェネリック型**: `Maybe`, `Either`, `IO`, `List`, `Array`
-- **ユーザー定義型**: 大文字で始まる型名
+Install this extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=seseragi-dev.seseragi-language-support).
 
-### 演算子
-- **パイプライン**: `|` (左から右への関数合成)
-- **逆パイプ**: `~` (部分適用)
-- **モナドバインド**: `>>=` (FlatMap操作)
-- **畳み込みモノイド**: `>>>` (モノイド操作)
-- **関数型**: `->` (型注釈)
-- **算術演算子**: `+`, `-`, `*`, `/`, `%`
-- **比較演算子**: `==`, `!=`, `<`, `>`, `<=`, `>=`
-- **論理演算子**: `&&`, `||`
+## Requirements
 
-### 組み込み関数
-- **Maybe**: `Just`, `Nothing`
-- **Either**: `Left`, `Right`
-- **List**: `Cons`, `Nil`
+- [Bun](https://bun.sh) runtime
 
-## 使用方法
+## Extension Settings
 
-1. `.ssrg` 拡張子のファイルを作成
-2. Seseragiコードを記述
-3. 自動的にシンタックスハイライトが適用される
+This extension contributes the following settings:
 
-## サンプルコード
+- `seseragi.maxNumberOfProblems`: Controls the maximum number of problems produced by the server (default: 100)
+- `seseragi.trace.server`: Traces the communication between VS Code and the language server
 
-```seseragi
-// 基本的な関数定義
-fn add a: Int -> b: Int -> Int = a + b
+## File Extensions
 
-// パイプライン演算子
-fn processNumber x: Int -> Int = 
-  x | double | square
+This extension provides language support for files with the following extensions:
 
-// Maybe型
-fn safeDivide a: Int -> b: Int -> Maybe<Int> =
-  if b == 0 then Nothing else Just (a / b)
+- `.ssrg` - Seseragi source files
 
-// パターンマッチング
-type Color = Red | Green | Blue
+## Commands
 
-fn colorName color: Color -> String = match color
-  | Red -> "赤"
-  | Green -> "緑" 
-  | Blue -> "青"
-```
+This extension contributes the following commands:
 
-## 設定
+- `seseragi.format`: Format current Seseragi file
 
-VS Codeの設定で以下が自動的に適用されます：
+## Known Issues
 
-- ファイル関連付け: `*.ssrg` → `seseragi`
-- カスタムトークンカラー
-- 自動インデント
-- 括弧の自動補完
+Please report issues on [GitHub](https://github.com/KentaroMorishita/seseragi/issues).
 
-## 今後の予定
+## Contributing
 
-- [ ] IntelliSense（自動補完）
-- [ ] エラー診断
-- [ ] 定義へのジャンプ
-- [ ] コードフォーマット
-- [ ] デバッガーサポート
+See the [repository](https://github.com/KentaroMorishita/seseragi) for contribution guidelines.
+
+
+**Enjoy!**
