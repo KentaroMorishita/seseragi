@@ -109,13 +109,13 @@ export class ArrayAccessConstraint {
         return (type as TypeVariable).name
       case "TupleType":
         const tt = type as AST.TupleType
-        return `(${tt.elementTypes.map(t => this.typeToString(t)).join(", ")})`
+        return `(${tt.elementTypes.map((t) => this.typeToString(t)).join(", ")})`
       case "GenericType":
         const gt = type as AST.GenericType
         if (gt.typeArguments.length === 0) {
           return gt.name
         }
-        return `${gt.name}<${gt.typeArguments.map(t => this.typeToString(t)).join(", ")}>`
+        return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
       default:
         return "Unknown"
     }
@@ -1821,9 +1821,12 @@ export class TypeInferenceSystem {
       case "head":
         // Type: List<T> -> Maybe<T>
         if (call.arguments.length === 1) {
-          const listType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const listType = this.generateConstraintsForExpression(
+            call.arguments[0],
+            env
+          )
           const elementType = this.freshTypeVariable(call.line, call.column)
-          
+
           // 引数はList<T>型でなければならない
           const expectedListType = new AST.GenericType(
             "List",
@@ -1840,7 +1843,7 @@ export class TypeInferenceSystem {
               "head function requires List<T> argument"
             )
           )
-          
+
           // 戻り値はMaybe<T>型
           return new AST.GenericType(
             "Maybe",
@@ -1854,9 +1857,12 @@ export class TypeInferenceSystem {
       case "tail":
         // Type: List<T> -> List<T>
         if (call.arguments.length === 1) {
-          const listType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const listType = this.generateConstraintsForExpression(
+            call.arguments[0],
+            env
+          )
           const elementType = this.freshTypeVariable(call.line, call.column)
-          
+
           // 引数はList<T>型でなければならない
           const expectedListType = new AST.GenericType(
             "List",
@@ -1873,7 +1879,7 @@ export class TypeInferenceSystem {
               "tail function requires List<T> argument"
             )
           )
-          
+
           // 戻り値も同じList<T>型
           return expectedListType
         }
@@ -2978,7 +2984,10 @@ export class TypeInferenceSystem {
         // タプルアクセスの場合、TypeScriptの挙動に合わせて
         // すべての要素型のunion型として扱う
         // ただし、型安全性のため、結果型を任意の型変数とする
-        const unionType = this.freshTypeVariable(constraint.line, constraint.column)
+        const unionType = this.freshTypeVariable(
+          constraint.line,
+          constraint.column
+        )
         return this.unify(resultType, unionType)
       }
     }
@@ -2986,8 +2995,11 @@ export class TypeInferenceSystem {
     // 型変数の場合、Array<T>またはTuple型として推論
     if (arrayType.kind === "TypeVariable") {
       const tv = arrayType as TypeVariable
-      const elementType = this.freshTypeVariable(constraint.line, constraint.column)
-      
+      const elementType = this.freshTypeVariable(
+        constraint.line,
+        constraint.column
+      )
+
       // Array<T>として推論
       const arrayGenericType = new AST.GenericType(
         "Array",
@@ -2995,7 +3007,7 @@ export class TypeInferenceSystem {
         constraint.line,
         constraint.column
       )
-      
+
       const sub1 = this.unify(arrayType, arrayGenericType)
       const sub2 = this.unify(resultType, elementType)
       return sub1.compose(sub2)
@@ -4579,7 +4591,7 @@ export class TypeInferenceSystem {
       arrayAccess.column,
       "Array or Tuple access"
     )
-    
+
     this.constraints.push(constraint)
   }
 

@@ -11,11 +11,11 @@ describe("Array Index Access", () => {
     const source = "let value = arr[1]"
     const parser = new Parser(source)
     const ast = parser.parse()
-    
+
     // プログラム内の最初の変数定義のArrayAccessを確認
     const stmt = ast.statements[0] as AST.VariableDeclaration
     const expr = stmt.initializer as AST.ArrayAccess
-    
+
     expect(expr.kind).toBe("ArrayAccess")
     expect((expr.array as AST.Identifier).name).toBe("arr")
     expect((expr.index as AST.Literal).value).toBe(1)
@@ -25,7 +25,7 @@ describe("Array Index Access", () => {
     const source = "let value = arr[0]"
     const parser = new Parser(source)
     const ast = parser.parse()
-    
+
     const tsCode = generateTypeScript(ast)
     expect(tsCode).toContain("(arr.tag === 'Tuple' ? arr.elements : arr)[0]")
   })
@@ -36,10 +36,10 @@ describe("Tuple Index Access", () => {
     const source = "let coord = point[0]"
     const parser = new Parser(source)
     const ast = parser.parse()
-    
+
     const stmt = ast.statements[0] as AST.VariableDeclaration
     const expr = stmt.initializer as AST.ArrayAccess
-    
+
     expect(expr.kind).toBe("ArrayAccess")
     expect((expr.array as AST.Identifier).name).toBe("point")
     expect((expr.index as AST.Literal).value).toBe(0)
@@ -53,9 +53,11 @@ describe("Tuple Index Access", () => {
     const parser = new Parser(source)
     const ast = parser.parse()
     const tsCode = generateTypeScript(ast)
-    
+
     // Tuple型の場合は.elementsから取り出すことを確認
-    expect(tsCode).toContain("(point.tag === 'Tuple' ? point.elements : point)[0]")
+    expect(tsCode).toContain(
+      "(point.tag === 'Tuple' ? point.elements : point)[0]"
+    )
   })
 
   test("should handle nested array access", () => {
@@ -63,7 +65,7 @@ describe("Tuple Index Access", () => {
     const parser = new Parser(source)
     const ast = parser.parse()
     const tsCode = generateTypeScript(ast)
-    
+
     // ネストした配列アクセスが正しく生成されることを確認
     expect(tsCode).toContain("matrix")
     expect(tsCode).toContain("[0]")

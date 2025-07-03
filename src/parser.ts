@@ -1631,7 +1631,7 @@ export class Parser {
       const line = operator.line
       const column = operator.column
       const functionName = operator.type === TokenType.HEAD_OP ? "head" : "tail"
-      
+
       // Check for tail chaining pattern: >> . >> list
       if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
         // Start building the chain
@@ -1643,10 +1643,10 @@ export class Parser {
         )
         return expr
       }
-      
+
       // Parse the argument normally
       const arg = this.unaryExpression()
-      
+
       // Return as a FunctionApplication
       return new AST.FunctionApplication(
         new AST.Identifier(functionName, line, column),
@@ -1655,7 +1655,6 @@ export class Parser {
         column
       )
     }
-
 
     return this.callExpression()
   }
@@ -1679,7 +1678,7 @@ export class Parser {
       const line = operator.line
       const column = operator.column
       const functionName = operator.type === TokenType.HEAD_OP ? "head" : "tail"
-      
+
       // Check for tail chaining pattern: >> . >> list
       if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
         // Start building the chain
@@ -1691,10 +1690,10 @@ export class Parser {
         )
         return expr
       }
-      
+
       // Parse the argument normally
       const arg = this.parseUnaryOnly()
-      
+
       // Return as a FunctionApplication
       return new AST.FunctionApplication(
         new AST.Identifier(functionName, line, column),
@@ -1704,22 +1703,21 @@ export class Parser {
       )
     }
 
-
     return this.primaryExpression()
   }
 
   // Parse tail chaining pattern: . >> . >> list
   private parseTailChain(): AST.Expression {
     // We expect: . >> [. >> ...] list
-    
+
     // Consume the first dot
     this.consume(TokenType.DOT, "Expected '.' in tail chain")
-    
-    // Check if we have another >> 
+
+    // Check if we have another >>
     if (this.match(TokenType.TAIL_OP)) {
       const line = this.previous().line
       const column = this.previous().column
-      
+
       // Check if there's another dot (continuing the chain)
       if (this.check(TokenType.DOT)) {
         // Recursive chain: tail(parseTailChain())
@@ -1739,7 +1737,9 @@ export class Parser {
         )
       }
     } else {
-      throw new Error(`Expected '>>' after '.' in tail chain at line ${this.peek().line}`)
+      throw new Error(
+        `Expected '>>' after '.' in tail chain at line ${this.peek().line}`
+      )
     }
   }
 
@@ -1935,7 +1935,13 @@ export class Parser {
 
     // ビルトイン関数
     if (
-      this.match(TokenType.PRINT, TokenType.PUT_STR_LN, TokenType.TO_STRING, TokenType.HEAD, TokenType.TAIL)
+      this.match(
+        TokenType.PRINT,
+        TokenType.PUT_STR_LN,
+        TokenType.TO_STRING,
+        TokenType.HEAD,
+        TokenType.TAIL
+      )
     ) {
       const functionName = this.previous().value as
         | "print"

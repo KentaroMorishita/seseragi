@@ -1,264 +1,110 @@
-# Seseragi Programming Language
+# Seseragi
 
-Seseragiは、TypeScriptにトランスパイルされるプログラミング言語です。
+A programming language that compiles to TypeScript
 
 ## 特徴
 
-- **副作用の明示的管理** - 安全で予測可能なコード
-- **静的型付け** - 型安全性の保証
-- **カリー化された関数** - デフォルトで部分適用をサポート
-- **モナド合成** - Maybe、Either、IOモナドによる安全な処理
-- **パイプライン演算子** - 関数合成の直感的な記述
+- **静的型付け** - 型推論による型安全性
+- **不変変数** - `let`による再代入不可な変数
+- **モナド型** - `Maybe`、`Either`による安全なエラーハンドリング
+- **VS Code統合** - 構文ハイライト、LSP、リアルタイム型チェック
 
 ## クイックスタート
 
-### 依存関係のインストール
-
 ```bash
-bun install
-```
-
-### Seseragiコンパイラの実行
-
-```bash
-# TypeScriptトランスパイラのテスト
-bun run src/main.ts
-
-# 全テスト実行
-bun test
-
-# 型チェック
-bun run typecheck
-```
-
-### サンプルコード
-
-Seseragi言語（`.ssrg`）のサンプル：
-
-```seseragi
-// 基本的な関数定義
-fn add a: Int -> b: Int -> Int = a + b
-
-// 関数適用演算子の使用例
-fn double x: Int -> Int = x * 2
-
-// Maybe型による安全な処理
-let someValue = Just 42
-let nothingValue = Nothing
-
-// 関数適用演算子（$）
-let result = toString $ add 5 3
-
-// 実行例
-print $ add 10 5     // 15
-print $ double 7     // 14
-print someValue      // { tag: "Just", value: 42 }
-print result         // "8"
-```
-
-## Seseragiコマンドライン
-
-### インストール
-
-```bash
-# 依存関係をインストール
+# インストール
 bun install
 
-# 開発用ビルド
-bun run build
+# Hello World
+echo 'let message = "Hello, Seseragi!"
+print message' > hello.ssrg
 
-# seseragiコマンドをグローバルにインストール（オプション）
-npm link
+# 実行
+seseragi run hello.ssrg
 ```
 
-### コマンド一覧
-
-#### `seseragi run` - 直接実行
-
-Seseragiファイルを直接実行します：
+## 基本的な使い方
 
 ```bash
-# 基本的な実行
-seseragi run examples/tutorial.ssrg
+# Seseragiファイルを直接実行
+seseragi run example.ssrg
 
-# デバッグ用（一時ファイルを保持）
-seseragi run examples/tutorial.ssrg --keep-temp
-
-# カスタム一時ディレクトリ指定
-seseragi run examples/tutorial.ssrg --temp-dir ./tmp
-```
-
-#### `seseragi compile` - TypeScriptコンパイル
-
-SeseragiファイルをTypeScriptにコンパイルします：
-
-```bash
-# 基本的なコンパイル
+# TypeScriptにコンパイル
 seseragi compile input.ssrg --output output.ts
 
-# ファイル監視モード
-seseragi compile input.ssrg --output output.ts --watch
-
-# 関数宣言スタイル使用
-seseragi compile input.ssrg --output output.ts --function-declarations
-
-# コメントなしで出力
-seseragi compile input.ssrg --output output.ts --no-comments
-
-# ランタイムモード指定
-seseragi compile input.ssrg --output output.ts --runtime embedded
-seseragi compile input.ssrg --output output.ts --runtime import
-seseragi compile input.ssrg --output output.ts --runtime minimal
-```
-
-#### `seseragi format` - コードフォーマット
-
-Seseragiファイルをフォーマットします：
-
-```bash
-# ファイルをフォーマット（標準出力）
-seseragi format input.ssrg
-
-# インプレース編集
+# コードフォーマット
 seseragi format input.ssrg --in-place
 
-# フォーマットチェック
-seseragi format input.ssrg --check
-
-# 出力ファイル指定
-seseragi format input.ssrg --output formatted.ssrg
+# ファイル監視でコンパイル
+seseragi compile input.ssrg --output output.ts --watch
 ```
 
-### 使用例
-
-#### 開発ワークフロー
-
-```bash
-# 1. Seseragiファイルを作成
-echo 'print "Hello, Seseragi!"' > hello.ssrg
-
-# 2. コードをフォーマット
-seseragi format hello.ssrg --in-place
-
-# 3. 直接実行して動作確認
-seseragi run hello.ssrg
-
-# 4. TypeScriptにコンパイル
-seseragi compile hello.ssrg --output hello.ts
-
-# 5. 生成されたTypeScriptを確認
-cat hello.ts
-```
-
-#### 継続的開発
-
-```bash
-# ファイル監視モードでコンパイル
-seseragi compile src/main.ssrg --output dist/main.ts --watch
-
-# 別ターミナルで実行テスト
-seseragi run src/main.ssrg
-```
-
-### ランタイムモードの説明
-
-- **`minimal`** (デフォルト): 必要な機能のみを含む最小ランタイム
-- **`embedded`**: 全機能を含む埋め込み式ランタイム  
-- **`import`**: 外部ランタイムライブラリからインポート
-
-### 出力例
-
-```bash
-$ seseragi run hello.ssrg
-Parsing hello.ssrg...
-Generating TypeScript code...
-Running...
-
-Hello, Seseragi!
-
-$ seseragi compile hello.ssrg --output hello.ts
-Parsing hello.ssrg...
-Generating TypeScript code...
-✓ Compiled to hello.ts
-```
-
-### モナド演算子の例
+## サンプルコード
 
 ```seseragi
-fn double x: Int -> Int = x * 2
-fn add a: Int -> b: Int -> Int = a + b
-fn increment x: Int -> Maybe<Int> = Just (x + 1)
+// Hello World
+print "Hello world"
 
-// ファンクター演算子 (<$>)
-let doubled = double <$> Just 21    // Just 42
+// 基本的な変数・関数定義
+let name = "Alice"
+fn greet name: String -> String = "Hello " + name
+print $ greet name
 
-// アプリカティブ演算子 (<*>)
-let added = Just add <*> Just 10 <*> Just 5    // Just 15
+// 関数の自動カリー化・部分適用
+fn add x: Int -> y: Int -> Int = x + y
+let addTen = add 10
+print $ addTen 20  // 30
 
-// モナド演算子 (>>=)
-let chained = Just 20 >>= increment    // Just 21
+// 構造体定義と演算子オーバーロード
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn square self -> Point {
+    let Point { x, y } = self
+    Point { x: x * x, y: y * y }
+  }
+
+  operator + self -> other -> Point {
+    Point { x: self.x + other.x, y: self.y + other.y }
+  }
+  operator * self -> scalar: Int -> Point {
+    Point { x: self.x * scalar, y: self.y * scalar }
+  }
+}
+
+let p1 = Point { x: 3, y: 4 }
+let p2 = Point { x: 1, y: 2 }
+show $ p1 square() // Point { x: 9, y: 16 }
+show $ p1 + p2 * 3  // Point { x: 6, y: 10 }
+
+// 配列とリストの使い分け
+let array = [1, 2, 3, 4, 5]     // Array - インデックスアクセス
+let list = `[1, 2, 3, 4, 5]     // List - head/tail操作
+
+show $ [x * x | x <- 1..=5]     // 配列内包表記: [1, 4, 9, 16, 25]
+show $ ^list                    // リストhead: Just 1
+show $ >>list                   // リストtail: `[2, 3, 4, 5]
 ```
 
 ## VS Code拡張
 
-Seseragi言語用のVS Code拡張が含まれています：
+1. プロジェクトをVS Codeで開く
+2. 拡張機能が自動でインストールされる
+3. `.ssrg`ファイルで構文ハイライト、型チェックが有効になる
 
-### 機能
-- ✅ シンタックスハイライト
-- ✅ 括弧の自動補完
-- ✅ コメントサポート
-- ✅ 言語固有の設定
+## 開発・ドキュメント
 
-### セットアップ
-1. `.ssrg` 拡張子のファイルを作成
-2. 自動的にシンタックスハイライトが適用される
-3. サンプル: `examples/sample.ssrg`
-
-## 開発情報
-
-### 技術スタック
-- **言語**: TypeScript/JavaScript
-- **パーサー**: 手書き再帰降下パーサー
-- **テスト**: Bun Test
-- **ビルド**: Bun
-- **ランタイム**: [Bun](https://bun.sh)
-
-### プロジェクト構造
-```
-src/
-├── lexer.ts      # 字句解析器
-├── parser.ts     # 構文解析器
-├── ast.ts        # 抽象構文木定義
-├── codegen.ts    # TypeScriptコード生成
-└── main.ts       # メインエントリーポイント
-
-tests/            # テストファイル
-examples/         # Seseragiサンプルコード
-.vscode/          # VS Code拡張とワークスペース設定
-```
-
-### 開発コマンド
-```bash
-# 開発サーバー
-bun run dev
-
-# ビルド
-bun run build:all
-
-# テスト
-bun test
-bun run test:watch
-
-# 品質チェック
-bun run typecheck
-bun run lint
-bun run format
-```
-
-## コントリビューション
-
-詳細な開発ガイドは `CLAUDE.md` を参照してください。
+- **開発者向けガイド**: [CLAUDE.md](./CLAUDE.md)
+- **サンプルコード**: [examples/](./examples/)
 
 ## ライセンス
 
-MIT License
+Apache-2.0
+
+## 技術スタック
+
+- **Runtime**: [Bun](https://bun.sh)
+- **Target**: TypeScript/JavaScript

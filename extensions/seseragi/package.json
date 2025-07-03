@@ -4,6 +4,7 @@
   "description": "Syntax highlighting and language support for Seseragi functional programming language",
   "version": "0.7.4",
   "publisher": "seseragi-dev",
+  "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -73,9 +74,7 @@
   ],
   "main": "./out/extension.js",
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "compile": "tsc -p ./"
   },
   "devDependencies": {
     "@types/vscode": "^1.74.0",
