@@ -26,10 +26,7 @@
       "runtimeArgs": [
         "run",
         "${workspaceFolder}/src/cli.ts",
-        "compile",
-        "${file}",
-        "--output",
-        "${fileDirname}/${fileBasenameNoExtension}.ts"
+        "${file}"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"

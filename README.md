@@ -29,14 +29,26 @@ seseragi run hello.ssrg
 # Seseragiファイルを直接実行
 seseragi run example.ssrg
 
-# TypeScriptにコンパイル
-seseragi compile input.ssrg --output output.ts
+# TypeScriptにコンパイル（シンプル版）
+seseragi example.ssrg              # example.ts に出力
 
-# コードフォーマット
-seseragi format input.ssrg --in-place
+# TypeScriptにコンパイル（出力先指定）
+seseragi example.ssrg -o output.ts
+
+# コードフォーマット（上書き）
+seseragi fmt example.ssrg
+
+# コードフォーマット（出力先指定）
+seseragi fmt example.ssrg -o formatted.ssrg
 
 # ファイル監視でコンパイル
-seseragi compile input.ssrg --output output.ts --watch
+seseragi example.ssrg --auto
+
+# ダイレクト実行
+seseragi run example.ssrg
+
+# ファイル監視で実行
+seseragi run example.ssrg --watch
 ```
 
 ## サンプルコード
