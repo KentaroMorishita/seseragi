@@ -42,7 +42,13 @@ seseragi fmt example.ssrg
 seseragi fmt example.ssrg -o formatted.ssrg
 
 # ファイル監視でコンパイル
-seseragi example.ssrg --watch
+seseragi example.ssrg --auto
+
+# ダイレクト実行
+seseragi run example.ssrg
+
+# ファイル監視で実行
+seseragi run example.ssrg --watch
 ```
 
 ## サンプルコード

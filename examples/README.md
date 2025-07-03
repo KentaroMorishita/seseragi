@@ -106,6 +106,15 @@ seseragi run examples/08-array-list-conversion.ssrg
 seseragi run examples/01-advanced-features.ssrg
 ```
 
+### 🔄 ファイル監視で実行
+ファイルを変更するたびに自動実行したい場合：
+```bash
+# ファイル監視で実行（開発中に便利）
+seseragi run examples/02-tutorial.ssrg --watch
+# or 短縮形
+seseragi run examples/02-tutorial.ssrg -w
+```
+
 ### 📂 コンパイル後実行
 ```bash
 # コンパイル（シンプル版）
@@ -120,24 +129,24 @@ bun examples/02-tutorial.ts
 
 ## 学習の進め方
 
-1. **`tutorial.ssrg`から開始** - 基本概念を理解
+1. **`02-tutorial.ssrg`から開始** - 基本概念を理解
    ```bash
-   seseragi run examples/tutorial.ssrg
+   seseragi run examples/02-tutorial.ssrg
    ```
 
-2. **`maybe-example.ssrg`でMaybe型を学習** - 安全な計算方法を理解
+2. **`03-maybe-monad.ssrg`でMaybe型を学習** - 安全な計算方法を理解
    ```bash
-   seseragi run examples/maybe-example.ssrg
+   seseragi run examples/03-maybe-monad.ssrg
    ```
 
-3. **`either-example.ssrg`でEither型を学習** - エラーハンドリング方法を理解
+3. **`04-either-monad.ssrg`でEither型を学習** - エラーハンドリング方法を理解
    ```bash
-   seseragi run examples/either-example.ssrg
+   seseragi run examples/04-either-monad.ssrg
    ```
 
-4. **`advanced-features.ssrg`で将来機能を確認** - 言語の方向性を理解
+4. **`01-advanced-features.ssrg`で将来機能を確認** - 言語の方向性を理解
    ```bash
-   seseragi run examples/advanced-features.ssrg
+   seseragi run examples/01-advanced-features.ssrg
    ```
 
 ## 実装済み機能
