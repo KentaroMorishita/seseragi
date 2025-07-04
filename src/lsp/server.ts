@@ -526,7 +526,7 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
         `Type inference errors: ${JSON.stringify(result.errors, null, 2)}`
       )
     }
-    const typeInfo = getTypeInfoWithInference(ast, wordAtPosition, result)
+    const typeInfo = getTypeInfoWithInference(ast, wordAtPosition, result, offset, text)
     if (typeInfo) {
       connection.console.log(
         `[SESERAGI LSP DEBUG] Returning type info: ${typeInfo}`
@@ -563,7 +563,9 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
 function getTypeInfoWithInference(
   ast: any,
   symbol: string,
-  inferenceResult: any
+  inferenceResult: any,
+  offset: number,
+  text: string
 ): string | null {
   try {
     // First check if this is a struct definition
@@ -576,7 +578,9 @@ function getTypeInfoWithInference(
     const symbolInfo = findSymbolWithEnhancedInference(
       ast,
       symbol,
-      inferenceResult
+      inferenceResult,
+      offset,
+      text
     )
     if (symbolInfo) {
       // Debug logging to understand what type we're getting
@@ -771,10 +775,14 @@ function handleFieldAccessHover(
     const result = typeInference.infer(ast)
 
     // Find the object's type
+    // Note: For field access, we use offset=0 as a temporary workaround
+    // This should be improved to get the actual text context
     const objectTypeInfo = findSymbolWithEnhancedInference(
       ast,
       fieldAccessInfo.objectName,
-      result
+      result,
+      0,
+      ""
     )
     if (!objectTypeInfo) {
       connection.console.log(
@@ -1107,8 +1115,12 @@ function findSymbolInStatement(
 function findSymbolWithEnhancedInference(
   ast: any,
   symbol: string,
-  inferenceResult: any
+  inferenceResult: any,
+  offset: number,
+  text: string
 ): any {
+  connection.console.log(`[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`)
+  
   if (!ast.statements) {
     return null
   }
@@ -1138,23 +1150,35 @@ function findSymbolWithEnhancedInference(
       }
     }
 
-    // Check function parameters for the symbol
+    // Check function parameters for the symbol - but only for the containing function
     if (statement.kind === "FunctionDeclaration" && statement.parameters) {
-      for (const param of statement.parameters) {
-        if (param.name === symbol) {
-          let paramType = param.type
-          if (
-            paramType &&
-            inferenceResult.substitution &&
-            inferenceResult.substitution.apply
-          ) {
-            paramType = inferenceResult.substitution.apply(paramType)
-          }
-          return {
-            type: "parameter",
-            name: symbol,
-            finalType: paramType,
-            hasExplicitType: true,
+      // Find which function contains the current offset
+      const containingFunction = findContainingFunction(ast, offset, text)
+      
+      // Only check parameters if this is the containing function
+      if (containingFunction && containingFunction.name === statement.name) {
+        for (const param of statement.parameters) {
+          if (param.name === symbol) {
+            let paramType = param.type
+            if (
+              paramType &&
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
+              paramType = inferenceResult.substitution.apply(paramType)
+            }
+            
+            connection.console.log(
+              `[SESERAGI LSP DEBUG] Found parameter ${symbol} in containing function ${statement.name}`
+            )
+            
+            return {
+              type: "parameter",
+              name: symbol,
+              finalType: paramType,
+              hasExplicitType: true,
+              context: "parameter"
+            }
           }
         }
       }
@@ -2849,6 +2873,61 @@ connection.onDocumentFormatting(
     }
   }
 )
+
+// Helper function to find which function contains the given offset
+function findContainingFunction(ast: any, offset: number, text: string): any {
+  if (!ast.statements) {
+    connection.console.log("[SESERAGI LSP DEBUG] No statements in AST")
+    return null
+  }
+
+  connection.console.log(`[SESERAGI LSP DEBUG] Finding containing function for offset ${offset}`)
+  
+  for (const statement of ast.statements) {
+    if (statement.kind === "FunctionDeclaration") {
+      // Calculate the function's text range more accurately
+      // Start from the beginning of the function declaration
+      const funcStart = getPositionFromLineColumn(text, statement.line, 1) // Start of the line
+      
+      // For a single-line function, we need to include the entire line
+      const lines = text.split('\n')
+      const functionLine = lines[statement.line - 1] || ""
+      const functionLineEnd = funcStart + functionLine.length
+      
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Function ${statement.name}: line ${statement.line}, funcStart=${funcStart}, lineEnd=${functionLineEnd}, offset=${offset}`
+      )
+      
+      // Check if offset is within this function line
+      // We use a more inclusive range check
+      if (offset >= funcStart && offset <= functionLineEnd) {
+        connection.console.log(
+          `[SESERAGI LSP DEBUG] Found containing function: ${statement.name}`
+        )
+        return statement
+      }
+    }
+  }
+
+  connection.console.log("[SESERAGI LSP DEBUG] No containing function found")
+  return null
+}
+
+// Helper function to convert line/column to offset
+function getPositionFromLineColumn(text: string, line: number, column: number): number {
+  const lines = text.split('\n')
+  let offset = 0
+  
+  // Add lengths of all lines before the target line
+  for (let i = 0; i < line - 1 && i < lines.length; i++) {
+    offset += lines[i].length + 1 // +1 for newline character
+  }
+  
+  // Add the column offset
+  offset += Math.max(0, column - 1)
+  
+  return offset
+}
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
