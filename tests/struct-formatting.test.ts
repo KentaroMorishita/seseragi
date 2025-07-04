@@ -44,6 +44,22 @@ test("format complex struct", () => {
   expect(formatSeseragiCode(input.trim())).toBe(expected)
 })
 
+test("format bind operator", () => {
+  const input = `let result = list>>=func`
+  const expected = `let result = list >>= func
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
+test("format monad operators", () => {
+  const input = `let mapped = list<$>(\\x -> x * 2)
+let applied = funcs<*>values`
+  const expected = `let mapped = list <$> (\\x -> x * 2)
+let applied = funcs <*> values
+`
+  expect(formatSeseragiCode(input.trim())).toBe(expected)
+})
+
 // Nested structs are complex and may require manual formatting
 // The main goal is to handle simple cases like Vector {x,y} -> Vector { x, y }
 

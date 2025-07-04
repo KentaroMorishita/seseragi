@@ -382,11 +382,16 @@ export function normalizeOperatorSpacing(code: string): string {
         protectedParts.push(" <*> ") // 適切なスペーシングで保存
         return `__PROTECTED_${index}__`
       })
+      // バインド演算子も保護
+      .replace(/\s*>>=\s*/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push(" >>= ") // 適切なスペーシングで保存
+        return `__PROTECTED_${index}__`
+      })
 
     // その他の行は演算子のスペーシングを正規化
     processed = processed
-      // 複数文字演算子
-      .replace(/\s*>>=\s*/g, " >>= ") // バインド演算子
+      // 複数文字演算子（>>=は保護済み）
       .replace(/\s*->\s*/g, " -> ") // 関数矢印
       .replace(/\s*==\s*/g, " == ") // 等価演算子
       .replace(/\s*!=\s*/g, " != ") // 不等価演算子
