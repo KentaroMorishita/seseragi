@@ -1,0 +1,163 @@
+// 高度なパターンマッチング機能のサンプル
+// Or-pattern (|) と Guard pattern (when) の使用例
+
+type Color = Red | Green | Blue | Yellow | Purple
+
+type Number = Positive Int | Negative Int | Zero
+
+type Result = Success Int String | Warning String | Error String | Pending
+
+type Shape = Circle Float | Rectangle Float Float
+
+// ===== Or-pattern の例 =====
+
+// 基本的なor-pattern
+let color = Red
+let colorCategory = match color {
+  Red | Blue -> "primary"
+  Green | Yellow -> "secondary"
+  Purple -> "tertiary"
+}
+
+print "=== Or-pattern Examples ==="
+print "Color category:"
+print colorCategory
+
+// 複数のコンストラクタでのor-pattern
+let result = Success 200 "OK"
+let statusType = match result {
+  Success 200 _ | Success 201 _ | Success 204 _ -> "Success response"
+  Success _ _ -> "Other success"
+  Warning _ | Error _ -> "Problem occurred"
+  Pending -> "In progress"
+}
+
+print "Status type:"
+print statusType
+
+// ===== Guard pattern の例 =====
+
+print ""
+print "=== Guard pattern Examples ==="
+
+// 数値の分類（guard pattern使用）
+let number1 = Positive 15
+let classification1 = match number1 {
+  Positive x when x > 10 -> "Large positive"
+  Positive x when x > 0 -> "Small positive"
+  Positive _ -> "Zero positive"
+  Negative x when x < -10 -> "Large negative"
+  Negative _ -> "Small negative"
+  Zero -> "Zero"
+}
+
+let number2 = Positive 3
+let classification2 = match number2 {
+  Positive x when x > 10 -> "Large positive"
+  Positive x when x > 0 -> "Small positive"
+  Positive _ -> "Zero positive"
+  Negative x when x < -10 -> "Large negative"
+  Negative _ -> "Small negative"
+  Zero -> "Zero"
+}
+
+let number3 = Negative 5
+let classification3 = match number3 {
+  Positive x when x > 10 -> "Large positive"
+  Positive x when x > 0 -> "Small positive"
+  Positive _ -> "Zero positive"
+  Negative x when x < -10 -> "Large negative"
+  Negative _ -> "Small negative"
+  Zero -> "Zero"
+}
+
+print "Number classifications:"
+print classification1
+print classification2
+print classification3
+
+// 図形の面積計算（guard patternで条件分岐）
+let shape1 = Circle 5.0
+let category1 = match shape1 {
+  Circle radius when radius > 3.0 -> "Large circle"
+  Circle _ -> "Small circle"
+  Rectangle width height when width * height > 20.0 -> "Large rectangle"
+  Rectangle _ _ -> "Small rectangle"
+}
+
+let shape2 = Rectangle 4.0 6.0
+let category2 = match shape2 {
+  Circle radius when radius > 3.0 -> "Large circle"
+  Circle _ -> "Small circle"
+  Rectangle width height when width * height > 20.0 -> "Large rectangle"
+  Rectangle _ _ -> "Small rectangle"
+}
+
+print ""
+print "Shape categories by area:"
+print category1
+print category2
+
+// ===== 複合パターン（Or-pattern + Guard pattern） =====
+
+print ""
+print "=== Combined Patterns (Or + Guard) ==="
+
+// HTTPレスポンスコードの処理
+type HttpResponse = Ok Int String | ClientError Int String | ServerError Int String
+
+let response1 = Ok 200 "Success"
+let analysis1 = match response1 {
+  Ok code _ when code >= 200 && code < 300 -> "Successful response"
+  ClientError 400 _ | ClientError 401 _ | ClientError 403 _ -> "Auth error"
+  ClientError 404 _ | ClientError 410 _ -> "Not found"
+  ClientError code _ when code >= 400 && code < 500 -> "Other client error"
+  ServerError code _ when code >= 500 -> "Server error"
+  _ -> "Unknown response"
+}
+
+let response2 = ClientError 404 "Not Found"
+let analysis2 = match response2 {
+  Ok code _ when code >= 200 && code < 300 -> "Successful response"
+  ClientError 400 _ | ClientError 401 _ | ClientError 403 _ -> "Auth error"
+  ClientError 404 _ | ClientError 410 _ -> "Not found"
+  ClientError code _ when code >= 400 && code < 500 -> "Other client error"
+  ServerError code _ when code >= 500 -> "Server error"
+  _ -> "Unknown response"
+}
+
+print "HTTP Response analysis:"
+print analysis1
+print analysis2
+
+// 学生の成績評価システム
+type Grade = A Int | B Int | C Int | F Int
+
+let grade1 = A 95
+let evaluation1 = match grade1 {
+  A score when score >= 95 -> "Excellent (A+)"
+  A _ -> "Excellent (A)"
+  B score when score >= 85 -> "Good (B+)"
+  B _ -> "Good (B)"
+  C score when score >= 75 -> "Average (C+)"
+  C _ -> "Average (C)"
+  F score when score < 50 -> "Failing"
+  F _ -> "Poor"
+}
+
+let grade2 = B 82
+let evaluation2 = match grade2 {
+  A score when score >= 95 -> "Excellent (A+)"
+  A _ -> "Excellent (A)"
+  B score when score >= 85 -> "Good (B+)"
+  B _ -> "Good (B)"
+  C score when score >= 75 -> "Average (C+)"
+  C _ -> "Average (C)"
+  F score when score < 50 -> "Failing"
+  F _ -> "Poor"
+}
+
+print ""
+print "Grade evaluations:"
+print evaluation1
+print evaluation2

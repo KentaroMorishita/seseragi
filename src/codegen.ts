@@ -182,6 +182,24 @@ export class CodeGenerator {
         })
         return tupleBindings
 
+      case "OrPattern": {
+        // orパターン: 最初にマッチしたパターンのバインディングを使用
+        // 注意: orパターンのすべてのサブパターンは同じ変数をバインドする必要がある
+        const orPattern = pattern as any // AST.OrPattern
+        if (orPattern.patterns.length > 0) {
+          // 最初のパターンからバインディングを生成
+          // 実際のマッチングは条件で制御される
+          return this.generatePatternBindings(orPattern.patterns[0], valueVar)
+        }
+        return ""
+      }
+
+      case "GuardPattern": {
+        // GuardPattern: 内部パターンのバインディングを生成
+        const guardPattern = pattern as any // AST.GuardPattern
+        return this.generatePatternBindings(guardPattern.pattern, valueVar)
+      }
+
       default:
         return ""
     }
@@ -2109,14 +2127,25 @@ ${indent}}`
 
     for (let i = 0; i < cases.length; i++) {
       const c = cases[i]
-      const condition = this.generatePatternCondition(c.pattern, "matchValue")
-      const bindings = this.generatePatternBindings(c.pattern, "matchValue")
-      const body = this.generateExpression(c.expression)
-
-      if (i === 0) {
-        result += `  if (${condition}) {\n    ${bindings}return ${body};\n  }`
+      
+      // GuardPatternの場合は特別な処理が必要
+      if (c.pattern.kind === "GuardPattern") {
+        const guardPattern = c.pattern as any // AST.GuardPattern
+        const baseCondition = this.generatePatternCondition(guardPattern.pattern, "matchValue")
+        const bindings = this.generatePatternBindings(guardPattern.pattern, "matchValue")
+        const guardCondition = this.generateExpression(guardPattern.guard)
+        const body = this.generateExpression(c.expression)
+        
+        // GuardPatternでは常にifを使用（else ifではなく）
+        // これにより、ガード条件が失敗したときに次のパターンへ続行できる
+        result += `  if (${baseCondition}) {\n    ${bindings}if (${guardCondition}) {\n      return ${body};\n    }\n  }`
       } else {
-        result += ` else if (${condition}) {\n    ${bindings}return ${body};\n  }`
+        const condition = this.generatePatternCondition(c.pattern, "matchValue")
+        const bindings = this.generatePatternBindings(c.pattern, "matchValue")
+        const body = this.generateExpression(c.expression)
+
+        // 通常のパターンは常に'if'を使用（ガードパターンと同様の連続的チェック）
+        result += `  if (${condition}) {\n    ${bindings}return ${body};\n  }`
       }
     }
 
@@ -2215,6 +2244,23 @@ ${indent}}`
       case "WildcardPattern":
         // ワイルドカードパターン
         return "true"
+
+      case "OrPattern": {
+        // orパターン: いずれかのサブパターンがマッチすれば良い
+        const orPattern = pattern as any // AST.OrPattern
+        const orConditions = orPattern.patterns.map((subPattern: any) => {
+          return this.generatePatternCondition(subPattern, valueVar)
+        })
+        return `(${orConditions.join(" || ")})`
+      }
+
+      case "GuardPattern": {
+        // ガードパターン: パターンがマッチし、かつガード条件が真である場合のみマッチ
+        const guardPattern = pattern as any // AST.GuardPattern
+        const patternCondition = this.generatePatternCondition(guardPattern.pattern, valueVar)
+        const guardCondition = this.generateExpression(guardPattern.guard)
+        return `(${patternCondition} && (${guardCondition}))`
+      }
 
       default:
         // 後方互換性のための古い形式をチェック

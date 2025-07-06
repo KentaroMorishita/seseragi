@@ -775,6 +775,16 @@ export class WildcardPattern extends Pattern {
   }
 }
 
+export class OrPattern extends Pattern {
+  kind = "OrPattern"
+  patterns: Pattern[]
+
+  constructor(patterns: Pattern[], line: number, column: number) {
+    super(line, column)
+    this.patterns = patterns
+  }
+}
+
 export class TuplePattern extends Pattern {
   kind = "TuplePattern"
   patterns: Pattern[]
@@ -829,6 +839,43 @@ export class StructPattern extends Pattern {
     super(line, column)
     this.structName = structName
     this.fields = fields
+  }
+}
+
+export class GuardPattern extends Pattern {
+  kind = "GuardPattern"
+  pattern: Pattern
+  guard: Expression
+
+  constructor(
+    pattern: Pattern,
+    guard: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.pattern = pattern
+    this.guard = guard
+  }
+}
+
+export class ArrayPattern extends Pattern {
+  kind = "ArrayPattern"
+  patterns: Pattern[]
+  hasRest: boolean
+  restPattern?: Pattern
+
+  constructor(
+    patterns: Pattern[],
+    hasRest: boolean,
+    restPattern: Pattern | undefined,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.patterns = patterns
+    this.hasRest = hasRest
+    this.restPattern = restPattern
   }
 }
 

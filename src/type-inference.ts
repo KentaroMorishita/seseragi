@@ -4350,6 +4350,17 @@ export class TypeInferenceSystem {
         // ワイルドカードパターン: 何にでもマッチし、変数をバインドしない
         break
 
+      case "OrPattern": {
+        // orパターン: すべてのサブパターンが同じ型である必要がある
+        const orPattern = pattern as AST.OrPattern
+        
+        // 各サブパターンに対して制約を生成
+        for (const subPattern of orPattern.patterns) {
+          this.generateConstraintsForPattern(subPattern, expectedType, env)
+        }
+        break
+      }
+
       case "TuplePattern": {
         // タプルパターン: (x, y, z) = tuple
         const tuplePattern = pattern as AST.TuplePattern
@@ -4385,6 +4396,29 @@ export class TypeInferenceSystem {
             env
           )
         }
+        break
+      }
+
+      case "GuardPattern": {
+        // ガードパターン: pattern when condition
+        const guardPattern = pattern as AST.GuardPattern
+
+        // 基底パターンの型制約を生成
+        this.generateConstraintsForPattern(guardPattern.pattern, expectedType, env)
+
+        // ガード条件の型制約を生成（Bool型である必要がある）
+        const guardType = this.generateConstraintsForExpression(guardPattern.guard, env)
+        const boolType = new AST.PrimitiveType("Bool", pattern.line, pattern.column)
+        
+        this.addConstraint(
+          new TypeConstraint(
+            guardType,
+            boolType,
+            pattern.line,
+            pattern.column,
+            "Guard condition must be Bool"
+          )
+        )
         break
       }
 

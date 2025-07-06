@@ -1277,6 +1277,41 @@ export class Parser {
   }
 
   private pattern(): AST.Pattern {
+    // Parse primary pattern first
+    let pattern = this.primaryPattern()
+    
+    // Check for guard pattern (when)
+    if (this.match(TokenType.WHEN)) {
+      const guard = this.expression()
+      pattern = new AST.GuardPattern(
+        pattern,
+        guard,
+        pattern.line,
+        pattern.column
+      )
+    }
+    
+    // Check for or patterns (|)
+    while (this.match(TokenType.PIPE)) {
+      const patterns = [pattern]
+      patterns.push(this.primaryPattern())
+      
+      // Continue collecting patterns separated by |
+      while (this.match(TokenType.PIPE)) {
+        patterns.push(this.primaryPattern())
+      }
+      
+      pattern = new AST.OrPattern(
+        patterns, 
+        pattern.line, 
+        pattern.column
+      )
+    }
+    
+    return pattern
+  }
+
+  private primaryPattern(): AST.Pattern {
     // Wildcard pattern
     if (this.match(TokenType.WILDCARD)) {
       return new AST.WildcardPattern(
