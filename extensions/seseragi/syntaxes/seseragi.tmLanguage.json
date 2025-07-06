@@ -10,6 +10,9 @@
       "include": "#list-sugar"
     },
     {
+      "include": "#strings"
+    },
+    {
       "include": "#keywords"
     },
     {
@@ -23,9 +26,6 @@
     },
     {
       "include": "#functions"
-    },
-    {
-      "include": "#strings"
     },
     {
       "include": "#numbers"
@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "keyword.control.seseragi",
-          "match": "\\b(fn|let|type|struct|impl|monoid|operator|effectful|match|import|as|if|then|else)\\b"
+          "match": "\\b(fn|let|type|struct|impl|monoid|operator|effectful|match|when|import|as|if|then|else)\\b"
         }
       ]
     },
@@ -270,7 +270,7 @@
         },
         {
           "name": "string.template.seseragi",
-          "begin": "`",
+          "begin": "`(?!\\[)",
           "end": "`",
           "patterns": [
             {
