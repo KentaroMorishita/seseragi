@@ -470,6 +470,11 @@ function normalizeStructure(obj: any): any {
     return { "@@type": "Left", value: normalizeStructure(obj.value) }
   }
 
+  // ADT型 (type: string, data: array の形式)
+  if (obj.type && Array.isArray(obj.data)) {
+    return { "@@type": "ADT", constructor: obj.type, args: obj.data.map(normalizeStructure) }
+  }
+
   // 配列
   if (Array.isArray(obj)) {
     return obj.map(normalizeStructure)
@@ -502,6 +507,19 @@ function beautifySeseragiTypes(json: string): string {
   json = json.replace(
     /\{\s*"@@type":\s*"Left",\s*"value":\s*(.+?)\s*\}/g,
     "Left($1)"
+  )
+
+  // ADT型の変換 (Circle(5), Rectangle(10, 20) 形式)
+  json = json.replace(
+    /\{\s*"@@type":\s*"ADT",\s*"constructor":\s*"(.+?)",\s*"args":\s*\[([^\]]*)\]\s*\}/gs,
+    (match, constructor, args) => {
+      const cleanArgs = args.replace(/\s*\n\s*/g, " ").trim()
+      if (cleanArgs === "") {
+        return constructor
+      } else {
+        return `${constructor}(${cleanArgs})`
+      }
+    }
   )
 
   return json

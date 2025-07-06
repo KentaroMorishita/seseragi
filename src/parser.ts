@@ -26,6 +26,9 @@ export class Parser {
   private typeVarCounter: number = 0
   private methodRegistry: Map<string, Set<string>> = new Map() // typeName -> method names
   private variableTypes: Map<string, string> = new Map() // variable name -> type name
+  private adtNames: Set<string> = new Set() // ADT型名の管理
+  private structNames: Set<string> = new Set() // struct名の管理
+  private adtDefinitions: Map<string, AST.TypeField[]> = new Map() // ADT名 -> コンストラクタ定義
 
   constructor(input: string | Token[]) {
     if (typeof input === "string") {
@@ -387,6 +390,14 @@ export class Parser {
   private typeDeclaration(): AST.TypeDeclaration | AST.TypeAliasDeclaration {
     const name = this.consume(TokenType.IDENTIFIER, "Expected type name").value
 
+    // 名前の重複チェック
+    if (this.structNames.has(name)) {
+      throw new ParseError(
+        `Type '${name}' conflicts with existing struct. Use a different name.`,
+        this.previous()
+      )
+    }
+
     // Check if this is a union type (type Name = A | B | C), type alias (type Name = Type), or struct type (type Name { field: Type })
     if (this.match(TokenType.ASSIGN)) {
       this.skipNewlines() // Allow newlines after '='
@@ -401,8 +412,10 @@ export class Parser {
         // Skip leading newlines/whitespace
         this.skipNewlines()
 
-        // Check for function type parentheses
-        if (this.check(TokenType.LEFT_PAREN)) {
+        // Check if we immediately see a pipe (multi-line ADT format)
+        if (this.check(TokenType.PIPE)) {
+          isTypeAlias = false // This is a union type
+        } else if (this.check(TokenType.LEFT_PAREN)) {
           // Function type like (Int -> Bool) - always a type alias
           isTypeAlias = true
         } else if (this.check(TokenType.IDENTIFIER)) {
@@ -453,10 +466,12 @@ export class Parser {
         )
       } else {
         // Union type: type Color = Red | Green | Blue
+        this.adtNames.add(name) // ADT名を登録
         return this.parseUnionType(name)
       }
     } else {
       // Struct type: type Point { x: Int, y: Int }
+      this.adtNames.add(name) // struct型も型名として登録
       return this.parseStructType(name)
     }
   }
@@ -534,6 +549,9 @@ export class Parser {
       }
     }
 
+    // ADT定義を保存（コンストラクタ判定用）
+    this.adtDefinitions.set(name, variants)
+
     return new AST.TypeDeclaration(
       name,
       variants,
@@ -568,12 +586,50 @@ export class Parser {
     )
   }
 
+  // ADTコンストラクタの引数数を動的に取得
+  private getConstructorArgCount(constructorName: string): number {
+    // 決め打ちのビルトインコンストラクタ
+    if (constructorName === "Cons") return 2
+    if (constructorName === "Just" || constructorName === "Left" || constructorName === "Right") return 1
+    if (constructorName === "Nothing" || constructorName === "Empty") return 0
+
+    // ユーザー定義ADTから動的に判定
+    for (const [adtName, variants] of this.adtDefinitions) {
+      for (const variant of variants) {
+        if (variant.name === constructorName) {
+          // Tupleの場合は引数数を取得
+          if (variant.type instanceof AST.GenericType && variant.type.name === "Tuple") {
+            return variant.type.typeArguments.length
+          }
+          // Unitの場合は引数なし
+          if (variant.type instanceof AST.PrimitiveType && variant.type.name === "Unit") {
+            return 0
+          }
+          // その他の場合は1つの引数
+          return 1
+        }
+      }
+    }
+
+    return 0 // デフォルトは引数なし
+  }
+
   private structDeclaration(): AST.StructDeclaration {
     const structToken = this.previous()
     const name = this.consume(
       TokenType.IDENTIFIER,
       "Expected struct name"
     ).value
+
+    // 名前の重複チェック
+    if (this.adtNames.has(name)) {
+      throw new ParseError(
+        `Struct '${name}' conflicts with existing type. Use a different name.`,
+        this.previous()
+      )
+    }
+
+    this.structNames.add(name) // struct名を登録
 
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after struct name")
     this.skipNewlines()
@@ -2087,12 +2143,7 @@ export class Parser {
           } else {
             // 関数型言語風の括弧なしの場合: Cons 1 2 または Cons (expr) (expr)
             let argCount = 0
-            const maxArgs =
-              name === "Cons"
-                ? 2
-                : name === "Just" || name === "Left" || name === "Right"
-                  ? 1
-                  : 0
+            const maxArgs = this.getConstructorArgCount(name)
 
             while (
               argCount < maxArgs &&

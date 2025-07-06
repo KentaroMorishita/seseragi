@@ -3300,15 +3300,23 @@ export class TypeInferenceSystem {
     )
   }
 
-  // 型エイリアスの解決
-  private resolveTypeAlias(type: AST.Type): AST.Type {
+  // 型エイリアスの解決（循環参照対応版）
+  private resolveTypeAlias(type: AST.Type, visited: Set<string> = new Set()): AST.Type {
     if (type.kind === "PrimitiveType") {
       const pt = type as AST.PrimitiveType
+      
+      // 循環参照チェック
+      if (visited.has(pt.name)) {
+        return type // 循環を検出したら元の型を返す
+      }
+      
       // 現在の環境で型エイリアスをチェック
       for (const [name, aliasedType] of this.currentEnvironment) {
         if (name === pt.name) {
-          // 再帰的にエイリアスを解決
-          return this.resolveTypeAlias(aliasedType)
+          // 訪問済みに追加して再帰的にエイリアスを解決
+          const newVisited = new Set(visited)
+          newVisited.add(pt.name)
+          return this.resolveTypeAlias(aliasedType, newVisited)
         }
       }
     }

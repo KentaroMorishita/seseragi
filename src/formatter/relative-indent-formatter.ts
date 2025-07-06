@@ -371,6 +371,12 @@ export function normalizeOperatorSpacing(code: string): string {
         protectedParts.push(match)
         return `__PROTECTED_${index}__`
       })
+      // 範囲演算子 ..= を保護
+      .replace(/\.\.\s*=/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push("..=")
+        return `__PROTECTED_${index}__`
+      })
       // モナド演算子を保護（スペースも含めて）
       .replace(/\s*<\$>\s*/g, (match) => {
         const index = protectedParts.length
@@ -383,9 +389,15 @@ export function normalizeOperatorSpacing(code: string): string {
         return `__PROTECTED_${index}__`
       })
       // バインド演算子も保護
+      .replace(/^\s*>>=\s*/g, (match) => {
+        // 行頭の場合はスペースなしで保護
+        const index = protectedParts.length
+        protectedParts.push(">>= ") // 行頭なので前のスペースなし
+        return `__PROTECTED_${index}__`
+      })
       .replace(/\s*>>=\s*/g, (match) => {
         const index = protectedParts.length
-        protectedParts.push(" >>= ") // 適切なスペーシングで保存
+        protectedParts.push(" >>= ") // 行中の場合は適切なスペーシング
         return `__PROTECTED_${index}__`
       })
 
@@ -397,22 +409,38 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/\s*!=\s*/g, " != ") // 不等価演算子
       .replace(/\s*<=\s*/g, " <= ") // 以下演算子
       .replace(/\s*>=\s*/g, " >= ") // 以上演算子
-      // コロンのスペーシング（型注釈以外は前後にスペース）
-      .replace(/\s*:\s*/g, " : ") // まず全てのコロンに前後スペース
-      .replace(/\s*:\s*$/g, " :") // 行末の場合は後ろのスペースなし
-      // 型注釈と構造体フィールドの修正（前にスペースなし）
-      .replace(/(let\s+\w+)\s:\s/g, "$1: ") // let name : Type
-      .replace(/(\w+)\s:\s([A-Z])/g, "$1: $2") // name : Type  
-      .replace(/(\w+)\s:\s(?=\s*\w)/g, "$1: ") // 構造体フィールド name : value
-      .replace(/{\s*(\w+)\s:\s/g, "{ $1: ") // 構造体内 { name : value
-      // 三項演算子の特別処理（? の後の : は前後にスペース）
-      .replace(/\?\s*([^:?]*?[^:\s])\s*:\s*/g, "? $1 : ")
+      // コロンのスペーシング処理（具体的パターンで判定）
+      // 1. 三項演算子の : （前後スペース）
+      .replace(/\?\s*([^?:]*?)\s*:\s*/g, "? $1 : ")
+      // 2. 型注釈（右のみスペース）- Cons演算子より先に処理
+      .replace(/(let\s+\w+)\s*:\s*([A-Z]\w*)/g, "$1: $2") // let name: Type
+      .replace(/(\w+)\s*:\s*([A-Z]\w*)/g, (match, p1, p2) => {
+        // 型注釈: 大文字で始まる型名の場合（let以外）
+        return `${p1}: ${p2}`;
+      })
+      // 3. Cons演算子チェーン処理（数値のみに限定）
+      .replace(/(\d+)\s*:\s*(\d+)/g, "$1 : $2") // 1 : 2
+      .replace(/(\d+)\s*:\s*(\[)/g, "$1 : $2") // 3 : []
+      .replace(/(\w+)\s*:\s*(\[)/g, (match, p1, p2) => {
+        // レコードフィールドでない場合のみCons演算子として扱う
+        return `${p1} : ${p2}`;
+      })
+      // 4. 構造体内のフィールド（右のみスペース）- Cons演算子処理の後に実行
+      .replace(/{\s*(\w+)\s*:\s*/g, "{ $1: ")
+      .replace(/,\s*(\w+)\s*:\s*/g, ", $1: ")
       // 代入演算子 =（==, >=, <=, >>=, != でない場合のみ）
       .replace(/(?<![!<>=>])\s*=\s*(?!=)/g, " = ")
       // 算術演算子
       .replace(/\s*\+\s*/g, " + ")
       .replace(/\s*\*\s*/g, " * ")
       .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
+      // パイプ演算子の保護（行頭の場合）
+      .replace(/^\s*\|\s*/g, (match) => {
+        // 行頭の場合はスペースなしで保護
+        const index = protectedParts.length
+        protectedParts.push("| ") // 行頭なので前のスペースなし
+        return `__PROTECTED_${index}__`
+      })
       // その他の演算子
       .replace(/\s*\|\s*/g, " | ")
       .replace(/\s*~\s*/g, " ~ ")
@@ -442,6 +470,8 @@ export function normalizeOperatorSpacing(code: string): string {
   })
 
   return processedLines.join("\n")
+    // 行末の = や : の後にスペースがある場合は削除
+    .replace(/(=|\?[^:]*:)\s+$/gm, "$1")
 }
 
 // match式のケース行かどうかを判定

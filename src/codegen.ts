@@ -1229,14 +1229,14 @@ const show = (value) => {
               field.type instanceof GenericType &&
               field.type.name === "Tuple"
             ) {
-              // Variant with associated data
+              // Variant with associated data - use List format
               const dataTypes = field.type.typeArguments
-                .map((t, i) => `data${i}: ${this.generateType(t)}`)
-                .join(", ")
-              return `{ type: '${field.name}', ${dataTypes} }`
+                .map((t) => this.generateType(t))
+                .join(" | ")
+              return `{ type: '${field.name}', data: Array<${dataTypes}> }`
             } else {
-              // Fallback
-              return `{ type: '${field.name}', data: ${this.generateType(field.type)} }`
+              // Fallback - single data as array
+              return `{ type: '${field.name}', data: [${this.generateType(field.type)}] }`
             }
           })
           .join(" | ")
@@ -1256,12 +1256,12 @@ const show = (value) => {
               const params = field.type.typeArguments
                 .map((t, i) => `data${i}: ${this.generateType(t)}`)
                 .join(", ")
-              const dataFields = field.type.typeArguments
+              const dataArray = field.type.typeArguments
                 .map((_, i) => `data${i}`)
                 .join(", ")
-              return `${indent}const ${field.name} = (${params}) => ({ type: '${field.name}' as const, ${dataFields} });`
+              return `${indent}const ${field.name} = (${params}) => ({ type: '${field.name}' as const, data: [${dataArray}] });`
             } else {
-              return `${indent}const ${field.name} = (data: ${this.generateType(field.type)}) => ({ type: '${field.name}' as const, data });`
+              return `${indent}const ${field.name} = (data: ${this.generateType(field.type)}) => ({ type: '${field.name}' as const, data: [data] });`
             }
           })
           .join("\n")
