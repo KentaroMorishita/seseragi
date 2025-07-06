@@ -2,7 +2,7 @@
 
 // レコード型を引数に取る関数
 fn greet props: { name: String, age: Int } -> String =
-  "Hello " + props.name + ", age " + toString(props.age)
+  `Hello ${props.name}, age ${props.age}`
 
 // 基本的な使用
 let result1 = greet { name: "Alice", age: 30 }
@@ -17,11 +17,11 @@ show results
 
 // UI風の関数定義
 fn div props: { className: String, children: Array<String> } -> String {
-  "<div class=" + props.className + ">" + toString (props.children) + "</div>"
+  `<div class="${props.className}">${props.children}</div>`
 }
 
 fn p props: { children: String } -> String =
-  "<p>" + props.children + "</p>"
+  `<p>${props.children}</p>`
 
 // UI風の使用
 let ui1 = div { className: "wrapper", children: ["Hello"] }

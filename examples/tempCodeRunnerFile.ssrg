@@ -1,10 +1,10 @@
 
 // UI風の関数定義
 fn div props: { className: String, children: String } -> String =
-  "<div class=\"" + props.className + "\">" + props.children + "</div>"
+  `<div class="${props.className}">${props.children}</div>`
 
 fn p props: { children: String } -> String =
-  "<p>" + props.children + "</p>"
+  `<p>${props.children}</p>`
 
 // // UI風の使用
 // let ui1 = div { className: "wrapper", children: "Hello" }

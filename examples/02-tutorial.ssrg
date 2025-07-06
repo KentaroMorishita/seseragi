@@ -43,7 +43,7 @@ show "--- Functions ---"
 // 基本的な関数
 fn hello -> String = "Hello world"
 fn double x: Int -> Int = x * 2
-fn greet name: String -> String = "Hello, " + name + "!"
+fn greet name: String -> String = `Hello, ${name}!`
 
 // カリー化された関数
 fn add x: Int -> y: Int -> Int = x + y
@@ -231,8 +231,7 @@ fn createPoint x: Int -> y: Int -> Point {
   Point { x: x, y: y }
 }
 
-fn describePlayer p: Player -> String =
-  p.name + " is " + toString (p.age) + " years old"
+fn describePlayer p: Player -> String = `${p.name} is ${p.age} years old`
 
 // 関数の呼び出し
 let distance = calculateDistance playerPos

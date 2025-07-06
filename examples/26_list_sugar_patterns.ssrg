@@ -20,8 +20,8 @@ print emptyCheck
 // 要素数によるパターンマッチ
 let lengthCheck = match numbers {
   `[] -> "Empty"
-  `[x] -> "Single element: " + toString(x)
-  `[x, y] -> "Pair: " + toString(x) + " and " + toString(y)
+  `[x] -> `Single element: ${x}`
+  `[x, y] -> `Pair: ${x} and ${y}`
   _ -> "Three or more elements"
 }
 
@@ -38,12 +38,12 @@ let headValue = match numbers {
   `[x, ...rest] -> x
 }
 
-print ("Head of list: " + toString(headValue))
+print `Head of list: ${headValue}`
 
 // 最初の要素とrest
 let headTail = match numbers {
   `[] -> "Empty list"
-  `[x, ...rest] -> "Head: " + toString(x) + ", Rest exists"
+  `[x, ...rest] -> `Head: ${x}, Rest exists`
 }
 
 print headTail
@@ -78,15 +78,15 @@ let sumResult = match `[1, 2, 3] {
   _ -> 999  // 仮の値
 }
 
-print ("Sum of [1,2,3]: " + toString(sumResult))
+print `Sum of [1,2,3]: ${sumResult}`
 
 // 設定値のパース
 let config = `["debug", "true"]
 
 let configResult = match config {
-  `["debug", value] -> "Debug mode: " + value
-  `["port", value] -> "Port: " + value
-  `[key, value] -> "Unknown config: " + key + " = " + value
+  `["debug", value] -> `Debug mode: ${value}`
+  `["port", value] -> `Port: ${value}`
+  `[key, value] -> `Unknown config: ${key} = ${value}`
   _ -> "Invalid config format"
 }
 
@@ -102,7 +102,7 @@ let points = `[(1, 2), (3, 4), (5, 6)]
 
 let firstPoint = match points {
   `[] -> "No points"
-  `[(x, y), ...rest] -> "First point: (" + toString(x) + ", " + toString(y) + ")"
+  `[(x, y), ...rest] -> `First point: (${x}, ${y})`
 }
 
 print firstPoint
@@ -116,7 +116,7 @@ let data = `[100, 200]
 
 let dataCheck = match data {
   `[] | `[_] -> "Empty or single element"
-  `[x, y] -> "Pair found: " + toString(x) + ", " + toString(y)
+  `[x, y] -> `Pair found: ${x}, ${y}`
   _ -> "Multiple elements"
 }
 
@@ -138,8 +138,8 @@ let emptyResult = match empty {
   `[x, ...rest] -> Just x
 }
 
-print ("Safe head of numbers: " + toString(safeHeadResult))
-print ("Safe head of empty: " + toString(emptyResult))
+print `Safe head of numbers: ${safeHeadResult}`
+print `Safe head of empty: ${emptyResult}`
 
 // リストが特定のパターンに一致するかチェック
 let isValidResponse = match `["OK", "200", "Success"] {
@@ -147,4 +147,4 @@ let isValidResponse = match `["OK", "200", "Success"] {
   _ -> False
 }
 
-print ("Is valid response format: " + toString(isValidResponse))
+print `Is valid response format: ${isValidResponse}`

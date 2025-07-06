@@ -165,7 +165,7 @@ show "--- Function Parameters with Destructuring ---"
 type Point = { x: Int, y: Int }
 fn displayPoint point: Point -> String {
   let {x, y} = point
-  "Point(" + toString x + ", " + toString y + ")"
+  `Point(${x}, ${y})`
 }
 
 let pointStr = displayPoint point1
@@ -174,7 +174,7 @@ show pointStr
 // 構造体を受け取る関数
 fn getPersonInfo person: Person -> String {
   let Person {name, age, city} = person
-  name + " is " + toString age + " years old and lives in " + city
+  `${name} is ${age} years old and lives in ${city}`
 }
 
 let aliceInfo = getPersonInfo alice

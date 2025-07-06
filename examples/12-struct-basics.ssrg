@@ -92,7 +92,7 @@ show "--- Functions with Structs ---"
 
 // 構造体を引数に取る関数
 fn getPersonInfo person: Person -> String =
-  person.name + " is " + toString(person.age) + " years old"
+  `${person.name} is ${person.age} years old`
 
 fn distance p1: Point -> p2: Point -> Float {
   let dx = p2.x - p1.x
