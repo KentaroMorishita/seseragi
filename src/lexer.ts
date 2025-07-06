@@ -303,7 +303,12 @@ export class Lexer {
       case "\\":
         return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
       case "`":
-        return this.templateString(startLine, startColumn)
+        // リスト糖衣構文 `[ かテンプレートリテラルかを判定
+        if (this.peek() === "[") {
+          return this.makeToken(TokenType.BACKTICK, char, startLine, startColumn)
+        } else {
+          return this.templateString(startLine, startColumn)
+        }
       case "^":
         return this.makeToken(TokenType.HEAD_OP, char, startLine, startColumn)
       case "\n":
