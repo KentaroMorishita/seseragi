@@ -1324,13 +1324,28 @@ export class Parser {
       // A constructor pattern has either more identifiers or is followed by ->
       const isConstructor = this.isConstructorName(name)
 
-      if (isConstructor && this.check(TokenType.IDENTIFIER)) {
+      if (
+        isConstructor &&
+        (this.check(TokenType.IDENTIFIER) ||
+          this.check(TokenType.INTEGER) ||
+          this.check(TokenType.FLOAT) ||
+          this.check(TokenType.STRING) ||
+          this.check(TokenType.BOOLEAN) ||
+          this.check(TokenType.WILDCARD))
+      ) {
         // Constructor pattern with arguments
         const patterns: AST.Pattern[] = []
 
-        // Collect all arguments until we hit an arrow
-        while (this.check(TokenType.IDENTIFIER)) {
-          // Look ahead to see if there's an arrow after this identifier
+        // Collect all arguments (identifiers and literals) until we hit an arrow
+        while (
+          this.check(TokenType.IDENTIFIER) ||
+          this.check(TokenType.INTEGER) ||
+          this.check(TokenType.FLOAT) ||
+          this.check(TokenType.STRING) ||
+          this.check(TokenType.BOOLEAN) ||
+          this.check(TokenType.WILDCARD)
+        ) {
+          // Look ahead to see if there's an arrow after this token
           let lookahead = this.current + 1
           while (
             lookahead < this.tokens.length &&
@@ -1340,33 +1355,91 @@ export class Parser {
             lookahead++
           }
 
-          // If we find an arrow right after this identifier,
-          // this identifier is the last argument before the arrow
+          // If we find an arrow right after this token,
+          // this token is the last argument before the arrow
           if (
             lookahead < this.tokens.length &&
             this.tokens[lookahead].type === TokenType.ARROW
           ) {
             // Consume this last argument before breaking
-            const argName = this.advance().value
-            patterns.push(
-              new AST.IdentifierPattern(
-                argName,
-                this.previous().line,
-                this.previous().column
+            const token = this.advance()
+
+            if (token.type === TokenType.IDENTIFIER) {
+              patterns.push(
+                new AST.IdentifierPattern(token.value, token.line, token.column)
               )
-            )
+            } else if (token.type === TokenType.WILDCARD) {
+              patterns.push(
+                new AST.WildcardPattern(token.line, token.column)
+              )
+            } else {
+              // Handle literal patterns
+              let value: string | number | boolean = token.value
+              let literalType: "string" | "integer" | "float" | "boolean"
+
+              if (token.type === TokenType.INTEGER) {
+                value = parseInt(token.value)
+                literalType = "integer"
+              } else if (token.type === TokenType.FLOAT) {
+                value = parseFloat(token.value)
+                literalType = "float"
+              } else if (token.type === TokenType.BOOLEAN) {
+                value = token.value === "True"
+                literalType = "boolean"
+              } else {
+                literalType = "string"
+              }
+
+              patterns.push(
+                new AST.LiteralPattern(
+                  value,
+                  token.line,
+                  token.column,
+                  literalType
+                )
+              )
+            }
             break
           }
 
-          // For constructor arguments, we expect simple identifier patterns (variable bindings)
-          const argName = this.advance().value
-          patterns.push(
-            new AST.IdentifierPattern(
-              argName,
-              this.previous().line,
-              this.previous().column
+          // Handle constructor arguments (identifiers or literals)
+          const token = this.advance()
+
+          if (token.type === TokenType.IDENTIFIER) {
+            patterns.push(
+              new AST.IdentifierPattern(token.value, token.line, token.column)
             )
-          )
+          } else if (token.type === TokenType.WILDCARD) {
+            patterns.push(
+              new AST.WildcardPattern(token.line, token.column)
+            )
+          } else {
+            // Handle literal patterns
+            let value: string | number | boolean = token.value
+            let literalType: "string" | "integer" | "float" | "boolean"
+
+            if (token.type === TokenType.INTEGER) {
+              value = parseInt(token.value)
+              literalType = "integer"
+            } else if (token.type === TokenType.FLOAT) {
+              value = parseFloat(token.value)
+              literalType = "float"
+            } else if (token.type === TokenType.BOOLEAN) {
+              value = token.value === "True"
+              literalType = "boolean"
+            } else {
+              literalType = "string"
+            }
+
+            patterns.push(
+              new AST.LiteralPattern(
+                value,
+                token.line,
+                token.column,
+                literalType
+              )
+            )
+          }
         }
 
         return new AST.ConstructorPattern(
@@ -1375,7 +1448,15 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
-      } else if (isConstructor && !this.check(TokenType.IDENTIFIER)) {
+      } else if (
+        isConstructor &&
+        !this.check(TokenType.IDENTIFIER) &&
+        !this.check(TokenType.INTEGER) &&
+        !this.check(TokenType.FLOAT) &&
+        !this.check(TokenType.STRING) &&
+        !this.check(TokenType.BOOLEAN) &&
+        !this.check(TokenType.WILDCARD)
+      ) {
         // Constructor pattern without arguments (Red, Green, Blue)
         return new AST.ConstructorPattern(
           name,
@@ -1401,16 +1482,27 @@ export class Parser {
     ) {
       const token = this.advance()
       let value: string | number | boolean = token.value
+      let literalType: "string" | "integer" | "float" | "boolean"
 
       if (token.type === TokenType.INTEGER) {
         value = parseInt(token.value)
+        literalType = "integer"
       } else if (token.type === TokenType.FLOAT) {
         value = parseFloat(token.value)
+        literalType = "float"
       } else if (token.type === TokenType.BOOLEAN) {
         value = token.value === "True"
+        literalType = "boolean"
+      } else {
+        literalType = "string"
       }
 
-      return new AST.LiteralPattern(value, token.line, token.column)
+      return new AST.LiteralPattern(
+        value,
+        token.line,
+        token.column,
+        literalType
+      )
     }
 
     throw new ParseError("Expected pattern", this.peek())

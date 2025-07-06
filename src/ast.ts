@@ -715,10 +715,17 @@ export class IdentifierPattern extends Pattern {
 export class LiteralPattern extends Pattern {
   kind = "LiteralPattern"
   value: string | number | boolean
+  literalType?: "string" | "integer" | "float" | "boolean"
 
-  constructor(value: string | number | boolean, line: number, column: number) {
+  constructor(
+    value: string | number | boolean,
+    line: number,
+    column: number,
+    literalType?: "string" | "integer" | "float" | "boolean"
+  ) {
     super(line, column)
     this.value = value
+    this.literalType = literalType
   }
 }
 
@@ -735,6 +742,27 @@ export class ConstructorPattern extends Pattern {
   ) {
     super(line, column)
     this.constructorName = constructorName
+    this.patterns = patterns
+  }
+}
+
+// リテラル値付きコンストラクタパターン（例: Circle 5.0）
+export class ConstructorLiteralPattern extends Pattern {
+  kind = "ConstructorLiteralPattern"
+  constructorName: string
+  literalValues: (string | number | boolean)[]
+  patterns: Pattern[] // リテラル後の残りのパターン
+
+  constructor(
+    constructorName: string,
+    literalValues: (string | number | boolean)[],
+    patterns: Pattern[],
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.constructorName = constructorName
+    this.literalValues = literalValues
     this.patterns = patterns
   }
 }

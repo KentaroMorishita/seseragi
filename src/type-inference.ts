@@ -4206,30 +4206,67 @@ export class TypeInferenceSystem {
         const litPattern = pattern as AST.LiteralPattern
         let literalType: AST.Type
 
-        switch (typeof litPattern.value) {
-          case "string":
-            literalType = new AST.PrimitiveType(
-              "String",
-              pattern.line,
-              pattern.column
-            )
-            break
-          case "number":
-            literalType = new AST.PrimitiveType(
-              "Int",
-              pattern.line,
-              pattern.column
-            )
-            break
-          case "boolean":
-            literalType = new AST.PrimitiveType(
-              "Bool",
-              pattern.line,
-              pattern.column
-            )
-            break
-          default:
-            literalType = this.freshTypeVariable(pattern.line, pattern.column)
+        // リテラルタイプを使用（利用可能な場合）
+        if (litPattern.literalType) {
+          switch (litPattern.literalType) {
+            case "string":
+              literalType = new AST.PrimitiveType(
+                "String",
+                pattern.line,
+                pattern.column
+              )
+              break
+            case "integer":
+              literalType = new AST.PrimitiveType(
+                "Int",
+                pattern.line,
+                pattern.column
+              )
+              break
+            case "float":
+              literalType = new AST.PrimitiveType(
+                "Float",
+                pattern.line,
+                pattern.column
+              )
+              break
+            case "boolean":
+              literalType = new AST.PrimitiveType(
+                "Bool",
+                pattern.line,
+                pattern.column
+              )
+              break
+            default:
+              literalType = this.freshTypeVariable(pattern.line, pattern.column)
+          }
+        } else {
+          // フォールバック：値の型から推論
+          switch (typeof litPattern.value) {
+            case "string":
+              literalType = new AST.PrimitiveType(
+                "String",
+                pattern.line,
+                pattern.column
+              )
+              break
+            case "number":
+              literalType = new AST.PrimitiveType(
+                "Int",
+                pattern.line,
+                pattern.column
+              )
+              break
+            case "boolean":
+              literalType = new AST.PrimitiveType(
+                "Bool",
+                pattern.line,
+                pattern.column
+              )
+              break
+            default:
+              literalType = this.freshTypeVariable(pattern.line, pattern.column)
+          }
         }
 
         this.addConstraint(

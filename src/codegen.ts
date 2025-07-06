@@ -132,24 +132,42 @@ export class CodeGenerator {
         let bindings = ""
         if (this.isBuiltinConstructor(pattern.constructorName)) {
           // ビルトインコンストラクタの場合
-          if (pattern.constructorName === "Just" || pattern.constructorName === "Left" || pattern.constructorName === "Right") {
+          if (
+            pattern.constructorName === "Just" ||
+            pattern.constructorName === "Left" ||
+            pattern.constructorName === "Right"
+          ) {
             // 単一の値を持つコンストラクタ
             if (pattern.patterns.length > 0) {
-              bindings += `const ${pattern.patterns[0].name} = ${valueVar}.value;\n    `
+              const subPattern = pattern.patterns[0]
+              if (subPattern.kind === "IdentifierPattern") {
+                bindings += `const ${subPattern.name} = ${valueVar}.value;\n    `
+              }
+              // LiteralPatternの場合はバインディングなし
             }
           } else if (pattern.constructorName === "Cons") {
             // Consは head と tail
             if (pattern.patterns.length > 0) {
-              bindings += `const ${pattern.patterns[0].name} = ${valueVar}.head;\n    `
+              const headPattern = pattern.patterns[0]
+              if (headPattern.kind === "IdentifierPattern") {
+                bindings += `const ${headPattern.name} = ${valueVar}.head;\n    `
+              }
             }
             if (pattern.patterns.length > 1) {
-              bindings += `const ${pattern.patterns[1].name} = ${valueVar}.tail;\n    `
+              const tailPattern = pattern.patterns[1]
+              if (tailPattern.kind === "IdentifierPattern") {
+                bindings += `const ${tailPattern.name} = ${valueVar}.tail;\n    `
+              }
             }
           }
         } else {
           // ユーザー定義ADTの場合
           for (let i = 0; i < pattern.patterns.length; i++) {
-            bindings += `const ${pattern.patterns[i].name} = ${valueVar}.data[${i}];\n    `
+            const subPattern = pattern.patterns[i]
+            if (subPattern.kind === "IdentifierPattern") {
+              bindings += `const ${subPattern.name} = ${valueVar}.data[${i}];\n    `
+            }
+            // LiteralPatternの場合はバインディングなし
           }
         }
         return bindings
@@ -157,7 +175,10 @@ export class CodeGenerator {
       case "TuplePattern":
         let tupleBindings = ""
         pattern.patterns.forEach((subPattern: any, i: number) => {
-          tupleBindings += this.generatePatternBindings(subPattern, `${valueVar}.elements[${i}]`)
+          tupleBindings += this.generatePatternBindings(
+            subPattern,
+            `${valueVar}.elements[${i}]`
+          )
         })
         return tupleBindings
 
@@ -2126,13 +2147,59 @@ ${indent}}`
         // 変数にバインドする場合（常に true）
         return "true"
 
-      case "ConstructorPattern":
+      case "ConstructorPattern": {
         // ビルトインコンストラクタとADTコンストラクタを区別
+        let constructorCondition: string
         if (this.isBuiltinConstructor(pattern.constructorName)) {
-          return `${valueVar}.tag === '${pattern.constructorName}'`
+          constructorCondition = `${valueVar}.tag === '${pattern.constructorName}'`
         } else {
-          return `${valueVar}.type === '${pattern.constructorName}'`
+          constructorCondition = `${valueVar}.type === '${pattern.constructorName}'`
         }
+
+        // サブパターンの条件も追加
+        if (pattern.patterns && pattern.patterns.length > 0) {
+          const subConditions: string[] = []
+
+          for (let i = 0; i < pattern.patterns.length; i++) {
+            const subPattern = pattern.patterns[i]
+            if (subPattern.kind === "LiteralPattern") {
+              // リテラルパターンの場合、値をチェック
+              let valueAccess: string
+              if (this.isBuiltinConstructor(pattern.constructorName)) {
+                if (
+                  pattern.constructorName === "Just" ||
+                  pattern.constructorName === "Left" ||
+                  pattern.constructorName === "Right"
+                ) {
+                  valueAccess = `${valueVar}.value`
+                } else if (pattern.constructorName === "Cons") {
+                  valueAccess =
+                    i === 0 ? `${valueVar}.head` : `${valueVar}.tail`
+                } else {
+                  valueAccess = `${valueVar}.data[${i}]`
+                }
+              } else {
+                valueAccess = `${valueVar}.data[${i}]`
+              }
+
+              if (typeof subPattern.value === "string") {
+                subConditions.push(
+                  `${valueAccess} === ${JSON.stringify(subPattern.value)}`
+                )
+              } else {
+                subConditions.push(`${valueAccess} === ${subPattern.value}`)
+              }
+            }
+            // IdentifierPatternの場合は常にtrue（バインディングのみ）
+          }
+
+          if (subConditions.length > 0) {
+            return `${constructorCondition} && ${subConditions.join(" && ")}`
+          }
+        }
+
+        return constructorCondition
+      }
 
       case "TuplePattern": {
         // タプルパターン
