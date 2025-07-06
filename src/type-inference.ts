@@ -1204,6 +1204,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "TemplateExpression":
+        resultType = this.generateConstraintsForTemplateExpression(
+          expr as AST.TemplateExpression,
+          env
+        )
+        break
+
       case "BinaryOperation":
         resultType = this.generateConstraintsForBinaryOperation(
           expr as AST.BinaryOperation,
@@ -4353,7 +4360,7 @@ export class TypeInferenceSystem {
       case "OrPattern": {
         // orパターン: すべてのサブパターンが同じ型である必要がある
         const orPattern = pattern as AST.OrPattern
-        
+
         // 各サブパターンに対して制約を生成
         for (const subPattern of orPattern.patterns) {
           this.generateConstraintsForPattern(subPattern, expectedType, env)
@@ -4404,12 +4411,23 @@ export class TypeInferenceSystem {
         const guardPattern = pattern as AST.GuardPattern
 
         // 基底パターンの型制約を生成
-        this.generateConstraintsForPattern(guardPattern.pattern, expectedType, env)
+        this.generateConstraintsForPattern(
+          guardPattern.pattern,
+          expectedType,
+          env
+        )
 
         // ガード条件の型制約を生成（Bool型である必要がある）
-        const guardType = this.generateConstraintsForExpression(guardPattern.guard, env)
-        const boolType = new AST.PrimitiveType("Bool", pattern.line, pattern.column)
-        
+        const guardType = this.generateConstraintsForExpression(
+          guardPattern.guard,
+          env
+        )
+        const boolType = new AST.PrimitiveType(
+          "Bool",
+          pattern.line,
+          pattern.column
+        )
+
         this.addConstraint(
           new TypeConstraint(
             guardType,
@@ -4425,7 +4443,7 @@ export class TypeInferenceSystem {
       case "ListSugarPattern": {
         // リスト糖衣構文パターン: `[x, y, ...rest]
         const listSugarPattern = pattern as AST.ListSugarPattern
-        
+
         // List型であることを確認
         const listType = new AST.GenericType(
           "List",
@@ -4433,7 +4451,7 @@ export class TypeInferenceSystem {
           pattern.line,
           pattern.column
         )
-        
+
         this.addConstraint(
           new TypeConstraint(
             expectedType,
@@ -4443,27 +4461,31 @@ export class TypeInferenceSystem {
             "List sugar pattern expects List type"
           )
         )
-        
+
         // 各要素パターンに対して再帰的に制約を生成
         const elementType = listType.typeArguments[0]
-        
+
         for (const elemPattern of listSugarPattern.patterns) {
           this.generateConstraintsForPattern(elemPattern, elementType, env)
         }
-        
+
         // restパターンがある場合
         if (listSugarPattern.hasRest && listSugarPattern.restPattern) {
           // restはList型全体
-          this.generateConstraintsForPattern(listSugarPattern.restPattern, expectedType, env)
+          this.generateConstraintsForPattern(
+            listSugarPattern.restPattern,
+            expectedType,
+            env
+          )
         }
-        
+
         break
       }
 
       case "ArrayPattern": {
         // 配列パターン: [x, y, ...rest]
         const arrayPattern = pattern as AST.ArrayPattern
-        
+
         // Array型であることを確認
         const arrayType = new AST.GenericType(
           "Array",
@@ -4471,7 +4493,7 @@ export class TypeInferenceSystem {
           pattern.line,
           pattern.column
         )
-        
+
         this.addConstraint(
           new TypeConstraint(
             expectedType,
@@ -4481,20 +4503,24 @@ export class TypeInferenceSystem {
             "Array pattern expects Array type"
           )
         )
-        
+
         // 各要素パターンに対して再帰的に制約を生成
         const elementType = arrayType.typeArguments[0]
-        
+
         for (const elemPattern of arrayPattern.patterns) {
           this.generateConstraintsForPattern(elemPattern, elementType, env)
         }
-        
+
         // restパターンがある場合
         if (arrayPattern.hasRest && arrayPattern.restPattern) {
           // restはArray型全体
-          this.generateConstraintsForPattern(arrayPattern.restPattern, expectedType, env)
+          this.generateConstraintsForPattern(
+            arrayPattern.restPattern,
+            expectedType,
+            env
+          )
         }
-        
+
         break
       }
 
@@ -5208,5 +5234,34 @@ export function infer(statements: AST.Statement[]): InferenceResult {
     typeEnvironment,
   }
 }
+
+// TemplateExpression の型推論メソッドを TypeInferenceSystem クラスに追加
+TypeInferenceSystem.prototype.generateConstraintsForTemplateExpression =
+  function (
+    templateExpr: AST.TemplateExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // テンプレートリテラルの結果型は常にString
+    const resultType = new AST.PrimitiveType(
+      "String",
+      templateExpr.line,
+      templateExpr.column
+    )
+
+    // 各埋め込み式の型を推論し、それらがtoString可能であることを確認
+    for (const part of templateExpr.parts) {
+      if (typeof part !== "string") {
+        // 埋め込み式の型を推論
+        const exprType = this.generateConstraintsForExpression(part, env)
+        this.nodeTypeMap.set(part, exprType)
+
+        // TODO: toString可能な型制約を追加する場合はここで実装
+        // 現在は全ての型がtoString可能と仮定
+      }
+    }
+
+    this.nodeTypeMap.set(templateExpr, resultType)
+    return resultType
+  }
 
 // MethodCall処理のためにTypeInferenceSystemクラスを拡張

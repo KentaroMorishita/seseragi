@@ -148,6 +148,16 @@ export class Identifier extends Expression {
   }
 }
 
+export class TemplateExpression extends Expression {
+  kind = "TemplateExpression"
+  parts: (string | Expression)[] // 文字列部分と埋め込み式を交互に保持
+
+  constructor(parts: (string | Expression)[], line: number, column: number) {
+    super(line, column)
+    this.parts = parts
+  }
+}
+
 export class BinaryOperation extends Expression {
   kind = "BinaryOperation"
   left: Expression

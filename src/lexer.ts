@@ -7,6 +7,7 @@ export enum TokenType {
   INTEGER = "INTEGER",
   FLOAT = "FLOAT",
   STRING = "STRING",
+  TEMPLATE_STRING = "TEMPLATE_STRING",
   BOOLEAN = "BOOLEAN",
 
   // Identifiers
@@ -89,6 +90,8 @@ export enum TokenType {
 
   // Special
   BACKTICK = "BACKTICK", // `
+  TEMPLATE_START = "TEMPLATE_START", // ${
+  TEMPLATE_END = "TEMPLATE_END", // }
   LAMBDA = "LAMBDA", // \
   WILDCARD = "WILDCARD", // _
   NEWLINE = "NEWLINE",
@@ -110,6 +113,7 @@ export class Lexer {
   private current: number = 0
   private line: number = 1
   private column: number = 1
+  private templateDepth: number = 0 // テンプレート内の入れ子レベル
 
   private keywords: Map<string, TokenType> = new Map([
     ["fn", TokenType.FN],
@@ -203,6 +207,15 @@ export class Lexer {
           startColumn
         )
       case "}":
+        if (this.templateDepth > 0) {
+          this.templateDepth--
+          return this.makeToken(
+            TokenType.TEMPLATE_END,
+            char,
+            startLine,
+            startColumn
+          )
+        }
         return this.makeToken(
           TokenType.RIGHT_BRACE,
           char,
@@ -271,6 +284,16 @@ export class Lexer {
           startColumn
         )
       case "$":
+        if (this.peek() === "{") {
+          this.advance() // consume {
+          this.templateDepth++
+          return this.makeToken(
+            TokenType.TEMPLATE_START,
+            "${",
+            startLine,
+            startColumn
+          )
+        }
         return this.makeToken(
           TokenType.FUNCTION_APPLICATION,
           char,
@@ -280,7 +303,7 @@ export class Lexer {
       case "\\":
         return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
       case "`":
-        return this.makeToken(TokenType.BACKTICK, char, startLine, startColumn)
+        return this.templateString(startLine, startColumn)
       case "^":
         return this.makeToken(TokenType.HEAD_OP, char, startLine, startColumn)
       case "\n":
@@ -608,6 +631,34 @@ export class Lexer {
     }
 
     return this.makeToken(TokenType.COMMENT, value, startLine, startColumn)
+  }
+
+  private templateString(startLine: number, startColumn: number): Token {
+    let value = ""
+
+    while (this.peek() !== "`" && !this.isAtEnd()) {
+      if (this.peek() === "\n") {
+        this.line++
+        this.column = 1
+      }
+      value += this.advance()
+    }
+
+    if (this.isAtEnd()) {
+      throw new Error(
+        `Unterminated template string at line ${startLine}, column ${startColumn}`
+      )
+    }
+
+    // Consume closing `
+    this.advance()
+
+    return this.makeToken(
+      TokenType.TEMPLATE_STRING,
+      value,
+      startLine,
+      startColumn
+    )
   }
 }
 

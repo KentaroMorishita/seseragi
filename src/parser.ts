@@ -1279,7 +1279,7 @@ export class Parser {
   private pattern(): AST.Pattern {
     // Parse primary pattern first
     let pattern = this.primaryPattern()
-    
+
     // Check for guard pattern (when)
     if (this.match(TokenType.WHEN)) {
       const guard = this.expression()
@@ -1290,24 +1290,20 @@ export class Parser {
         pattern.column
       )
     }
-    
+
     // Check for or patterns (|)
     while (this.match(TokenType.PIPE)) {
       const patterns = [pattern]
       patterns.push(this.primaryPattern())
-      
+
       // Continue collecting patterns separated by |
       while (this.match(TokenType.PIPE)) {
         patterns.push(this.primaryPattern())
       }
-      
-      pattern = new AST.OrPattern(
-        patterns, 
-        pattern.line, 
-        pattern.column
-      )
+
+      pattern = new AST.OrPattern(patterns, pattern.line, pattern.column)
     }
-    
+
     return pattern
   }
 
@@ -1324,18 +1320,21 @@ export class Parser {
     if (this.match(TokenType.BACKTICK)) {
       const line = this.previous().line
       const column = this.previous().column
-      
-      this.consume(TokenType.LEFT_BRACKET, "Expected '[' after '`' in list pattern")
-      
+
+      this.consume(
+        TokenType.LEFT_BRACKET,
+        "Expected '[' after '`' in list pattern"
+      )
+
       // Empty list pattern `[]
       if (this.match(TokenType.RIGHT_BRACKET)) {
         return new AST.ListSugarPattern([], false, undefined, line, column)
       }
-      
+
       const patterns: AST.Pattern[] = []
       let hasRest = false
       let restPattern: AST.Pattern | undefined = undefined
-      
+
       // Check for rest pattern `[...rest]
       if (this.match(TokenType.SPREAD)) {
         restPattern = this.pattern()
@@ -1343,7 +1342,7 @@ export class Parser {
       } else {
         // Parse first pattern
         patterns.push(this.pattern())
-        
+
         // Parse remaining patterns
         while (this.match(TokenType.COMMA)) {
           // Check for rest pattern `[x, ...rest]
@@ -1355,10 +1354,16 @@ export class Parser {
           patterns.push(this.pattern())
         }
       }
-      
+
       this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list pattern")
-      
-      return new AST.ListSugarPattern(patterns, hasRest, restPattern, line, column)
+
+      return new AST.ListSugarPattern(
+        patterns,
+        hasRest,
+        restPattern,
+        line,
+        column
+      )
     }
 
     // Tuple pattern
@@ -1445,9 +1450,7 @@ export class Parser {
                 new AST.IdentifierPattern(token.value, token.line, token.column)
               )
             } else if (token.type === TokenType.WILDCARD) {
-              patterns.push(
-                new AST.WildcardPattern(token.line, token.column)
-              )
+              patterns.push(new AST.WildcardPattern(token.line, token.column))
             } else {
               // Handle literal patterns
               let value: string | number | boolean = token.value
@@ -1486,9 +1489,7 @@ export class Parser {
               new AST.IdentifierPattern(token.value, token.line, token.column)
             )
           } else if (token.type === TokenType.WILDCARD) {
-            patterns.push(
-              new AST.WildcardPattern(token.line, token.column)
-            )
+            patterns.push(new AST.WildcardPattern(token.line, token.column))
           } else {
             // Handle literal patterns
             let value: string | number | boolean = token.value
@@ -1585,16 +1586,16 @@ export class Parser {
     if (this.match(TokenType.LEFT_BRACKET)) {
       const line = this.previous().line
       const column = this.previous().column
-      
+
       // Empty array pattern []
       if (this.match(TokenType.RIGHT_BRACKET)) {
         return new AST.ArrayPattern([], false, undefined, line, column)
       }
-      
+
       const patterns: AST.Pattern[] = []
       let hasRest = false
       let restPattern: AST.Pattern | undefined = undefined
-      
+
       // Check for rest pattern [...rest]
       if (this.match(TokenType.SPREAD)) {
         restPattern = this.pattern()
@@ -1602,7 +1603,7 @@ export class Parser {
       } else {
         // Parse first pattern
         patterns.push(this.pattern())
-        
+
         // Parse remaining patterns
         while (this.match(TokenType.COMMA)) {
           // Check for rest pattern [x, ...rest]
@@ -1614,9 +1615,9 @@ export class Parser {
           patterns.push(this.pattern())
         }
       }
-      
+
       this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array pattern")
-      
+
       return new AST.ArrayPattern(patterns, hasRest, restPattern, line, column)
     }
 
@@ -2180,6 +2181,7 @@ export class Parser {
       type === TokenType.INTEGER ||
       type === TokenType.FLOAT ||
       type === TokenType.STRING ||
+      type === TokenType.TEMPLATE_STRING ||
       type === TokenType.BOOLEAN ||
       type === TokenType.IDENTIFIER ||
       type === TokenType.PRINT ||
@@ -2229,6 +2231,10 @@ export class Parser {
         this.previous().line,
         this.previous().column
       )
+    }
+
+    if (this.match(TokenType.TEMPLATE_STRING)) {
+      return this.templateExpression()
     }
 
     if (this.match(TokenType.BOOLEAN)) {
@@ -3088,6 +3094,55 @@ export class Parser {
       this.previous().line,
       this.previous().column
     )
+  }
+
+  private templateExpression(): AST.TemplateExpression {
+    const startToken = this.previous()
+    const templateContent = startToken.value
+    const parts: (string | AST.Expression)[] = []
+
+    // テンプレート文字列を解析して、文字列部分と埋め込み式を抽出
+    let currentIndex = 0
+
+    while (currentIndex < templateContent.length) {
+      const dollarIndex = templateContent.indexOf("${", currentIndex)
+
+      if (dollarIndex === -1) {
+        // 残りは全て文字列
+        const remainingText = templateContent.substring(currentIndex)
+        if (remainingText.length > 0) {
+          parts.push(remainingText)
+        }
+        break
+      }
+
+      // ${の前の文字列部分
+      if (dollarIndex > currentIndex) {
+        const textPart = templateContent.substring(currentIndex, dollarIndex)
+        parts.push(textPart)
+      }
+
+      // 埋め込み式の終了位置を探す
+      const braceIndex = templateContent.indexOf("}", dollarIndex + 2)
+      if (braceIndex === -1) {
+        throw new ParseError("Unterminated template expression", startToken)
+      }
+
+      // 埋め込み式部分を解析
+      const exprContent = templateContent.substring(dollarIndex + 2, braceIndex)
+      if (exprContent.trim().length > 0) {
+        // 埋め込み式を個別に解析
+        const exprLexer = new Lexer(exprContent.trim())
+        const exprTokens = exprLexer.tokenize()
+        const exprParser = new Parser(exprTokens)
+        const exprResult = exprParser.expression()
+        parts.push(exprResult)
+      }
+
+      currentIndex = braceIndex + 1
+    }
+
+    return new AST.TemplateExpression(parts, startToken.line, startToken.column)
   }
 }
 

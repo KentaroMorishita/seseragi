@@ -319,6 +319,9 @@ export class TypeChecker {
       case "StructExpression":
         return this.checkStructExpression(expr as AST.StructExpression, env)
 
+      case "TemplateExpression":
+        return this.checkTemplateExpression(expr as AST.TemplateExpression, env)
+
       default:
         this.addError(
           `Unhandled expression type: ${expr.kind}`,
@@ -1349,5 +1352,23 @@ export class TypeChecker {
       default:
         return "Unknown"
     }
+  }
+
+  private checkTemplateExpression(
+    expr: AST.TemplateExpression,
+    env: TypeEnvironment
+  ): AST.Type {
+    // テンプレートリテラルの各埋め込み式の型をチェック
+    for (const part of expr.parts) {
+      if (typeof part !== "string") {
+        // 埋め込み式の型をチェック
+        this.checkExpression(part, env)
+        // 現在は全ての型をtoString可能と仮定
+        // 将来的にはtoString制約を追加できる
+      }
+    }
+
+    // テンプレートリテラルの結果型は常にString
+    return new AST.PrimitiveType("String", expr.line, expr.column)
   }
 }

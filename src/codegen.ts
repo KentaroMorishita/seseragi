@@ -8,6 +8,7 @@ import {
   TypeAliasDeclaration,
   Literal,
   Identifier,
+  TemplateExpression,
   BinaryOperation,
   UnaryOperation,
   FunctionCall,
@@ -205,7 +206,7 @@ export class CodeGenerator {
         const listSugarPattern = pattern as any // AST.ListSugarPattern
         let bindings = ""
         let currentVar = valueVar
-        
+
         // 各要素パターンのバインディング
         for (let i = 0; i < listSugarPattern.patterns.length; i++) {
           const elemPattern = listSugarPattern.patterns[i]
@@ -213,12 +214,15 @@ export class CodeGenerator {
           bindings += this.generatePatternBindings(elemPattern, headVar)
           currentVar = `${currentVar}.tail`
         }
-        
+
         // restパターンのバインディング
         if (listSugarPattern.hasRest && listSugarPattern.restPattern) {
-          bindings += this.generatePatternBindings(listSugarPattern.restPattern, currentVar)
+          bindings += this.generatePatternBindings(
+            listSugarPattern.restPattern,
+            currentVar
+          )
         }
-        
+
         return bindings
       }
 
@@ -226,20 +230,23 @@ export class CodeGenerator {
         // 配列パターン: [x, y, ...rest]
         const arrayPattern = pattern as any // AST.ArrayPattern
         let bindings = ""
-        
+
         // 各要素パターンのバインディング
         for (let i = 0; i < arrayPattern.patterns.length; i++) {
           const elemPattern = arrayPattern.patterns[i]
           const indexVar = `${valueVar}[${i}]`
           bindings += this.generatePatternBindings(elemPattern, indexVar)
         }
-        
+
         // restパターンのバインディング
         if (arrayPattern.hasRest && arrayPattern.restPattern) {
           const sliceVar = `${valueVar}.slice(${arrayPattern.patterns.length})`
-          bindings += this.generatePatternBindings(arrayPattern.restPattern, sliceVar)
+          bindings += this.generatePatternBindings(
+            arrayPattern.restPattern,
+            sliceVar
+          )
         }
-        
+
         return bindings
       }
 
@@ -1699,6 +1706,8 @@ ${indent}}`
       return this.generateLiteral(expr)
     } else if (expr instanceof Identifier) {
       return expr.name
+    } else if (expr instanceof TemplateExpression) {
+      return this.generateTemplateExpression(expr)
     } else if (expr instanceof BinaryOperation) {
       return this.generateBinaryOperation(expr)
     } else if (expr instanceof UnaryOperation) {
@@ -2170,15 +2179,21 @@ ${indent}}`
 
     for (let i = 0; i < cases.length; i++) {
       const c = cases[i]
-      
+
       // GuardPatternの場合は特別な処理が必要
       if (c.pattern.kind === "GuardPattern") {
         const guardPattern = c.pattern as any // AST.GuardPattern
-        const baseCondition = this.generatePatternCondition(guardPattern.pattern, "matchValue")
-        const bindings = this.generatePatternBindings(guardPattern.pattern, "matchValue")
+        const baseCondition = this.generatePatternCondition(
+          guardPattern.pattern,
+          "matchValue"
+        )
+        const bindings = this.generatePatternBindings(
+          guardPattern.pattern,
+          "matchValue"
+        )
         const guardCondition = this.generateExpression(guardPattern.guard)
         const body = this.generateExpression(c.expression)
-        
+
         // GuardPatternでは常にifを使用（else ifではなく）
         // これにより、ガード条件が失敗したときに次のパターンへ続行できる
         result += `  if (${baseCondition}) {\n    ${bindings}if (${guardCondition}) {\n      return ${body};\n    }\n  }`
@@ -2300,7 +2315,10 @@ ${indent}}`
       case "GuardPattern": {
         // ガードパターン: パターンがマッチし、かつガード条件が真である場合のみマッチ
         const guardPattern = pattern as any // AST.GuardPattern
-        const patternCondition = this.generatePatternCondition(guardPattern.pattern, valueVar)
+        const patternCondition = this.generatePatternCondition(
+          guardPattern.pattern,
+          valueVar
+        )
         const guardCondition = this.generateExpression(guardPattern.guard)
         return `(${patternCondition} && (${guardCondition}))`
       }
@@ -2308,60 +2326,70 @@ ${indent}}`
       case "ListSugarPattern": {
         // リスト糖衣構文パターン: `[x, y, ...rest]
         const listSugarPattern = pattern as any // AST.ListSugarPattern
-        
+
         // 空リストパターン `[]
-        if (listSugarPattern.patterns.length === 0 && !listSugarPattern.hasRest) {
+        if (
+          listSugarPattern.patterns.length === 0 &&
+          !listSugarPattern.hasRest
+        ) {
           return `${valueVar}.tag === 'Empty'`
         }
-        
+
         // restのみのパターン `[...rest]
-        if (listSugarPattern.patterns.length === 0 && listSugarPattern.hasRest) {
+        if (
+          listSugarPattern.patterns.length === 0 &&
+          listSugarPattern.hasRest
+        ) {
           return "true" // すべてのリストにマッチ
         }
-        
+
         // パターンを構築
         let conditions: string[] = []
         let currentVar = valueVar
-        
+
         // 各要素パターンをチェック
         for (let i = 0; i < listSugarPattern.patterns.length; i++) {
           conditions.push(`${currentVar}.tag === 'Cons'`)
           currentVar = `${currentVar}.tail`
         }
-        
+
         // restパターンがない場合、残りはEmptyである必要がある
         if (!listSugarPattern.hasRest) {
           conditions.push(`${currentVar}.tag === 'Empty'`)
         }
-        
+
         return `(${conditions.join(" && ")})`
       }
 
       case "ArrayPattern": {
         // 配列パターン: [x, y, ...rest]
         const arrayPattern = pattern as any // AST.ArrayPattern
-        
+
         // 空配列パターン []
         if (arrayPattern.patterns.length === 0 && !arrayPattern.hasRest) {
           return `${valueVar}.length === 0`
         }
-        
+
         // restのみのパターン [...rest]
         if (arrayPattern.patterns.length === 0 && arrayPattern.hasRest) {
           return "true" // すべての配列にマッチ
         }
-        
+
         let conditions: string[] = []
-        
+
         // 要素数チェック
         if (!arrayPattern.hasRest) {
           // restがない場合、正確な長さを要求
-          conditions.push(`${valueVar}.length === ${arrayPattern.patterns.length}`)
+          conditions.push(
+            `${valueVar}.length === ${arrayPattern.patterns.length}`
+          )
         } else {
           // restがある場合、最小長さを要求
-          conditions.push(`${valueVar}.length >= ${arrayPattern.patterns.length}`)
+          conditions.push(
+            `${valueVar}.length >= ${arrayPattern.patterns.length}`
+          )
         }
-        
+
         return `(${conditions.join(" && ")})`
       }
 
@@ -3014,5 +3042,24 @@ ${indent}}`
       }
     })
     return `const { ${fieldPatterns.join(", ")} } = ${initializer};`
+  }
+
+  // テンプレートリテラルの生成
+  generateTemplateExpression(expr: TemplateExpression): string {
+    let result = "`"
+
+    for (const part of expr.parts) {
+      if (typeof part === "string") {
+        // 文字列部分はそのまま追加
+        result += part
+      } else {
+        // 埋め込み式はTypeScriptのテンプレートリテラル記法で囲む
+        const exprCode = this.generateExpression(part)
+        result += "${" + exprCode + "}"
+      }
+    }
+
+    result += "`"
+    return result
   }
 }

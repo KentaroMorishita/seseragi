@@ -1,0 +1,7 @@
+// 単純なレコード引数関数テスト
+
+fn greet props: { name: String } -> String = 
+  "Hello " + props.name
+
+let result = greet { name: "Alice" }
+show result
