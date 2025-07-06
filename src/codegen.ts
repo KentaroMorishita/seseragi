@@ -111,6 +111,61 @@ export class CodeGenerator {
     this.filePrefix = this.generateFilePrefix(options.filePath || "unknown")
   }
 
+  // ビルトインコンストラクタかどうかを判定
+  private isBuiltinConstructor(name: string): boolean {
+    return ["Just", "Nothing", "Left", "Right", "Empty", "Cons"].includes(name)
+  }
+
+  // パターンから変数バインディングを生成
+  private generatePatternBindings(pattern: any, valueVar: string): string {
+    if (!pattern) return ""
+
+    switch (pattern.kind) {
+      case "IdentifierPattern":
+        return `const ${pattern.name} = ${valueVar};\n    `
+
+      case "ConstructorPattern":
+        if (!pattern.patterns || pattern.patterns.length === 0) {
+          return ""
+        }
+
+        let bindings = ""
+        if (this.isBuiltinConstructor(pattern.constructorName)) {
+          // ビルトインコンストラクタの場合
+          if (pattern.constructorName === "Just" || pattern.constructorName === "Left" || pattern.constructorName === "Right") {
+            // 単一の値を持つコンストラクタ
+            if (pattern.patterns.length > 0) {
+              bindings += `const ${pattern.patterns[0].name} = ${valueVar}.value;\n    `
+            }
+          } else if (pattern.constructorName === "Cons") {
+            // Consは head と tail
+            if (pattern.patterns.length > 0) {
+              bindings += `const ${pattern.patterns[0].name} = ${valueVar}.head;\n    `
+            }
+            if (pattern.patterns.length > 1) {
+              bindings += `const ${pattern.patterns[1].name} = ${valueVar}.tail;\n    `
+            }
+          }
+        } else {
+          // ユーザー定義ADTの場合
+          for (let i = 0; i < pattern.patterns.length; i++) {
+            bindings += `const ${pattern.patterns[i].name} = ${valueVar}.data[${i}];\n    `
+          }
+        }
+        return bindings
+
+      case "TuplePattern":
+        let tupleBindings = ""
+        pattern.patterns.forEach((subPattern: any, i: number) => {
+          tupleBindings += this.generatePatternBindings(subPattern, `${valueVar}.elements[${i}]`)
+        })
+        return tupleBindings
+
+      default:
+        return ""
+    }
+  }
+
   // ファイルパスからハッシュベースのプレフィックスを生成
   private generateFilePrefix(filePath: string): string {
     // ファイルパスの簡易ハッシュ（名前衝突回避用）
@@ -2034,12 +2089,13 @@ ${indent}}`
     for (let i = 0; i < cases.length; i++) {
       const c = cases[i]
       const condition = this.generatePatternCondition(c.pattern, "matchValue")
+      const bindings = this.generatePatternBindings(c.pattern, "matchValue")
       const body = this.generateExpression(c.expression)
 
       if (i === 0) {
-        result += `  if (${condition}) {\n    return ${body};\n  }`
+        result += `  if (${condition}) {\n    ${bindings}return ${body};\n  }`
       } else {
-        result += ` else if (${condition}) {\n    return ${body};\n  }`
+        result += ` else if (${condition}) {\n    ${bindings}return ${body};\n  }`
       }
     }
 
@@ -2071,8 +2127,12 @@ ${indent}}`
         return "true"
 
       case "ConstructorPattern":
-        // ADTコンストラクタパターン
-        return `${valueVar}.type === '${pattern.constructorName}'`
+        // ビルトインコンストラクタとADTコンストラクタを区別
+        if (this.isBuiltinConstructor(pattern.constructorName)) {
+          return `${valueVar}.tag === '${pattern.constructorName}'`
+        } else {
+          return `${valueVar}.type === '${pattern.constructorName}'`
+        }
 
       case "TuplePattern": {
         // タプルパターン

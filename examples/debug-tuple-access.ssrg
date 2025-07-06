@@ -1,4 +1,0 @@
-// Simple tuple access test
-let point = (10, 20)
-let x = point[0]
-show x

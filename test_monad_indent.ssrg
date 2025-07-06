@@ -1,7 +1,0 @@
-let monadChain = Just 10
- >>= (\x -> safeDivide x 2)
- >>= (\x -> safeDivide x 1)  // Just 5
-let monadFail = Just 10
- >>= (\x -> safeDivide x 0)
- >>= (\x -> safeDivide x 1)  // Nothing
-

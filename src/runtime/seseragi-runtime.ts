@@ -472,7 +472,11 @@ function normalizeStructure(obj: any): any {
 
   // ADT型 (type: string, data: array の形式)
   if (obj.type && Array.isArray(obj.data)) {
-    return { "@@type": "ADT", constructor: obj.type, args: obj.data.map(normalizeStructure) }
+    return {
+      "@@type": "ADT",
+      constructor: obj.type,
+      args: obj.data.map(normalizeStructure),
+    }
   }
 
   // 配列

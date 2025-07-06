@@ -1,9 +1,0 @@
-// Array bind演算子のテスト
-
-let numbers = [1, 2, 3]
-let duplicated = numbers >>= (\x -> [x, x])
-show "Original:"
-show numbers
-show "Duplicated:"
-show duplicated
-

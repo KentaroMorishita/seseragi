@@ -416,14 +416,14 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/(let\s+\w+)\s*:\s*([A-Z]\w*)/g, "$1: $2") // let name: Type
       .replace(/(\w+)\s*:\s*([A-Z]\w*)/g, (match, p1, p2) => {
         // 型注釈: 大文字で始まる型名の場合（let以外）
-        return `${p1}: ${p2}`;
+        return `${p1}: ${p2}`
       })
       // 3. Cons演算子チェーン処理（数値のみに限定）
       .replace(/(\d+)\s*:\s*(\d+)/g, "$1 : $2") // 1 : 2
       .replace(/(\d+)\s*:\s*(\[)/g, "$1 : $2") // 3 : []
       .replace(/(\w+)\s*:\s*(\[)/g, (match, p1, p2) => {
         // レコードフィールドでない場合のみCons演算子として扱う
-        return `${p1} : ${p2}`;
+        return `${p1} : ${p2}`
       })
       // 4. 構造体内のフィールド（右のみスペース）- Cons演算子処理の後に実行
       .replace(/{\s*(\w+)\s*:\s*/g, "{ $1: ")
@@ -445,20 +445,24 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/\s*\|\s*/g, " | ")
       .replace(/\s*~\s*/g, " ~ ")
       .replace(/\s*\$\s*/g, " $ ")
-      // 単一行の構造体のスペーシング - 複数回適用でネスト対応
-    
+    // 単一行の構造体のスペーシング - 複数回適用でネスト対応
+
     // 内側から処理するため、複数回適用
     let prevProcessed = ""
     while (prevProcessed !== processed) {
       prevProcessed = processed
       // まず内側の最も単純な構造体を処理
-      processed = processed.replace(/(\w+\s*)?\{\s*([^{}]+)\s*\}/g, (match, prefix, content) => {
-        if (content.includes("\n")) return match // 複数行は除外
-        const formattedContent = content.trim()
-          .replace(/,\s*/g, ", ") // カンマの後にスペース
-          .replace(/(\w+)\s:\s/g, "$1: ") // 構造体内のフィールド名: value
-        return (prefix || "") + "{ " + formattedContent + " }"
-      })
+      processed = processed.replace(
+        /(\w+\s*)?\{\s*([^{}]+)\s*\}/g,
+        (match, prefix, content) => {
+          if (content.includes("\n")) return match // 複数行は除外
+          const formattedContent = content
+            .trim()
+            .replace(/,\s*/g, ", ") // カンマの後にスペース
+            .replace(/(\w+)\s:\s/g, "$1: ") // 構造体内のフィールド名: value
+          return (prefix || "") + "{ " + formattedContent + " }"
+        }
+      )
     }
 
     // 保護された部分を復元
@@ -469,9 +473,12 @@ export function normalizeOperatorSpacing(code: string): string {
     return processed
   })
 
-  return processedLines.join("\n")
-    // 行末の = や : の後にスペースがある場合は削除
-    .replace(/(=|\?[^:]*:)\s+$/gm, "$1")
+  return (
+    processedLines
+      .join("\n")
+      // 行末の = や : の後にスペースがある場合は削除
+      .replace(/(=|\?[^:]*:)\s+$/gm, "$1")
+  )
 }
 
 // match式のケース行かどうかを判定

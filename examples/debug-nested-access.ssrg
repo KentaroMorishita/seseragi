@@ -1,9 +1,0 @@
-// Nested access test
-let data = [("user1", [100, 200, 300])]
-let user = data[0]        // Should be (String, Array<Int>)
-let scores = user[1]      // Should be Array<Int>
-let score = scores[2]     // Should be Int
-
-show user
-show scores  
-show score

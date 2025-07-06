@@ -590,7 +590,12 @@ export class Parser {
   private getConstructorArgCount(constructorName: string): number {
     // 決め打ちのビルトインコンストラクタ
     if (constructorName === "Cons") return 2
-    if (constructorName === "Just" || constructorName === "Left" || constructorName === "Right") return 1
+    if (
+      constructorName === "Just" ||
+      constructorName === "Left" ||
+      constructorName === "Right"
+    )
+      return 1
     if (constructorName === "Nothing" || constructorName === "Empty") return 0
 
     // ユーザー定義ADTから動的に判定
@@ -598,11 +603,17 @@ export class Parser {
       for (const variant of variants) {
         if (variant.name === constructorName) {
           // Tupleの場合は引数数を取得
-          if (variant.type instanceof AST.GenericType && variant.type.name === "Tuple") {
+          if (
+            variant.type instanceof AST.GenericType &&
+            variant.type.name === "Tuple"
+          ) {
             return variant.type.typeArguments.length
           }
           // Unitの場合は引数なし
-          if (variant.type instanceof AST.PrimitiveType && variant.type.name === "Unit") {
+          if (
+            variant.type instanceof AST.PrimitiveType &&
+            variant.type.name === "Unit"
+          ) {
             return 0
           }
           // その他の場合は1つの引数
@@ -1317,11 +1328,45 @@ export class Parser {
         // Constructor pattern with arguments
         const patterns: AST.Pattern[] = []
 
-        while (
-          this.check(TokenType.IDENTIFIER) &&
-          !this.checkAhead(TokenType.ARROW)
-        ) {
-          patterns.push(this.pattern())
+        // Collect all arguments until we hit an arrow
+        while (this.check(TokenType.IDENTIFIER)) {
+          // Look ahead to see if there's an arrow after this identifier
+          let lookahead = this.current + 1
+          while (
+            lookahead < this.tokens.length &&
+            (this.tokens[lookahead].type === TokenType.NEWLINE ||
+              this.tokens[lookahead].type === TokenType.WHITESPACE)
+          ) {
+            lookahead++
+          }
+
+          // If we find an arrow right after this identifier,
+          // this identifier is the last argument before the arrow
+          if (
+            lookahead < this.tokens.length &&
+            this.tokens[lookahead].type === TokenType.ARROW
+          ) {
+            // Consume this last argument before breaking
+            const argName = this.advance().value
+            patterns.push(
+              new AST.IdentifierPattern(
+                argName,
+                this.previous().line,
+                this.previous().column
+              )
+            )
+            break
+          }
+
+          // For constructor arguments, we expect simple identifier patterns (variable bindings)
+          const argName = this.advance().value
+          patterns.push(
+            new AST.IdentifierPattern(
+              argName,
+              this.previous().line,
+              this.previous().column
+            )
+          )
         }
 
         return new AST.ConstructorPattern(
@@ -2609,6 +2654,28 @@ export class Parser {
   private checkAhead(type: TokenType): boolean {
     // Look ahead to the next token without consuming
     let lookahead = this.current + 1
+
+    // Skip whitespace and newlines
+    while (
+      lookahead < this.tokens.length &&
+      (this.tokens[lookahead].type === TokenType.NEWLINE ||
+        this.tokens[lookahead].type === TokenType.WHITESPACE)
+    ) {
+      lookahead++
+    }
+
+    return (
+      lookahead < this.tokens.length && this.tokens[lookahead].type === type
+    )
+  }
+
+  private checkNextIsIdentifier(): boolean {
+    return this.checkAhead(TokenType.IDENTIFIER)
+  }
+
+  private checkAheadTwoTokens(type: TokenType): boolean {
+    // Look ahead two tokens without consuming
+    let lookahead = this.current + 2
 
     // Skip whitespace and newlines
     while (

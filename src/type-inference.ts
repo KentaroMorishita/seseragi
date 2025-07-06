@@ -1113,6 +1113,18 @@ export class TypeInferenceSystem {
     typeDecl: AST.TypeDeclaration,
     env: Map<string, AST.Type>
   ): void {
+    // ビルトイン型との名前衝突をチェック
+    const builtinTypes = ["Maybe", "Either", "List"]
+    if (builtinTypes.includes(typeDecl.name)) {
+      const error = new TypeInferenceError(
+        `Type '${typeDecl.name}' conflicts with builtin type. Use a different name.`,
+        typeDecl.line,
+        typeDecl.column
+      )
+      this.errors.push(error)
+      return
+    }
+
     // ADT型を環境に追加
     const adtType = new AST.PrimitiveType(
       typeDecl.name,
@@ -3301,15 +3313,18 @@ export class TypeInferenceSystem {
   }
 
   // 型エイリアスの解決（循環参照対応版）
-  private resolveTypeAlias(type: AST.Type, visited: Set<string> = new Set()): AST.Type {
+  private resolveTypeAlias(
+    type: AST.Type,
+    visited: Set<string> = new Set()
+  ): AST.Type {
     if (type.kind === "PrimitiveType") {
       const pt = type as AST.PrimitiveType
-      
+
       // 循環参照チェック
       if (visited.has(pt.name)) {
         return type // 循環を検出したら元の型を返す
       }
-      
+
       // 現在の環境で型エイリアスをチェック
       for (const [name, aliasedType] of this.currentEnvironment) {
         if (name === pt.name) {

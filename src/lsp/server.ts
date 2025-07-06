@@ -526,7 +526,13 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
         `Type inference errors: ${JSON.stringify(result.errors, null, 2)}`
       )
     }
-    const typeInfo = getTypeInfoWithInference(ast, wordAtPosition, result, offset, text)
+    const typeInfo = getTypeInfoWithInference(
+      ast,
+      wordAtPosition,
+      result,
+      offset,
+      text
+    )
     if (typeInfo) {
       connection.console.log(
         `[SESERAGI LSP DEBUG] Returning type info: ${typeInfo}`
@@ -1119,8 +1125,10 @@ function findSymbolWithEnhancedInference(
   offset: number,
   text: string
 ): any {
-  connection.console.log(`[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`)
-  
+  connection.console.log(
+    `[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`
+  )
+
   if (!ast.statements) {
     return null
   }
@@ -1154,7 +1162,7 @@ function findSymbolWithEnhancedInference(
     if (statement.kind === "FunctionDeclaration" && statement.parameters) {
       // Find which function contains the current offset
       const containingFunction = findContainingFunction(ast, offset, text)
-      
+
       // Only check parameters if this is the containing function
       if (containingFunction && containingFunction.name === statement.name) {
         for (const param of statement.parameters) {
@@ -1167,17 +1175,17 @@ function findSymbolWithEnhancedInference(
             ) {
               paramType = inferenceResult.substitution.apply(paramType)
             }
-            
+
             connection.console.log(
               `[SESERAGI LSP DEBUG] Found parameter ${symbol} in containing function ${statement.name}`
             )
-            
+
             return {
               type: "parameter",
               name: symbol,
               finalType: paramType,
               hasExplicitType: true,
-              context: "parameter"
+              context: "parameter",
             }
           }
         }
@@ -2881,23 +2889,25 @@ function findContainingFunction(ast: any, offset: number, text: string): any {
     return null
   }
 
-  connection.console.log(`[SESERAGI LSP DEBUG] Finding containing function for offset ${offset}`)
-  
+  connection.console.log(
+    `[SESERAGI LSP DEBUG] Finding containing function for offset ${offset}`
+  )
+
   for (const statement of ast.statements) {
     if (statement.kind === "FunctionDeclaration") {
       // Calculate the function's text range more accurately
       // Start from the beginning of the function declaration
       const funcStart = getPositionFromLineColumn(text, statement.line, 1) // Start of the line
-      
+
       // For a single-line function, we need to include the entire line
-      const lines = text.split('\n')
+      const lines = text.split("\n")
       const functionLine = lines[statement.line - 1] || ""
       const functionLineEnd = funcStart + functionLine.length
-      
+
       connection.console.log(
         `[SESERAGI LSP DEBUG] Function ${statement.name}: line ${statement.line}, funcStart=${funcStart}, lineEnd=${functionLineEnd}, offset=${offset}`
       )
-      
+
       // Check if offset is within this function line
       // We use a more inclusive range check
       if (offset >= funcStart && offset <= functionLineEnd) {
@@ -2914,18 +2924,22 @@ function findContainingFunction(ast: any, offset: number, text: string): any {
 }
 
 // Helper function to convert line/column to offset
-function getPositionFromLineColumn(text: string, line: number, column: number): number {
-  const lines = text.split('\n')
+function getPositionFromLineColumn(
+  text: string,
+  line: number,
+  column: number
+): number {
+  const lines = text.split("\n")
   let offset = 0
-  
+
   // Add lengths of all lines before the target line
   for (let i = 0; i < line - 1 && i < lines.length; i++) {
     offset += lines[i].length + 1 // +1 for newline character
   }
-  
+
   // Add the column offset
   offset += Math.max(0, column - 1)
-  
+
   return offset
 }
 
