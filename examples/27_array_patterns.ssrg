@@ -1,0 +1,191 @@
+// Array Pattern の使用例
+// 配列 [x, y, z] をパターンマッチで分解
+
+// ===== 基本的な配列パターン =====
+
+let numbers = [1, 2, 3, 4, 5]
+let coordinates = [10, 20]
+let empty = []
+let single = [42]
+
+print "=== Basic Array Patterns ==="
+
+// 空配列のチェック
+let emptyCheck = match empty {
+  [] -> "Empty array"
+  _ -> "Has elements"
+}
+print emptyCheck
+
+// 要素数による分岐
+let lengthPattern = match coordinates {
+  [] -> "Empty"
+  [x] -> "Single: " + toString(x)
+  [x, y] -> "Pair: " + toString(x) + ", " + toString(y)
+  [x, y, z] -> "Triple: " + toString(x) + ", " + toString(y) + ", " + toString(z)
+  _ -> "Four or more elements"
+}
+print lengthPattern
+
+// ===== Rest Pattern (基本形) =====
+
+print ""
+print "=== Rest Patterns ==="
+
+// Rest patternは現在パーサーに制限があるため、基本的な例のみ
+print "Rest patterns work in simple cases"
+
+// ===== 実用的な例 =====
+
+print ""
+print "=== Practical Examples ==="
+
+// 座標データの処理
+let point2D = [100, 200]
+let point3D = [10, 20, 30]
+
+let coordType = match point2D {
+  [] -> "No coordinates"
+  [x] -> "1D point at " + toString(x)
+  [x, y] -> "2D point at (" + toString(x) + ", " + toString(y) + ")"
+  [x, y, z] -> "3D point at (" + toString(x) + ", " + toString(y) + ", " + toString(z) + ")"
+  _ -> "High-dimensional point"
+}
+print coordType
+
+// RGB色値の処理
+let color = [255, 128, 64]
+let colorInfo = match color {
+  [] -> "No color"
+  [r] -> "Grayscale: " + toString(r)
+  [r, g] -> "RG color"
+  [r, g, b] -> "RGB(" + toString(r) + ", " + toString(g) + ", " + toString(b) + ")"
+  _ -> "Extended color format"
+}
+print colorInfo
+
+// ===== 設定・コマンド解析 =====
+
+print ""
+print "=== Configuration Parsing ==="
+
+// HTTPヘッダー風の処理
+let header = ["Content-Type", "application/json"]
+let headerResult = match header {
+  [] -> "Empty header"
+  [key] -> "Header key only: " + key
+  [key, value] -> key + ": " + value
+  _ -> "Complex header"
+}
+print headerResult
+
+// ===== Guard Pattern との組み合わせ =====
+
+print ""
+print "=== With Guard Patterns ==="
+
+let scores = [85, 92, 78]
+let gradeCheck = match scores {
+  [] -> "No scores"
+  [score] when score >= 90 -> "Single A grade!"
+  [score] -> "Single score: " + toString(score)
+  [x, y, z] when x >= 90 -> "First score is excellent!"
+  [x, y, z] when x >= 80 -> "First score is good"
+  [x, y, z] -> "First score: " + toString(x)
+}
+print gradeCheck
+
+// 数値範囲チェック
+let values = [150, 75, 200]
+let rangeCheck = match values {
+  [x, y, z] when x > 100 && y < 100 && z > 100 -> "High-Low-High pattern"
+  [x, y, z] when x < 100 && y < 100 && z < 100 -> "All low values"
+  [x, y, z] -> "Mixed values"
+  _ -> "Not a triple"
+}
+print rangeCheck
+
+// ===== データ変換・処理 =====
+
+print ""
+print "=== Data Processing ==="
+
+// タプルとして使われる配列
+let person = ["Alice", "30", "Engineer"]
+let personInfo = match person {
+  [] -> "No person data"
+  [name] -> "Name: " + name
+  [name, age] -> name + " (age " + age + ")"
+  [name, age, job] -> name + ", " + age + " years old, " + job
+  _ -> "Extended person info"
+}
+print personInfo
+
+// CSV行の処理
+let csvRow = ["2024", "January", "Sales", "15000"]
+let csvResult = match csvRow {
+  [] -> "Empty row"
+  [year] -> "Year: " + year
+  [year, month] -> year + "-" + month
+  [year, month, category] -> year + "-" + month + " " + category
+  [year, month, category, amount] -> category + " in " + month + " " + year + ": " + amount
+  _ -> "Extended CSV format"
+}
+print csvResult
+
+// ===== Or Pattern との組み合わせ =====
+
+print ""
+print "=== With Or Patterns ==="
+
+let data = [42]
+let dataCheck = match data {
+  [] | [0] -> "Empty or zero"
+  [x] -> "Single value: " + toString(x)
+  _ -> "Multiple values"
+}
+print dataCheck
+
+// ===== List vs Array Comparison =====
+
+print ""
+print "=== List vs Array Comparison ==="
+
+// List sugar pattern
+let myList = `[1, 2, 3]
+let listResult = match myList {
+  `[] -> "empty list"
+  `[x, ...rest] -> "list head: " + toString(x)
+}
+print ("List: " + listResult)
+
+// Array pattern
+let myArray = [1, 2, 3]
+let arrayResult = match myArray {
+  [] -> "empty array"
+  [x, y, z] -> "array triple: " + toString(x) + ", " + toString(y) + ", " + toString(z)
+  _ -> "other"
+}
+print ("Array: " + arrayResult)
+
+// ===== 使い分けの例 =====
+
+print ""
+print "=== Use Cases ==="
+
+// Array: 固定長データの分解
+let dimensions = [1920, 1080]
+let screenInfo = match dimensions {
+  [width, height] -> "Screen: " + toString(width) + "x" + toString(height)
+  _ -> "Unknown dimensions"
+}
+print screenInfo
+
+// List: 動的なデータ処理
+let dynamicData = `[1, 2, 3, 4, 5]
+let listHead = match dynamicData {
+  `[] -> "No data"
+  `[first, ...rest] -> "Processing " + toString(first) + " first"
+}
+print listHead
+

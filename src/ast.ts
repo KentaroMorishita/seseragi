@@ -879,6 +879,26 @@ export class ArrayPattern extends Pattern {
   }
 }
 
+export class ListSugarPattern extends Pattern {
+  kind = "ListSugarPattern"
+  patterns: Pattern[]
+  hasRest: boolean
+  restPattern?: Pattern
+
+  constructor(
+    patterns: Pattern[],
+    hasRest: boolean,
+    restPattern: Pattern | undefined,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.patterns = patterns
+    this.hasRest = hasRest
+    this.restPattern = restPattern
+  }
+}
+
 export class MatchCase extends ASTNode {
   kind = "MatchCase"
   pattern: Pattern

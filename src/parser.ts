@@ -1320,6 +1320,47 @@ export class Parser {
       )
     }
 
+    // List sugar pattern
+    if (this.match(TokenType.BACKTICK)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      
+      this.consume(TokenType.LEFT_BRACKET, "Expected '[' after '`' in list pattern")
+      
+      // Empty list pattern `[]
+      if (this.match(TokenType.RIGHT_BRACKET)) {
+        return new AST.ListSugarPattern([], false, undefined, line, column)
+      }
+      
+      const patterns: AST.Pattern[] = []
+      let hasRest = false
+      let restPattern: AST.Pattern | undefined = undefined
+      
+      // Check for rest pattern `[...rest]
+      if (this.match(TokenType.SPREAD)) {
+        restPattern = this.pattern()
+        hasRest = true
+      } else {
+        // Parse first pattern
+        patterns.push(this.pattern())
+        
+        // Parse remaining patterns
+        while (this.match(TokenType.COMMA)) {
+          // Check for rest pattern `[x, ...rest]
+          if (this.match(TokenType.SPREAD)) {
+            restPattern = this.pattern()
+            hasRest = true
+            break
+          }
+          patterns.push(this.pattern())
+        }
+      }
+      
+      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after list pattern")
+      
+      return new AST.ListSugarPattern(patterns, hasRest, restPattern, line, column)
+    }
+
     // Tuple pattern
     if (this.match(TokenType.LEFT_PAREN)) {
       const line = this.previous().line
@@ -1538,6 +1579,45 @@ export class Parser {
         token.column,
         literalType
       )
+    }
+
+    // Array pattern
+    if (this.match(TokenType.LEFT_BRACKET)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      
+      // Empty array pattern []
+      if (this.match(TokenType.RIGHT_BRACKET)) {
+        return new AST.ArrayPattern([], false, undefined, line, column)
+      }
+      
+      const patterns: AST.Pattern[] = []
+      let hasRest = false
+      let restPattern: AST.Pattern | undefined = undefined
+      
+      // Check for rest pattern [...rest]
+      if (this.match(TokenType.SPREAD)) {
+        restPattern = this.pattern()
+        hasRest = true
+      } else {
+        // Parse first pattern
+        patterns.push(this.pattern())
+        
+        // Parse remaining patterns
+        while (this.match(TokenType.COMMA)) {
+          // Check for rest pattern [x, ...rest]
+          if (this.match(TokenType.SPREAD)) {
+            restPattern = this.pattern()
+            hasRest = true
+            break
+          }
+          patterns.push(this.pattern())
+        }
+      }
+      
+      this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array pattern")
+      
+      return new AST.ArrayPattern(patterns, hasRest, restPattern, line, column)
     }
 
     throw new ParseError("Expected pattern", this.peek())

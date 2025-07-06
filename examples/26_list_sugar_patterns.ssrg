@@ -1,0 +1,150 @@
+// List Sugar Pattern の使用例
+// リスト糖衣構文 `[...] をパターンマッチで使用
+
+// ===== 基本的なリストパターン =====
+
+let numbers = `[1, 2, 3, 4, 5]
+let pair = `[10, 20]
+let single = `[42]
+let empty = `[]
+
+// 空リストのチェック
+let emptyCheck = match empty {
+  `[] -> "This is an empty list"
+  _ -> "Not empty"
+}
+
+print "=== Basic List Patterns ==="
+print emptyCheck
+
+// 要素数によるパターンマッチ
+let lengthCheck = match numbers {
+  `[] -> "Empty"
+  `[x] -> "Single element: " + toString(x)
+  `[x, y] -> "Pair: " + toString(x) + " and " + toString(y)
+  _ -> "Three or more elements"
+}
+
+print lengthCheck
+
+// ===== Rest Pattern (head/tail操作) =====
+
+print ""
+print "=== Rest Patterns ==="
+
+// 最初の要素を取得
+let headValue = match numbers {
+  `[] -> 0
+  `[x, ...rest] -> x
+}
+
+print ("Head of list: " + toString(headValue))
+
+// 最初の要素とrest
+let headTail = match numbers {
+  `[] -> "Empty list"
+  `[x, ...rest] -> "Head: " + toString(x) + ", Rest exists"
+}
+
+print headTail
+
+// ===== Guard Pattern との組み合わせ =====
+
+print ""
+print "=== With Guard Patterns ==="
+
+let scores = `[85, 92, 78, 95, 88]
+
+let firstScoreCheck = match scores {
+  `[] -> "No scores"
+  `[score, ...rest] when score >= 90 -> "First score is A grade!"
+  `[score, ...rest] when score >= 80 -> "First score is B grade"
+  `[score, ...rest] -> "First score needs improvement"
+}
+
+print firstScoreCheck
+
+// ===== 実用的な例 =====
+
+print ""
+print "=== Practical Examples ==="
+
+// リストの合計を計算する関数のイメージ
+let sumResult = match `[1, 2, 3] {
+  `[] -> 0
+  `[x] -> x
+  `[x, y] -> x + y
+  `[x, y, z] -> x + y + z
+  _ -> 999  // 仮の値
+}
+
+print ("Sum of [1,2,3]: " + toString(sumResult))
+
+// 設定値のパース
+let config = `["debug", "true"]
+
+let configResult = match config {
+  `["debug", value] -> "Debug mode: " + value
+  `["port", value] -> "Port: " + value
+  `[key, value] -> "Unknown config: " + key + " = " + value
+  _ -> "Invalid config format"
+}
+
+print configResult
+
+// ===== ネストしたデータ構造 =====
+
+print ""
+print "=== Nested Structures ==="
+
+// タプルのリスト
+let points = `[(1, 2), (3, 4), (5, 6)]
+
+let firstPoint = match points {
+  `[] -> "No points"
+  `[(x, y), ...rest] -> "First point: (" + toString(x) + ", " + toString(y) + ")"
+}
+
+print firstPoint
+
+// ===== Or Pattern との組み合わせ =====
+
+print ""
+print "=== With Or Patterns ==="
+
+let data = `[100, 200]
+
+let dataCheck = match data {
+  `[] | `[_] -> "Empty or single element"
+  `[x, y] -> "Pair found: " + toString(x) + ", " + toString(y)
+  _ -> "Multiple elements"
+}
+
+print dataCheck
+
+// ===== リスト処理のイディオム =====
+
+print ""
+print "=== List Processing Idioms ==="
+
+// 安全なhead取得
+let safeHeadResult = match numbers {
+  `[] -> Nothing
+  `[x, ...rest] -> Just x
+}
+
+let emptyResult = match empty {
+  `[] -> Nothing
+  `[x, ...rest] -> Just x
+}
+
+print ("Safe head of numbers: " + toString(safeHeadResult))
+print ("Safe head of empty: " + toString(emptyResult))
+
+// リストが特定のパターンに一致するかチェック
+let isValidResponse = match `["OK", "200", "Success"] {
+  `["OK", code, msg] -> True
+  _ -> False
+}
+
+print ("Is valid response format: " + toString(isValidResponse))

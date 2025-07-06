@@ -4422,6 +4422,82 @@ export class TypeInferenceSystem {
         break
       }
 
+      case "ListSugarPattern": {
+        // リスト糖衣構文パターン: `[x, y, ...rest]
+        const listSugarPattern = pattern as AST.ListSugarPattern
+        
+        // List型であることを確認
+        const listType = new AST.GenericType(
+          "List",
+          [this.freshTypeVariable(pattern.line, pattern.column)],
+          pattern.line,
+          pattern.column
+        )
+        
+        this.addConstraint(
+          new TypeConstraint(
+            expectedType,
+            listType,
+            pattern.line,
+            pattern.column,
+            "List sugar pattern expects List type"
+          )
+        )
+        
+        // 各要素パターンに対して再帰的に制約を生成
+        const elementType = listType.typeArguments[0]
+        
+        for (const elemPattern of listSugarPattern.patterns) {
+          this.generateConstraintsForPattern(elemPattern, elementType, env)
+        }
+        
+        // restパターンがある場合
+        if (listSugarPattern.hasRest && listSugarPattern.restPattern) {
+          // restはList型全体
+          this.generateConstraintsForPattern(listSugarPattern.restPattern, expectedType, env)
+        }
+        
+        break
+      }
+
+      case "ArrayPattern": {
+        // 配列パターン: [x, y, ...rest]
+        const arrayPattern = pattern as AST.ArrayPattern
+        
+        // Array型であることを確認
+        const arrayType = new AST.GenericType(
+          "Array",
+          [this.freshTypeVariable(pattern.line, pattern.column)],
+          pattern.line,
+          pattern.column
+        )
+        
+        this.addConstraint(
+          new TypeConstraint(
+            expectedType,
+            arrayType,
+            pattern.line,
+            pattern.column,
+            "Array pattern expects Array type"
+          )
+        )
+        
+        // 各要素パターンに対して再帰的に制約を生成
+        const elementType = arrayType.typeArguments[0]
+        
+        for (const elemPattern of arrayPattern.patterns) {
+          this.generateConstraintsForPattern(elemPattern, elementType, env)
+        }
+        
+        // restパターンがある場合
+        if (arrayPattern.hasRest && arrayPattern.restPattern) {
+          // restはArray型全体
+          this.generateConstraintsForPattern(arrayPattern.restPattern, expectedType, env)
+        }
+        
+        break
+      }
+
       default:
         this.errors.push(
           new TypeInferenceError(

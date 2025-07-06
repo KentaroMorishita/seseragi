@@ -200,6 +200,49 @@ export class CodeGenerator {
         return this.generatePatternBindings(guardPattern.pattern, valueVar)
       }
 
+      case "ListSugarPattern": {
+        // リスト糖衣構文パターン: `[x, y, ...rest]
+        const listSugarPattern = pattern as any // AST.ListSugarPattern
+        let bindings = ""
+        let currentVar = valueVar
+        
+        // 各要素パターンのバインディング
+        for (let i = 0; i < listSugarPattern.patterns.length; i++) {
+          const elemPattern = listSugarPattern.patterns[i]
+          const headVar = `${currentVar}.head`
+          bindings += this.generatePatternBindings(elemPattern, headVar)
+          currentVar = `${currentVar}.tail`
+        }
+        
+        // restパターンのバインディング
+        if (listSugarPattern.hasRest && listSugarPattern.restPattern) {
+          bindings += this.generatePatternBindings(listSugarPattern.restPattern, currentVar)
+        }
+        
+        return bindings
+      }
+
+      case "ArrayPattern": {
+        // 配列パターン: [x, y, ...rest]
+        const arrayPattern = pattern as any // AST.ArrayPattern
+        let bindings = ""
+        
+        // 各要素パターンのバインディング
+        for (let i = 0; i < arrayPattern.patterns.length; i++) {
+          const elemPattern = arrayPattern.patterns[i]
+          const indexVar = `${valueVar}[${i}]`
+          bindings += this.generatePatternBindings(elemPattern, indexVar)
+        }
+        
+        // restパターンのバインディング
+        if (arrayPattern.hasRest && arrayPattern.restPattern) {
+          const sliceVar = `${valueVar}.slice(${arrayPattern.patterns.length})`
+          bindings += this.generatePatternBindings(arrayPattern.restPattern, sliceVar)
+        }
+        
+        return bindings
+      }
+
       default:
         return ""
     }
@@ -2260,6 +2303,66 @@ ${indent}}`
         const patternCondition = this.generatePatternCondition(guardPattern.pattern, valueVar)
         const guardCondition = this.generateExpression(guardPattern.guard)
         return `(${patternCondition} && (${guardCondition}))`
+      }
+
+      case "ListSugarPattern": {
+        // リスト糖衣構文パターン: `[x, y, ...rest]
+        const listSugarPattern = pattern as any // AST.ListSugarPattern
+        
+        // 空リストパターン `[]
+        if (listSugarPattern.patterns.length === 0 && !listSugarPattern.hasRest) {
+          return `${valueVar}.tag === 'Empty'`
+        }
+        
+        // restのみのパターン `[...rest]
+        if (listSugarPattern.patterns.length === 0 && listSugarPattern.hasRest) {
+          return "true" // すべてのリストにマッチ
+        }
+        
+        // パターンを構築
+        let conditions: string[] = []
+        let currentVar = valueVar
+        
+        // 各要素パターンをチェック
+        for (let i = 0; i < listSugarPattern.patterns.length; i++) {
+          conditions.push(`${currentVar}.tag === 'Cons'`)
+          currentVar = `${currentVar}.tail`
+        }
+        
+        // restパターンがない場合、残りはEmptyである必要がある
+        if (!listSugarPattern.hasRest) {
+          conditions.push(`${currentVar}.tag === 'Empty'`)
+        }
+        
+        return `(${conditions.join(" && ")})`
+      }
+
+      case "ArrayPattern": {
+        // 配列パターン: [x, y, ...rest]
+        const arrayPattern = pattern as any // AST.ArrayPattern
+        
+        // 空配列パターン []
+        if (arrayPattern.patterns.length === 0 && !arrayPattern.hasRest) {
+          return `${valueVar}.length === 0`
+        }
+        
+        // restのみのパターン [...rest]
+        if (arrayPattern.patterns.length === 0 && arrayPattern.hasRest) {
+          return "true" // すべての配列にマッチ
+        }
+        
+        let conditions: string[] = []
+        
+        // 要素数チェック
+        if (!arrayPattern.hasRest) {
+          // restがない場合、正確な長さを要求
+          conditions.push(`${valueVar}.length === ${arrayPattern.patterns.length}`)
+        } else {
+          // restがある場合、最小長さを要求
+          conditions.push(`${valueVar}.length >= ${arrayPattern.patterns.length}`)
+        }
+        
+        return `(${conditions.join(" && ")})`
       }
 
       default:
