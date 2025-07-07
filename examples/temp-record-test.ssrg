@@ -10,8 +10,8 @@ show result1
 
 // 配列内での関数呼び出し（カッコ必要性確認）
 let results = [
-greet { name: "Bob", age: 25 },
-greet { name: "Carol", age: 35 }
+  greet { name: "Bob", age: 25 },
+  greet { name: "Carol", age: 35 }
 ]
 show results
 

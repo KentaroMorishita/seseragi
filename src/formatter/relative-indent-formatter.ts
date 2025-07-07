@@ -214,6 +214,16 @@ function getRelativeIndent(
   if (line.trim() === "}") {
     return 0
   }
+  
+  // 配列の閉じ括弧
+  if (line.trim() === "]") {
+    return 0
+  }
+
+  // 配列要素のインデント処理
+  if (isArrayElement(line, index, allLines)) {
+    return 1 // 親から +2スペース
+  }
 
   // 新しい実装では基本的に相対インデントは0
   // getCurrentContextLevel が既に正しいインデントレベルを返す
@@ -336,6 +346,61 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
   return false
 }
 
+// 配列要素かどうかを判定
+function isArrayElement(line: string, index: number, allLines: string[]): boolean {
+  const trimmed = line.trim()
+  
+  // 配列の閉じ括弧は要素ではない
+  if (trimmed === "]") {
+    return false
+  }
+  
+  // 直前の行をさかのぼって配列のコンテキストにいるかチェック
+  let bracketDepth = 0
+  let foundArrayStart = false
+  
+  for (let i = index - 1; i >= 0; i--) {
+    const prevLine = allLines[i].trim()
+    
+    // 空行やコメントはスキップ
+    if (prevLine === "" || prevLine.startsWith("//")) {
+      continue
+    }
+    
+    // 角括弧をカウント
+    for (const char of prevLine) {
+      if (char === "[") {
+        bracketDepth++
+        foundArrayStart = true
+      } else if (char === "]") {
+        bracketDepth--
+      }
+    }
+    
+    // 配列の開始が見つかって、現在も配列内にいる場合
+    if (foundArrayStart && bracketDepth > 0) {
+      return true
+    }
+    
+    // 配列の外に出たか、他の構造が見つかった場合
+    if (bracketDepth <= 0 && foundArrayStart) {
+      return false
+    }
+    
+    // トップレベル要素が見つかって配列コンテキストでない場合
+    if (bracketDepth === 0 && (
+      prevLine.startsWith("fn ") ||
+      prevLine.startsWith("let ") ||
+      prevLine.startsWith("type ") ||
+      prevLine.startsWith("show ")
+    )) {
+      return false
+    }
+  }
+  
+  return false
+}
+
 export function removeExtraWhitespace(code: string): string {
   return code
     .replace(/[ \t]+/g, " ")
@@ -356,9 +421,15 @@ export function normalizeOperatorSpacing(code: string): string {
       return line
     }
 
-    // 文字列リテラル、ジェネリック型、モナド演算子を一時的に保護
+    // 文字列リテラル、テンプレートリテラル、ジェネリック型、モナド演算子を一時的に保護
     const protectedParts: string[] = []
     let processed = line
+      // テンプレートリテラル全体を保護（バッククォートで囲まれた全体）
+      .replace(/`[^`]*`/g, (match) => {
+        const index = protectedParts.length
+        protectedParts.push(match)
+        return `__PROTECTED_${index}__`
+      })
       // 文字列リテラルを保護
       .replace(/"[^"]*"/g, (match) => {
         const index = protectedParts.length
