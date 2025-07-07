@@ -62,9 +62,9 @@ show "--- Array ↔ List Conversion with Monads ---"
 
 // Array → List → Array
 let originalArray = [1, 2, 3, 4, 5]
-let convertedToList = arrayToList originalArray
-let processedList = (\x -> x * x) <$> convertedToList
-let backToArray = listToArray processedList
+let convertedToList: List<Int> = arrayToList originalArray
+let processedList: List<Int> = (\x -> x * x) <$> convertedToList
+let backToArray: Array<Int>  = listToArray processedList
 
 show "Original Array:"
 show originalArray
@@ -75,9 +75,9 @@ show backToArray
 
 // List → Array → List
 let originalList = Cons 5 (Cons 10 (Cons 15 Empty))
-let convertedToArray = listToArray originalList
-let processedArray = convertedToArray >>= (\x -> [x, x / 5])
-let backToList = arrayToList processedArray
+let convertedToArray: Array<Int> = listToArray originalList
+let processedArray: Array<Int> = convertedToArray >>= (\x -> [x, x / 5])
+let backToList: List<Int>  = arrayToList processedArray
 
 show "Original List:"
 show originalList
