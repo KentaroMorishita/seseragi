@@ -305,7 +305,12 @@ export class Lexer {
       case "`":
         // リスト糖衣構文 `[ かテンプレートリテラルかを判定
         if (this.peek() === "[") {
-          return this.makeToken(TokenType.BACKTICK, char, startLine, startColumn)
+          return this.makeToken(
+            TokenType.BACKTICK,
+            char,
+            startLine,
+            startColumn
+          )
         } else {
           return this.templateString(startLine, startColumn)
         }

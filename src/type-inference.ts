@@ -1046,22 +1046,29 @@ export class TypeInferenceSystem {
     varDecl: AST.VariableDeclaration,
     env: Map<string, AST.Type>
   ): AST.Type {
+    // 型注釈がある場合は期待される型として渡す
+    let expectedType: AST.Type | undefined = undefined
+    if (varDecl.type) {
+      expectedType = varDecl.type
+      if (varDecl.type.kind === "PrimitiveType") {
+        const aliasedType = env.get(varDecl.type.name)
+        if (aliasedType) {
+          expectedType = aliasedType
+        }
+      }
+    }
+
     // 初期化式の型を推論
     const initType = this.generateConstraintsForExpression(
       varDecl.initializer,
-      env
+      env,
+      expectedType
     )
 
     let finalType: AST.Type
     if (varDecl.type) {
-      // 明示的な型注釈がある場合は型エイリアスを解決
-      let resolvedType = varDecl.type
-      if (varDecl.type.kind === "PrimitiveType") {
-        const aliasedType = env.get(varDecl.type.name)
-        if (aliasedType) {
-          resolvedType = aliasedType
-        }
-      }
+      // 明示的な型注釈がある場合（expectedTypeは既に解決済み）
+      const resolvedType = expectedType!
 
       // 制約を追加（解決された型で）
       this.addConstraint(
@@ -1188,7 +1195,8 @@ export class TypeInferenceSystem {
 
   public generateConstraintsForExpression(
     expr: AST.Expression,
-    env: Map<string, AST.Type>
+    env: Map<string, AST.Type>,
+    expectedType?: AST.Type
   ): AST.Type {
     let resultType: AST.Type
 
@@ -1354,7 +1362,8 @@ export class TypeInferenceSystem {
       case "RecordExpression":
         resultType = this.generateConstraintsForRecordExpression(
           expr as AST.RecordExpression,
-          env
+          env,
+          expectedType
         )
         break
 
@@ -1403,7 +1412,8 @@ export class TypeInferenceSystem {
       case "StructExpression":
         resultType = this.generateConstraintsForStructExpression(
           expr as AST.StructExpression,
-          env
+          env,
+          expectedType
         )
         break
 
@@ -1715,14 +1725,16 @@ export class TypeInferenceSystem {
     call: AST.FunctionCall,
     env: Map<string, AST.Type>
   ): AST.Type {
-    // print/putStrLn関数の特別処理
+    // print/putStrLn/show関数の特別処理
     if (call.function.kind === "Identifier") {
       const funcName = (call.function as AST.Identifier).name
       if (
-        (funcName === "print" || funcName === "putStrLn") &&
+        (funcName === "print" ||
+          funcName === "putStrLn" ||
+          funcName === "show") &&
         call.arguments.length === 1
       ) {
-        // print/putStrLn関数は任意の型を受け取り、Unit型を返す
+        // print/putStrLn/show関数は任意の型を受け取り、Unit型を返す
         this.generateConstraintsForExpression(call.arguments[0], env)
         return new AST.PrimitiveType("Unit", call.line, call.column)
       }
@@ -1822,6 +1834,7 @@ export class TypeInferenceSystem {
     switch (call.functionName) {
       case "print":
       case "putStrLn":
+      case "show":
         // Type: 'a -> Unit (polymorphic)
         if (call.arguments.length === 1) {
           // Just check that the argument has some type, but we accept anything
@@ -3983,7 +3996,8 @@ export class TypeInferenceSystem {
 
   private generateConstraintsForStructExpression(
     structExpr: AST.StructExpression,
-    env: Map<string, AST.Type>
+    env: Map<string, AST.Type>,
+    expectedType?: AST.Type
   ): AST.Type {
     // 構造体型を環境から取得
     const structType = env.get(structExpr.structName)
@@ -4089,18 +4103,25 @@ export class TypeInferenceSystem {
       }
     }
 
+    // Maybe型フィールドの自動補完（Struct版）
+    // オブジェクトベースのコンストラクタでは、デフォルト値はコンストラクタ内で適用されるため
+    // ここでの自動補完は不要
+
     // 必要なフィールドがすべて提供されているかチェック
     for (const field of structType.fields) {
       const providedData = providedFieldMap.get(field.name)
 
       if (!providedData) {
-        this.errors.push(
-          new TypeInferenceError(
-            `Missing field '${field.name}' in struct ${structExpr.structName}`,
-            structExpr.line,
-            structExpr.column
+        // Maybe型フィールドは省略可能
+        if (!this.isMaybeType(field.type)) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Missing field '${field.name}' in struct ${structExpr.structName}`,
+              structExpr.line,
+              structExpr.column
+            )
           )
-        )
+        }
         continue
       }
 
@@ -4537,7 +4558,8 @@ export class TypeInferenceSystem {
 
   private generateConstraintsForRecordExpression(
     record: AST.RecordExpression,
-    env: Map<string, AST.Type>
+    env: Map<string, AST.Type>,
+    expectedType?: AST.Type
   ): AST.Type {
     // Mapを使って重複フィールドを避ける（後から来たフィールドで上書き）
     const fieldMap = new Map<string, AST.RecordField>()
@@ -4622,9 +4644,82 @@ export class TypeInferenceSystem {
       }
     }
 
+    // Maybe型フィールドの自動補完
+    if (
+      expectedType &&
+      (expectedType.kind === "RecordType" ||
+        expectedType.kind === "PrimitiveType")
+    ) {
+      let expectedRecordType: AST.RecordType | null = null
+
+      // 期待される型がRecord型の場合
+      if (expectedType.kind === "RecordType") {
+        expectedRecordType = expectedType as AST.RecordType
+      }
+      // 期待される型がPrimitiveType（型エイリアス）の場合は解決を試みる
+      else if (expectedType.kind === "PrimitiveType") {
+        const aliasedType = env.get(expectedType.name)
+        if (aliasedType && aliasedType.kind === "RecordType") {
+          expectedRecordType = aliasedType as AST.RecordType
+        }
+      }
+
+      // 期待されるRecord型が見つかった場合、省略されたMaybe型フィールドを自動補完
+      if (expectedRecordType) {
+        for (const expectedField of expectedRecordType.fields) {
+          // フィールドが省略されている場合
+          if (!fieldMap.has(expectedField.name)) {
+            // Maybe型かどうかをチェック
+            if (this.isMaybeType(expectedField.type)) {
+              // Nothing値を自動設定
+              const nothingConstructor = new AST.ConstructorExpression(
+                "Nothing",
+                [],
+                record.line,
+                record.column
+              )
+              const nothingField = new AST.RecordInitField(
+                expectedField.name,
+                nothingConstructor,
+                record.line,
+                record.column
+              )
+
+              // RecordExpressionのfieldsに追加
+              record.fields.push(nothingField)
+
+              // fieldMapにも追加（型推論用）
+              const nothingType = this.generateConstraintsForExpression(
+                nothingConstructor,
+                env
+              )
+              fieldMap.set(
+                expectedField.name,
+                new AST.RecordField(
+                  expectedField.name,
+                  nothingType,
+                  record.line,
+                  record.column
+                )
+              )
+            }
+          }
+        }
+      }
+    }
+
     // Mapから配列に変換
     const fields = Array.from(fieldMap.values())
     return new AST.RecordType(fields, record.line, record.column)
+  }
+
+  // Maybe型かどうかをチェックするヘルパーメソッド
+  private isMaybeType(type: AST.Type): boolean {
+    if (type.kind === "GenericType") {
+      const genericType = type as AST.GenericType
+      return genericType.name === "Maybe"
+    }
+    return false
   }
 
   private generateConstraintsForRecordAccess(

@@ -214,7 +214,7 @@ function getRelativeIndent(
   if (line.trim() === "}") {
     return 0
   }
-  
+
   // 配列の閉じ括弧
   if (line.trim() === "]") {
     return 0
@@ -347,26 +347,30 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
 }
 
 // 配列要素かどうかを判定
-function isArrayElement(line: string, index: number, allLines: string[]): boolean {
+function isArrayElement(
+  line: string,
+  index: number,
+  allLines: string[]
+): boolean {
   const trimmed = line.trim()
-  
+
   // 配列の閉じ括弧は要素ではない
   if (trimmed === "]") {
     return false
   }
-  
+
   // 直前の行をさかのぼって配列のコンテキストにいるかチェック
   let bracketDepth = 0
   let foundArrayStart = false
-  
+
   for (let i = index - 1; i >= 0; i--) {
     const prevLine = allLines[i].trim()
-    
+
     // 空行やコメントはスキップ
     if (prevLine === "" || prevLine.startsWith("//")) {
       continue
     }
-    
+
     // 角括弧をカウント
     for (const char of prevLine) {
       if (char === "[") {
@@ -376,28 +380,29 @@ function isArrayElement(line: string, index: number, allLines: string[]): boolea
         bracketDepth--
       }
     }
-    
+
     // 配列の開始が見つかって、現在も配列内にいる場合
     if (foundArrayStart && bracketDepth > 0) {
       return true
     }
-    
+
     // 配列の外に出たか、他の構造が見つかった場合
     if (bracketDepth <= 0 && foundArrayStart) {
       return false
     }
-    
+
     // トップレベル要素が見つかって配列コンテキストでない場合
-    if (bracketDepth === 0 && (
-      prevLine.startsWith("fn ") ||
-      prevLine.startsWith("let ") ||
-      prevLine.startsWith("type ") ||
-      prevLine.startsWith("show ")
-    )) {
+    if (
+      bracketDepth === 0 &&
+      (prevLine.startsWith("fn ") ||
+        prevLine.startsWith("let ") ||
+        prevLine.startsWith("type ") ||
+        prevLine.startsWith("show "))
+    ) {
       return false
     }
   }
-  
+
   return false
 }
 

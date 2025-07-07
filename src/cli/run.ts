@@ -4,6 +4,9 @@ import * as os from "node:os"
 import { spawn } from "node:child_process"
 import { Parser } from "../parser.js"
 import { generateTypeScript } from "../codegen.js"
+import { infer } from "../type-inference.js"
+import { TypeChecker } from "../typechecker.js"
+import * as AST from "../ast.js"
 
 export interface RunOptions {
   input: string
@@ -90,12 +93,33 @@ async function compileToTemp(options: RunOptions): Promise<string> {
   const parser = new Parser(sourceCode)
   const ast = parser.parse()
 
+  if (ast.errors && ast.errors.length > 0) {
+    throw new Error(ast.errors.map((e) => e.message).join("\n"))
+  }
+
+  // 型推論
+  console.log("Running type inference...")
+  const inferenceResult = infer(ast.statements!)
+
+  if (inferenceResult.errors.length > 0) {
+    throw new Error(inferenceResult.errors.map((e) => e.message).join("\n"))
+  }
+
+  // 型チェック（main.tsと合わせるため一旦無効化）
+  // console.log("Type checking...")
+  // const program = new AST.Program(ast.statements!, 1, 1)
+  // const typeChecker = new TypeChecker(inferenceResult.typeEnvironment)
+  // const errors = typeChecker.check(program)
+
+  // if (errors.length > 0) {
+  //   throw new Error(errors.map((e) => e.message).join("\n"))
+  // }
+
   // TypeScriptコードを生成
   console.log("Generating TypeScript code...")
   const typeScriptCode = generateTypeScript(ast.statements, {
-    generateComments: false, // 実行用なのでコメントは不要
-    useArrowFunctions: true,
-    runtimeMode: "embedded", // 完全なランタイムを常に埋め込み
+    typeInferenceResult: inferenceResult,
+    runtimeMode: "embedded", // 一時ファイル実行のため埋め込みモード必須
   })
 
   // 一時ファイルに書き込み

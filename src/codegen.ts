@@ -1435,11 +1435,47 @@ const show = (value) => {
   // 構造体宣言の生成
   generateStructDeclaration(structDecl: StructDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
-    const fields = structDecl.fields
-      .map((f) => `public ${f.name}: ${this.generateType(f.type)}`)
+
+    // フィールド定義
+    const fieldDeclarations = structDecl.fields
+      .map((f) => `${indent}  ${f.name}: ${this.generateType(f.type)};`)
+      .join("\n")
+
+    // コンストラクタ引数の型定義
+    const constructorParamType = structDecl.fields
+      .map((f) => {
+        // Maybe型フィールドはオプショナルにする
+        const isOptional = this.isMaybeType(f.type) ? "?" : ""
+        return `${f.name}${isOptional}: ${this.generateType(f.type)}`
+      })
       .join(", ")
 
-    return `${indent}class ${structDecl.name} {\n${indent}  constructor(${fields}) {}\n${indent}}`
+    // コンストラクタ本体でデフォルト値を適用
+    const fieldAssignments = structDecl.fields
+      .map((f) => {
+        if (this.isMaybeType(f.type)) {
+          return `${indent}    this.${f.name} = fields.${f.name} ?? Nothing;`
+        } else {
+          return `${indent}    this.${f.name} = fields.${f.name};`
+        }
+      })
+      .join("\n")
+
+    return `${indent}class ${structDecl.name} {
+${fieldDeclarations}
+
+${indent}  constructor(fields: { ${constructorParamType} }) {
+${fieldAssignments}
+${indent}  }
+${indent}}`
+  }
+
+  // Maybe型かどうかをチェック（コード生成用）
+  private isMaybeType(type: Type): boolean {
+    if (type.kind === "GenericType" && type.name === "Maybe") {
+      return true
+    }
+    return false
   }
 
   // impl ブロックの生成
@@ -1850,6 +1886,18 @@ ${indent}}`
       }
     }
     return expr.type
+  }
+
+  // 構造体型定義を型環境から取得
+  private getStructTypeDefinition(structName: string): StructType | undefined {
+    if (this.typeInferenceResult && this.typeInferenceResult.typeEnvironment) {
+      const structType =
+        this.typeInferenceResult.typeEnvironment.get(structName)
+      if (structType && structType.kind === "StructType") {
+        return structType as StructType
+      }
+    }
+    return undefined
   }
 
   // プリミティブ型かどうかをチェック
@@ -2953,21 +3001,24 @@ ${indent}}`
     }
 
     // 従来のコンストラクタ形式（スプレッドなし）
-    const args = structExpr.fields
-      .map((field) => {
-        if (field.kind === "RecordInitField") {
-          const initField = field as any // AST.RecordInitField
-          return this.generateExpression(initField.value)
-        } else if (field.kind === "RecordShorthandField") {
-          const shorthandField = field as any // AST.RecordShorthandField
-          // Use the variable name directly
-          return shorthandField.name
-        }
-        return ""
-      })
-      .filter((arg) => arg !== "")
-      .join(", ")
-    return `new ${structExpr.structName}(${args})`
+    // オブジェクトリテラルでフィールドを指定
+    const fieldEntries: string[] = []
+
+    for (const field of structExpr.fields) {
+      if (field.kind === "RecordInitField") {
+        const initField = field as any // AST.RecordInitField
+        const value = this.generateExpression(initField.value)
+        fieldEntries.push(`${initField.name}: ${value}`)
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as any // AST.RecordShorthandField
+        fieldEntries.push(shorthandField.name)
+      }
+    }
+
+    const fieldsObject =
+      fieldEntries.length > 0 ? `{ ${fieldEntries.join(", ")} }` : "{}"
+
+    return `new ${structExpr.structName}(${fieldsObject})`
   }
 
   // メソッド呼び出しの生成

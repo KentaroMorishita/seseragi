@@ -38,20 +38,38 @@ export function compileSeseragi(source: string): string {
   }
 
   // コード生成
-  return generateTypeScript(parseResult.statements!)
+  return generateTypeScript(parseResult.statements!, {
+    typeInferenceResult: inferenceResult,
+  })
 }
 
 console.log("Seseragi Compiler v1.0.0")
 
-// テスト用のSeseragiコード
-const testCases = [
-  "fn add a :Int -> b :Int -> Int = a + b",
-  "let x :Int = 42",
-  "fn double x :Int -> Int = x * 2",
-  "fn isEven n :Int -> Bool = n % 2 == 0",
-]
+// コマンドライン引数からファイルを読み込み
+const args = process.argv.slice(2)
+let sourceCodeList: string[] = []
 
-for (const source of testCases) {
+if (args.length > 0 && args[0].endsWith(".ssrg")) {
+  try {
+    const fs = require("fs")
+    const fileContent = fs.readFileSync(args[0], "utf8")
+    sourceCodeList = [fileContent]
+    console.log(`ファイル ${args[0]} を読み込みました`)
+  } catch (error) {
+    console.error(`ファイル読み込みエラー: ${error}`)
+    process.exit(1)
+  }
+} else {
+  // デフォルトのテストケース
+  sourceCodeList = [
+    "fn add a :Int -> b :Int -> Int = a + b",
+    "let x :Int = 42",
+    "fn double x :Int -> Int = x * 2",
+    "fn isEven n :Int -> Bool = n % 2 == 0",
+  ]
+}
+
+for (const source of sourceCodeList) {
   console.log("\n" + "=".repeat(50))
   console.log("Seseragiコード:", source)
   console.log("-".repeat(30))
@@ -70,8 +88,20 @@ for (const source of testCases) {
     const program = parser.parse()
     console.log("AST:", program.statements.length, "個の文")
 
+    // 型推論
+    console.log("型推論を実行中...")
+    const inferenceResult = infer(program.statements!)
+
+    if (inferenceResult.errors.length > 0) {
+      console.error("型推論エラー:")
+      inferenceResult.errors.forEach((error) => console.error(error.message))
+      continue
+    }
+
     // TypeScriptコード生成
-    const tsCode = generateTypeScript(program.statements)
+    const tsCode = generateTypeScript(program.statements, {
+      typeInferenceResult: inferenceResult,
+    })
     console.log("生成されたTypeScript:")
     console.log(tsCode)
   } catch (error) {
