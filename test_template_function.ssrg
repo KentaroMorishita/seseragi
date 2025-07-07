@@ -1,3 +1,0 @@
-let name = "World"
-show `Hello ${name}!`
-print `Count: ${42 + 8}`

@@ -1,8 +1,0 @@
-// テンプレートリテラルのテストケース
-let name = "World"
-let greeting = `Hello ${name}!`
-let count = 42
-let message = `Count: ${count + 8}`
-
-print greeting
-print message
