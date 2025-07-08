@@ -2339,7 +2339,7 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
         const paramSig = info.parameters
           .map((p: any) => {
             const paramType = formatInferredTypeForDisplay(p.type)
-            return `${p.name} :${paramType}`
+            return `${p.name}: ${paramType}`
           })
           .join(" -> ")
 
@@ -2693,7 +2693,7 @@ function formatStructDefinitionInfo(
 
   const fieldStrs = structInfo.fields.map((field: any) => {
     const fieldType = formatInferredTypeForDisplay(field.type)
-    return `  ${field.name} :${fieldType}`
+    return `  ${field.name}: ${fieldType}`
   })
 
   let structDef = `struct ${structName} {\n${fieldStrs.join(",\n")}\n}`
@@ -2713,7 +2713,7 @@ function formatStructDefinitionInfo(
         1,
         "  "
       )
-      return `  ${field.name} :${fieldType}`
+      return `  ${field.name}: ${fieldType}`
     })
     structDef = `struct ${structName} {\n${detailedFields.join(",\n")}\n}`
   }
