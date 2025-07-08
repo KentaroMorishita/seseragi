@@ -2163,7 +2163,60 @@ export class Parser {
           this.previous().column
         )
       } else if (this.canStartExpression()) {
-        // 括弧なし関数適用（関数型言語の標準）
+        // builtin関数の特別処理（show, print, putStrLn, toString用）
+        if (expr.kind === "Identifier") {
+          const identifierExpr = expr as AST.Identifier
+          if (
+            ["show", "print", "putStrLn", "toString"].includes(
+              identifierExpr.name
+            )
+          ) {
+            // builtin関数の場合は、引数として一つの完全な式を解析
+            // 再帰を避けるため、primaryExpression()からpostfix操作を手動で処理
+            let arg = this.check(TokenType.NOT)
+              ? this.parseUnaryOnly()
+              : this.primaryExpression()
+
+            // postfix操作（dot access, array access等）を手動で処理
+            while (true) {
+              if (this.match(TokenType.DOT)) {
+                const fieldName = this.consume(
+                  TokenType.IDENTIFIER,
+                  "Expected field name after '.'"
+                ).value
+                arg = new AST.RecordAccess(
+                  arg,
+                  fieldName,
+                  this.previous().line,
+                  this.previous().column
+                )
+              } else if (this.match(TokenType.LEFT_BRACKET)) {
+                const index = this.expression()
+                this.consume(
+                  TokenType.RIGHT_BRACKET,
+                  "Expected ']' after array index"
+                )
+                arg = new AST.ArrayAccess(
+                  arg,
+                  index,
+                  this.previous().line,
+                  this.previous().column
+                )
+              } else {
+                break
+              }
+            }
+
+            return new AST.BuiltinFunctionCall(
+              identifierExpr.name as "print" | "putStrLn" | "toString" | "show",
+              [arg],
+              identifierExpr.line,
+              identifierExpr.column
+            )
+          }
+        }
+
+        // 通常の括弧なし関数適用（関数型言語の標準）
         const arg = this.check(TokenType.NOT)
           ? this.parseUnaryOnly()
           : this.primaryExpression()
@@ -2180,7 +2233,6 @@ export class Parser {
 
     return expr
   }
-
 
   // 次のトークンが式の開始になり得るかチェック
   private canStartExpression(): boolean {
