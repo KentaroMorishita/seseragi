@@ -1066,10 +1066,7 @@ export class Parser {
           typeArgs.push(this.parseType())
         } while (this.match(TokenType.COMMA))
 
-        this.consume(
-          TokenType.GREATER_THAN,
-          "Expected '>' after type arguments"
-        )
+        this.consumeGreaterThan("Expected '>' after type arguments")
 
         return new AST.GenericType(name, typeArgs, token.line, token.column)
       }
@@ -2668,6 +2665,67 @@ export class Parser {
 
   private consume(type: TokenType, message: string): Token {
     if (this.check(type)) return this.advance()
+
+    throw new ParseError(message, this.peek())
+  }
+
+  // ジェネリクス型での > を消費する特別なメソッド
+  private consumeGreaterThan(message: string): Token {
+    if (this.check(TokenType.GREATER_THAN)) {
+      return this.advance()
+    }
+
+    // >> トークンを2つの > として扱う
+    if (this.check(TokenType.TAIL_OP)) {
+      const tailOpToken = this.advance()
+      // 新しい GREATER_THAN トークンを作成して、次の位置に挿入
+      const greaterThanToken = {
+        type: TokenType.GREATER_THAN,
+        value: ">",
+        line: tailOpToken.line,
+        column: tailOpToken.column + 1,
+      }
+
+      // 現在の位置に GREATER_THAN トークンを挿入
+      this.tokens.splice(this.current, 0, greaterThanToken)
+
+      // 最初の > として元のトークンを返す（値は > に変更）
+      return {
+        type: TokenType.GREATER_THAN,
+        value: ">",
+        line: tailOpToken.line,
+        column: tailOpToken.column,
+      }
+    }
+
+    // >>> トークンを3つの > として扱う
+    if (this.check(TokenType.FOLD_MONOID)) {
+      const foldToken = this.advance()
+      // 2つ目と3つ目の GREATER_THAN トークンを作成して挿入
+      const greaterThanToken2 = {
+        type: TokenType.GREATER_THAN,
+        value: ">",
+        line: foldToken.line,
+        column: foldToken.column + 1,
+      }
+      const greaterThanToken3 = {
+        type: TokenType.GREATER_THAN,
+        value: ">",
+        line: foldToken.line,
+        column: foldToken.column + 2,
+      }
+
+      // 現在の位置に2つの GREATER_THAN トークンを挿入
+      this.tokens.splice(this.current, 0, greaterThanToken2, greaterThanToken3)
+
+      // 最初の > として元のトークンを返す（値は > に変更）
+      return {
+        type: TokenType.GREATER_THAN,
+        value: ">",
+        line: foldToken.line,
+        column: foldToken.column,
+      }
+    }
 
     throw new ParseError(message, this.peek())
   }
