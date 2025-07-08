@@ -1424,6 +1424,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "TypeAssertion":
+        resultType = this.generateConstraintsForTypeAssertion(
+          expr as AST.TypeAssertion,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -5358,5 +5365,27 @@ TypeInferenceSystem.prototype.generateConstraintsForTemplateExpression =
     this.nodeTypeMap.set(templateExpr, resultType)
     return resultType
   }
+
+// TypeAssertion の型推論メソッドを TypeInferenceSystem クラスに追加
+TypeInferenceSystem.prototype.generateConstraintsForTypeAssertion = function (
+  assertion: AST.TypeAssertion,
+  env: Map<string, AST.Type>
+): AST.Type {
+  // 元の式の型を推論
+  const exprType = this.generateConstraintsForExpression(
+    assertion.expression,
+    env
+  )
+
+  // 型アサーションの場合、制約を生成せずに直接ターゲット型を返す
+  // これにより型チェックを緩める（TypeScript風の動作）
+  const targetType = assertion.targetType
+
+  // ノードタイプマップに記録
+  this.nodeTypeMap.set(assertion.expression, exprType)
+  this.nodeTypeMap.set(assertion, targetType)
+
+  return targetType
+}
 
 // MethodCall処理のためにTypeInferenceSystemクラスを拡張

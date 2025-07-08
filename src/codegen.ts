@@ -50,6 +50,7 @@ import {
   StructExpression,
   StructType,
   SpreadExpression,
+  TypeAssertion,
   RecordSpreadField,
   RecordDestructuring,
   StructDestructuring,
@@ -1806,6 +1807,8 @@ ${indent}}`
       return this.generateStructExpression(expr)
     } else if (expr instanceof SpreadExpression) {
       return this.generateSpreadExpression(expr)
+    } else if (expr instanceof TypeAssertion) {
+      return this.generateTypeAssertion(expr)
     }
 
     return `/* Unsupported expression: ${expr.constructor.name} */`
@@ -3112,5 +3115,14 @@ ${indent}}`
 
     result += "`"
     return result
+  }
+
+  // 型アサーションの生成
+  generateTypeAssertion(assertion: TypeAssertion): string {
+    const expr = this.generateExpression(assertion.expression)
+    const targetType = this.generateType(assertion.targetType)
+
+    // TypeScript風の型アサーション構文で生成
+    return `(${expr} as ${targetType})`
   }
 }

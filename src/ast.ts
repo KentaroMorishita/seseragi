@@ -692,6 +692,26 @@ export class SpreadExpression extends Expression {
   }
 }
 
+export class TypeAssertion extends Expression {
+  kind = "TypeAssertion"
+  expression: Expression
+  targetType: Type
+  assertionKind: "as" | "into" // 将来拡張用
+
+  constructor(
+    expression: Expression,
+    targetType: Type,
+    assertionKind: "as" | "into",
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.expression = expression
+    this.targetType = targetType
+    this.assertionKind = assertionKind
+  }
+}
+
 export class RecordSpreadField extends ASTNode {
   kind = "RecordSpreadField"
   spreadExpression: SpreadExpression

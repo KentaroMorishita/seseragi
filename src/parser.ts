@@ -2152,6 +2152,16 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+      } else if (this.match(TokenType.AS)) {
+        // 型アサーション: expr as Type
+        const targetType = this.parseType()
+        expr = new AST.TypeAssertion(
+          expr,
+          targetType,
+          "as",
+          this.previous().line,
+          this.previous().column
+        )
       } else if (this.canStartExpression()) {
         // 括弧なし関数適用（関数型言語の標準）
         const arg = this.check(TokenType.NOT)
@@ -2170,6 +2180,7 @@ export class Parser {
 
     return expr
   }
+
 
   // 次のトークンが式の開始になり得るかチェック
   private canStartExpression(): boolean {
