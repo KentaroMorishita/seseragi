@@ -1,0 +1,19 @@
+fn f x: Int -> Int = x * 2
+
+let x = f 1
+let x' = f x
+let x'' = f x'
+
+show x
+show x'
+show x''
+
+fn f' x: Int -> Int = f (f x)
+
+let y = f' 1
+let y' = f' y
+let y'' = f' y'
+
+show y
+show y'
+show y''

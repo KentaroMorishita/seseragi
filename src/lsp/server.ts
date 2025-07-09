@@ -720,8 +720,9 @@ function getWordAtPosition(text: string, offset: number): string | null {
   const before = text.substring(0, offset)
   const after = text.substring(offset)
 
-  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*$/)
-  const afterMatch = after.match(/^[a-zA-Z0-9_]*/)
+  // Haskellスタイルのアポストロフィ付き識別子をサポート
+  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*'*$/)
+  const afterMatch = after.match(/^[a-zA-Z0-9_']*/)
 
   if (beforeMatch) {
     const start = beforeMatch[0]
@@ -744,9 +745,9 @@ function getFieldAccessInfo(
   const before = text.substring(0, offset)
   const after = text.substring(offset)
 
-  // Get the current word (field name)
-  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*$/)
-  const afterMatch = after.match(/^[a-zA-Z0-9_]*/)
+  // Get the current word (field name) - アポストロフィ付き識別子をサポート
+  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*'*$/)
+  const afterMatch = after.match(/^[a-zA-Z0-9_']*'*/)
 
   if (!beforeMatch) {
     return null
@@ -757,7 +758,7 @@ function getFieldAccessInfo(
   // Look for the pattern: objectName.fieldName
   // Find the dot before the current field name
   const beforeField = before.substring(0, before.length - beforeMatch[0].length)
-  const dotMatch = beforeField.match(/([a-zA-Z_][a-zA-Z0-9_]*)\s*\.\s*$/)
+  const dotMatch = beforeField.match(/([a-zA-Z_][a-zA-Z0-9_]*'*)\s*\.\s*$/)
 
   if (dotMatch) {
     const objectName = dotMatch[1]

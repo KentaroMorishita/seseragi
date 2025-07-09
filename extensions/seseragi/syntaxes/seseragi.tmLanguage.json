@@ -232,11 +232,11 @@
         },
         {
           "name": "entity.name.function.definition.seseragi",
-          "match": "(?<=fn\\s+)[a-z][a-zA-Z0-9_]*"
+          "match": "(?<=fn\\s+)[a-z][a-zA-Z0-9_]*'*"
         },
         {
           "name": "entity.name.function.call.seseragi",
-          "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*\\()"
+          "match": "\\b[a-z][a-zA-Z0-9_]*'*(?=\\s*\\()"
         },
         {
           "name": "support.function.builtin.seseragi",
@@ -250,17 +250,6 @@
           "name": "string.quoted.double.seseragi",
           "begin": "\"",
           "end": "\"",
-          "patterns": [
-            {
-              "name": "constant.character.escape.seseragi",
-              "match": "\\\\."
-            }
-          ]
-        },
-        {
-          "name": "string.quoted.single.seseragi",
-          "begin": "'",
-          "end": "'",
           "patterns": [
             {
               "name": "constant.character.escape.seseragi",
@@ -329,7 +318,7 @@
         },
         {
           "name": "variable.other.seseragi",
-          "match": "\\b[a-z][a-zA-Z0-9_]*\\b"
+          "match": "\\b[a-z][a-zA-Z0-9_]*'*\\b"
         }
       ]
     },

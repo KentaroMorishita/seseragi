@@ -118,4 +118,48 @@ describe("Lexer", () => {
     expect(tokens[2].value).toBe("y")
     expect(tokens[3].type).toBe(TokenType.EOF)
   })
+
+  it("should handle identifiers with apostrophes (Haskell-style)", () => {
+    const source = "x' y'' z''' f' g''"
+    const lexer = new Lexer(source)
+    const tokens = lexer.tokenize()
+
+    expect(tokens[0].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[0].value).toBe("x'")
+    expect(tokens[1].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[1].value).toBe("y''")
+    expect(tokens[2].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[2].value).toBe("z'''")
+    expect(tokens[3].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[3].value).toBe("f'")
+    expect(tokens[4].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[4].value).toBe("g''")
+    expect(tokens[5].type).toBe(TokenType.EOF)
+  })
+
+  it("should handle function definition with apostrophes", () => {
+    const source = "fn f' x = x + 1"
+    const lexer = new Lexer(source)
+    const tokens = lexer.tokenize()
+
+    expect(tokens[0].type).toBe(TokenType.FN)
+    expect(tokens[1].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[1].value).toBe("f'")
+    expect(tokens[2].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[2].value).toBe("x")
+    expect(tokens[3].type).toBe(TokenType.ASSIGN)
+  })
+
+  it("should handle let binding with apostrophes", () => {
+    const source = "let x' = 42"
+    const lexer = new Lexer(source)
+    const tokens = lexer.tokenize()
+
+    expect(tokens[0].type).toBe(TokenType.LET)
+    expect(tokens[1].type).toBe(TokenType.IDENTIFIER)
+    expect(tokens[1].value).toBe("x'")
+    expect(tokens[2].type).toBe(TokenType.ASSIGN)
+    expect(tokens[3].type).toBe(TokenType.INTEGER)
+    expect(tokens[3].value).toBe("42")
+  })
 })

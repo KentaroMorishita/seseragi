@@ -557,6 +557,11 @@ export class Lexer {
       value += this.advance()
     }
 
+    // 末尾のアポストロフィを処理（Haskellスタイル）
+    while (this.peek() === "'") {
+      value += this.advance()
+    }
+
     const tokenType = this.keywords.get(value) || TokenType.IDENTIFIER
     return this.makeToken(tokenType, value, startLine, startColumn)
   }

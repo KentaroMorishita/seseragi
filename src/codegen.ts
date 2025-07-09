@@ -1326,15 +1326,15 @@ const show = (value) => {
       const body = this.generateExpression(func.body)
       // オブジェクトリテラルの場合は括弧で囲む
       const wrappedBody = body.startsWith("{") ? `(${body})` : body
-      return `${indent}const ${func.name} = curry((${params}): ${returnType} => ${wrappedBody});`
+      return `${indent}const ${this.sanitizeIdentifier(func.name)} = curry((${params}): ${returnType} => ${wrappedBody});`
     } else {
       const body = this.generateExpression(func.body)
       if (this.options.useArrowFunctions) {
         // オブジェクトリテラルの場合は括弧で囲む
         const wrappedBody = body.startsWith("{") ? `(${body})` : body
-        return `${indent}const ${func.name} = (${params}): ${returnType} => ${wrappedBody};`
+        return `${indent}const ${this.sanitizeIdentifier(func.name)} = (${params}): ${returnType} => ${wrappedBody};`
       } else {
-        return `${indent}function ${func.name}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
+        return `${indent}function ${this.sanitizeIdentifier(func.name)}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
       }
     }
   }
@@ -1345,7 +1345,7 @@ const show = (value) => {
     const type = varDecl.type ? `: ${this.generateType(varDecl.type)}` : ""
     const value = this.generateExpression(varDecl.initializer)
 
-    return `${indent}const ${varDecl.name}${type} = ${value};`
+    return `${indent}const ${this.sanitizeIdentifier(varDecl.name)}${type} = ${value};`
   }
 
   // 型宣言の生成
@@ -1723,6 +1723,13 @@ ${indent}}`
     return opMap[op] || op.replace(/[^a-zA-Z0-9]/g, "_")
   }
 
+  // 識別子をサニタイズ（アポストロフィを変換）
+  private sanitizeIdentifier(name: string): string {
+    // アポストロフィを_primeに変換
+    // 例: x' -> x_prime, f'' -> f_prime_prime
+    return name.replace(/'/g, "_prime")
+  }
+
   // モノイド宣言の生成
   generateMonoidDeclaration(monoid: MonoidDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
@@ -1742,7 +1749,7 @@ ${indent}}`
     if (expr instanceof Literal) {
       return this.generateLiteral(expr)
     } else if (expr instanceof Identifier) {
-      return expr.name
+      return this.sanitizeIdentifier(expr.name)
     } else if (expr instanceof TemplateExpression) {
       return this.generateTemplateExpression(expr)
     } else if (expr instanceof BinaryOperation) {
