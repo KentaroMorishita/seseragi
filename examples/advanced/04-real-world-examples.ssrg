@@ -1,0 +1,232 @@
+// 04-real-world-examples.ssrg
+// 実践的な例を学ぶ
+
+print "=== 実践的な例 ==="
+
+// =============================================================================
+// FizzBuzz問題
+// =============================================================================
+
+print "--- FizzBuzz ---"
+
+// FizzBuzz関数
+fn fizzBuzz n: Int -> String = match (n % 3, n % 5) {
+  (0, 0) -> "FizzBuzz"
+  (0, _) -> "Fizz"
+  (_, 0) -> "Buzz"
+  _ -> `${n}`
+}
+
+// 数値をチェックする関数
+fn checkNumber n: Int -> String = `${n}: ${fizzBuzz n}`
+
+// FizzBuzzのテスト
+[print (checkNumber n) | n <- 1..=20]
+
+// =============================================================================
+// 計算器の実装
+// =============================================================================
+
+print "--- 計算器 ---"
+
+// 演算の種類
+type Operation =
+  | Add
+  | Subtract
+  | Multiply
+  | Divide
+
+// 安全な計算関数
+fn calculate op: Operation -> x: Int -> y: Int -> Either<String, Int> = match op {
+  Add -> Right (x + y)
+  Subtract -> Right (x - y)
+  Multiply -> Right (x * y)
+  Divide -> match y {
+    0 -> Left "ゼロ除算エラー"
+    _ -> Right (x / y)
+  }
+}
+
+// 計算例
+let result1 = calculate Add 10 5
+let result2 = calculate Divide 20 4
+let result3 = calculate Divide 10 0
+
+show result1  // Right 15
+show result2  // Right 5
+show result3  // Left "ゼロ除算エラー"
+
+// =============================================================================
+// 簡単な在庫管理システム
+// =============================================================================
+
+print "--- 在庫管理システム ---"
+
+// 商品の構造体
+struct Product {
+  id: Int,
+  name: String,
+  price: Int,
+  stock: Int
+}
+
+impl Product {
+  fn updateStock self -> newStock: Int -> Product =
+    Product { ...self, stock: newStock }
+
+  fn sell self -> quantity: Int -> Either<String, Product> = match quantity {
+    q when q <= 0 -> Left "数量は正数である必要があります"
+    q when q > self.stock -> Left "在庫が不足しています"
+    q -> Right $ self updateStock (self.stock - q)
+  }
+
+  fn restock self -> quantity: Int -> Either<String, Product> = match quantity {
+    q when q <= 0 -> Left "数量は正数である必要があります"
+    q -> Right $ self updateStock (self.stock + q)
+  }
+}
+
+// 商品の使用例
+let apple = Product { id: 1, name: "りんご", price: 100, stock: 50 }
+show apple  // Product { id: 1, name: "りんご", price: 100, stock: 50 }
+
+let soldApple = apple sell 10
+show soldApple  // Right Product { id: 1, name: "りんご", price: 100, stock: 40 }
+
+let restockedApple = match soldApple {
+  Left error -> Left error
+  Right product -> product restock 20
+}
+show restockedApple  // Right Product { id: 1, name: "りんご", price: 100, stock: 60 }
+
+// =============================================================================
+// 簡単な銀行システム
+// =============================================================================
+
+print "--- 銀行システム ---"
+
+// 取引の種類
+type Transaction =
+  | Deposit Int
+  | Withdraw Int
+  | Transfer Int Int
+
+// 口座の構造体
+struct BankAccount {
+  id: Int,
+  owner: String,
+  balance: Int
+}
+
+impl BankAccount {
+  fn deposit self -> amount: Int -> Either<String, BankAccount> = match amount {
+    a when a <= 0 -> Left "入金額は正数である必要があります"
+    a -> Right (BankAccount { ...self, balance: self.balance + a })
+  }
+
+  fn withdraw self -> amount: Int -> Either<String, BankAccount> = match amount {
+    a when a <= 0 -> Left "出金額は正数である必要があります"
+    a when a > self.balance -> Left "残高が不足しています"
+    a -> Right (BankAccount { ...self, balance: self.balance - a })
+  }
+
+  fn getStatement self -> String {
+    let { id, owner, balance } = self
+    `口座ID: ${id}, 所有者: ${owner}, 残高: ${balance}円`
+  }
+}
+
+// 口座の使用例
+let account = BankAccount { id: 1001, owner: "田中太郎", balance: 50000 }
+show account  // BankAccount { id: 1001, owner: "田中太郎", balance: 50000 }
+
+// 一連の取引
+let step1 = account deposit 20000
+let step2 = match step1 {
+  Left error -> Left error
+  Right acc -> acc withdraw 15000
+}
+let step3 = match step2 {
+  Left error -> Left error
+  Right acc -> acc deposit 5000
+}
+
+show step1  // Right BankAccount { id: 1001, owner: "田中太郎", balance: 70000 }
+show step2  // Right BankAccount { id: 1001, owner: "田中太郎", balance: 55000 }
+show step3  // Right BankAccount { id: 1001, owner: "田中太郎", balance: 60000 }
+
+// getStatementの使用例
+let statement = match step3 {
+  Left error -> error
+  Right acc -> acc getStatement()
+}
+show statement  // "口座ID: 1001, 所有者: 田中太郎, 残高: 60000円"
+
+// 失敗例：残高不足による出金失敗
+let failedWithdraw = account withdraw 100000
+show failedWithdraw  // Left "残高が不足しています"
+
+// 失敗例：無効な入金額
+let invalidDeposit = account deposit (-1000)
+show invalidDeposit  // Left "入金額は正数である必要があります"
+
+// =============================================================================
+// 成績管理システム
+// =============================================================================
+
+print "--- 成績管理システム ---"
+
+// 成績の構造体
+struct Grade {
+  subject: String,
+  score: Int
+}
+
+// 学生の構造体
+struct Student {
+  name: String,
+  grades: List<Grade>
+}
+
+impl Student {
+  fn addGrade self -> grade: Grade -> Student {
+    let grades = grade : self.grades
+    Student { ...self, grades }
+  }
+
+  fn getAverageScore self -> Maybe<Int> = match (self.grades) {
+    Empty -> Nothing
+    Cons _ _ -> Just 85 // 簡略化
+  }
+}
+
+// 学生の使用例
+let mathGrade = Grade { subject: "数学", score: 85 }
+let englishGrade = Grade { subject: "英語", score: 92 }
+
+let student = Student { name: "佐藤花子", grades: `[mathGrade] }
+show student  // Student { name: "佐藤花子", grades: `[Grade { subject: "数学", score: 85 }] }
+
+let updatedStudent = student addGrade englishGrade
+show updatedStudent  // Student { name: "佐藤花子", grades: `[Grade { subject: "英語", score: 92 }, Grade { subject: "数学", score: 85 }] }
+
+let average = student getAverageScore()
+show average  // Just 85
+
+// =============================================================================
+// 実践的なプログラミングの原則
+// =============================================================================
+
+print "--- 実践的なプログラミングの原則 ---"
+
+// 1. 型安全性を活用する
+// 2. エラーハンドリングを適切に行う
+// 3. 不変性を保つ
+// 4. 関数の合成を活用する
+// 5. パターンマッチングを使って表現力を高める
+
+print "実践的なプログラムでは、型安全性とエラーハンドリングが重要です"
+
+// 実行方法:
+// seseragi run examples/advanced/04-real-world-examples.ssrg
+

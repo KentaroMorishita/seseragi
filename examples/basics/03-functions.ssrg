@@ -1,0 +1,170 @@
+// 03-functions.ssrg
+// Seseragiの関数について学ぶ
+
+print "=== 関数 ==="
+
+// =============================================================================
+// 関数の命名規則
+// =============================================================================
+
+print "--- 関数の命名規則 ---"
+
+// 関数名も変数と同じルール
+fn sayHello -> String = "Hello!"
+fn getUserName -> String = "User"
+
+// アポストロフィーも使える
+fn calculate x: Int -> Int = x * 2
+fn calculate' x: Int -> Int = x * 3
+
+show $ sayHello      // "Hello!"
+show $ calculate 5   // 10
+show $ calculate' 5  // 15
+
+// =============================================================================
+// 関数定義の基本構文
+// =============================================================================
+
+print "--- 関数定義の基本構文 ---"
+
+// 基本構文: fn 関数名 引数: 型 -> 戻り値型 = 式
+// 引数なしの関数は () を付けて呼び出す
+fn hello -> String = "Hello world"
+show $ hello()  // "Hello world"
+
+// 関数自体を表示すると
+show hello  // () = > "Hello world"
+
+// 引数ありの関数
+fn square x: Int -> Int = x * x
+show $ square 5  // 25
+
+// 文字列を扱う関数
+fn greet name: String -> String = `Hello, ${name}!`
+show $ greet "Alice"  // "Hello, Alice!"
+
+// =============================================================================
+// 型の書き方
+// =============================================================================
+
+print "--- 型の書き方 ---"
+
+// 基本型
+fn getNumber -> Int = 42
+fn getMessage -> String = "Hello"
+fn getFlag -> Bool = True
+fn getPi -> Float = 3.14
+
+// 関数を実行
+show $ getNumber()  // 42
+show $ getMessage()  // "Hello"
+show $ getFlag()    // True
+show $ getPi()      // 3.14
+
+// 複数引数の型指定
+fn add x: Int -> y: Int -> Int = x + y
+fn concat first: String -> second: String -> String = first + second
+
+show $ add 3 7  // 10
+show $ concat "Hello" " World"  // "Hello World"
+
+// =============================================================================
+// ブロック構文を使った関数定義
+// =============================================================================
+
+print "--- ブロック構文 ---"
+
+// 複数行の処理が必要な場合は {} を使う（= は不要）
+// ブロック内の最後の式が戻り値になる
+fn blockExample x: Int -> Int {
+  let doubled = x * 2
+  let added = doubled + 10
+  let result = added * 3
+  result  // これが戻り値
+}
+
+show $ blockExample 5  // 60
+
+// 中間計算を含む関数
+fn circleArea radius: Float -> Float {
+  let pi = 3.14159
+  let radiusSquared = radius * radius
+  pi * radiusSquared
+}
+
+show $ circleArea 5.0  // 78.53975
+
+// 複数の変数を使う関数
+fn areaCalc width: Int -> height: Int -> Int {
+  let area = width * height
+  let message = `面積は ${area} です`
+  print message // 面積は 40 です
+  area          // 最後の式が戻り値
+}
+
+show $ areaCalc 5 8  // 40
+
+// =============================================================================
+// カリー化された関数
+// =============================================================================
+
+print "--- カリー化された関数 ---"
+
+// 複数の引数を持つ関数（カリー化）
+fn addTwo x: Int -> y: Int -> Int = x + y
+fn multiplyTwo x: Int -> y: Int -> Int = x * y
+
+// 部分適用
+let add5 = addTwo 5
+let triple = multiplyTwo 3
+
+show $ add5 10    // 15
+show $ triple 7   // 21
+
+// 完全適用
+show $ addTwo 3 4      // 7
+show $ multiplyTwo 6 9 // 54
+
+// =============================================================================
+// 高階関数
+// =============================================================================
+
+print "--- 高階関数 ---"
+
+// 関数を引数に取る関数
+fn applyFunc func: (Int -> Int) -> value: Int -> Int = func value
+
+// 使用する関数を定義
+fn quad x: Int -> Int = x * 4
+let increment = addTwo 1
+let addTen = addTwo 10
+
+show $ applyFunc quad 5    // 20
+show $ increment 20        // 21
+show $ addTen 5            // 15
+
+// =============================================================================
+// 実用的な関数例
+// =============================================================================
+
+print "--- 実用的な関数例 ---"
+
+// 数値計算の関数
+fn power base: Int -> exp: Int -> Int =
+  exp == 0 ? 1 : base * power base (exp - 1)
+
+// 階乗を求める関数
+fn factorial n: Int -> Int =
+  n <= 1 ? 1 : n * factorial (n - 1)
+
+// 文字列を繰り返す関数
+fn repeatStr str: String -> times: Int -> String =
+  times <= 0 ? "" : `${str}${repeatStr str (times - 1)}`
+
+show $ power 2 3          // 8
+show $ factorial 5        // 120
+show $ repeatStr "Hi " 3  // "Hi Hi Hi "
+
+// 実行方法:
+// seseragi run examples/basics/03-functions.ssrg
+

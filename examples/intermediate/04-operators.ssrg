@@ -1,0 +1,195 @@
+// 04-operators.ssrg
+// モナド演算子の基本を学ぶ
+
+print "=== モナド演算子の基本 ==="
+
+// =============================================================================
+// ファンクター演算子 (<$>)
+// =============================================================================
+
+print "--- ファンクター演算子 <$> ---"
+
+// 通常の関数を定義
+fn double x: Int -> Int = x * 2
+fn increment x: Int -> Int = x + 1
+
+// Maybe型に対するファンクター
+let maybeValue = Just 42
+let nothingValue = Nothing
+
+let doubled = double <$> maybeValue
+let doubled' = double <$> nothingValue
+
+show doubled   // Just 84
+show doubled'  // Nothing
+
+// Either型に対するファンクター
+let rightValue = Right 10
+let leftValue = Left "error"
+
+let incremented = increment <$> rightValue
+let incremented' = increment <$> leftValue
+
+show incremented   // Right 11
+show incremented'  // Left "error"
+
+// =============================================================================
+// アプリカティブ演算子 (<*>)
+// =============================================================================
+
+print "--- アプリカティブ演算子 <*> ---"
+
+// 複数引数の関数
+fn add x: Int -> y: Int -> Int = x + y
+fn multiply x: Int -> y: Int -> Int = x * y
+
+// Maybe型でのアプリカティブ
+let value1 = Just 10
+let value2 = Just 5
+let value3 = Nothing
+
+let sum = Just add <*> value1 <*> value2
+let sum' = Just add <*> value1 <*> value3
+
+show sum   // Just 15
+show sum'  // Nothing
+
+// Either型でのアプリカティブ
+let right1 = Right 20
+let right2 = Right 3
+let left1 = Left "first error"
+
+let product = Right multiply <*> right1 <*> right2
+let product' = Right multiply <*> left1 <*> right2
+
+show product   // Right 60
+show product'  // Left "first error"
+
+// =============================================================================
+// モナド演算子 (>>=)
+// =============================================================================
+
+print "--- モナド演算子 >>= ---"
+
+// Maybe型を返す関数
+fn doubleIfEven x: Int -> Maybe<Int> =
+  x % 2 == 0 ? Just (x * 2) : Nothing
+
+fn addTen x: Int -> Maybe<Int> =
+  x > 0 ? Just (x + 10) : Nothing
+
+// モナド演算子の使用
+let result1 = Just 4 >>= doubleIfEven
+let result2 = Just 3 >>= doubleIfEven
+
+show result1  // Just 8
+show result2  // Nothing
+
+// モナド演算子の連鎖
+let chain1 = Just 2
+  >>= doubleIfEven
+  >>= addTen
+let chain2 = Just 3
+  >>= doubleIfEven
+  >>= addTen
+
+show chain1  // Just 14
+show chain2  // Nothing
+
+// Either型でのモナド演算子
+fn validatePositive x: Int -> Either<String, Int> =
+  x > 0 ? Right x: Left "値は正数である必要があります"
+
+fn validateEven x: Int -> Either<String, Int> =
+  x % 2 == 0 ? Right x: Left "値は偶数である必要があります"
+
+let valid1 = Right 8
+  >>= validatePositive
+  >>= validateEven
+let valid2 = Right 7
+  >>= validatePositive
+  >>= validateEven
+let valid3 = Right -2
+  >>= validatePositive
+  >>= validateEven
+
+show valid1  // Right 8
+show valid2  // Left "値は偶数である必要があります"
+show valid3  // Left "値は正数である必要があります"
+
+// 配列とリストでのモナド演算子
+let arr = [1, 2, 3]
+let mapped = (\x -> x * 2) <$> arr
+show mapped  // [2, 4, 6]
+
+let lst = `[1, 2, 3]
+let transformed = (\x -> x * 3) <$> lst
+show transformed  // `[3, 6, 9]
+
+fn repeat x: Int -> Array<Int> = [x, x]
+let flattened = arr >>= repeat
+show flattened  // [1, 1, 2, 2, 3, 3]
+
+fn listRepeat x: Int -> List<Int> = `[x, x]
+let listFlattened = lst >>= listRepeat
+show listFlattened  // `[1, 1, 2, 2, 3, 3]
+
+// =============================================================================
+// 実用的な例
+// =============================================================================
+
+print "--- 実用的な例 ---"
+
+// 変数名にアポストロフィーを使った例
+let x' = Just 100
+let y' = Just 25
+
+fn subtract x: Int -> y: Int -> Int = x - y
+
+let result' = Just subtract <*> x' <*> y'
+show result'  // Just 75
+
+// <$>: モナド値に関数適用
+let value = Just 100
+let value' = toString <$> value
+show value'  // Just "100"
+
+// <*>: 複数のモナド値を受け取って関数適用
+fn createEmail name: String -> domain: String -> String = `${name}@${domain}`
+let nameValue = Just "user"
+let domainValue = Just "example.com"
+let email = Just createEmail <*> nameValue <*> domainValue
+show email  // Just "user@example.com"
+
+// >>=: モナド値で処理を連結
+fn parsePort input: String -> Maybe<Int> =
+  input == "80" ? Just 80 :
+  input == "443" ? Just 443 :
+  Nothing
+
+fn validatePort port: Int -> Maybe<String> =
+  port == 80 ? Just "HTTP" :
+  port == 443 ? Just "HTTPS" :
+  Nothing
+
+let result = Just "80"
+  >>= parsePort
+  >>= validatePort
+show result  // Just "HTTP"
+
+// =============================================================================
+// 演算子の利点
+// =============================================================================
+
+print "--- 演算子の利点 ---"
+
+// 1. 関数型プログラミングの表現力向上
+// 2. エラーハンドリングの簡潔化
+// 3. 型安全性の維持
+// 4. 合成可能な操作
+
+print "モナド演算子により、安全で表現力豊かなコードが書けます"
+
+// 実行方法:
+// seseragi run examples/intermediate/04-operators.ssrg
+

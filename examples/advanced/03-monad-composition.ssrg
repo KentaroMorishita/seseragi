@@ -1,0 +1,280 @@
+// 03-monad-composition.ssrg
+// モナドの合成について学ぶ
+
+print "=== モナドの合成 ==="
+
+// =============================================================================
+// 複数のMaybe値の合成
+// =============================================================================
+
+print "--- Maybe値の合成 ---"
+
+// Maybe値の基本的な合成
+let maybeX = Just 10
+let maybeY = Just 20
+let maybeZ = Nothing
+
+fn add x: Int -> y: Int -> Int = x + y
+
+// アプリカティブ演算子での合成
+let result1 = Just add <*> maybeX <*> maybeY
+let result2 = Just add <*> maybeX <*> maybeZ
+
+show result1  // Just 30
+show result2  // Nothing
+
+// モナド演算子での合成（処理単位を組み合わせる）
+fn doubleIfPositive x: Int -> Maybe<Int> =
+  if x > 0 then Just (x * 2) else Nothing
+
+fn addTen x: Int -> Maybe<Int> =
+  if x < 100 then Just (x + 10) else Nothing
+
+// 処理単位を組み合わせたパイプライン
+let result3 = maybeX
+  >>= doubleIfPositive
+  >>= addTen
+
+let result4 = maybeZ
+  >>= doubleIfPositive
+  >>= addTen
+
+show result3  // Just 30
+show result4  // Nothing
+
+// =============================================================================
+// Either値の合成
+// =============================================================================
+
+print "--- Either値の合成 ---"
+
+// Either値の基本的な合成
+let rightX = Right 15
+let rightY = Right 25
+let leftError = Left "エラーが発生しました"
+
+// アプリカティブ演算子での合成
+let eitherResult1 = Right add <*> rightX <*> rightY
+let eitherResult2 = Right add <*> rightX <*> leftError
+
+show eitherResult1  // Right 40
+show eitherResult2  // Left "エラーが発生しました"
+
+// モナド演算子での合成（処理単位を組み合わせる）
+fn multiplyBy2 x: Int -> Either<String, Int> =
+  if x > 0 then Right (x * 2) else Left "値は正数である必要があります"
+
+fn subtractFive x: Int -> Either<String, Int> =
+  if x >= 5 then Right (x - 5) else Left "値が小さすぎます"
+
+// 処理単位を組み合わせたパイプライン
+let eitherResult3 = rightX
+  >>= multiplyBy2
+  >>= subtractFive
+
+let eitherResult4 = Right 0
+  >>= multiplyBy2
+  >>= subtractFive
+
+let eitherResult5 = Right 2
+  >>= multiplyBy2
+  >>= subtractFive
+
+show eitherResult3  // Right 25
+show eitherResult4  // Left "値は正数である必要があります"
+show eitherResult5  // Left "値が小さすぎます"
+
+// =============================================================================
+// 複雑な計算のチェーン
+// =============================================================================
+
+print "--- 複雑な計算のチェーン ---"
+
+// 実用的な処理関数群
+fn parseUserId input: String -> Maybe<Int> = match input {
+  "user123" -> Just 123
+  "admin456" -> Just 456
+  "guest789" -> Just 789
+  _ -> Nothing
+}
+
+fn checkPermission userId: Int -> Maybe<String> = match userId {
+  123 -> Just "read"
+  456 -> Just "admin"
+  789 -> Just "guest"
+  _ -> Nothing
+}
+
+fn accessResource permission: String -> Maybe<String> = match permission {
+  "read" -> Just "データを読み取りました"
+  "admin" -> Just "管理者権限でアクセスしました"
+  "guest" -> Just "ゲストとしてアクセスしました"
+  _ -> Nothing
+}
+
+// 認証・認可の処理チェーン
+let accessResult1 = Just "user123"
+  >>= parseUserId
+  >>= checkPermission
+  >>= accessResource
+
+let accessResult2 = Just "admin456"
+  >>= parseUserId
+  >>= checkPermission
+  >>= accessResource
+
+let accessResult3 = Just "unknown"
+  >>= parseUserId
+  >>= checkPermission
+  >>= accessResource
+
+show accessResult1  // Just "データを読み取りました"
+show accessResult2  // Just "管理者権限でアクセスしました"
+show accessResult3  // Nothing
+
+// =============================================================================
+// バリデーションの合成
+// =============================================================================
+
+print "--- バリデーションの合成 ---"
+
+// バリデーション関数群
+fn validateAge age: Int -> Either<String, Int> = match age {
+  n when n < 0 -> Left "年齢は負数にできません"
+  n when n > 150 -> Left "年齢が無効です"
+  n -> Right n
+}
+
+fn validateName name: String -> Either<String, String> = match name {
+  "" -> Left "名前が空です"
+  "admin" -> Left "予約語は使用できません"
+  "root" -> Left "予約語は使用できません"
+  n -> Right n
+}
+
+fn validateEmail email: String -> Either<String, String> = match email {
+  "" -> Left "メールアドレスが空です"
+  e when e == "test@test.com" -> Left "テストアドレスは使用できません"
+  e -> Right e
+}
+
+// 複数のバリデーションを組み合わせる構造体
+struct User {
+  name: String,
+  age: Int,
+  email: String
+}
+
+// ユーザー作成関数（カリー化）
+fn createUser name: String -> age: Int -> email: String -> User =
+  User { name: name, age: age, email: email }
+
+// アプリカティブでバリデーションを並列合成
+let userResult1 = Right createUser
+ <*> validateName "Alice"
+ <*> validateAge 25
+ <*> validateEmail "alice@example.com"
+
+let userResult2 = Right createUser
+ <*> validateName "admin"  // エラー
+ <*> validateAge 25
+ <*> validateEmail "alice@example.com"
+
+let userResult3 = Right createUser
+ <*> validateName "Bob"
+ <*> validateAge -5  // エラー
+ <*> validateEmail "test@test.com"  // エラー
+
+show userResult1  // Right User { name: "Alice", age: 25, email: "alice@example.com" }
+show userResult2  // Left "予約語は使用できません"
+show userResult3  // Left "年齢は負数にできません"  （注：最初のエラーのみ）
+
+// =============================================================================
+// 関数の合成
+// =============================================================================
+
+print "--- 関数の合成 ---"
+
+// 関数を返す関数
+let compose = \f -> \g -> \x -> g x | f
+
+// 基本的な関数
+fn double x: Int -> Int = x * 2
+fn increment x: Int -> Int = x + 1
+fn square x: Int -> Int = x * x
+
+// 関数の合成
+let doubleAndIncrement = compose increment double
+let squareAndDouble = compose double square
+
+show $ doubleAndIncrement 5  // 11
+show $ squareAndDouble 3     // 18
+
+// =============================================================================
+// 実践的な例：データ処理パイプライン
+// =============================================================================
+
+print "--- データ処理パイプライン ---"
+
+// APIレスポンスの解析パイプライン
+fn fetchUserData userId: String -> Either<String, String> = match userId {
+  "user123" -> Right `{"id": "user123", "score": 85}`
+  "user456" -> Right `{"id": "user456", "score": -10}`
+  _ -> Left `ユーザー ${userId} が見つかりません`
+}
+
+fn parseScore json: String -> Either<String, Int> = match json {
+  s when s == `{"id": "user123", "score": 85}` -> Right 85
+  s when s == `{"id": "user456", "score": -10}` -> Right -10
+  _ -> Left "JSONの解析に失敗しました"
+}
+
+fn calculateBonus score: Int -> Either<String, Int> = match score {
+  s when s >= 80 -> Right (s * 2)  // 高得点はボーナス2倍
+  s when s >= 60 -> Right (s + 20)  // 中得点は + 20
+  s when s > 0 -> Right s           // 低得点はそのまま
+  _ -> Left `スコア ${score} は無効です（負の値）`
+}
+
+fn generateReport bonus: Int -> Either<String, String> = match bonus {
+  b when b >= 150 -> Right `優秀！ボーナススコア: ${b}`
+  b when b >= 80 -> Right `良好。ボーナススコア: ${b}`
+  b -> Right `ボーナススコア: ${b}`
+}
+
+// 前の結果に依存する処理チェーン
+let report1 = fetchUserData "user123"
+  >>= parseScore
+  >>= calculateBonus
+  >>= generateReport
+
+let report2 = fetchUserData "user456"
+  >>= parseScore
+  >>= calculateBonus
+  >>= generateReport
+
+let report3 = fetchUserData "unknown"
+  >>= parseScore
+  >>= calculateBonus
+  >>= generateReport
+
+show report1  // Right "優秀！ボーナススコア: 170"
+show report2  // Left "スコア -10 は無効です（負の値）"
+show report3  // Left "ユーザー unknown が見つかりません"
+
+// =============================================================================
+// モナド合成の利点
+// =============================================================================
+
+print "--- モナド合成の利点 ---"
+
+// 1. 複雑な計算の表現
+// 2. エラーハンドリングの自動化
+// 3. 関数の合成可能性
+// 4. 型安全性の維持
+
+print "モナドの合成により、複雑な計算を安全かつ簡潔に表現できます"
+
+// 実行方法:
+// seseragi run examples/advanced/03-monad-composition.ssrg
+

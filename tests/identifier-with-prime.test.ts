@@ -97,4 +97,3 @@ let result = f' 2
     expect(result).toContain("const result = f_prime(2);")
   })
 })
-

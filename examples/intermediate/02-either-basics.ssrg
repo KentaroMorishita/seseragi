@@ -1,0 +1,121 @@
+// 02-either-basics.ssrg
+// Either型の基本を学ぶ
+
+print "=== Either型の基本 ==="
+
+// =============================================================================
+// Either型とは
+// =============================================================================
+
+print "--- Either型とは ---"
+
+// Either型は「成功または失敗」を表現する型
+// Right: 成功した場合の値
+// Left: 失敗した場合の値（通常はエラー）
+
+let successValue = Right 42
+let errorValue = Left "Something went wrong"
+
+show successValue  // Right 42
+show errorValue    // Left "Something went wrong"
+
+// =============================================================================
+// 基本的なEither値の操作
+// =============================================================================
+
+print "--- 基本的な操作 ---"
+
+// 異なる型のEither値
+let successNumber = Right 100
+let successString = Right "Hello"
+let errorMessage = Left "エラーが発生しました"
+let anotherError = Left "別のエラー"
+
+show successNumber  // Right 100
+show successString  // Right "Hello"
+show errorMessage   // Left "エラーが発生しました"
+show anotherError   // Left "別のエラー"
+
+// =============================================================================
+// Either型を使った安全な操作
+// =============================================================================
+
+print "--- 安全な操作 ---"
+
+// 安全な除算関数（エラーメッセージ付き）
+fn safeDivide x: Int -> y: Int -> Either<String, Int> =
+  y == 0 ? Left "ゼロ除算エラー" : Right (x / y)
+
+let result1 = safeDivide 10 2  // Right 5
+let result2 = safeDivide 10 0  // Left "ゼロ除算エラー"
+
+show result1  // Right 5
+show result2  // Left "ゼロ除算エラー"
+
+// 安全な文字列解析
+fn parseInt input: String -> Either<String, Int> =
+  input == "42" ? Right 42 :
+  input == "100" ? Right 100 :
+  Left `"${input}"は数値ではありません`
+
+show $ parseInt "42"   // Right 42
+show $ parseInt "abc"  // Left "abcは数値ではありません"
+
+// =============================================================================
+// Either型の実用例
+// =============================================================================
+
+print "--- 実用例 ---"
+
+// ユーザー検索（詳細なエラーメッセージ付き）
+fn findUser id: Int -> Either<String, String> =
+  id == 1 ? Right "Alice" :
+  id == 2 ? Right "Bob" :
+  Left `ユーザーID ${id} は存在しません`
+
+let user1 = findUser 1   // Right "Alice"
+let user2 = findUser 99  // Left "ユーザーID 99 は存在しません"
+
+show user1  // Right "Alice"
+show user2  // Left "ユーザーID 99 は存在しません"
+
+// ファイル読み込み（概念的な例）
+fn readFile filename: String -> Either<String, String> =
+  filename == "config.txt" ? Right "設定内容" :
+  filename == "data.txt" ? Right "データ内容" :
+  Left `ファイル "${filename}" が見つかりません`
+
+show $ readFile "config.txt"   // Right "設定内容"
+show $ readFile "missing.txt"  // Left "ファイル \"missing.txt\" が見つかりません"
+
+// =============================================================================
+// バリデーション例
+// =============================================================================
+
+print "--- バリデーション例 ---"
+
+// 年齢のバリデーション
+fn validateAge age: Int -> Either<String, Int> =
+  age < 0 ? Left "年齢は負数にできません" :
+  age > 150 ? Left "年齢が無効です" :
+  Right age
+
+show $ validateAge 25   // Right 25
+show $ validateAge -5   // Left "年齢は負数にできません"
+show $ validateAge 200  // Left "年齢が無効です"
+
+// =============================================================================
+// Either型の利点
+// =============================================================================
+
+print "--- Either型の利点 ---"
+
+// 1. エラーハンドリングの改善
+// 2. 詳細なエラーメッセージの提供
+// 3. 型安全性の向上
+// 4. 例外処理の代替手段
+
+print "Either型により、エラーを値として扱えます"
+
+// 実行方法:
+// seseragi run examples/intermediate/02-either-basics.ssrg

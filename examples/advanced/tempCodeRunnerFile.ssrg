@@ -1,0 +1,38 @@
+
+print "--- 成績管理システム ---"
+
+// 成績の構造体
+struct Grade {
+  subject: String,
+  score: Int
+}
+
+// 学生の構造体
+struct Student {
+  name: String,
+  grades: List<Grade>
+}
+
+impl Student {
+  fn addGrade self -> grade: Grade -> Student {
+    Student { ...self, grades: (grade: self.grade) }
+  }
+
+  fn getAverageScore self -> Maybe<Int> = match self.grades {
+    [] -> Nothing
+    _ -> Just 85  // 簡単な例として固定値
+  }
+}
+
+// 学生の使用例
+let mathGrade = Grade { subject: "数学", score: 85 }
+let englishGrade = Grade { subject: "英語", score: 92 }
+
+let student = Student { name: "佐藤花子", grades: [mathGrade] }
+show student  // Student { name: "佐藤花子", grades: [Grade { subject: "数学", score: 85 }] }
+
+let updatedStudent = student addGrade englishGrade
+show updatedStudent  // Student { name: "佐藤花子", grades: [Grade { subject: "英語", score: 92 }] }
+
+let average = student getAverageScore()
+show average  // Just 85

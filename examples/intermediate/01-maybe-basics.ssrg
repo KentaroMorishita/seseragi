@@ -1,0 +1,121 @@
+// 01-maybe-basics.ssrg
+// Maybe型の基本を学ぶ
+
+print "=== Maybe型の基本 ==="
+
+// =============================================================================
+// Maybe型とは
+// =============================================================================
+
+print "--- Maybe型とは ---"
+
+// Maybe型は「値があるかもしれない」を表現する型
+// Just: 値がある場合
+// Nothing: 値がない場合
+
+let someValue = Just 42
+let nothingValue = Nothing
+
+show someValue    // Just 42
+show nothingValue // Nothing
+
+// =============================================================================
+// 基本的なMaybe値の操作
+// =============================================================================
+
+print "--- 基本的な操作 ---"
+
+// 異なる型のMaybe値
+let maybeNumber = Just 100
+let maybeString = Just "Hello"
+let maybeBoolean = Just True
+let empty = Nothing
+
+show maybeNumber   // Just 100
+show maybeString   // Just "Hello"
+show maybeBoolean  // Just True
+show empty         // Nothing
+
+// =============================================================================
+// Maybe型を使った安全な操作
+// =============================================================================
+
+print "--- 安全な操作 ---"
+
+// 数値を月名に変換
+fn numberToMonth n: Int -> Maybe<String> =
+  n == 1 ? Just "January" :
+  n == 2 ? Just "February" :
+  n == 3 ? Just "March" :
+  n == 4 ? Just "April" :
+  n == 5 ? Just "May" :
+  n == 6 ? Just "June" :
+  n == 7 ? Just "July" :
+  n == 8 ? Just "August" :
+  n == 9 ? Just "September" :
+  n == 10 ? Just "October" :
+  n == 11 ? Just "November" :
+  n == 12 ? Just "December" :
+  Nothing
+
+show $ numberToMonth 0   // Nothing
+show $ numberToMonth 1   // Just "January"
+show $ numberToMonth 12  // Just "December"
+show $ numberToMonth 13  // Nothing
+
+// 安全な配列インデックスアクセス（概念的な例）
+fn safeGet index: Int -> Maybe<Int> =
+  index < 0 ? Nothing :
+  index >= 10 ? Nothing :
+  Just (index * 10)
+
+show $ safeGet 2   // Just 20
+show $ safeGet -1  // Nothing
+show $ safeGet 15  // Nothing
+
+// =============================================================================
+// Maybe型の実用例
+// =============================================================================
+
+print "--- 実用例 ---"
+
+// 年齢を文字列から安全に解析
+fn parseAge input: String -> Maybe<Int> =
+  input == "25" ? Just 25 :
+  input == "30" ? Just 30 :
+  Nothing
+
+let age1 = parseAge "25"  // Just 25
+let age2 = parseAge "abc" // Nothing
+
+show age1  // Just 25
+show age2  // Nothing
+
+// 検索結果の表現
+fn findUser id: Int -> Maybe<String> =
+  id == 1 ? Just "Alice" :
+  id == 2 ? Just "Bob" :
+  Nothing
+
+let user1 = findUser 1  // Just "Alice"
+let user2 = findUser 99 // Nothing
+
+show user1  // Just "Alice"
+show user2  // Nothing
+
+// =============================================================================
+// Maybe型の利点
+// =============================================================================
+
+print "--- Maybe型の利点 ---"
+
+// 1. nullポインタエラーの回避
+// 2. 存在しない値を明示的に表現
+// 3. 型安全性の向上
+// 4. エラーハンドリングの改善
+
+print "Maybe型により、値の存在/非存在を型レベルで表現できます"
+
+// 実行方法:
+// seseragi run examples/intermediate/01-maybe-basics.ssrg
+

@@ -1,0 +1,182 @@
+// 03-lists-and-arrays.ssrg
+// ListとArrayの基本を学ぶ
+
+print "=== ListとArrayの基本 ==="
+
+// =============================================================================
+// Array型
+// =============================================================================
+
+print "--- Array型 ---"
+
+// 基本的な配列
+let numbers = [1, 2, 3, 4, 5]
+let strings = ["hello", "world", "seseragi"]
+let booleans = [True, False, True]
+let empty = []
+
+show numbers   // [1, 2, 3, 4, 5]
+show strings   // ["hello", "world", "seseragi"]
+show booleans  // [True, False, True]
+show empty     // []
+
+// 配列のインデックスアクセス
+show numbers[0]  // 1
+show numbers[2]  // 3
+show strings[1]  // "world"
+
+// =============================================================================
+// List型
+// =============================================================================
+
+print "--- List型 ---"
+
+// 空のリスト
+let emptyList = Empty
+let emptyList' = `[]
+show emptyList   // Empty
+show emptyList'  // `[]
+
+// 要素を持つリスト（Cons構築子使用）
+let singletonList = Cons 42 Empty
+show singletonList  // Cons 42 Empty
+
+// cons演算子 : を使用
+let singletonList' = 42 : `[]
+show singletonList'  // 42 : `[]
+
+// シュガー構文
+let singletonList'' = `[42]
+show singletonList''  // `[42]
+
+// 複数要素のリスト
+let list1 = Cons 1 (Cons 2 (Cons 3 Empty))
+let list2 = 1 : 2 : 3 : `[]
+let list3 = `[1, 2, 3]
+show list1  // Cons 1 (Cons 2 (Cons 3 Empty))
+show list2  // 1 : 2 : 3 : `[]
+show list3  // `[1, 2, 3]
+
+// 文字列のリスト
+let stringList = `["hello", "world", "seseragi"]
+show stringList  // `["hello", "world", "seseragi"]
+
+// headとtailの演算子
+let numbers' = `[10, 20, 30, 40]
+show $ head numbers'  // Just 10
+show $ tail numbers'  // `[20, 30, 40]
+
+// 演算子形式
+show $ ^numbers'      // Just 10 (head演算子)
+show $ >>numbers'     // `[20, 30, 40] (tail演算子)
+
+// 演算子の連結
+show $ ^>>numbers'    // Just 20 (tailのhead)
+show $ >>.>>numbers'  // `[30, 40] (tailのtail)
+
+// より複雑な連結
+show $ ^>>.>>numbers' // Just 30 (3番目の要素)
+show $ ^>>.>>.>>numbers' // Just 40 (4番目の要素)
+
+// 空リストでのhead/tail
+let emptyList'' = `[]
+show $ ^emptyList''   // Nothing
+show $ >>emptyList''  // `[]
+
+// =============================================================================
+// Array↔List変換
+// =============================================================================
+
+print "--- Array↔List変換 ---"
+
+// 配列をリストに変換
+let arr: Array<Int> = [1, 2, 3, 4, 5]
+let list: List<Int> = arrayToList arr
+show arr   // [1, 2, 3, 4, 5]
+show list  // `[1, 2, 3, 4, 5]
+
+// リストを配列に変換
+let backToArray: Array<Int> = listToArray list
+show backToArray  // [1, 2, 3, 4, 5]
+
+// 空配列の変換
+let emptyArr: Array<Int> = []
+let emptyListFromArray: List<Int> = arrayToList emptyArr
+let emptyArrFromList: Array<Int> = listToArray emptyListFromArray
+
+show emptyArr            // []
+show emptyListFromArray  // `[]
+show emptyArrFromList    // []
+
+// =============================================================================
+// 内包表記
+// =============================================================================
+
+print "--- Array内包表記 ---"
+
+// 基本的な内包表記
+let squares = [x * x | x <- [1, 2, 3, 4, 5]]
+show squares  // [1, 4, 9, 16, 25]
+
+// 範囲演算子
+let range1 = 1..5   // 末尾含まず
+let range2 = 1..=5  // 末尾含む
+show range1  // [1, 2, 3, 4]
+show range2  // [1, 2, 3, 4, 5]
+
+// 範囲演算子を使った内包表記
+let squaresRange = [x * x | x <- 1..=5]
+show squaresRange  // [1, 4, 9, 16, 25]
+
+// 条件付き内包表記
+let evenSquares = [x * x | x <- 1..=6, x % 2 == 0]
+show evenSquares  // [4, 16, 36]
+
+// 複数のジェネレータ
+let pairs = [(x, y) | x <- 1..=2, y <- 3..=4]
+show pairs  // [(1, 3), (1, 4), (2, 3), (2, 4)]
+
+print "--- List内包表記 ---"
+
+// 基本的な内包表記
+let squares' = `[x * x | x <- [1, 2, 3, 4, 5]]
+show squares'  // `[1, 4, 9, 16, 25]
+
+// 範囲演算子を使った内包表記
+let squaresRange' = `[x * x | x <- 1..=5]
+show squaresRange'  // `[1, 4, 9, 16, 25]
+
+// 条件付き内包表記
+let evenSquares' = `[x * x | x <- 1..=6, x % 2 == 0]
+show evenSquares'  // `[4, 16, 36]
+
+// 文字列の内包表記
+let greetings = `[`Hello, ${name}!` | name <- ["Alice", "Bob", "Charlie"]]
+show greetings  // `["Hello, Alice!", "Hello, Bob!", "Hello, Charlie!"]
+
+// ガード付き複数ジェネレータ
+let filtered = `[x + y | x <- 1..=3, y <- 4..=6, x + y > 6]
+show filtered  // `[7, 8, 8, 9]
+
+// =============================================================================
+// ArrayとListの使い分け
+// =============================================================================
+
+print "--- ArrayとListの使い分け ---"
+
+// Array型の特徴：
+// - JavaScriptの配列と互換性がある
+// - インデックスアクセスが効率的
+// - 可変長
+
+// List型の特徴：
+// - 関数プログラミングに適している
+// - 再帰的な処理に適している
+// - 不変性
+
+print "Array型はJavaScriptとの互換性、List型は関数プログラミングに適しています"
+
+
+// 実行方法:
+// seseragi run examples/intermediate/03-lists-and-arrays.ssrg
+

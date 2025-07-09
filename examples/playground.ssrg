@@ -1,0 +1,82 @@
+// playground.ssrg
+// 自由に実験できるプレイグラウンド
+
+show "=== Seseragi プレイグラウンド ==="
+
+// このファイルで自由にSeseragiを試してみてください！
+// 以下のコードを編集・追加・削除して実験してみましょう
+
+// =============================================================================
+// 基本的な例
+// =============================================================================
+
+// 数値と文字列
+let number = 42
+let message = "Hello, Seseragi!"
+
+show number
+show message
+
+// 関数の定義
+fn greet name: String -> String = `Hello, ${name}!`
+show $ greet "World"
+
+// =============================================================================
+// ここから下は自由に編集してください！
+// =============================================================================
+
+// 例1: 計算機を作ってみよう
+fn add x: Int -> y: Int -> Int = x + y
+fn multiply x: Int -> y: Int -> Int = x * y
+
+show $ add 5 3
+show $ multiply 4 7
+
+// 例2: リストを使ってみよう
+let myList = `[x | x <- 1..=10, x % 2 == 0]
+show myList
+
+// 例3: 構造体を定義してみよう
+struct Point {
+  x: Int,
+  y: Int
+}
+
+impl Point {
+  fn distanceSquaredTo self -> other -> Int {
+    let dx = other.x - self.x
+    let dy = other.y - self.y
+    dx * dx + dy * dy
+  }
+}
+
+let point1 = Point { x: 0, y: 0 }
+let point2 = Point { x: 3, y: 4 }
+let point3 = Point { x: 1, y: 1 }
+
+show point1
+show point2
+show point3
+
+// ピタゴラスの定理で距離の2乗を計算
+show $ point1 distanceSquaredTo point2  // 25 (5²)
+show $ point1 distanceSquaredTo point3  // 2 (√2の2乗)
+
+// 距離の比較（平方根不要）
+let dist1 = point1 distanceSquaredTo point2  // 25
+let dist2 = point1 distanceSquaredTo point3  // 2
+
+show $ dist1 > dist2  // True (point2の方が遠い)
+show `point1から近い順: point3 (距離²=${dist2}) < point2 (距離²=${dist1})`
+
+// =============================================================================
+// 実験スペース - ここで自由にコードを書いてみてください！
+// =============================================================================
+
+// あなたのコードをここに書いてください...
+
+// 実行方法:
+// seseragi run examples/playground.ssrg
+// または
+// seseragi run examples/playground.ssrg --watch  (ファイル監視モード)
+

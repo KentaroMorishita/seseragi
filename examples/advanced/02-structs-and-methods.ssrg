@@ -1,0 +1,204 @@
+// 02-structs-and-methods.ssrg
+// 構造体とメソッドについて学ぶ
+
+print "=== 構造体とメソッド ==="
+
+// =============================================================================
+// 構造体の定義
+// =============================================================================
+
+print "--- 構造体の定義 ---"
+
+// 基本的な構造体定義
+struct Person {
+  name: String,
+  age: Int
+}
+
+struct Point {
+  x: Float,
+  y: Float
+}
+
+// より複雑な構造体
+struct Employee {
+  id: Int,
+  name: String,
+  department: String,
+  salary: Int,
+  isActive: Bool
+}
+
+// =============================================================================
+// 構造体のインスタンス化
+// =============================================================================
+
+print "--- 構造体のインスタンス化 ---"
+
+// 構造体インスタンスの作成
+let alice = Person { name: "Alice", age: 30 }
+let bob = Person { name: "Bob", age: 25 }
+
+show alice  // Person { name: "Alice", age: 30 }
+show bob    // Person { name: "Bob", age: 25 }
+
+// Point構造体のインスタンス
+let origin = Point { x: 0.0, y: 0.0 }
+let point1 = Point { x: 3.0, y: 4.0 }
+let point2 = Point { x: 1.0, y: 2.0 }
+
+show origin  // Point { x: 0.0, y: 0.0 }
+show point1  // Point { x: 3.0, y: 4.0 }
+show point2  // Point { x: 1.0, y: 2.0 }
+
+// =============================================================================
+// フィールドアクセス
+// =============================================================================
+
+print "--- フィールドアクセス ---"
+
+// ドット記法でフィールドにアクセス
+let aliceName = alice.name
+let aliceAge = alice.age
+
+show aliceName  // "Alice"
+show aliceAge   // 30
+
+// Pointのフィールドアクセス
+let x1 = point1.x
+let y1 = point1.y
+
+show x1  // 3.0
+show y1  // 4.0
+
+// =============================================================================
+// 構造体のメソッド実装
+// =============================================================================
+
+print "--- 構造体のメソッド実装 ---"
+
+// Point構造体にメソッドを実装
+struct Vector {
+  x: Int,
+  y: Int
+}
+
+impl Vector {
+  // メソッドの定義
+  fn add self -> other: Vector -> Vector {
+    let x = self.x + other.x
+    let y = self.y + other.y
+    Vector { x, y }
+  }
+
+  fn subtract self -> other: Vector -> Vector {
+    let x = self.x - other.x
+    let y = self.y - other.y
+    Vector { x, y }
+  }
+
+  fn scale self -> factor: Int -> Vector {
+    let x = self.x * factor
+    let y = self.y * factor
+    Vector { x, y }
+  }
+
+  fn distanceSquared self -> Int =
+    self.x * self.x + self.y * self.y
+
+  // 演算子オーバーロード
+  operator + self -> other -> Vector = self add other
+  operator - self -> other: Vector -> Vector = self subtract other
+  operator * self -> factor: Int -> Vector = self scale factor
+}
+
+let v1 = Vector { x: 3, y: 4 }
+let v2 = Vector { x: 1, y: 2 }
+
+show v1  // Vector { x: 3, y: 4 }
+show v2  // Vector { x: 1, y: 2 }
+
+print "--- メソッドの呼び出し ---"
+
+// メソッドの呼び出し
+let sum = v1 add v2
+let diff = v1 subtract v2
+let scaled = v1 scale 3
+let distance = v1 distanceSquared()
+
+show sum       // Vector { x: 4, y: 6 }
+show diff      // Vector { x: 2, y: 2 }
+show scaled    // Vector { x: 9, y: 12 }
+show distance  // 25
+
+// 演算子のオーバーロード
+show $ v1 + v2 // Vector { x: 4, y: 6 }
+show $ v1 - v2 // Vector { x: 2, y: 2 }
+show $ v1 * 3  // Vector { x: 9, y: 12 }
+
+// =============================================================================
+// 実用的な構造体例
+// =============================================================================
+
+print "--- 実用的な例 ---"
+
+// 銀行口座の構造体
+struct Account {
+  id: Int,
+  owner: String,
+  balance: Int
+}
+
+impl Account {
+  fn getInfo self -> String {
+    let { id, owner, balance } = self
+    `口座ID: ${id}, 所有者: ${owner}, 残高: ${balance}`
+  }
+
+  fn deposit self -> amount: Int -> Account {
+    Account { ...self, balance: self.balance + amount }
+  }
+
+  fn withdraw self -> amount: Int -> Either<String, Account> {
+    let balance = self.balance - amount
+    if amount <= balance
+    then Right (Account { ...self, balance })
+    else Left `残高不足です。現在の残高: ${self.balance}, 出金額: ${amount}`
+  }
+}
+
+let account = Account { id: 1001, owner: "Alice", balance: 10000 }
+show account  // Account { id: 1001, owner: "Alice", balance: 10000 }
+
+let account' = account deposit 5000
+show account'  // Account { id: 1001, owner: "Alice", balance: 15000 }
+
+let withdrawResult = account' withdraw 3000
+show withdrawResult  // Right Account { id: 1001, owner: "Alice", balance: 12000 }
+
+let failedWithdraw = account' withdraw 20000
+show failedWithdraw  // Left "残高不足です。現在の残高: 15000, 出金額: 20000"
+
+// 成功時の処理
+let account'' = match withdrawResult {
+  Right acc -> acc
+  Left _ -> account'
+}
+show $ account'' getInfo()     // "口座ID: 1001, 所有者: Alice, 残高: 12000"
+
+// =============================================================================
+// 構造体の利点
+// =============================================================================
+
+print "--- 構造体の利点 ---"
+
+// 1. データの構造化
+// 2. 型安全性
+// 3. メソッドによる操作の関連付け
+// 4. コードの可読性向上
+
+print "構造体により、関連するデータとメソッドを一箇所にまとめられます"
+
+// 実行方法:
+// seseragi run examples/advanced/02-structs-and-methods.ssrg
+

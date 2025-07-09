@@ -1,0 +1,107 @@
+// 04-conditionals.ssrg
+// Seseragiの条件分岐について学ぶ
+
+print "=== 条件分岐 ==="
+
+// =============================================================================
+// 基本的な条件分岐
+// =============================================================================
+
+print "--- 基本的な条件分岐 ---"
+
+// if-then-else式
+let x = 10
+let result = if x > 5 then "大きい" else "小さい"
+show result  // "大きい"
+
+// ブール値での条件分岐
+let isTrue = True
+let message = if isTrue then "真です" else "偽です"
+show message  // "真です"
+
+let isFalse = False
+let message' = if isFalse then "真です" else "偽です"
+show message'  // "偽です"
+
+// =============================================================================
+// 比較演算子
+// =============================================================================
+
+print "--- 比較演算子 ---"
+
+let a = 5
+let b = 3
+
+show $ a == b  // False (等しい)
+show $ a != b  // True (等しくない)
+show $ a > b   // True (より大きい)
+show $ a < b   // False (より小さい)
+show $ a >= b  // True (以上)
+show $ a <= b  // False (以下)
+
+// =============================================================================
+// ブール演算子
+// =============================================================================
+
+print "--- ブール演算子 ---"
+
+let p = True
+let q = False
+
+show $ p && q  // False (AND演算)
+show $ p || q  // True (OR演算)
+show $ !p      // False (NOT演算)
+
+// =============================================================================
+// 複合条件の書き方比較
+// =============================================================================
+
+print "--- 複合条件の書き方比較 ---"
+
+// if-then-else チェーン
+fn classify age: Int -> String =
+  if age < 13 then "子供"
+  else if age < 20 then "ティーンエイジャー"
+  else if age < 65 then "大人"
+  else "高齢者"
+
+// 三項演算子チェーン
+fn classify' age: Int -> String =
+  age < 13 ? "子供" :
+  age < 20 ? "ティーンエイジャー" :
+  age < 65 ? "大人" :
+  "高齢者"
+
+show $ classify 16   // "ティーンエイジャー"
+show $ classify' 16  // "ティーンエイジャー"
+
+show $ classify 10   // "子供"
+show $ classify' 30  // "大人"
+
+// =============================================================================
+// 実用的な条件分岐例
+// =============================================================================
+
+print "--- 実用的な例 ---"
+
+// 偶数・奇数判定
+fn isEven x: Int -> Bool = x % 2 == 0
+fn isOdd x: Int -> Bool = x % 2 != 0
+
+show $ isEven 4   // True
+show $ isOdd 4    // False
+
+// 成績判定
+fn grade score: Int -> String =
+  score >= 90 ? "A" :
+  score >= 80 ? "B" :
+  score >= 70 ? "C" :
+  score >= 60 ? "D" :
+  "F"
+
+show $ grade 95   // "A"
+show $ grade 75   // "C"
+show $ grade 45   // "F"
+
+// 実行方法:
+// seseragi run examples/basics/04-conditionals.ssrg

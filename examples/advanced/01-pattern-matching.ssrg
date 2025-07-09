@@ -1,0 +1,273 @@
+// 01-pattern-matching.ssrg
+// パターンマッチングの基本を学ぶ
+
+print "=== パターンマッチング ==="
+
+// =============================================================================
+// リテラルパターン
+// =============================================================================
+
+print "--- リテラルパターン ---"
+
+// 数値リテラルパターン
+fn describeNumber n: Int -> String = match n {
+  0 -> "ゼロ"
+  1 -> "一"
+  42 -> "答え"
+  _ -> "その他の数"
+}
+
+show $ describeNumber 0   // "ゼロ"
+show $ describeNumber 42  // "答え"
+show $ describeNumber 99  // "その他の数"
+
+// 文字列リテラルパターン
+fn greetByLanguage lang: String -> String = match lang {
+  "jp" -> "こんにちは"
+  "en" -> "Hello"
+  "fr" -> "Bonjour"
+  _ -> "Unknown language"
+}
+
+show $ greetByLanguage "jp"  // "こんにちは"
+show $ greetByLanguage "en"  // "Hello"
+show $ greetByLanguage "de"  // "Unknown language"
+
+// =============================================================================
+// タプルパターン
+// =============================================================================
+
+print "--- タプルパターン ---"
+
+// 座標のパターンマッチング
+fn describePoint point: (Int, Int) -> String = match point {
+  (0, 0) -> "原点"
+  (0, _) -> "Y軸上"
+  (_, 0) -> "X軸上"
+  (x, y) -> `点(${x}, ${y})`
+}
+
+show $ describePoint $ (0, 0)  // "原点"
+show $ describePoint $ (0, 5)  // "Y軸上"
+show $ describePoint $ (3, 0)  // "X軸上"
+show $ describePoint $ (2, 3)  // "点(2, 3)"
+
+// 3つ組のパターンマッチング
+fn analyzeTriple triple: (Int, Int, Int) -> String = match triple {
+  (0, 0, 0) -> "すべてゼロ"
+  (x, y, z) when x == y && y == z -> `すべて同じ値: ${x}`
+  (x, y, z) -> `異なる値: ${x}, ${y}, ${z}`
+}
+
+show $ analyzeTriple $ (0, 0, 0)  // "すべてゼロ"
+show $ analyzeTriple $ (5, 5, 5)  // "すべて同じ値: 5"
+show $ analyzeTriple $ (1, 2, 3)  // "異なる値: 1, 2, 3"
+
+// =============================================================================
+// 基本的なADT（代数データ型）
+// =============================================================================
+
+print "--- 基本的なADT ---"
+
+// 列挙型の定義
+type Color =
+  | Red
+  | Green
+  | Blue
+
+let red = Red
+let green = Green
+let blue = Blue
+
+// パターンマッチング
+let colorName = match red {
+  Red -> "赤"
+  Green -> "緑"
+  Blue -> "青"
+}
+
+show colorName  // "赤"
+
+// 関数でのパターンマッチング
+fn colorToString color: Color -> String = match color {
+  Red -> "赤色"
+  Green -> "緑色"
+  Blue -> "青色"
+}
+
+show $ colorToString green  // "緑色"
+
+// =============================================================================
+// 引数付きADT
+// =============================================================================
+
+print "--- 引数付きADT ---"
+
+// 引数を持つ代数データ型
+type Shape =
+  | Circle Float
+  | Rectangle Float Float
+
+let circle = Circle 5.0
+let rectangle = Rectangle 3.0 4.0
+
+// パターンマッチングで計算
+let area = match circle {
+  Circle radius -> radius * radius * 3.14
+  Rectangle width height -> width * height
+}
+
+show area  // 78.5
+
+// より複雑なパターンマッチング
+fn calculateArea shape: Shape -> Float = match shape {
+  Circle radius -> radius * radius * 3.14
+  Rectangle width height -> width * height
+}
+
+show $ calculateArea circle     // 78.5
+show $ calculateArea rectangle  // 12.0
+
+// =============================================================================
+// ビルトインMaybe型
+// =============================================================================
+
+print "--- ビルトインMaybe型 ---"
+
+let just42 = Just 42
+let nothing = Nothing
+
+let maybeValue = match just42 {
+  Nothing -> 0
+  Just value -> value * 2
+}
+
+show maybeValue  // 84
+
+// Maybe型の安全な操作
+fn unwrapOr maybe: Maybe<Int> -> defaultValue: Int -> Int = match maybe {
+  Nothing -> defaultValue
+  Just value -> value
+}
+
+show $ unwrapOr just42 0   // 42
+show $ unwrapOr nothing 0  // 0
+
+// =============================================================================
+// ビルトインEither型
+// =============================================================================
+
+print "--- ビルトインEither型 ---"
+
+let right100 = Right 100
+let leftError = Left "エラー"
+
+let eitherValue = match right100 {
+  Left msg -> 0
+  Right value -> value + 10
+}
+
+show eitherValue  // 110
+
+// Either型のエラーハンドリング
+fn handleResult result: Either<String, Int> -> String = match result {
+  Left error -> `エラー: ${error}`
+  Right value -> `成功: ${value}`
+}
+
+show $ handleResult right100  // "成功: 100"
+show $ handleResult leftError // "エラー: エラー"
+
+// =============================================================================
+// ビルトインList型
+// =============================================================================
+
+print "--- ビルトインList型 ---"
+
+let myList = Cons 1 (Cons 2 (Cons 3 Empty))
+let emptyList = Empty
+
+let listHead = match myList {
+  Empty -> -1
+  Cons h t -> h
+}
+
+show listHead  // 1
+
+// リストの再帰的な処理
+fn listLength list: List<Int> -> Int = match list {
+  Empty -> 0
+  Cons h t -> 1 + listLength t
+}
+
+show $ listLength myList     // 3
+show $ listLength emptyList  // 0
+
+// =============================================================================
+// 複雑なパターンマッチング例
+// =============================================================================
+
+print "--- 複雑な例 ---"
+
+// Guardパターン（when）
+type Result =
+  | Success Int
+  | Failure String
+
+fn processResult result: Result -> String = match result {
+  Success value when value == 0 -> "ゼロです"
+  Success value when value > 0 -> `正の値: ${value}`
+  Success value -> `負の値: ${value}`
+  Failure msg -> `失敗: ${msg}`
+}
+
+let success = Success 42
+let zero = Success 0
+let failure = Failure "エラーが発生しました"
+
+show $ processResult success  // "正の値: 42"
+show $ processResult zero     // "ゼロです"
+show $ processResult failure  // "失敗: エラーが発生しました"
+
+// Orパターン（|）
+fn classifyCharacter char: String -> String = match char {
+  "a" | "e" | "i" | "o" | "u" -> "母音"
+  "y" -> "半母音"
+  _ -> "子音"
+}
+
+show $ classifyCharacter "a"  // "母音"
+show $ classifyCharacter "b"  // "子音"
+show $ classifyCharacter "y"  // "半母音"
+
+// 配列パターン
+fn analyzeArray arr: Array<Int> -> String = match arr {
+  [] -> "空の配列"
+  [a] -> `要素1つ: ${a}`
+  [a, b] -> `要素2つ: ${a}, ${b}`
+  [a, b, c] -> `要素3つ: ${a}, ${b}, ${c}`
+  _ -> "4つ以上の要素"
+}
+
+show $ analyzeArray $ []        // "空の配列"
+show $ analyzeArray $ [1]       // "要素1つ: 1"
+show $ analyzeArray $ [1, 2]    // "要素2つ: 1, 2"
+show $ analyzeArray $ [1, 2, 3] // "要素3つ: 1, 2, 3"
+show $ analyzeArray $ [1, 2, 3, 4] // "4つ以上の要素"
+
+// =============================================================================
+// パターンマッチングの利点
+// =============================================================================
+
+print "--- パターンマッチングの利点 ---"
+
+// 1. 型安全性の向上
+// 2. 網羅性のチェック
+// 3. 表現力の向上
+// 4. 関数型プログラミングの核心機能
+
+print "パターンマッチングにより、型安全で表現力豊かなコードが書けます"
+
+// 実行方法:
+// seseragi run examples/advanced/01-pattern-matching.ssrg
+

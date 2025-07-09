@@ -1,0 +1,98 @@
+// 02-types-and-variables.ssrg
+// Seseragiの基本型と変数について学ぶ
+
+print "=== 基本型と変数 ==="
+
+// =============================================================================
+// 変数の命名規則
+// =============================================================================
+
+print "--- 命名規則 ---"
+
+// 変数名は小文字で始める
+let userName = "Alice"
+let userAge = 25
+
+// アポストロフィー（'）が使える
+let x = 10
+let x' = 20
+let result' = x + x'
+
+// スネークケースも可能
+let user_name = "Bob"
+let max_count = 100
+
+show userName    // "Alice"
+show x'          // 20
+show result'     // 30
+show user_name   // "Bob"
+
+// =============================================================================
+// 基本型
+// =============================================================================
+
+print "--- 基本型 ---"
+
+// Int型: 整数
+let number = 42
+show number  // 42
+
+// String型: 文字列
+let message = "Hello, Seseragi!"
+show message  // "Hello, Seseragi!"
+
+// Bool型: 真偽値
+let flag = true
+show flag  // True
+
+// Float型: 浮動小数点数
+let pi = 3.14
+show pi  // 3.14
+
+// =============================================================================
+// 算術演算
+// =============================================================================
+
+print "--- 算術演算 ---"
+
+// 基本的な算術演算子
+let sum = 10 + 5
+let difference = 10 - 5
+let product = 6 * 7
+let quotient = 20 / 4
+
+show sum        // 15
+show difference // 5
+show product    // 42
+show quotient   // 5
+
+// =============================================================================
+// 比較演算
+// =============================================================================
+
+print "--- 比較演算 ---"
+
+// 比較演算子
+let isEqual = 5 == 5
+let isNotEqual = 5 != 3
+let isGreater = 7 > 4
+let isLess = 3 < 7
+
+show isEqual    // True
+show isNotEqual // True
+show isGreater  // True
+show isLess     // True
+
+// =============================================================================
+// 文字列操作
+// =============================================================================
+
+print "--- 文字列操作 ---"
+
+// 文字列補間
+let name = "Alice"
+let greeting = `Hello, ${name}!`
+show greeting  // "Hello, Alice!"
+
+// 実行方法:
+// seseragi run examples/basics/02-types-and-variables.ssrg
