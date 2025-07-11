@@ -42,7 +42,7 @@ let message = "Hello, Seseragi!"
 show message  // "Hello, Seseragi!"
 
 // Bool型: 真偽値
-let flag = true
+let flag = True
 show flag  // True
 
 // Float型: 浮動小数点数

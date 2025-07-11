@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import MonacoEditor, { Monaco } from "@monaco-editor/react"
 import {
   initializeSeseragiLanguage,
@@ -25,10 +25,6 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
 
       // Monaco言語リストを確認
       const languages = monaco.languages.getLanguages()
-      console.log(
-        "🔍 Registered languages:",
-        languages.map((l) => l.id)
-      )
       console.log(
         "🔍 Is seseragi registered?",
         languages.some((l) => l.id === "seseragi")
@@ -63,13 +59,16 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
       onMount={handleEditorDidMount}
       options={{
         minimap: { enabled: false },
-        fontSize: 14,
+        fontSize: 18,
         lineNumbers: "on",
         automaticLayout: true,
         scrollBeyondLastLine: false,
         wordWrap: "on",
         formatOnType: true,
         formatOnPaste: true,
+        tabSize: 2,
+        insertSpaces: true,
+        detectIndentation: false,
       }}
     />
   )

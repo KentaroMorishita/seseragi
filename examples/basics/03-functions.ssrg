@@ -62,10 +62,8 @@ show $ getFlag()    // True
 show $ getPi()      // 3.14
 
 // 複数引数の型指定
-fn add x: Int -> y: Int -> Int = x + y
 fn concat first: String -> second: String -> String = first + second
 
-show $ add 3 7  // 10
 show $ concat "Hello" " World"  // "Hello World"
 
 // =============================================================================
@@ -111,18 +109,18 @@ show $ areaCalc 5 8  // 40
 print "--- カリー化された関数 ---"
 
 // 複数の引数を持つ関数（カリー化）
-fn addTwo x: Int -> y: Int -> Int = x + y
+fn add x: Int -> y: Int -> Int = x + y
 fn multiplyTwo x: Int -> y: Int -> Int = x * y
 
 // 部分適用
-let add5 = addTwo 5
+let add5 = add 5
 let triple = multiplyTwo 3
 
 show $ add5 10    // 15
 show $ triple 7   // 21
 
 // 完全適用
-show $ addTwo 3 4      // 7
+show $ add 3 4      // 7
 show $ multiplyTwo 6 9 // 54
 
 // =============================================================================
@@ -136,12 +134,13 @@ fn applyFunc func: (Int -> Int) -> value: Int -> Int = func value
 
 // 使用する関数を定義
 fn quad x: Int -> Int = x * 4
-let increment = addTwo 1
-let addTen = addTwo 10
+fn increment x: Int -> Int = x + 1
+fn addTen x: Int -> Int = x + 10
 
-show $ applyFunc quad 5    // 20
-show $ increment 20        // 21
-show $ addTen 5            // 15
+// 高階関数を適用
+show $ applyFunc quad 5         // 20
+show $ applyFunc increment 20   // 21
+show $ applyFunc addTen 5       // 15
 
 // =============================================================================
 // 実用的な関数例

@@ -17,11 +17,8 @@ fn fizzBuzz n: Int -> String = match (n % 3, n % 5) {
   _ -> `${n}`
 }
 
-// 数値をチェックする関数
-fn checkNumber n: Int -> String = `${n}: ${fizzBuzz n}`
-
 // FizzBuzzのテスト
-[print (checkNumber n) | n <- 1..=20]
+[print $ fizzBuzz n | n <- 1..=100]
 
 // =============================================================================
 // 計算器の実装

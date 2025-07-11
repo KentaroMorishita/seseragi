@@ -12,12 +12,12 @@ print "--- 出力の基本 ---"
 // print: 値をそのまま出力
 print "Hello, World!"
 print 42
-print true
+print True
 
 // show: 値を見やすく整形して出力
 show "Hello, World!"
 show 42
-show true
+show True
 
 // =============================================================================
 // 関数適用演算子 ($)

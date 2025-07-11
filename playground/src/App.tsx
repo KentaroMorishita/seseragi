@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from "react"
 import Editor from "./components/Editor"
 import Output from "./components/Output"
 import Toolbar from "./components/Toolbar"
+import Resizer from "./components/Resizer"
+import VerticalResizer from "./components/VerticalResizer"
 import { compileAndRun } from "./lib/runner"
 import { samples } from "./samples"
 
@@ -10,6 +12,17 @@ function App() {
   const [output, setOutput] = useState<string>("")
   const [isRunning, setIsRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [leftWidth, setLeftWidth] = useState(50)
+  const [topHeight, setTopHeight] = useState(60)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleRun = useCallback(async () => {
     setIsRunning(true)
@@ -44,13 +57,31 @@ function App() {
         />
       </header>
       <div className="main-content">
-        <div className="editor-pane">
-          <Editor value={code} onChange={setCode} />
-        </div>
-        <div className="output-pane">
-          <div className="output-header">Output</div>
-          <Output output={output} error={error} />
-        </div>
+        {isMobile ? (
+          // スマホサイズ: 縦並び
+          <>
+            <div className="editor-pane" style={{ height: `${topHeight}vh` }}>
+              <Editor value={code} onChange={setCode} />
+            </div>
+            <VerticalResizer onResize={setTopHeight} />
+            <div className="output-pane" style={{ height: `${100 - topHeight - 15}vh` }}>
+              <div className="output-header">Output</div>
+              <Output output={output} error={error} />
+            </div>
+          </>
+        ) : (
+          // デスクトップサイズ: 横並び
+          <>
+            <div className="editor-pane" style={{ width: `${leftWidth}%` }}>
+              <Editor value={code} onChange={setCode} />
+            </div>
+            <Resizer onResize={setLeftWidth} />
+            <div className="output-pane" style={{ width: `${100 - leftWidth}%` }}>
+              <div className="output-header">Output</div>
+              <Output output={output} error={error} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

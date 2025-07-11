@@ -1,4 +1,3 @@
-
 print "--- 成績管理システム ---"
 
 // 成績の構造体
@@ -13,26 +12,33 @@ struct Student {
   grades: List<Grade>
 }
 
+fn calculateAverage grades: List<Grade> -> sum: Int -> count: Int -> Int = match grades {
+  Empty -> sum / count
+  Cons grade rest -> calculateAverage (rest) (sum + grade.score) (count + 1)
+}
+
 impl Student {
   fn addGrade self -> grade: Grade -> Student {
-    Student { ...self, grades: (grade: self.grade) }
+    let grades = grade : self.grades
+    Student { ...self, grades }
   }
 
-  fn getAverageScore self -> Maybe<Int> = match self.grades {
-    [] -> Nothing
-    _ -> Just 85  // 簡単な例として固定値
+  // 平均計算
+  fn getAverageScore self -> Maybe<Int> = match (self.grades) {
+    Empty -> Nothing
+    _ -> Just (calculateAverage (self.grades) 0 0)
   }
 }
 
 // 学生の使用例
-let mathGrade = Grade { subject: "数学", score: 85 }
-let englishGrade = Grade { subject: "英語", score: 92 }
+let mathGrade = Grade { subject: "数学", score: 80 }
+let englishGrade = Grade { subject: "英語", score: 90 }
 
-let student = Student { name: "佐藤花子", grades: [mathGrade] }
-show student  // Student { name: "佐藤花子", grades: [Grade { subject: "数学", score: 85 }] }
+let student = Student { name: "佐藤花子", grades: `[mathGrade] }
+show student  // Student { name: "佐藤花子", grades: `[Grade { subject: "数学", score: 80 }] }
 
-let updatedStudent = student addGrade englishGrade
-show updatedStudent  // Student { name: "佐藤花子", grades: [Grade { subject: "英語", score: 92 }] }
+let student' = student addGrade englishGrade
+show student'  // Student { name: "佐藤花子", grades: `[Grade { subject: "英語", score: 90 }, Grade { subject: "数学", score: 80 }] }
 
-let average = student getAverageScore()
+let average = student' getAverageScore()
 show average  // Just 85

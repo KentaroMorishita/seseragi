@@ -53,11 +53,13 @@ let rightX = Right 15
 let rightY = Right 25
 let leftError = Left "エラーが発生しました"
 
-// アプリカティブ演算子での合成
-let eitherResult1 = Right add <*> rightX <*> rightY
-let eitherResult2 = Right add <*> rightX <*> leftError
+fn multiply x: Int -> y: Int -> Int = x * y
 
-show eitherResult1  // Right 40
+// アプリカティブ演算子での合成
+let eitherResult1 = Right multiply <*> rightX <*> rightY
+let eitherResult2 = Right multiply <*> rightX <*> leftError
+
+show eitherResult1  // Right 375
 show eitherResult2  // Left "エラーが発生しました"
 
 // モナド演算子での合成（処理単位を組み合わせる）
