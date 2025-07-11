@@ -221,6 +221,10 @@ body {
     width: 100% !important;
   }
   
+  .output-content {
+    font-size: 14px;
+  }
+  
   .resizer {
     display: none;
   }

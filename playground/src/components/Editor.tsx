@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import MonacoEditor, { Monaco } from "@monaco-editor/react"
 import {
   initializeSeseragiLanguage,
@@ -14,6 +14,17 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
   const monacoRef = useRef<Monaco | null>(null)
   const editorRef = useRef<any>(null)
   const [, setIsLanguageReady] = useState(false)
+  const [fontSize, setFontSize] = useState(18)
+
+  useEffect(() => {
+    const updateFontSize = () => {
+      setFontSize(window.innerWidth <= 768 ? 14 : 18)
+    }
+    
+    updateFontSize()
+    window.addEventListener('resize', updateFontSize)
+    return () => window.removeEventListener('resize', updateFontSize)
+  }, [])
 
   const handleEditorDidMount = async (editor: any, monaco: Monaco) => {
     monacoRef.current = monaco
@@ -59,7 +70,7 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
       onMount={handleEditorDidMount}
       options={{
         minimap: { enabled: false },
-        fontSize: 18,
+        fontSize: fontSize,
         lineNumbers: "on",
         automaticLayout: true,
         scrollBeyondLastLine: false,
