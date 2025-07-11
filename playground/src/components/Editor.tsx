@@ -18,7 +18,7 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
 
   useEffect(() => {
     const updateFontSize = () => {
-      setFontSize(window.innerWidth <= 768 ? 14 : 18)
+      setFontSize(window.innerWidth <= 768 ? 16 : 18)
     }
     
     updateFontSize()
