@@ -40,7 +40,7 @@ fn describe n: Int -> String = match n {
 
 show $ describe 1  // "one"
 
-print "✨ 左のExamplesボタンから更に多くのサンプルを試してみてください！"`,
+print "✨ Examplesボタンから更に多くのサンプルを試してみてください！"`,
   },
   {
     name: "Basic Functions",
