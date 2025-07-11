@@ -17,7 +17,7 @@ fn getUserName -> String = "User"
 fn calculate x: Int -> Int = x * 2
 fn calculate' x: Int -> Int = x * 3
 
-show $ sayHello      // "Hello!"
+show $ sayHello()    // "Hello!"
 show $ calculate 5   // 10
 show $ calculate' 5  // 15
 
@@ -110,18 +110,18 @@ print "--- カリー化された関数 ---"
 
 // 複数の引数を持つ関数（カリー化）
 fn add x: Int -> y: Int -> Int = x + y
-fn multiplyTwo x: Int -> y: Int -> Int = x * y
+fn multiply x: Int -> y: Int -> Int = x * y
 
 // 部分適用
 let add5 = add 5
-let triple = multiplyTwo 3
+let triple = multiply 3
 
 show $ add5 10    // 15
 show $ triple 7   // 21
 
 // 完全適用
 show $ add 3 4      // 7
-show $ multiplyTwo 6 9 // 54
+show $ multiply 6 9 // 54
 
 // =============================================================================
 // 高階関数
