@@ -1,8 +1,46 @@
 export const samples = [
   {
-    name: "Hello World",
-    code: `print "Hello, World!"
-print 42`,
+    name: "Welcome to Seseragi",
+    code: `// Welcome to Seseragi Playground!
+// Seseragiは簡潔な構文でTypeScriptコードを生成する新しいプログラミング言語です
+
+print "=== Seseragi言語の特徴 ==="
+
+// 🔹 シンプルな関数定義
+fn greet name: String -> String = \`こんにちは、\${name}さん！\`
+let message = greet "プログラマー" // messageはStringに推論される
+show message // "こんにちは、プログラマーさん！"
+
+fn add x: Int -> y: Int -> Int = x + y
+show $ add 10 20 // 30
+
+// 🔹 null安全なMaybe型
+fn findUser id: Int -> Maybe<String> =
+  id == 1 ? Just "Alice" :
+  id == 2 ? Just "Bob" :
+  Nothing
+
+show $ findUser 1  // Just("Alice")
+show $ findUser 99 // Nothing
+
+// 🔹 配列の操作と内包表記
+fn double x: Int -> Int = x * 2
+
+let numbers: Array<Int> = 1..=10
+let doubled: Array<Int> = [double x | x <- numbers]
+show doubled  // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+
+// 🔹 パターンマッチング
+fn describe n: Int -> String = match n {
+  0 -> "zero"
+  1 -> "one"
+  2 -> "two"
+  _ -> "other"
+}
+
+show $ describe 1  // "one"
+
+print "✨ 左のExamplesボタンから更に多くのサンプルを試してみてください！"`,
   },
   {
     name: "Basic Functions",
