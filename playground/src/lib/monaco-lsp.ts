@@ -1,7 +1,7 @@
 import { Monaco } from "@monaco-editor/react"
 
 // 簡易版のLSP初期化（フル実装は後で追加）
-export function initializeLSP(monaco: Monaco, editor: any) {
+export function initializeLSP(monaco: Monaco, _editor: any) {
   // 現時点では基本的なフォーマッター機能のみ実装
   monaco.languages.registerDocumentFormattingEditProvider("seseragi", {
     async provideDocumentFormattingEdits(model) {

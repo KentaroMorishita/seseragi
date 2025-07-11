@@ -2,10 +2,9 @@ import React, { useState, useCallback, useEffect } from "react"
 
 interface VerticalResizerProps {
   onResize: (topHeight: number) => void
-  initialTopHeight?: number
 }
 
-const VerticalResizer: React.FC<VerticalResizerProps> = ({ onResize, initialTopHeight = 60 }) => {
+const VerticalResizer: React.FC<VerticalResizerProps> = ({ onResize }) => {
   const [isResizing, setIsResizing] = useState(false)
 
   const handleMouseDown = useCallback(() => {

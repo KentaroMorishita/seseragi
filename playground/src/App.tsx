@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 import Editor from "./components/Editor"
 import Output from "./components/Output"
 import Toolbar from "./components/Toolbar"
@@ -53,7 +53,6 @@ function App() {
           onRun={handleRun}
           onSampleChange={handleSampleChange}
           isRunning={isRunning}
-          samples={samples}
         />
       </header>
       <div className="main-content">

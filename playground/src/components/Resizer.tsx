@@ -2,10 +2,9 @@ import React, { useState, useCallback, useEffect } from "react"
 
 interface ResizerProps {
   onResize: (leftWidth: number) => void
-  initialLeftWidth?: number
 }
 
-const Resizer: React.FC<ResizerProps> = ({ onResize, initialLeftWidth = 50 }) => {
+const Resizer: React.FC<ResizerProps> = ({ onResize }) => {
   const [isResizing, setIsResizing] = useState(false)
 
   const handleMouseDown = useCallback(() => {

@@ -2,23 +2,17 @@ import React, { useState } from "react"
 import { getAvailableThemes, setTheme } from "../lib/monaco-seseragi"
 import SampleModal from "./SampleModal"
 
-interface Sample {
-  name: string
-  code: string
-}
 
 interface ToolbarProps {
   onRun: () => void
   onSampleChange: (code: string) => void
   isRunning: boolean
-  samples: Sample[]
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
   onRun,
   onSampleChange,
   isRunning,
-  samples,
 }) => {
   const themes = getAvailableThemes()
   const [isModalOpen, setIsModalOpen] = useState(false)

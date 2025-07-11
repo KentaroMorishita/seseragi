@@ -1,9 +1,8 @@
 import React, { useState } from "react"
 import {
-  allCodeSections,
   sectionsByCategory,
-  type CodeSection,
 } from "../samples/examples-data"
+import type { CodeSection } from "../samples/section-parser"
 
 interface SampleModalProps {
   isOpen: boolean

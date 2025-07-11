@@ -13,7 +13,7 @@ interface EditorProps {
 const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
   const monacoRef = useRef<Monaco | null>(null)
   const editorRef = useRef<any>(null)
-  const [isLanguageReady, setIsLanguageReady] = useState(false)
+  const [, setIsLanguageReady] = useState(false)
 
   const handleEditorDidMount = async (editor: any, monaco: Monaco) => {
     monacoRef.current = monaco

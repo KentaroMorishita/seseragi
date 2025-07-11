@@ -1,6 +1,7 @@
 // examples-data.ts - 全サンプルファイルのデータ（セクション分割済み）
 
-import { parseCodeSections, type CodeSection } from "./section-parser"
+import { parseCodeSections } from "./section-parser"
+import type { CodeSection } from "./section-parser"
 
 // 実際のサンプルファイルの内容（examplesディレクトリから）
 const sampleFiles = {
