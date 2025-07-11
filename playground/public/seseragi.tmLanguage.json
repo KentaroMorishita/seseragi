@@ -1,0 +1,448 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Seseragi",
+  "scopeName": "source.seseragi",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#list-sugar"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#type-declarations"
+    },
+    {
+      "include": "#types"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#booleans"
+    },
+    {
+      "include": "#identifiers"
+    },
+    {
+      "include": "#punctuation"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.seseragi",
+          "begin": "//",
+          "end": "$"
+        },
+        {
+          "name": "comment.block.seseragi",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.seseragi",
+          "match": "\\b(fn|let|type|struct|impl|monoid|operator|effectful|match|when|import|as|if|then|else)\\b"
+        }
+      ]
+    },
+    "type-declarations": {
+      "patterns": [
+        {
+          "name": "meta.type-declaration.seseragi",
+          "begin": "\\b(type)\\s+([A-Z][a-zA-Z0-9_]*)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.type.seseragi"
+            },
+            "2": {
+              "name": "entity.name.type.declaration.seseragi"
+            }
+          },
+          "end": "(?=\\n|//|/\\*)",
+          "patterns": [
+            {
+              "name": "keyword.operator.assignment.seseragi",
+              "match": "="
+            },
+            {
+              "include": "#types"
+            },
+            {
+              "include": "#operators"
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
+        },
+        {
+          "name": "meta.struct-declaration.seseragi",
+          "begin": "\\b(struct)\\s+([A-Z][a-zA-Z0-9_]*)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.struct.seseragi"
+            },
+            "2": {
+              "name": "entity.name.type.struct.seseragi"
+            }
+          },
+          "end": "}",
+          "patterns": [
+            {
+              "name": "punctuation.definition.struct.begin.seseragi",
+              "match": "{"
+            },
+            {
+              "name": "variable.other.field.seseragi",
+              "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*:)"
+            },
+            {
+              "include": "#types"
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "entity.name.type.primitive.seseragi",
+          "match": "\\b(Int|Float|Bool|String|Char|Unit)\\b"
+        },
+        {
+          "name": "entity.name.type.generic.seseragi",
+          "match": "\\b(Maybe|Either|IO|List|Array)\\b"
+        },
+        {
+          "name": "entity.name.type.user.seseragi",
+          "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.map.seseragi",
+          "match": "<\\$>"
+        },
+        {
+          "name": "keyword.operator.apply.seseragi",
+          "match": "<\\*>"
+        },
+        {
+          "name": "keyword.operator.spread.seseragi",
+          "match": "\\.\\.\\."
+        },
+        {
+          "name": "keyword.operator.range.seseragi",
+          "match": "\\.\\.(=)?"
+        },
+        {
+          "name": "keyword.operator.generator.seseragi",
+          "match": "<-"
+        },
+        {
+          "name": "keyword.operator.arrow.seseragi",
+          "match": "->"
+        },
+        {
+          "name": "keyword.operator.logical.seseragi",
+          "match": "(&&|\\|\\|)"
+        },
+        {
+          "name": "keyword.operator.comparison.seseragi",
+          "match": "(==|!=|<=|>=|<|>)"
+        },
+        {
+          "name": "keyword.operator.bind.seseragi",
+          "match": ">>="
+        },
+        {
+          "name": "keyword.operator.fold-monoid.seseragi",
+          "match": ">>>"
+        },
+        {
+          "name": "keyword.operator.pipeline.seseragi",
+          "match": "(\\||\\$)"
+        },
+        {
+          "name": "keyword.operator.reverse-pipe.seseragi",
+          "match": "~"
+        },
+        {
+          "name": "keyword.operator.head.seseragi",
+          "match": "\\^"
+        },
+        {
+          "name": "keyword.operator.tail.seseragi",
+          "match": ">>"
+        },
+        {
+          "name": "keyword.operator.assignment.seseragi",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.arithmetic.seseragi",
+          "match": "(\\+|-|\\*|/|%)"
+        },
+        {
+          "name": "keyword.operator.cons.seseragi",
+          "match": ":"
+        },
+        {
+          "name": "keyword.operator.ternary.seseragi",
+          "match": "\\?"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.io.seseragi",
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*\\()"
+        },
+        {
+          "name": "support.function.builtin.io.functional.seseragi",
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s+[^\\(])"
+        },
+        {
+          "name": "support.function.builtin.io.standalone.seseragi",
+          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*$)"
+        },
+        {
+          "name": "entity.name.function.definition.seseragi",
+          "match": "\\b(fn)\\s+([a-z][a-zA-Z0-9_]*'*)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.seseragi"
+            },
+            "2": {
+              "name": "entity.name.function.definition.seseragi"
+            }
+          }
+        },
+        {
+          "name": "entity.name.function.call.seseragi",
+          "match": "\\b[a-z][a-zA-Z0-9_]*'*(?=\\s*\\()"
+        },
+        {
+          "name": "support.function.builtin.seseragi",
+          "match": "\\b(Just|Nothing|Left|Right|Cons|Nil|Empty|arrayToList|listToArray)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.seseragi",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.seseragi",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.template.seseragi",
+          "begin": "`(?!\\[)",
+          "end": "`",
+          "patterns": [
+            {
+              "name": "meta.embedded.expression.seseragi",
+              "begin": "\\$\\{",
+              "end": "\\}",
+              "beginCaptures": {
+                "0": {
+                  "name": "punctuation.definition.template-expression.begin.seseragi"
+                }
+              },
+              "endCaptures": {
+                "0": {
+                  "name": "punctuation.definition.template-expression.end.seseragi"
+                }
+              },
+              "patterns": [
+                {
+                  "include": "#expressions"
+                }
+              ]
+            },
+            {
+              "name": "constant.character.escape.seseragi",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.seseragi",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.seseragi",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.seseragi",
+          "match": "\\b(True|False)\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "constant.language.wildcard.seseragi",
+          "match": "\\b_\\b"
+        },
+        {
+          "name": "variable.other.seseragi",
+          "match": "\\b[a-z][a-zA-Z0-9_]*'*\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.parenthesis.begin.seseragi",
+          "match": "\\("
+        },
+        {
+          "name": "punctuation.parenthesis.end.seseragi",
+          "match": "\\)"
+        },
+        {
+          "name": "punctuation.bracket.begin.seseragi",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.bracket.end.seseragi",
+          "match": "\\]"
+        },
+        {
+          "name": "punctuation.brace.begin.seseragi",
+          "match": "\\{"
+        },
+        {
+          "name": "punctuation.brace.end.seseragi",
+          "match": "\\}"
+        },
+        {
+          "name": "punctuation.separator.comma.seseragi",
+          "match": ","
+        },
+        {
+          "name": "punctuation.separator.colon.seseragi",
+          "match": ":"
+        },
+        {
+          "name": "punctuation.backtick.seseragi",
+          "match": "`"
+        }
+      ]
+    },
+    "list-sugar": {
+      "patterns": [
+        {
+          "name": "meta.list-sugar.seseragi",
+          "begin": "`\\[",
+          "end": "\\]",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.list.begin.seseragi"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.list.end.seseragi"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#booleans"
+            },
+            {
+              "include": "#identifiers"
+            },
+            {
+              "include": "#list-sugar"
+            },
+            {
+              "name": "punctuation.separator.comma.seseragi",
+              "match": ","
+            }
+          ]
+        }
+      ]
+    },
+    "expressions": {
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#functions"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#booleans"
+        },
+        {
+          "include": "#identifiers"
+        },
+        {
+          "include": "#punctuation"
+        }
+      ]
+    }
+  }
+}

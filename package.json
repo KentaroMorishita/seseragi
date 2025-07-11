@@ -1,19 +1,22 @@
 {
   "name": "seseragi",
   "version": "1.0.0",
-  "main": "src/main.ts",
+  "main": "src/cli.ts",
   "bin": {
     "seseragi": "./src/cli.ts",
     "seseragi-lsp": "./src/lsp/main.ts"
   },
   "scripts": {
-    "dev": "bun run --watch src/main.ts",
+    "dev": "bun run --watch src/cli.ts",
     "build": "./scripts/build.sh",
     "check": "./scripts/check.sh",
+    "format": "./scripts/format.sh",
     "vscode": "./scripts/vscode.sh",
     "all": "./scripts/dev-all.sh",
     "test": "bun test",
-    "test:watch": "bun test --watch"
+    "test:watch": "bun test --watch",
+    "dev:playground": "cd playground && bun run dev",
+    "build:playground": "cd playground && bun run build"
   },
   "keywords": [],
   "author": "",

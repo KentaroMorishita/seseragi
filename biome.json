@@ -28,6 +28,6 @@
     }
   },
   "files": {
-    "includes": ["src/**/*", "tests/**/*"]
+    "includes": ["src/**/*", "tests/**/*", "playground/src/**/*"]
   }
 }

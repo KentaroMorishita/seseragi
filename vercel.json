@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd playground && bun install && bun run build",
+  "outputDirectory": "playground/dist",
+  "installCommand": "bun install",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

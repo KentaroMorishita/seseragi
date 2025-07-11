@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-echo "✨ Formatting code..."
-bunx biome format --write src tests
+# フォーマット実行
+./scripts/format.sh
 
 echo "🔍 Linting..."
 bunx biome lint src tests
