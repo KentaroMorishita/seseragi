@@ -831,6 +831,7 @@ export class Parser {
         TokenType.MULTIPLY,
         TokenType.DIVIDE,
         TokenType.MODULO,
+        TokenType.POWER,
         TokenType.EQUAL,
         TokenType.NOT_EQUAL,
         TokenType.LESS_THAN,
@@ -1902,11 +1903,11 @@ export class Parser {
   }
 
   private factorExpression(): AST.Expression {
-    let expr = this.unaryExpression()
+    let expr = this.powerExpression()
 
     while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
       const operator = this.previous().value
-      const right = this.unaryExpression()
+      const right = this.powerExpression()
       expr = new AST.BinaryOperation(
         expr,
         operator,
@@ -1916,6 +1917,25 @@ export class Parser {
       )
     }
 
+    return expr
+  }
+
+  private powerExpression(): AST.Expression {
+    let expr = this.unaryExpression()
+    
+    // べき乗は右結合なので再帰的に処理
+    if (this.match(TokenType.POWER)) {
+      const operator = this.previous().value
+      const right = this.powerExpression() // 右結合のため再帰
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+    
     return expr
   }
 
