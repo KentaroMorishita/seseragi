@@ -1922,7 +1922,7 @@ export class Parser {
 
   private powerExpression(): AST.Expression {
     let expr = this.unaryExpression()
-    
+
     // べき乗は右結合なので再帰的に処理
     if (this.match(TokenType.POWER)) {
       const operator = this.previous().value
@@ -1935,7 +1935,7 @@ export class Parser {
         this.previous().column
       )
     }
-    
+
     return expr
   }
 

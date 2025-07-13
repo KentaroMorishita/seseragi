@@ -508,7 +508,10 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/(?<![!<>=>])\s*=\s*(?!=)/g, " = ")
       // 算術演算子
       .replace(/\s*\+\s*/g, " + ")
-      .replace(/\s*\*\s*/g, " * ")
+      // べき乗演算子は先に処理（スペース確保）
+      .replace(/\s*\*\*\s*/g, " ** ")
+      // 単一のアスタリスクのみを処理（**でない場合）
+      .replace(/(?<!\*)\s*\*\s*(?!\*)/g, " * ")
       .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
       // パイプ演算子の保護（行頭の場合）
       .replace(/^\s*\|\s*/g, (match) => {
