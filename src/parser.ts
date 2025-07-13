@@ -2247,6 +2247,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
+      type === TokenType.TO_INT ||
+      type === TokenType.TO_FLOAT ||
       type === TokenType.HEAD ||
       type === TokenType.TAIL ||
       type === TokenType.LEFT_PAREN ||
@@ -2313,6 +2315,8 @@ export class Parser {
         TokenType.PRINT,
         TokenType.PUT_STR_LN,
         TokenType.TO_STRING,
+        TokenType.TO_INT,
+        TokenType.TO_FLOAT,
         TokenType.HEAD,
         TokenType.TAIL
       )
@@ -2321,6 +2325,8 @@ export class Parser {
         | "print"
         | "putStrLn"
         | "toString"
+        | "toInt"
+        | "toFloat"
         | "head"
         | "tail"
       const line = this.previous().line
@@ -2810,6 +2816,8 @@ export class Parser {
       type === TokenType.PRINT ||
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
+      type === TokenType.TO_INT ||
+      type === TokenType.TO_FLOAT ||
       type === TokenType.HEAD ||
       type === TokenType.TAIL ||
       type === TokenType.LEFT_PAREN ||

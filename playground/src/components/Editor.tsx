@@ -20,10 +20,10 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
     const updateFontSize = () => {
       setFontSize(window.innerWidth <= 768 ? 16 : 18)
     }
-    
+
     updateFontSize()
-    window.addEventListener('resize', updateFontSize)
-    return () => window.removeEventListener('resize', updateFontSize)
+    window.addEventListener("resize", updateFontSize)
+    return () => window.removeEventListener("resize", updateFontSize)
   }, [])
 
   const handleEditorDidMount = async (editor: any, monaco: Monaco) => {

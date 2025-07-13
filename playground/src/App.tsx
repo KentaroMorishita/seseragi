@@ -20,8 +20,8 @@ function App() {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const handleRun = useCallback(async () => {
@@ -63,7 +63,10 @@ function App() {
               <Editor value={code} onChange={setCode} />
             </div>
             <VerticalResizer onResize={setTopHeight} />
-            <div className="output-pane" style={{ height: `${100 - topHeight - 15}vh` }}>
+            <div
+              className="output-pane"
+              style={{ height: `${100 - topHeight - 15}vh` }}
+            >
               <div className="output-header">Output</div>
               <Output output={output} error={error} />
             </div>
@@ -75,7 +78,10 @@ function App() {
               <Editor value={code} onChange={setCode} />
             </div>
             <Resizer onResize={setLeftWidth} />
-            <div className="output-pane" style={{ width: `${100 - leftWidth}%` }}>
+            <div
+              className="output-pane"
+              style={{ width: `${100 - leftWidth}%` }}
+            >
               <div className="output-header">Output</div>
               <Output output={output} error={error} />
             </div>

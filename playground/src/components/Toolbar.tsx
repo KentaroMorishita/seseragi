@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { getAvailableThemes, setTheme } from "../lib/monaco-seseragi"
 import SampleModal from "./SampleModal"
 
-
 interface ToolbarProps {
   onRun: () => void
   onSampleChange: (code: string) => void
@@ -28,9 +27,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
   return (
     <>
       <div className="toolbar">
-        <button 
-          className={`run-button ${isRunning ? 'running' : ''}`}
-          onClick={onRun} 
+        <button
+          className={`run-button ${isRunning ? "running" : ""}`}
+          onClick={onRun}
           disabled={isRunning}
           title={isRunning ? "実行中..." : "コードを実行 (Ctrl+Enter)"}
         >
@@ -44,13 +43,16 @@ const Toolbar: React.FC<ToolbarProps> = ({
           )}
         </button>
 
-        <button className="examples-button" onClick={() => setIsModalOpen(true)}>
+        <button
+          className="examples-button"
+          onClick={() => setIsModalOpen(true)}
+        >
           Examples
         </button>
 
-        <select 
+        <select
           className="theme-select"
-          onChange={handleThemeChange} 
+          onChange={handleThemeChange}
           defaultValue="seseragi-theme"
           title="テーマを選択"
         >

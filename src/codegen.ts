@@ -445,6 +445,12 @@ export class CodeGenerator {
     if (this.usageAnalysis.needsBuiltins.toString) {
       imports.push("toString")
     }
+    if (this.usageAnalysis.needsBuiltins.toInt) {
+      imports.push("toInt")
+    }
+    if (this.usageAnalysis.needsBuiltins.toFloat) {
+      imports.push("toFloat")
+    }
     if (this.usageAnalysis.needsBuiltins.show) {
       imports.push("show")
     }
@@ -777,6 +783,36 @@ export class CodeGenerator {
   }
   
   return String(value)
+};`)
+    }
+    if (this.usageAnalysis.needsBuiltins.toInt) {
+      lines.push(`const toInt = (value: any): number => {
+  if (typeof value === 'number') {
+    return Math.trunc(value)
+  }
+  if (typeof value === 'string') {
+    const n = parseInt(value, 10)
+    if (isNaN(n)) {
+      throw new Error(\`Cannot convert "\${value}" to Int\`)
+    }
+    return n
+  }
+  throw new Error(\`Cannot convert \${typeof value} to Int\`)
+};`)
+    }
+    if (this.usageAnalysis.needsBuiltins.toFloat) {
+      lines.push(`const toFloat = (value: any): number => {
+  if (typeof value === 'number') {
+    return value
+  }
+  if (typeof value === 'string') {
+    const n = parseFloat(value)
+    if (isNaN(n)) {
+      throw new Error(\`Cannot convert "\${value}" to Float\`)
+    }
+    return n
+  }
+  throw new Error(\`Cannot convert \${typeof value} to Float\`)
 };`)
     }
     if (this.usageAnalysis.needsBuiltins.show) {
@@ -1237,6 +1273,32 @@ const show = (value) => {
   }
   
   return String(value)
+};`,
+      `const toInt = (value: any): number => {
+  if (typeof value === 'number') {
+    return Math.trunc(value)
+  }
+  if (typeof value === 'string') {
+    const n = parseInt(value, 10)
+    if (isNaN(n)) {
+      throw new Error(\`Cannot convert "\${value}" to Int\`)
+    }
+    return n
+  }
+  throw new Error(\`Cannot convert \${typeof value} to Int\`)
+};`,
+      `const toFloat = (value: any): number => {
+  if (typeof value === 'number') {
+    return value
+  }
+  if (typeof value === 'string') {
+    const n = parseFloat(value)
+    if (isNaN(n)) {
+      throw new Error(\`Cannot convert "\${value}" to Float\`)
+    }
+    return n
+  }
+  throw new Error(\`Cannot convert \${typeof value} to Float\`)
 };`,
       `const show = (value: any): void => {
   console.log(toString(value))
@@ -1850,7 +1912,7 @@ ${indent}}`
     const leftType = this.getResolvedType(binOp.left)
     const rightType = this.getResolvedType(binOp.right)
 
-    // 両辺がプリミティブ型の場合は直接演算子を使用
+    // 両辺がプリミブ型の場合は直接演算子を使用
     if (
       this.isBasicOperator(binOp.operator) &&
       this.isPrimitiveType(leftType) &&
@@ -1859,6 +1921,16 @@ ${indent}}`
       let operator = binOp.operator
       if (operator === "==") operator = "==="
       if (operator === "!=") operator = "!=="
+
+      // Int/Int除算の特別処理 - Math.trunc()で切り捨て
+      if (
+        operator === "/" &&
+        this.isIntType(leftType) &&
+        this.isIntType(rightType)
+      ) {
+        return `Math.trunc(${left} / ${right})`
+      }
+
       return `(${left} ${operator} ${right})`
     }
 
@@ -1917,6 +1989,13 @@ ${indent}}`
     }
     const primitiveTypes = ["Int", "Float", "Bool", "String", "Char", "Unit"]
     return primitiveTypes.includes((type as PrimitiveType).name)
+  }
+
+  // Int型かどうかをチェック
+  private isIntType(type: Type | undefined): boolean {
+    return (
+      type?.kind === "PrimitiveType" && (type as PrimitiveType).name === "Int"
+    )
   }
 
   // 演算子ディスパッチを使用しているかチェック
@@ -2147,6 +2226,10 @@ ${indent}}`
         return `console.log(${arg})`
       } else if (funcName === "toString") {
         return `toString(${arg})`
+      } else if (funcName === "toInt") {
+        return `toInt(${arg})`
+      } else if (funcName === "toFloat") {
+        return `toFloat(${arg})`
       } else if (funcName === "head") {
         return `headList(${arg})`
       } else if (funcName === "tail") {
@@ -2189,6 +2272,16 @@ ${indent}}`
           throw new Error("toString requires exactly one argument")
         }
         return `toString(${args[0]})`
+      case "toInt":
+        if (args.length !== 1) {
+          throw new Error("toInt requires exactly one argument")
+        }
+        return `toInt(${args[0]})`
+      case "toFloat":
+        if (args.length !== 1) {
+          throw new Error("toFloat requires exactly one argument")
+        }
+        return `toFloat(${args[0]})`
       case "head":
         if (args.length !== 1) {
           throw new Error("head requires exactly one argument")

@@ -21,6 +21,8 @@ export interface UsageAnalysis {
     print: boolean
     putStrLn: boolean
     toString: boolean
+    toInt: boolean
+    toFloat: boolean
     show: boolean
     arrayToList: boolean
     listToArray: boolean
@@ -46,6 +48,8 @@ export class UsageAnalyzer {
       print: false,
       putStrLn: false,
       toString: false,
+      toInt: false,
+      toFloat: false,
       show: false,
       arrayToList: false,
       listToArray: false,
@@ -236,6 +240,10 @@ export class UsageAnalyzer {
       this.analysis.needsBuiltins.putStrLn = true
     } else if (name === "toString") {
       this.analysis.needsBuiltins.toString = true
+    } else if (name === "toInt") {
+      this.analysis.needsBuiltins.toInt = true
+    } else if (name === "toFloat") {
+      this.analysis.needsBuiltins.toFloat = true
     } else if (name === "show") {
       this.analysis.needsBuiltins.show = true
       // showは内部でtoStringを使うので自動的に必要

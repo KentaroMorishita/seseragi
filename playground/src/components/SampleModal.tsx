@@ -1,7 +1,5 @@
 import React, { useState } from "react"
-import {
-  sectionsByCategory,
-} from "../samples/examples-data"
+import { sectionsByCategory } from "../samples/examples-data"
 import type { CodeSection } from "../samples/section-parser"
 
 interface SampleModalProps {

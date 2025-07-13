@@ -739,6 +739,24 @@ export class TypeInferenceSystem {
     )
     env.set("toString", toStringType)
 
+    // toInt: 'a -> Int (多相関数)
+    const toIntType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("Int", 0, 0),
+      0,
+      0
+    )
+    env.set("toInt", toIntType)
+
+    // toFloat: 'a -> Float (多相関数)
+    const toFloatType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("Float", 0, 0),
+      0,
+      0
+    )
+    env.set("toFloat", toFloatType)
+
     // show: 'a -> Unit (多相関数)
     const showType = new AST.FunctionType(
       new PolymorphicTypeVariable("a", 0, 0),

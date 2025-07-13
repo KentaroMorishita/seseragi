@@ -14,10 +14,10 @@ const Resizer: React.FC<ResizerProps> = ({ onResize }) => {
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!isResizing) return
-      
+
       const containerWidth = window.innerWidth
       const leftWidth = (e.clientX / containerWidth) * 100
-      
+
       // 最小20%、最大80%に制限
       const clampedWidth = Math.min(Math.max(leftWidth, 20), 80)
       onResize(clampedWidth)

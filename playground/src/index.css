@@ -98,8 +98,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .toolbar .run-button:hover:not(:disabled) {
@@ -196,16 +200,16 @@ body {
     gap: 12px;
     align-items: stretch;
   }
-  
+
   .header h1 {
     text-align: center;
     font-size: 16px;
   }
-  
+
   .toolbar {
     justify-content: center;
   }
-  
+
   .main-content {
     flex-direction: column;
   }
@@ -216,23 +220,23 @@ body {
     min-height: 50vh;
     width: 100% !important;
   }
-  
+
   .output-pane {
     width: 100% !important;
   }
-  
+
   .output-content {
     font-size: 16px;
   }
-  
+
   .resizer {
     display: none;
   }
-  
+
   .vertical-resizer {
     display: block;
   }
-  
+
   .output-pane {
     min-height: 30vh;
   }
