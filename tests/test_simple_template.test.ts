@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { compileSeseragi } from "../src/main"
+import { compileSeseragi } from "./test-utils"
 
 describe("Template Function Integration Tests", () => {
   test("should compile show with template literal", () => {

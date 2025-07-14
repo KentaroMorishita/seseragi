@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test"
-import { compileSeseragi } from "../src/main"
+import { compileSeseragi } from "./test-utils"
 
 describe("Arithmetic Type System", () => {
   test("should handle float arithmetic in struct fields correctly", () => {

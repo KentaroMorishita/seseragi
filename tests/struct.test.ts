@@ -4,7 +4,7 @@ import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 import { TypeInferenceSystem } from "../src/type-inference"
 import type * as AST from "../src/ast"
-import { compileSeseragi } from "../src/main"
+import { compileSeseragi } from "./test-utils"
 
 describe("Struct Tests", () => {
   test("should parse struct declaration", () => {
