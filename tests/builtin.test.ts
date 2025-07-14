@@ -56,7 +56,7 @@ describe("Builtin Functions", () => {
     expect(compiledCode).toContain('console.log("Hello, Seseragi!")')
   })
 
-  it("should compile toString function to String()", async () => {
+  it("should compile toString function to toString()", async () => {
     const seseragiCode = `
     let age: Int = 25
     print(toString(age))
@@ -72,8 +72,8 @@ describe("Builtin Functions", () => {
     })
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain("String(age)")
-    expect(compiledCode).toContain("console.log(String(age))")
+    expect(compiledCode).toContain("toString(age)")
+    expect(compiledCode).toContain("console.log(toString(age))")
   })
 
   it("should compile multiple builtin functions", async () => {
@@ -95,7 +95,7 @@ describe("Builtin Functions", () => {
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
     expect(compiledCode).toContain('console.log(("Name: " + name))')
-    expect(compiledCode).toContain("console.log(String(age))")
+    expect(compiledCode).toContain("console.log(toString(age))")
   })
 
   it("should handle builtin functions in function definitions", async () => {
