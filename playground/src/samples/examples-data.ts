@@ -683,10 +683,32 @@ show strings   // ["hello", "world", "seseragi"]
 show booleans  // [True, False, True]
 show empty     // []
 
-// 配列のインデックスアクセス
-show numbers[0]  // 1
-show numbers[2]  // 3
-show strings[1]  // "world"
+// 配列の長さを取得
+show numbers.length  // 5
+show strings.length  // 3
+show empty.length    // 0
+
+// 安全な配列アクセス（Maybe型を返す）
+show numbers[0]  // Just(1)
+show numbers[2]  // Just(3)
+show strings[1]  // Just("world")
+
+// 範囲外アクセスは安全にNothingを返す
+show numbers[10]  // Nothing
+show strings[5]   // Nothing
+
+
+// 安全なアクセスの使用例
+match numbers[0] {
+  Just value -> show \`First element: \${value}\`
+  Nothing -> show "No element found"
+}
+
+match strings[10] {
+  Just value -> show \`Element at index 10: \${value}\`
+  Nothing -> show "Index out of bounds"
+}
+
 
 // =============================================================================
 // List型
@@ -829,15 +851,18 @@ print "--- ArrayとListの使い分け ---"
 
 // Array型の特徴：
 // - JavaScriptの配列と互換性がある
-// - インデックスアクセスが効率的
+// - .lengthプロパティで長さを取得可能
+// - 安全なインデックスアクセス（Maybe型）
+// - 範囲外アクセスでもランタイムエラーなし
 // - 可変長
 
 // List型の特徴：
 // - 関数プログラミングに適している
 // - 再帰的な処理に適している
+// - head/tail操作で安全にアクセス
 // - 不変性
 
-print "Array型はJavaScriptとの互換性、List型は関数プログラミングに適しています"
+print "Array型は型安全なインデックスアクセス、List型は関数プログラミングに適しています"
 
 
 // 実行方法:
@@ -1028,7 +1053,7 @@ show result  // Just "HTTP"
 
 print "--- 演算子の利点 ---"
 
-// 1. 関数型プログラミングの表現力向上
+// 1. 関数プログラミングの表現力向上
 // 2. エラーハンドリングの簡潔化
 // 3. 型安全性の維持
 // 4. 合成可能な操作
@@ -1304,7 +1329,7 @@ print "--- パターンマッチングの利点 ---"
 // 1. 型安全性の向上
 // 2. 網羅性のチェック
 // 3. 表現力の向上
-// 4. 関数型プログラミングの核心機能
+// 4. 関数プログラミングの核心機能
 
 print "パターンマッチングにより、型安全で表現力豊かなコードが書けます"
 

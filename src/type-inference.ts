@@ -710,7 +710,7 @@ export class TypeInferenceSystem {
   private createInitialEnvironment(): Map<string, AST.Type> {
     const env = new Map<string, AST.Type>()
 
-    // 組み込み関数の型を定義
+    // 組み込み関数のシグネチャを定義
 
     // print: 'a -> Unit (多相関数)
     const printType = new AST.FunctionType(
@@ -1002,10 +1002,10 @@ export class TypeInferenceSystem {
       paramTypes.push(paramType)
     }
 
-    // 関数の型を構築
+    // 関数シグネチャを構築
     let funcType: AST.Type = returnType
 
-    // パラメータから関数型を構築（カリー化）
+    // パラメータから関数シグネチャを構築（カリー化）
     if (func.parameters.length === 0) {
       // 引数なしの関数は Unit -> ReturnType
       const unitType = new AST.PrimitiveType("Unit", func.line, func.column)
@@ -1102,7 +1102,7 @@ export class TypeInferenceSystem {
       finalType = resolvedType
     } else {
       // 型注釈がない場合は推論された型を使用
-      // 型変数、ジェネリック型、関数型すべてを正しく保持
+      // 型変数、ジェネリック型、関数シグネチャすべてを正しく保持
       env.set(varDecl.name, initType)
       finalType = initType
     }
@@ -1193,7 +1193,7 @@ export class TypeInferenceSystem {
       // データ付きのコンストラクタ (RGB Int Int Int)
       let resultType = adtType
 
-      // 型引数から逆順でカリー化された関数型を構築
+      // 型引数から逆順でカリー化された関数シグネチャを構築
       for (let i = field.type.typeArguments.length - 1; i >= 0; i--) {
         const paramType = field.type.typeArguments[i]
         resultType = new AST.FunctionType(
@@ -1770,7 +1770,7 @@ export class TypeInferenceSystem {
 
     // 引数が0個の場合は、関数がユニット型を取る関数として扱う
     if (call.arguments.length === 0) {
-      // 関数の型が既知の場合、その戻り値型を抽出
+      // 関数シグネチャが既知の場合、その戻り値型を抽出
       if (funcType.kind === "FunctionType") {
         const ft = funcType as AST.FunctionType
         // Unit -> ReturnType の形を期待
@@ -1794,7 +1794,7 @@ export class TypeInferenceSystem {
         return ft.returnType // 戻り値型を直接返す
       }
 
-      // 関数型が不明な場合のフォールバック
+      // 関数シグネチャが不明な場合のフォールバック
       const resultType = this.freshTypeVariable(call.line, call.column)
       const expectedFuncType = new AST.FunctionType(
         new AST.PrimitiveType("Unit", call.line, call.column),
@@ -1829,7 +1829,7 @@ export class TypeInferenceSystem {
       const argType = this.generateConstraintsForExpression(arg, env)
       const newResultType = this.freshTypeVariable(call.line, call.column)
 
-      // 現在の結果型は引数型から新しい結果型への関数型でなければならない
+      // 現在の結果型は引数型から新しい結果型へのFunction型でなければならない
       const expectedFuncType = new AST.FunctionType(
         argType,
         newResultType,
@@ -1963,7 +1963,7 @@ export class TypeInferenceSystem {
     const argType = this.generateConstraintsForExpression(app.argument, env)
     const resultType = this.freshTypeVariable(app.line, app.column)
 
-    // 関数型は引数型から結果型への関数でなければならない
+    // Function型は引数型から結果型への関数でなければならない
     const expectedFuncType = new AST.FunctionType(
       argType,
       resultType,
@@ -3030,8 +3030,14 @@ export class TypeInferenceSystem {
     if (arrayType.kind === "GenericType") {
       const gt = arrayType as AST.GenericType
       if (gt.name === "Array" && gt.typeArguments.length === 1) {
-        // Array<T>[index] -> T
-        return this.unify(resultType, gt.typeArguments[0])
+        // Array<T>[index] -> Maybe<T>
+        const maybeType = new AST.GenericType(
+          "Maybe",
+          [gt.typeArguments[0]],
+          constraint.line,
+          constraint.column
+        )
+        return this.unify(resultType, maybeType)
       }
     }
 
@@ -3137,7 +3143,7 @@ export class TypeInferenceSystem {
       )
     }
 
-    // 関数型の場合
+    // Function型の場合
     if (type1.kind === "FunctionType" && type2.kind === "FunctionType") {
       const ft1 = type1 as AST.FunctionType
       const ft2 = type2 as AST.FunctionType
@@ -3529,7 +3535,7 @@ export class TypeInferenceSystem {
     if (!methodReturnType) {
       methodReturnType = this.freshTypeVariable(call.line, call.column)
 
-      // カリー化された関数型として制約を構築（従来の方法）
+      // カリー化されたFunction型として制約を構築（従来の方法）
       let expectedMethodType: AST.Type = methodReturnType
 
       for (let i = argTypes.length - 1; i >= 0; i--) {
@@ -3997,7 +4003,7 @@ export class TypeInferenceSystem {
     return false
   }
 
-  // パラメータリストから関数型を構築（カリー化）
+  // パラメータリストから関数シグネチャを構築（カリー化）
   private buildFunctionType(
     parameters: AST.Parameter[],
     returnType: AST.Type
@@ -4006,7 +4012,7 @@ export class TypeInferenceSystem {
       return returnType
     }
 
-    // 右結合でカリー化された関数型を構築
+    // 右結合でカリー化されたFunction型を構築
     let result = returnType
     for (let i = parameters.length - 1; i >= 0; i--) {
       result = new AST.FunctionType(
@@ -4357,7 +4363,7 @@ export class TypeInferenceSystem {
         let currentType = constructorType
         const paramTypes: AST.Type[] = []
 
-        // 関数型を辿ってパラメータ型を抽出
+        // Function型を辿ってパラメータ型を抽出
         while (currentType instanceof AST.FunctionType) {
           paramTypes.push(currentType.paramType)
           currentType = currentType.returnType
@@ -4753,6 +4759,29 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     const recordType = this.generateConstraintsForExpression(access.record, env)
+
+    // 配列の.lengthアクセスを特別に処理
+    if (access.fieldName === "length") {
+      // recordTypeが配列型であることを確認するための制約を追加
+      const elementType = this.freshTypeVariable(access.line, access.column)
+      const arrayType = new AST.GenericType(
+        "Array",
+        [elementType],
+        access.line,
+        access.column
+      )
+      this.addConstraint(
+        new TypeConstraint(
+          recordType,
+          arrayType,
+          access.line,
+          access.column,
+          "Array length access"
+        )
+      )
+      // lengthはInt型を返す
+      return new AST.PrimitiveType("Int", access.line, access.column)
+    }
 
     // まず、recordTypeがStructTypeかどうかを直接チェック
     if (recordType.kind === "StructType") {

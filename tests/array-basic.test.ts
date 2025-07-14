@@ -47,7 +47,7 @@ describe("Array Basic Implementation", () => {
     expect(arrayLiteral.elements).toHaveLength(0)
   })
 
-  test("Array code generation", () => {
+  test("Array code generation with safe access", () => {
     const source = `
       let numbers = [1, 2, 3]
       let first = numbers[0]
@@ -57,7 +57,9 @@ describe("Array Basic Implementation", () => {
     const code = generateTypeScript(ast.statements, { generateComments: false })
 
     expect(code).toContain("[1, 2, 3]")
-    expect(code).toContain("numbers[0]")
+    // 安全な配列アクセスはMaybe型を返す
+    expect(code).toContain("Just")
+    expect(code).toContain("Nothing")
     expect(code).toContain("const numbers")
     expect(code).toContain("const first")
   })
@@ -77,5 +79,27 @@ describe("Array Basic Implementation", () => {
     expect((innerAccess.array as AST.Identifier).name).toBe("matrix")
     expect((innerAccess.index as AST.Literal).value).toBe(0)
     expect((outerAccess.index as AST.Literal).value).toBe(1)
+  })
+
+  test("Array length property parsing", () => {
+    const source = "let len = arr.length"
+    const parser = new Parser(source)
+    const ast = parser.parse()
+
+    const stmt = ast.statements[0] as AST.VariableDeclaration
+    expect(stmt.initializer.kind).toBe("RecordAccess")
+
+    const lengthAccess = stmt.initializer as AST.RecordAccess
+    expect((lengthAccess.record as AST.Identifier).name).toBe("arr")
+    expect(lengthAccess.fieldName).toBe("length")
+  })
+
+  test("Array length code generation", () => {
+    const source = "let len = arr.length"
+    const parser = new Parser(source)
+    const ast = parser.parse()
+    const code = generateTypeScript(ast.statements, { generateComments: false })
+
+    expect(code).toContain("arr.length")
   })
 })

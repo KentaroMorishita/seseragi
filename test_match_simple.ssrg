@@ -1,0 +1,6 @@
+let x = Just 42
+
+match x {
+  Just value -> show value
+  Nothing -> show "nothing"
+}

@@ -18,7 +18,7 @@ seseragi run examples/basics/04-conditionals.ssrg
 ```
 
 ### 🚀 中級レベル（intermediate/）
-関数型プログラミングの核心概念を学びます。
+関数プログラミングの核心概念を学びます。
 
 ```bash
 seseragi run examples/intermediate/01-maybe-basics.ssrg
@@ -101,7 +101,7 @@ bun output.ts
 
 ## 🛠️ Seseragiの特徴
 
-### 関数型プログラミング
+### 関数プログラミング
 - **カリー化**: すべての関数は自動的にカリー化される
 - **不変性**: データは変更されず、新しい値が作成される
 - **型安全性**: 型システムによる安全性
@@ -109,7 +109,7 @@ bun output.ts
 ### モナド型システム
 - **Maybe型**: null安全性を提供
 - **Either型**: エラーハンドリングの改善
-- **List型**: 関数型データ構造
+- **List型**: 連結リスト
 
 ### 実用的な機能
 - **構造体**: データとメソッドの組み合わせ

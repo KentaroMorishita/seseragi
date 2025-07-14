@@ -1183,7 +1183,36 @@ export class Parser {
   }
 
   private matchExpression(): AST.MatchExpression {
-    const expr = this.primaryExpression()
+    // match式のためだけに、primaryExpression + postfix操作を解析
+    let expr = this.primaryExpression()
+
+    // postfix操作を手動で処理（配列アクセス、メソッド呼び出しなど）
+    while (true) {
+      if (this.match(TokenType.DOT)) {
+        const fieldName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected field name after '.'"
+        ).value
+        expr = new AST.RecordAccess(
+          expr,
+          fieldName,
+          this.previous().line,
+          this.previous().column
+        )
+      } else if (this.match(TokenType.LEFT_BRACKET)) {
+        // Array access: array[index]
+        const index = this.expression()
+        this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array index")
+        expr = new AST.ArrayAccess(
+          expr,
+          index,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
+    }
 
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after match expression")
 
@@ -2236,7 +2265,7 @@ export class Parser {
           }
         }
 
-        // 通常の括弧なし関数適用（関数型言語の標準）
+        // 通常の括弧なし関数適用（Seseragiの標準）
         const arg = this.check(TokenType.NOT)
           ? this.parseUnaryOnly()
           : this.primaryExpression()
@@ -2485,7 +2514,7 @@ export class Parser {
               "Expected ')' after constructor arguments"
             )
           } else {
-            // 関数型言語風の括弧なしの場合: Cons 1 2 または Cons (expr) (expr)
+            // 括弧なしの場合: Cons 1 2 または Cons (expr) (expr)
             let argCount = 0
             const maxArgs = this.getConstructorArgCount(name)
 

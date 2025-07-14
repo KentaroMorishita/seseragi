@@ -172,6 +172,8 @@ export class UsageAnalyzer {
     } else if (expr instanceof AST.ArrayAccess) {
       this.analyzeExpression(expr.array)
       this.analyzeExpression(expr.index)
+      // 配列アクセスはMaybe型を返す
+      this.analysis.needsMaybe = true
     } else if (expr instanceof AST.LambdaExpression) {
       this.analyzeExpression(expr.body)
     } else if (expr instanceof AST.BlockExpression) {

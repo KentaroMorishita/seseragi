@@ -1,0 +1,7 @@
+let arr = [1, 2, 3]
+show arr.length
+let x = arr[0]
+show x
+
+let y = arr[4]
+show y

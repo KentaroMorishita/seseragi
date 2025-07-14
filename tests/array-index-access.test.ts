@@ -26,8 +26,11 @@ describe("Array Index Access", () => {
     const parser = new Parser(source)
     const ast = parser.parse()
 
-    const tsCode = generateTypeScript(ast)
-    expect(tsCode).toContain("(arr.tag === 'Tuple' ? arr.elements : arr)[0]")
+    const tsCode = generateTypeScript(ast.statements!)
+    // 安全な配列アクセスはMaybe型を返す
+    expect(tsCode).toContain(
+      "((0) >= 0 && (0) < (arr.tag === 'Tuple' ? arr.elements : arr).length ? { tag: 'Just', value: (arr.tag === 'Tuple' ? arr.elements : arr)[0] } : { tag: 'Nothing' })"
+    )
   })
 })
 
@@ -52,11 +55,11 @@ describe("Tuple Index Access", () => {
     `
     const parser = new Parser(source)
     const ast = parser.parse()
-    const tsCode = generateTypeScript(ast)
+    const tsCode = generateTypeScript(ast.statements!)
 
-    // Tuple型の場合は.elementsから取り出すことを確認
+    // 安全なタプルアクセスもMaybe型を返す
     expect(tsCode).toContain(
-      "(point.tag === 'Tuple' ? point.elements : point)[0]"
+      "((0) >= 0 && (0) < (point.tag === 'Tuple' ? point.elements : point).length ? { tag: 'Just', value: (point.tag === 'Tuple' ? point.elements : point)[0] } : { tag: 'Nothing' })"
     )
   })
 
@@ -64,27 +67,65 @@ describe("Tuple Index Access", () => {
     const source = "let cell = matrix[0][1]"
     const parser = new Parser(source)
     const ast = parser.parse()
-    const tsCode = generateTypeScript(ast)
+    const tsCode = generateTypeScript(ast.statements!)
 
-    // ネストした配列アクセスが正しく生成されることを確認
+    // ネストした配列アクセスもMaybe型を返すようになる
     expect(tsCode).toContain("matrix")
-    expect(tsCode).toContain("[0]")
-    expect(tsCode).toContain("[1]")
+    expect(tsCode).toContain("Just")
+    expect(tsCode).toContain("Nothing")
+  })
+})
+
+describe("Array Length Property", () => {
+  test("should parse array length access", () => {
+    const source = "let len = arr.length"
+    const parser = new Parser(source)
+    const ast = parser.parse()
+
+    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const expr = stmt.initializer as AST.RecordAccess
+
+    expect(expr.kind).toBe("RecordAccess")
+    expect((expr.record as AST.Identifier).name).toBe("arr")
+    expect(expr.fieldName).toBe("length")
+  })
+
+  test("should generate correct TypeScript for length access", () => {
+    const source = "let len = arr.length"
+    const parser = new Parser(source)
+    const ast = parser.parse()
+
+    const tsCode = generateTypeScript(ast.statements!)
+    expect(tsCode).toContain("arr.length")
+  })
+})
+
+describe("Safe Array Access", () => {
+  test("should return Maybe type for array access", () => {
+    const source = `
+      let arr = [1, 2, 3]
+      let safe = arr[0]
+    `
+    const parser = new Parser(source)
+    const ast = parser.parse()
+    const tsCode = generateTypeScript(ast.statements!)
+
+    // Maybe型のランタイムが含まれることを確認
+    expect(tsCode).toContain("Just")
+    expect(tsCode).toContain("Nothing")
   })
 })
 
 describe("Error Cases", () => {
   test("should handle malformed bracket syntax", () => {
-    expect(() => {
-      const parser = new Parser("arr[")
-      parser.parse()
-    }).toThrow()
+    const parser = new Parser("arr[")
+    const result = parser.parse()
+    expect(result.errors.length).toBeGreaterThan(0)
   })
 
   test("should handle missing index", () => {
-    expect(() => {
-      const parser = new Parser("arr[]")
-      parser.parse()
-    }).toThrow()
+    const parser = new Parser("arr[]")
+    const result = parser.parse()
+    expect(result.errors.length).toBeGreaterThan(0)
   })
 })

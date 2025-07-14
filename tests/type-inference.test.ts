@@ -162,7 +162,7 @@ describe("TypeInferenceSystem", () => {
   })
 
   describe("関数の型推論", () => {
-    it("単純な関数の型が正しく推論される", () => {
+    it("単純な関数のシグネチャが正しく推論される", () => {
       const program = new AST.Program([
         new AST.FunctionDeclaration(
           "increment",
@@ -408,7 +408,7 @@ describe("TypeSubstitution", () => {
     expect((result as AST.PrimitiveType).name).toBe("Int")
   })
 
-  it("関数型への置換が正しく動作する", () => {
+  it("Function型への置換が正しく動作する", () => {
     const substitution = new TypeSubstitution()
     const typeVar = new TypeVariable(0, 1, 1)
     const intType = new AST.PrimitiveType("Int", 1, 1)

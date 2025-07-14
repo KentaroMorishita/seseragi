@@ -66,7 +66,7 @@ import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
 
 /**
  * Seseragi から TypeScript へのコード生成器
- * 関数型言語の機能をJavaScriptの慣用的なコードに変換
+ * SeseragiをTypeScriptコードに変換
  */
 
 export interface CodeGenOptions {
@@ -2871,6 +2871,12 @@ ${indent}}`
   // Recordアクセスの生成
   generateRecordAccess(access: RecordAccess): string {
     const record = this.generateExpression(access.record)
+
+    // 配列の.lengthアクセスを特別に処理
+    if (access.fieldName === "length") {
+      return `${record}.length`
+    }
+
     return `${record}.${access.fieldName}`
   }
 
@@ -2891,8 +2897,10 @@ ${indent}}`
   generateArrayAccess(arrayAccess: ArrayAccess): string {
     const array = this.generateExpression(arrayAccess.array)
     const index = this.generateExpression(arrayAccess.index)
-    // タプル型の場合はelementsから取り出す
-    return `(${array}.tag === 'Tuple' ? ${array}.elements : ${array})[${index}]`
+
+    // 安全な配列アクセス: Maybe型を返す
+    const actualArray = `(${array}.tag === 'Tuple' ? ${array}.elements : ${array})`
+    return `((${index}) >= 0 && (${index}) < ${actualArray}.length ? { tag: 'Just', value: ${actualArray}[${index}] } : { tag: 'Nothing' })`
   }
 
   // リストシュガーの生成 [1, 2, 3] -> Cons(1, Cons(2, Cons(3, Empty)))
