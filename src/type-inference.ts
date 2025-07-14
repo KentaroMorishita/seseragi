@@ -144,7 +144,8 @@ export class TypeSubstitution {
       }
 
       case "PolymorphicTypeVariable":
-        // 多相型変数は置換しない（常に多相のまま）
+        // 多相型変数も制約解決で具体化される場合がある
+        // 具体的な使用文脈では具体的な型に解決される
         return type
 
       case "FunctionType": {
@@ -1101,10 +1102,18 @@ export class TypeInferenceSystem {
       env.set(varDecl.name, resolvedType)
       finalType = resolvedType
     } else {
-      // 型注釈がない場合は推論された型を使用
-      // 型変数、ジェネリック型、関数シグネチャすべてを正しく保持
-      env.set(varDecl.name, initType)
-      finalType = initType
+      // 型注釈がない場合の処理
+      // 初期化式がラムダ式の場合のみ一般化、それ以外は推論された型をそのまま使用
+      if (varDecl.initializer.kind === "LambdaExpression") {
+        // ラムダ式は多相性を保つため一般化
+        const generalizedType = this.generalize(initType, env)
+        env.set(varDecl.name, generalizedType)
+        finalType = generalizedType
+      } else {
+        // 値型（関数呼び出し結果など）は具体的な型をそのまま使用
+        env.set(varDecl.name, initType)
+        finalType = initType
+      }
     }
 
     // Track the type for this variable declaration
@@ -1114,6 +1123,21 @@ export class TypeInferenceSystem {
     this.nodeTypeMap.set(varDecl.initializer, initType)
 
     return finalType
+  }
+
+  // 型が関数型かどうかを判定するヘルパー関数
+  private isFunctionType(type: AST.Type): boolean {
+    switch (type.kind) {
+      case "FunctionType":
+        return true
+      case "TypeVariable":
+      case "PolymorphicTypeVariable":
+        // 型変数の場合は制約から判定するのは複雑なので、
+        // 保守的に関数型と見なす（一般化を適用）
+        return true
+      default:
+        return false
+    }
   }
 
   private generateConstraintsForTupleDestructuring(
@@ -3883,9 +3907,10 @@ export class TypeInferenceSystem {
       operator.returnType
     )
 
-    // 環境に演算子を登録
-    env.set(`${operator.operator}`, functionType)
-    this.nodeTypeMap.set(operator, functionType)
+    // 環境に演算子を登録（多相性のため一般化）
+    const generalizedOperatorType = this.generalize(functionType, env)
+    env.set(`${operator.operator}`, generalizedOperatorType)
+    this.nodeTypeMap.set(operator, generalizedOperatorType)
 
     // 演算子本体を処理するために新しい環境を作成（元の環境をコピー）
     const operatorEnv = new Map(env)
