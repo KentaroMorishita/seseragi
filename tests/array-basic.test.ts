@@ -1,5 +1,4 @@
 import { describe, test, expect } from "bun:test"
-import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 import type * as AST from "../src/ast"

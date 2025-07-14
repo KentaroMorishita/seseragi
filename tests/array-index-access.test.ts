@@ -4,7 +4,7 @@
 import { expect, test, describe } from "bun:test"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Array Index Access", () => {
   test("should parse array access expression", () => {

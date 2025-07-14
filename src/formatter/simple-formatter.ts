@@ -1,11 +1,9 @@
 export function formatSeseragiCode(code: string): string {
-  return (
-    code
-      .split("\n")
-      .map((line) => formatLine(line.trim()))
-      .filter((line) => line.length > 0)
-      .join("\n") + "\n"
-  )
+  return `${code
+    .split("\n")
+    .map((line) => formatLine(line.trim()))
+    .filter((line) => line.length > 0)
+    .join("\n")}\n`
 }
 
 function formatLine(line: string): string {

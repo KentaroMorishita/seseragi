@@ -29,7 +29,7 @@ export function formatSeseragiCode(code: string): string {
     result.push(indent + cleaned)
   }
 
-  return result.join("\n") + "\n"
+  return `${result.join("\n")}\n`
 }
 
 function getCorrectIndent(
@@ -158,7 +158,7 @@ function isMatchCaseContinuation(index: number, lines: string[]): boolean {
 
   // 直前の行が矢印で終わる場合
   const prevLine = lines[index - 1]?.trim()
-  return prevLine && prevLine.endsWith(" ->")
+  return prevLine?.endsWith(" ->")
 }
 
 function isInsideFunctionBody(index: number, lines: string[]): boolean {

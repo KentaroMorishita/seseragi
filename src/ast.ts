@@ -799,10 +799,6 @@ export class ConstructorLiteralPattern extends Pattern {
 
 export class WildcardPattern extends Pattern {
   kind = "WildcardPattern"
-
-  constructor(line: number, column: number) {
-    super(line, column)
-  }
 }
 
 export class OrPattern extends Pattern {

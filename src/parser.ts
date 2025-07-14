@@ -447,7 +447,7 @@ export class Parser {
           // Other type constructs are type aliases
           isTypeAlias = true
         }
-      } catch (e) {
+      } catch (_e) {
         // If parsing fails, assume it's a complex type alias
         isTypeAlias = true
       }
@@ -599,7 +599,7 @@ export class Parser {
     if (constructorName === "Nothing" || constructorName === "Empty") return 0
 
     // ユーザー定義ADTから動的に判定
-    for (const [adtName, variants] of this.adtDefinitions) {
+    for (const [_adtName, variants] of this.adtDefinitions) {
       for (const variant of variants) {
         if (variant.name === constructorName) {
           // Tupleの場合は引数数を取得
@@ -1360,7 +1360,7 @@ export class Parser {
 
       const patterns: AST.Pattern[] = []
       let hasRest = false
-      let restPattern: AST.Pattern | undefined = undefined
+      let restPattern: AST.Pattern | undefined
 
       // Check for rest pattern `[...rest]
       if (this.match(TokenType.SPREAD)) {
@@ -1621,7 +1621,7 @@ export class Parser {
 
       const patterns: AST.Pattern[] = []
       let hasRest = false
-      let restPattern: AST.Pattern | undefined = undefined
+      let restPattern: AST.Pattern | undefined
 
       // Check for rest pattern [...rest]
       if (this.match(TokenType.SPREAD)) {
@@ -1990,7 +1990,7 @@ export class Parser {
       // Check for tail chaining pattern: >> . >> list
       if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
         // Start building the chain
-        let expr = new AST.FunctionApplication(
+        const expr = new AST.FunctionApplication(
           new AST.Identifier("tail", line, column),
           this.parseTailChain(),
           line,
@@ -2037,7 +2037,7 @@ export class Parser {
       // Check for tail chaining pattern: >> . >> list
       if (operator.type === TokenType.TAIL_OP && this.check(TokenType.DOT)) {
         // Start building the chain
-        let expr = new AST.FunctionApplication(
+        const expr = new AST.FunctionApplication(
           new AST.Identifier("tail", line, column),
           this.parseTailChain(),
           line,
@@ -3170,7 +3170,7 @@ export class Parser {
   }
 
   // Context-aware method call detection
-  private isActualMethodCall(receiver: AST.Expression): boolean {
+  private isActualMethodCall(_receiver: AST.Expression): boolean {
     // Check if the next identifier is a known method name from any struct impl block
     if (!this.check(TokenType.IDENTIFIER)) {
       return false

@@ -404,32 +404,32 @@ export class Lexer {
   }
 
   private getKeywordType(value: string): TokenType | null {
-    const keywords: Record<string, TokenType> = {
-      fn: TokenType.FN,
-      let: TokenType.LET,
-      type: TokenType.TYPE,
-      impl: TokenType.IMPL,
-      monoid: TokenType.MONOID,
-      match: TokenType.MATCH,
-      effectful: TokenType.EFFECTFUL,
-      is: TokenType.IS,
-      then: TokenType.THEN,
-      else: TokenType.ELSE,
-      Int: TokenType.INT,
-      Float: TokenType.FLOAT,
-      Bool: TokenType.BOOL,
-      String: TokenType.STRING,
-      Char: TokenType.CHAR,
-      Unit: TokenType.UNIT,
-      True: TokenType.BOOL_LITERAL,
-      False: TokenType.BOOL_LITERAL,
-      Nothing: TokenType.IDENTIFIER,
-      Just: TokenType.IDENTIFIER,
-      Left: TokenType.IDENTIFIER,
-      Right: TokenType.IDENTIFIER,
-    }
+    const keywords = new Map<string, TokenType>([
+      ["fn", TokenType.FN],
+      ["let", TokenType.LET],
+      ["type", TokenType.TYPE],
+      ["impl", TokenType.IMPL],
+      ["monoid", TokenType.MONOID],
+      ["match", TokenType.MATCH],
+      ["effectful", TokenType.EFFECTFUL],
+      ["is", TokenType.IS],
+      ["then", TokenType.THEN],
+      ["else", TokenType.ELSE],
+      ["Int", TokenType.INT],
+      ["Float", TokenType.FLOAT],
+      ["Bool", TokenType.BOOL],
+      ["String", TokenType.STRING],
+      ["Char", TokenType.CHAR],
+      ["Unit", TokenType.UNIT],
+      ["True", TokenType.BOOL_LITERAL],
+      ["False", TokenType.BOOL_LITERAL],
+      ["Nothing", TokenType.IDENTIFIER],
+      ["Just", TokenType.IDENTIFIER],
+      ["Left", TokenType.IDENTIFIER],
+      ["Right", TokenType.IDENTIFIER],
+    ])
 
-    return keywords[value] || null
+    return keywords.get(value) || null
   }
 
   private current(): string {

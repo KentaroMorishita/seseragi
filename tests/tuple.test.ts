@@ -216,7 +216,7 @@ describe("Tuple Feature Tests", () => {
       expect(parseResult.errors).toHaveLength(0)
 
       const inferenceSystem = new TypeInferenceSystem()
-      const inferenceResult = inferenceSystem.infer({
+      const _inferenceResult = inferenceSystem.infer({
         statements: parseResult.statements!,
       })
 

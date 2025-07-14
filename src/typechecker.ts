@@ -35,7 +35,7 @@ export class TypeEnvironment {
 }
 
 // Type error class with enhanced error information
-export class TypeError {
+export class SeseragiTypeError {
   constructor(
     public message: string,
     public line: number,
@@ -62,7 +62,7 @@ export class TypeError {
 
 // Type checker main class
 export class TypeChecker {
-  private errors: TypeError[] = []
+  private errors: SeseragiTypeError[] = []
   private globalEnv: TypeEnvironment
 
   constructor(typeEnvironment?: Map<string, AST.Type>) {
@@ -125,7 +125,7 @@ export class TypeChecker {
   }
 
   // Main entry point for type checking
-  check(program: AST.Program): TypeError[] {
+  check(program: AST.Program): SeseragiTypeError[] {
     this.errors = []
     this.checkProgram(program, this.globalEnv)
     return this.errors
@@ -253,8 +253,8 @@ export class TypeChecker {
   }
 
   private checkTypeDeclaration(
-    typeDecl: AST.TypeDeclaration,
-    env: TypeEnvironment
+    _typeDecl: AST.TypeDeclaration,
+    _env: TypeEnvironment
   ): void {
     // Register custom type (simplified for now)
     // Full implementation would handle type constructors
@@ -770,7 +770,7 @@ export class TypeChecker {
 
       case "ConstructorPattern": {
         // Handle constructor patterns (simplified for now)
-        const ctorPat = pattern as AST.ConstructorPattern
+        const _ctorPat = pattern as AST.ConstructorPattern
         // TODO: Full implementation would check constructor types
         break
       }
@@ -1035,7 +1035,9 @@ export class TypeChecker {
     code?: string,
     suggestion?: string
   ): void {
-    this.errors.push(new TypeError(message, line, column, code, suggestion))
+    this.errors.push(
+      new SeseragiTypeError(message, line, column, code, suggestion)
+    )
   }
 
   // Helper methods for better error suggestions

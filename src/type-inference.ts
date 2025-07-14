@@ -107,15 +107,17 @@ export class ArrayAccessConstraint {
         return (type as AST.PrimitiveType).name
       case "TypeVariable":
         return (type as TypeVariable).name
-      case "TupleType":
+      case "TupleType": {
         const tt = type as AST.TupleType
         return `(${tt.elementTypes.map((t) => this.typeToString(t)).join(", ")})`
-      case "GenericType":
+      }
+      case "GenericType": {
         const gt = type as AST.GenericType
         if (gt.typeArguments.length === 0) {
           return gt.name
         }
         return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
+      }
       default:
         return "Unknown"
     }
@@ -324,12 +326,19 @@ export interface InferenceResult {
   typeEnvironment?: Map<string, AST.Type>
 }
 
+// TypeInferenceSystemのinferメソッドの戻り値型
+export interface TypeInferenceSystemResult {
+  substitution: TypeSubstitution
+  errors: TypeInferenceError[]
+  nodeTypeMap: Map<AST.ASTNode, AST.Type>
+}
+
 // 型推論システムのメインクラス
 export class TypeInferenceSystem {
   private nextVarId = 1000 // Start from 1000 to avoid conflicts with parser-generated type variables
   private constraints: (TypeConstraint | ArrayAccessConstraint)[] = []
   private errors: TypeInferenceError[] = []
-  private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
+  private nodeTypeMap: Map<AST.ASTNode, AST.Type> = new Map() // Track types for AST nodes
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
 
@@ -675,11 +684,7 @@ export class TypeInferenceSystem {
   }
 
   // 型推論のメインエントリーポイント
-  infer(program: AST.Program): {
-    substitution: TypeSubstitution
-    errors: TypeInferenceError[]
-    nodeTypeMap: Map<any, AST.Type>
-  } {
+  infer(program: AST.Program): TypeInferenceSystemResult {
     this.constraints = []
     this.currentEnvironment.clear() // 環境をクリア
     this.errors = []
@@ -1068,7 +1073,7 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     // 型注釈がある場合は期待される型として渡す
-    let expectedType: AST.Type | undefined = undefined
+    let expectedType: AST.Type | undefined
     if (varDecl.type) {
       expectedType = varDecl.type
       if (varDecl.type.kind === "PrimitiveType") {
@@ -1146,7 +1151,7 @@ export class TypeInferenceSystem {
   private findOperatorDefinition(
     structType: AST.Type,
     operator: string,
-    env: Map<string, AST.Type>
+    _env: Map<string, AST.Type>
   ): AST.OperatorDeclaration | null {
     // 構造体型の場合のみ処理
     if (structType.kind !== "StructType") {
@@ -1163,7 +1168,7 @@ export class TypeInferenceSystem {
     for (const stmt of this.currentProgram.statements) {
       if (stmt.kind === "ImplBlock") {
         const implBlock = stmt as AST.ImplBlock
-        
+
         // 対象の構造体型のimplブロックかチェック
         if (implBlock.typeName === structTypeName) {
           // 該当する演算子定義を検索
@@ -1590,7 +1595,7 @@ export class TypeInferenceSystem {
     binOp.right.type = rightType
 
     switch (binOp.operator) {
-      case "+":
+      case "+": {
         // 構造体の演算子オーバーロードをチェック
         const plusOperatorDef = this.findOperatorDefinition(leftType, "+", env)
         if (plusOperatorDef) {
@@ -1613,6 +1618,7 @@ export class TypeInferenceSystem {
 
         // 結果の型は左のオペランドと同じ型
         return leftType
+      }
 
       case "-":
       case "*":
@@ -1620,7 +1626,11 @@ export class TypeInferenceSystem {
       case "%":
       case "**": {
         // 構造体の演算子オーバーロードをチェック
-        const operatorDef = this.findOperatorDefinition(leftType, binOp.operator, env)
+        const operatorDef = this.findOperatorDefinition(
+          leftType,
+          binOp.operator,
+          env
+        )
         if (operatorDef) {
           // 演算子定義が見つかった場合、その戻り値型を使用
           return operatorDef.returnType
@@ -1764,7 +1774,7 @@ export class TypeInferenceSystem {
           unaryOp.line,
           unaryOp.column
         )
-        const floatType = new AST.PrimitiveType(
+        const _floatType = new AST.PrimitiveType(
           "Float",
           unaryOp.line,
           unaryOp.column
@@ -3125,7 +3135,7 @@ export class TypeInferenceSystem {
 
     // 型変数の場合、Array<T>またはTuple型として推論
     if (arrayType.kind === "TypeVariable") {
-      const tv = arrayType as TypeVariable
+      const _tv = arrayType as TypeVariable
       const elementType = this.freshTypeVariable(
         constraint.line,
         constraint.column
@@ -3544,7 +3554,7 @@ export class TypeInferenceSystem {
       receiverTypeName = (receiverType as AST.PrimitiveType).name
     } else if (receiverType.kind === "TypeVariable") {
       // 型変数の場合、nodeTypeMapから解決を試みる
-      for (const [node, type] of this.nodeTypeMap.entries()) {
+      for (const [_node, type] of this.nodeTypeMap.entries()) {
         if (type === receiverType && type.kind === "StructType") {
           receiverTypeName = (type as AST.StructType).name
           break
@@ -4097,7 +4107,7 @@ export class TypeInferenceSystem {
   private generateConstraintsForStructExpression(
     structExpr: AST.StructExpression,
     env: Map<string, AST.Type>,
-    expectedType?: AST.Type
+    _expectedType?: AST.Type
   ): AST.Type {
     // 構造体型を環境から取得
     const structType = env.get(structExpr.structName)

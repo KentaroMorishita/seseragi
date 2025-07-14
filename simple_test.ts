@@ -354,7 +354,7 @@ function __ssrg_Point_f4pl4mu_op_add(self: Point, other: Point): Point {
   return (() => {
   const x = (self.x + other.x);
   const y = (self.y + other.y);
-  return (() => { const __tmpts7y4a = { x: x, y: y }; return Object.assign(Object.create(Point.prototype), __tmpts7y4a); })();
+  return (() => { const __tmpik8sxa = { x: x, y: y }; return Object.assign(Object.create(Point.prototype), __tmpik8sxa); })();
 })();
 }
 
@@ -362,6 +362,11 @@ function __ssrg_Point_f4pl4mu_op_add(self: Point, other: Point): Point {
 function __ssrg_User_f4pl4mu_op_add(self: User, other: User): number {
   return (() => {
   return (self.amount + other.amount);
+})();
+}
+function __ssrg_User_f4pl4mu_op_mul(self: User, v: number): number {
+  return (() => {
+  return (self.amount * v);
 })();
 }
 
@@ -383,7 +388,8 @@ function __ssrg_User_f4pl4mu_op_add(self: User, other: User): number {
       "+": __ssrg_Point_f4pl4mu_op_add
     },
     "User": {
-      "+": __ssrg_User_f4pl4mu_op_add
+      "+": __ssrg_User_f4pl4mu_op_add,
+      "*": __ssrg_User_f4pl4mu_op_mul
     },
   };
 
@@ -411,6 +417,14 @@ const u1 = new User({ name: "foo", age: 20, amount: 10 });
 
 const u2 = new User({ name: "bar", age: 20, amount: 20 });
 
-const bar = func(u1)(u2);
+const bar = (func(u1)(u2) as number);
 
 show(bar);
+
+const baz = __dispatchOperator(u1, "+", u2);
+
+show(baz);
+
+const quax = __dispatchOperator(u1, "*", 2);
+
+show(quax);

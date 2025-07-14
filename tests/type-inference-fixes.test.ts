@@ -1,6 +1,7 @@
 import { test, expect } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
+import type * as AST from "../src/ast"
 
 test("Maybe type inference", () => {
   const content = `
@@ -15,11 +16,11 @@ let nothingValue = Nothing
 
   // Find the variable types
   const someValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "someValue"
   )
   const nothingValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "nothingValue"
   )
 
@@ -27,11 +28,11 @@ let nothingValue = Nothing
   const nothingValueType = result.nodeTypeMap.get(nothingValueDecl)
 
   expect(someValueType?.kind).toBe("GenericType")
-  expect((someValueType as any)?.name).toBe("Maybe")
-  expect((someValueType as any)?.typeArguments[0]?.name).toBe("Int")
+  expect((someValueType as AST.GenericType)?.name).toBe("Maybe")
+  expect((someValueType as AST.GenericType)?.typeArguments[0]?.name).toBe("Int")
 
   expect(nothingValueType?.kind).toBe("GenericType")
-  expect((nothingValueType as any)?.name).toBe("Maybe")
+  expect((nothingValueType as AST.GenericType)?.name).toBe("Maybe")
 })
 
 test("Either type inference", () => {
@@ -46,11 +47,11 @@ let errorValue = Left "Error occurred"
   const result = typeInference.infer(ast)
 
   const successValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "successValue"
   )
   const errorValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "errorValue"
   )
 
@@ -58,10 +59,10 @@ let errorValue = Left "Error occurred"
   const errorValueType = result.nodeTypeMap.get(errorValueDecl)
 
   expect(successValueType?.kind).toBe("GenericType")
-  expect((successValueType as any)?.name).toBe("Either")
+  expect((successValueType as AST.GenericType)?.name).toBe("Either")
 
   expect(errorValueType?.kind).toBe("GenericType")
-  expect((errorValueType as any)?.name).toBe("Either")
+  expect((errorValueType as AST.GenericType)?.name).toBe("Either")
 })
 
 test("Curried function partial application", () => {
@@ -81,7 +82,7 @@ let calculatedA = complexCalculation 3
   const result = typeInference.infer(ast)
 
   const calculatedADecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "calculatedA"
   )
 
@@ -89,8 +90,8 @@ let calculatedA = complexCalculation 3
 
   // Should be a function type Int -> Int
   expect(calculatedAType?.kind).toBe("FunctionType")
-  expect((calculatedAType as any)?.paramType?.name).toBe("Int")
-  expect((calculatedAType as any)?.returnType?.name).toBe("Int")
+  expect((calculatedAType as AST.FunctionType)?.paramType?.name).toBe("Int")
+  expect((calculatedAType as AST.FunctionType)?.returnType?.name).toBe("Int")
 })
 
 test("Curried function full application", () => {
@@ -110,7 +111,7 @@ let calculatedB = complexCalculation 5 6
   const result = typeInference.infer(ast)
 
   const calculatedBDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "calculatedB"
   )
 
@@ -118,7 +119,7 @@ let calculatedB = complexCalculation 5 6
 
   // Should be Int
   expect(calculatedBType?.kind).toBe("PrimitiveType")
-  expect((calculatedBType as any)?.name).toBe("Int")
+  expect((calculatedBType as AST.PrimitiveType)?.name).toBe("Int")
 })
 
 test("Complex type inference scenario", () => {
@@ -139,7 +140,7 @@ let result3 = safeDivide 10 0
 
   // Check addFive is a function Int -> Int
   const addFiveDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "addFive"
   )
   const addFiveType = result.nodeTypeMap.get(addFiveDecl)
@@ -147,19 +148,19 @@ let result3 = safeDivide 10 0
 
   // Check result1 is Int
   const result1Decl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "result1"
   )
   const result1Type = result.nodeTypeMap.get(result1Decl)
   expect(result1Type?.kind).toBe("PrimitiveType")
-  expect((result1Type as any)?.name).toBe("Int")
+  expect((result1Type as AST.PrimitiveType)?.name).toBe("Int")
 
   // Check result2 and result3 are Maybe<Int>
   const result2Decl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "result2"
   )
   const result2Type = result.nodeTypeMap.get(result2Decl)
   expect(result2Type?.kind).toBe("GenericType")
-  expect((result2Type as any)?.name).toBe("Maybe")
+  expect((result2Type as AST.GenericType)?.name).toBe("Maybe")
 })

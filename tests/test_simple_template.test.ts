@@ -11,10 +11,10 @@ describe("Template Function Integration Tests", () => {
   })
 
   test("should compile print with template literal and expression", () => {
-    const source = "print `Count: ${42}`"
+    const source = `print \`Count: \${42}\``
 
     const result = compileSeseragi(source)
     expect(typeof result).toBe("string")
-    expect(result).toContain("console.log(`Count: ${42}`)")
+    expect(result).toContain(`console.log(\`Count: \${42}\`)`)
   })
 })

@@ -205,7 +205,7 @@ test("Maybe - Nothing propagation", () => {
 test("Either - Error propagation", () => {
   const parseNum = (s: string): Either<string, number> => {
     const n = parseInt(s)
-    return isNaN(n) ? Left("Parse error") : Right(n)
+    return Number.isNaN(n) ? Left("Parse error") : Right(n)
   }
 
   const double = (x: number): Either<string, number> => Right(x * 2)
@@ -220,7 +220,7 @@ test("Either - Error propagation", () => {
 test("Either - Success chain", () => {
   const parseNum = (s: string): Either<string, number> => {
     const n = parseInt(s)
-    return isNaN(n) ? Left("Parse error") : Right(n)
+    return Number.isNaN(n) ? Left("Parse error") : Right(n)
   }
 
   const double = (x: number): Either<string, number> => Right(x * 2)
@@ -330,7 +330,7 @@ test("Mixed monad operations - Either chain", () => {
   const double = (x: number) => x * 2
   const safeParse = (s: string): Either<string, number> => {
     const n = parseInt(s)
-    return isNaN(n) ? Left("Parse error") : Right(n)
+    return Number.isNaN(n) ? Left("Parse error") : Right(n)
   }
 
   // パース -> 足し算 -> 2倍

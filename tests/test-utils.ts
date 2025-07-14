@@ -5,7 +5,10 @@ import { TypeInferenceSystem } from "../src/type-inference"
 export function compileSeseragi(source: string): string {
   const parser = new Parser(source)
   const program = parser.parse()
+  if (!program.statements) return ""
   const typeInference = new TypeInferenceSystem()
   const typeResult = typeInference.infer(program)
-  return generateTypeScript(program, typeResult.nodeTypeMap)
+  return generateTypeScript(program.statements, {
+    typeInferenceResult: typeResult,
+  })
 }

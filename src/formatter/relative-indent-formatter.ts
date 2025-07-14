@@ -32,7 +32,7 @@ export function formatSeseragiCode(code: string): string {
     result.push(indent + cleaned)
   }
 
-  return result.join("\n") + "\n"
+  return `${result.join("\n")}\n`
 }
 
 function calculateIndentLevel(
@@ -285,7 +285,7 @@ function isArrowContinuation(index: number, allLines: string[]): boolean {
   if (index === 0) return false
 
   const prevLine = allLines[index - 1]?.trim()
-  return prevLine && prevLine.endsWith(" ->")
+  return prevLine?.endsWith(" ->")
 }
 
 function isExpressionContinuation(index: number, allLines: string[]): boolean {
@@ -448,30 +448,30 @@ export function normalizeOperatorSpacing(code: string): string {
         return `__PROTECTED_${index}__`
       })
       // 範囲演算子 ..= を保護
-      .replace(/\.\.\s*=/g, (match) => {
+      .replace(/\.\.\s*=/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push("..=")
         return `__PROTECTED_${index}__`
       })
       // モナド演算子を保護（スペースも含めて）
-      .replace(/\s*<\$>\s*/g, (match) => {
+      .replace(/\s*<\$>\s*/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push(" <$> ") // 適切なスペーシングで保存
         return `__PROTECTED_${index}__`
       })
-      .replace(/\s*<\*>\s*/g, (match) => {
+      .replace(/\s*<\*>\s*/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push(" <*> ") // 適切なスペーシングで保存
         return `__PROTECTED_${index}__`
       })
       // バインド演算子も保護
-      .replace(/^\s*>>=\s*/g, (match) => {
+      .replace(/^\s*>>=\s*/g, (_match) => {
         // 行頭の場合はスペースなしで保護
         const index = protectedParts.length
         protectedParts.push(">>= ") // 行頭なので前のスペースなし
         return `__PROTECTED_${index}__`
       })
-      .replace(/\s*>>=\s*/g, (match) => {
+      .replace(/\s*>>=\s*/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push(" >>= ") // 行中の場合は適切なスペーシング
         return `__PROTECTED_${index}__`
@@ -490,14 +490,14 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/\?\s*([^?:]*?)\s*:\s*/g, "? $1 : ")
       // 2. 型注釈（右のみスペース）- Cons演算子より先に処理
       .replace(/(let\s+\w+)\s*:\s*([A-Z]\w*)/g, "$1: $2") // let name: Type
-      .replace(/(\w+)\s*:\s*([A-Z]\w*)/g, (match, p1, p2) => {
+      .replace(/(\w+)\s*:\s*([A-Z]\w*)/g, (_match, p1, p2) => {
         // 型注釈: 大文字で始まる型名の場合（let以外）
         return `${p1}: ${p2}`
       })
       // 3. Cons演算子チェーン処理（数値のみに限定）
       .replace(/(\d+)\s*:\s*(\d+)/g, "$1 : $2") // 1 : 2
       .replace(/(\d+)\s*:\s*(\[)/g, "$1 : $2") // 3 : []
-      .replace(/(\w+)\s*:\s*(\[)/g, (match, p1, p2) => {
+      .replace(/(\w+)\s*:\s*(\[)/g, (_match, p1, p2) => {
         // レコードフィールドでない場合のみCons演算子として扱う
         return `${p1} : ${p2}`
       })
@@ -514,7 +514,7 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/(?<!\*)\s*\*\s*(?!\*)/g, " * ")
       .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
       // パイプ演算子の保護（行頭の場合）
-      .replace(/^\s*\|\s*/g, (match) => {
+      .replace(/^\s*\|\s*/g, (_match) => {
         // 行頭の場合はスペースなしで保護
         const index = protectedParts.length
         protectedParts.push("| ") // 行頭なので前のスペースなし
@@ -539,7 +539,7 @@ export function normalizeOperatorSpacing(code: string): string {
             .trim()
             .replace(/,\s*/g, ", ") // カンマの後にスペース
             .replace(/(\w+)\s:\s/g, "$1: ") // 構造体内のフィールド名: value
-          return (prefix || "") + "{ " + formattedContent + " }"
+          return `${prefix || ""}{ ${formattedContent} }`
         }
       )
     }

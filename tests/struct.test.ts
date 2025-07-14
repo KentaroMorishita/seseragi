@@ -1,8 +1,6 @@
 import { describe, test, expect } from "bun:test"
-import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
-import { TypeInferenceSystem } from "../src/type-inference"
 import type * as AST from "../src/ast"
 import { compileSeseragi } from "./test-utils"
 
@@ -37,7 +35,7 @@ describe("Struct Tests", () => {
   test("should parse struct instantiation", () => {
     const source = `Person { name: "Alice", age: 30 }`
     const parser = new Parser(source)
-    const expr = parser["primaryExpression"]()
+    const expr = parser.primaryExpression()
 
     expect(expr.kind).toBe("StructExpression")
     const structExpr = expr as AST.StructExpression
@@ -63,8 +61,8 @@ describe("Struct Tests", () => {
     const typescript = generateTypeScript(result.statements!)
 
     expect(typescript).toContain("class Person")
-    expect(typescript).toContain("public name: string")
-    expect(typescript).toContain("public age: number")
+    expect(typescript).toContain("name: string;")
+    expect(typescript).toContain("age: number;")
   })
 
   test("should generate TypeScript for struct instantiation", () => {
@@ -73,7 +71,7 @@ describe("Struct Tests", () => {
     const result = parser.parse()
     const typescript = generateTypeScript(result.statements!)
 
-    expect(typescript).toContain('new Person("Alice", 30)')
+    expect(typescript).toContain('new Person({ name: "Alice", age: 30 })')
   })
 
   test("should parse struct with multiple field types", () => {
@@ -95,11 +93,11 @@ describe("Struct Tests", () => {
 
     const typescript = generateTypeScript(result.statements!)
     expect(typescript).toContain("class User")
-    expect(typescript).toContain("public id: number")
-    expect(typescript).toContain("public name: string")
-    expect(typescript).toContain("public email: string")
-    expect(typescript).toContain("public isActive: boolean")
-    expect(typescript).toContain("public score: number")
+    expect(typescript).toContain("id: number;")
+    expect(typescript).toContain("name: string;")
+    expect(typescript).toContain("email: string;")
+    expect(typescript).toContain("isActive: boolean;")
+    expect(typescript).toContain("score: number;")
   })
 
   test("should parse struct with generic types", () => {
@@ -156,7 +154,7 @@ describe("Struct Tests", () => {
 
     const typescript = generateTypeScript(result.statements!)
     expect(typescript).toContain("class Person")
-    expect(typescript).toContain('new Person("Bob", 25)')
+    expect(typescript).toContain('new Person({ name: "Bob", age: 25 })')
     expect(typescript).toContain("person.name")
   })
 

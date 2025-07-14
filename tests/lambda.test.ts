@@ -82,7 +82,7 @@ describe("Lambda Expression Tests", () => {
 
     const code = generateTypeScript(program.statements)
 
-    expect(code).toContain("(x: any) => (x + 1)")
+    expect(code).toContain('(x: any) => __dispatchOperator(x, "+", 1)')
   })
 
   test("should generate correct TypeScript for lambda application", () => {
@@ -91,7 +91,7 @@ describe("Lambda Expression Tests", () => {
 
     const code = generateTypeScript(program.statements)
 
-    expect(code).toContain("((x: any) => (x + 1))(5)")
+    expect(code).toContain('((x: any) => __dispatchOperator(x, "+", 1))(5)')
   })
 
   test("should generate correct TypeScript for curried lambda", () => {
@@ -100,7 +100,9 @@ describe("Lambda Expression Tests", () => {
 
     const code = generateTypeScript(program.statements)
 
-    expect(code).toContain("(x: any) => (y: any) => (x + y)")
+    expect(code).toContain(
+      '(x: any) => (y: any) => __dispatchOperator(x, "+", y)'
+    )
   })
 
   test("should handle lambda with explicit types", () => {
@@ -109,6 +111,6 @@ describe("Lambda Expression Tests", () => {
 
     const code = generateTypeScript(program.statements)
 
-    expect(code).toContain("(x: number) => (x + 100)")
+    expect(code).toContain('(x: number) => __dispatchOperator(x, "+", 100)')
   })
 })

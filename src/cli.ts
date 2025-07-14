@@ -23,8 +23,8 @@ program
   )
   .option(
     "--runtime <mode>",
-    "Runtime mode: embedded, import, minimal (default: minimal)",
-    "minimal"
+    "Runtime mode: embedded, import (default: embedded)",
+    "embedded"
   )
   .action(async (file, options) => {
     if (!file) {

@@ -1,7 +1,7 @@
 import { describe, test, expect } from "bun:test"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 import { TypeInferenceSystem } from "../src/type-inference"
 import { generateTypeScript } from "../src/codegen"
 
@@ -17,12 +17,12 @@ describe("Template Literal Tests", () => {
   })
 
   test("should tokenize template literal with expression", () => {
-    const source = "`Hello ${name}!`"
+    const source = `\`Hello \${name}!\``
     const lexer = new Lexer(source)
     const tokens = lexer.tokenize()
 
     expect(tokens[0].type).toBe(TokenType.TEMPLATE_STRING)
-    expect(tokens[0].value).toBe("Hello ${name}!")
+    expect(tokens[0].value).toBe(`Hello \${name}!`)
     expect(tokens[1].type).toBe(TokenType.EOF)
   })
 
@@ -44,7 +44,7 @@ describe("Template Literal Tests", () => {
   })
 
   test("should parse template literal with embedded expression", () => {
-    const source = "`Hello ${name}!`"
+    const source = `\`Hello \${name}!\``
     const parser = new Parser(source)
     const result = parser.parse()
 
@@ -89,13 +89,13 @@ describe("Template Literal Tests", () => {
   })
 
   test("should generate TypeScript template literal with expression", () => {
-    const source = "`Hello ${name}!`"
+    const source = `\`Hello \${name}!\``
     const parser = new Parser(source)
     const result = parser.parse()
 
     const generatedCode = generateTypeScript(result.statements!)
     expect(generatedCode).toContain("`Hello ")
-    expect(generatedCode).toContain("${name}")
+    expect(generatedCode).toContain(`\${name}`)
     expect(generatedCode).toContain("!`")
   })
 
@@ -120,7 +120,7 @@ describe("Template Literal Tests", () => {
   })
 
   test("should parse template literal with expression as function argument", () => {
-    const source = "print `Count: ${42}`"
+    const source = `print \`Count: \${42}\``
     const parser = new Parser(source)
     const result = parser.parse()
 

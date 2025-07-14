@@ -37,7 +37,6 @@ import {
   RangeLiteral,
   ListComprehension,
   ListComprehensionSugar,
-  Generator,
   type Type,
   FunctionType,
   PrimitiveType,
@@ -51,18 +50,23 @@ import {
   StructType,
   SpreadExpression,
   TypeAssertion,
-  RecordSpreadField,
   RecordDestructuring,
   StructDestructuring,
-  RecordPattern,
-  StructPattern,
-  RecordPatternField,
   ImplBlock,
   type MethodDeclaration,
   type OperatorDeclaration,
   type MonoidDeclaration,
+  GuardPattern,
+  ListSugarPattern,
+  ArrayPattern,
+  OrPattern,
+  type Pattern,
+  IdentifierPattern,
+  ConstructorPattern,
+  TuplePattern,
 } from "./ast"
 import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
+import type { TypeInferenceSystemResult } from "./type-inference"
 
 /**
  * Seseragi から TypeScript へのコード生成器
@@ -73,9 +77,9 @@ export interface CodeGenOptions {
   indent?: string
   useArrowFunctions?: boolean
   generateComments?: boolean
-  runtimeMode?: "embedded" | "import" | "minimal"
+  runtimeMode?: "embedded" | "import"
   filePath?: string // ファイルパス（ハッシュ生成用）
-  typeInferenceResult?: any // 型推論結果
+  typeInferenceResult?: TypeInferenceSystemResult // 型推論結果
 }
 
 const defaultOptions: CodeGenOptions = {
@@ -103,7 +107,7 @@ export class CodeGenerator {
   currentStructContext: string | null = null // 現在処理中の構造体名
   structMethods: Map<string, Set<string>> = new Map() // 構造体名 → メソッド名のセット
   structOperators: Map<string, Set<string>> = new Map() // 構造体名 → 演算子のセット
-  typeInferenceResult: any = null // 型推論結果
+  typeInferenceResult: TypeInferenceSystemResult | null = null // 型推論結果
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -119,44 +123,50 @@ export class CodeGenerator {
   }
 
   // パターンから変数バインディングを生成
-  private generatePatternBindings(pattern: any, valueVar: string): string {
+  private generatePatternBindings(pattern: Pattern, valueVar: string): string {
     if (!pattern) return ""
 
     switch (pattern.kind) {
-      case "IdentifierPattern":
-        return `const ${pattern.name} = ${valueVar};\n    `
+      case "IdentifierPattern": {
+        const identifierPattern = pattern as IdentifierPattern
+        return `const ${identifierPattern.name} = ${valueVar};\n    `
+      }
 
-      case "ConstructorPattern":
-        if (!pattern.patterns || pattern.patterns.length === 0) {
+      case "ConstructorPattern": {
+        const constructorPattern = pattern as ConstructorPattern
+        if (
+          !constructorPattern.patterns ||
+          constructorPattern.patterns.length === 0
+        ) {
           return ""
         }
 
         let bindings = ""
-        if (this.isBuiltinConstructor(pattern.constructorName)) {
+        if (this.isBuiltinConstructor(constructorPattern.constructorName)) {
           // ビルトインコンストラクタの場合
           if (
-            pattern.constructorName === "Just" ||
-            pattern.constructorName === "Left" ||
-            pattern.constructorName === "Right"
+            constructorPattern.constructorName === "Just" ||
+            constructorPattern.constructorName === "Left" ||
+            constructorPattern.constructorName === "Right"
           ) {
             // 単一の値を持つコンストラクタ
-            if (pattern.patterns.length > 0) {
-              const subPattern = pattern.patterns[0]
+            if (constructorPattern.patterns.length > 0) {
+              const subPattern = constructorPattern.patterns[0]
               if (subPattern.kind === "IdentifierPattern") {
                 bindings += `const ${subPattern.name} = ${valueVar}.value;\n    `
               }
               // LiteralPatternの場合はバインディングなし
             }
-          } else if (pattern.constructorName === "Cons") {
+          } else if (constructorPattern.constructorName === "Cons") {
             // Consは head と tail
-            if (pattern.patterns.length > 0) {
-              const headPattern = pattern.patterns[0]
+            if (constructorPattern.patterns.length > 0) {
+              const headPattern = constructorPattern.patterns[0]
               if (headPattern.kind === "IdentifierPattern") {
                 bindings += `const ${headPattern.name} = ${valueVar}.head;\n    `
               }
             }
-            if (pattern.patterns.length > 1) {
-              const tailPattern = pattern.patterns[1]
+            if (constructorPattern.patterns.length > 1) {
+              const tailPattern = constructorPattern.patterns[1]
               if (tailPattern.kind === "IdentifierPattern") {
                 bindings += `const ${tailPattern.name} = ${valueVar}.tail;\n    `
               }
@@ -164,8 +174,8 @@ export class CodeGenerator {
           }
         } else {
           // ユーザー定義ADTの場合
-          for (let i = 0; i < pattern.patterns.length; i++) {
-            const subPattern = pattern.patterns[i]
+          for (let i = 0; i < constructorPattern.patterns.length; i++) {
+            const subPattern = constructorPattern.patterns[i]
             if (subPattern.kind === "IdentifierPattern") {
               bindings += `const ${subPattern.name} = ${valueVar}.data[${i}];\n    `
             }
@@ -173,21 +183,24 @@ export class CodeGenerator {
           }
         }
         return bindings
+      }
 
-      case "TuplePattern":
+      case "TuplePattern": {
+        const tuplePattern = pattern as TuplePattern
         let tupleBindings = ""
-        pattern.patterns.forEach((subPattern: any, i: number) => {
+        tuplePattern.patterns.forEach((subPattern: Pattern, i: number) => {
           tupleBindings += this.generatePatternBindings(
             subPattern,
             `${valueVar}.elements[${i}]`
           )
         })
         return tupleBindings
+      }
 
       case "OrPattern": {
         // orパターン: 最初にマッチしたパターンのバインディングを使用
         // 注意: orパターンのすべてのサブパターンは同じ変数をバインドする必要がある
-        const orPattern = pattern as any // AST.OrPattern
+        const orPattern = pattern as OrPattern
         if (orPattern.patterns.length > 0) {
           // 最初のパターンからバインディングを生成
           // 実際のマッチングは条件で制御される
@@ -198,13 +211,13 @@ export class CodeGenerator {
 
       case "GuardPattern": {
         // GuardPattern: 内部パターンのバインディングを生成
-        const guardPattern = pattern as any // AST.GuardPattern
+        const guardPattern = pattern as GuardPattern
         return this.generatePatternBindings(guardPattern.pattern, valueVar)
       }
 
       case "ListSugarPattern": {
         // リスト糖衣構文パターン: `[x, y, ...rest]
-        const listSugarPattern = pattern as any // AST.ListSugarPattern
+        const listSugarPattern = pattern as ListSugarPattern
         let bindings = ""
         let currentVar = valueVar
 
@@ -229,7 +242,7 @@ export class CodeGenerator {
 
       case "ArrayPattern": {
         // 配列パターン: [x, y, ...rest]
-        const arrayPattern = pattern as any // AST.ArrayPattern
+        const arrayPattern = pattern as ArrayPattern
         let bindings = ""
 
         // 各要素パターンのバインディング
@@ -271,6 +284,11 @@ export class CodeGenerator {
   // プログラム全体の生成
   generateProgram(statements: Statement[]): string {
     const lines: string[] = []
+
+    // statementsのガード
+    if (!statements || !Array.isArray(statements)) {
+      return ""
+    }
 
     // 使用分析を実行
     const analyzer = new UsageAnalyzer()
@@ -390,9 +408,6 @@ export class CodeGenerator {
     switch (this.options.runtimeMode) {
       case "import":
         return this.generateRuntimeImports()
-      case "minimal":
-        return this.generateMinimalRuntime()
-      case "embedded":
       default:
         return this.generateEmbeddedRuntime()
     }
@@ -471,578 +486,6 @@ export class CodeGenerator {
       lines.push(
         `import { ${imports.join(", ")} } from './runtime/seseragi-runtime.js';`
       )
-    }
-
-    return lines
-  }
-
-  // 最小限のランタイム（使用機能のみ埋め込み）
-  generateMinimalRuntime(): string[] {
-    const lines: string[] = ["// Seseragi minimal runtime", ""]
-
-    if (!this.usageAnalysis) return lines
-
-    // 型定義（常に生成）
-    lines.push(
-      "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };"
-    )
-    if (this.usageAnalysis.needsEither) {
-      lines.push(
-        "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };"
-      )
-    }
-    if (this.usageAnalysis.needsList) {
-      lines.push(
-        "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };"
-      )
-    }
-    if (
-      this.usageAnalysis.needsMaybe ||
-      this.usageAnalysis.needsEither ||
-      this.usageAnalysis.needsList
-    ) {
-      lines.push("")
-    }
-
-    // 必要な機能のみ生成
-    if (this.usageAnalysis.needsCurrying) {
-      lines.push(...this.generateCurryFunction())
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsPipeline) {
-      lines.push(
-        "const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsReversePipe) {
-      lines.push(
-        "const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsFunctionApplication) {
-      lines.push(
-        "const apply = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);"
-      )
-      lines.push("")
-    }
-    // Maybe constructors（常に生成）
-    lines.push(
-      "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });"
-    )
-    lines.push("const Nothing: Maybe<never> = { tag: 'Nothing' };")
-    lines.push("")
-    if (this.usageAnalysis.needsEither) {
-      lines.push(
-        "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });"
-      )
-      lines.push(
-        "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsList) {
-      lines.push("const Empty: List<never> = { tag: 'Empty' };")
-      lines.push(
-        "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsBuiltins.head) {
-      lines.push(
-        "const headList = <T>(list: List<T>): Maybe<T> => list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' };"
-      )
-    }
-    if (this.usageAnalysis.needsBuiltins.tail) {
-      lines.push(
-        "const tailList = <T>(list: List<T>): List<T> => list.tag === 'Cons' ? list.tail : Empty;"
-      )
-    }
-    if (
-      this.usageAnalysis.needsBuiltins.head ||
-      this.usageAnalysis.needsBuiltins.tail
-    ) {
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsFunctorMap) {
-      lines.push(
-        "const mapMaybe = <T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> => {"
-      )
-      lines.push("  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {"
-      )
-      lines.push("  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {")
-      lines.push("  return fa.map(f);")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const mapList = <T, U>(fa: any, f: (a: T) => U): any => {")
-      lines.push("  if (fa.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push(
-        "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };"
-      )
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsApplicativeApply) {
-      lines.push(
-        "const applyMaybe = <T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> => {"
-      )
-      lines.push(
-        "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;"
-      )
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {"
-      )
-      lines.push(
-        "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :"
-      )
-      lines.push("         ef.tag === 'Left' ? ef : ea;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const applyArray = <T, U>(ff: ((a: T) => U)[], fa: T[]): U[] => {"
-      )
-      lines.push("  const result: U[] = [];")
-      lines.push("  for (const func of ff) {")
-      lines.push("    for (const value of fa) {")
-      lines.push("      result.push(func(value));")
-      lines.push("    }")
-      lines.push("  }")
-      lines.push("  return result;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const applyList = <T, U>(ff: any, fa: any): any => {")
-      lines.push("  if (ff.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push("  const mappedValues = mapList(fa, ff.head);")
-      lines.push("  const restApplied = applyList(ff.tail, fa);")
-      lines.push("  return concatList(mappedValues, restApplied);")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const concatList = <T>(list1: any, list2: any): any => {")
-      lines.push("  if (list1.tag === 'Empty') return list2;")
-      lines.push(
-        "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };"
-      )
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsMonadBind) {
-      lines.push(
-        "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {"
-      )
-      lines.push("  return ma.tag === 'Just' ? f(ma.value) : Nothing;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {"
-      )
-      lines.push("  return ea.tag === 'Right' ? f(ea.value) : ea;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const bindArray = <T, U>(ma: T[], f: (value: T) => U[]): U[] => {"
-      )
-      lines.push("  const result: U[] = [];")
-      lines.push("  for (const value of ma) {")
-      lines.push("    result.push(...f(value));")
-      lines.push("  }")
-      lines.push("  return result;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const bindList = <T, U>(ma: any, f: (value: T) => any): any => {"
-      )
-      lines.push("  if (ma.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push("  const headResult = f(ma.head);")
-      lines.push("  const tailResult = bindList(ma.tail, f);")
-      lines.push("  return concatList(headResult, tailResult);")
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsFoldMonoid) {
-      lines.push(
-        "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {"
-      )
-      lines.push("  return arr.reduce(combine, empty);")
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsBuiltins.print) {
-      lines.push(`const print = (value: any): void => {
-  // Seseragi型の場合は美しく整形
-  if (value && typeof value === 'object' && (
-    value.tag === 'Just' || value.tag === 'Nothing' ||
-    value.tag === 'Left' || value.tag === 'Right' ||
-    value.tag === 'Cons' || value.tag === 'Empty'
-  )) {
-    console.log(toString(value))
-  } 
-  // 通常のオブジェクトはそのまま
-  else {
-    console.log(value)
-  }
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.putStrLn) {
-      lines.push(
-        "const putStrLn = (value: string): void => console.log(value);"
-      )
-    }
-    if (this.usageAnalysis.needsBuiltins.toString) {
-      lines.push(`const toString = (value: any): string => {
-  // Maybe型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Just') {
-    return \`Just(\${toString(value.value)})\`
-  }
-  if (value && typeof value === 'object' && value.tag === 'Nothing') {
-    return 'Nothing'
-  }
-  
-  // Either型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Left') {
-    return \`Left(\${toString(value.value)})\`
-  }
-  if (value && typeof value === 'object' && value.tag === 'Right') {
-    return \`Right(\${toString(value.value)})\`
-  }
-  
-  // List型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Empty') {
-    return "\`[]"
-  }
-  if (value && typeof value === 'object' && value.tag === 'Cons') {
-    const items = []
-    let current = value
-    while (current.tag === 'Cons') {
-      items.push(toString(current.head))
-      current = current.tail
-    }
-    return "\`[" + items.join(', ') + "]"
-  }
-  
-  // Tuple型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Tuple') {
-    return \`(\${value.elements.map(toString).join(', ')})\`
-  }
-  
-  // 配列の表示
-  if (Array.isArray(value)) {
-    return \`[\${value.map(toString).join(', ')}]\`
-  }
-  
-  // プリミティブ型
-  if (typeof value === 'string') {
-    return \`"\${value}"\`
-  }
-  if (typeof value === 'number') {
-    return String(value)
-  }
-  if (typeof value === 'boolean') {
-    return value ? 'True' : 'False'
-  }
-  
-  // 普通のオブジェクト（構造体など）
-  if (typeof value === 'object' && value !== null) {
-    const pairs = []
-    for (const key in value) {
-      if (value.hasOwnProperty(key)) {
-        pairs.push(\`\${key}: \${toString(value[key])}\`)
-      }
-    }
-    
-    // 構造体名を取得（constructor.nameを使用）
-    const structName = value.constructor && value.constructor.name !== 'Object' 
-      ? value.constructor.name 
-      : ''
-    
-    // 複数フィールドがある場合はインデント表示
-    if (pairs.length > 2) {
-      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
-    } else {
-      return \`\${structName} { \${pairs.join(', ')} }\`
-    }
-  }
-  
-  return String(value)
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.toInt) {
-      lines.push(`const toInt = (value: any): number => {
-  if (typeof value === 'number') {
-    return Math.trunc(value)
-  }
-  if (typeof value === 'string') {
-    const n = parseInt(value, 10)
-    if (isNaN(n)) {
-      throw new Error(\`Cannot convert "\${value}" to Int\`)
-    }
-    return n
-  }
-  throw new Error(\`Cannot convert \${typeof value} to Int\`)
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.toFloat) {
-      lines.push(`const toFloat = (value: any): number => {
-  if (typeof value === 'number') {
-    return value
-  }
-  if (typeof value === 'string') {
-    const n = parseFloat(value)
-    if (isNaN(n)) {
-      throw new Error(\`Cannot convert "\${value}" to Float\`)
-    }
-    return n
-  }
-  throw new Error(\`Cannot convert \${typeof value} to Float\`)
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.show) {
-      // prettyFormat関数も必要
-      lines.push(`// Seseragi型の構造を正規化
-function normalizeStructure(obj) {
-  // プリミティブ型の処理
-  if (typeof obj === 'boolean') {
-    return { '@@type': 'Boolean', value: obj }
-  }
-  if (!obj || typeof obj !== 'object') return obj
-  
-  // List型 → 特別なマーカー付き配列に変換
-  if (obj.tag === 'Empty') return { '@@type': 'List', value: [] }
-  if (obj.tag === 'Cons') {
-    const items = []
-    let current = obj
-    while (current && current.tag === 'Cons') {
-      items.push(normalizeStructure(current.head))
-      current = current.tail
-    }
-    return { '@@type': 'List', value: items }
-  }
-  
-  // Maybe型
-  if (obj.tag === 'Just') {
-    return { '@@type': 'Just', value: normalizeStructure(obj.value) }
-  }
-  if (obj.tag === 'Nothing') {
-    return '@@Nothing'
-  }
-  
-  // Either型
-  if (obj.tag === 'Right') {
-    return { '@@type': 'Right', value: normalizeStructure(obj.value) }
-  }
-  if (obj.tag === 'Left') {
-    return { '@@type': 'Left', value: normalizeStructure(obj.value) }
-  }
-  
-  // Tuple型
-  if (obj.tag === 'Tuple') {
-    return { '@@type': 'Tuple', value: obj.elements.map(normalizeStructure) }
-  }
-  
-  // 配列
-  if (Array.isArray(obj)) {
-    return obj.map(normalizeStructure)
-  }
-  
-  // 通常のオブジェクト
-  const result = {}
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      result[key] = normalizeStructure(obj[key])
-    }
-  }
-  return result
-}
-
-// JSON文字列をSeseragi型の美しい表記に変換
-function beautifySeseragiTypes(json) {
-  let result = json
-  
-  // Seseragi特殊型の変換
-  result = beautifySpecialTypes(result)
-  
-  // 普通のオブジェクト（構造体など）の変換
-  result = beautifyStructObjects(result)
-  
-  return result
-}
-
-// Seseragi特殊型（Maybe、Either、List）の美しい変換
-function beautifySpecialTypes(json) {
-  return json
-    // List型
-    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[\\s*\\]\\s*\\}/g, '\`[]')
-    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
-      const cleanContent = content.replace(/\\s+/g, ' ').trim()
-      return \`\\\`[\${cleanContent}]\`
-    })
-    // Maybe型
-    .replace(/"@@type":\\s*"Just",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Just(\${val.trim()})\`)
-    .replace(/\\{\\s*Just\\(([^)]+)\\)\\s*\\}/g, 'Just($1)')
-    .replace(/"@@Nothing"/g, 'Nothing')
-    // Either型
-    .replace(/"@@type":\\s*"Right",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Right(\${val.trim()})\`)
-    .replace(/\\{\\s*Right\\(([^)]+)\\)\\s*\\}/g, 'Right($1)')
-    .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
-    .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
-    // タプル型
-    .replace(/\\{\\s*"@@type":\\s*"Tuple",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
-      const cleanContent = content.replace(/\\s+/g, ' ').trim()
-      return \`(\${cleanContent})\`
-    })
-    // ブール値型
-    .replace(/\\{\\s*"@@type":\\s*"Boolean",\\s*"value":\\s*(true|false)\\s*\\}/g, (match, value) => {
-      return value === 'true' ? 'True' : 'False'
-    })
-}
-
-// 普通のオブジェクト（構造体）の美しい変換
-function beautifyStructObjects(json) {
-  return json.replace(/\\{([\\s\\S]*?)\\}/g, (match, content) => {
-    // 既に変換済みのSeseragi型は除外
-    if (match.includes('Just(') || match.includes('Right(') || match.includes('Left(') || match.includes('\`[')) {
-      return match
-    }
-    
-    // フィールドを解析
-    const fields = content.trim().split(',').filter(f => f.trim())
-    const jsFields = fields.map(field => {
-      const cleaned = field.trim().replace(/"(\\w+)":/g, '$1:')
-      return cleaned
-    })
-    
-    // 複数フィールドの場合はインデント表示を保持、少数フィールドは1行
-    if (jsFields.length > 2) {
-      return \`{\\n  \${jsFields.join(',\\n  ')}\\n}\`
-    } else {
-      return \`{ \${jsFields.join(', ')} }\`
-    }
-  })
-}
-
-
-// 美しくフォーマットする関数
-const prettyFormat = (value) => {
-  // プリミティブ型
-  if (typeof value === 'string') return \`"\${value}"\`
-  if (typeof value === 'number') return String(value)
-  if (typeof value === 'boolean') return value ? 'True' : 'False'
-  if (value === null) return 'null'
-  if (value === undefined) return 'undefined'
-  
-  // Seseragi特殊型とオブジェクトの場合
-  if (value && typeof value === 'object') {
-    // Maybe型
-    if (value.tag === 'Just') {
-      return \`Just(\${prettyFormat(value.value)})\`
-    }
-    if (value.tag === 'Nothing') {
-      return 'Nothing'
-    }
-    
-    // Either型
-    if (value.tag === 'Left') {
-      return \`Left(\${prettyFormat(value.value)})\`
-    }
-    if (value.tag === 'Right') {
-      return \`Right(\${prettyFormat(value.value)})\`
-    }
-    
-    // List型
-    if (value.tag === 'Empty') {
-      return '\`[]'
-    }
-    if (value.tag === 'Cons') {
-      const items = []
-      let current = value
-      while (current.tag === 'Cons') {
-        items.push(prettyFormat(current.head))
-        current = current.tail
-      }
-      return \`\\\`[\${items.join(', ')}]\`
-    }
-    
-    // Tuple型
-    if (value.tag === 'Tuple') {
-      return \`(\${value.elements.map(prettyFormat).join(', ')})\`
-    }
-    
-    // 配列
-    if (Array.isArray(value)) {
-      return \`[\${value.map(prettyFormat).join(', ')}]\`
-    }
-    
-    // 構造体・普通のオブジェクト
-    const pairs = []
-    for (const key in value) {
-      if (value.hasOwnProperty(key)) {
-        pairs.push(\`\${key}: \${prettyFormat(value[key])}\`)
-      }
-    }
-    
-    const structName = value.constructor && value.constructor.name !== 'Object' 
-      ? value.constructor.name 
-      : ''
-    
-    if (pairs.length > 2) {
-      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
-    } else {
-      return \`\${structName} { \${pairs.join(', ')} }\`
-    }
-  }
-  
-  return String(value)
-}
-
-const show = (value) => {
-  console.log(prettyFormat(value))
-};`)
-    }
-    if (
-      this.usageAnalysis.needsBuiltins.arrayToList ||
-      this.usageAnalysis.needsBuiltins.listToArray
-    ) {
-      lines.push("")
-      if (this.usageAnalysis.needsBuiltins.arrayToList) {
-        lines.push("const arrayToList = curry(<T>(arr: T[]): List<T> => {")
-        lines.push("  let result: List<T> = Empty;")
-        lines.push("  for (let i = arr.length - 1; i >= 0; i--) {")
-        lines.push("    result = Cons(arr[i], result);")
-        lines.push("  }")
-        lines.push("  return result;")
-        lines.push("});")
-        lines.push("")
-      }
-      if (this.usageAnalysis.needsBuiltins.listToArray) {
-        lines.push("const listToArray = curry(<T>(list: List<T>): T[] => {")
-        lines.push("  const result: T[] = [];")
-        lines.push("  let current = list;")
-        lines.push("  while (current.tag === 'Cons') {")
-        lines.push("    result.push(current.head);")
-        lines.push("    current = current.tail;")
-        lines.push("  }")
-        lines.push("  return result;")
-        lines.push("});")
-      }
     }
 
     return lines
@@ -1191,7 +634,7 @@ const show = (value) => {
     value.tag === 'Cons' || value.tag === 'Empty'
   )) {
     console.log(toString(value))
-  } 
+  }
   // 通常のオブジェクトはそのまま
   else {
     console.log(value)
@@ -1206,7 +649,7 @@ const show = (value) => {
   if (value && typeof value === 'object' && value.tag === 'Nothing') {
     return 'Nothing'
   }
-  
+
   // Either型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Left') {
     return \`Left(\${toString(value.value)})\`
@@ -1214,7 +657,7 @@ const show = (value) => {
   if (value && typeof value === 'object' && value.tag === 'Right') {
     return \`Right(\${toString(value.value)})\`
   }
-  
+
   // List型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Empty') {
     return "\`[]"
@@ -1228,17 +671,17 @@ const show = (value) => {
     }
     return "\`[" + items.join(', ') + "]"
   }
-  
+
   // Tuple型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Tuple') {
     return \`(\${value.elements.map(toString).join(', ')})\`
   }
-  
+
   // 配列の表示
   if (Array.isArray(value)) {
     return \`[\${value.map(toString).join(', ')}]\`
   }
-  
+
   // プリミティブ型
   if (typeof value === 'string') {
     return \`"\${value}"\`
@@ -1249,7 +692,7 @@ const show = (value) => {
   if (typeof value === 'boolean') {
     return value ? 'True' : 'False'
   }
-  
+
   // 普通のオブジェクト（構造体など）
   if (typeof value === 'object' && value !== null) {
     const pairs = []
@@ -1258,12 +701,12 @@ const show = (value) => {
         pairs.push(\`\${key}: \${toString(value[key])}\`)
       }
     }
-    
+
     // 構造体名を取得（constructor.nameを使用）
-    const structName = value.constructor && value.constructor.name !== 'Object' 
-      ? value.constructor.name 
+    const structName = value.constructor && value.constructor.name !== 'Object'
+      ? value.constructor.name
       : ''
-    
+
     // 複数フィールドがある場合はインデント表示
     if (pairs.length > 2) {
       return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
@@ -1271,7 +714,7 @@ const show = (value) => {
       return \`\${structName} { \${pairs.join(', ')} }\`
     }
   }
-  
+
   return String(value)
 };`,
       `const toInt = (value: any): number => {
@@ -1644,7 +1087,7 @@ ${indent}}`
     lines.push("    return structMethods[methodName](obj, ...args);")
     lines.push("  }")
     lines.push(
-      "  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);"
+      `  throw new Error(\`Method '\${methodName}' not found for struct '\${structName}'\`);`
     )
     lines.push("}")
     lines.push("")
@@ -1673,7 +1116,9 @@ ${indent}}`
     lines.push("    case '>=': return left >= right;")
     lines.push("    case '&&': return left && right;")
     lines.push("    case '||': return left || right;")
-    lines.push("    default: throw new Error(`Unknown operator: ${operator}`);")
+    lines.push(
+      `    default: throw new Error(\`Unknown operator: \${operator}\`);`
+    )
     lines.push("  }")
     lines.push("}")
     lines.push("")
@@ -1962,7 +1407,7 @@ ${indent}}`
 
   // 型推論結果から解決済みの型を取得
   private getResolvedType(expr: Expression): Type | undefined {
-    if (this.typeInferenceResult && this.typeInferenceResult.nodeTypeMap) {
+    if (this.typeInferenceResult?.nodeTypeMap) {
       const resolvedType = this.typeInferenceResult.nodeTypeMap.get(expr)
       if (resolvedType) {
         return resolvedType
@@ -1973,7 +1418,7 @@ ${indent}}`
 
   // 構造体型定義を型環境から取得
   private getStructTypeDefinition(structName: string): StructType | undefined {
-    if (this.typeInferenceResult && this.typeInferenceResult.typeEnvironment) {
+    if (this.typeInferenceResult?.typeEnvironment) {
       const structType =
         this.typeInferenceResult.typeEnvironment.get(structName)
       if (structType && structType.kind === "StructType") {
@@ -2327,14 +1772,14 @@ ${indent}}`
 
     // if-else チェーンとして生成（柔軟性を向上）
     const cases = match.cases
-    let result = "(() => {\n  const matchValue = " + expr + ";\n"
+    let result = `(() => {\n  const matchValue = ${expr};\n`
 
     for (let i = 0; i < cases.length; i++) {
       const c = cases[i]
 
       // GuardPatternの場合は特別な処理が必要
       if (c.pattern.kind === "GuardPattern") {
-        const guardPattern = c.pattern as any // AST.GuardPattern
+        const guardPattern = c.pattern as GuardPattern
         const baseCondition = this.generatePatternCondition(
           guardPattern.pattern,
           "matchValue"
@@ -2457,7 +1902,7 @@ ${indent}}`
 
       case "OrPattern": {
         // orパターン: いずれかのサブパターンがマッチすれば良い
-        const orPattern = pattern as any // AST.OrPattern
+        const orPattern = pattern as OrPattern
         const orConditions = orPattern.patterns.map((subPattern: any) => {
           return this.generatePatternCondition(subPattern, valueVar)
         })
@@ -2466,7 +1911,7 @@ ${indent}}`
 
       case "GuardPattern": {
         // ガードパターン: パターンがマッチし、かつガード条件が真である場合のみマッチ
-        const guardPattern = pattern as any // AST.GuardPattern
+        const guardPattern = pattern as GuardPattern
         const patternCondition = this.generatePatternCondition(
           guardPattern.pattern,
           valueVar
@@ -2477,7 +1922,7 @@ ${indent}}`
 
       case "ListSugarPattern": {
         // リスト糖衣構文パターン: `[x, y, ...rest]
-        const listSugarPattern = pattern as any // AST.ListSugarPattern
+        const listSugarPattern = pattern as ListSugarPattern
 
         // 空リストパターン `[]
         if (
@@ -2496,7 +1941,7 @@ ${indent}}`
         }
 
         // パターンを構築
-        let conditions: string[] = []
+        const conditions: string[] = []
         let currentVar = valueVar
 
         // 各要素パターンをチェック
@@ -2515,7 +1960,7 @@ ${indent}}`
 
       case "ArrayPattern": {
         // 配列パターン: [x, y, ...rest]
-        const arrayPattern = pattern as any // AST.ArrayPattern
+        const arrayPattern = pattern as ArrayPattern
 
         // 空配列パターン []
         if (arrayPattern.patterns.length === 0 && !arrayPattern.hasRest) {
@@ -2527,7 +1972,7 @@ ${indent}}`
           return "true" // すべての配列にマッチ
         }
 
-        let conditions: string[] = []
+        const conditions: string[] = []
 
         // 要素数チェック
         if (!arrayPattern.hasRest) {
@@ -2629,7 +2074,7 @@ ${indent}}`
       const _values = ${valueContainer};
       if (Array.isArray(_funcs) && Array.isArray(_values)) {
         return applyArray(_funcs, _values);
-      } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') && 
+      } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') &&
                 _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
         return applyList(_funcs, _values);
       } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
@@ -3218,7 +2663,7 @@ ${indent}}`
       } else {
         // 埋め込み式はTypeScriptのテンプレートリテラル記法で囲む
         const exprCode = this.generateExpression(part)
-        result += "${" + exprCode + "}"
+        result += `\${${exprCode}}`
       }
     }
 

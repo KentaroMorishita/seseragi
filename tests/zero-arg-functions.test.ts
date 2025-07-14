@@ -15,7 +15,7 @@ test("Zero-argument functions - should parse correctly", () => {
 
   expect(program.statements).toHaveLength(3)
 
-  const funcDecl = program.statements[0] as any
+  const funcDecl = program.statements[0] as AST.FunctionDeclaration
   expect(funcDecl.kind).toBe("FunctionDeclaration")
   expect(funcDecl.name).toBe("getMessage")
   expect(funcDecl.parameters).toHaveLength(0)

@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 import * as AST from "../src/ast"
-import { TypeInferenceSystem, TypeInferenceError } from "../src/type-inference"
+import { TypeInferenceSystem } from "../src/type-inference"
 
 describe("Plus operator type inference", () => {
   test("String + String works correctly", () => {

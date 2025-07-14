@@ -1,8 +1,6 @@
 import { describe, test, expect } from "bun:test"
-import { lex } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import * as AST from "../src/ast"
 
 // LSPサーバーから同じ関数をコピーしてテスト用に使用
 function findSymbolWithEnhancedInference(
@@ -10,7 +8,7 @@ function findSymbolWithEnhancedInference(
   symbol: string,
   inferenceResult: any,
   offset: number,
-  text: string
+  _text: string
 ): any {
   console.log(`Searching for symbol: "${symbol}" at offset ${offset}`)
 
@@ -96,13 +94,15 @@ function formatInferredTypeInfo(symbol: string, symbolInfo: any): string {
     switch (type.kind) {
       case "PrimitiveType":
         return type.name
-      case "FunctionType":
+      case "FunctionType": {
         const paramType = formatType(type.paramType)
         const returnType = formatType(type.returnType)
         return `(${paramType}) -> ${returnType}`
-      case "GenericType":
+      }
+      case "GenericType": {
         const args = type.typeArguments.map(formatType).join(", ")
         return `${type.name}<${args}>`
+      }
       default:
         return type.kind || "unknown"
     }

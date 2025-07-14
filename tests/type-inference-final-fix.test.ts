@@ -1,6 +1,7 @@
 import { test, expect } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
+import type * as AST from "../src/ast"
 
 test("Function calls with no arguments", () => {
   const content = `
@@ -17,21 +18,22 @@ let number = getNumber()
   const result = typeInference.infer(ast)
 
   const messageDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "message"
   )
   const numberDecl = ast.statements.find(
-    (stmt: any) => stmt.kind === "VariableDeclaration" && stmt.name === "number"
+    (stmt: AST.Statement) =>
+      stmt.kind === "VariableDeclaration" && stmt.name === "number"
   )
 
   const messageType = result.nodeTypeMap.get(messageDecl)
   const numberType = result.nodeTypeMap.get(numberDecl)
 
   expect(messageType?.kind).toBe("PrimitiveType")
-  expect((messageType as any)?.name).toBe("String")
+  expect((messageType as AST.PrimitiveType)?.name).toBe("String")
 
   expect(numberType?.kind).toBe("PrimitiveType")
-  expect((numberType as any)?.name).toBe("Int")
+  expect((numberType as AST.PrimitiveType)?.name).toBe("Int")
 })
 
 test("Maybe types with proper polymorphism", () => {
@@ -46,11 +48,11 @@ let nothingValue = Nothing
   const result = typeInference.infer(ast)
 
   const someValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "someValue"
   )
   const nothingValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "nothingValue"
   )
 
@@ -59,16 +61,18 @@ let nothingValue = Nothing
 
   // Just 42 should be Maybe<Int>
   expect(someValueType?.kind).toBe("GenericType")
-  expect((someValueType as any)?.name).toBe("Maybe")
-  expect((someValueType as any)?.typeArguments[0]?.name).toBe("Int")
+  expect((someValueType as AST.GenericType)?.name).toBe("Maybe")
+  expect((someValueType as AST.GenericType)?.typeArguments[0]?.name).toBe("Int")
 
   // Nothing should be Maybe<'a> (polymorphic)
   expect(nothingValueType?.kind).toBe("GenericType")
-  expect((nothingValueType as any)?.name).toBe("Maybe")
-  expect((nothingValueType as any)?.typeArguments[0]?.kind).toBe(
+  expect((nothingValueType as AST.GenericType)?.name).toBe("Maybe")
+  expect((nothingValueType as AST.GenericType)?.typeArguments[0]?.kind).toBe(
     "PolymorphicTypeVariable"
   )
-  expect((nothingValueType as any)?.typeArguments[0]?.name).toBe("a")
+  expect((nothingValueType as AST.GenericType)?.typeArguments[0]?.name).toBe(
+    "a"
+  )
 })
 
 test("Either types with proper polymorphism", () => {
@@ -83,11 +87,11 @@ let errorValue = Left "Error occurred"
   const result = typeInference.infer(ast)
 
   const successValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "successValue"
   )
   const errorValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "errorValue"
   )
 
@@ -96,21 +100,27 @@ let errorValue = Left "Error occurred"
 
   // Right 42 should be Either<'a, Int>
   expect(successValueType?.kind).toBe("GenericType")
-  expect((successValueType as any)?.name).toBe("Either")
-  expect((successValueType as any)?.typeArguments[0]?.kind).toBe(
+  expect((successValueType as AST.GenericType)?.name).toBe("Either")
+  expect((successValueType as AST.GenericType)?.typeArguments[0]?.kind).toBe(
     "PolymorphicTypeVariable"
   )
-  expect((successValueType as any)?.typeArguments[0]?.name).toBe("a")
-  expect((successValueType as any)?.typeArguments[1]?.name).toBe("Int")
+  expect((successValueType as AST.GenericType)?.typeArguments[0]?.name).toBe(
+    "a"
+  )
+  expect((successValueType as AST.GenericType)?.typeArguments[1]?.name).toBe(
+    "Int"
+  )
 
   // Left "Error" should be Either<String, 'b>
   expect(errorValueType?.kind).toBe("GenericType")
-  expect((errorValueType as any)?.name).toBe("Either")
-  expect((errorValueType as any)?.typeArguments[0]?.name).toBe("String")
-  expect((errorValueType as any)?.typeArguments[1]?.kind).toBe(
+  expect((errorValueType as AST.GenericType)?.name).toBe("Either")
+  expect((errorValueType as AST.GenericType)?.typeArguments[0]?.name).toBe(
+    "String"
+  )
+  expect((errorValueType as AST.GenericType)?.typeArguments[1]?.kind).toBe(
     "PolymorphicTypeVariable"
   )
-  expect((errorValueType as any)?.typeArguments[1]?.name).toBe("b")
+  expect((errorValueType as AST.GenericType)?.typeArguments[1]?.name).toBe("b")
 })
 
 test("Curried functions still work correctly", () => {
@@ -131,11 +141,11 @@ let calculatedB = complexCalculation 5 6
   const result = typeInference.infer(ast)
 
   const calculatedADecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "calculatedA"
   )
   const calculatedBDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "calculatedB"
   )
 
@@ -144,12 +154,12 @@ let calculatedB = complexCalculation 5 6
 
   // calculatedA should be Int -> Int
   expect(calculatedAType?.kind).toBe("FunctionType")
-  expect((calculatedAType as any)?.paramType?.name).toBe("Int")
-  expect((calculatedAType as any)?.returnType?.name).toBe("Int")
+  expect((calculatedAType as AST.FunctionType)?.paramType?.name).toBe("Int")
+  expect((calculatedAType as AST.FunctionType)?.returnType?.name).toBe("Int")
 
   // calculatedB should be Int
   expect(calculatedBType?.kind).toBe("PrimitiveType")
-  expect((calculatedBType as any)?.name).toBe("Int")
+  expect((calculatedBType as AST.PrimitiveType)?.name).toBe("Int")
 })
 
 test("Type string formatting", () => {
@@ -164,11 +174,11 @@ let successValue = Right 42
   const result = typeInference.infer(ast)
 
   const nothingValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "nothingValue"
   )
   const successValueDecl = ast.statements.find(
-    (stmt: any) =>
+    (stmt: AST.Statement) =>
       stmt.kind === "VariableDeclaration" && stmt.name === "successValue"
   )
 

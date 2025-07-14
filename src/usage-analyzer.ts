@@ -59,6 +59,9 @@ export class UsageAnalyzer {
   }
 
   analyze(statements: AST.Statement[]): UsageAnalysis {
+    if (!statements || !Array.isArray(statements)) {
+      return this.analysis
+    }
     for (const stmt of statements) {
       this.analyzeStatement(stmt)
     }
@@ -95,7 +98,7 @@ export class UsageAnalyzer {
       this.analysis.needsFunctionApplication = true
       // ビルトイン関数の検出
       if (expr.left instanceof AST.Identifier) {
-        this.analyzeBuiltin(expr.left.name as any)
+        this.analyzeBuiltin(expr.left.name)
       }
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
@@ -122,14 +125,14 @@ export class UsageAnalyzer {
     } else if (expr instanceof AST.FunctionApplication) {
       // ビルトイン関数の検出
       if (expr.function instanceof AST.Identifier) {
-        this.analyzeBuiltin(expr.function.name as any)
+        this.analyzeBuiltin(expr.function.name)
       }
       this.analyzeExpression(expr.function)
       this.analyzeExpression(expr.argument)
     } else if (expr instanceof AST.FunctionCall) {
       // ビルトイン関数の検出
       if (expr.function instanceof AST.Identifier) {
-        this.analyzeBuiltin(expr.function.name as any)
+        this.analyzeBuiltin(expr.function.name)
       }
       this.analyzeExpression(expr.function)
       for (const arg of expr.arguments) {

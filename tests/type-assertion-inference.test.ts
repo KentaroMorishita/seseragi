@@ -2,7 +2,7 @@ import { describe, test, expect } from "bun:test"
 import { lex } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Type Assertion Inference", () => {
   test("変数の型アサーション推論確認", () => {

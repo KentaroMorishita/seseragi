@@ -5,8 +5,6 @@ import { spawn } from "node:child_process"
 import { Parser } from "../parser.js"
 import { generateTypeScript } from "../codegen.js"
 import { infer } from "../type-inference.js"
-import { TypeChecker } from "../typechecker.js"
-import * as AST from "../ast.js"
 
 export interface RunOptions {
   input: string
@@ -168,7 +166,7 @@ export function cleanupTempFiles(): void {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file)
       }
-    } catch (error) {
+    } catch (_error) {
       // クリーンアップエラーは無視
     }
   })

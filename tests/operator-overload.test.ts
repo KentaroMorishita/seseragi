@@ -22,13 +22,13 @@ let u2 = User { name: "bar", age: 20, amount: 20 }
 
 let result = u1 + u2
     `
-    
+
     const parser = new Parser(code)
     const program = parser.parse()
-    
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
-    
+
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
   })
@@ -56,13 +56,13 @@ let p2 = Point { x: 3, y: 4 }
 let pointResult = func p1 p2
 let intResult = func 1 2
     `
-    
+
     const parser = new Parser(code)
     const program = parser.parse()
-    
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
-    
+
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
   })
@@ -90,13 +90,13 @@ let v2 = Vector { x: 3, y: 4 }
 let vectorSum = v1 + v2
 let dotProduct = v1 * v2
     `
-    
+
     const parser = new Parser(code)
     const program = parser.parse()
-    
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
-    
+
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
   })
