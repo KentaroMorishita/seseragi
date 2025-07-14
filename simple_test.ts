@@ -327,6 +327,68 @@ function __dispatchOperator(left: any, operator: string, right: any): any {
 }
 
 
+class Point {
+  x: number;
+  y: number;
+
+  constructor(fields: { x: number, y: number }) {
+    this.x = fields.x;
+    this.y = fields.y;
+  }
+}
+
+class User {
+  name: string;
+  age: number;
+  amount: number;
+
+  constructor(fields: { name: string, age: number, amount: number }) {
+    this.name = fields.name;
+    this.age = fields.age;
+    this.amount = fields.amount;
+  }
+}
+
+// Point implementation
+function __ssrg_Point_f4pl4mu_op_add(self: Point, other: Point): Point {
+  return (() => {
+  const x = (self.x + other.x);
+  const y = (self.y + other.y);
+  return (() => { const __tmpts7y4a = { x: x, y: y }; return Object.assign(Object.create(Point.prototype), __tmpts7y4a); })();
+})();
+}
+
+// User implementation
+function __ssrg_User_f4pl4mu_op_add(self: User, other: User): number {
+  return (() => {
+  return (self.amount + other.amount);
+})();
+}
+
+// Initialize dispatch tables immediately
+(() => {
+  // Initialize method dispatch table
+  __structMethods = {
+    "Point": {
+
+    },
+    "User": {
+
+    },
+  };
+
+  // Initialize operator dispatch table
+  __structOperators = {
+    "Point": {
+      "+": __ssrg_Point_f4pl4mu_op_add
+    },
+    "User": {
+      "+": __ssrg_User_f4pl4mu_op_add
+    },
+  };
+
+})();
+
 const func = (x: any) => (y: any) => __dispatchOperator(x, "+", y);
 
 const hoge = func(1)(2);
@@ -336,3 +398,19 @@ show(hoge);
 const fuga = func("foo")("bar");
 
 show(fuga);
+
+const p1 = new Point({ x: 1, y: 2 });
+
+const p2 = new Point({ x: 3, y: 4 });
+
+const foo = func(p1)(p2);
+
+show(foo);
+
+const u1 = new User({ name: "foo", age: 20, amount: 10 });
+
+const u2 = new User({ name: "bar", age: 20, amount: 20 });
+
+const bar = func(u1)(u2);
+
+show(bar);

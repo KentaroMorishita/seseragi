@@ -331,6 +331,7 @@ export class TypeInferenceSystem {
   private errors: TypeInferenceError[] = []
   private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
+  private currentProgram: AST.Program | null = null // 現在処理中のプログラム
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
@@ -684,6 +685,7 @@ export class TypeInferenceSystem {
     this.errors = []
     this.nextVarId = 1000 // Reset to 1000 to avoid conflicts with parser-generated type variables
     this.nodeTypeMap.clear()
+    this.currentProgram = program // プログラム情報を保存
 
     // 型環境の初期化
     const env = this.createInitialEnvironment()
@@ -1140,6 +1142,43 @@ export class TypeInferenceSystem {
     }
   }
 
+  // 構造体の演算子定義を検索するヘルパー関数
+  private findOperatorDefinition(
+    structType: AST.Type,
+    operator: string,
+    env: Map<string, AST.Type>
+  ): AST.OperatorDeclaration | null {
+    // 構造体型の場合のみ処理
+    if (structType.kind !== "StructType") {
+      return null
+    }
+
+    const structTypeName = (structType as AST.StructType).name
+
+    // プログラム全体からImplBlockを検索
+    if (!this.currentProgram) {
+      return null
+    }
+
+    for (const stmt of this.currentProgram.statements) {
+      if (stmt.kind === "ImplBlock") {
+        const implBlock = stmt as AST.ImplBlock
+        
+        // 対象の構造体型のimplブロックかチェック
+        if (implBlock.typeName === structTypeName) {
+          // 該当する演算子定義を検索
+          for (const op of implBlock.operators) {
+            if (op.operator === operator) {
+              return op
+            }
+          }
+        }
+      }
+    }
+
+    return null
+  }
+
   private generateConstraintsForTupleDestructuring(
     tupleDestr: AST.TupleDestructuring,
     env: Map<string, AST.Type>
@@ -1552,9 +1591,15 @@ export class TypeInferenceSystem {
 
     switch (binOp.operator) {
       case "+":
-        // + 演算子は数値演算か文字列結合のどちらか
-        // より具体的な制約生成で型安全性を保つ
+        // 構造体の演算子オーバーロードをチェック
+        const plusOperatorDef = this.findOperatorDefinition(leftType, "+", env)
+        if (plusOperatorDef) {
+          // 演算子定義が見つかった場合、その戻り値型を使用
+          return plusOperatorDef.returnType
+        }
 
+        // 演算子定義がない場合は従来の処理
+        // + 演算子は数値演算か文字列結合のどちらか
         // 左右のオペランドが同じ型である制約
         this.addConstraint(
           new TypeConstraint(
@@ -1574,28 +1619,26 @@ export class TypeInferenceSystem {
       case "/":
       case "%":
       case "**": {
-        // 数値演算: 両オペランドは同じ型でなければならず、結果も同じ型
-        // ただし、構造体型が関わっている場合は演算子オーバーロードの可能性があるため制約を緩める
-
-        // 構造体型が関わっているかチェック
-        const hasStructType =
-          this.isStructOrResolvesToStruct(leftType, env) ||
-          this.isStructOrResolvesToStruct(rightType, env)
-
-        if (!hasStructType) {
-          // 通常の数値演算の場合のみ、左右のオペランドが同じ型である制約を追加
-          this.addConstraint(
-            new TypeConstraint(
-              leftType,
-              rightType,
-              binOp.line,
-              binOp.column,
-              `Binary operation ${binOp.operator} operands must have same type`
-            )
-          )
+        // 構造体の演算子オーバーロードをチェック
+        const operatorDef = this.findOperatorDefinition(leftType, binOp.operator, env)
+        if (operatorDef) {
+          // 演算子定義が見つかった場合、その戻り値型を使用
+          return operatorDef.returnType
         }
 
-        // 結果の型は左のオペランドと同じ型（構造体の場合は演算子オーバーロードで決まる）
+        // 演算子定義がない場合は従来の処理
+        // 数値演算: 両オペランドは同じ型でなければならず、結果も同じ型
+        this.addConstraint(
+          new TypeConstraint(
+            leftType,
+            rightType,
+            binOp.line,
+            binOp.column,
+            `Binary operation ${binOp.operator} operands must have same type`
+          )
+        )
+
+        // 結果の型は左のオペランドと同じ型
         return leftType
       }
 

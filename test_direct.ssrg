@@ -1,0 +1,17 @@
+struct User {
+  name: String,
+  age: Int,
+  amount: Int
+}
+
+impl User {
+  operator + self -> other -> Int {
+    self.amount + other.amount
+  }
+}
+
+let u1 = User { name: "foo", age: 20, amount: 10 }
+let u2 = User { name: "bar", age: 20, amount: 20 }
+
+let direct = u1 + u2
+show direct
