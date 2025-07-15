@@ -1,4 +1,3 @@
-// @ts-nocheck - LSP implementation with complex type issues
 import {
   createConnection,
   TextDocuments,
@@ -22,65 +21,16 @@ import {
 } from "vscode-languageserver/node"
 
 import { TextDocument } from "vscode-languageserver-textdocument"
+import { URI } from "vscode-uri"
 import { Parser } from "../parser"
-import {
-  TypeInferenceSystem,
-  type TypeInferenceSystemResult,
-} from "../type-inference"
-import type { TypeChecker } from "../typechecker"
-import { formatSeseragiCode } from "../formatter/index.js"
+import { TypeInferenceSystem } from "../type-inference"
+import { TypeChecker } from "../typechecker"
 import * as AST from "../ast"
-
-// LSP type interfaces
-interface SymbolInfo {
-  type: string
-  name: string
-  finalType: AST.Type
-  hasExplicitType?: boolean
-}
-
-// Helper interfaces to avoid 'as any'
-interface ExpressionWithName extends AST.Expression {
-  name?: string
-}
-
-interface ExpressionWithInitializer extends AST.Expression {
-  initializer?: AST.Expression
-}
-
-interface ExpressionWithPattern extends AST.Expression {
-  pattern?: AST.Pattern
-}
-
-interface ExpressionWithBody extends AST.Expression {
-  body?: AST.Expression
-}
-
-interface ExpressionWithStatements extends AST.Expression {
-  statements?: AST.Statement[]
-}
-
-interface StatementWithBody extends AST.Statement {
-  body?: AST.Expression
-}
-
-interface PatternWithFields extends AST.Pattern {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fields?: any[]
-}
-
-interface TypeWithFields extends AST.Type {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fields?: any[]
-}
-
-interface StatementWithType extends AST.Statement {
-  type?: AST.Type
-}
-
-interface StatementWithName extends AST.Statement {
-  name?: string
-}
+import {
+  formatSeseragiCode,
+  removeExtraWhitespace,
+  normalizeOperatorSpacing,
+} from "../formatter/index.js"
 
 // Create a connection for the server, using Node's IPC as a transport
 const connection = createConnection(ProposedFeatures.all)
@@ -103,8 +53,11 @@ connection.onInitialize((params: InitializeParams) => {
   hasWorkspaceFolderCapability = !!(
     capabilities.workspace && !!capabilities.workspace.workspaceFolders
   )
-  hasDiagnosticRelatedInformationCapability =
-    !!capabilities.textDocument?.publishDiagnostics?.relatedInformation
+  hasDiagnosticRelatedInformationCapability = !!(
+    capabilities.textDocument &&
+    capabilities.textDocument.publishDiagnostics &&
+    capabilities.textDocument.publishDiagnostics.relatedInformation
+  )
 
   const result: InitializeResult = {
     capabilities: {
@@ -202,19 +155,79 @@ documents.onDidChangeContent((change) => {
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   // In this simple example we get the settings for every validate run.
-  const _settings = await getDocumentSettings(textDocument.uri)
+  const settings = await getDocumentSettings(textDocument.uri)
 
   // The validator creates diagnostics for all uppercase words longer than 2 characters
   const text = textDocument.getText()
   const diagnostics: Diagnostic[] = []
 
   try {
-    const result = parseAndInferTypes(text)
-    const allErrors = result.errors
+    // Parse the document
+    const parser = new Parser(text)
+    const parseResult = parser.parse()
+    const ast = new AST.Program(parseResult.statements || [])
+
+    // Use new type inference system
+    const typeInference = new TypeInferenceSystem()
+    const inferenceResult = typeInference.infer(ast)
+
+    // Use only the new type inference system errors
+    const allErrors = inferenceResult.errors
 
     // Convert type errors to diagnostics
     for (const error of allErrors) {
-      const diagnostic = createDiagnosticFromError(error, textDocument)
+      const startPos =
+        error.line !== undefined && error.column !== undefined
+          ? {
+              line: Math.max(0, error.line - 1),
+              character: Math.max(0, error.column),
+            }
+          : textDocument.positionAt(0)
+      const endPos =
+        error.line !== undefined && error.column !== undefined
+          ? {
+              line: Math.max(0, error.line - 1),
+              character: Math.max(
+                0,
+                error.column + ((error as any).length || 1)
+              ),
+            }
+          : textDocument.positionAt(Math.min(text.length, 100))
+
+      // Enhanced error message with context
+      let enhancedMessage = error.message
+      if ("context" in error && error.context) {
+        enhancedMessage += `\n\nContext: ${error.context}`
+      }
+      if ("suggestion" in error && error.suggestion) {
+        enhancedMessage += `\n\nSuggestion: ${error.suggestion}`
+      }
+
+      const diagnostic: Diagnostic = {
+        severity: DiagnosticSeverity.Error,
+        range: {
+          start: startPos,
+          end: endPos,
+        },
+        message: enhancedMessage,
+        source: "seseragi",
+        code:
+          ("code" in error && typeof error.code === "string"
+            ? error.code
+            : undefined) || "type-error",
+      }
+
+      if (hasDiagnosticRelatedInformationCapability) {
+        diagnostic.relatedInformation = [
+          {
+            location: {
+              uri: textDocument.uri,
+              range: Object.assign({}, diagnostic.range),
+            },
+            message: "Type error occurred here",
+          },
+        ]
+      }
       diagnostics.push(diagnostic)
     }
   } catch (error) {
@@ -255,102 +268,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics })
 }
 
-function parseAndInferTypes(text: string) {
-  // Parse the document
-  const parser = new Parser(text)
-  const parseResult = parser.parse()
-  const ast = new AST.Program(parseResult.statements || [])
-
-  // Use new type inference system
-  const typeInference = new TypeInferenceSystem()
-  const inferenceResult = typeInference.infer(ast)
-
-  return inferenceResult
-}
-
-interface ErrorLike {
-  message: string
-  line?: number
-  column?: number
-  length?: number
-  context?: string
-  suggestion?: string
-  code?: string
-}
-
-function createDiagnosticFromError(
-  error: ErrorLike,
-  textDocument: TextDocument
-): Diagnostic {
-  const startPos = calculateStartPosition(error, textDocument)
-  const endPos = calculateEndPosition(error, textDocument)
-  const enhancedMessage = buildEnhancedMessage(error)
-
-  const diagnostic: Diagnostic = {
-    severity: DiagnosticSeverity.Error,
-    range: {
-      start: startPos,
-      end: endPos,
-    },
-    message: enhancedMessage,
-    source: "seseragi",
-    code:
-      ("code" in error && typeof error.code === "string"
-        ? error.code
-        : undefined) || "type-error",
-  }
-
-  if (hasDiagnosticRelatedInformationCapability) {
-    diagnostic.relatedInformation = [
-      {
-        location: {
-          uri: textDocument.uri,
-          range: Object.assign({}, diagnostic.range),
-        },
-        message: "Type error occurred here",
-      },
-    ]
-  }
-
-  return diagnostic
-}
-
-function calculateStartPosition(error: ErrorLike, textDocument: TextDocument) {
-  return error.line !== undefined && error.column !== undefined
-    ? {
-        line: Math.max(0, error.line - 1),
-        character: Math.max(0, error.column),
-      }
-    : textDocument.positionAt(0)
-}
-
-function calculateEndPosition(error: ErrorLike, textDocument: TextDocument) {
-  const text = textDocument.getText()
-  return error.line !== undefined && error.column !== undefined
-    ? {
-        line: Math.max(0, error.line - 1),
-        character: Math.max(
-          0,
-          error.column +
-            ("length" in error && typeof error.length === "number"
-              ? error.length
-              : 1)
-        ),
-      }
-    : textDocument.positionAt(Math.min(text.length, 100))
-}
-
-function buildEnhancedMessage(error: ErrorLike): string {
-  let enhancedMessage = error.message
-  if ("context" in error && error.context) {
-    enhancedMessage += `\n\nContext: ${error.context}`
-  }
-  if ("suggestion" in error && error.suggestion) {
-    enhancedMessage += `\n\nSuggestion: ${error.suggestion}`
-  }
-  return enhancedMessage
-}
-
 // Deprecated API - remove for now
 // connection.languages.onDocumentDiagnostic(async (params) => {
 //   const document = documents.get(params.textDocument.uri);
@@ -375,8 +292,7 @@ function buildEnhancedMessage(error: ErrorLike): string {
 //   try {
 //     // Parse the document
 //     const parser = new Parser(text);
-//     const parseResult = parser.parse()
-//     const ast = new AST.Program(parseResult.statements || [])
+//     const ast = parser.parse();
 
 //     // Type check the document
 //     const typeChecker = new TypeChecker();
@@ -422,7 +338,7 @@ connection.onCompletion(
 
     const text = document.getText()
     const position = textDocumentPosition.position
-    const _offset = document.offsetAt(position)
+    const offset = document.offsetAt(position)
 
     // Get current line text for context
     const lineText = text.split("\n")[position.line] || ""
@@ -557,8 +473,7 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
   try {
     // Parse the document
     const parser = new Parser(text)
-    const parseResult = parser.parse()
-    const ast = new AST.Program(parseResult.statements || [])
+    const ast = parser.parse()
 
     // Debug: log AST structure
     connection.console.log(`=== LSP AST DEBUG ===`)
@@ -586,11 +501,7 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
 })
 
 // Helper function to get hover information at a specific offset
-function getHoverInfo(
-  ast: AST.Program,
-  offset: number,
-  text: string
-): string | null {
+function getHoverInfo(ast: any, offset: number, text: string): string | null {
   // Check if this is a field access first
   const fieldAccessInfo = getFieldAccessInfo(text, offset)
   if (fieldAccessInfo) {
@@ -659,9 +570,9 @@ function getHoverInfo(
 
 // Get type information using the enhanced type inference system
 function getTypeInfoWithInference(
-  ast: AST.Program,
+  ast: any,
   symbol: string,
-  inferenceResult: TypeInferenceSystemResult,
+  inferenceResult: any,
   offset: number,
   text: string
 ): string | null {
@@ -685,7 +596,7 @@ function getTypeInfoWithInference(
       connection.console.log(
         `Type info for ${symbol}: ${JSON.stringify(symbolInfo.finalType, null, 2)}`
       )
-      return formatInferredTypeInfo(symbol, symbolInfo.finalType)
+      return formatInferredTypeInfo(symbol, symbolInfo)
     }
   } catch (error) {
     connection.console.log(
@@ -697,49 +608,40 @@ function getTypeInfoWithInference(
 }
 
 // Find symbol with type information from the type checker
-function _findSymbolWithType(
-  ast: AST.Program,
+function findSymbolWithType(
+  ast: any,
   symbol: string,
-  _typeChecker: TypeChecker
-): SymbolInfo | null {
+  typeChecker: TypeChecker
+): any {
   if (!ast.statements) {
     return null
   }
 
   for (const statement of ast.statements) {
-    if (
-      statement.kind === "FunctionDeclaration" &&
-      (statement as AST.FunctionDeclaration).name === symbol
-    ) {
-      const funcDecl = statement as AST.FunctionDeclaration
+    if (statement.kind === "FunctionDeclaration" && statement.name === symbol) {
       return {
         type: "function",
         name: symbol,
-        finalType: funcDecl.returnType,
+        parameters: statement.parameters,
+        returnType: statement.returnType,
+        isEffectful: statement.isEffectful,
       }
     }
 
-    if (
-      statement.kind === "VariableDeclaration" &&
-      (statement as AST.VariableDeclaration).name === symbol
-    ) {
-      const varDecl = statement as AST.VariableDeclaration
+    if (statement.kind === "VariableDeclaration" && statement.name === symbol) {
       return {
         type: "variable",
         name: symbol,
-        finalType: varDecl.type || new AST.PrimitiveType("unknown", 0, 0),
+        varType: statement.type,
+        value: statement.initializer,
       }
     }
 
-    if (
-      statement.kind === "TypeDeclaration" &&
-      (statement as AST.TypeDeclaration).name === symbol
-    ) {
-      const typeDecl = statement as AST.TypeDeclaration
+    if (statement.kind === "TypeDeclaration" && statement.name === symbol) {
       return {
         type: "type",
         name: symbol,
-        finalType: new AST.StructType(typeDecl.name, [], 0, 0),
+        definition: statement.definition,
       }
     }
   }
@@ -748,24 +650,12 @@ function _findSymbolWithType(
 }
 
 // Format type information for hover display
-// Format type information for hover display (legacy format)
-function _formatTypeInfo(
-  symbol: string,
-  info: {
-    type: string
-    parameters?: Array<{ name: string; type: AST.Type }>
-    returnType?: AST.Type
-    isEffectful?: boolean
-    fields?: Array<{ name: string; type: AST.Type }>
-    description?: string
-    varType?: AST.Type
-  }
-): string {
+function formatTypeInfo(symbol: string, info: any): string {
   switch (info.type) {
     case "function": {
       const params =
         info.parameters
-          ?.map((p) => {
+          ?.map((p: any) => {
             const paramType = formatTypeForDisplay(p.type)
             return `${p.name}: ${paramType}`
           })
@@ -791,7 +681,7 @@ function _formatTypeInfo(
 }
 
 // Format type for display in hover
-function formatTypeForDisplay(type: AST.Type): string {
+function formatTypeForDisplay(type: any): string {
   if (!type) return "unknown"
 
   if (typeof type === "string") {
@@ -803,24 +693,21 @@ function formatTypeForDisplay(type: AST.Type): string {
   }
 
   if (type.kind === "FunctionType") {
-    const funcType = type as AST.FunctionType
-    const paramType = formatTypeForDisplay(funcType.paramType)
-    const returnType = formatTypeForDisplay(funcType.returnType)
+    const paramType = formatTypeForDisplay(type.parameterType)
+    const returnType = formatTypeForDisplay(type.returnType)
     return `${paramType} -> ${returnType}`
   }
 
   if (type.kind === "GenericType") {
-    const genericType = type as AST.GenericType
-    const baseType = genericType.name
+    const baseType = formatTypeForDisplay(type.baseType)
     const typeArgs =
-      genericType.typeArguments?.map(formatTypeForDisplay).join(", ") || ""
+      type.typeArguments?.map(formatTypeForDisplay).join(", ") || ""
     return typeArgs ? `${baseType}<${typeArgs}>` : baseType
   }
 
   if (type.kind === "TupleType") {
-    const tupleType = type as AST.TupleType
     const elementTypes =
-      tupleType.elementTypes?.map(formatTypeForDisplay).join(", ") || ""
+      type.elementTypes?.map(formatTypeForDisplay).join(", ") || ""
     return `(${elementTypes})`
   }
 
@@ -889,7 +776,7 @@ function getFieldAccessInfo(
 
 // Handle hover for field access expressions
 function handleFieldAccessHover(
-  ast: AST.Program,
+  ast: any,
   fieldAccessInfo: { objectName: string; fieldName: string }
 ): string | null {
   try {
@@ -949,19 +836,14 @@ function handleFieldAccessHover(
 
 // Get field type from struct definition
 function getFieldTypeFromStruct(
-  structType: AST.Type,
+  structType: any,
   fieldName: string
-): AST.Type | null {
-  if (structType.kind !== "StructType") {
+): any | null {
+  if (structType.kind !== "StructType" || !structType.fields) {
     return null
   }
 
-  const struct = structType as AST.StructType
-  if (!struct.fields) {
-    return null
-  }
-
-  for (const field of struct.fields) {
+  for (const field of structType.fields) {
     if (field.name === fieldName) {
       return field.type
     }
@@ -973,67 +855,38 @@ function getFieldTypeFromStruct(
 function formatFieldAccessInfo(
   objectName: string,
   fieldName: string,
-  fieldType: AST.Type,
+  fieldType: any,
   structName: string
 ): string {
-  const typeDisplay = formatTypeWithNestedStructures(fieldType, undefined)
+  const typeDisplay = formatTypeWithNestedStructures(fieldType, null, 0)
   return `\`\`\`seseragi\n${objectName}.${fieldName}: ${typeDisplay}\n\`\`\`\n\nField \`${fieldName}\` of struct \`${structName}\``
 }
 
-// Format function definition for display
-interface FunctionDefinitionItem {
-  parameters?: Array<{ name: string; type?: AST.Type }>
-  returnType?: AST.Type
-}
-
-function formatFunctionDefinition(
-  item: FunctionDefinitionItem,
-  symbol: string
-): string {
-  const paramTypes =
-    item.parameters
-      ?.map((p) => (p.type ? `${p.name}: ${formatType(p.type)}` : p.name))
-      .join(", ") || ""
-  const returnType = item.returnType ? formatType(item.returnType) : "unknown"
-  return `\`\`\`seseragi\nfn ${symbol}(${paramTypes}) -> ${returnType}\n\`\`\``
-}
-
-// Format variable definition for display
-interface VariableDefinitionItem {
-  valueType?: AST.Type
-}
-
-function formatVariableDefinition(
-  item: VariableDefinitionItem,
-  symbol: string
-): string {
-  const varType = item.valueType ? formatType(item.valueType) : "inferred"
-  return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\``
-}
-
 // Get type information for a symbol (basic implementation)
-function getTypeInfoForSymbol(ast: AST.Program, symbol: string): string | null {
-  if (!ast.statements) {
-    return null
-  }
+function getTypeInfoForSymbol(ast: any, symbol: string): string | null {
+  // This is a simplified implementation
+  // In a full implementation, you would traverse the AST to find the symbol's type
 
-  for (const item of ast.statements) {
-    // @ts-ignore - Type comparison issue
-    if (
-      (item as StatementWithType).type === "FunctionDefinition" &&
-      (item as StatementWithName).name === symbol
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return formatFunctionDefinition(item as any, symbol)
-    }
+  // Try to find function definitions
+  if (ast.items) {
+    for (const item of ast.items) {
+      if (item.type === "FunctionDefinition" && item.name === symbol) {
+        const paramTypes =
+          item.parameters
+            ?.map((p: any) =>
+              p.type ? `${p.name}: ${formatType(p.type)}` : p.name
+            )
+            .join(", ") || ""
+        const returnType = item.returnType
+          ? formatType(item.returnType)
+          : "unknown"
+        return `\`\`\`seseragi\nfn ${symbol}(${paramTypes}) -> ${returnType}\n\`\`\``
+      }
 
-    // @ts-ignore - Type comparison issue
-    if (
-      (item as StatementWithType).type === "VariableDefinition" &&
-      (item as StatementWithName).name === symbol
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return formatVariableDefinition(item as any, symbol)
+      if (item.type === "VariableDefinition" && item.name === symbol) {
+        const varType = item.valueType ? formatType(item.valueType) : "inferred"
+        return `\`\`\`seseragi\nlet ${symbol}: ${varType}\n\`\`\``
+      }
     }
   }
 
@@ -1041,18 +894,17 @@ function getTypeInfoForSymbol(ast: AST.Program, symbol: string): string | null {
 }
 
 // Format type information for display
-function formatType(type: AST.Type): string {
+function formatType(type: any): string {
   if (typeof type === "string") {
     return type
   }
   if (type.name) {
     return type.name
   }
-  if (type.kind === "FunctionType") {
-    const funcType = type as AST.FunctionType
-    const paramType = formatType(funcType.paramType)
-    const returnType = formatType(funcType.returnType)
-    return `${paramType} -> ${returnType}`
+  if (type.type === "FunctionType") {
+    const params = type.parameters?.map(formatType).join(" -> ") || ""
+    const returnType = type.returnType ? formatType(type.returnType) : "unknown"
+    return params ? `${params} -> ${returnType}` : returnType
   }
   return "unknown"
 }
@@ -1081,13 +933,11 @@ function getKeywordInfo(keyword: string): string | null {
 }
 
 // Find symbol within an expression (for method bodies, etc.)
-// @ts-ignore - Complex function with many type issues
-// eslint-disable-next-line complexity
 function findSymbolInExpression(
-  expression: AST.Expression,
+  expression: any,
   symbol: string,
-  inferenceResult: TypeInferenceSystemResult
-): AST.ASTNode | null {
+  inferenceResult: any
+): any {
   if (!expression) {
     return null
   }
@@ -1108,13 +958,11 @@ function findSymbolInExpression(
       break
 
     case "VariableDeclaration":
-      if ((expression as ExpressionWithName).name === symbol) {
+      if (expression.name === symbol) {
         // Get the type of this variable from nodeTypeMap
         let varType = inferenceResult.nodeTypeMap.get(expression)
-        if (!varType && (expression as ExpressionWithInitializer).initializer) {
-          varType = inferenceResult.nodeTypeMap.get(
-            (expression as ExpressionWithInitializer).initializer
-          )
+        if (!varType && expression.initializer) {
+          varType = inferenceResult.nodeTypeMap.get(expression.initializer)
         }
 
         // Apply substitution if available
@@ -1130,34 +978,45 @@ function findSymbolInExpression(
           `Found variable ${symbol} with type: ${JSON.stringify(varType, null, 2)}`
         )
 
-        return expression
+        return {
+          type: "variable",
+          name: symbol,
+          finalType: varType,
+          hasExplicitType: !!expression.type,
+        }
       }
       break
 
     case "RecordDestructuring": {
       // Check if the symbol is one of the destructured variables
-      const foundField = findVariableInRecordPattern(
-        (expression as ExpressionWithPattern).pattern,
-        symbol
-      )
+      const foundField = findVariableInRecordPattern(expression.pattern, symbol)
       if (foundField) {
         // Get the type of the initializer (the record being destructured)
-        const initType = inferenceResult.nodeTypeMap.get(
-          (expression as ExpressionWithInitializer).initializer
-        )
+        const initType = inferenceResult.nodeTypeMap.get(expression.initializer)
 
         if (initType && initType.kind === "RecordType") {
-          const recordType = initType as AST.RecordType
+          const recordType = initType as any
           const fieldType = recordType.fields.find(
-            (f) => f.name === foundField.fieldName
+            (f: any) => f.name === foundField.fieldName
           )?.type
 
           if (fieldType) {
-            if (inferenceResult.substitution?.apply) {
-              inferenceResult.substitution.apply(fieldType)
+            let finalFieldType = fieldType
+            if (
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
+              finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
-            return expression
+            return {
+              type: "variable",
+              name: symbol,
+              finalType: finalFieldType,
+              hasExplicitType: false,
+              isRecordField: true,
+              fieldName: foundField.fieldName,
+            }
           }
         }
       }
@@ -1167,27 +1026,37 @@ function findSymbolInExpression(
     case "StructDestructuring": {
       // Check if the symbol is one of the destructured variables
       const foundStructField = findVariableInStructPattern(
-        (expression as ExpressionWithPattern).pattern,
+        expression.pattern,
         symbol
       )
       if (foundStructField) {
         // Get the type of the initializer (the struct being destructured)
-        const initType = inferenceResult.nodeTypeMap.get(
-          (expression as ExpressionWithInitializer).initializer
-        )
+        const initType = inferenceResult.nodeTypeMap.get(expression.initializer)
 
         if (initType && initType.kind === "StructType") {
-          const structType = initType as AST.StructType
+          const structType = initType as any
           const fieldType = structType.fields.find(
-            (f: AST.RecordField) => f.name === foundStructField.fieldName
+            (f: any) => f.name === foundStructField.fieldName
           )?.type
 
           if (fieldType) {
-            if (inferenceResult.substitution?.apply) {
-              inferenceResult.substitution.apply(fieldType)
+            let finalFieldType = fieldType
+            if (
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
+              finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
-            return expression
+            return {
+              type: "variable",
+              name: symbol,
+              finalType: finalFieldType,
+              hasExplicitType: false,
+              isStructField: true,
+              fieldName: foundStructField.fieldName,
+              structName: expression.pattern.structName,
+            }
           }
         }
       }
@@ -1196,25 +1065,23 @@ function findSymbolInExpression(
 
     default:
       // For other expression types, recursively search any nested expressions
-      if ((expression as ExpressionWithStatements).statements) {
-        for (const stmt of (expression as ExpressionWithStatements)
-          .statements) {
+      if (expression.statements) {
+        for (const stmt of expression.statements) {
           const result = findSymbolInExpression(stmt, symbol, inferenceResult)
           if (result) return result
         }
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((expression as any).initializer) {
+      if (expression.initializer) {
         const result = findSymbolInExpression(
-          (expression as ExpressionWithInitializer).initializer,
+          expression.initializer,
           symbol,
           inferenceResult
         )
         if (result) return result
       }
-      if ((expression as ExpressionWithBody).body) {
+      if (expression.body) {
         const result = findSymbolInExpression(
-          (expression as ExpressionWithBody).body,
+          expression.body,
           symbol,
           inferenceResult
         )
@@ -1228,10 +1095,10 @@ function findSymbolInExpression(
 
 // Find symbol in a statement (for block expressions)
 function findSymbolInStatement(
-  statement: AST.Statement,
+  statement: any,
   symbol: string,
-  inferenceResult: TypeInferenceSystemResult
-): AST.ASTNode | null {
+  inferenceResult: any
+): any {
   if (!statement) {
     return null
   }
@@ -1245,12 +1112,8 @@ function findSymbolInStatement(
 
     default:
       // For other statement types, check if they contain expressions
-      if ((statement as StatementWithBody).body) {
-        return findSymbolInExpression(
-          (statement as StatementWithBody).body,
-          symbol,
-          inferenceResult
-        )
+      if (statement.body) {
+        return findSymbolInExpression(statement.body, symbol, inferenceResult)
       }
       break
   }
@@ -1260,12 +1123,12 @@ function findSymbolInStatement(
 
 // Find symbol with inferred type information
 function findSymbolWithEnhancedInference(
-  ast: AST.Program,
+  ast: any,
   symbol: string,
-  inferenceResult: TypeInferenceSystemResult,
+  inferenceResult: any,
   offset: number,
-  _text: string
-): SymbolInfo | null {
+  text: string
+): any {
   connection.console.log(
     `[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`
   )
@@ -1274,79 +1137,29 @@ function findSymbolWithEnhancedInference(
     return null
   }
 
-  // Try different search strategies
-  const functionResult = searchForFunction(
-    ast.statements,
-    symbol,
-    inferenceResult
-  )
-  if (functionResult) return functionResult
+  for (const statement of ast.statements) {
+    if (statement.kind === "FunctionDeclaration" && statement.name === symbol) {
+      // Apply substitution to function type
+      let funcType = statement.returnType
+      for (let i = statement.parameters.length - 1; i >= 0; i--) {
+        funcType = {
+          kind: "FunctionType",
+          paramType: statement.parameters[i].type,
+          returnType: funcType,
+        }
+      }
 
-  const variableResult = searchForVariable(
-    ast.statements,
-    symbol,
-    inferenceResult
-  )
-  if (variableResult) return variableResult
+      const finalType = inferenceResult.substitution.apply
+        ? inferenceResult.substitution.apply(funcType)
+        : funcType
 
-  const expressionResult = searchInExpressions(
-    ast.statements,
-    symbol,
-    inferenceResult
-  )
-  if (expressionResult) return expressionResult
-
-  return null
-}
-
-// Search for function declaration
-function searchFunctionDeclaration(
-  statement: AST.Statement,
-  symbol: string,
-  inferenceResult: TypeInferenceSystemResult
-): AST.ASTNode | null {
-  if (statement.kind !== "FunctionDeclaration" || statement.name !== symbol) {
-    return null
-  }
-
-  // Apply substitution to function type
-  let funcType = statement.returnType
-  for (let i = statement.parameters.length - 1; i >= 0; i--) {
-    funcType = {
-      kind: "FunctionType",
-      paramType: statement.parameters[i].type,
-      returnType: funcType,
-    }
-  }
-
-  const finalType = inferenceResult.substitution.apply
-    ? inferenceResult.substitution.apply(funcType)
-    : funcType
-
-  return {
-    type: "function",
-    name: symbol,
-    parameters: statement.parameters,
-    finalType: finalType,
-    isEffectful: statement.isEffectful,
-  }
-}
-
-// @ts-ignore - Complex function with many type issues
-// eslint-disable-next-line complexity
-function searchForFunction(
-  statements: AST.Statement[],
-  symbol: string,
-  inferenceResult: TypeInferenceSystemResult
-): SymbolInfo | null {
-  for (const statement of statements) {
-    const functionResult = searchFunctionDeclaration(
-      statement,
-      symbol,
-      inferenceResult
-    )
-    if (functionResult) {
-      return functionResult
+      return {
+        type: "function",
+        name: symbol,
+        parameters: statement.parameters,
+        finalType: finalType,
+        isEffectful: statement.isEffectful,
+      }
     }
 
     // Check function parameters for the symbol - but only for the containing function
@@ -1385,7 +1198,7 @@ function searchForFunction(
 
     // Check impl block method and operator parameters for the symbol
     if (statement.kind === "ImplBlock") {
-      const implBlock = statement as AST.ImplBlock
+      const implBlock = statement as any // AST.ImplBlock
 
       // Check method parameters
       for (const method of implBlock.methods || []) {
@@ -1660,7 +1473,7 @@ function searchForFunction(
       if (finalType && finalType.kind === "StructType") {
         connection.console.log(`=== STRUCT TYPE NAME: ${finalType.name} ===`)
         connection.console.log(
-          `=== STRUCT TYPE FIELDS: ${JSON.stringify((finalType as TypeWithFields).fields, null, 2)} ===`
+          `=== STRUCT TYPE FIELDS: ${JSON.stringify(finalType.fields, null, 2)} ===`
         )
       }
       connection.console.log(
@@ -1710,7 +1523,7 @@ function searchForFunction(
 
     // Handle tuple destructuring
     if (statement.kind === "TupleDestructuring") {
-      const tupleDestr = statement as AST.TupleDestructuring
+      const tupleDestr = statement as any // AST.TupleDestructuring
 
       // Check if the symbol is one of the destructured variables
       const foundVariable = findVariableInTuplePattern(
@@ -1774,7 +1587,7 @@ function searchForFunction(
 
     // Handle record destructuring
     if (statement.kind === "RecordDestructuring") {
-      const recordDestr = statement as AST.RecordDestructuring
+      const recordDestr = statement as any // AST.RecordDestructuring
 
       // Check if the symbol is one of the destructured variables
       const foundField = findVariableInRecordPattern(
@@ -1795,14 +1608,17 @@ function searchForFunction(
         )
 
         if (initType && initType.kind === "RecordType") {
-          const recordType = initType as AST.RecordType
+          const recordType = initType as any
           const fieldType = recordType.fields.find(
-            (f) => f.name === foundField.fieldName
+            (f: any) => f.name === foundField.fieldName
           )?.type
 
           if (fieldType) {
             let finalFieldType = fieldType
-            if (inferenceResult.substitution?.apply) {
+            if (
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
               finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
@@ -1821,7 +1637,7 @@ function searchForFunction(
 
     // Handle struct destructuring
     if (statement.kind === "StructDestructuring") {
-      const structDestr = statement as AST.StructDestructuring
+      const structDestr = statement as any // AST.StructDestructuring
 
       // Check if the symbol is one of the destructured variables
       const foundField = findVariableInStructPattern(
@@ -1842,14 +1658,17 @@ function searchForFunction(
         )
 
         if (initType && initType.kind === "StructType") {
-          const structType = initType as AST.StructType
+          const structType = initType as any
           const fieldType = structType.fields.find(
-            (f) => f.name === foundField.fieldName
+            (f: any) => f.name === foundField.fieldName
           )?.type
 
           if (fieldType) {
             let finalFieldType = fieldType
-            if (inferenceResult.substitution?.apply) {
+            if (
+              inferenceResult.substitution &&
+              inferenceResult.substitution.apply
+            ) {
               finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
@@ -1873,7 +1692,7 @@ function searchForFunction(
 
 // Helper function to find a variable in a tuple pattern
 function findVariableInTuplePattern(
-  pattern: AST.Pattern,
+  pattern: any,
   symbol: string
 ): { index: number } | null {
   if (pattern.kind !== "TuplePattern") {
@@ -1901,14 +1720,14 @@ function findVariableInTuplePattern(
 
 // Helper function to find a variable in a record pattern
 function findVariableInRecordPattern(
-  pattern: AST.Pattern,
+  pattern: any,
   symbol: string
 ): { fieldName: string } | null {
   if (pattern.kind !== "RecordPattern") {
     return null
   }
 
-  for (const field of (pattern as PatternWithFields).fields || []) {
+  for (const field of pattern.fields) {
     const variableName = field.alias || field.fieldName
     if (variableName === symbol) {
       return { fieldName: field.fieldName }
@@ -1920,14 +1739,14 @@ function findVariableInRecordPattern(
 
 // Helper function to find a variable in a struct pattern
 function findVariableInStructPattern(
-  pattern: AST.Pattern,
+  pattern: any,
   symbol: string
 ): { fieldName: string } | null {
   if (pattern.kind !== "StructPattern") {
     return null
   }
 
-  for (const field of (pattern as PatternWithFields).fields || []) {
+  for (const field of pattern.fields) {
     const variableName = field.alias || field.fieldName
     if (variableName === symbol) {
       return { fieldName: field.fieldName }
@@ -1938,9 +1757,7 @@ function findVariableInStructPattern(
 }
 
 // Helper function to find a type alias definition by name
-function findTypeAliasDefinition(
-  typeName: string
-): AST.TypeAliasDeclaration | null {
+function findTypeAliasDefinition(typeName: string): any {
   if (!cachedAST || !cachedAST.statements) {
     return null
   }
@@ -1958,9 +1775,7 @@ function findTypeAliasDefinition(
 }
 
 // Helper function to find a variable declaration by name
-function findVariableDeclaration(
-  varName: string
-): AST.VariableDeclaration | null {
+function findVariableDeclaration(varName: string): any {
   if (!cachedAST || !cachedAST.statements) {
     return null
   }
@@ -1977,53 +1792,8 @@ function findVariableDeclaration(
   return null
 }
 
-// Search for method call in array values
-function searchMethodCallInArray(
-  value: AST.ASTNode[],
-  methodName: string
-): AST.MethodCall | null {
-  for (const item of value) {
-    const result = findMethodCallInNode(item, methodName)
-    if (result) {
-      return result
-    }
-  }
-  return null
-}
-
-// Process individual property value
-function processPropertyValue(
-  value: unknown,
-  methodName: string
-): AST.MethodCall | null {
-  if (Array.isArray(value)) {
-    return searchMethodCallInArray(value, methodName)
-  } else {
-    return findMethodCallInNode(value, methodName)
-  }
-}
-
-// Search for method call in object properties
-function searchMethodCallInProperties(
-  node: AST.ASTNode,
-  methodName: string
-): AST.MethodCall | null {
-  for (const key in node) {
-    if (Object.hasOwn(node, key) && typeof node[key] === "object") {
-      const result = processPropertyValue(node[key], methodName)
-      if (result) {
-        return result
-      }
-    }
-  }
-  return null
-}
-
 // Helper function to recursively search for method calls in an AST node
-function findMethodCallInNode(
-  node: AST.ASTNode,
-  methodName: string
-): AST.MethodCall | null {
+function findMethodCallInNode(node: any, methodName: string): any {
   if (!node) {
     return null
   }
@@ -2034,21 +1804,40 @@ function findMethodCallInNode(
   }
 
   // Recursively search in all properties of the node
-  return searchMethodCallInProperties(node, methodName)
+  for (const key in node) {
+    if (Object.hasOwn(node, key) && typeof node[key] === "object") {
+      const value = node[key]
+
+      if (Array.isArray(value)) {
+        // Search in array elements
+        for (const item of value) {
+          const result = findMethodCallInNode(item, methodName)
+          if (result) {
+            return result
+          }
+        }
+      } else {
+        // Search in object properties
+        const result = findMethodCallInNode(value, methodName)
+        if (result) {
+          return result
+        }
+      }
+    }
+  }
+
+  return null
 }
 
 // Helper function to find method definition in impl blocks
-function findMethodDefinition(
-  ast: AST.Program,
-  methodName: string
-): AST.MethodDeclaration | null {
+function findMethodDefinition(ast: any, methodName: string): any {
   if (!ast.statements) {
     return null
   }
 
   for (const statement of ast.statements) {
     if (statement.kind === "ImplBlock") {
-      const implBlock = statement as AST.ImplBlock
+      const implBlock = statement as any // AST.ImplBlock
 
       // Check methods
       for (const method of implBlock.methods || []) {
@@ -2067,11 +1856,7 @@ function findMethodDefinition(
 }
 
 // Resolve MonadBind type by analyzing the pattern
-// eslint-disable-next-line complexity
-function resolveMonadBindType(
-  monadBindExpr: AST.MonadBind,
-  inferenceResult: TypeInferenceSystemResult
-): AST.Type | null {
+function resolveMonadBindType(monadBindExpr: any, inferenceResult: any): any {
   try {
     // For MonadBind: left >>= right
     // We need to determine the type based on the left operand
@@ -2155,10 +1940,10 @@ function resolveMonadBindType(
 }
 
 // Extract variable type from type inference result
-function _extractVariableTypeFromInference(
-  statement: AST.Statement,
-  _substitution: TypeInferenceSystemResult
-): AST.Type | null {
+function extractVariableTypeFromInference(
+  statement: any,
+  substitution: any
+): any {
   // This is a simplified approach - in a full implementation, we'd need to
   // track which type variables correspond to which expressions
   // For now, try to infer the type from the expression directly
@@ -2166,11 +1951,7 @@ function _extractVariableTypeFromInference(
 }
 
 // Simple type inference from expression (fallback)
-// eslint-disable-next-line complexity
-function inferTypeFromExpression(
-  expr: AST.Expression,
-  ast?: AST.Program
-): AST.Type | null {
+function inferTypeFromExpression(expr: any, ast?: any): any {
   if (!expr) return null
 
   switch (expr.kind) {
@@ -2190,7 +1971,7 @@ function inferTypeFromExpression(
 
     case "ConstructorExpression": {
       // Handle Maybe and Either constructors
-      const ctor = expr as AST.ConstructorExpression
+      const ctor = expr as any
       switch (ctor.constructorName) {
         case "Just":
           if (ctor.arguments && ctor.arguments.length > 0) {
@@ -2315,7 +2096,7 @@ function inferTypeFromExpression(
       // Tuple expressions return TupleType with element types
       if (expr.elements && expr.elements.length > 0) {
         const elementTypes = expr.elements.map(
-          (element) =>
+          (element: any) =>
             inferTypeFromExpression(element, ast) || {
               kind: "TypeVariable",
               name: "T",
@@ -2374,12 +2155,15 @@ function inferTypeFromExpression(
   }
 }
 
-// Handle constructor type inference
-function inferConstructorType(
-  functionName: string,
-  call: AST.FunctionCall,
-  ast?: AST.Program
-): AST.Type | null {
+// Infer return type from function call by looking up function definition
+function inferFunctionCallReturnType(call: any, ast?: any): any {
+  if (!call.function || call.function.kind !== "Identifier") {
+    return null
+  }
+
+  const functionName = call.function.name
+
+  // Handle Maybe/Either constructors with arguments
   if (functionName === "Just" && call.arguments && call.arguments.length > 0) {
     const argType = inferTypeFromExpression(call.arguments[0], ast)
     return {
@@ -2413,17 +2197,36 @@ function inferConstructorType(
     }
   }
 
-  return null
-}
+  // If we have access to the AST, look up the function definition
+  if (ast && ast.statements) {
+    for (const statement of ast.statements) {
+      if (
+        statement.kind === "FunctionDeclaration" &&
+        statement.name === functionName
+      ) {
+        return statement.returnType
+      }
+    }
+  }
 
-// Get known built-in function types
-function getKnownFunctionTypes(): { [key: string]: AST.Type } {
-  return {
+  // Fallback to known built-in functions
+  const knownFunctions: { [key: string]: any } = {
     processNumber: { kind: "PrimitiveType", name: "Int" },
     formatMessage: { kind: "PrimitiveType", name: "String" },
     complexCalculation: { kind: "PrimitiveType", name: "Int" },
     add: { kind: "PrimitiveType", name: "Int" },
     double: { kind: "PrimitiveType", name: "Int" },
+    // Array↔List conversion functions
+    arrayToList: (argType: any) => ({
+      kind: "GenericType",
+      name: "List",
+      typeArguments: [argType || { kind: "TypeVariable", name: "T" }],
+    }),
+    listToArray: (argType: any) => ({
+      kind: "GenericType",
+      name: "Array",
+      typeArguments: [argType || { kind: "TypeVariable", name: "T" }],
+    }),
     getMessage: { kind: "PrimitiveType", name: "String" },
     getNumber: { kind: "PrimitiveType", name: "Int" },
     max: { kind: "PrimitiveType", name: "Int" },
@@ -2440,137 +2243,96 @@ function getKnownFunctionTypes(): { [key: string]: AST.Type } {
         { kind: "PrimitiveType", name: "Int" },
       ],
     },
+    // Maybe constructors
+    Just: (argType: any) => ({
+      kind: "GenericType",
+      name: "Maybe",
+      typeArguments: [argType || { kind: "PrimitiveType", name: "Int" }],
+    }),
     Nothing: {
       kind: "GenericType",
       name: "Maybe",
       typeArguments: [{ kind: "TypeVariable", name: "T" }],
     },
+    // Either constructors
+    Right: (argType: any) => ({
+      kind: "GenericType",
+      name: "Either",
+      typeArguments: [
+        { kind: "TypeVariable", name: "L" },
+        argType || { kind: "PrimitiveType", name: "Int" },
+      ],
+    }),
+    Left: (argType: any) => ({
+      kind: "GenericType",
+      name: "Either",
+      typeArguments: [
+        argType || { kind: "PrimitiveType", name: "String" },
+        { kind: "TypeVariable", name: "R" },
+      ],
+    }),
   }
+
+  return knownFunctions[functionName] || null
 }
 
-// Infer return type from function call by looking up function definition
-function inferFunctionCallReturnType(
-  call: AST.FunctionCall,
-  ast?: AST.Program
-): AST.Type | null {
-  if (!call.function || call.function.kind !== "Identifier") {
-    return null
-  }
+// Handle curried function applications with proper type inference
+function inferCurriedFunctionType(expr: any, ast?: any): any {
+  // For safeDivide 10 2 - this should return Maybe<Int>
+  if (expr.function && expr.function.kind === "FunctionApplication") {
+    // This is a nested application like (safeDivide 10) 2
+    const innerApp = expr.function
+    if (innerApp.function && innerApp.function.kind === "Identifier") {
+      const funcName = innerApp.function.name
 
-  const functionName = call.function.name
+      // Count total arguments applied
+      let totalArgs = 1 // Current argument
+      if (innerApp.argument) totalArgs++
 
-  // Handle Maybe/Either constructors with arguments
-  const constructorType = inferConstructorType(functionName, call, ast)
-  if (constructorType) {
-    return constructorType
-  }
-
-  // If we have access to the AST, look up the function definition
-  if (ast?.statements) {
-    for (const statement of ast.statements) {
-      if (
-        statement.kind === "FunctionDeclaration" &&
-        statement.name === functionName
-      ) {
-        return statement.returnType
+      // Special handling for safeDivide with 2 arguments
+      if (funcName === "safeDivide" && totalArgs >= 2) {
+        return {
+          kind: "GenericType",
+          name: "Maybe",
+          typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
+        }
       }
     }
   }
 
-  // Fallback to known built-in functions
-  const knownFunctions = getKnownFunctionTypes()
-  return knownFunctions[functionName] || null
-}
+  // Single function application
+  if (expr.function && expr.function.kind === "Identifier") {
+    const funcName = expr.function.name
 
-// Handle nested function application
-function handleNestedFunctionApplication(
-  expr: AST.Expression
-): AST.Type | null {
-  if (!expr.function || expr.function.kind !== "FunctionApplication") {
-    return null
-  }
-
-  const innerApp = expr.function
-  if (!innerApp.function || innerApp.function.kind !== "Identifier") {
-    return null
-  }
-
-  const funcName = innerApp.function.name
-  let totalArgs = 1 // Current argument
-  if (innerApp.argument) totalArgs++
-
-  // Special handling for safeDivide with 2 arguments
-  if (funcName === "safeDivide" && totalArgs >= 2) {
-    return {
-      kind: "GenericType",
-      name: "Maybe",
-      typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
-    }
-  }
-
-  return null
-}
-
-// Handle single function application
-function handleSingleFunctionApplication(
-  expr: AST.Expression,
-  ast?: AST.Program
-): AST.Type | null {
-  if (!expr.function || expr.function.kind !== "Identifier") {
-    return null
-  }
-
-  const funcName = expr.function.name
-
-  // Handle Maybe constructors
-  if (funcName === "Just" && expr.argument) {
-    const argType = inferTypeFromExpression(expr.argument, ast)
-    return {
-      kind: "GenericType",
-      name: "Maybe",
-      typeArguments: [argType || { kind: "PrimitiveType", name: "Int" }],
-    }
-  }
-
-  // For single argument to safeDivide, return partial type
-  if (funcName === "safeDivide") {
-    return {
-      kind: "FunctionType",
-      paramType: { kind: "PrimitiveType", name: "Int" },
-      returnType: {
+    // Handle Maybe constructors
+    if (funcName === "Just" && expr.argument) {
+      const argType = inferTypeFromExpression(expr.argument, ast)
+      return {
         kind: "GenericType",
         name: "Maybe",
-        typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
-      },
+        typeArguments: [argType || { kind: "PrimitiveType", name: "Int" }],
+      }
     }
-  }
 
-  return null
-}
-
-// Handle curried function applications with proper type inference
-function inferCurriedFunctionType(
-  expr: AST.Expression,
-  ast?: AST.Program
-): AST.Type | null {
-  // Try nested function application first
-  const nestedResult = handleNestedFunctionApplication(expr)
-  if (nestedResult) {
-    return nestedResult
-  }
-
-  // Try single function application
-  const singleResult = handleSingleFunctionApplication(expr, ast)
-  if (singleResult) {
-    return singleResult
+    // For single argument to safeDivide, return partial type
+    if (funcName === "safeDivide") {
+      return {
+        kind: "FunctionType",
+        paramType: { kind: "PrimitiveType", name: "Int" },
+        returnType: {
+          kind: "GenericType",
+          name: "Maybe",
+          typeArguments: [{ kind: "PrimitiveType", name: "Int" }],
+        },
+      }
+    }
   }
 
   return inferFunctionCallReturnType(expr, ast)
 }
 
 // Format inferred type information for hover display
-// eslint-disable-next-line complexity
-function formatInferredTypeInfo(symbol: string, info: AST.Type): string {
+function formatInferredTypeInfo(symbol: string, info: any): string {
   switch (info.type) {
     case "function": {
       const effectful = info.isEffectful ? "effectful " : ""
@@ -2579,7 +2341,7 @@ function formatInferredTypeInfo(symbol: string, info: AST.Type): string {
       let funcSignature = `${effectful}fn ${symbol}`
       if (info.parameters && info.parameters.length > 0) {
         const paramSig = info.parameters
-          .map((p: { name: string; type?: AST.Type }) => {
+          .map((p: any) => {
             const paramType = formatInferredTypeForDisplay(p.type)
             return `${p.name}: ${paramType}`
           })
@@ -2622,9 +2384,9 @@ function formatInferredTypeInfo(symbol: string, info: AST.Type): string {
       if (info.hasExplicitType) {
         // Try to find the original type annotation from the AST
         const varDecl = findVariableDeclaration(symbol)
-        if (varDecl?.type && varDecl.type.kind === "PrimitiveType") {
+        if (varDecl && varDecl.type && varDecl.type.kind === "PrimitiveType") {
           const typeAlias = findTypeAliasDefinition(varDecl.type.name)
-          if (typeAlias?.aliasedType) {
+          if (typeAlias && typeAlias.aliasedType) {
             const aliasedTypeStr = formatInferredTypeForDisplay(
               typeAlias.aliasedType
             )
@@ -2657,8 +2419,7 @@ function formatInferredTypeInfo(symbol: string, info: AST.Type): string {
 }
 
 // Format inferred type for display
-// eslint-disable-next-line complexity
-function formatInferredTypeForDisplay(type: AST.Type): string {
+function formatInferredTypeForDisplay(type: any): string {
   if (!type) return "unknown"
 
   if (typeof type === "string") {
@@ -2668,7 +2429,7 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
   if (type.kind === "PrimitiveType") {
     // Check if this "primitive" is actually a struct
     const structInfo = findStructDefinition(type.name)
-    if (structInfo?.fields && structInfo.fields.length > 0) {
+    if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
       connection.console.log(
         `[DEBUG] PrimitiveType '${type.name}' is actually a struct, converting to detailed display`
       )
@@ -2695,8 +2456,8 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
   if (type.kind === "TypeVariable") {
     // For type variables, they should have been resolved by substitution
     // If we still have an unresolved type variable, show detailed info for debugging
-    const tv = type as AST.TypeVariable
-    if (tv.name?.startsWith("t")) {
+    const tv = type as any
+    if (tv.name && tv.name.startsWith("t")) {
       // This indicates a type variable that wasn't fully resolved
       // Try to infer a more specific type based on context
       return `unknown` // Better than Monad<unknown>
@@ -2706,7 +2467,7 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
 
   if (type.kind === "PolymorphicTypeVariable") {
     // For polymorphic type variables, show them properly
-    const ptv = type as AST.PolymorphicTypeVariable
+    const ptv = type as any
     return `'${ptv.name}`
   }
 
@@ -2735,7 +2496,7 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
         `[DEBUG] StructInfo fields: ${JSON.stringify(structInfo.fields)}`
       )
     }
-    if (structInfo?.fields && structInfo.fields.length > 0) {
+    if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
       // Create a RecordType-like structure for consistent formatting
       const structAsRecord = {
         kind: "RecordType",
@@ -2758,10 +2519,7 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
   }
 
   if (type.kind === "RecordType") {
-    if (
-      (type as TypeWithFields).fields &&
-      (type as TypeWithFields).fields.length > 0
-    ) {
+    if (type.fields && type.fields.length > 0) {
       return formatTypeWithNestedStructures(type, type, 0, "")
     }
     return "{}"
@@ -2774,9 +2532,9 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
   }
 
   if (type.kind === "StructType") {
-    const structType = type as AST.StructType
+    const structType = type as any
     if (structType.fields && structType.fields.length > 0) {
-      const fieldStrs = structType.fields.map((field: AST.StructField) => {
+      const fieldStrs = structType.fields.map((field: any) => {
         const fieldType = formatInferredTypeForDisplay(field.type)
         return `${field.name}: ${fieldType}`
       })
@@ -2788,9 +2546,9 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
   }
 
   if (type.kind === "RecordType") {
-    const recordType = type as AST.RecordType
+    const recordType = type as any
     if (recordType.fields && recordType.fields.length > 0) {
-      const fieldStrs = recordType.fields.map((field: AST.RecordField) => {
+      const fieldStrs = recordType.fields.map((field: any) => {
         const fieldType = formatInferredTypeForDisplay(field.type)
         return `${field.name}: ${fieldType}`
       })
@@ -2806,8 +2564,8 @@ function formatInferredTypeForDisplay(type: AST.Type): string {
 
 // Format types with nested structures and proper indentation
 function formatTypeWithNestedStructures(
-  type: AST.Type,
-  ast: AST.Program | undefined,
+  type: any,
+  ast: any,
   depth: number = 0,
   indent: string = ""
 ): string {
@@ -2816,29 +2574,29 @@ function formatTypeWithNestedStructures(
   switch (type.kind) {
     case "StructType": {
       let fields = []
-      if (ast?.fields) {
+      if (ast && ast.fields) {
         fields = ast.fields
       } else {
         const structInfo = findStructDefinition(type.name)
-        if (structInfo?.fields) {
+        if (structInfo && structInfo.fields) {
           fields = structInfo.fields
         }
       }
 
       if (fields.length > 0) {
-        const fieldStrs = fields.map((field: AST.StructField) => {
+        const fieldStrs = fields.map((field: any) => {
           const fieldType = formatTypeWithNestedStructures(
             field.type,
             null,
             depth + 1,
-            `${indent}  `
+            indent + "  "
           )
           return `${field.name}: ${fieldType}`
         })
 
         // Check if we need multiline formatting
         const hasNestedStructures = fields.some(
-          (field: AST.StructField) =>
+          (field: any) =>
             field.type &&
             (field.type.kind === "StructType" ||
               field.type.kind === "RecordType")
@@ -2854,23 +2612,20 @@ function formatTypeWithNestedStructures(
     }
 
     case "RecordType":
-      if (
-        (type as TypeWithFields).fields &&
-        (type as TypeWithFields).fields.length > 0
-      ) {
-        const fieldStrs = type.fields.map((field: AST.RecordField) => {
+      if (type.fields && type.fields.length > 0) {
+        const fieldStrs = type.fields.map((field: any) => {
           const fieldType = formatTypeWithNestedStructures(
             field.type,
             null,
             depth + 1,
-            `${indent}  `
+            indent + "  "
           )
           return `${field.name}: ${fieldType}`
         })
 
         // Check if we need multiline formatting
         const hasNestedStructures = type.fields.some(
-          (field: AST.RecordField) =>
+          (field: any) =>
             field.type &&
             (field.type.kind === "StructType" ||
               field.type.kind === "RecordType")
@@ -2909,7 +2664,7 @@ function formatTypeWithNestedStructures(
     case "GenericType": {
       const baseType = type.name
       const typeArgs = type.typeArguments
-        ?.map((t: AST.Type) =>
+        ?.map((t: any) =>
           formatTypeWithNestedStructures(t, null, depth, indent)
         )
         .join(", ")
@@ -2919,7 +2674,7 @@ function formatTypeWithNestedStructures(
     case "TupleType": {
       const elementTypes =
         type.elementTypes
-          ?.map((t: AST.Type) =>
+          ?.map((t: any) =>
             formatTypeWithNestedStructures(t, null, depth, indent)
           )
           .join(", ") || ""
@@ -2932,19 +2687,15 @@ function formatTypeWithNestedStructures(
 }
 
 // Format struct definition information for hover display
-interface StructInfo {
-  fields?: Array<{ name: string; type: AST.Type }>
-}
-
 function formatStructDefinitionInfo(
   structName: string,
-  structInfo: StructInfo
+  structInfo: any
 ): string {
   if (!structInfo || !structInfo.fields) {
     return `**struct ${structName}**`
   }
 
-  const fieldStrs = structInfo.fields.map((field) => {
+  const fieldStrs = structInfo.fields.map((field: any) => {
     const fieldType = formatInferredTypeForDisplay(field.type)
     return `  ${field.name}: ${fieldType}`
   })
@@ -2953,13 +2704,13 @@ function formatStructDefinitionInfo(
 
   // If it has nested structures or many fields, format with better spacing
   const hasNestedStructures = structInfo.fields.some(
-    (field) =>
+    (field: any) =>
       field.type &&
       (field.type.kind === "StructType" || field.type.kind === "RecordType")
   )
 
   if (hasNestedStructures) {
-    const detailedFields = structInfo.fields.map((field) => {
+    const detailedFields = structInfo.fields.map((field: any) => {
       const fieldType = formatTypeWithNestedStructures(
         field.type,
         null,
@@ -2975,8 +2726,8 @@ function formatStructDefinitionInfo(
 }
 
 // Find struct definition in AST (helper function)
-let cachedAST: AST.Program | null = null
-function findStructDefinition(structName: string): AST.TypeDeclaration | null {
+let cachedAST: any = null
+function findStructDefinition(structName: string): any {
   if (!cachedAST) return null
 
   if (cachedAST.statements) {
@@ -3006,8 +2757,7 @@ connection.onDefinition((params: DefinitionParams): Definition | null => {
   try {
     // Parse the document
     const parser = new Parser(text)
-    const parseResult = parser.parse()
-    const ast = new AST.Program(parseResult.statements || [])
+    const ast = parser.parse()
 
     // Get the word at the current position
     const wordAtPosition = getWordAtPosition(text, offset)
@@ -3029,42 +2779,9 @@ connection.onDefinition((params: DefinitionParams): Definition | null => {
   return null
 })
 
-// Create location from item
-interface ASTItem {
-  line?: number
-  column?: number
-  name: string
-  type: string
-}
-
-function createLocationFromItem(
-  item: ASTItem,
-  symbol: string,
-  document: TextDocument
-): Location {
-  const line = item.line || 0
-  const character = item.column || 0
-  return {
-    uri: document.uri,
-    range: {
-      start: { line, character },
-      end: { line, character: character + symbol.length },
-    },
-  }
-}
-
-// Check if item matches symbol and type
-function itemMatches(
-  item: ASTItem,
-  symbol: string,
-  expectedType: string
-): boolean {
-  return item.type === expectedType && item.name === symbol
-}
-
 // Helper function to find symbol definitions
 function findDefinition(
-  ast: AST.Program,
+  ast: any,
   symbol: string,
   document: TextDocument
 ): Location | null {
@@ -3073,16 +2790,41 @@ function findDefinition(
   }
 
   for (const item of ast.items) {
-    if (itemMatches(item, symbol, "FunctionDefinition")) {
-      return createLocationFromItem(item, symbol, document)
+    if (item.type === "FunctionDefinition" && item.name === symbol) {
+      // Calculate position from AST node if available
+      const line = item.line || 0
+      const character = item.column || 0
+      return {
+        uri: document.uri,
+        range: {
+          start: { line, character },
+          end: { line, character: character + symbol.length },
+        },
+      }
     }
 
-    if (itemMatches(item, symbol, "VariableDefinition")) {
-      return createLocationFromItem(item, symbol, document)
+    if (item.type === "VariableDefinition" && item.name === symbol) {
+      const line = item.line || 0
+      const character = item.column || 0
+      return {
+        uri: document.uri,
+        range: {
+          start: { line, character },
+          end: { line, character: character + symbol.length },
+        },
+      }
     }
 
-    if (itemMatches(item, symbol, "TypeDefinition")) {
-      return createLocationFromItem(item, symbol, document)
+    if (item.type === "TypeDefinition" && item.name === symbol) {
+      const line = item.line || 0
+      const character = item.column || 0
+      return {
+        uri: document.uri,
+        range: {
+          start: { line, character },
+          end: { line, character: character + symbol.length },
+        },
+      }
     }
   }
 
@@ -3145,11 +2887,7 @@ connection.onDocumentFormatting(
 )
 
 // Helper function to find which function contains the given offset
-function findContainingFunction(
-  ast: AST.Program,
-  offset: number,
-  text: string
-): AST.FunctionDeclaration | null {
+function findContainingFunction(ast: any, offset: number, text: string): any {
   if (!ast.statements) {
     connection.console.log("[SESERAGI LSP DEBUG] No statements in AST")
     return null
