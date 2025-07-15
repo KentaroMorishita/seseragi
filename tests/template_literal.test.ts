@@ -110,11 +110,11 @@ describe("Template Literal Tests", () => {
     const stmt = result.statements?.[0] as AST.ExpressionStatement
     expect(stmt.kind).toBe("ExpressionStatement")
 
-    const expr = stmt.expression as AST.FunctionApplication
-    expect(expr.kind).toBe("FunctionApplication")
-    expect((expr.function as AST.Identifier).name).toBe("show")
+    const expr = stmt.expression as AST.BuiltinFunctionCall
+    expect(expr.kind).toBe("BuiltinFunctionCall")
+    expect(expr.functionName).toBe("show")
 
-    const arg = expr.argument as AST.TemplateExpression
+    const arg = expr.arguments[0] as AST.TemplateExpression
     expect(arg.kind).toBe("TemplateExpression")
     expect(arg.parts[0]).toBe("Hello World")
   })
@@ -128,11 +128,11 @@ describe("Template Literal Tests", () => {
     expect(result.statements).toHaveLength(1)
 
     const stmt = result.statements?.[0] as AST.ExpressionStatement
-    const expr = stmt.expression as AST.FunctionApplication
-    expect(expr.kind).toBe("FunctionApplication")
-    expect((expr.function as AST.Identifier).name).toBe("print")
+    const expr = stmt.expression as AST.BuiltinFunctionCall
+    expect(expr.kind).toBe("BuiltinFunctionCall")
+    expect(expr.functionName).toBe("print")
 
-    const arg = expr.argument as AST.TemplateExpression
+    const arg = expr.arguments[0] as AST.TemplateExpression
     expect(arg.kind).toBe("TemplateExpression")
     expect(arg.parts).toHaveLength(2)
     expect(arg.parts[0]).toBe("Count: ")

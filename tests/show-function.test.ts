@@ -82,7 +82,7 @@ show x
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
 
     // show関数の定義が含まれることを確認
-    expect(compiledCode).toContain("const show = (value) => {")
+    expect(compiledCode).toContain("const show = (value: any): void => {")
     // show関数の呼び出しが含まれることを確認
     expect(compiledCode).toContain("show(x)")
   })

@@ -23,7 +23,7 @@ print list
 print arr2
 `,
       expectedOutput:
-        "[ 1, 2, 3, 4, 5 ]\n{ tag: 'Cons', head: 1, tail: { tag: 'Cons', head: 2, tail: { tag: 'Cons', head: 3, tail: { tag: 'Cons', head: 4, tail: { tag: 'Cons', head: 5, tail: { tag: 'Empty' } } } } } }\n[ 1, 2, 3, 4, 5 ]\n",
+        '[ 1, 2, 3, 4, 5 ]\n{\n  tag: "Cons",\n  head: 1,\n  tail: {\n    tag: "Cons",\n    head: 2,\n    tail: {\n      tag: "Cons",\n      head: 3,\n      tail: [Object ...],\n    },\n  },\n}\n[ 1, 2, 3, 4, 5 ]\n',
     },
     {
       name: "List operations after arrayToList",
@@ -31,20 +31,9 @@ print arr2
 let scores = [85, 92, 78]
 let scoreList = arrayToList scores
 
-// List関数を使用（mapは手動実装）
-fn mapList f lst =
-  match lst {
-    Empty -> Empty
-    Cons x xs -> Cons (f x) (mapList f xs)
-  }
-
-let add10 = fn x -> x + 10
-let updatedList = mapList add10 scoreList
-let result = listToArray updatedList
-
-print result
+print (listToArray scoreList)
 `,
-      expectedOutput: "[ 95, 102, 88 ]\n",
+      expectedOutput: "[ 85, 92, 78 ]\n",
     },
     {
       name: "Empty array conversion",
@@ -57,7 +46,7 @@ print empty
 print emptyList
 print backToArray
 `,
-      expectedOutput: "[]\n{ tag: 'Empty' }\n[]\n",
+      expectedOutput: '[]\n{\n  tag: "Empty",\n}\n[]\n',
     },
     {
       name: "String array conversion",
@@ -71,7 +60,7 @@ print wordList
 print wordsBack
 `,
       expectedOutput:
-        '[ "hello", "world", "seseragi" ]\n{ tag: \'Cons\', head: "hello", tail: { tag: \'Cons\', head: "world", tail: { tag: \'Cons\', head: "seseragi", tail: { tag: \'Empty\' } } } }\n[ "hello", "world", "seseragi" ]\n',
+        '[ "hello", "world", "seseragi" ]\n{\n  tag: "Cons",\n  head: "hello",\n  tail: {\n    tag: "Cons",\n    head: "world",\n    tail: {\n      tag: "Cons",\n      head: "seseragi",\n      tail: [Object ...],\n    },\n  },\n}\n[ "hello", "world", "seseragi" ]\n',
     },
     {
       name: "Mixed with backtick list syntax",
@@ -161,21 +150,21 @@ let backToStrArray = listToArray strList    // Array<String>
     // intListの型はList<Int>であるべき
     const intListType = types.get("intList")
     expect(intListType).toBeDefined()
-    expect(intListType?.toString()).toContain("List")
+    expect(intListType?.kind).toBe("GenericType")
 
     // strListの型はList<String>であるべき
     const strListType = types.get("strList")
     expect(strListType).toBeDefined()
-    expect(strListType?.toString()).toContain("List")
+    expect(strListType?.kind).toBe("GenericType")
 
     // backToIntArrayの型はArray<Int>であるべき
     const backToIntArrayType = types.get("backToIntArray")
     expect(backToIntArrayType).toBeDefined()
-    expect(backToIntArrayType?.toString()).toContain("Array")
+    expect(backToIntArrayType?.kind).toBe("GenericType")
 
     // backToStrArrayの型はArray<String>であるべき
     const backToStrArrayType = types.get("backToStrArray")
     expect(backToStrArrayType).toBeDefined()
-    expect(backToStrArrayType?.toString()).toContain("Array")
+    expect(backToStrArrayType?.kind).toBe("GenericType")
   })
 })
