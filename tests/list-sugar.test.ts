@@ -7,13 +7,14 @@ import * as AST from "../src/ast"
 describe("List Syntax Sugar", () => {
   function parseAndGenerate(source: string): string {
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
     // Type inference
     const typeInference = new TypeInferenceSystem()
-    typeInference.infer(ast)
+    const program = new AST.Program(parseResult.statements || [])
+    typeInference.infer(program)
 
-    return generateTypeScript(ast.statements, {
+    return generateTypeScript(parseResult.statements || [], {
       indent: "  ",
       runtimeMode: "embedded",
     })
@@ -21,11 +22,12 @@ describe("List Syntax Sugar", () => {
 
   function parseExpression(source: string): AST.Expression {
     const parser = new Parser(source)
-    const ast = parser.parse()
-    if (ast.statements.length === 0) {
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [])
+    if (program.statements.length === 0) {
       throw new Error("No statements found")
     }
-    const stmt = ast.statements[0]
+    const stmt = program.statements[0]
     if (!(stmt instanceof AST.ExpressionStatement)) {
       throw new Error("First statement is not an expression statement")
     }

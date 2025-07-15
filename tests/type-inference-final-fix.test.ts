@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import type * as AST from "../src/ast"
+import * as AST from "../src/ast"
 
 test("Function calls with no arguments", () => {
   const content = `
@@ -13,17 +13,20 @@ let number = getNumber()
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const messageDecl = ast.statements.find(
+  const messageDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "message"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "message"
   )
-  const numberDecl = ast.statements.find(
+  const numberDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "number"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "number"
   )
 
   const messageType = result.nodeTypeMap.get(messageDecl)
@@ -43,17 +46,20 @@ let nothingValue = Nothing
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const someValueDecl = ast.statements.find(
+  const someValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "someValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "someValue"
   )
-  const nothingValueDecl = ast.statements.find(
+  const nothingValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "nothingValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "nothingValue"
   )
 
   const someValueType = result.nodeTypeMap.get(someValueDecl)
@@ -82,17 +88,20 @@ let errorValue = Left "Error occurred"
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const successValueDecl = ast.statements.find(
+  const successValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "successValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "successValue"
   )
-  const errorValueDecl = ast.statements.find(
+  const errorValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "errorValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "errorValue"
   )
 
   const successValueType = result.nodeTypeMap.get(successValueDecl)
@@ -136,17 +145,20 @@ let calculatedB = complexCalculation 5 6
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const calculatedADecl = ast.statements.find(
+  const calculatedADecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "calculatedA"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "calculatedA"
   )
-  const calculatedBDecl = ast.statements.find(
+  const calculatedBDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "calculatedB"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "calculatedB"
   )
 
   const calculatedAType = result.nodeTypeMap.get(calculatedADecl)
@@ -169,17 +181,20 @@ let successValue = Right 42
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const nothingValueDecl = ast.statements.find(
+  const nothingValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "nothingValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "nothingValue"
   )
-  const successValueDecl = ast.statements.find(
+  const successValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "successValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "successValue"
   )
 
   const nothingValueType = result.nodeTypeMap.get(nothingValueDecl)

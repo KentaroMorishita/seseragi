@@ -34,7 +34,7 @@ describe("Template Literal Tests", () => {
     expect(result.errors).toHaveLength(0)
     expect(result.statements).toHaveLength(1)
 
-    const stmt = result.statements![0] as AST.ExpressionStatement
+    const stmt = result.statements?.[0] as AST.ExpressionStatement
     expect(stmt.kind).toBe("ExpressionStatement")
 
     const expr = stmt.expression as AST.TemplateExpression
@@ -51,7 +51,7 @@ describe("Template Literal Tests", () => {
     expect(result.errors).toHaveLength(0)
     expect(result.statements).toHaveLength(1)
 
-    const stmt = result.statements![0] as AST.ExpressionStatement
+    const stmt = result.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.TemplateExpression
     expect(expr.kind).toBe("TemplateExpression")
     expect(expr.parts).toHaveLength(3)
@@ -65,7 +65,7 @@ describe("Template Literal Tests", () => {
     const parser = new Parser(source)
     const result = parser.parse()
 
-    const stmt = result.statements![0] as AST.ExpressionStatement
+    const stmt = result.statements?.[0] as AST.ExpressionStatement
     const templateExpr = stmt.expression as AST.TemplateExpression
 
     const system = new TypeInferenceSystem()
@@ -107,7 +107,7 @@ describe("Template Literal Tests", () => {
     expect(result.errors).toHaveLength(0)
     expect(result.statements).toHaveLength(1)
 
-    const stmt = result.statements![0] as AST.ExpressionStatement
+    const stmt = result.statements?.[0] as AST.ExpressionStatement
     expect(stmt.kind).toBe("ExpressionStatement")
 
     const expr = stmt.expression as AST.FunctionApplication
@@ -127,7 +127,7 @@ describe("Template Literal Tests", () => {
     expect(result.errors).toHaveLength(0)
     expect(result.statements).toHaveLength(1)
 
-    const stmt = result.statements![0] as AST.ExpressionStatement
+    const stmt = result.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.FunctionApplication
     expect(expr.kind).toBe("FunctionApplication")
     expect((expr.function as AST.Identifier).name).toBe("print")

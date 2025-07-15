@@ -45,8 +45,12 @@ describe("List型", () => {
   describe("基本操作", () => {
     test("headList - リストの先頭要素を取得", () => {
       const list = Cons(1, Cons(2, Cons(3, Empty)))
-      expect(headList(list)).toBe(1)
-      expect(headList(Empty)).toBeUndefined()
+      const head = headList(list)
+      expect(head.tag === "Just" ? head.value : undefined).toBe(1)
+      const emptyHead = headList(Empty)
+      expect(
+        emptyHead.tag === "Just" ? emptyHead.value : undefined
+      ).toBeUndefined()
     })
 
     test("tailList - リストの末尾を取得", () => {

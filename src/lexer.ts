@@ -174,21 +174,12 @@ export class Lexer {
     return tokens
   }
 
-  private nextToken(): Token | null {
-    const hadWhitespace = this.hasWhitespace()
-    this.skipWhitespace()
-
-    if (this.isAtEnd()) {
-      return null
-    }
-
-    const _start = this.current
-    const startLine = this.line
-    const startColumn = this.column
-
-    const char = this.advance()
-
-    // Single character tokens
+  private handleSingleCharTokens(
+    char: string,
+    startLine: number,
+    startColumn: number,
+    _hadWhitespace: boolean
+  ): Token | null {
     switch (char) {
       case "(":
         return this.makeToken(
@@ -250,39 +241,13 @@ export class Lexer {
       case "?":
         return this.makeToken(TokenType.QUESTION, char, startLine, startColumn)
       case ".":
-        if (this.peek() === "." && this.peekNext() === "=") {
-          this.advance() // consume second .
-          this.advance() // consume =
-          return this.makeToken(
-            TokenType.RANGE_INCLUSIVE,
-            "..=",
-            startLine,
-            startColumn
-          )
-        }
-        if (this.peek() === "." && this.peekNext() === ".") {
-          this.advance() // consume second .
-          this.advance() // consume third .
-          return this.makeToken(TokenType.SPREAD, "...", startLine, startColumn)
-        }
-        if (this.peek() === ".") {
-          this.advance() // consume second .
-          return this.makeToken(TokenType.RANGE, "..", startLine, startColumn)
-        }
-        return this.makeToken(TokenType.DOT, char, startLine, startColumn)
+        return this.handleDotTokens(startLine, startColumn)
       case "+":
         return this.makeToken(TokenType.PLUS, char, startLine, startColumn)
       case "*":
-        if (this.peek() === "*") {
-          this.advance()
-          return this.makeToken(TokenType.POWER, "**", startLine, startColumn)
-        }
-        return this.makeToken(TokenType.MULTIPLY, char, startLine, startColumn)
+        return this.handleStarTokens(startLine, startColumn)
       case "/":
-        if (this.peek() === "/") {
-          return this.comment(startLine, startColumn)
-        }
-        return this.makeToken(TokenType.DIVIDE, char, startLine, startColumn)
+        return this.handleSlashTokens(startLine, startColumn)
       case "%":
         return this.makeToken(TokenType.MODULO, char, startLine, startColumn)
       case "~":
@@ -293,164 +258,241 @@ export class Lexer {
           startColumn
         )
       case "$":
-        if (this.peek() === "{") {
-          this.advance() // consume {
-          this.templateDepth++
-          return this.makeToken(
-            TokenType.TEMPLATE_START,
-            "${",
-            startLine,
-            startColumn
-          )
-        }
-        return this.makeToken(
-          TokenType.FUNCTION_APPLICATION,
-          char,
-          startLine,
-          startColumn
-        )
+        return this.handleDollarTokens(startLine, startColumn)
       case "\\":
         return this.makeToken(TokenType.LAMBDA, char, startLine, startColumn)
       case "`":
-        // リスト糖衣構文 `[ かテンプレートリテラルかを判定
-        if (this.peek() === "[") {
-          return this.makeToken(
-            TokenType.BACKTICK,
-            char,
-            startLine,
-            startColumn
-          )
-        } else {
-          return this.templateString(startLine, startColumn)
-        }
+        return this.handleBacktickTokens(startLine, startColumn)
       case "^":
         return this.makeToken(TokenType.HEAD_OP, char, startLine, startColumn)
       case "\n":
         this.line++
         this.column = 1
         return this.makeToken(TokenType.NEWLINE, char, startLine, startColumn)
+      default:
+        return null
     }
+  }
 
-    // Multi-character tokens
-    if (char === "-") {
-      if (this.peek() === ">") {
-        this.advance()
-        return this.makeToken(
-          TokenType.ARROW,
-          "->",
-          startLine,
-          startColumn,
-          hadWhitespace
-        )
-      }
-      // 負の数値リテラル: -123, -45.67
-      if (this.isDigit(this.peek())) {
-        return this.negativeNumber(startLine, startColumn)
-      }
+  private handleDotTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "." && this.peekNext() === "=") {
+      this.advance() // consume second .
+      this.advance() // consume =
       return this.makeToken(
-        TokenType.MINUS,
-        char,
+        TokenType.RANGE_INCLUSIVE,
+        "..=",
+        startLine,
+        startColumn
+      )
+    }
+    if (this.peek() === "." && this.peekNext() === ".") {
+      this.advance() // consume second .
+      this.advance() // consume third .
+      return this.makeToken(TokenType.SPREAD, "...", startLine, startColumn)
+    }
+    if (this.peek() === ".") {
+      this.advance() // consume second .
+      return this.makeToken(TokenType.RANGE, "..", startLine, startColumn)
+    }
+    return this.makeToken(TokenType.DOT, ".", startLine, startColumn)
+  }
+
+  private handleStarTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "*") {
+      this.advance()
+      return this.makeToken(TokenType.POWER, "**", startLine, startColumn)
+    }
+    return this.makeToken(TokenType.MULTIPLY, "*", startLine, startColumn)
+  }
+
+  private handleSlashTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "/") {
+      return this.comment(startLine, startColumn)
+    }
+    return this.makeToken(TokenType.DIVIDE, "/", startLine, startColumn)
+  }
+
+  private handleDollarTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "{") {
+      this.advance() // consume {
+      this.templateDepth++
+      return this.makeToken(
+        TokenType.TEMPLATE_START,
+        "${",
+        startLine,
+        startColumn
+      )
+    }
+    return this.makeToken(
+      TokenType.FUNCTION_APPLICATION,
+      "$",
+      startLine,
+      startColumn
+    )
+  }
+
+  private handleBacktickTokens(startLine: number, startColumn: number): Token {
+    // リスト糖衣構文 `[ かテンプレートリテラルかを判定
+    if (this.peek() === "[") {
+      return this.makeToken(TokenType.BACKTICK, "`", startLine, startColumn)
+    } else {
+      return this.templateString(startLine, startColumn)
+    }
+  }
+
+  private handleMultiCharTokens(
+    char: string,
+    startLine: number,
+    startColumn: number,
+    hadWhitespace: boolean
+  ): Token | null {
+    switch (char) {
+      case "-":
+        return this.handleMinusTokens(startLine, startColumn, hadWhitespace)
+      case "=":
+        return this.handleEqualsTokens(startLine, startColumn)
+      case "!":
+        return this.handleExclamationTokens(startLine, startColumn)
+      case "<":
+        return this.handleLessTokens(startLine, startColumn)
+      case ">":
+        return this.handleGreaterTokens(startLine, startColumn)
+      case "&":
+        return this.handleAmpersandTokens(startLine, startColumn)
+      case "|":
+        return this.handlePipeTokens(startLine, startColumn)
+      default:
+        return null
+    }
+  }
+
+  private handleMinusTokens(
+    startLine: number,
+    startColumn: number,
+    hadWhitespace: boolean
+  ): Token {
+    if (this.peek() === ">") {
+      this.advance()
+      return this.makeToken(
+        TokenType.ARROW,
+        "->",
         startLine,
         startColumn,
         hadWhitespace
       )
     }
-
-    if (char === "=") {
-      if (this.peek() === "=") {
-        this.advance()
-        return this.makeToken(TokenType.EQUAL, "==", startLine, startColumn)
-      }
-      return this.makeToken(TokenType.ASSIGN, char, startLine, startColumn)
+    // 負の数値リテラル: -123, -45.67
+    if (this.isDigit(this.peek())) {
+      return this.negativeNumber(startLine, startColumn)
     }
+    return this.makeToken(
+      TokenType.MINUS,
+      "-",
+      startLine,
+      startColumn,
+      hadWhitespace
+    )
+  }
 
-    if (char === "!") {
-      if (this.peek() === "=") {
-        this.advance()
-        return this.makeToken(TokenType.NOT_EQUAL, "!=", startLine, startColumn)
-      }
-      return this.makeToken(TokenType.NOT, char, startLine, startColumn)
+  private handleEqualsTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "=") {
+      this.advance()
+      return this.makeToken(TokenType.EQUAL, "==", startLine, startColumn)
     }
+    return this.makeToken(TokenType.ASSIGN, "=", startLine, startColumn)
+  }
 
-    if (char === "<") {
-      if (this.peek() === "$" && this.peekNext() === ">") {
-        this.advance() // consume $
-        this.advance() // consume >
-        return this.makeToken(TokenType.MAP, "<$>", startLine, startColumn)
-      }
-      if (this.peek() === "*" && this.peekNext() === ">") {
-        this.advance() // consume *
-        this.advance() // consume >
-        return this.makeToken(TokenType.APPLY, "<*>", startLine, startColumn)
-      }
-      if (this.peek() === "-") {
-        this.advance() // consume -
-        return this.makeToken(TokenType.GENERATOR, "<-", startLine, startColumn)
-      }
-      if (this.peek() === "=") {
-        this.advance()
-        return this.makeToken(
-          TokenType.LESS_EQUAL,
-          "<=",
-          startLine,
-          startColumn
-        )
-      }
-      return this.makeToken(TokenType.LESS_THAN, char, startLine, startColumn)
+  private handleExclamationTokens(
+    startLine: number,
+    startColumn: number
+  ): Token {
+    if (this.peek() === "=") {
+      this.advance()
+      return this.makeToken(TokenType.NOT_EQUAL, "!=", startLine, startColumn)
     }
+    return this.makeToken(TokenType.NOT, "!", startLine, startColumn)
+  }
 
-    if (char === ">") {
-      if (this.peek() === "=") {
-        this.advance()
-        return this.makeToken(
-          TokenType.GREATER_EQUAL,
-          ">=",
-          startLine,
-          startColumn
-        )
-      }
-      if (this.peek() === ">" && this.peekNext() === "=") {
-        this.advance() // first >
-        this.advance() // second >
-        this.advance() // =
-        return this.makeToken(TokenType.BIND, ">>=", startLine, startColumn)
-      }
-      if (this.peek() === ">" && this.peekNext() === ">") {
-        this.advance() // first >
-        this.advance() // second >
-        this.advance() // third >
-        return this.makeToken(
-          TokenType.FOLD_MONOID,
-          ">>>",
-          startLine,
-          startColumn
-        )
-      }
-      if (this.peek() === ">") {
-        this.advance() // second >
-        return this.makeToken(TokenType.TAIL_OP, ">>", startLine, startColumn)
-      }
+  private handleLessTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "$" && this.peekNext() === ">") {
+      this.advance() // consume $
+      this.advance() // consume >
+      return this.makeToken(TokenType.MAP, "<$>", startLine, startColumn)
+    }
+    if (this.peek() === "*" && this.peekNext() === ">") {
+      this.advance() // consume *
+      this.advance() // consume >
+      return this.makeToken(TokenType.APPLY, "<*>", startLine, startColumn)
+    }
+    if (this.peek() === "-") {
+      this.advance() // consume -
+      return this.makeToken(TokenType.GENERATOR, "<-", startLine, startColumn)
+    }
+    if (this.peek() === "=") {
+      this.advance()
+      return this.makeToken(TokenType.LESS_EQUAL, "<=", startLine, startColumn)
+    }
+    return this.makeToken(TokenType.LESS_THAN, "<", startLine, startColumn)
+  }
+
+  private handleGreaterTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "=") {
+      this.advance()
       return this.makeToken(
-        TokenType.GREATER_THAN,
-        char,
+        TokenType.GREATER_EQUAL,
+        ">=",
         startLine,
         startColumn
       )
     }
+    if (this.peek() === ">" && this.peekNext() === "=") {
+      this.advance() // first >
+      this.advance() // second >
+      this.advance() // =
+      return this.makeToken(TokenType.BIND, ">>=", startLine, startColumn)
+    }
+    if (this.peek() === ">" && this.peekNext() === ">") {
+      this.advance() // first >
+      this.advance() // second >
+      this.advance() // third >
+      return this.makeToken(
+        TokenType.FOLD_MONOID,
+        ">>>",
+        startLine,
+        startColumn
+      )
+    }
+    if (this.peek() === ">") {
+      this.advance() // second >
+      return this.makeToken(TokenType.TAIL_OP, ">>", startLine, startColumn)
+    }
+    return this.makeToken(TokenType.GREATER_THAN, ">", startLine, startColumn)
+  }
 
-    if (char === "&" && this.peek() === "&") {
+  private handleAmpersandTokens(
+    startLine: number,
+    startColumn: number
+  ): Token | null {
+    if (this.peek() === "&") {
       this.advance()
       return this.makeToken(TokenType.AND, "&&", startLine, startColumn)
     }
+    return null
+  }
 
-    if (char === "|") {
-      if (this.peek() === "|") {
-        this.advance()
-        return this.makeToken(TokenType.OR, "||", startLine, startColumn)
-      }
-      return this.makeToken(TokenType.PIPE, char, startLine, startColumn)
+  private handlePipeTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "|") {
+      this.advance()
+      return this.makeToken(TokenType.OR, "||", startLine, startColumn)
     }
+    return this.makeToken(TokenType.PIPE, "|", startLine, startColumn)
+  }
 
+  private handleLiteralsAndIdentifiers(
+    char: string,
+    startLine: number,
+    startColumn: number
+  ): Token {
     // String literals
     if (char === '"') {
       return this.string(startLine, startColumn)
@@ -474,6 +516,46 @@ export class Lexer {
     throw new Error(
       `Unexpected character: ${char} at line ${startLine}, column ${startColumn}`
     )
+  }
+
+  private nextToken(): Token | null {
+    const hadWhitespace = this.hasWhitespace()
+    this.skipWhitespace()
+
+    if (this.isAtEnd()) {
+      return null
+    }
+
+    const _start = this.current
+    const startLine = this.line
+    const startColumn = this.column
+
+    const char = this.advance()
+
+    // Single character tokens
+    const singleCharToken = this.handleSingleCharTokens(
+      char,
+      startLine,
+      startColumn,
+      hadWhitespace
+    )
+    if (singleCharToken) {
+      return singleCharToken
+    }
+
+    // Multi-character tokens
+    const multiCharToken = this.handleMultiCharTokens(
+      char,
+      startLine,
+      startColumn,
+      hadWhitespace
+    )
+    if (multiCharToken) {
+      return multiCharToken
+    }
+
+    // Literals and identifiers
+    return this.handleLiteralsAndIdentifiers(char, startLine, startColumn)
   }
 
   private string(startLine: number, startColumn: number): Token {

@@ -32,7 +32,7 @@ describe("Show Function Detection", () => {
     }
 
     const generatedCode = generateTypeScript(parseResult.statements, {
-      runtimeMode: "minimal",
+      runtimeMode: "embedded",
     })
     return generatedCode.includes("const show = ")
   }

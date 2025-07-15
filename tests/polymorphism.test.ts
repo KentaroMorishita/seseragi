@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
+import * as AST from "../src/ast"
 
 describe("Polymorphism Tests", () => {
   test("should handle polymorphic lambda with multiple different type applications", () => {
@@ -15,7 +16,8 @@ show fuga
     `
 
     const parser = new Parser(code)
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
 
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
@@ -33,7 +35,8 @@ let strId = identity "hello"
     `
 
     const parser = new Parser(code)
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
 
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
@@ -53,7 +56,8 @@ let result = combined 5
     `
 
     const parser = new Parser(code)
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
 
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
@@ -74,7 +78,8 @@ let stringResult = func "a" "b"
     `
 
     const parser = new Parser(code)
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
 
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)

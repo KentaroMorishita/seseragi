@@ -211,109 +211,111 @@ export class Parser {
     while (this.check(TokenType.IDENTIFIER)) {
       const paramNameToken = this.peek()
 
-      // Check if this identifier is followed by colon (typed parameter)
       if (this.checkNext(TokenType.COLON)) {
-        // Typed parameter: param :Type ->
-        hasTypedParameters = true
-        const paramName = this.advance().value
-        this.consume(TokenType.COLON, "Expected ':'")
-        const paramType = this.parseType()
-        this.consume(TokenType.ARROW, "Expected '->' after parameter type")
-
-        // 型ありパラメータでも暗黙的selfとotherをチェック
-        const isImplicitSelf =
-          implContext && paramName === "self" && parameters.length === 0
-        const isImplicitOther = implContext && paramName === "other"
-
-        parameters.push(
-          new AST.Parameter(
-            paramName,
-            paramType,
-            paramNameToken.line,
-            paramNameToken.column,
-            isImplicitSelf,
-            isImplicitOther
-          )
+        hasTypedParameters = this.parseTypedParameter(
+          parameters,
+          implContext,
+          paramNameToken
         )
       } else {
-        // Either untyped parameter or return type
-        // Look ahead to determine which one
-        if (this.isReturnType(hasTypedParameters)) {
-          // This is the return type, stop parsing parameters
-          return this.parseType()
-        } else {
-          // Untyped parameter
-          const paramName = this.advance().value
-
-          // 暗黙的selfの検出：implコンテキスト内で最初のパラメータが'self'の場合
-          const isImplicitSelf =
-            implContext && paramName === "self" && parameters.length === 0
-
-          // 暗黙的otherの検出：implコンテキスト内で'other'パラメータの場合
-          const isImplicitOther = implContext && paramName === "other"
-
-          if (isImplicitSelf) {
-            // 暗黙的selfパラメータ：型は後でimplコンテキストから解決される
-            parameters.push(
-              new AST.Parameter(
-                paramName,
-                this.freshTypeVariable(
-                  paramNameToken.line,
-                  paramNameToken.column
-                ),
-                paramNameToken.line,
-                paramNameToken.column,
-                true, // isImplicitSelf = true
-                false // isImplicitOther = false
-              )
-            )
-          } else if (isImplicitOther) {
-            // 暗黙的otherパラメータ：型は後でimplコンテキストから解決される
-            parameters.push(
-              new AST.Parameter(
-                paramName,
-                this.freshTypeVariable(
-                  paramNameToken.line,
-                  paramNameToken.column
-                ),
-                paramNameToken.line,
-                paramNameToken.column,
-                false, // isImplicitSelf = false
-                true // isImplicitOther = true
-              )
-            )
-          } else {
-            // 通常の型なしパラメータ
-            parameters.push(
-              new AST.Parameter(
-                paramName,
-                this.freshTypeVariable(
-                  paramNameToken.line,
-                  paramNameToken.column
-                ),
-                paramNameToken.line,
-                paramNameToken.column,
-                false, // isImplicitSelf = false
-                false // isImplicitOther = false
-              )
-            )
-          }
-
-          // 型なしパラメータの後に'->'がある場合は消費（次のパラメータまたは戻り値型）
-          if (this.check(TokenType.ARROW)) {
-            this.advance() // consume ->
-          }
+        const returnType = this.parseUntypedParameterOrReturnType(
+          parameters,
+          implContext,
+          paramNameToken,
+          hasTypedParameters
+        )
+        if (returnType) {
+          return returnType
         }
       }
     }
 
-    // パラメータ解析ループが終了した後、明示的な戻り値型があるかチェック
+    return this.parseExplicitReturnType()
+  }
+
+  private parseTypedParameter(
+    parameters: AST.Parameter[],
+    implContext: string | undefined,
+    paramNameToken: Token
+  ): boolean {
+    const paramName = this.advance().value
+    this.consume(TokenType.COLON, "Expected ':'")
+    const paramType = this.parseType()
+    this.consume(TokenType.ARROW, "Expected '->' after parameter type")
+
+    const { isImplicitSelf, isImplicitOther } = this.checkImplicitParameters(
+      implContext,
+      paramName,
+      parameters.length
+    )
+
+    parameters.push(
+      new AST.Parameter(
+        paramName,
+        paramType,
+        paramNameToken.line,
+        paramNameToken.column,
+        isImplicitSelf,
+        isImplicitOther
+      )
+    )
+    return true
+  }
+
+  private parseUntypedParameterOrReturnType(
+    parameters: AST.Parameter[],
+    implContext: string | undefined,
+    paramNameToken: Token,
+    hasTypedParameters: boolean
+  ): AST.Type | null {
+    if (this.isReturnType(hasTypedParameters)) {
+      return this.parseType()
+    }
+
+    const paramName = this.advance().value
+    const { isImplicitSelf, isImplicitOther } = this.checkImplicitParameters(
+      implContext,
+      paramName,
+      parameters.length
+    )
+
+    parameters.push(
+      new AST.Parameter(
+        paramName,
+        this.freshTypeVariable(paramNameToken.line, paramNameToken.column),
+        paramNameToken.line,
+        paramNameToken.column,
+        isImplicitSelf,
+        isImplicitOther
+      )
+    )
+
+    if (this.check(TokenType.ARROW)) {
+      this.advance() // consume ->
+    }
+
+    return null
+  }
+
+  private checkImplicitParameters(
+    implContext: string | undefined,
+    paramName: string,
+    paramCount: number
+  ): { isImplicitSelf: boolean; isImplicitOther: boolean } {
+    const isImplicitSelf =
+      implContext && paramName === "self" && paramCount === 0
+    const isImplicitOther = implContext && paramName === "other"
+    return {
+      isImplicitSelf: !!isImplicitSelf,
+      isImplicitOther: !!isImplicitOther,
+    }
+  }
+
+  private parseExplicitReturnType(): AST.Type {
     if (this.check(TokenType.ARROW)) {
       this.advance() // consume ->
       return this.parseType()
     }
-
-    // If we reach here and have no explicit return type, use fresh type variable for inference
     return this.freshTypeVariable(this.peek().line, this.peek().column)
   }
 
@@ -323,61 +325,36 @@ export class Parser {
   }
 
   private isReturnType(hasTypedParameters: boolean): boolean {
-    // Look ahead to see what comes after this identifier
+    return this.isReturnTypeWithLookahead() ? true : hasTypedParameters
+  }
+
+  private isReturnTypeWithLookahead(): boolean {
     let lookahead = this.current + 1
     let genericDepth = 0
 
-    // Skip the current identifier and any generic type arguments
     while (lookahead < this.tokens.length) {
       const tokenType = this.tokens[lookahead].type
 
-      // Track generic type depth
-      if (tokenType === TokenType.LESS_THAN) {
-        genericDepth++
-        lookahead++
+      // Skip generic type content
+      if (this.isGenericTypeToken(tokenType, genericDepth)) {
+        const { newLookahead, newDepth } = this.skipGenericToken(
+          lookahead,
+          genericDepth,
+          tokenType
+        )
+        lookahead = newLookahead
+        genericDepth = newDepth
         continue
       }
 
-      if (tokenType === TokenType.GREATER_THAN) {
-        genericDepth--
-        lookahead++
-        continue
+      // Check for function definition patterns
+      const definitionResult = this.checkForDefinitionPattern(tokenType)
+      if (definitionResult !== null) {
+        return definitionResult
       }
 
-      // If we're inside a generic type, skip all tokens including identifiers
-      if (genericDepth > 0) {
-        lookahead++
-        continue
-      }
-
-      // If we find '=' or '{' after this identifier:
-      // - In typed functions (e.g., "fn add a :Int -> b :Int -> Int = ..."),
-      //   this identifier is a return type
-      // - In untyped functions (e.g., "fn add x y = ..."),
-      //   this identifier is also a return type if preceded by ->
-      if (
-        tokenType === TokenType.ASSIGN ||
-        tokenType === TokenType.LEFT_BRACE
-      ) {
-        // Check if this identifier was preceded by -> (indicating return type)
-        if (
-          this.current > 0 &&
-          this.tokens[this.current - 1].type === TokenType.ARROW
-        ) {
-          return true // This is a return type
-        }
-        return hasTypedParameters
-      }
-
-      // If we find '->' after this identifier, this is NOT a return type
-      // (it's a parameter type, and the return type comes later)
-      if (tokenType === TokenType.ARROW) {
-        return false
-      }
-
-      // If we find another identifier outside of generics without encountering anything definitive,
-      // this is likely a parameter name, not a return type
-      if (tokenType === TokenType.IDENTIFIER) {
+      // Check for other patterns
+      if (this.isOtherPattern(tokenType)) {
         return false
       }
 
@@ -387,93 +364,146 @@ export class Parser {
     return false
   }
 
+  private isGenericTypeToken(
+    tokenType: TokenType,
+    genericDepth: number
+  ): boolean {
+    return (
+      tokenType === TokenType.LESS_THAN ||
+      tokenType === TokenType.GREATER_THAN ||
+      genericDepth > 0
+    )
+  }
+
+  private skipGenericToken(
+    lookahead: number,
+    genericDepth: number,
+    tokenType: TokenType
+  ): { newLookahead: number; newDepth: number } {
+    if (tokenType === TokenType.LESS_THAN) {
+      return { newLookahead: lookahead + 1, newDepth: genericDepth + 1 }
+    }
+    if (tokenType === TokenType.GREATER_THAN) {
+      return { newLookahead: lookahead + 1, newDepth: genericDepth - 1 }
+    }
+    return { newLookahead: lookahead + 1, newDepth: genericDepth }
+  }
+
+  private checkForDefinitionPattern(tokenType: TokenType): boolean | null {
+    if (tokenType === TokenType.ASSIGN || tokenType === TokenType.LEFT_BRACE) {
+      return (
+        this.current > 0 &&
+        this.tokens[this.current - 1].type === TokenType.ARROW
+      )
+    }
+    return null
+  }
+
+  private isOtherPattern(tokenType: TokenType): boolean {
+    return tokenType === TokenType.ARROW || tokenType === TokenType.IDENTIFIER
+  }
+
   private typeDeclaration(): AST.TypeDeclaration | AST.TypeAliasDeclaration {
     const name = this.consume(TokenType.IDENTIFIER, "Expected type name").value
 
-    // 名前の重複チェック
+    this.validateTypeName(name)
+
+    if (this.match(TokenType.ASSIGN)) {
+      return this.parseTypeWithAssignment(name)
+    } else {
+      return this.parseStructTypeDeclaration(name)
+    }
+  }
+
+  private validateTypeName(name: string): void {
     if (this.structNames.has(name)) {
       throw new ParseError(
         `Type '${name}' conflicts with existing struct. Use a different name.`,
         this.previous()
       )
     }
+  }
 
-    // Check if this is a union type (type Name = A | B | C), type alias (type Name = Type), or struct type (type Name { field: Type })
-    if (this.match(TokenType.ASSIGN)) {
-      this.skipNewlines() // Allow newlines after '='
+  private parseTypeWithAssignment(
+    name: string
+  ): AST.TypeDeclaration | AST.TypeAliasDeclaration {
+    this.skipNewlines() // Allow newlines after '='
 
-      // Look ahead to determine if this is a type alias or union type
-      // Save current position to backtrack if needed
-      const savedPosition = this.current
+    const savedPosition = this.current
+    const isTypeAlias = this.determineTypeKind()
+    this.current = savedPosition
 
-      // Try to parse the first part and look for a pipe separator
-      let isTypeAlias = true
-      try {
-        // Skip leading newlines/whitespace
-        this.skipNewlines()
-
-        // Check if we immediately see a pipe (multi-line ADT format)
-        if (this.check(TokenType.PIPE)) {
-          isTypeAlias = false // This is a union type
-        } else if (this.check(TokenType.LEFT_PAREN)) {
-          // Function type like (Int -> Bool) - always a type alias
-          isTypeAlias = true
-        } else if (this.check(TokenType.IDENTIFIER)) {
-          this.advance() // consume the identifier
-
-          // Parse any type arguments (e.g., Maybe<String>)
-          if (this.match(TokenType.LESS_THAN)) {
-            // Skip the generic arguments to look for pipes later
-            let bracketCount = 1
-            while (bracketCount > 0 && !this.isAtEnd()) {
-              if (this.check(TokenType.LESS_THAN)) {
-                bracketCount++
-              } else if (this.check(TokenType.GREATER_THAN)) {
-                bracketCount--
-              }
-              this.advance()
-            }
-          }
-
-          // Parse any additional type arguments for constructor variants
-          this.parseVariantDataTypes()
-
-          // Skip whitespace and check for pipe
-          this.skipNewlines()
-          if (this.check(TokenType.PIPE)) {
-            isTypeAlias = false // This is a union type
-          }
-        } else {
-          // Other type constructs are type aliases
-          isTypeAlias = true
-        }
-      } catch (_e) {
-        // If parsing fails, assume it's a complex type alias
-        isTypeAlias = true
-      }
-
-      // Restore position
-      this.current = savedPosition
-
-      if (isTypeAlias) {
-        // Type alias: type UserId = Int
-        const aliasedType = this.parseType()
-        return new AST.TypeAliasDeclaration(
-          name,
-          aliasedType,
-          this.previous().line,
-          this.previous().column
-        )
-      } else {
-        // Union type: type Color = Red | Green | Blue
-        this.adtNames.add(name) // ADT名を登録
-        return this.parseUnionType(name)
-      }
+    if (isTypeAlias) {
+      return this.parseTypeAliasDeclaration(name)
     } else {
-      // Struct type: type Point { x: Int, y: Int }
-      this.adtNames.add(name) // struct型も型名として登録
-      return this.parseStructType(name)
+      return this.parseUnionTypeDeclaration(name)
     }
+  }
+
+  private determineTypeKind(): boolean {
+    try {
+      this.skipNewlines()
+
+      if (this.check(TokenType.PIPE)) {
+        return false // This is a union type
+      }
+
+      if (this.check(TokenType.LEFT_PAREN)) {
+        return true // Function type
+      }
+
+      if (this.check(TokenType.IDENTIFIER)) {
+        return this.checkIdentifierTypeKind()
+      }
+
+      return true // Other type constructs are type aliases
+    } catch (_e) {
+      return true // If parsing fails, assume it's a complex type alias
+    }
+  }
+
+  private checkIdentifierTypeKind(): boolean {
+    this.advance() // consume the identifier
+
+    this.skipGenericArguments()
+    this.parseVariantDataTypes()
+
+    this.skipNewlines()
+    return !this.check(TokenType.PIPE)
+  }
+
+  private skipGenericArguments(): void {
+    if (this.match(TokenType.LESS_THAN)) {
+      let bracketCount = 1
+      while (bracketCount > 0 && !this.isAtEnd()) {
+        if (this.check(TokenType.LESS_THAN)) {
+          bracketCount++
+        } else if (this.check(TokenType.GREATER_THAN)) {
+          bracketCount--
+        }
+        this.advance()
+      }
+    }
+  }
+
+  private parseTypeAliasDeclaration(name: string): AST.TypeAliasDeclaration {
+    const aliasedType = this.parseType()
+    return new AST.TypeAliasDeclaration(
+      name,
+      aliasedType,
+      this.previous().line,
+      this.previous().column
+    )
+  }
+
+  private parseUnionTypeDeclaration(name: string): AST.TypeDeclaration {
+    this.adtNames.add(name) // ADT名を登録
+    return this.parseUnionType(name)
+  }
+
+  private parseStructTypeDeclaration(name: string): AST.TypeDeclaration {
+    this.adtNames.add(name) // struct型も型名として登録
+    return this.parseStructType(name)
   }
 
   private parseUnionType(name: string): AST.TypeDeclaration {
@@ -588,41 +618,57 @@ export class Parser {
 
   // ADTコンストラクタの引数数を動的に取得
   private getConstructorArgCount(constructorName: string): number {
-    // 決め打ちのビルトインコンストラクタ
+    const builtinCount = this.getBuiltinConstructorArgCount(constructorName)
+    if (builtinCount !== -1) {
+      return builtinCount
+    }
+
+    return this.getUserDefinedConstructorArgCount(constructorName)
+  }
+
+  private getBuiltinConstructorArgCount(constructorName: string): number {
     if (constructorName === "Cons") return 2
-    if (
+    if (this.isSingleArgBuiltin(constructorName)) return 1
+    if (this.isZeroArgBuiltin(constructorName)) return 0
+    return -1 // Not a builtin
+  }
+
+  private isSingleArgBuiltin(constructorName: string): boolean {
+    return (
       constructorName === "Just" ||
       constructorName === "Left" ||
       constructorName === "Right"
     )
-      return 1
-    if (constructorName === "Nothing" || constructorName === "Empty") return 0
+  }
 
-    // ユーザー定義ADTから動的に判定
+  private isZeroArgBuiltin(constructorName: string): boolean {
+    return constructorName === "Nothing" || constructorName === "Empty"
+  }
+
+  private getUserDefinedConstructorArgCount(constructorName: string): number {
     for (const [_adtName, variants] of this.adtDefinitions) {
-      for (const variant of variants) {
-        if (variant.name === constructorName) {
-          // Tupleの場合は引数数を取得
-          if (
-            variant.type instanceof AST.GenericType &&
-            variant.type.name === "Tuple"
-          ) {
-            return variant.type.typeArguments.length
-          }
-          // Unitの場合は引数なし
-          if (
-            variant.type instanceof AST.PrimitiveType &&
-            variant.type.name === "Unit"
-          ) {
-            return 0
-          }
-          // その他の場合は1つの引数
-          return 1
-        }
+      const variant = variants.find((v) => v.name === constructorName)
+      if (variant) {
+        return this.getVariantArgCount(variant)
       }
     }
-
     return 0 // デフォルトは引数なし
+  }
+
+  private getVariantArgCount(variant: AST.TypeField): number {
+    if (
+      variant.type instanceof AST.GenericType &&
+      variant.type.name === "Tuple"
+    ) {
+      return variant.type.typeArguments.length
+    }
+    if (
+      variant.type instanceof AST.PrimitiveType &&
+      variant.type.name === "Unit"
+    ) {
+      return 0
+    }
+    return 1 // その他の場合は1つの引数
   }
 
   private structDeclaration(): AST.StructDeclaration {
@@ -1013,6 +1059,7 @@ export class Parser {
   // Types
   // =============================================================================
 
+  // eslint-disable-next-line complexity
   private parseType(): AST.Type {
     // Check for parenthesized types first (function types, tuple types, or parenthesized types)
     if (this.check(TokenType.LEFT_PAREN)) {
@@ -1334,6 +1381,7 @@ export class Parser {
     return pattern
   }
 
+  // eslint-disable-next-line complexity
   private primaryPattern(): AST.Pattern {
     // Wildcard pattern
     if (this.match(TokenType.WILDCARD)) {
@@ -2098,6 +2146,7 @@ export class Parser {
     }
   }
 
+  // eslint-disable-next-line complexity
   private callExpression(): AST.Expression {
     let expr = this.primaryExpression()
 
@@ -2308,6 +2357,7 @@ export class Parser {
     )
   }
 
+  // eslint-disable-next-line complexity
   private primaryExpression(): AST.Expression {
     // Lambda expressions: \x -> expr or \x :Type -> expr
     if (this.match(TokenType.LAMBDA)) {
@@ -2942,45 +2992,58 @@ export class Parser {
     let returnExpression: AST.Expression | undefined
 
     while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-      // Skip newlines and comments
       if (this.match(TokenType.NEWLINE, TokenType.COMMENT)) {
         continue
       }
 
-      // Check for explicit return statement
-      if (this.check(TokenType.RETURN)) {
-        const returnStmt = this.returnStatement()
-        returnExpression = returnStmt.expression
+      const result = this.parseBlockStatement()
+      if (result.returnExpression) {
+        returnExpression = result.returnExpression
         break
       }
 
-      // Parse statement or expression
-      const stmt = this.statement()
-      if (stmt) {
-        // If this is an expression statement and it's the last thing before closing brace,
-        // treat it as the return expression
-        if (stmt instanceof AST.ExpressionStatement) {
-          // Look ahead to see if we're at the end of the block
-          this.skipNewlines()
-          if (this.check(TokenType.RIGHT_BRACE)) {
-            returnExpression = stmt.expression
-          } else {
-            statements.push(stmt)
-          }
+      if (result.statement) {
+        const finalExpression = this.checkForFinalExpression(result.statement)
+        if (finalExpression) {
+          returnExpression = finalExpression
         } else {
-          statements.push(stmt)
+          statements.push(result.statement)
         }
       }
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after block")
-
     return new AST.BlockExpression(
       statements,
       returnExpression,
       this.previous().line,
       this.previous().column
     )
+  }
+
+  private parseBlockStatement(): {
+    statement?: AST.Statement
+    returnExpression?: AST.Expression
+  } {
+    if (this.check(TokenType.RETURN)) {
+      const returnStmt = this.returnStatement()
+      return { returnExpression: returnStmt.expression }
+    }
+
+    const stmt = this.statement()
+    return { statement: stmt || undefined }
+  }
+
+  private checkForFinalExpression(
+    stmt: AST.Statement
+  ): AST.Expression | undefined {
+    if (stmt instanceof AST.ExpressionStatement) {
+      this.skipNewlines()
+      if (this.check(TokenType.RIGHT_BRACE)) {
+        return stmt.expression
+      }
+    }
+    return undefined
   }
 
   private lambdaExpression(): AST.LambdaExpression {
@@ -2991,31 +3054,25 @@ export class Parser {
 
     // Parse parameter(s) - support both single param and nested lambdas
     // \x -> expr  or  \x :Type -> expr
-    do {
-      const paramName = this.consume(
-        TokenType.IDENTIFIER,
-        "Expected parameter name after '\\'"
-      ).value
+    // Parse one parameter per lambda
+    const paramName = this.consume(
+      TokenType.IDENTIFIER,
+      "Expected parameter name after '\\'"
+    ).value
 
-      let paramType: AST.Type | undefined
+    let paramType: AST.Type | undefined
 
-      // Check for optional type annotation
-      if (this.match(TokenType.COLON)) {
-        paramType = this.parseType()
-      } else {
-        // Create a placeholder type that will be inferred
-        paramType = new AST.PrimitiveType("_", startLine, startColumn)
-      }
+    // Check for optional type annotation
+    if (this.match(TokenType.COLON)) {
+      paramType = this.parseType()
+    } else {
+      // Create a placeholder type that will be inferred
+      paramType = new AST.PrimitiveType("_", startLine, startColumn)
+    }
 
-      parameters.push(
-        new AST.Parameter(paramName, paramType, startLine, startColumn)
-      )
-
-      // If we find another lambda, it's a nested lambda (\a -> \b -> ...)
-      if (this.check(TokenType.LAMBDA)) {
-        break
-      }
-    } while (false) // Only parse one parameter per lambda
+    parameters.push(
+      new AST.Parameter(paramName, paramType, startLine, startColumn)
+    )
 
     this.consume(TokenType.ARROW, "Expected '->' after lambda parameter")
 

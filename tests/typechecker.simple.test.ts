@@ -1,12 +1,14 @@
 import { describe, test, expect } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeChecker } from "../src/typechecker"
+import * as AST from "../src/ast"
 
 function checkTypes(code: string) {
   const parser = new Parser(code)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeChecker = new TypeChecker()
-  return typeChecker.check(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  return typeChecker.check(program)
 }
 
 describe("TypeChecker - Basic Tests", () => {

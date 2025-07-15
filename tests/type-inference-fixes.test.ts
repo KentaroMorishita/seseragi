@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import type * as AST from "../src/ast"
+import * as AST from "../src/ast"
 
 test("Maybe type inference", () => {
   const content = `
@@ -10,18 +10,21 @@ let nothingValue = Nothing
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
   // Find the variable types
-  const someValueDecl = ast.statements.find(
+  const someValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "someValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "someValue"
   )
-  const nothingValueDecl = ast.statements.find(
+  const nothingValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "nothingValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "nothingValue"
   )
 
   const someValueType = result.nodeTypeMap.get(someValueDecl)
@@ -42,17 +45,20 @@ let errorValue = Left "Error occurred"
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const successValueDecl = ast.statements.find(
+  const successValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "successValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "successValue"
   )
-  const errorValueDecl = ast.statements.find(
+  const errorValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "errorValue"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "errorValue"
   )
 
   const successValueType = result.nodeTypeMap.get(successValueDecl)
@@ -77,13 +83,15 @@ let calculatedA = complexCalculation 3
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const calculatedADecl = ast.statements.find(
+  const calculatedADecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "calculatedA"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "calculatedA"
   )
 
   const calculatedAType = result.nodeTypeMap.get(calculatedADecl)
@@ -106,13 +114,15 @@ let calculatedB = complexCalculation 5 6
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
-  const calculatedBDecl = ast.statements.find(
+  const calculatedBDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "calculatedB"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "calculatedB"
   )
 
   const calculatedBType = result.nodeTypeMap.get(calculatedBDecl)
@@ -134,31 +144,35 @@ let result3 = safeDivide 10 0
 `
 
   const parser = new Parser(content)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  const result = typeInference.infer(program)
 
   // Check addFive is a function Int -> Int
-  const addFiveDecl = ast.statements.find(
+  const addFiveDecl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "addFive"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "addFive"
   )
   const addFiveType = result.nodeTypeMap.get(addFiveDecl)
   expect(addFiveType?.kind).toBe("FunctionType")
 
   // Check result1 is Int
-  const result1Decl = ast.statements.find(
+  const result1Decl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "result1"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "result1"
   )
   const result1Type = result.nodeTypeMap.get(result1Decl)
   expect(result1Type?.kind).toBe("PrimitiveType")
   expect((result1Type as AST.PrimitiveType)?.name).toBe("Int")
 
   // Check result2 and result3 are Maybe<Int>
-  const result2Decl = ast.statements.find(
+  const result2Decl = program.statements.find(
     (stmt: AST.Statement) =>
-      stmt.kind === "VariableDeclaration" && stmt.name === "result2"
+      stmt.kind === "VariableDeclaration" &&
+      (stmt as AST.VariableDeclaration).name === "result2"
   )
   const result2Type = result.nodeTypeMap.get(result2Decl)
   expect(result2Type?.kind).toBe("GenericType")

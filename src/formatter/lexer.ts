@@ -117,20 +117,75 @@ export class Lexer {
     const start = this.position
     const startLine = this.line
     const startColumn = this.column
-
     const char = this.current()
 
-    // Handle whitespace (preserve for formatting)
+    // 基本トークンの処理
+    const basicToken = this.tryReadBasicToken(
+      char,
+      start,
+      startLine,
+      startColumn
+    )
+    if (basicToken) {
+      return basicToken
+    }
+
+    // リテラルの処理
+    const literalToken = this.tryReadLiteral(
+      char,
+      start,
+      startLine,
+      startColumn
+    )
+    if (literalToken) {
+      return literalToken
+    }
+
+    // 演算子の処理
+    const operatorToken = this.tryReadOperator(
+      char,
+      start,
+      startLine,
+      startColumn
+    )
+    if (operatorToken) {
+      return operatorToken
+    }
+
+    // 識別子の処理
+    if (this.isAlpha(char) || char === "_") {
+      return this.readIdentifier(start, startLine, startColumn)
+    }
+
+    // 未知の文字
+    this.advance()
+    return {
+      type: TokenType.IDENTIFIER,
+      value: char,
+      line: startLine,
+      column: startColumn,
+      start,
+      end: this.position,
+    }
+  }
+
+  private tryReadBasicToken(
+    char: string,
+    start: number,
+    startLine: number,
+    startColumn: number
+  ): Token | null {
+    // 空白文字
     if (this.isWhitespace(char)) {
       return this.readWhitespace(start, startLine, startColumn)
     }
 
-    // Comments
+    // コメント
     if (char === "/" && this.peek() === "/") {
       return this.readComment(start, startLine, startColumn)
     }
 
-    // Newlines
+    // 改行
     if (char === "\n") {
       this.advance()
       return {
@@ -143,22 +198,60 @@ export class Lexer {
       }
     }
 
-    // String literals
+    return null
+  }
+
+  private tryReadLiteral(
+    char: string,
+    start: number,
+    startLine: number,
+    startColumn: number
+  ): Token | null {
+    // 文字列リテラル
     if (char === '"') {
       return this.readString(start, startLine, startColumn)
     }
 
-    // Character literals
+    // 文字リテラル
     if (char === "'") {
       return this.readChar(start, startLine, startColumn)
     }
 
-    // Numbers
+    // 数値リテラル
     if (this.isDigit(char)) {
       return this.readNumber(start, startLine, startColumn)
     }
 
-    // Multi-character operators
+    return null
+  }
+
+  private tryReadOperator(
+    char: string,
+    start: number,
+    startLine: number,
+    startColumn: number
+  ): Token | null {
+    // 複数文字演算子
+    const multiCharToken = this.tryReadMultiCharOperator(
+      char,
+      start,
+      startLine,
+      startColumn
+    )
+    if (multiCharToken) {
+      return multiCharToken
+    }
+
+    // 単一文字演算子
+    return this.tryReadSingleCharOperator(char, start, startLine, startColumn)
+  }
+
+  private tryReadMultiCharOperator(
+    char: string,
+    start: number,
+    startLine: number,
+    startColumn: number
+  ): Token | null {
     if (char === ">" && this.peek() === ">" && this.peek(2) === "=") {
       this.advance()
       this.advance()
@@ -226,7 +319,15 @@ export class Lexer {
       }
     }
 
-    // Single character operators and delimiters
+    return null
+  }
+
+  private tryReadSingleCharOperator(
+    char: string,
+    start: number,
+    startLine: number,
+    startColumn: number
+  ): Token | null {
     const singleCharTokens: Record<string, TokenType> = {
       "|": TokenType.PIPE,
       "~": TokenType.REVERSE_PIPE,
@@ -258,21 +359,7 @@ export class Lexer {
       }
     }
 
-    // Identifiers and keywords
-    if (this.isAlpha(char) || char === "_") {
-      return this.readIdentifier(start, startLine, startColumn)
-    }
-
-    // Unknown character
-    this.advance()
-    return {
-      type: TokenType.IDENTIFIER,
-      value: char,
-      line: startLine,
-      column: startColumn,
-      start,
-      end: this.position,
-    }
+    return null
   }
 
   private readWhitespace(start: number, line: number, column: number): Token {

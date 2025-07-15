@@ -1,29 +1,44 @@
 import { describe, test, expect } from "bun:test"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import {
+  TypeInferenceSystem,
+  type TypeInferenceSystemResult,
+} from "../src/type-inference"
+import * as AST from "../src/ast"
 
 // LSPサーバーから同じ関数をコピーしてテスト用に使用
+interface SymbolInfo {
+  type: string
+  name: string
+  finalType: AST.Type
+  hasExplicitType?: boolean
+}
+
 function findSymbolWithEnhancedInference(
-  ast: any,
+  program: AST.Program,
   symbol: string,
-  inferenceResult: any,
+  inferenceResult: TypeInferenceSystemResult,
   offset: number,
   _text: string
-): any {
+): SymbolInfo | null {
+  // 戻り値も複雑なので anyを維持
   console.log(`Searching for symbol: "${symbol}" at offset ${offset}`)
 
-  if (!ast.statements) {
+  if (!program.statements) {
     return null
   }
 
-  for (const statement of ast.statements) {
-    if (statement.kind === "VariableDeclaration" && statement.name === symbol) {
+  for (const statement of program.statements) {
+    if (
+      statement.kind === "VariableDeclaration" &&
+      (statement as any).name === symbol
+    ) {
       console.log(`=== Looking for variable ${symbol} ===`)
       console.log(
         `Statement type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement)}`
       )
       console.log(
-        `Initializer type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has(statement.initializer)}`
+        `Initializer type in nodeTypeMap: ${inferenceResult.nodeTypeMap.has((statement as any).initializer)}`
       )
 
       // Log the actual type from nodeTypeMap
@@ -34,7 +49,9 @@ function findSymbolWithEnhancedInference(
         )
       }
 
-      const initType = inferenceResult.nodeTypeMap.get(statement.initializer)
+      const initType = inferenceResult.nodeTypeMap.get(
+        (statement as any).initializer
+      )
       if (initType) {
         console.log(
           `NodeTypeMap type for initializer: ${JSON.stringify(initType, null, 2)}`
@@ -46,7 +63,9 @@ function findSymbolWithEnhancedInference(
 
       if (!finalType) {
         // Fallback: look for the type in the initializer
-        finalType = inferenceResult.nodeTypeMap.get(statement.initializer)
+        finalType = inferenceResult.nodeTypeMap.get(
+          (statement as any).initializer
+        )
         console.log(
           `Using initializer type: ${finalType ? finalType.kind : "none"}`
         )
@@ -74,7 +93,7 @@ function findSymbolWithEnhancedInference(
           type: "variable",
           name: symbol,
           finalType: finalType,
-          hasExplicitType: !!statement.type,
+          hasExplicitType: !!(statement as any).type,
         }
       }
     }
@@ -83,25 +102,32 @@ function findSymbolWithEnhancedInference(
   return null
 }
 
-function formatInferredTypeInfo(symbol: string, symbolInfo: any): string {
+function formatInferredTypeInfo(
+  symbol: string,
+  symbolInfo: SymbolInfo | null
+): string {
+  // シンボル情報の型が複雑なのでanyを維持
   if (!symbolInfo || !symbolInfo.finalType) {
     return `**${symbol}**: unknown`
   }
 
-  const formatType = (type: any): string => {
+  const formatType = (type: AST.Type): string => {
+    // 型オブジェクトの型が複雑なのでanyを維持
     if (!type) return "unknown"
 
     switch (type.kind) {
       case "PrimitiveType":
         return type.name
       case "FunctionType": {
-        const paramType = formatType(type.paramType)
-        const returnType = formatType(type.returnType)
+        const funcType = type as any
+        const paramType = formatType(funcType.paramType)
+        const returnType = formatType(funcType.returnType)
         return `(${paramType}) -> ${returnType}`
       }
       case "GenericType": {
-        const args = type.typeArguments.map(formatType).join(", ")
-        return `${type.name}<${args}>`
+        const genericType = type as any
+        const args = genericType.typeArguments.map(formatType).join(", ")
+        return `${genericType.name}<${args}>`
       }
       default:
         return type.kind || "unknown"
@@ -117,19 +143,20 @@ describe("LSP Type Assertion", () => {
     const source = `let x = 42 as String`
 
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    expect(ast.errors).toHaveLength(0)
-    expect(ast.statements).toHaveLength(1)
+    expect(parseResult.errors).toHaveLength(0)
+    expect(parseResult.statements).toHaveLength(1)
 
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(parseResult.statements || [])
+    const result = typeInference.infer(program)
 
     expect(result.errors).toHaveLength(0)
 
     // LSPサーバーと同じ方法で変数の型情報を取得
     const symbolInfo = findSymbolWithEnhancedInference(
-      ast,
+      program,
       "x",
       result,
       0,
@@ -150,15 +177,16 @@ describe("LSP Type Assertion", () => {
     const source = `let z = (42 as Float) as String`
 
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(parseResult.statements || [])
+    const result = typeInference.infer(program)
 
     expect(result.errors).toHaveLength(0)
 
     const symbolInfo = findSymbolWithEnhancedInference(
-      ast,
+      program,
       "z",
       result,
       0,
@@ -182,23 +210,42 @@ let z = (42 as Float) as String
 `
 
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(parseResult.statements || [])
+    const result = typeInference.infer(program)
 
     expect(result.errors).toHaveLength(0)
 
     // x の型確認
-    const xInfo = findSymbolWithEnhancedInference(ast, "x", result, 0, source)
+    const xInfo = findSymbolWithEnhancedInference(
+      program,
+      "x",
+      result,
+      0,
+      source
+    )
     expect(xInfo?.finalType?.name).toBe("String")
 
     // y の型確認
-    const yInfo = findSymbolWithEnhancedInference(ast, "y", result, 0, source)
+    const yInfo = findSymbolWithEnhancedInference(
+      program,
+      "y",
+      result,
+      0,
+      source
+    )
     expect(yInfo?.finalType?.name).toBe("Int")
 
     // z の型確認
-    const zInfo = findSymbolWithEnhancedInference(ast, "z", result, 0, source)
+    const zInfo = findSymbolWithEnhancedInference(
+      program,
+      "z",
+      result,
+      0,
+      source
+    )
     expect(zInfo?.finalType?.name).toBe("String")
 
     console.log("Multiple variables type info:")

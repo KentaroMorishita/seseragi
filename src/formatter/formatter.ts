@@ -228,45 +228,65 @@ export class SeseragiFormatter {
 
   private formatExpression(): void {
     while (!this.isAtEnd() && !this.isStatementEnd()) {
-      if (this.check(TokenType.STRING)) {
-        // Handle string literals specially - don't format inside them
-        this.addToken()
-      } else if (this.check(TokenType.PIPE)) {
-        if (this.shouldBreakPipeline()) {
-          this.addNewline()
-          this.addIndent()
-          this.addToken()
-          this.addSpace()
-        } else {
-          this.addSpace()
-          this.addToken()
-          this.addSpace()
-        }
-      } else if (this.check(TokenType.MATCH)) {
-        this.formatMatchExpression()
-      } else if (this.check(TokenType.THEN)) {
-        this.addSpace()
-        this.addToken()
-        this.addSpace()
-      } else if (this.check(TokenType.ELSE)) {
-        this.addSpace()
-        this.addToken()
-        this.addSpace()
-      } else if (this.check(TokenType.LEFT_PAREN)) {
-        this.addToken()
-        this.formatExpression()
-        if (this.check(TokenType.RIGHT_PAREN)) {
-          this.addToken()
-        }
-      } else if (this.isComparisonOperator()) {
-        // Handle comparison operators specially to avoid breaking them
-        this.addSpace()
-        this.addToken()
-        this.addSpace()
-      } else {
-        this.addToken()
-      }
+      this.formatNextExpressionToken()
     }
+  }
+
+  private formatNextExpressionToken(): void {
+    if (this.check(TokenType.STRING)) {
+      this.formatStringLiteral()
+    } else if (this.check(TokenType.PIPE)) {
+      this.formatPipeToken()
+    } else if (this.check(TokenType.MATCH)) {
+      this.formatMatchExpression()
+    } else if (this.check(TokenType.THEN) || this.check(TokenType.ELSE)) {
+      this.formatConditionalKeyword()
+    } else if (this.check(TokenType.LEFT_PAREN)) {
+      this.formatParenthesizedExpression()
+    } else if (this.isComparisonOperator()) {
+      this.formatComparisonOperator()
+    } else {
+      this.addToken()
+    }
+  }
+
+  private formatStringLiteral(): void {
+    // Handle string literals specially - don't format inside them
+    this.addToken()
+  }
+
+  private formatPipeToken(): void {
+    if (this.shouldBreakPipeline()) {
+      this.addNewline()
+      this.addIndent()
+      this.addToken()
+      this.addSpace()
+    } else {
+      this.addSpace()
+      this.addToken()
+      this.addSpace()
+    }
+  }
+
+  private formatConditionalKeyword(): void {
+    this.addSpace()
+    this.addToken()
+    this.addSpace()
+  }
+
+  private formatParenthesizedExpression(): void {
+    this.addToken()
+    this.formatExpression()
+    if (this.check(TokenType.RIGHT_PAREN)) {
+      this.addToken()
+    }
+  }
+
+  private formatComparisonOperator(): void {
+    // Handle comparison operators specially to avoid breaking them
+    this.addSpace()
+    this.addToken()
+    this.addSpace()
   }
 
   private formatMatchExpression(): void {
@@ -463,21 +483,6 @@ export class SeseragiFormatter {
       tokenType === TokenType.GREATER_THAN ||
       tokenType === TokenType.EQUAL ||
       tokenType === TokenType.NOT_EQUAL
-    )
-  }
-
-  private shouldAddSpaceAroundToken(): boolean {
-    if (this.isAtEnd()) return false
-
-    const tokenType = this.current().type
-    return (
-      tokenType === TokenType.PLUS ||
-      tokenType === TokenType.MINUS ||
-      tokenType === TokenType.MULTIPLY ||
-      tokenType === TokenType.DIVIDE ||
-      tokenType === TokenType.MODULO ||
-      tokenType === TokenType.AND ||
-      tokenType === TokenType.OR
     )
   }
 

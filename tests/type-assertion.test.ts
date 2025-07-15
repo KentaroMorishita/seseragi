@@ -1,8 +1,8 @@
 import { describe, test, expect } from "bun:test"
-import { lex } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 import { TypeInferenceSystem } from "../src/type-inference"
+import * as AST from "../src/ast"
 
 describe("Type Assertion", () => {
   test("基本的な型アサーション", () => {
@@ -10,8 +10,7 @@ describe("Type Assertion", () => {
 let x = 42 as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)
@@ -26,8 +25,7 @@ let x = 42 as String
 let result = (1 + 2) as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)
@@ -41,8 +39,7 @@ let result = (1 + 2) as String
 let result = obj.method() as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)
@@ -56,14 +53,12 @@ let result = obj.method() as String
 let x = 42 as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements || [])
     const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer({
-      statements: parseResult.statements || [],
-    })
+    const typeResult = typeInference.infer(program)
 
     // 型アサーションにより型エラーが抑制されることを確認
     expect(typeResult.errors).toHaveLength(0)
@@ -74,8 +69,7 @@ let x = 42 as String
 let value = 123 as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)
@@ -89,8 +83,7 @@ let value = 123 as String
 let x = (42 as Float) as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)
@@ -104,8 +97,7 @@ let x = (42 as Float) as String
 let arr = [1 as String, 2 as String]
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)

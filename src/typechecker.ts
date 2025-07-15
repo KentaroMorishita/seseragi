@@ -369,69 +369,26 @@ export class TypeChecker {
 
     // Check for struct operator overloading first
     if (leftType.kind === "StructType") {
-      // For struct operations, assume operator overloading is handled
-      // Return the left struct type as a default (this could be improved)
       return leftType
     }
 
-    // Type rules for operators
+    return this.checkBinaryOperatorType(binOp, leftType, rightType)
+  }
+
+  private checkBinaryOperatorType(
+    binOp: AST.BinaryOperation,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): AST.Type {
     switch (binOp.operator) {
       case "+":
-        // Addition can be numeric or string concatenation
-        if (this.isNumericType(leftType) && this.isNumericType(rightType)) {
-          // If both are same type, return that type
-          if (this.typesEqual(leftType, rightType)) {
-            return leftType
-          }
-          // If mixed Int/Float, promote to Float
-          if (
-            (this.isIntType(leftType) && this.isFloatType(rightType)) ||
-            (this.isFloatType(leftType) && this.isIntType(rightType))
-          ) {
-            return new AST.PrimitiveType("Float", binOp.line, binOp.column)
-          }
-        } else if (
-          this.isStringType(leftType) &&
-          this.isStringType(rightType)
-        ) {
-          // String concatenation
-          return new AST.PrimitiveType("String", binOp.line, binOp.column)
-        }
-        this.addError(
-          `Invalid operands for '${binOp.operator}' operator`,
-          binOp.line,
-          binOp.column,
-          `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
-          this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
-        )
-        return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
+        return this.checkAdditionOperator(binOp, leftType, rightType)
 
       case "-":
       case "*":
       case "/":
       case "%":
-        // Numeric operations only
-        if (this.isNumericType(leftType) && this.isNumericType(rightType)) {
-          // If both are same type, return that type
-          if (this.typesEqual(leftType, rightType)) {
-            return leftType
-          }
-          // If mixed Int/Float, promote to Float
-          if (
-            (this.isIntType(leftType) && this.isFloatType(rightType)) ||
-            (this.isFloatType(leftType) && this.isIntType(rightType))
-          ) {
-            return new AST.PrimitiveType("Float", binOp.line, binOp.column)
-          }
-        }
-        this.addError(
-          `Invalid operands for '${binOp.operator}' operator`,
-          binOp.line,
-          binOp.column,
-          `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
-          this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
-        )
-        return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
+        return this.checkArithmeticOperator(binOp, leftType, rightType)
 
       case "==":
       case "!=":
@@ -439,27 +396,11 @@ export class TypeChecker {
       case ">":
       case "<=":
       case ">=":
-        // Comparison operations
-        if (!this.typesEqual(leftType, rightType)) {
-          this.addError(
-            `Type error in comparison '${binOp.operator}': types must match, got '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
-            binOp.line,
-            binOp.column
-          )
-        }
-        return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+        return this.checkComparisonOperator(binOp, leftType, rightType)
 
       case "&&":
       case "||":
-        // Boolean operations
-        if (!this.isBoolType(leftType) || !this.isBoolType(rightType)) {
-          this.addError(
-            `Type error in boolean operation '${binOp.operator}': both operands must be Bool`,
-            binOp.line,
-            binOp.column
-          )
-        }
-        return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+        return this.checkBooleanOperator(binOp, leftType, rightType)
 
       default:
         this.addError(
@@ -469,6 +410,99 @@ export class TypeChecker {
         )
         return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
     }
+  }
+
+  private checkAdditionOperator(
+    binOp: AST.BinaryOperation,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): AST.Type {
+    // Addition can be numeric or string concatenation
+    if (this.isNumericType(leftType) && this.isNumericType(rightType)) {
+      // If both are same type, return that type
+      if (this.typesEqual(leftType, rightType)) {
+        return leftType
+      }
+      // If mixed Int/Float, promote to Float
+      if (
+        (this.isIntType(leftType) && this.isFloatType(rightType)) ||
+        (this.isFloatType(leftType) && this.isIntType(rightType))
+      ) {
+        return new AST.PrimitiveType("Float", binOp.line, binOp.column)
+      }
+    } else if (this.isStringType(leftType) && this.isStringType(rightType)) {
+      // String concatenation
+      return new AST.PrimitiveType("String", binOp.line, binOp.column)
+    }
+    this.addError(
+      `Invalid operands for '${binOp.operator}' operator`,
+      binOp.line,
+      binOp.column,
+      `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+      this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
+    )
+    return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
+  }
+
+  private checkArithmeticOperator(
+    binOp: AST.BinaryOperation,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): AST.Type {
+    // Numeric operations only
+    if (this.isNumericType(leftType) && this.isNumericType(rightType)) {
+      // If both are same type, return that type
+      if (this.typesEqual(leftType, rightType)) {
+        return leftType
+      }
+      // If mixed Int/Float, promote to Float
+      if (
+        (this.isIntType(leftType) && this.isFloatType(rightType)) ||
+        (this.isFloatType(leftType) && this.isIntType(rightType))
+      ) {
+        return new AST.PrimitiveType("Float", binOp.line, binOp.column)
+      }
+    }
+    this.addError(
+      `Invalid operands for '${binOp.operator}' operator`,
+      binOp.line,
+      binOp.column,
+      `Cannot apply '${binOp.operator}' to types '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+      this.getBinaryOperatorSuggestion(binOp.operator, leftType, rightType)
+    )
+    return new AST.PrimitiveType("Unknown", binOp.line, binOp.column)
+  }
+
+  private checkComparisonOperator(
+    binOp: AST.BinaryOperation,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): AST.Type {
+    // Comparison operations
+    if (!this.typesEqual(leftType, rightType)) {
+      this.addError(
+        `Type error in comparison '${binOp.operator}': types must match, got '${this.typeToString(leftType)}' and '${this.typeToString(rightType)}'`,
+        binOp.line,
+        binOp.column
+      )
+    }
+    return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
+  }
+
+  private checkBooleanOperator(
+    binOp: AST.BinaryOperation,
+    leftType: AST.Type,
+    rightType: AST.Type
+  ): AST.Type {
+    // Boolean operations
+    if (!this.isBoolType(leftType) || !this.isBoolType(rightType)) {
+      this.addError(
+        `Type error in boolean operation '${binOp.operator}': both operands must be Bool`,
+        binOp.line,
+        binOp.column
+      )
+    }
+    return new AST.PrimitiveType("Bool", binOp.line, binOp.column)
   }
 
   private checkFunctionCall(
@@ -1102,50 +1136,88 @@ export class TypeChecker {
     const fieldNames = new Set<string>()
 
     for (const field of record.fields) {
-      if (field.kind === "RecordInitField") {
-        const initField = field as AST.RecordInitField
-        // Check for duplicate field names
-        if (fieldNames.has(initField.name)) {
-          this.addError(
-            `Duplicate field name '${initField.name}' in record`,
-            initField.line,
-            initField.column,
-            `Field '${initField.name}' is defined multiple times`,
-            `Remove the duplicate field definition`
-          )
-        }
-        fieldNames.add(initField.name)
-
-        const fieldType = this.checkExpression(initField.value, env)
-        fields.push(
-          new AST.RecordField(
-            initField.name,
-            fieldType,
-            initField.line,
-            initField.column
-          )
-        )
-      } else if (field.kind === "RecordSpreadField") {
-        const spreadField = field as AST.RecordSpreadField
-        const spreadType = this.checkExpression(
-          spreadField.spreadExpression.expression,
-          env
-        )
-
-        // Handle spread fields - add their types to the current record
-        if (spreadType.kind === "RecordType") {
-          const recordType = spreadType as AST.RecordType
-          for (const sourceField of recordType.fields) {
-            if (!fieldNames.has(sourceField.name)) {
-              fields.push(sourceField)
-              fieldNames.add(sourceField.name)
-            }
-          }
-        }
-      }
+      this.processRecordField(field, fields, fieldNames, env)
     }
 
     return new AST.RecordType(fields, record.line, record.column)
+  }
+
+  private processRecordField(
+    field:
+      | AST.RecordInitField
+      | AST.RecordShorthandField
+      | AST.RecordSpreadField,
+    fields: AST.RecordField[],
+    fieldNames: Set<string>,
+    env: TypeEnvironment
+  ): void {
+    if (field.kind === "RecordInitField") {
+      this.processRecordInitField(
+        field as AST.RecordInitField,
+        fields,
+        fieldNames,
+        env
+      )
+    } else if (field.kind === "RecordSpreadField") {
+      this.processRecordSpreadField(
+        field as AST.RecordSpreadField,
+        fields,
+        fieldNames,
+        env
+      )
+    }
+  }
+
+  private processRecordInitField(
+    initField: AST.RecordInitField,
+    fields: AST.RecordField[],
+    fieldNames: Set<string>,
+    env: TypeEnvironment
+  ): void {
+    // Check for duplicate field names
+    if (fieldNames.has(initField.name)) {
+      this.addError(
+        `Duplicate field name '${initField.name}' in record`,
+        initField.line,
+        initField.column,
+        `Field '${initField.name}' is defined multiple times`,
+        `Remove the duplicate field definition`
+      )
+    }
+    fieldNames.add(initField.name)
+
+    const fieldType = this.checkExpression(initField.value, env)
+    fields.push(
+      new AST.RecordField(
+        initField.name,
+        fieldType,
+        initField.line,
+        initField.column
+      )
+    )
+  }
+
+  private processRecordSpreadField(
+    spreadField: AST.RecordSpreadField,
+    fields: AST.RecordField[],
+    fieldNames: Set<string>,
+    env: TypeEnvironment
+  ): void {
+    const spreadType = this.checkExpression(
+      spreadField.spreadExpression.expression,
+      env
+    )
+
+    // Handle spread fields - add their types to the current record
+    if (spreadType.kind === "RecordType") {
+      const recordType = spreadType as AST.RecordType
+      for (const sourceField of recordType.fields) {
+        if (!fieldNames.has(sourceField.name)) {
+          fields.push(sourceField)
+          fieldNames.add(sourceField.name)
+        }
+      }
+    }
   }
 
   private checkRecordAccess(
@@ -1205,7 +1277,26 @@ export class TypeChecker {
     structExpr: AST.StructExpression,
     env: TypeEnvironment
   ): AST.Type {
-    // Look up the struct type in the environment
+    const structType = this.validateStructType(structExpr, env)
+    if (!structType) {
+      return new AST.PrimitiveType(
+        "Unknown",
+        structExpr.line,
+        structExpr.column
+      )
+    }
+
+    const st = structType as AST.StructType
+    this.validateRequiredFields(structExpr, st)
+    this.validateProvidedFields(structExpr, st, env)
+
+    return structType
+  }
+
+  private validateStructType(
+    structExpr: AST.StructExpression,
+    env: TypeEnvironment
+  ): AST.Type | null {
     const structType = env.lookup(structExpr.structName)
 
     if (!structType) {
@@ -1216,11 +1307,7 @@ export class TypeChecker {
         `Struct '${structExpr.structName}' is not defined`,
         `Check that the struct is declared before use`
       )
-      return new AST.PrimitiveType(
-        "Unknown",
-        structExpr.line,
-        structExpr.column
-      )
+      return null
     }
 
     if (structType.kind !== "StructType") {
@@ -1231,15 +1318,16 @@ export class TypeChecker {
         `Expected a struct type, but got ${structType.kind}`,
         `Only struct types can be used in struct expressions`
       )
-      return new AST.PrimitiveType(
-        "Unknown",
-        structExpr.line,
-        structExpr.column
-      )
+      return null
     }
 
-    const st = structType as AST.StructType
+    return structType
+  }
 
+  private validateRequiredFields(
+    structExpr: AST.StructExpression,
+    st: AST.StructType
+  ): void {
     // Check that all required fields are provided
     for (const structField of st.fields) {
       const providedField = structExpr.fields.find(
@@ -1257,57 +1345,78 @@ export class TypeChecker {
         )
       }
     }
+  }
 
+  private validateProvidedFields(
+    structExpr: AST.StructExpression,
+    st: AST.StructType,
+    env: TypeEnvironment
+  ): void {
     // Check that all provided fields exist and have correct types
     for (const field of structExpr.fields) {
       if (field.kind === "RecordInitField") {
-        const providedField = field as AST.RecordInitField
-        const structField = st.fields.find((f) => f.name === providedField.name)
-        if (!structField) {
-          this.addError(
-            `Unknown field '${providedField.name}' in struct '${structExpr.structName}'`,
-            providedField.line,
-            providedField.column,
-            `Field '${providedField.name}' is not defined in struct '${structExpr.structName}'`,
-            `Available fields: ${st.fields.map((f) => f.name).join(", ")}`
-          )
-        } else {
-          // Check field type
-          const valueType = this.checkExpression(providedField.value, env)
-          if (!this.typesEqual(valueType, structField.type)) {
-            this.addError(
-              `Field '${providedField.name}' type mismatch`,
-              providedField.line,
-              providedField.column,
-              `Expected '${this.typeToString(structField.type)}', but got '${this.typeToString(valueType)}'`,
-              `Ensure the field value matches the declared type`
-            )
-          }
-        }
-      } else if (field.kind === "RecordSpreadField") {
-        // Handle spread fields
-        const spreadField = field as AST.RecordSpreadField
-        const spreadType = this.checkExpression(
-          spreadField.spreadExpression.expression,
+        this.validateStructInitField(
+          field as AST.RecordInitField,
+          structExpr,
+          st,
           env
         )
-
-        if (
-          spreadType.kind !== "StructType" &&
-          spreadType.kind !== "RecordType"
-        ) {
-          this.addError(
-            `Cannot spread non-struct/record type in struct literal`,
-            spreadField.line,
-            spreadField.column,
-            `Expected struct or record type for spread operator`,
-            `Use a struct or record expression instead`
-          )
-        }
+      } else if (field.kind === "RecordSpreadField") {
+        this.validateStructSpreadField(field as AST.RecordSpreadField, env)
       }
     }
+  }
 
-    return structType
+  private validateStructInitField(
+    providedField: AST.RecordInitField,
+    structExpr: AST.StructExpression,
+    st: AST.StructType,
+    env: TypeEnvironment
+  ): void {
+    const structField = st.fields.find((f) => f.name === providedField.name)
+    if (!structField) {
+      this.addError(
+        `Unknown field '${providedField.name}' in struct '${structExpr.structName}'`,
+        providedField.line,
+        providedField.column,
+        `Field '${providedField.name}' is not defined in struct '${structExpr.structName}'`,
+        `Available fields: ${st.fields.map((f) => f.name).join(", ")}`
+      )
+      return
+    }
+
+    // Check field type
+    const valueType = this.checkExpression(providedField.value, env)
+    if (!this.typesEqual(valueType, structField.type)) {
+      this.addError(
+        `Field '${providedField.name}' type mismatch`,
+        providedField.line,
+        providedField.column,
+        `Expected '${this.typeToString(structField.type)}', but got '${this.typeToString(valueType)}'`,
+        `Ensure the field value matches the declared type`
+      )
+    }
+  }
+
+  private validateStructSpreadField(
+    spreadField: AST.RecordSpreadField,
+    env: TypeEnvironment
+  ): void {
+    // Handle spread fields
+    const spreadType = this.checkExpression(
+      spreadField.spreadExpression.expression,
+      env
+    )
+
+    if (spreadType.kind !== "StructType" && spreadType.kind !== "RecordType") {
+      this.addError(
+        `Cannot spread non-struct/record type in struct literal`,
+        spreadField.line,
+        spreadField.column,
+        `Expected struct or record type for spread operator`,
+        `Use a struct or record expression instead`
+      )
+    }
   }
 
   private checkStructDeclaration(

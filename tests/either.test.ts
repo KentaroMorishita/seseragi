@@ -5,28 +5,28 @@ import { generateTypeScript } from "../src/codegen"
 test("Either - should parse Left constructor", () => {
   const source = 'let errorValue: Either<String, Int> = Left "Error message"'
   const parser = new Parser(source)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
 
-  expect(ast.statements).toHaveLength(1)
-  const stmt = ast.statements[0]
+  expect(parseResult.statements).toHaveLength(1)
+  const stmt = parseResult.statements?.[0]
   expect(stmt.kind).toBe("VariableDeclaration")
 })
 
 test("Either - should parse Right constructor", () => {
   const source = "let successValue: Either<String, Int> = Right 42"
   const parser = new Parser(source)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
 
-  expect(ast.statements).toHaveLength(1)
-  const stmt = ast.statements[0]
+  expect(parseResult.statements).toHaveLength(1)
+  const stmt = parseResult.statements?.[0]
   expect(stmt.kind).toBe("VariableDeclaration")
 })
 
 test("Either - should generate TypeScript for Left", () => {
   const source = 'let errorValue = Left "Error message"'
   const parser = new Parser(source)
-  const ast = parser.parse()
-  const tsCode = generateTypeScript(ast.statements)
+  const parseResult = parser.parse()
+  const tsCode = generateTypeScript(parseResult.statements || [])
 
   expect(tsCode).toContain('Left("Error message")')
 })
@@ -34,8 +34,8 @@ test("Either - should generate TypeScript for Left", () => {
 test("Either - should generate TypeScript for Right", () => {
   const source = "let successValue = Right 42"
   const parser = new Parser(source)
-  const ast = parser.parse()
-  const tsCode = generateTypeScript(ast.statements)
+  const parseResult = parser.parse()
+  const tsCode = generateTypeScript(parseResult.statements || [])
 
   expect(tsCode).toContain("Right(42)")
 })
@@ -48,9 +48,9 @@ test("Either - should handle pattern matching", () => {
     }
   `
   const parser = new Parser(source)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
 
-  expect(ast.statements).toHaveLength(1)
-  const stmt = ast.statements[0]
+  expect(parseResult.statements).toHaveLength(1)
+  const stmt = parseResult.statements?.[0]
   expect(stmt.kind).toBe("ExpressionStatement")
 })

@@ -115,8 +115,7 @@ async function compileToTemp(options: RunOptions): Promise<string> {
 
   // TypeScriptコードを生成
   console.log("Generating TypeScript code...")
-  const typeScriptCode = generateTypeScript(ast.statements, {
-    typeInferenceResult: inferenceResult,
+  const typeScriptCode = generateTypeScript(ast.statements || [], {
     runtimeMode: "embedded", // 一時ファイル実行のため埋め込みモード必須
   })
 

@@ -2,6 +2,7 @@ import { test, expect } from "bun:test"
 import { Parser } from "../src/parser.js"
 import { generateTypeScript } from "../src/codegen.js"
 import { TokenType, Lexer } from "../src/lexer.js"
+import * as AST from "../src/ast.js"
 
 test("Zero-argument functions - should parse correctly", () => {
   const source = `
@@ -11,7 +12,8 @@ test("Zero-argument functions - should parse correctly", () => {
   `
 
   const parser = new Parser(source)
-  const program = parser.parse()
+  const parseResult = parser.parse()
+  const program = new AST.Program(parseResult.statements || [])
 
   expect(program.statements).toHaveLength(3)
 
@@ -32,7 +34,8 @@ test("Zero-argument functions - should generate correct TypeScript", () => {
   `
 
   const parser = new Parser(source)
-  const program = parser.parse()
+  const parseResult = parser.parse()
+  const program = new AST.Program(parseResult.statements || [])
   const generated = generateTypeScript(program.statements)
 
   expect(generated).toContain('const getMessage = (): string => "Hello!";')
@@ -51,7 +54,8 @@ test("Zero-argument functions - should work with complex expressions", () => {
   `
 
   const parser = new Parser(source)
-  const program = parser.parse()
+  const parseResult = parser.parse()
+  const program = new AST.Program(parseResult.statements || [])
   const generated = generateTypeScript(program.statements)
 
   expect(generated).toContain("getBase")

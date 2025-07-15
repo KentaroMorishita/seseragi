@@ -1,5 +1,4 @@
 import { describe, test, expect } from "bun:test"
-import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 import { TypeInferenceSystem } from "../src/type-inference"
@@ -7,11 +6,13 @@ import * as AST from "../src/ast"
 
 describe("Record Type Tests", () => {
   test("should parse record type definition", () => {
-    const lexer = new Lexer("{ name: String, age: Int }")
-    const _tokens = lexer.tokenize()
-    const parser = new Parser("{ name: String, age: Int }")
+    const source = "type Person = { name: String, age: Int }"
+    const parser = new Parser(source)
+    const result = parser.parse()
 
-    const type = parser.parseType()
+    expect(result.errors).toHaveLength(0)
+    const stmt = result.statements![0] as AST.TypeAliasDeclaration
+    const type = stmt.aliasedType
     expect(type.kind).toBe("RecordType")
 
     const recordType = type as AST.RecordType
@@ -26,19 +27,27 @@ describe("Record Type Tests", () => {
 
   test("should parse record expression", () => {
     const parser = new Parser('{ name: "Alice", age: 30 }')
-    const expr = parser.primaryExpression()
+    const result = parser.parse()
 
+    expect(result.errors).toHaveLength(0)
+    const stmt = result.statements![0] as AST.ExpressionStatement
+    const expr = stmt.expression
     expect(expr.kind).toBe("RecordExpression")
     const recordExpr = expr as AST.RecordExpression
     expect(recordExpr.fields).toHaveLength(2)
-    expect(recordExpr.fields[0].name).toBe("name")
-    expect(recordExpr.fields[1].name).toBe("age")
+    const field0 = recordExpr.fields[0] as AST.RecordInitField
+    const field1 = recordExpr.fields[1] as AST.RecordInitField
+    expect(field0.name).toBe("name")
+    expect(field1.name).toBe("age")
   })
 
   test("should parse record field access", () => {
     const parser = new Parser("person.name")
-    const expr = parser.callExpression()
+    const result = parser.parse()
 
+    expect(result.errors).toHaveLength(0)
+    const stmt = result.statements![0] as AST.ExpressionStatement
+    const expr = stmt.expression
     expect(expr.kind).toBe("RecordAccess")
     const accessExpr = expr as AST.RecordAccess
     expect(accessExpr.fieldName).toBe("name")
@@ -48,23 +57,19 @@ describe("Record Type Tests", () => {
 
   test("should generate correct TypeScript for record expression", () => {
     const parser = new Parser('{ name: "Alice", age: 30 }')
-    const expr = parser.primaryExpression() as AST.RecordExpression
+    const result = parser.parse()
 
-    const typescript = generateTypeScript([
-      new AST.ExpressionStatement(expr, 1, 1),
-    ])
-
+    expect(result.errors).toHaveLength(0)
+    const typescript = generateTypeScript(result.statements!)
     expect(typescript).toContain('{ name: "Alice", age: 30 }')
   })
 
   test("should generate correct TypeScript for record access", () => {
     const parser = new Parser("person.name")
-    const expr = parser.callExpression() as AST.RecordAccess
+    const result = parser.parse()
 
-    const typescript = generateTypeScript([
-      new AST.ExpressionStatement(expr, 1, 1),
-    ])
-
+    expect(result.errors).toHaveLength(0)
+    const typescript = generateTypeScript(result.statements!)
     expect(typescript).toContain("person.name")
   })
 
@@ -72,8 +77,9 @@ describe("Record Type Tests", () => {
     const source = `let person = { name: "Alice", age: 30 }`
 
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements || [])
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
 
@@ -86,7 +92,7 @@ describe("Record Type Tests", () => {
     }
 
     // Check that the record expression has the correct type
-    const personDecl = program.statements[0] as AST.VariableDeclaration
+    const personDecl = parseResult.statements![0] as AST.VariableDeclaration
     const recordExpr = personDecl.initializer as AST.RecordExpression
     const recordType = result.nodeTypeMap.get(recordExpr)
 
@@ -105,10 +111,12 @@ describe("Record Type Tests", () => {
 
   test("should handle nested record access", () => {
     const parser = new Parser("employee.info.name")
-    const expr = parser.primaryExpression() // employee
+    const result = parser.parse()
 
-    // Parse the chain manually since our parser doesn't support this yet
-    expect(expr.kind).toBe("Identifier")
+    expect(result.errors).toHaveLength(0)
+    const stmt = result.statements![0] as AST.ExpressionStatement
+    // For now just check that it parses without error
+    expect(stmt.expression).toBeDefined()
   })
 
   test("should detect record field access errors", () => {
@@ -118,8 +126,9 @@ describe("Record Type Tests", () => {
     `
 
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements || [])
     const typeInference = new TypeInferenceSystem()
     const _result = typeInference.infer(program)
 
@@ -130,8 +139,11 @@ describe("Record Type Tests", () => {
 
   test("should handle empty record", () => {
     const parser = new Parser("{}")
-    const expr = parser.primaryExpression()
+    const result = parser.parse()
 
+    expect(result.errors).toHaveLength(0)
+    const stmt = result.statements![0] as AST.ExpressionStatement
+    const expr = stmt.expression
     expect(expr.kind).toBe("RecordExpression")
     const recordExpr = expr as AST.RecordExpression
     expect(recordExpr.fields).toHaveLength(0)

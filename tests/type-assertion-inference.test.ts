@@ -1,8 +1,7 @@
 import { describe, test, expect } from "bun:test"
-import { lex } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import type * as AST from "../src/ast"
+import * as AST from "../src/ast"
 
 describe("Type Assertion Inference", () => {
   test("変数の型アサーション推論確認", () => {
@@ -10,17 +9,15 @@ describe("Type Assertion Inference", () => {
 let x = 42 as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
     expect(parseResult.errors).toHaveLength(0)
     expect(parseResult.statements).toHaveLength(1)
 
+    const program = new AST.Program(parseResult.statements || [])
     const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer({
-      statements: parseResult.statements || [],
-    })
+    const typeResult = typeInference.infer(program)
 
     expect(typeResult.errors).toHaveLength(0)
 
@@ -60,14 +57,12 @@ let x = 42 as String
 let y = "hello" as Int
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements || [])
     const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer({
-      statements: parseResult.statements || [],
-    })
+    const typeResult = typeInference.infer(program)
 
     expect(typeResult.errors).toHaveLength(0)
 
@@ -91,14 +86,12 @@ let y = "hello" as Int
 let z = (42 as Float) as String
 `
 
-    const tokens = lex(source)
-    const parser = new Parser(tokens)
+    const parser = new Parser(source)
     const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements || [])
     const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer({
-      statements: parseResult.statements || [],
-    })
+    const typeResult = typeInference.infer(program)
 
     expect(typeResult.errors).toHaveLength(0)
 

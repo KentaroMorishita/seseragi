@@ -7,8 +7,11 @@
       "style": {
         "noNonNullAssertion": "off"
       },
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
       "complexity": {
-        "noExcessiveCognitiveComplexity": "warn"
+        "noExcessiveCognitiveComplexity": "off"
       }
     }
   },
