@@ -59,6 +59,9 @@ export class UsageAnalyzer {
   }
 
   analyze(statements: AST.Statement[]): UsageAnalysis {
+    if (!statements || !Array.isArray(statements)) {
+      return this.analysis
+    }
     for (const stmt of statements) {
       this.analyzeStatement(stmt)
     }
@@ -83,113 +86,186 @@ export class UsageAnalyzer {
   }
 
   private analyzeExpression(expr: AST.Expression): void {
+    // Monadic and pipeline operations
+    if (this.analyzeMonadicOperations(expr)) return
+
+    // Constructor and builtin expressions
+    if (this.analyzeConstructorAndBuiltins(expr)) return
+
+    // Function applications and calls
+    if (this.analyzeFunctionCalls(expr)) return
+
+    // Conditionals and pattern matching
+    if (this.analyzeConditionals(expr)) return
+
+    // Data structures
+    if (this.analyzeDataStructures(expr)) return
+
+    // Other expressions
+    this.analyzeOtherExpressions(expr)
+  }
+
+  private analyzeMonadicOperations(expr: AST.Expression): boolean {
     if (expr instanceof AST.Pipeline) {
       this.analysis.needsPipeline = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.ReversePipe) {
+      return true
+    }
+    if (expr instanceof AST.ReversePipe) {
       this.analysis.needsReversePipe = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.FunctionApplicationOperator) {
-      this.analysis.needsFunctionApplication = true
-      // ビルトイン関数の検出
-      if (expr.left instanceof AST.Identifier) {
-        this.analyzeBuiltin(expr.left.name as any)
-      }
-      this.analyzeExpression(expr.left)
-      this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.MonadBind) {
+      return true
+    }
+    if (expr instanceof AST.MonadBind) {
       this.analysis.needsMonadBind = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.FunctorMap) {
+      return true
+    }
+    if (expr instanceof AST.FunctorMap) {
       this.analysis.needsFunctorMap = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.ApplicativeApply) {
+      return true
+    }
+    if (expr instanceof AST.ApplicativeApply) {
       this.analysis.needsApplicativeApply = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.FoldMonoid) {
+      return true
+    }
+    if (expr instanceof AST.FoldMonoid) {
       this.analysis.needsFoldMonoid = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.ConstructorExpression) {
+      return true
+    }
+    return false
+  }
+
+  private analyzeConstructorAndBuiltins(expr: AST.Expression): boolean {
+    if (expr instanceof AST.ConstructorExpression) {
       this.analyzeConstructor(expr)
-    } else if (expr instanceof AST.BuiltinFunctionCall) {
+      return true
+    }
+    if (expr instanceof AST.BuiltinFunctionCall) {
       this.analyzeBuiltin(expr.functionName)
-    } else if (expr instanceof AST.FunctionApplication) {
-      // ビルトイン関数の検出
+      return true
+    }
+    return false
+  }
+
+  private analyzeFunctionCalls(expr: AST.Expression): boolean {
+    if (expr instanceof AST.FunctionApplicationOperator) {
+      this.analysis.needsFunctionApplication = true
+      if (expr.left instanceof AST.Identifier) {
+        this.analyzeBuiltin(expr.left.name)
+      }
+      this.analyzeExpression(expr.left)
+      this.analyzeExpression(expr.right)
+      return true
+    }
+    if (expr instanceof AST.FunctionApplication) {
       if (expr.function instanceof AST.Identifier) {
-        this.analyzeBuiltin(expr.function.name as any)
+        this.analyzeBuiltin(expr.function.name)
       }
       this.analyzeExpression(expr.function)
       this.analyzeExpression(expr.argument)
-    } else if (expr instanceof AST.FunctionCall) {
-      // ビルトイン関数の検出
+      return true
+    }
+    if (expr instanceof AST.FunctionCall) {
       if (expr.function instanceof AST.Identifier) {
-        this.analyzeBuiltin(expr.function.name as any)
+        this.analyzeBuiltin(expr.function.name)
       }
       this.analyzeExpression(expr.function)
       for (const arg of expr.arguments) {
         this.analyzeExpression(arg)
       }
-    } else if (expr instanceof AST.BinaryOperation) {
+      return true
+    }
+    return false
+  }
+
+  private analyzeConditionals(expr: AST.Expression): boolean {
+    if (expr instanceof AST.BinaryOperation) {
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.ConditionalExpression) {
+      return true
+    }
+    if (expr instanceof AST.ConditionalExpression) {
       this.analyzeExpression(expr.condition)
       this.analyzeExpression(expr.thenExpression)
       this.analyzeExpression(expr.elseExpression)
-    } else if (expr instanceof AST.MatchExpression) {
+      return true
+    }
+    if (expr instanceof AST.MatchExpression) {
       this.analyzeExpression(expr.expression)
       for (const matchCase of expr.cases) {
         this.analyzePattern(matchCase.pattern)
         this.analyzeExpression(matchCase.expression)
       }
-    } else if (expr instanceof AST.ListSugar) {
+      return true
+    }
+    return false
+  }
+
+  private analyzeDataStructures(expr: AST.Expression): boolean {
+    if (expr instanceof AST.ListSugar) {
       this.analysis.needsList = true
       for (const element of expr.elements) {
         this.analyzeExpression(element)
       }
-    } else if (expr instanceof AST.ConsExpression) {
+      return true
+    }
+    if (expr instanceof AST.ConsExpression) {
       this.analysis.needsList = true
       this.analyzeExpression(expr.left)
       this.analyzeExpression(expr.right)
-    } else if (expr instanceof AST.RecordExpression) {
-      // レコード内の式を再帰的に解析
+      return true
+    }
+    if (expr instanceof AST.RecordExpression) {
       for (const field of expr.fields) {
-        this.analyzeExpression(field.value)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.analyzeExpression((field as any).value)
       }
-    } else if (expr instanceof AST.ArrayLiteral) {
-      // 配列内の式を再帰的に解析
+      return true
+    }
+    if (expr instanceof AST.ArrayLiteral) {
       for (const element of expr.elements) {
         this.analyzeExpression(element)
       }
-    } else if (expr instanceof AST.RecordAccess) {
-      this.analyzeExpression(expr.record)
-    } else if (expr instanceof AST.ArrayAccess) {
+      return true
+    }
+    if (expr instanceof AST.ArrayAccess) {
       this.analyzeExpression(expr.array)
       this.analyzeExpression(expr.index)
-      // 配列アクセスはMaybe型を返す
       this.analysis.needsMaybe = true
+      return true
+    }
+    return false
+  }
+
+  private analyzeOtherExpressions(expr: AST.Expression): void {
+    if (expr instanceof AST.RecordAccess) {
+      this.analyzeExpression(expr.record)
     } else if (expr instanceof AST.LambdaExpression) {
       this.analyzeExpression(expr.body)
     } else if (expr instanceof AST.BlockExpression) {
       for (const stmt of expr.statements) {
         this.analyzeStatement(stmt)
       }
-      if (expr.expression) {
-        this.analyzeExpression(expr.expression)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((expr as any).expression) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.analyzeExpression((expr as any).expression)
       }
     } else if (expr instanceof AST.ListComprehensionSugar) {
-      // ListComprehensionSugar uses arrayToList helper, curry, and List constructors
       this.analysis.needsBuiltins.arrayToList = true
       this.analysis.needsCurrying = true
       this.analysis.needsList = true
 
-      // Analyze comprehension expression and generators
       this.analyzeExpression(expr.expression)
       for (const generator of expr.generators) {
         this.analyzeExpression(generator.iterable)

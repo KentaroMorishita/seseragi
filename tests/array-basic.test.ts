@@ -1,5 +1,4 @@
 import { describe, test, expect } from "bun:test"
-import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
 import type * as AST from "../src/ast"
@@ -8,10 +7,10 @@ describe("Array Basic Implementation", () => {
   test("Array literal parsing", () => {
     const source = "let arr = [1, 2, 3]"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    expect(ast.statements).toHaveLength(1)
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    expect(parseResult.statements).toHaveLength(1)
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     expect(stmt.kind).toBe("VariableDeclaration")
     expect(stmt.initializer.kind).toBe("ArrayLiteral")
 
@@ -25,9 +24,9 @@ describe("Array Basic Implementation", () => {
   test("Array access parsing", () => {
     const source = "let first = arr[0]"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("ArrayAccess")
 
     const arrayAccess = stmt.initializer as AST.ArrayAccess
@@ -38,9 +37,9 @@ describe("Array Basic Implementation", () => {
   test("Empty array parsing", () => {
     const source = "let empty = []"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("ArrayLiteral")
 
     const arrayLiteral = stmt.initializer as AST.ArrayLiteral
@@ -53,8 +52,10 @@ describe("Array Basic Implementation", () => {
       let first = numbers[0]
     `
     const parser = new Parser(source)
-    const ast = parser.parse()
-    const code = generateTypeScript(ast.statements, { generateComments: false })
+    const parseResult = parser.parse()
+    const code = generateTypeScript(parseResult.statements || [], {
+      generateComments: false,
+    })
 
     expect(code).toContain("[1, 2, 3]")
     // 安全な配列アクセスはMaybe型を返す
@@ -67,9 +68,9 @@ describe("Array Basic Implementation", () => {
   test("Nested array access parsing", () => {
     const source = "let value = matrix[0][1]"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("ArrayAccess")
 
     const outerAccess = stmt.initializer as AST.ArrayAccess
@@ -84,9 +85,9 @@ describe("Array Basic Implementation", () => {
   test("Array length property parsing", () => {
     const source = "let len = arr.length"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     expect(stmt.initializer.kind).toBe("RecordAccess")
 
     const lengthAccess = stmt.initializer as AST.RecordAccess
@@ -97,8 +98,10 @@ describe("Array Basic Implementation", () => {
   test("Array length code generation", () => {
     const source = "let len = arr.length"
     const parser = new Parser(source)
-    const ast = parser.parse()
-    const code = generateTypeScript(ast.statements, { generateComments: false })
+    const parseResult = parser.parse()
+    const code = generateTypeScript(parseResult.statements || [], {
+      generateComments: false,
+    })
 
     expect(code).toContain("arr.length")
   })

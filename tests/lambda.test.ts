@@ -3,15 +3,15 @@ import { Parser } from "../src/parser"
 import { TypeChecker } from "../src/typechecker"
 import { TypeInferenceSystem } from "../src/type-inference"
 import { generateTypeScript } from "../src/codegen"
-import type * as AST from "../src/ast"
+import * as AST from "../src/ast"
 
 describe("Lambda Expression Tests", () => {
   test("should parse simple lambda expression", () => {
     const parser = new Parser("\\x -> x + 1")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    expect(program.statements).toHaveLength(1)
-    const stmt = program.statements[0] as AST.ExpressionStatement
+    expect(parseResult.statements).toHaveLength(1)
+    const stmt = parseResult.statements![0] as AST.ExpressionStatement
     const lambda = stmt.expression as AST.LambdaExpression
 
     expect(lambda.kind).toBe("LambdaExpression")
@@ -48,8 +48,9 @@ describe("Lambda Expression Tests", () => {
 
   test("should type check lambda expressions", () => {
     const parser = new Parser("let f = \\x: Int -> x + 1")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements!)
     const typeChecker = new TypeChecker()
     const errors = typeChecker.check(program)
 
@@ -58,8 +59,9 @@ describe("Lambda Expression Tests", () => {
 
   test("should infer lambda types", () => {
     const parser = new Parser("let f = \\x -> x + 1")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements!)
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
 
@@ -68,8 +70,9 @@ describe("Lambda Expression Tests", () => {
 
   test("should handle lambda application", () => {
     const parser = new Parser("let result = (\\x: Int -> x + 1) 5")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
+    const program = new AST.Program(parseResult.statements!)
     const typeChecker = new TypeChecker()
     const errors = typeChecker.check(program)
 
@@ -78,37 +81,39 @@ describe("Lambda Expression Tests", () => {
 
   test("should generate correct TypeScript for lambda", () => {
     const parser = new Parser("let f = \\x -> x + 1")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const code = generateTypeScript(program.statements)
+    const code = generateTypeScript(parseResult.statements!)
 
-    expect(code).toContain("(x: any) => (x + 1)")
+    expect(code).toContain('(x: any) => __dispatchOperator(x, "+", 1)')
   })
 
   test("should generate correct TypeScript for lambda application", () => {
     const parser = new Parser("let result = (\\x -> x + 1) 5")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const code = generateTypeScript(program.statements)
+    const code = generateTypeScript(parseResult.statements!)
 
-    expect(code).toContain("((x: any) => (x + 1))(5)")
+    expect(code).toContain('((x: any) => __dispatchOperator(x, "+", 1))(5)')
   })
 
   test("should generate correct TypeScript for curried lambda", () => {
     const parser = new Parser("let add = \\x -> \\y -> x + y")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const code = generateTypeScript(program.statements)
+    const code = generateTypeScript(parseResult.statements!)
 
-    expect(code).toContain("(x: any) => (y: any) => (x + y)")
+    expect(code).toContain(
+      '(x: any) => (y: any) => __dispatchOperator(x, "+", y)'
+    )
   })
 
   test("should handle lambda with explicit types", () => {
     const parser = new Parser("let typed = \\x: Int -> x + 100")
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const code = generateTypeScript(program.statements)
+    const code = generateTypeScript(parseResult.statements!)
 
-    expect(code).toContain("(x: number) => (x + 100)")
+    expect(code).toContain('(x: number) => __dispatchOperator(x, "+", 100)')
   })
 })

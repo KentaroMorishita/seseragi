@@ -32,7 +32,7 @@ export function formatSeseragiCode(code: string): string {
     result.push(indent + cleaned)
   }
 
-  return result.join("\n") + "\n"
+  return `${result.join("\n")}\n`
 }
 
 function calculateIndentLevel(
@@ -68,37 +68,53 @@ function calculateIndentLevel(
 function isAfterRecordClose(index: number, allLines: string[]): boolean {
   if (index === 0) return false
 
-  // 前の非空行を探す
-  for (let i = index - 1; i >= 0; i--) {
-    const prevLine = allLines[i].trim()
-    if (prevLine === "" || prevLine.startsWith("//")) continue
+  const prevNonEmptyLineIndex = findPreviousNonEmptyLine(index, allLines)
+  if (prevNonEmptyLineIndex === -1) return false
 
-    // 単独の閉じ括弧の後
-    if (prevLine === "}") {
-      // その閉じ括弧がレコードの終了かチェック
-      let openBraces = 0
-      for (let j = 0; j <= i; j++) {
-        const line = allLines[j].trim()
-        if (line === "" || line.startsWith("//")) continue
+  const prevLine = allLines[prevNonEmptyLineIndex].trim()
 
-        for (const char of line) {
-          if (char === "{") {
-            openBraces++
-          } else if (char === "}") {
-            openBraces = Math.max(0, openBraces - 1)
-          }
-        }
-      }
-
-      // 閉じ括弧で括弧が全て閉じた場合
-      return openBraces === 0
-    }
-
-    // 閉じ括弧以外の行があったら、閉じ括弧直後ではない
-    return false
+  // 単独の閉じ括弧の後
+  if (prevLine === "}") {
+    return isRecordClosingBrace(prevNonEmptyLineIndex, allLines)
   }
 
   return false
+}
+
+function findPreviousNonEmptyLine(index: number, allLines: string[]): number {
+  for (let i = index - 1; i >= 0; i--) {
+    const line = allLines[i].trim()
+    if (line !== "" && !line.startsWith("//")) {
+      return i
+    }
+  }
+  return -1
+}
+
+function isRecordClosingBrace(braceIndex: number, allLines: string[]): boolean {
+  // その閉じ括弧がレコードの終了かチェック
+  let openBraces = 0
+  for (let j = 0; j <= braceIndex; j++) {
+    const line = allLines[j].trim()
+    if (line === "" || line.startsWith("//")) continue
+
+    openBraces += countBraceChanges(line)
+  }
+
+  // 閉じ括弧で括弧が全て閉じた場合
+  return openBraces === 0
+}
+
+function countBraceChanges(line: string): number {
+  let braceChange = 0
+  for (const char of line) {
+    if (char === "{") {
+      braceChange++
+    } else if (char === "}") {
+      braceChange--
+    }
+  }
+  return braceChange
 }
 
 function isTopLevelElement(line: string): boolean {
@@ -285,7 +301,7 @@ function isArrowContinuation(index: number, allLines: string[]): boolean {
   if (index === 0) return false
 
   const prevLine = allLines[index - 1]?.trim()
-  return prevLine && prevLine.endsWith(" ->")
+  return prevLine?.endsWith(" ->")
 }
 
 function isExpressionContinuation(index: number, allLines: string[]): boolean {
@@ -294,49 +310,45 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
   const currentLine = allLines[index].trim()
 
   // match式のケース行は式の継続ではない（別途処理される）
-  if (
-    currentLine.includes(" -> ") &&
-    isMatchCase(currentLine, index, allLines)
-  ) {
+  if (isMatchCaseButNotContinuation(currentLine, index, allLines)) {
     return false
   }
 
+  return checkPreviousLineForContinuation(index, allLines)
+}
+
+function isMatchCaseButNotContinuation(
+  currentLine: string,
+  index: number,
+  allLines: string[]
+): boolean {
+  return (
+    currentLine.includes(" -> ") && isMatchCase(currentLine, index, allLines)
+  )
+}
+
+function checkPreviousLineForContinuation(
+  index: number,
+  allLines: string[]
+): boolean {
   // 直前の行をチェック
   for (let i = index - 1; i >= 0; i--) {
     const prevLine = allLines[i].trim()
 
     // 空行やコメントはスキップ
-    if (prevLine === "" || prevLine.startsWith("//")) {
+    if (isEmptyOrComment(prevLine)) {
       continue
     }
 
-    // 等号で終わる行の後
-    if (prevLine.endsWith(" =")) {
-      return true
-    }
-
-    // match文の後（ただし、match式のケース行は除外）
-    if (prevLine.includes("match ") && prevLine.includes("{")) {
-      // match式の最初の行だけをtrueとする
-      // すでにmatch式のケースが始まっている場合はfalse
-      let hasMatchCase = false
-      for (let j = i + 1; j < index; j++) {
-        const checkLine = allLines[j].trim()
-        if (
-          checkLine !== "" &&
-          !checkLine.startsWith("//") &&
-          checkLine.includes(" -> ")
-        ) {
-          hasMatchCase = true
-          break
-        }
-      }
-      return !hasMatchCase
-    }
-
-    // then文の後（elseでない限り）
-    if (prevLine.includes(" then") && !prevLine.includes(" else")) {
-      return true
+    // 式の継続パターンをチェック
+    const continuationResult = checkContinuationPatterns(
+      prevLine,
+      i,
+      index,
+      allLines
+    )
+    if (continuationResult !== null) {
+      return continuationResult
     }
 
     // 他の条件に当てはまらない場合は継続ではない
@@ -344,6 +356,54 @@ function isExpressionContinuation(index: number, allLines: string[]): boolean {
   }
 
   return false
+}
+
+function isEmptyOrComment(line: string): boolean {
+  return line === "" || line.startsWith("//")
+}
+
+function checkContinuationPatterns(
+  prevLine: string,
+  lineIndex: number,
+  currentIndex: number,
+  allLines: string[]
+): boolean | null {
+  // 等号で終わる行の後
+  if (prevLine.endsWith(" =")) {
+    return true
+  }
+
+  // match文の後（ただし、match式のケース行は除外）
+  if (prevLine.includes("match ") && prevLine.includes("{")) {
+    return checkMatchContinuation(lineIndex, currentIndex, allLines)
+  }
+
+  // then文の後（elseでない限り）
+  if (prevLine.includes(" then") && !prevLine.includes(" else")) {
+    return true
+  }
+
+  return null
+}
+
+function checkMatchContinuation(
+  matchLineIndex: number,
+  currentIndex: number,
+  allLines: string[]
+): boolean {
+  // match式の最初の行だけをtrueとする
+  // すでにmatch式のケースが始まっている場合はfalse
+  for (let j = matchLineIndex + 1; j < currentIndex; j++) {
+    const checkLine = allLines[j].trim()
+    if (
+      checkLine !== "" &&
+      !checkLine.startsWith("//") &&
+      checkLine.includes(" -> ")
+    ) {
+      return false // すでにmatch caseが始まっている
+    }
+  }
+  return true
 }
 
 // 配列要素かどうかを判定
@@ -359,7 +419,21 @@ function isArrayElement(
     return false
   }
 
-  // 直前の行をさかのぼって配列のコンテキストにいるかチェック
+  return checkArrayContext(index, allLines)
+}
+
+function checkArrayContext(index: number, allLines: string[]): boolean {
+  const context = analyzeArrayBrackets(index, allLines)
+  return context.foundArrayStart && context.bracketDepth > 0
+}
+
+function analyzeArrayBrackets(
+  index: number,
+  allLines: string[]
+): {
+  foundArrayStart: boolean
+  bracketDepth: number
+} {
   let bracketDepth = 0
   let foundArrayStart = false
 
@@ -367,43 +441,70 @@ function isArrayElement(
     const prevLine = allLines[i].trim()
 
     // 空行やコメントはスキップ
-    if (prevLine === "" || prevLine.startsWith("//")) {
+    if (isEmptyOrComment(prevLine)) {
       continue
     }
 
     // 角括弧をカウント
-    for (const char of prevLine) {
-      if (char === "[") {
-        bracketDepth++
-        foundArrayStart = true
-      } else if (char === "]") {
-        bracketDepth--
-      }
+    const bracketResult = countBracketsInLine(prevLine)
+    bracketDepth += bracketResult.depth
+    if (bracketResult.hasOpenBracket) {
+      foundArrayStart = true
     }
 
-    // 配列の開始が見つかって、現在も配列内にいる場合
-    if (foundArrayStart && bracketDepth > 0) {
-      return true
-    }
-
-    // 配列の外に出たか、他の構造が見つかった場合
-    if (bracketDepth <= 0 && foundArrayStart) {
-      return false
-    }
-
-    // トップレベル要素が見つかって配列コンテキストでない場合
-    if (
-      bracketDepth === 0 &&
-      (prevLine.startsWith("fn ") ||
-        prevLine.startsWith("let ") ||
-        prevLine.startsWith("type ") ||
-        prevLine.startsWith("show "))
-    ) {
-      return false
+    // 配列の外に出たか、トップレベル要素が見つかった場合
+    if (shouldStopArrayAnalysis(bracketDepth, foundArrayStart, prevLine)) {
+      break
     }
   }
 
+  return { foundArrayStart, bracketDepth }
+}
+
+function countBracketsInLine(line: string): {
+  depth: number
+  hasOpenBracket: boolean
+} {
+  let depth = 0
+  let hasOpenBracket = false
+
+  for (const char of line) {
+    if (char === "[") {
+      depth++
+      hasOpenBracket = true
+    } else if (char === "]") {
+      depth--
+    }
+  }
+
+  return { depth, hasOpenBracket }
+}
+
+function shouldStopArrayAnalysis(
+  bracketDepth: number,
+  foundArrayStart: boolean,
+  prevLine: string
+): boolean {
+  // 配列の外に出た場合
+  if (bracketDepth <= 0 && foundArrayStart) {
+    return true
+  }
+
+  // トップレベル要素が見つかって配列コンテキストでない場合
+  if (bracketDepth === 0 && isTopLevelStatement(prevLine)) {
+    return true
+  }
+
   return false
+}
+
+function isTopLevelStatement(line: string): boolean {
+  return (
+    line.startsWith("fn ") ||
+    line.startsWith("let ") ||
+    line.startsWith("type ") ||
+    line.startsWith("show ")
+  )
 }
 
 export function removeExtraWhitespace(code: string): string {
@@ -448,30 +549,30 @@ export function normalizeOperatorSpacing(code: string): string {
         return `__PROTECTED_${index}__`
       })
       // 範囲演算子 ..= を保護
-      .replace(/\.\.\s*=/g, (match) => {
+      .replace(/\.\.\s*=/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push("..=")
         return `__PROTECTED_${index}__`
       })
       // モナド演算子を保護（スペースも含めて）
-      .replace(/\s*<\$>\s*/g, (match) => {
+      .replace(/\s*<\$>\s*/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push(" <$> ") // 適切なスペーシングで保存
         return `__PROTECTED_${index}__`
       })
-      .replace(/\s*<\*>\s*/g, (match) => {
+      .replace(/\s*<\*>\s*/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push(" <*> ") // 適切なスペーシングで保存
         return `__PROTECTED_${index}__`
       })
       // バインド演算子も保護
-      .replace(/^\s*>>=\s*/g, (match) => {
+      .replace(/^\s*>>=\s*/g, (_match) => {
         // 行頭の場合はスペースなしで保護
         const index = protectedParts.length
         protectedParts.push(">>= ") // 行頭なので前のスペースなし
         return `__PROTECTED_${index}__`
       })
-      .replace(/\s*>>=\s*/g, (match) => {
+      .replace(/\s*>>=\s*/g, (_match) => {
         const index = protectedParts.length
         protectedParts.push(" >>= ") // 行中の場合は適切なスペーシング
         return `__PROTECTED_${index}__`
@@ -490,14 +591,14 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/\?\s*([^?:]*?)\s*:\s*/g, "? $1 : ")
       // 2. 型注釈（右のみスペース）- Cons演算子より先に処理
       .replace(/(let\s+\w+)\s*:\s*([A-Z]\w*)/g, "$1: $2") // let name: Type
-      .replace(/(\w+)\s*:\s*([A-Z]\w*)/g, (match, p1, p2) => {
+      .replace(/(\w+)\s*:\s*([A-Z]\w*)/g, (_match, p1, p2) => {
         // 型注釈: 大文字で始まる型名の場合（let以外）
         return `${p1}: ${p2}`
       })
       // 3. Cons演算子チェーン処理（数値のみに限定）
       .replace(/(\d+)\s*:\s*(\d+)/g, "$1 : $2") // 1 : 2
       .replace(/(\d+)\s*:\s*(\[)/g, "$1 : $2") // 3 : []
-      .replace(/(\w+)\s*:\s*(\[)/g, (match, p1, p2) => {
+      .replace(/(\w+)\s*:\s*(\[)/g, (_match, p1, p2) => {
         // レコードフィールドでない場合のみCons演算子として扱う
         return `${p1} : ${p2}`
       })
@@ -514,7 +615,7 @@ export function normalizeOperatorSpacing(code: string): string {
       .replace(/(?<!\*)\s*\*\s*(?!\*)/g, " * ")
       .replace(/(?<!\/)\s*\/\s*(?!\/)/g, " / ")
       // パイプ演算子の保護（行頭の場合）
-      .replace(/^\s*\|\s*/g, (match) => {
+      .replace(/^\s*\|\s*/g, (_match) => {
         // 行頭の場合はスペースなしで保護
         const index = protectedParts.length
         protectedParts.push("| ") // 行頭なので前のスペースなし
@@ -539,7 +640,7 @@ export function normalizeOperatorSpacing(code: string): string {
             .trim()
             .replace(/,\s*/g, ", ") // カンマの後にスペース
             .replace(/(\w+)\s:\s/g, "$1: ") // 構造体内のフィールド名: value
-          return (prefix || "") + "{ " + formattedContent + " }"
+          return `${prefix || ""}{ ${formattedContent} }`
         }
       )
     }
@@ -594,59 +695,88 @@ function isTernaryContinuation(
   index: number,
   allLines: string[]
 ): boolean {
-  // 直近の関数定義から三項演算子の文脈にいるかチェック
-  let inTernaryContext = false
-  let functionStart = -1
+  const functionStart = findFunctionStart(index, allLines)
+  if (functionStart === -1) return false
 
+  const inTernaryContext = hasTernaryOperatorInFunction(
+    functionStart,
+    index,
+    allLines
+  )
+  if (!inTernaryContext) return false
+
+  return isTernaryLine(line, index, allLines)
+}
+
+function findFunctionStart(index: number, allLines: string[]): number {
   // 関数定義の開始を探す
   for (let i = index - 1; i >= 0; i--) {
     const prevLine = allLines[i].trim()
-    if (prevLine === "" || prevLine.startsWith("//")) continue
+    if (isEmptyOrComment(prevLine)) continue
 
-    if (prevLine.startsWith("fn ") && prevLine.endsWith(" =")) {
-      functionStart = i
-      break
+    if (isFunctionDefinition(prevLine)) {
+      return i
     }
 
     // 他のトップレベル要素が見つかったら終了
-    if (
-      prevLine.startsWith("let ") ||
-      prevLine.startsWith("type ") ||
-      prevLine.startsWith("show ")
-    ) {
-      return false
+    if (isOtherTopLevelElement(prevLine)) {
+      return -1
     }
   }
+  return -1
+}
 
-  if (functionStart === -1) return false
+function isFunctionDefinition(line: string): boolean {
+  return line.startsWith("fn ") && line.endsWith(" =")
+}
 
+function isOtherTopLevelElement(line: string): boolean {
+  return (
+    line.startsWith("let ") ||
+    line.startsWith("type ") ||
+    line.startsWith("show ")
+  )
+}
+
+function hasTernaryOperatorInFunction(
+  functionStart: number,
+  currentIndex: number,
+  allLines: string[]
+): boolean {
   // 関数定義以降で ? が見つかるかチェック
-  for (let i = functionStart; i < index; i++) {
+  for (let i = functionStart; i < currentIndex; i++) {
     const checkLine = allLines[i].trim()
-    if (checkLine === "" || checkLine.startsWith("//")) continue
+    if (isEmptyOrComment(checkLine)) continue
 
     if (checkLine.includes("?")) {
-      inTernaryContext = true
-      break
-    }
-  }
-
-  // 三項演算子のコンテキストにいて、
-  // 現在の行が : を含むか、または三項演算子の最終部分（toString x等）
-  if (inTernaryContext) {
-    // : を含む行
-    if (line.includes(":") && !line.includes("->") && !line.includes("::")) {
       return true
     }
+  }
+  return false
+}
 
-    // 前の行が : で終わる場合の最終表現
-    if (index > 0) {
-      const prevLine = allLines[index - 1].trim()
-      if (prevLine.endsWith(":")) {
-        return true
-      }
-    }
+function isTernaryLine(
+  line: string,
+  index: number,
+  allLines: string[]
+): boolean {
+  // : を含む行
+  if (hasTernaryColon(line)) {
+    return true
   }
 
+  // 前の行が : で終わる場合の最終表現
+  return isPreviousLineColonEnding(index, allLines)
+}
+
+function hasTernaryColon(line: string): boolean {
+  return line.includes(":") && !line.includes("->") && !line.includes("::")
+}
+
+function isPreviousLineColonEnding(index: number, allLines: string[]): boolean {
+  if (index > 0) {
+    const prevLine = allLines[index - 1].trim()
+    return prevLine.endsWith(":")
+  }
   return false
 }

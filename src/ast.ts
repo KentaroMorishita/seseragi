@@ -214,11 +214,27 @@ export class FunctionCall extends Expression {
 
 export class BuiltinFunctionCall extends Expression {
   kind = "BuiltinFunctionCall"
-  functionName: "print" | "putStrLn" | "toString" | "show"
+  functionName:
+    | "print"
+    | "putStrLn"
+    | "toString"
+    | "show"
+    | "toInt"
+    | "toFloat"
+    | "head"
+    | "tail"
   arguments: Expression[]
 
   constructor(
-    functionName: "print" | "putStrLn" | "toString" | "show",
+    functionName:
+      | "print"
+      | "putStrLn"
+      | "toString"
+      | "show"
+      | "toInt"
+      | "toFloat"
+      | "head"
+      | "tail",
     args: Expression[],
     line: number,
     column: number
@@ -474,7 +490,7 @@ export class LambdaExpression extends Expression {
 export class RecordInitField extends ASTNode {
   kind = "RecordInitField"
   name: string
-  value: Expression
+  value: Expression | undefined
 
   constructor(name: string, value: Expression, line: number, column: number) {
     super(line, column)
@@ -486,10 +502,12 @@ export class RecordInitField extends ASTNode {
 export class RecordShorthandField extends ASTNode {
   kind = "RecordShorthandField"
   name: string
+  value: Expression | undefined // Compatible with RecordInitField
 
   constructor(name: string, line: number, column: number) {
     super(line, column)
     this.name = name
+    this.value = undefined
   }
 }
 
@@ -799,10 +817,6 @@ export class ConstructorLiteralPattern extends Pattern {
 
 export class WildcardPattern extends Pattern {
   kind = "WildcardPattern"
-
-  constructor(line: number, column: number) {
-    super(line, column)
-  }
 }
 
 export class OrPattern extends Pattern {

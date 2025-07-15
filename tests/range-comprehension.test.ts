@@ -3,7 +3,7 @@
  */
 
 import { describe, test, expect } from "bun:test"
-import { Lexer } from "../src/lexer"
+import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
 import type * as AST from "../src/ast"
 
@@ -194,9 +194,9 @@ describe("Token Recognition", () => {
     const tokens = lexer.tokenize()
 
     expect(tokens).toHaveLength(7) // 1, .., 10, 1, ..=, 5, EOF
-    expect(tokens[1].type).toBe("RANGE")
+    expect(tokens[1].type).toBe(TokenType.RANGE)
     expect(tokens[1].value).toBe("..")
-    expect(tokens[4].type).toBe("RANGE_INCLUSIVE")
+    expect(tokens[4].type).toBe(TokenType.RANGE_INCLUSIVE)
     expect(tokens[4].value).toBe("..=")
   })
 
@@ -206,7 +206,7 @@ describe("Token Recognition", () => {
     const tokens = lexer.tokenize()
 
     expect(tokens).toHaveLength(4) // x, <-, list, EOF
-    expect(tokens[1].type).toBe("GENERATOR")
+    expect(tokens[1].type).toBe(TokenType.GENERATOR)
     expect(tokens[1].value).toBe("<-")
   })
 })

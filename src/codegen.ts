@@ -6,63 +6,71 @@ import {
   VariableDeclaration,
   TypeDeclaration,
   TypeAliasDeclaration,
-  Literal,
+  type Literal,
   Identifier,
-  TemplateExpression,
-  BinaryOperation,
-  UnaryOperation,
+  type TemplateExpression,
+  type BinaryOperation,
+  type UnaryOperation,
   FunctionCall,
-  MethodCall,
+  type MethodCall,
   FunctionApplication,
-  BuiltinFunctionCall,
-  ConditionalExpression,
-  TernaryExpression,
-  MatchExpression,
-  ConstructorExpression,
+  type BuiltinFunctionCall,
+  type ConditionalExpression,
+  type TernaryExpression,
+  type MatchExpression,
+  type ConstructorExpression,
   BlockExpression,
-  Pipeline,
-  ReversePipe,
-  FunctorMap,
-  ApplicativeApply,
-  MonadBind,
-  FoldMonoid,
-  FunctionApplicationOperator,
+  type Pipeline,
+  type ReversePipe,
+  type FunctorMap,
+  type ApplicativeApply,
+  type MonadBind,
+  type FoldMonoid,
+  type FunctionApplicationOperator,
   LambdaExpression,
-  RecordExpression,
-  RecordAccess,
-  ArrayLiteral,
-  ArrayAccess,
-  ListSugar,
-  ConsExpression,
-  RangeLiteral,
+  type RecordExpression,
+  type RecordAccess,
+  type ArrayLiteral,
+  type ArrayAccess,
+  type ListSugar,
+  type ConsExpression,
+  type RangeLiteral,
   ListComprehension,
-  ListComprehensionSugar,
-  Generator,
+  type ListComprehensionSugar,
   type Type,
   FunctionType,
   PrimitiveType,
   GenericType,
   RecordType,
   TupleType,
-  TupleExpression,
+  type TupleExpression,
   TupleDestructuring,
   StructDeclaration,
   StructExpression,
   StructType,
-  SpreadExpression,
-  TypeAssertion,
-  RecordSpreadField,
+  type SpreadExpression,
+  type TypeAssertion,
   RecordDestructuring,
   StructDestructuring,
-  RecordPattern,
-  StructPattern,
-  RecordPatternField,
   ImplBlock,
   type MethodDeclaration,
   type OperatorDeclaration,
   type MonoidDeclaration,
+  type GuardPattern,
+  type ListSugarPattern,
+  type ArrayPattern,
+  type OrPattern,
+  type Pattern,
+  type IdentifierPattern,
+  type ConstructorPattern,
+  type TuplePattern,
+  type RecordInitField,
+  type RecordShorthandField,
+  type RecordSpreadField,
+  type LiteralPattern,
 } from "./ast"
 import { UsageAnalyzer, type UsageAnalysis } from "./usage-analyzer"
+import type { TypeInferenceSystemResult } from "./type-inference"
 
 /**
  * Seseragi から TypeScript へのコード生成器
@@ -73,9 +81,9 @@ export interface CodeGenOptions {
   indent?: string
   useArrowFunctions?: boolean
   generateComments?: boolean
-  runtimeMode?: "embedded" | "import" | "minimal"
+  runtimeMode?: "embedded" | "import"
   filePath?: string // ファイルパス（ハッシュ生成用）
-  typeInferenceResult?: any // 型推論結果
+  typeInferenceResult?: TypeInferenceSystemResult // 型推論結果
 }
 
 const defaultOptions: CodeGenOptions = {
@@ -103,7 +111,7 @@ export class CodeGenerator {
   currentStructContext: string | null = null // 現在処理中の構造体名
   structMethods: Map<string, Set<string>> = new Map() // 構造体名 → メソッド名のセット
   structOperators: Map<string, Set<string>> = new Map() // 構造体名 → 演算子のセット
-  typeInferenceResult: any = null // 型推論結果
+  typeInferenceResult: TypeInferenceSystemResult | null = null // 型推論結果
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -119,137 +127,43 @@ export class CodeGenerator {
   }
 
   // パターンから変数バインディングを生成
-  private generatePatternBindings(pattern: any, valueVar: string): string {
+  private generatePatternBindings(pattern: Pattern, valueVar: string): string {
     if (!pattern) return ""
 
     switch (pattern.kind) {
       case "IdentifierPattern":
-        return `const ${pattern.name} = ${valueVar};\n    `
-
+        return this.generateIdentifierPatternBindings(
+          pattern as IdentifierPattern,
+          valueVar
+        )
       case "ConstructorPattern":
-        if (!pattern.patterns || pattern.patterns.length === 0) {
-          return ""
-        }
-
-        let bindings = ""
-        if (this.isBuiltinConstructor(pattern.constructorName)) {
-          // ビルトインコンストラクタの場合
-          if (
-            pattern.constructorName === "Just" ||
-            pattern.constructorName === "Left" ||
-            pattern.constructorName === "Right"
-          ) {
-            // 単一の値を持つコンストラクタ
-            if (pattern.patterns.length > 0) {
-              const subPattern = pattern.patterns[0]
-              if (subPattern.kind === "IdentifierPattern") {
-                bindings += `const ${subPattern.name} = ${valueVar}.value;\n    `
-              }
-              // LiteralPatternの場合はバインディングなし
-            }
-          } else if (pattern.constructorName === "Cons") {
-            // Consは head と tail
-            if (pattern.patterns.length > 0) {
-              const headPattern = pattern.patterns[0]
-              if (headPattern.kind === "IdentifierPattern") {
-                bindings += `const ${headPattern.name} = ${valueVar}.head;\n    `
-              }
-            }
-            if (pattern.patterns.length > 1) {
-              const tailPattern = pattern.patterns[1]
-              if (tailPattern.kind === "IdentifierPattern") {
-                bindings += `const ${tailPattern.name} = ${valueVar}.tail;\n    `
-              }
-            }
-          }
-        } else {
-          // ユーザー定義ADTの場合
-          for (let i = 0; i < pattern.patterns.length; i++) {
-            const subPattern = pattern.patterns[i]
-            if (subPattern.kind === "IdentifierPattern") {
-              bindings += `const ${subPattern.name} = ${valueVar}.data[${i}];\n    `
-            }
-            // LiteralPatternの場合はバインディングなし
-          }
-        }
-        return bindings
-
+        return this.generateConstructorPatternBindings(
+          pattern as ConstructorPattern,
+          valueVar
+        )
       case "TuplePattern":
-        let tupleBindings = ""
-        pattern.patterns.forEach((subPattern: any, i: number) => {
-          tupleBindings += this.generatePatternBindings(
-            subPattern,
-            `${valueVar}.elements[${i}]`
-          )
-        })
-        return tupleBindings
+        return this.generateTuplePatternBindings(
+          pattern as TuplePattern,
+          valueVar
+        )
 
-      case "OrPattern": {
-        // orパターン: 最初にマッチしたパターンのバインディングを使用
-        // 注意: orパターンのすべてのサブパターンは同じ変数をバインドする必要がある
-        const orPattern = pattern as any // AST.OrPattern
-        if (orPattern.patterns.length > 0) {
-          // 最初のパターンからバインディングを生成
-          // 実際のマッチングは条件で制御される
-          return this.generatePatternBindings(orPattern.patterns[0], valueVar)
-        }
-        return ""
-      }
-
-      case "GuardPattern": {
-        // GuardPattern: 内部パターンのバインディングを生成
-        const guardPattern = pattern as any // AST.GuardPattern
-        return this.generatePatternBindings(guardPattern.pattern, valueVar)
-      }
-
-      case "ListSugarPattern": {
-        // リスト糖衣構文パターン: `[x, y, ...rest]
-        const listSugarPattern = pattern as any // AST.ListSugarPattern
-        let bindings = ""
-        let currentVar = valueVar
-
-        // 各要素パターンのバインディング
-        for (let i = 0; i < listSugarPattern.patterns.length; i++) {
-          const elemPattern = listSugarPattern.patterns[i]
-          const headVar = `${currentVar}.head`
-          bindings += this.generatePatternBindings(elemPattern, headVar)
-          currentVar = `${currentVar}.tail`
-        }
-
-        // restパターンのバインディング
-        if (listSugarPattern.hasRest && listSugarPattern.restPattern) {
-          bindings += this.generatePatternBindings(
-            listSugarPattern.restPattern,
-            currentVar
-          )
-        }
-
-        return bindings
-      }
-
-      case "ArrayPattern": {
-        // 配列パターン: [x, y, ...rest]
-        const arrayPattern = pattern as any // AST.ArrayPattern
-        let bindings = ""
-
-        // 各要素パターンのバインディング
-        for (let i = 0; i < arrayPattern.patterns.length; i++) {
-          const elemPattern = arrayPattern.patterns[i]
-          const indexVar = `${valueVar}[${i}]`
-          bindings += this.generatePatternBindings(elemPattern, indexVar)
-        }
-
-        // restパターンのバインディング
-        if (arrayPattern.hasRest && arrayPattern.restPattern) {
-          const sliceVar = `${valueVar}.slice(${arrayPattern.patterns.length})`
-          bindings += this.generatePatternBindings(
-            arrayPattern.restPattern,
-            sliceVar
-          )
-        }
-
-        return bindings
-      }
+      case "OrPattern":
+        return this.generateOrPatternBindings(pattern as OrPattern, valueVar)
+      case "GuardPattern":
+        return this.generateGuardPatternBindings(
+          pattern as GuardPattern,
+          valueVar
+        )
+      case "ListSugarPattern":
+        return this.generateListSugarPatternBindings(
+          pattern as ListSugarPattern,
+          valueVar
+        )
+      case "ArrayPattern":
+        return this.generateArrayPatternBindings(
+          pattern as ArrayPattern,
+          valueVar
+        )
 
       default:
         return ""
@@ -270,12 +184,34 @@ export class CodeGenerator {
 
   // プログラム全体の生成
   generateProgram(statements: Statement[]): string {
-    const lines: string[] = []
+    // statementsのガード
+    if (!statements || !Array.isArray(statements)) {
+      return ""
+    }
 
     // 使用分析を実行
+    this.performUsageAnalysis(statements)
+
+    const lines: string[] = []
+
+    // コメントとランタイムの生成
+    this.addProgramHeader(lines)
+
+    // 構造体前処理とディスパッチテーブル生成
+    this.processStructuresAndDispatch(statements, lines)
+
+    // 文を分類して生成
+    this.generateStatementsByType(statements, lines)
+
+    return lines.join("\n")
+  }
+
+  private performUsageAnalysis(statements: Statement[]): void {
     const analyzer = new UsageAnalyzer()
     this.usageAnalysis = analyzer.analyze(statements)
+  }
 
+  private addProgramHeader(lines: string[]): void {
     if (this.options.generateComments) {
       lines.push("// Generated TypeScript code from Seseragi")
       lines.push("")
@@ -284,7 +220,12 @@ export class CodeGenerator {
     // ランタイムの生成
     lines.push(...this.generateRuntime())
     lines.push("")
+  }
 
+  private processStructuresAndDispatch(
+    statements: Statement[],
+    lines: string[]
+  ): void {
     // まず構造体を処理してディスパッチテーブルを準備
     for (const stmt of statements) {
       if (stmt instanceof ImplBlock) {
@@ -292,37 +233,64 @@ export class CodeGenerator {
       }
     }
 
-    // 演算子ディスパッチを使用しているかどうかを判定
+    // ディスパッチテーブルが必要かどうかを判定
+    const needsDispatchTables = this.shouldGenerateDispatchTables(statements)
+
+    if (needsDispatchTables) {
+      lines.push(this.generateDispatchTables())
+      lines.push("")
+    }
+  }
+
+  private shouldGenerateDispatchTables(statements: Statement[]): boolean {
     const usesOperatorDispatch = this.checkUsesOperatorDispatch(statements)
-
-    // BinaryOperationがある場合は常にディスパッチテーブルを生成（安全のため）
     const hasBinaryOperations = this.hasBinaryOperations(statements)
+    const hasStructs = this.hasStructureRelatedStatements(statements)
+    const hasDispatchOperatorUsage = this.hasDispatchOperatorUsage(statements)
 
-    // 構造体を使用している場合、または演算子ディスパッチを使用している場合はディスパッチテーブルを生成
-    const hasStructs = statements.some(
+    return (
+      hasStructs ||
+      hasBinaryOperations ||
+      usesOperatorDispatch ||
+      hasDispatchOperatorUsage
+    )
+  }
+
+  private hasStructureRelatedStatements(statements: Statement[]): boolean {
+    return statements.some(
       (stmt) =>
         stmt instanceof StructDeclaration ||
         stmt instanceof ImplBlock ||
         (stmt instanceof ExpressionStatement &&
           stmt.expression instanceof StructExpression)
     )
+  }
 
-    // __dispatchOperatorが使用される可能性がある場合のみ生成
-    // 構造体があるか、二項演算があるか、演算子ディスパッチが使用されている場合に生成
-    // 安全のため、`__dispatchOperator`の使用がある場合は常に生成
-    const hasDispatchOperatorUsage = this.hasDispatchOperatorUsage(statements)
-    const needsDispatchTables =
-      hasStructs ||
-      hasBinaryOperations ||
-      usesOperatorDispatch ||
-      hasDispatchOperatorUsage
+  private generateStatementsByType(
+    statements: Statement[],
+    lines: string[]
+  ): void {
+    const { structStatements, implStatements, otherStatements } =
+      this.categorizeStatements(statements)
 
-    if (needsDispatchTables) {
-      lines.push(this.generateDispatchTables())
-      lines.push("")
-    }
+    // 構造体定義
+    this.generateStatementsOfType(structStatements, lines)
 
-    // 構造体定義と実装を先に生成
+    // 実装ブロック
+    this.generateStatementsOfType(implStatements, lines)
+
+    // ディスパッチテーブル初期化
+    this.generateDispatchTableInit(lines)
+
+    // 残りの文
+    this.generateStatementsOfType(otherStatements, lines)
+  }
+
+  private categorizeStatements(statements: Statement[]): {
+    structStatements: Statement[]
+    implStatements: Statement[]
+    otherStatements: Statement[]
+  } {
     const structStatements: Statement[] = []
     const implStatements: Statement[] = []
     const otherStatements: Statement[] = []
@@ -337,25 +305,23 @@ export class CodeGenerator {
       }
     }
 
-    // 構造体定義
-    for (const stmt of structStatements) {
+    return { structStatements, implStatements, otherStatements }
+  }
+
+  private generateStatementsOfType(
+    statements: Statement[],
+    lines: string[]
+  ): void {
+    for (const stmt of statements) {
       const code = this.generateStatement(stmt)
       if (code.trim()) {
         lines.push(code)
         lines.push("")
       }
     }
+  }
 
-    // 実装ブロック
-    for (const stmt of implStatements) {
-      const code = this.generateStatement(stmt)
-      if (code.trim()) {
-        lines.push(code)
-        lines.push("")
-      }
-    }
-
-    // ディスパッチテーブル初期化（IIFEで即座に実行）
+  private generateDispatchTableInit(lines: string[]): void {
     if (this.structMethods.size > 0 || this.structOperators.size > 0) {
       lines.push("// Initialize dispatch tables immediately")
       lines.push("(() => {")
@@ -366,17 +332,6 @@ export class CodeGenerator {
       lines.push("})();")
       lines.push("")
     }
-
-    // 残りの文
-    for (const stmt of otherStatements) {
-      const code = this.generateStatement(stmt)
-      if (code.trim()) {
-        lines.push(code)
-        lines.push("")
-      }
-    }
-
-    return lines.join("\n")
   }
 
   // ランタイムの生成
@@ -390,9 +345,6 @@ export class CodeGenerator {
     switch (this.options.runtimeMode) {
       case "import":
         return this.generateRuntimeImports()
-      case "minimal":
-        return this.generateMinimalRuntime()
-      case "embedded":
       default:
         return this.generateEmbeddedRuntime()
     }
@@ -406,6 +358,23 @@ export class CodeGenerator {
     if (!this.usageAnalysis) return lines
 
     // 必要な機能のみインポート
+    this.collectBasicImports(imports)
+    this.collectTypeImports(imports)
+    this.collectFunctionalImports(imports)
+    this.collectBuiltinImports(imports)
+
+    if (imports.length > 0) {
+      lines.push(
+        `import { ${imports.join(", ")} } from './runtime/seseragi-runtime.js';`
+      )
+    }
+
+    return lines
+  }
+
+  private collectBasicImports(imports: string[]): void {
+    if (!this.usageAnalysis) return
+
     if (this.usageAnalysis.needsCurrying) {
       imports.push("curry")
     }
@@ -418,12 +387,22 @@ export class CodeGenerator {
     if (this.usageAnalysis.needsFunctionApplication) {
       imports.push("apply")
     }
+  }
+
+  private collectTypeImports(imports: string[]): void {
+    if (!this.usageAnalysis) return
+
     if (this.usageAnalysis.needsMaybe) {
       imports.push("Just", "Nothing", "type Maybe")
     }
     if (this.usageAnalysis.needsEither) {
       imports.push("Left", "Right", "type Either")
     }
+  }
+
+  private collectFunctionalImports(imports: string[]): void {
+    if (!this.usageAnalysis) return
+
     if (this.usageAnalysis.needsFunctorMap) {
       imports.push("mapMaybe", "mapEither", "mapList", "mapArray")
     }
@@ -436,616 +415,30 @@ export class CodeGenerator {
     if (this.usageAnalysis.needsFoldMonoid) {
       imports.push("foldMonoid")
     }
-    if (this.usageAnalysis.needsBuiltins.print) {
-      imports.push("print")
-    }
-    if (this.usageAnalysis.needsBuiltins.putStrLn) {
-      imports.push("putStrLn")
-    }
-    if (this.usageAnalysis.needsBuiltins.toString) {
-      imports.push("toString")
-    }
-    if (this.usageAnalysis.needsBuiltins.toInt) {
-      imports.push("toInt")
-    }
-    if (this.usageAnalysis.needsBuiltins.toFloat) {
-      imports.push("toFloat")
-    }
-    if (this.usageAnalysis.needsBuiltins.show) {
-      imports.push("show")
-    }
-    if (this.usageAnalysis.needsBuiltins.arrayToList) {
-      imports.push("arrayToList")
-    }
-    if (this.usageAnalysis.needsBuiltins.listToArray) {
-      imports.push("listToArray")
-    }
-    if (this.usageAnalysis.needsBuiltins.head) {
-      imports.push("headList")
-    }
-    if (this.usageAnalysis.needsBuiltins.tail) {
-      imports.push("tailList")
-    }
-
-    if (imports.length > 0) {
-      lines.push(
-        `import { ${imports.join(", ")} } from './runtime/seseragi-runtime.js';`
-      )
-    }
-
-    return lines
   }
 
-  // 最小限のランタイム（使用機能のみ埋め込み）
-  generateMinimalRuntime(): string[] {
-    const lines: string[] = ["// Seseragi minimal runtime", ""]
+  private collectBuiltinImports(imports: string[]): void {
+    if (!this.usageAnalysis) return
 
-    if (!this.usageAnalysis) return lines
-
-    // 型定義（常に生成）
-    lines.push(
-      "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };"
-    )
-    if (this.usageAnalysis.needsEither) {
-      lines.push(
-        "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };"
-      )
-    }
-    if (this.usageAnalysis.needsList) {
-      lines.push(
-        "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };"
-      )
-    }
-    if (
-      this.usageAnalysis.needsMaybe ||
-      this.usageAnalysis.needsEither ||
-      this.usageAnalysis.needsList
-    ) {
-      lines.push("")
+    const builtins = this.usageAnalysis.needsBuiltins
+    const builtinMap: Record<string, string> = {
+      print: "print",
+      putStrLn: "putStrLn",
+      toString: "toString",
+      toInt: "toInt",
+      toFloat: "toFloat",
+      show: "show",
+      arrayToList: "arrayToList",
+      listToArray: "listToArray",
+      head: "headList",
+      tail: "tailList",
     }
 
-    // 必要な機能のみ生成
-    if (this.usageAnalysis.needsCurrying) {
-      lines.push(...this.generateCurryFunction())
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsPipeline) {
-      lines.push(
-        "const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsReversePipe) {
-      lines.push(
-        "const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsFunctionApplication) {
-      lines.push(
-        "const apply = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);"
-      )
-      lines.push("")
-    }
-    // Maybe constructors（常に生成）
-    lines.push(
-      "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });"
-    )
-    lines.push("const Nothing: Maybe<never> = { tag: 'Nothing' };")
-    lines.push("")
-    if (this.usageAnalysis.needsEither) {
-      lines.push(
-        "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });"
-      )
-      lines.push(
-        "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsList) {
-      lines.push("const Empty: List<never> = { tag: 'Empty' };")
-      lines.push(
-        "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });"
-      )
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsBuiltins.head) {
-      lines.push(
-        "const headList = <T>(list: List<T>): Maybe<T> => list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' };"
-      )
-    }
-    if (this.usageAnalysis.needsBuiltins.tail) {
-      lines.push(
-        "const tailList = <T>(list: List<T>): List<T> => list.tag === 'Cons' ? list.tail : Empty;"
-      )
-    }
-    if (
-      this.usageAnalysis.needsBuiltins.head ||
-      this.usageAnalysis.needsBuiltins.tail
-    ) {
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsFunctorMap) {
-      lines.push(
-        "const mapMaybe = <T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> => {"
-      )
-      lines.push("  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {"
-      )
-      lines.push("  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {")
-      lines.push("  return fa.map(f);")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const mapList = <T, U>(fa: any, f: (a: T) => U): any => {")
-      lines.push("  if (fa.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push(
-        "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };"
-      )
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsApplicativeApply) {
-      lines.push(
-        "const applyMaybe = <T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> => {"
-      )
-      lines.push(
-        "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;"
-      )
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {"
-      )
-      lines.push(
-        "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :"
-      )
-      lines.push("         ef.tag === 'Left' ? ef : ea;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const applyArray = <T, U>(ff: ((a: T) => U)[], fa: T[]): U[] => {"
-      )
-      lines.push("  const result: U[] = [];")
-      lines.push("  for (const func of ff) {")
-      lines.push("    for (const value of fa) {")
-      lines.push("      result.push(func(value));")
-      lines.push("    }")
-      lines.push("  }")
-      lines.push("  return result;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const applyList = <T, U>(ff: any, fa: any): any => {")
-      lines.push("  if (ff.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push("  const mappedValues = mapList(fa, ff.head);")
-      lines.push("  const restApplied = applyList(ff.tail, fa);")
-      lines.push("  return concatList(mappedValues, restApplied);")
-      lines.push("};")
-      lines.push("")
-
-      lines.push("const concatList = <T>(list1: any, list2: any): any => {")
-      lines.push("  if (list1.tag === 'Empty') return list2;")
-      lines.push(
-        "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };"
-      )
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsMonadBind) {
-      lines.push(
-        "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {"
-      )
-      lines.push("  return ma.tag === 'Just' ? f(ma.value) : Nothing;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {"
-      )
-      lines.push("  return ea.tag === 'Right' ? f(ea.value) : ea;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const bindArray = <T, U>(ma: T[], f: (value: T) => U[]): U[] => {"
-      )
-      lines.push("  const result: U[] = [];")
-      lines.push("  for (const value of ma) {")
-      lines.push("    result.push(...f(value));")
-      lines.push("  }")
-      lines.push("  return result;")
-      lines.push("};")
-      lines.push("")
-
-      lines.push(
-        "const bindList = <T, U>(ma: any, f: (value: T) => any): any => {"
-      )
-      lines.push("  if (ma.tag === 'Empty') return { tag: 'Empty' };")
-      lines.push("  const headResult = f(ma.head);")
-      lines.push("  const tailResult = bindList(ma.tail, f);")
-      lines.push("  return concatList(headResult, tailResult);")
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsFoldMonoid) {
-      lines.push(
-        "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {"
-      )
-      lines.push("  return arr.reduce(combine, empty);")
-      lines.push("};")
-      lines.push("")
-    }
-    if (this.usageAnalysis.needsBuiltins.print) {
-      lines.push(`const print = (value: any): void => {
-  // Seseragi型の場合は美しく整形
-  if (value && typeof value === 'object' && (
-    value.tag === 'Just' || value.tag === 'Nothing' ||
-    value.tag === 'Left' || value.tag === 'Right' ||
-    value.tag === 'Cons' || value.tag === 'Empty'
-  )) {
-    console.log(toString(value))
-  } 
-  // 通常のオブジェクトはそのまま
-  else {
-    console.log(value)
-  }
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.putStrLn) {
-      lines.push(
-        "const putStrLn = (value: string): void => console.log(value);"
-      )
-    }
-    if (this.usageAnalysis.needsBuiltins.toString) {
-      lines.push(`const toString = (value: any): string => {
-  // Maybe型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Just') {
-    return \`Just(\${toString(value.value)})\`
-  }
-  if (value && typeof value === 'object' && value.tag === 'Nothing') {
-    return 'Nothing'
-  }
-  
-  // Either型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Left') {
-    return \`Left(\${toString(value.value)})\`
-  }
-  if (value && typeof value === 'object' && value.tag === 'Right') {
-    return \`Right(\${toString(value.value)})\`
-  }
-  
-  // List型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Empty') {
-    return "\`[]"
-  }
-  if (value && typeof value === 'object' && value.tag === 'Cons') {
-    const items = []
-    let current = value
-    while (current.tag === 'Cons') {
-      items.push(toString(current.head))
-      current = current.tail
-    }
-    return "\`[" + items.join(', ') + "]"
-  }
-  
-  // Tuple型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Tuple') {
-    return \`(\${value.elements.map(toString).join(', ')})\`
-  }
-  
-  // 配列の表示
-  if (Array.isArray(value)) {
-    return \`[\${value.map(toString).join(', ')}]\`
-  }
-  
-  // プリミティブ型
-  if (typeof value === 'string') {
-    return \`"\${value}"\`
-  }
-  if (typeof value === 'number') {
-    return String(value)
-  }
-  if (typeof value === 'boolean') {
-    return value ? 'True' : 'False'
-  }
-  
-  // 普通のオブジェクト（構造体など）
-  if (typeof value === 'object' && value !== null) {
-    const pairs = []
-    for (const key in value) {
-      if (value.hasOwnProperty(key)) {
-        pairs.push(\`\${key}: \${toString(value[key])}\`)
+    for (const [key, value] of Object.entries(builtinMap)) {
+      if (builtins[key as keyof typeof builtins]) {
+        imports.push(value)
       }
     }
-    
-    // 構造体名を取得（constructor.nameを使用）
-    const structName = value.constructor && value.constructor.name !== 'Object' 
-      ? value.constructor.name 
-      : ''
-    
-    // 複数フィールドがある場合はインデント表示
-    if (pairs.length > 2) {
-      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
-    } else {
-      return \`\${structName} { \${pairs.join(', ')} }\`
-    }
-  }
-  
-  return String(value)
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.toInt) {
-      lines.push(`const toInt = (value: any): number => {
-  if (typeof value === 'number') {
-    return Math.trunc(value)
-  }
-  if (typeof value === 'string') {
-    const n = parseInt(value, 10)
-    if (isNaN(n)) {
-      throw new Error(\`Cannot convert "\${value}" to Int\`)
-    }
-    return n
-  }
-  throw new Error(\`Cannot convert \${typeof value} to Int\`)
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.toFloat) {
-      lines.push(`const toFloat = (value: any): number => {
-  if (typeof value === 'number') {
-    return value
-  }
-  if (typeof value === 'string') {
-    const n = parseFloat(value)
-    if (isNaN(n)) {
-      throw new Error(\`Cannot convert "\${value}" to Float\`)
-    }
-    return n
-  }
-  throw new Error(\`Cannot convert \${typeof value} to Float\`)
-};`)
-    }
-    if (this.usageAnalysis.needsBuiltins.show) {
-      // prettyFormat関数も必要
-      lines.push(`// Seseragi型の構造を正規化
-function normalizeStructure(obj) {
-  // プリミティブ型の処理
-  if (typeof obj === 'boolean') {
-    return { '@@type': 'Boolean', value: obj }
-  }
-  if (!obj || typeof obj !== 'object') return obj
-  
-  // List型 → 特別なマーカー付き配列に変換
-  if (obj.tag === 'Empty') return { '@@type': 'List', value: [] }
-  if (obj.tag === 'Cons') {
-    const items = []
-    let current = obj
-    while (current && current.tag === 'Cons') {
-      items.push(normalizeStructure(current.head))
-      current = current.tail
-    }
-    return { '@@type': 'List', value: items }
-  }
-  
-  // Maybe型
-  if (obj.tag === 'Just') {
-    return { '@@type': 'Just', value: normalizeStructure(obj.value) }
-  }
-  if (obj.tag === 'Nothing') {
-    return '@@Nothing'
-  }
-  
-  // Either型
-  if (obj.tag === 'Right') {
-    return { '@@type': 'Right', value: normalizeStructure(obj.value) }
-  }
-  if (obj.tag === 'Left') {
-    return { '@@type': 'Left', value: normalizeStructure(obj.value) }
-  }
-  
-  // Tuple型
-  if (obj.tag === 'Tuple') {
-    return { '@@type': 'Tuple', value: obj.elements.map(normalizeStructure) }
-  }
-  
-  // 配列
-  if (Array.isArray(obj)) {
-    return obj.map(normalizeStructure)
-  }
-  
-  // 通常のオブジェクト
-  const result = {}
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      result[key] = normalizeStructure(obj[key])
-    }
-  }
-  return result
-}
-
-// JSON文字列をSeseragi型の美しい表記に変換
-function beautifySeseragiTypes(json) {
-  let result = json
-  
-  // Seseragi特殊型の変換
-  result = beautifySpecialTypes(result)
-  
-  // 普通のオブジェクト（構造体など）の変換
-  result = beautifyStructObjects(result)
-  
-  return result
-}
-
-// Seseragi特殊型（Maybe、Either、List）の美しい変換
-function beautifySpecialTypes(json) {
-  return json
-    // List型
-    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[\\s*\\]\\s*\\}/g, '\`[]')
-    .replace(/\\{\\s*"@@type":\\s*"List",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
-      const cleanContent = content.replace(/\\s+/g, ' ').trim()
-      return \`\\\`[\${cleanContent}]\`
-    })
-    // Maybe型
-    .replace(/"@@type":\\s*"Just",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Just(\${val.trim()})\`)
-    .replace(/\\{\\s*Just\\(([^)]+)\\)\\s*\\}/g, 'Just($1)')
-    .replace(/"@@Nothing"/g, 'Nothing')
-    // Either型
-    .replace(/"@@type":\\s*"Right",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Right(\${val.trim()})\`)
-    .replace(/\\{\\s*Right\\(([^)]+)\\)\\s*\\}/g, 'Right($1)')
-    .replace(/"@@type":\\s*"Left",\\s*"value":\\s*([^}]+)/g, (_, val) => \`Left(\${val.trim()})\`)
-    .replace(/\\{\\s*Left\\(([^)]+)\\)\\s*\\}/g, 'Left($1)')
-    // タプル型
-    .replace(/\\{\\s*"@@type":\\s*"Tuple",\\s*"value":\\s*\\[([\\s\\S]*?)\\]\\s*\\}/g, (match, content) => {
-      const cleanContent = content.replace(/\\s+/g, ' ').trim()
-      return \`(\${cleanContent})\`
-    })
-    // ブール値型
-    .replace(/\\{\\s*"@@type":\\s*"Boolean",\\s*"value":\\s*(true|false)\\s*\\}/g, (match, value) => {
-      return value === 'true' ? 'True' : 'False'
-    })
-}
-
-// 普通のオブジェクト（構造体）の美しい変換
-function beautifyStructObjects(json) {
-  return json.replace(/\\{([\\s\\S]*?)\\}/g, (match, content) => {
-    // 既に変換済みのSeseragi型は除外
-    if (match.includes('Just(') || match.includes('Right(') || match.includes('Left(') || match.includes('\`[')) {
-      return match
-    }
-    
-    // フィールドを解析
-    const fields = content.trim().split(',').filter(f => f.trim())
-    const jsFields = fields.map(field => {
-      const cleaned = field.trim().replace(/"(\\w+)":/g, '$1:')
-      return cleaned
-    })
-    
-    // 複数フィールドの場合はインデント表示を保持、少数フィールドは1行
-    if (jsFields.length > 2) {
-      return \`{\\n  \${jsFields.join(',\\n  ')}\\n}\`
-    } else {
-      return \`{ \${jsFields.join(', ')} }\`
-    }
-  })
-}
-
-
-// 美しくフォーマットする関数
-const prettyFormat = (value) => {
-  // プリミティブ型
-  if (typeof value === 'string') return \`"\${value}"\`
-  if (typeof value === 'number') return String(value)
-  if (typeof value === 'boolean') return value ? 'True' : 'False'
-  if (value === null) return 'null'
-  if (value === undefined) return 'undefined'
-  
-  // Seseragi特殊型とオブジェクトの場合
-  if (value && typeof value === 'object') {
-    // Maybe型
-    if (value.tag === 'Just') {
-      return \`Just(\${prettyFormat(value.value)})\`
-    }
-    if (value.tag === 'Nothing') {
-      return 'Nothing'
-    }
-    
-    // Either型
-    if (value.tag === 'Left') {
-      return \`Left(\${prettyFormat(value.value)})\`
-    }
-    if (value.tag === 'Right') {
-      return \`Right(\${prettyFormat(value.value)})\`
-    }
-    
-    // List型
-    if (value.tag === 'Empty') {
-      return '\`[]'
-    }
-    if (value.tag === 'Cons') {
-      const items = []
-      let current = value
-      while (current.tag === 'Cons') {
-        items.push(prettyFormat(current.head))
-        current = current.tail
-      }
-      return \`\\\`[\${items.join(', ')}]\`
-    }
-    
-    // Tuple型
-    if (value.tag === 'Tuple') {
-      return \`(\${value.elements.map(prettyFormat).join(', ')})\`
-    }
-    
-    // 配列
-    if (Array.isArray(value)) {
-      return \`[\${value.map(prettyFormat).join(', ')}]\`
-    }
-    
-    // 構造体・普通のオブジェクト
-    const pairs = []
-    for (const key in value) {
-      if (value.hasOwnProperty(key)) {
-        pairs.push(\`\${key}: \${prettyFormat(value[key])}\`)
-      }
-    }
-    
-    const structName = value.constructor && value.constructor.name !== 'Object' 
-      ? value.constructor.name 
-      : ''
-    
-    if (pairs.length > 2) {
-      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
-    } else {
-      return \`\${structName} { \${pairs.join(', ')} }\`
-    }
-  }
-  
-  return String(value)
-}
-
-const show = (value) => {
-  console.log(prettyFormat(value))
-};`)
-    }
-    if (
-      this.usageAnalysis.needsBuiltins.arrayToList ||
-      this.usageAnalysis.needsBuiltins.listToArray
-    ) {
-      lines.push("")
-      if (this.usageAnalysis.needsBuiltins.arrayToList) {
-        lines.push("const arrayToList = curry(<T>(arr: T[]): List<T> => {")
-        lines.push("  let result: List<T> = Empty;")
-        lines.push("  for (let i = arr.length - 1; i >= 0; i--) {")
-        lines.push("    result = Cons(arr[i], result);")
-        lines.push("  }")
-        lines.push("  return result;")
-        lines.push("});")
-        lines.push("")
-      }
-      if (this.usageAnalysis.needsBuiltins.listToArray) {
-        lines.push("const listToArray = curry(<T>(list: List<T>): T[] => {")
-        lines.push("  const result: T[] = [];")
-        lines.push("  let current = list;")
-        lines.push("  while (current.tag === 'Cons') {")
-        lines.push("    result.push(current.head);")
-        lines.push("    current = current.tail;")
-        lines.push("  }")
-        lines.push("  return result;")
-        lines.push("});")
-      }
-    }
-
-    return lines
   }
 
   // 従来の埋め込み式ランタイム（下位互換性用）
@@ -1191,7 +584,7 @@ const show = (value) => {
     value.tag === 'Cons' || value.tag === 'Empty'
   )) {
     console.log(toString(value))
-  } 
+  }
   // 通常のオブジェクトはそのまま
   else {
     console.log(value)
@@ -1206,7 +599,7 @@ const show = (value) => {
   if (value && typeof value === 'object' && value.tag === 'Nothing') {
     return 'Nothing'
   }
-  
+
   // Either型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Left') {
     return \`Left(\${toString(value.value)})\`
@@ -1214,7 +607,7 @@ const show = (value) => {
   if (value && typeof value === 'object' && value.tag === 'Right') {
     return \`Right(\${toString(value.value)})\`
   }
-  
+
   // List型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Empty') {
     return "\`[]"
@@ -1228,17 +621,17 @@ const show = (value) => {
     }
     return "\`[" + items.join(', ') + "]"
   }
-  
+
   // Tuple型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Tuple') {
     return \`(\${value.elements.map(toString).join(', ')})\`
   }
-  
+
   // 配列の表示
   if (Array.isArray(value)) {
     return \`[\${value.map(toString).join(', ')}]\`
   }
-  
+
   // プリミティブ型
   if (typeof value === 'string') {
     return \`"\${value}"\`
@@ -1249,7 +642,7 @@ const show = (value) => {
   if (typeof value === 'boolean') {
     return value ? 'True' : 'False'
   }
-  
+
   // 普通のオブジェクト（構造体など）
   if (typeof value === 'object' && value !== null) {
     const pairs = []
@@ -1258,12 +651,12 @@ const show = (value) => {
         pairs.push(\`\${key}: \${toString(value[key])}\`)
       }
     }
-    
+
     // 構造体名を取得（constructor.nameを使用）
-    const structName = value.constructor && value.constructor.name !== 'Object' 
-      ? value.constructor.name 
+    const structName = value.constructor && value.constructor.name !== 'Object'
+      ? value.constructor.name
       : ''
-    
+
     // 複数フィールドがある場合はインデント表示
     if (pairs.length > 2) {
       return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
@@ -1271,7 +664,7 @@ const show = (value) => {
       return \`\${structName} { \${pairs.join(', ')} }\`
     }
   }
-  
+
   return String(value)
 };`,
       `const toInt = (value: any): number => {
@@ -1644,7 +1037,7 @@ ${indent}}`
     lines.push("    return structMethods[methodName](obj, ...args);")
     lines.push("  }")
     lines.push(
-      "  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);"
+      `  throw new Error(\`Method '\${methodName}' not found for struct '\${structName}'\`);`
     )
     lines.push("}")
     lines.push("")
@@ -1673,7 +1066,9 @@ ${indent}}`
     lines.push("    case '>=': return left >= right;")
     lines.push("    case '&&': return left && right;")
     lines.push("    case '||': return left || right;")
-    lines.push("    default: throw new Error(`Unknown operator: ${operator}`);")
+    lines.push(
+      `    default: throw new Error(\`Unknown operator: \${operator}\`);`
+    )
     lines.push("  }")
     lines.push("}")
     lines.push("")
@@ -1689,7 +1084,7 @@ ${indent}}`
     if (this.structMethods.size > 0) {
       lines.push("// Initialize method dispatch table")
       lines.push("__structMethods = {")
-      for (const [structName, methods] of this.structMethods) {
+      for (const [structName, methods] of Array.from(this.structMethods)) {
         const methodEntries = Array.from(methods)
           .map((methodName) => {
             const funcName = `__ssrg_${structName}_${this.filePrefix}_${methodName}`
@@ -1706,10 +1101,10 @@ ${indent}}`
     if (this.structOperators.size > 0) {
       lines.push("// Initialize operator dispatch table")
       lines.push("__structOperators = {")
-      for (const [structName, operators] of this.structOperators) {
+      for (const [structName, operators] of Array.from(this.structOperators)) {
         const operatorEntries = Array.from(operators)
           .map((op) => {
-            const opMethodName = this.operatorToMethodName(op)
+            const opMethodName = this.operatorToMethodName(op as string)
             const funcName = `__ssrg_${structName}_${this.filePrefix}_op_${opMethodName}`
             return `    "${op}": ${funcName}`
           })
@@ -1808,79 +1203,84 @@ ${indent}}`
 
   // 式の生成
   generateExpression(expr: Expression): string {
-    if (expr instanceof Literal) {
-      return this.generateLiteral(expr)
-    } else if (expr instanceof Identifier) {
-      return this.sanitizeIdentifier(expr.name)
-    } else if (expr instanceof TemplateExpression) {
-      return this.generateTemplateExpression(expr)
-    } else if (expr instanceof BinaryOperation) {
-      return this.generateBinaryOperation(expr)
-    } else if (expr instanceof UnaryOperation) {
-      return this.generateUnaryOperation(expr)
-    } else if (expr instanceof FunctionCall) {
-      return this.generateFunctionCall(expr)
-    } else if (expr instanceof MethodCall) {
-      return this.generateMethodCall(expr)
-    } else if (expr instanceof FunctionApplication) {
-      return this.generateFunctionApplication(expr)
-    } else if (expr instanceof BuiltinFunctionCall) {
-      return this.generateBuiltinFunctionCall(expr)
-    } else if (expr instanceof ConditionalExpression) {
-      return this.generateConditionalExpression(expr)
-    } else if (expr instanceof TernaryExpression) {
-      return this.generateTernaryExpression(expr)
-    } else if (expr instanceof MatchExpression) {
-      return this.generateMatchExpression(expr)
-    } else if (expr instanceof Pipeline) {
-      return this.generatePipeline(expr)
-    } else if (expr instanceof ReversePipe) {
-      return this.generateReversePipe(expr)
-    } else if (expr instanceof FunctorMap) {
-      return this.generateFunctorMap(expr)
-    } else if (expr instanceof ApplicativeApply) {
-      return this.generateApplicativeApply(expr)
-    } else if (expr instanceof MonadBind) {
-      return this.generateMonadBind(expr)
-    } else if (expr instanceof FoldMonoid) {
-      return this.generateFoldMonoid(expr)
-    } else if (expr instanceof FunctionApplicationOperator) {
-      return this.generateFunctionApplicationOperator(expr)
-    } else if (expr instanceof ConstructorExpression) {
-      return this.generateConstructorExpression(expr)
-    } else if (expr instanceof BlockExpression) {
-      return this.generateBlockExpression(expr)
-    } else if (expr instanceof LambdaExpression) {
-      return this.generateLambdaExpression(expr)
-    } else if (expr instanceof RecordExpression) {
-      return this.generateRecordExpression(expr)
-    } else if (expr instanceof RecordAccess) {
-      return this.generateRecordAccess(expr)
-    } else if (expr instanceof ArrayLiteral) {
-      return this.generateArrayLiteral(expr)
-    } else if (expr instanceof ArrayAccess) {
-      return this.generateArrayAccess(expr)
-    } else if (expr instanceof ListSugar) {
-      return this.generateListSugar(expr)
-    } else if (expr instanceof ConsExpression) {
-      return this.generateConsExpression(expr)
-    } else if (expr instanceof RangeLiteral) {
-      return this.generateRangeLiteral(expr)
-    } else if (expr instanceof ListComprehension) {
-      return this.generateListComprehension(expr)
-    } else if (expr instanceof ListComprehensionSugar) {
-      return this.generateListComprehensionSugar(expr)
-    } else if (expr instanceof TupleExpression) {
-      return this.generateTupleExpression(expr)
-    } else if (expr instanceof StructExpression) {
-      return this.generateStructExpression(expr)
-    } else if (expr instanceof SpreadExpression) {
-      return this.generateSpreadExpression(expr)
-    } else if (expr instanceof TypeAssertion) {
-      return this.generateTypeAssertion(expr)
+    switch (expr.kind) {
+      case "Literal":
+        return this.generateLiteral(expr as Literal)
+      case "Identifier":
+        return this.sanitizeIdentifier((expr as Identifier).name)
+      case "TemplateExpression":
+        return this.generateTemplateExpression(expr as TemplateExpression)
+      case "BinaryOperation":
+        return this.generateBinaryOperation(expr as BinaryOperation)
+      case "UnaryOperation":
+        return this.generateUnaryOperation(expr as UnaryOperation)
+      case "FunctionCall":
+        return this.generateFunctionCall(expr as FunctionCall)
+      case "MethodCall":
+        return this.generateMethodCall(expr as MethodCall)
+      case "FunctionApplication":
+        return this.generateFunctionApplication(expr as FunctionApplication)
+      case "BuiltinFunctionCall":
+        return this.generateBuiltinFunctionCall(expr as BuiltinFunctionCall)
+      case "ConditionalExpression":
+        return this.generateConditionalExpression(expr as ConditionalExpression)
+      case "TernaryExpression":
+        return this.generateTernaryExpression(expr as TernaryExpression)
+      case "MatchExpression":
+        return this.generateMatchExpression(expr as MatchExpression)
+      case "Pipeline":
+        return this.generatePipeline(expr as Pipeline)
+      case "ReversePipe":
+        return this.generateReversePipe(expr as ReversePipe)
+      case "FunctorMap":
+        return this.generateFunctorMap(expr as FunctorMap)
+      case "ApplicativeApply":
+        return this.generateApplicativeApply(expr as ApplicativeApply)
+      case "MonadBind":
+        return this.generateMonadBind(expr as MonadBind)
+      case "FoldMonoid":
+        return this.generateFoldMonoid(expr as FoldMonoid)
+      case "FunctionApplicationOperator":
+        return this.generateFunctionApplicationOperator(
+          expr as FunctionApplicationOperator
+        )
+      case "ConstructorExpression":
+        return this.generateConstructorExpression(expr as ConstructorExpression)
+      case "BlockExpression":
+        return this.generateBlockExpression(expr as BlockExpression)
+      case "LambdaExpression":
+        return this.generateLambdaExpression(expr as LambdaExpression)
+      case "RecordExpression":
+        return this.generateRecordExpression(expr as RecordExpression)
+      case "RecordAccess":
+        return this.generateRecordAccess(expr as RecordAccess)
+      case "ArrayLiteral":
+        return this.generateArrayLiteral(expr as ArrayLiteral)
+      case "ArrayAccess":
+        return this.generateArrayAccess(expr as ArrayAccess)
+      case "ListSugar":
+        return this.generateListSugar(expr as ListSugar)
+      case "ConsExpression":
+        return this.generateConsExpression(expr as ConsExpression)
+      case "RangeLiteral":
+        return this.generateRangeLiteral(expr as RangeLiteral)
+      case "ListComprehension":
+        return this.generateListComprehension(expr as ListComprehension)
+      case "ListComprehensionSugar":
+        return this.generateListComprehensionSugar(
+          expr as ListComprehensionSugar
+        )
+      case "TupleExpression":
+        return this.generateTupleExpression(expr as TupleExpression)
+      case "StructExpression":
+        return this.generateStructExpression(expr as StructExpression)
+      case "SpreadExpression":
+        return this.generateSpreadExpression(expr as SpreadExpression)
+      case "TypeAssertion":
+        return this.generateTypeAssertion(expr as TypeAssertion)
+      default:
+        return `/* Unsupported expression: ${expr.constructor.name} */`
     }
-
-    return `/* Unsupported expression: ${expr.constructor.name} */`
   }
 
   // リテラルの生成
@@ -1962,25 +1362,13 @@ ${indent}}`
 
   // 型推論結果から解決済みの型を取得
   private getResolvedType(expr: Expression): Type | undefined {
-    if (this.typeInferenceResult && this.typeInferenceResult.nodeTypeMap) {
+    if (this.typeInferenceResult?.nodeTypeMap) {
       const resolvedType = this.typeInferenceResult.nodeTypeMap.get(expr)
       if (resolvedType) {
         return resolvedType
       }
     }
     return expr.type
-  }
-
-  // 構造体型定義を型環境から取得
-  private getStructTypeDefinition(structName: string): StructType | undefined {
-    if (this.typeInferenceResult && this.typeInferenceResult.typeEnvironment) {
-      const structType =
-        this.typeInferenceResult.typeEnvironment.get(structName)
-      if (structType && structType.kind === "StructType") {
-        return structType as StructType
-      }
-    }
-    return undefined
   }
 
   // プリミティブ型かどうかをチェック
@@ -2022,8 +1410,8 @@ ${indent}}`
   private statementHasBinaryOperations(stmt: Statement): boolean {
     if (stmt instanceof ExpressionStatement) {
       return this.expressionHasBinaryOperations(stmt.expression)
-    } else if (stmt instanceof VariableDeclaration && stmt.value) {
-      return this.expressionHasBinaryOperations(stmt.value)
+    } else if (stmt instanceof VariableDeclaration && stmt.initializer) {
+      return this.expressionHasBinaryOperations(stmt.initializer)
     } else if (stmt instanceof FunctionDeclaration && stmt.body) {
       return this.expressionHasBinaryOperations(stmt.body)
     }
@@ -2031,55 +1419,100 @@ ${indent}}`
   }
 
   private expressionHasBinaryOperations(expr: Expression): boolean {
-    if (expr instanceof BinaryOperation) {
-      return true
-    } else if (expr instanceof BlockExpression) {
-      for (const stmt of expr.statements) {
-        if (this.statementHasBinaryOperations(stmt)) {
-          return true
-        }
-      }
-      if (expr.returnExpression) {
-        return this.expressionHasBinaryOperations(expr.returnExpression)
-      }
-    } else if (expr instanceof ListComprehension) {
-      if (this.expressionHasBinaryOperations(expr.expression)) {
+    switch (expr.kind) {
+      case "BinaryOperation":
+        return true
+
+      case "BlockExpression":
+        return this.blockExpressionHasBinaryOperations(expr as BlockExpression)
+
+      case "ListComprehension":
+        return this.listComprehensionHasBinaryOperations(
+          expr as ListComprehension
+        )
+
+      case "FunctionCall":
+        return this.functionCallHasBinaryOperations(expr as FunctionCall)
+
+      case "LambdaExpression":
+        return this.expressionHasBinaryOperations(
+          (expr as LambdaExpression).body
+        )
+
+      case "FunctorMap":
+        return this.expressionHasBinaryOperations((expr as FunctorMap).left)
+
+      case "MonadBind":
+        return this.expressionHasBinaryOperations((expr as MonadBind).left)
+
+      case "ApplicativeApply":
+        return this.applicativeApplyHasBinaryOperations(
+          expr as ApplicativeApply
+        )
+
+      case "FunctionApplication":
+        return this.functionApplicationHasBinaryOperations(
+          expr as FunctionApplication
+        )
+
+      default:
+        return false
+    }
+  }
+
+  private blockExpressionHasBinaryOperations(
+    blockExpr: BlockExpression
+  ): boolean {
+    for (const stmt of blockExpr.statements) {
+      if (this.statementHasBinaryOperations(stmt)) {
         return true
       }
-      for (const filter of expr.filters || []) {
-        if (this.expressionHasBinaryOperations(filter)) {
-          return true
-        }
-      }
-    } else if (expr instanceof FunctionCall) {
-      for (const arg of expr.arguments) {
-        if (this.expressionHasBinaryOperations(arg)) {
-          return true
-        }
-      }
-    } else if (expr instanceof LambdaExpression) {
-      // ラムダ式内の二項演算も検出
-      return this.expressionHasBinaryOperations(expr.body)
-    } else if (expr instanceof FunctorMap) {
-      // map演算子内の関数に二項演算があるかチェック
-      return this.expressionHasBinaryOperations(expr.function)
-    } else if (expr instanceof MonadBind) {
-      // bind演算子内の関数に二項演算があるかチェック
-      return this.expressionHasBinaryOperations(expr.function)
-    } else if (expr instanceof ApplicativeApply) {
-      // apply演算子内の関数に二項演算があるかチェック
-      if (this.expressionHasBinaryOperations(expr.function)) {
-        return true
-      }
-      return this.expressionHasBinaryOperations(expr.value)
-    } else if (expr instanceof FunctionApplication) {
-      // 関数適用での引数に二項演算があるかチェック
-      if (this.expressionHasBinaryOperations(expr.function)) {
-        return true
-      }
-      return this.expressionHasBinaryOperations(expr.argument)
+    }
+    if (blockExpr.returnExpression) {
+      return this.expressionHasBinaryOperations(blockExpr.returnExpression)
     }
     return false
+  }
+
+  private listComprehensionHasBinaryOperations(
+    listComp: ListComprehension
+  ): boolean {
+    if (this.expressionHasBinaryOperations(listComp.expression)) {
+      return true
+    }
+    for (const filter of listComp.filters || []) {
+      if (this.expressionHasBinaryOperations(filter)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  private functionCallHasBinaryOperations(funcCall: FunctionCall): boolean {
+    for (const arg of funcCall.arguments) {
+      if (this.expressionHasBinaryOperations(arg)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  private applicativeApplyHasBinaryOperations(
+    applyExpr: ApplicativeApply
+  ): boolean {
+    if (this.expressionHasBinaryOperations(applyExpr.left)) {
+      return true
+    }
+    return this.expressionHasBinaryOperations(applyExpr.right)
+  }
+
+  private functionApplicationHasBinaryOperations(
+    appExpr: FunctionApplication
+  ): boolean {
+    if (this.expressionHasBinaryOperations(appExpr.function)) {
+      return true
+    }
+    return this.expressionHasBinaryOperations(appExpr.argument)
   }
 
   // __dispatchOperatorの使用があるかチェック
@@ -2094,21 +1527,11 @@ ${indent}}`
     return false
   }
 
-  // リスト内包表記があるかチェック
-  private hasListComprehensions(statements: Statement[]): boolean {
-    for (const stmt of statements) {
-      if (this.statementHasListComprehensions(stmt)) {
-        return true
-      }
-    }
-    return false
-  }
-
   private statementHasListComprehensions(stmt: Statement): boolean {
     if (stmt instanceof ExpressionStatement) {
       return this.expressionHasListComprehensions(stmt.expression)
-    } else if (stmt instanceof VariableDeclaration && stmt.value) {
-      return this.expressionHasListComprehensions(stmt.value)
+    } else if (stmt instanceof VariableDeclaration && stmt.initializer) {
+      return this.expressionHasListComprehensions(stmt.initializer)
     } else if (stmt instanceof FunctionDeclaration && stmt.body) {
       return this.expressionHasListComprehensions(stmt.body)
     }
@@ -2140,8 +1563,8 @@ ${indent}}`
   private checkStatementUsesOperatorDispatch(stmt: Statement): boolean {
     if (stmt instanceof ExpressionStatement) {
       return this.checkExpressionUsesOperatorDispatch(stmt.expression)
-    } else if (stmt instanceof VariableDeclaration && stmt.value) {
-      return this.checkExpressionUsesOperatorDispatch(stmt.value)
+    } else if (stmt instanceof VariableDeclaration && stmt.initializer) {
+      return this.checkExpressionUsesOperatorDispatch(stmt.initializer)
     } else if (stmt instanceof FunctionDeclaration && stmt.body) {
       return this.checkExpressionUsesOperatorDispatch(stmt.body)
     }
@@ -2149,43 +1572,68 @@ ${indent}}`
   }
 
   private checkExpressionUsesOperatorDispatch(expr: Expression): boolean {
-    if (expr instanceof BinaryOperation) {
-      // プリミティブ型同士の演算ではない場合のみ__dispatchOperatorを使用
-      if (
-        !this.isBasicOperator(expr.operator) ||
-        !this.isPrimitiveType(expr.left.type) ||
-        !this.isPrimitiveType(expr.right.type)
-      ) {
+    switch (expr.kind) {
+      case "BinaryOperation":
+        return this.binaryOperationUsesDispatch(expr as BinaryOperation)
+
+      case "BlockExpression":
+        return this.blockExpressionUsesDispatch(expr as BlockExpression)
+
+      case "ListComprehension":
+        return this.listComprehensionUsesDispatch(expr as ListComprehension)
+
+      case "FunctionCall":
+        return this.functionCallUsesDispatch(expr as FunctionCall)
+
+      default:
+        return false
+    }
+  }
+
+  private binaryOperationUsesDispatch(binOp: BinaryOperation): boolean {
+    // プリミティブ型同士の演算ではない場合のみ__dispatchOperatorを使用
+    if (
+      !this.isBasicOperator(binOp.operator) ||
+      !this.isPrimitiveType(binOp.left.type) ||
+      !this.isPrimitiveType(binOp.right.type)
+    ) {
+      return true
+    }
+    return false
+  }
+
+  private blockExpressionUsesDispatch(blockExpr: BlockExpression): boolean {
+    for (const stmt of blockExpr.statements) {
+      if (this.checkStatementUsesOperatorDispatch(stmt)) {
         return true
-      }
-    } else if (expr instanceof BlockExpression) {
-      for (const stmt of expr.statements) {
-        if (this.checkStatementUsesOperatorDispatch(stmt)) {
-          return true
-        }
-      }
-      if (expr.returnExpression) {
-        return this.checkExpressionUsesOperatorDispatch(expr.returnExpression)
-      }
-    } else if (expr instanceof ListComprehension) {
-      // リスト内包表記の式をチェック
-      if (this.checkExpressionUsesOperatorDispatch(expr.expression)) {
-        return true
-      }
-      for (const filter of expr.filters || []) {
-        if (this.checkExpressionUsesOperatorDispatch(filter)) {
-          return true
-        }
-      }
-    } else if (expr instanceof FunctionCall) {
-      // 関数呼び出しの引数をチェック
-      for (const arg of expr.arguments) {
-        if (this.checkExpressionUsesOperatorDispatch(arg)) {
-          return true
-        }
       }
     }
-    // 他の複合式も再帰的にチェック
+    if (blockExpr.returnExpression) {
+      return this.checkExpressionUsesOperatorDispatch(
+        blockExpr.returnExpression
+      )
+    }
+    return false
+  }
+
+  private listComprehensionUsesDispatch(listComp: ListComprehension): boolean {
+    if (this.checkExpressionUsesOperatorDispatch(listComp.expression)) {
+      return true
+    }
+    for (const filter of listComp.filters || []) {
+      if (this.checkExpressionUsesOperatorDispatch(filter)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  private functionCallUsesDispatch(funcCall: FunctionCall): boolean {
+    for (const arg of funcCall.arguments) {
+      if (this.checkExpressionUsesOperatorDispatch(arg)) {
+        return true
+      }
+    }
     return false
   }
 
@@ -2221,26 +1669,46 @@ ${indent}}`
     const arg = this.generateExpression(app.argument)
 
     // ビルトイン関数の特別処理
-    if (app.function instanceof Identifier) {
-      const funcName = app.function.name
-      if (funcName === "print" || funcName === "putStrLn") {
-        return `console.log(${arg})`
-      } else if (funcName === "toString") {
-        return `toString(${arg})`
-      } else if (funcName === "toInt") {
-        return `toInt(${arg})`
-      } else if (funcName === "toFloat") {
-        return `toFloat(${arg})`
-      } else if (funcName === "head") {
-        return `headList(${arg})`
-      } else if (funcName === "tail") {
-        return `tailList(${arg})`
-      } else if (funcName === "show") {
-        return `show(${arg})`
-      }
+    const builtinResult = this.tryGenerateBuiltinApplication(app, arg)
+    if (builtinResult) {
+      return builtinResult
     }
 
     // ネストした関数適用の処理
+    const nestedResult = this.tryGenerateNestedApplication(app, arg)
+    if (nestedResult) {
+      return nestedResult
+    }
+
+    // 通常の関数適用
+    return this.generateRegularApplication(app, func, arg)
+  }
+
+  private tryGenerateBuiltinApplication(
+    app: FunctionApplication,
+    arg: string
+  ): string | null {
+    if (app.function instanceof Identifier) {
+      const funcName = app.function.name
+      const builtinMap: Record<string, string> = {
+        print: `console.log(${arg})`,
+        putStrLn: `console.log(${arg})`,
+        toString: `toString(${arg})`,
+        toInt: `toInt(${arg})`,
+        toFloat: `toFloat(${arg})`,
+        head: `headList(${arg})`,
+        tail: `tailList(${arg})`,
+        show: `show(${arg})`,
+      }
+      return builtinMap[funcName] || null
+    }
+    return null
+  }
+
+  private tryGenerateNestedApplication(
+    app: FunctionApplication,
+    arg: string
+  ): string | null {
     if (app.function instanceof FunctionApplication) {
       const nestedFunc = app.function.function
       if (nestedFunc instanceof Identifier) {
@@ -2251,8 +1719,15 @@ ${indent}}`
         }
       }
     }
+    return null
+  }
 
-    // 通常の関数適用 - wrap lambda expressions in parentheses
+  private generateRegularApplication(
+    app: FunctionApplication,
+    func: string,
+    arg: string
+  ): string {
+    // wrap lambda expressions in parentheses
     if (app.function instanceof LambdaExpression) {
       return `(${func})(${arg})`
     }
@@ -2327,14 +1802,15 @@ ${indent}}`
 
     // if-else チェーンとして生成（柔軟性を向上）
     const cases = match.cases
-    let result = "(() => {\n  const matchValue = " + expr + ";\n"
+    let result = `(() => {\n  const matchValue = ${expr};\n`
 
     for (let i = 0; i < cases.length; i++) {
       const c = cases[i]
+      if (!c) continue
 
       // GuardPatternの場合は特別な処理が必要
       if (c.pattern.kind === "GuardPattern") {
-        const guardPattern = c.pattern as any // AST.GuardPattern
+        const guardPattern = c.pattern as GuardPattern
         const baseCondition = this.generatePatternCondition(
           guardPattern.pattern,
           "matchValue"
@@ -2365,7 +1841,7 @@ ${indent}}`
   }
 
   // パターン条件の生成（if-else用）
-  generatePatternCondition(pattern: any, valueVar: string): string {
+  generatePatternCondition(pattern: Pattern, valueVar: string): string {
     if (!pattern) {
       return "true" // ワイルドカードパターン
     }
@@ -2373,190 +1849,60 @@ ${indent}}`
     // ASTパターンの種類に基づいて処理
     switch (pattern.kind) {
       case "LiteralPattern":
-        if (typeof pattern.value === "string") {
-          return `${valueVar} === ${JSON.stringify(pattern.value)}`
-        } else {
-          return `${valueVar} === ${pattern.value}`
-        }
-
-      case "IdentifierPattern":
-        if (pattern.name === "_") {
-          return "true" // ワイルドカードパターン
-        }
-        // 変数にバインドする場合（常に true）
-        return "true"
-
-      case "ConstructorPattern": {
-        // ビルトインコンストラクタとADTコンストラクタを区別
-        let constructorCondition: string
-        if (this.isBuiltinConstructor(pattern.constructorName)) {
-          constructorCondition = `${valueVar}.tag === '${pattern.constructorName}'`
-        } else {
-          constructorCondition = `${valueVar}.type === '${pattern.constructorName}'`
-        }
-
-        // サブパターンの条件も追加
-        if (pattern.patterns && pattern.patterns.length > 0) {
-          const subConditions: string[] = []
-
-          for (let i = 0; i < pattern.patterns.length; i++) {
-            const subPattern = pattern.patterns[i]
-            if (subPattern.kind === "LiteralPattern") {
-              // リテラルパターンの場合、値をチェック
-              let valueAccess: string
-              if (this.isBuiltinConstructor(pattern.constructorName)) {
-                if (
-                  pattern.constructorName === "Just" ||
-                  pattern.constructorName === "Left" ||
-                  pattern.constructorName === "Right"
-                ) {
-                  valueAccess = `${valueVar}.value`
-                } else if (pattern.constructorName === "Cons") {
-                  valueAccess =
-                    i === 0 ? `${valueVar}.head` : `${valueVar}.tail`
-                } else {
-                  valueAccess = `${valueVar}.data[${i}]`
-                }
-              } else {
-                valueAccess = `${valueVar}.data[${i}]`
-              }
-
-              if (typeof subPattern.value === "string") {
-                subConditions.push(
-                  `${valueAccess} === ${JSON.stringify(subPattern.value)}`
-                )
-              } else {
-                subConditions.push(`${valueAccess} === ${subPattern.value}`)
-              }
-            }
-            // IdentifierPatternの場合は常にtrue（バインディングのみ）
-          }
-
-          if (subConditions.length > 0) {
-            return `${constructorCondition} && ${subConditions.join(" && ")}`
-          }
-        }
-
-        return constructorCondition
-      }
-
-      case "TuplePattern": {
-        // タプルパターン
-        const tupleConditions = pattern.patterns.map((subPattern, i) => {
-          return this.generatePatternCondition(
-            subPattern,
-            `${valueVar}.elements[${i}]`
-          )
-        })
-        return tupleConditions.join(" && ")
-      }
-
-      case "WildcardPattern":
-        // ワイルドカードパターン
-        return "true"
-
-      case "OrPattern": {
-        // orパターン: いずれかのサブパターンがマッチすれば良い
-        const orPattern = pattern as any // AST.OrPattern
-        const orConditions = orPattern.patterns.map((subPattern: any) => {
-          return this.generatePatternCondition(subPattern, valueVar)
-        })
-        return `(${orConditions.join(" || ")})`
-      }
-
-      case "GuardPattern": {
-        // ガードパターン: パターンがマッチし、かつガード条件が真である場合のみマッチ
-        const guardPattern = pattern as any // AST.GuardPattern
-        const patternCondition = this.generatePatternCondition(
-          guardPattern.pattern,
+        return this.generateLiteralPatternCondition(
+          pattern as LiteralPattern,
           valueVar
         )
-        const guardCondition = this.generateExpression(guardPattern.guard)
-        return `(${patternCondition} && (${guardCondition}))`
-      }
+      case "IdentifierPattern":
+        return this.generateIdentifierPatternCondition(
+          pattern as IdentifierPattern,
+          valueVar
+        )
+      case "ConstructorPattern":
+        return this.generateConstructorPatternCondition(
+          pattern as ConstructorPattern,
+          valueVar
+        )
+      case "TuplePattern":
+        return this.generateTuplePatternCondition(
+          pattern as TuplePattern,
+          valueVar
+        )
+      case "WildcardPattern":
+        return "true" // ワイルドカードパターン
+      case "OrPattern":
+        return this.generateOrPatternCondition(pattern as OrPattern, valueVar)
 
-      case "ListSugarPattern": {
-        // リスト糖衣構文パターン: `[x, y, ...rest]
-        const listSugarPattern = pattern as any // AST.ListSugarPattern
-
-        // 空リストパターン `[]
-        if (
-          listSugarPattern.patterns.length === 0 &&
-          !listSugarPattern.hasRest
-        ) {
-          return `${valueVar}.tag === 'Empty'`
-        }
-
-        // restのみのパターン `[...rest]
-        if (
-          listSugarPattern.patterns.length === 0 &&
-          listSugarPattern.hasRest
-        ) {
-          return "true" // すべてのリストにマッチ
-        }
-
-        // パターンを構築
-        let conditions: string[] = []
-        let currentVar = valueVar
-
-        // 各要素パターンをチェック
-        for (let i = 0; i < listSugarPattern.patterns.length; i++) {
-          conditions.push(`${currentVar}.tag === 'Cons'`)
-          currentVar = `${currentVar}.tail`
-        }
-
-        // restパターンがない場合、残りはEmptyである必要がある
-        if (!listSugarPattern.hasRest) {
-          conditions.push(`${currentVar}.tag === 'Empty'`)
-        }
-
-        return `(${conditions.join(" && ")})`
-      }
-
-      case "ArrayPattern": {
-        // 配列パターン: [x, y, ...rest]
-        const arrayPattern = pattern as any // AST.ArrayPattern
-
-        // 空配列パターン []
-        if (arrayPattern.patterns.length === 0 && !arrayPattern.hasRest) {
-          return `${valueVar}.length === 0`
-        }
-
-        // restのみのパターン [...rest]
-        if (arrayPattern.patterns.length === 0 && arrayPattern.hasRest) {
-          return "true" // すべての配列にマッチ
-        }
-
-        let conditions: string[] = []
-
-        // 要素数チェック
-        if (!arrayPattern.hasRest) {
-          // restがない場合、正確な長さを要求
-          conditions.push(
-            `${valueVar}.length === ${arrayPattern.patterns.length}`
-          )
-        } else {
-          // restがある場合、最小長さを要求
-          conditions.push(
-            `${valueVar}.length >= ${arrayPattern.patterns.length}`
-          )
-        }
-
-        return `(${conditions.join(" && ")})`
-      }
+      case "GuardPattern":
+        return this.generateGuardPatternCondition(
+          pattern as GuardPattern,
+          valueVar
+        )
+      case "ListSugarPattern":
+        return this.generateListSugarPatternCondition(
+          pattern as ListSugarPattern,
+          valueVar
+        )
+      case "ArrayPattern":
+        return this.generateArrayPatternCondition(
+          pattern as ArrayPattern,
+          valueVar
+        )
 
       default:
         // 後方互換性のための古い形式をチェック
-        if (pattern.value !== undefined) {
-          if (typeof pattern.value === "string") {
-            return `${valueVar} === ${JSON.stringify(pattern.value)}`
+        if (pattern.kind === "LiteralPattern") {
+          const literalPattern = pattern as LiteralPattern
+          if (typeof literalPattern.value === "string") {
+            return `${valueVar} === ${JSON.stringify(literalPattern.value)}`
           } else {
-            return `${valueVar} === ${pattern.value}`
+            return `${valueVar} === ${literalPattern.value}`
           }
         }
 
-        if (pattern.name) {
-          if (pattern.name === "_") {
+        if (pattern.kind === "IdentifierPattern") {
+          const identifierPattern = pattern as IdentifierPattern
+          if (identifierPattern.name === "_") {
             return "true"
           }
           return "true"
@@ -2570,11 +1916,435 @@ ${indent}}`
     }
   }
 
+  // リテラルパターンの条件生成
+  private generateLiteralPatternCondition(
+    pattern: LiteralPattern,
+    valueVar: string
+  ): string {
+    if (typeof pattern.value === "string") {
+      return `${valueVar} === ${JSON.stringify(pattern.value)}`
+    } else {
+      return `${valueVar} === ${pattern.value}`
+    }
+  }
+
+  // 識別子パターンの条件生成
+  private generateIdentifierPatternCondition(
+    pattern: IdentifierPattern,
+    _valueVar: string
+  ): string {
+    if (pattern.name === "_") {
+      return "true" // ワイルドカードパターン
+    }
+    // 変数にバインドする場合（常に true）
+    return "true"
+  }
+
+  // コンストラクタパターンの条件生成
+  private generateConstructorPatternCondition(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    const constructorCondition = this.generateConstructorCondition(
+      pattern,
+      valueVar
+    )
+    const subConditions = this.generateSubPatternConditions(pattern, valueVar)
+
+    if (subConditions.length > 0) {
+      return `${constructorCondition} && ${subConditions.join(" && ")}`
+    }
+
+    return constructorCondition
+  }
+
+  // コンストラクタ条件の生成
+  private generateConstructorCondition(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    if (this.isBuiltinConstructor(pattern.constructorName)) {
+      return `${valueVar}.tag === '${pattern.constructorName}'`
+    } else {
+      return `${valueVar}.type === '${pattern.constructorName}'`
+    }
+  }
+
+  // サブパターン条件の生成
+  private generateSubPatternConditions(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string[] {
+    if (!pattern.patterns || pattern.patterns.length === 0) {
+      return []
+    }
+
+    const subConditions: string[] = []
+
+    for (let i = 0; i < pattern.patterns.length; i++) {
+      const subPattern = pattern.patterns[i]
+      if (subPattern.kind === "LiteralPattern") {
+        const valueAccess = this.generateValueAccess(pattern, valueVar, i)
+        const condition = this.generateLiteralCondition(
+          subPattern as LiteralPattern,
+          valueAccess
+        )
+        subConditions.push(condition)
+      }
+      // IdentifierPatternの場合は常にtrue（バインディングのみ）
+    }
+
+    return subConditions
+  }
+
+  // 値アクセス文字列の生成
+  private generateValueAccess(
+    pattern: ConstructorPattern,
+    valueVar: string,
+    index: number
+  ): string {
+    if (this.isBuiltinConstructor(pattern.constructorName)) {
+      return this.generateBuiltinValueAccess(
+        pattern.constructorName,
+        valueVar,
+        index
+      )
+    } else {
+      return `${valueVar}.data[${index}]`
+    }
+  }
+
+  // ビルトイン型の値アクセス
+  private generateBuiltinValueAccess(
+    constructorName: string,
+    valueVar: string,
+    index: number
+  ): string {
+    if (
+      constructorName === "Just" ||
+      constructorName === "Left" ||
+      constructorName === "Right"
+    ) {
+      return `${valueVar}.value`
+    } else if (constructorName === "Cons") {
+      return index === 0 ? `${valueVar}.head` : `${valueVar}.tail`
+    } else {
+      return `${valueVar}.data[${index}]`
+    }
+  }
+
+  // リテラル条件の生成
+  private generateLiteralCondition(
+    pattern: LiteralPattern,
+    valueAccess: string
+  ): string {
+    if (typeof pattern.value === "string") {
+      return `${valueAccess} === ${JSON.stringify(pattern.value)}`
+    } else {
+      return `${valueAccess} === ${pattern.value}`
+    }
+  }
+
+  // タプルパターンの条件生成
+  private generateTuplePatternCondition(
+    pattern: TuplePattern,
+    valueVar: string
+  ): string {
+    const tupleConditions = pattern.patterns.map((subPattern, i) => {
+      return this.generatePatternCondition(
+        subPattern,
+        `${valueVar}.elements[${i}]`
+      )
+    })
+    return tupleConditions.join(" && ")
+  }
+
+  // Orパターンの条件生成
+  private generateOrPatternCondition(
+    pattern: OrPattern,
+    valueVar: string
+  ): string {
+    const orConditions = pattern.patterns.map((subPattern: Pattern) => {
+      return this.generatePatternCondition(subPattern, valueVar)
+    })
+    return `(${orConditions.join(" || ")})`
+  }
+
+  // ガードパターンの条件生成
+  private generateGuardPatternCondition(
+    pattern: GuardPattern,
+    valueVar: string
+  ): string {
+    const patternCondition = this.generatePatternCondition(
+      pattern.pattern,
+      valueVar
+    )
+    const guardCondition = this.generateExpression(pattern.guard)
+    return `(${patternCondition} && (${guardCondition}))`
+  }
+
+  // リスト糖衣構文パターンの条件生成
+  private generateListSugarPatternCondition(
+    pattern: ListSugarPattern,
+    valueVar: string
+  ): string {
+    // 空リストパターン `[]
+    if (pattern.patterns.length === 0 && !pattern.restPattern) {
+      return `${valueVar}.tag === 'Empty'`
+    }
+
+    // restのみのパターン `[...rest]
+    if (pattern.patterns.length === 0 && pattern.restPattern) {
+      return "true" // すべてのリストにマッチ
+    }
+
+    // パターンを構築
+    const conditions: string[] = []
+    let currentVar = valueVar
+
+    // 各要素パターンをチェック
+    for (let i = 0; i < pattern.patterns.length; i++) {
+      conditions.push(`${currentVar}.tag === 'Cons'`)
+      currentVar = `${currentVar}.tail`
+    }
+
+    // restパターンがない場合、残りはEmptyである必要がある
+    if (!pattern.restPattern) {
+      conditions.push(`${currentVar}.tag === 'Empty'`)
+    }
+
+    return `(${conditions.join(" && ")})`
+  }
+
+  // 配列パターンの条件生成
+  private generateArrayPatternCondition(
+    pattern: ArrayPattern,
+    valueVar: string
+  ): string {
+    // 空配列パターン []
+    if (pattern.patterns.length === 0 && !pattern.restPattern) {
+      return `${valueVar}.length === 0`
+    }
+
+    // restのみのパターン [...rest]
+    if (pattern.patterns.length === 0 && pattern.restPattern) {
+      return "true" // すべての配列にマッチ
+    }
+
+    const conditions: string[] = []
+
+    // 要素数チェック
+    if (!pattern.restPattern) {
+      // restがない場合、正確な長さを要求
+      conditions.push(`${valueVar}.length === ${pattern.patterns.length}`)
+    } else {
+      // restがある場合、最小長さを要求
+      conditions.push(`${valueVar}.length >= ${pattern.patterns.length}`)
+    }
+
+    return `(${conditions.join(" && ")})`
+  }
+
+  // 識別子パターンのバインディング生成
+  private generateIdentifierPatternBindings(
+    pattern: IdentifierPattern,
+    valueVar: string
+  ): string {
+    return `const ${pattern.name} = ${valueVar};\n    `
+  }
+
+  // コンストラクタパターンのバインディング生成
+  private generateConstructorPatternBindings(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    if (!pattern.patterns || pattern.patterns.length === 0) {
+      return ""
+    }
+
+    if (this.isBuiltinConstructor(pattern.constructorName)) {
+      return this.generateBuiltinConstructorBindings(pattern, valueVar)
+    } else {
+      return this.generateUserDefinedConstructorBindings(pattern, valueVar)
+    }
+  }
+
+  // ビルトインコンストラクタバインディング生成
+  private generateBuiltinConstructorBindings(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    if (this.isSingleValueConstructor(pattern.constructorName)) {
+      return this.generateSingleValueConstructorBindings(pattern, valueVar)
+    } else if (pattern.constructorName === "Cons") {
+      return this.generateConsConstructorBindings(pattern, valueVar)
+    }
+    return ""
+  }
+
+  // 単一値コンストラクタのバインディング
+  private generateSingleValueConstructorBindings(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    if (pattern.patterns.length > 0) {
+      const subPattern = pattern.patterns[0]
+      if (subPattern.kind === "IdentifierPattern") {
+        const identifierPattern = subPattern as IdentifierPattern
+        return `const ${identifierPattern.name} = ${valueVar}.value;\n    `
+      }
+    }
+    return ""
+  }
+
+  // Consコンストラクタのバインディング
+  private generateConsConstructorBindings(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    let bindings = ""
+
+    if (pattern.patterns.length > 0) {
+      const headPattern = pattern.patterns[0]
+      if (headPattern.kind === "IdentifierPattern") {
+        const identifierPattern = headPattern as IdentifierPattern
+        bindings += `const ${identifierPattern.name} = ${valueVar}.head;\n    `
+      }
+    }
+
+    if (pattern.patterns.length > 1) {
+      const tailPattern = pattern.patterns[1]
+      if (tailPattern.kind === "IdentifierPattern") {
+        const identifierPattern = tailPattern as IdentifierPattern
+        bindings += `const ${identifierPattern.name} = ${valueVar}.tail;\n    `
+      }
+    }
+
+    return bindings
+  }
+
+  // ユーザー定義コンストラクタバインディング生成
+  private generateUserDefinedConstructorBindings(
+    pattern: ConstructorPattern,
+    valueVar: string
+  ): string {
+    let bindings = ""
+
+    for (let i = 0; i < pattern.patterns.length; i++) {
+      const subPattern = pattern.patterns[i]
+      if (subPattern.kind === "IdentifierPattern") {
+        const identifierPattern = subPattern as IdentifierPattern
+        bindings += `const ${identifierPattern.name} = ${valueVar}.data[${i}];\n    `
+      }
+    }
+
+    return bindings
+  }
+
+  // 単一値コンストラクタの判定
+  private isSingleValueConstructor(constructorName: string): boolean {
+    return (
+      constructorName === "Just" ||
+      constructorName === "Left" ||
+      constructorName === "Right"
+    )
+  }
+
+  // タプルパターンのバインディング生成
+  private generateTuplePatternBindings(
+    pattern: TuplePattern,
+    valueVar: string
+  ): string {
+    let tupleBindings = ""
+    pattern.patterns.forEach((subPattern: Pattern, i: number) => {
+      tupleBindings += this.generatePatternBindings(
+        subPattern,
+        `${valueVar}.elements[${i}]`
+      )
+    })
+    return tupleBindings
+  }
+
+  // Orパターンのバインディング生成
+  private generateOrPatternBindings(
+    pattern: OrPattern,
+    valueVar: string
+  ): string {
+    if (pattern.patterns.length > 0) {
+      // 最初のパターンからバインディングを生成
+      // 実際のマッチングは条件で制御される
+      return pattern.patterns[0]
+        ? this.generatePatternBindings(pattern.patterns[0], valueVar)
+        : ""
+    }
+    return ""
+  }
+
+  // ガードパターンのバインディング生成
+  private generateGuardPatternBindings(
+    pattern: GuardPattern,
+    valueVar: string
+  ): string {
+    return this.generatePatternBindings(pattern.pattern, valueVar)
+  }
+
+  // リスト糖衣構文パターンのバインディング生成
+  private generateListSugarPatternBindings(
+    pattern: ListSugarPattern,
+    valueVar: string
+  ): string {
+    let bindings = ""
+    let currentVar = valueVar
+
+    // 各要素パターンのバインディング
+    for (let i = 0; i < pattern.patterns.length; i++) {
+      const elemPattern = pattern.patterns[i]
+      const headVar = `${currentVar}.head`
+      bindings += elemPattern
+        ? this.generatePatternBindings(elemPattern, headVar)
+        : ""
+      currentVar = `${currentVar}.tail`
+    }
+
+    // restパターンのバインディング
+    if (pattern.restPattern) {
+      bindings += this.generatePatternBindings(pattern.restPattern, currentVar)
+    }
+
+    return bindings
+  }
+
+  // 配列パターンのバインディング生成
+  private generateArrayPatternBindings(
+    pattern: ArrayPattern,
+    valueVar: string
+  ): string {
+    let bindings = ""
+
+    // 各要素パターンのバインディング
+    for (let i = 0; i < pattern.patterns.length; i++) {
+      const elemPattern = pattern.patterns[i]
+      const indexVar = `${valueVar}[${i}]`
+      bindings += elemPattern
+        ? this.generatePatternBindings(elemPattern, indexVar)
+        : ""
+    }
+
+    // restパターンのバインディング
+    if (pattern.restPattern) {
+      const sliceVar = `${valueVar}.slice(${pattern.patterns.length})`
+      bindings += this.generatePatternBindings(pattern.restPattern, sliceVar)
+    }
+
+    return bindings
+  }
+
   // パターンの生成（旧メソッド、下位互換性のため保持）
-  generatePattern(pattern: any): string {
+  generatePattern(pattern: Pattern): string {
     // 簡易実装：リテラルパターンのみサポート
-    if (pattern.value !== undefined) {
-      return JSON.stringify(pattern.value)
+    if (pattern.kind === "LiteralPattern") {
+      const literalPattern = pattern as LiteralPattern
+      return JSON.stringify(literalPattern.value)
     }
     return pattern.toString()
   }
@@ -2629,7 +2399,7 @@ ${indent}}`
       const _values = ${valueContainer};
       if (Array.isArray(_funcs) && Array.isArray(_values)) {
         return applyArray(_funcs, _values);
-      } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') && 
+      } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') &&
                 _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
         return applyList(_funcs, _values);
       } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
@@ -2848,15 +2618,15 @@ ${indent}}`
 
     const fieldStrings = record.fields.map((field) => {
       if (field.kind === "RecordInitField") {
-        const initField = field as any // AST.RecordInitField
+        const initField = field as RecordInitField
         const value = this.generateExpression(initField.value)
         return `${initField.name}: ${value}`
       } else if (field.kind === "RecordShorthandField") {
-        const shorthandField = field as any // AST.RecordShorthandField
+        const shorthandField = field as RecordShorthandField
         // JavaScript/TypeScript shorthand property notation
         return shorthandField.name
       } else if (field.kind === "RecordSpreadField") {
-        const spreadField = field as any // AST.RecordSpreadField
+        const spreadField = field as RecordSpreadField
         const spreadValue = this.generateExpression(
           spreadField.spreadExpression.expression
         )
@@ -3051,78 +2821,106 @@ ${indent}}`
 
   // 構造体式の生成
   generateStructExpression(structExpr: StructExpression): string {
-    // スプレッド構文または省略記法がある場合
-    const hasSpread = structExpr.fields.some(
-      (field) => field.kind === "RecordSpreadField"
-    )
-    const hasShorthand = structExpr.fields.some(
-      (field) => field.kind === "RecordShorthandField"
-    )
+    // スプレッド構文または省略記法があるかチェック
+    const hasSpread = this.hasSpreadFields(structExpr)
+    const hasShorthand = this.hasShorthandFields(structExpr)
 
     if (hasSpread || hasShorthand) {
-      // スプレッドフィールドとイニシャライザーフィールドを収集
-      const spreadExpressions: string[] = []
-      const initFields: { name: string; value: string }[] = []
+      return this.generateComplexStructExpression(structExpr)
+    }
 
-      for (const field of structExpr.fields) {
-        if (field.kind === "RecordSpreadField") {
-          const spreadField = field as any // AST.RecordSpreadField
-          const spreadValue = this.generateExpression(
-            spreadField.spreadExpression.expression
-          )
-          spreadExpressions.push(spreadValue)
-        } else if (field.kind === "RecordInitField") {
-          const initField = field as any // AST.RecordInitField
-          const value = this.generateExpression(initField.value)
-          initFields.push({ name: initField.name, value })
-        } else if (field.kind === "RecordShorthandField") {
-          const shorthandField = field as any // AST.RecordShorthandField
-          // Shorthand property: use variable name directly
-          initFields.push({
-            name: shorthandField.name,
-            value: shorthandField.name,
-          })
-        }
-      }
+    return this.generateSimpleStructExpression(structExpr)
+  }
 
-      // オブジェクトから新しい構造体インスタンスを作成
-      const spreadPart = spreadExpressions
-        .map((expr) => `...${expr}`)
-        .join(", ")
-      const fieldsPart = initFields
-        .map((f) => `${f.name}: ${f.value}`)
-        .join(", ")
+  private hasSpreadFields(structExpr: StructExpression): boolean {
+    return structExpr.fields.some((field) => field.kind === "RecordSpreadField")
+  }
 
-      let allFields = ""
-      if (spreadPart && fieldsPart) {
-        allFields = `${spreadPart}, ${fieldsPart}`
-      } else if (spreadPart) {
-        allFields = spreadPart
-      } else if (fieldsPart) {
-        allFields = fieldsPart
-      }
+  private hasShorthandFields(structExpr: StructExpression): boolean {
+    return structExpr.fields.some(
+      (field) => field.kind === "RecordShorthandField"
+    )
+  }
 
-      if (allFields) {
-        // 一時オブジェクトを作成し、構造体定義の順序に従ってコンストラクタ引数を構築
-        const tempVar = `__tmp${Math.random().toString(36).substring(2, 8)}`
+  private generateComplexStructExpression(
+    structExpr: StructExpression
+  ): string {
+    // スプレッドフィールドとイニシャライザーフィールドを収集
+    const { spreadExpressions, initFields } =
+      this.collectStructFields(structExpr)
 
-        // 構造体の型定義から必要なフィールド順序を取得する必要があるが、
-        // 現時点では型情報が利用できないので、Object.assignアプローチを使用
-        return `(() => { const ${tempVar} = { ${allFields} }; return Object.assign(Object.create(${structExpr.structName}.prototype), ${tempVar}); })()`
+    // フィールド部分文字列を組み立て
+    const allFields = this.combineStructFields(spreadExpressions, initFields)
+
+    if (allFields) {
+      // 一時オブジェクトを作成し、構造体定義の順序に従ってコンストラクタ引数を構築
+      const tempVar = `__tmp${Math.random().toString(36).substring(2, 8)}`
+      return `(() => { const ${tempVar} = { ${allFields} }; return Object.assign(Object.create(${structExpr.structName}.prototype), ${tempVar}); })()`
+    }
+
+    return `new ${structExpr.structName}({})`
+  }
+
+  private collectStructFields(structExpr: StructExpression): {
+    spreadExpressions: string[]
+    initFields: { name: string; value: string }[]
+  } {
+    const spreadExpressions: string[] = []
+    const initFields: { name: string; value: string }[] = []
+
+    for (const field of structExpr.fields) {
+      if (field.kind === "RecordSpreadField") {
+        const spreadField = field as RecordSpreadField
+        const spreadValue = this.generateExpression(
+          spreadField.spreadExpression.expression
+        )
+        spreadExpressions.push(spreadValue)
+      } else if (field.kind === "RecordInitField") {
+        const initField = field as RecordInitField
+        const value = this.generateExpression(initField.value)
+        initFields.push({ name: initField.name, value })
+      } else if (field.kind === "RecordShorthandField") {
+        const shorthandField = field as RecordShorthandField
+        // Shorthand property: use variable name directly
+        initFields.push({
+          name: shorthandField.name,
+          value: shorthandField.name,
+        })
       }
     }
 
+    return { spreadExpressions, initFields }
+  }
+
+  private combineStructFields(
+    spreadExpressions: string[],
+    initFields: { name: string; value: string }[]
+  ): string {
+    const spreadPart = spreadExpressions.map((expr) => `...${expr}`).join(", ")
+    const fieldsPart = initFields.map((f) => `${f.name}: ${f.value}`).join(", ")
+
+    if (spreadPart && fieldsPart) {
+      return `${spreadPart}, ${fieldsPart}`
+    } else if (spreadPart) {
+      return spreadPart
+    } else if (fieldsPart) {
+      return fieldsPart
+    }
+
+    return ""
+  }
+
+  private generateSimpleStructExpression(structExpr: StructExpression): string {
     // 従来のコンストラクタ形式（スプレッドなし）
-    // オブジェクトリテラルでフィールドを指定
     const fieldEntries: string[] = []
 
     for (const field of structExpr.fields) {
       if (field.kind === "RecordInitField") {
-        const initField = field as any // AST.RecordInitField
+        const initField = field as RecordInitField
         const value = this.generateExpression(initField.value)
         fieldEntries.push(`${initField.name}: ${value}`)
       } else if (field.kind === "RecordShorthandField") {
-        const shorthandField = field as any // AST.RecordShorthandField
+        const shorthandField = field as RecordShorthandField
         fieldEntries.push(shorthandField.name)
       }
     }
@@ -3152,16 +2950,17 @@ ${indent}}`
   }
 
   // タプルパターンから変数名を抽出
-  private extractTuplePatternVars(pattern: any): string[] {
+  private extractTuplePatternVars(pattern: TuplePattern): string[] {
     const vars: string[] = []
 
     for (const subPattern of pattern.patterns) {
       if (subPattern.kind === "IdentifierPattern") {
-        if (subPattern.name === "_") {
+        const identifierPattern = subPattern as IdentifierPattern
+        if (identifierPattern.name === "_") {
           // ワイルドカードの場合は一意な変数名を生成
           vars.push(`_${this.wildcardCounter++}`)
         } else {
-          vars.push(subPattern.name)
+          vars.push(identifierPattern.name)
         }
       } else if (subPattern.kind === "WildcardPattern") {
         // ワイルドカードパターンの場合は一意な変数名を生成
@@ -3218,7 +3017,7 @@ ${indent}}`
       } else {
         // 埋め込み式はTypeScriptのテンプレートリテラル記法で囲む
         const exprCode = this.generateExpression(part)
-        result += "${" + exprCode + "}"
+        result += `\${${exprCode}}`
       }
     }
 

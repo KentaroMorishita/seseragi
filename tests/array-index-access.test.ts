@@ -4,16 +4,16 @@
 import { expect, test, describe } from "bun:test"
 import { Parser } from "../src/parser"
 import { generateTypeScript } from "../src/codegen"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Array Index Access", () => {
   test("should parse array access expression", () => {
     const source = "let value = arr[1]"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
     // プログラム内の最初の変数定義のArrayAccessを確認
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     const expr = stmt.initializer as AST.ArrayAccess
 
     expect(expr.kind).toBe("ArrayAccess")
@@ -24,9 +24,9 @@ describe("Array Index Access", () => {
   test("should generate correct TypeScript for array access", () => {
     const source = "let value = arr[0]"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const tsCode = generateTypeScript(ast.statements!)
+    const tsCode = generateTypeScript(parseResult.statements || [])
     // 安全な配列アクセスはMaybe型を返す
     expect(tsCode).toContain(
       "((0) >= 0 && (0) < (arr.tag === 'Tuple' ? arr.elements : arr).length ? { tag: 'Just', value: (arr.tag === 'Tuple' ? arr.elements : arr)[0] } : { tag: 'Nothing' })"
@@ -38,9 +38,9 @@ describe("Tuple Index Access", () => {
   test("should parse tuple access expression", () => {
     const source = "let coord = point[0]"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     const expr = stmt.initializer as AST.ArrayAccess
 
     expect(expr.kind).toBe("ArrayAccess")
@@ -54,8 +54,8 @@ describe("Tuple Index Access", () => {
       let x = point[0]
     `
     const parser = new Parser(source)
-    const ast = parser.parse()
-    const tsCode = generateTypeScript(ast.statements!)
+    const parseResult = parser.parse()
+    const tsCode = generateTypeScript(parseResult.statements || [])
 
     // 安全なタプルアクセスもMaybe型を返す
     expect(tsCode).toContain(
@@ -66,8 +66,8 @@ describe("Tuple Index Access", () => {
   test("should handle nested array access", () => {
     const source = "let cell = matrix[0][1]"
     const parser = new Parser(source)
-    const ast = parser.parse()
-    const tsCode = generateTypeScript(ast.statements!)
+    const parseResult = parser.parse()
+    const tsCode = generateTypeScript(parseResult.statements || [])
 
     // ネストした配列アクセスもMaybe型を返すようになる
     expect(tsCode).toContain("matrix")
@@ -80,9 +80,9 @@ describe("Array Length Property", () => {
   test("should parse array length access", () => {
     const source = "let len = arr.length"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = ast.statements[0] as AST.VariableDeclaration
+    const stmt = parseResult.statements?.[0] as AST.VariableDeclaration
     const expr = stmt.initializer as AST.RecordAccess
 
     expect(expr.kind).toBe("RecordAccess")
@@ -93,9 +93,9 @@ describe("Array Length Property", () => {
   test("should generate correct TypeScript for length access", () => {
     const source = "let len = arr.length"
     const parser = new Parser(source)
-    const ast = parser.parse()
+    const parseResult = parser.parse()
 
-    const tsCode = generateTypeScript(ast.statements!)
+    const tsCode = generateTypeScript(parseResult.statements || [])
     expect(tsCode).toContain("arr.length")
   })
 })
@@ -107,8 +107,8 @@ describe("Safe Array Access", () => {
       let safe = arr[0]
     `
     const parser = new Parser(source)
-    const ast = parser.parse()
-    const tsCode = generateTypeScript(ast.statements!)
+    const parseResult = parser.parse()
+    const tsCode = generateTypeScript(parseResult.statements || [])
 
     // Maybe型のランタイムが含まれることを確認
     expect(tsCode).toContain("Just")

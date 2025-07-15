@@ -35,6 +35,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
+    "downlevelIteration": true,
     
     // Other
     "skipLibCheck": true,

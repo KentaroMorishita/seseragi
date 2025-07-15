@@ -7,10 +7,10 @@ describe("Function Application Operator ($)", () => {
   it("should tokenize $ operator", () => {
     const source = "f $ x"
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    expect(program.statements).toHaveLength(1)
-    const stmt = program.statements[0] as AST.ExpressionStatement
+    expect(parseResult.statements).toHaveLength(1)
+    const stmt = parseResult.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.FunctionApplicationOperator
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
@@ -21,9 +21,9 @@ describe("Function Application Operator ($)", () => {
   it("should parse right-associative $ operator", () => {
     const source = "f $ g $ x"
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = program.statements[0] as AST.ExpressionStatement
+    const stmt = parseResult.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.FunctionApplicationOperator
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
@@ -39,9 +39,9 @@ describe("Function Application Operator ($)", () => {
   it("should parse $ with function calls", () => {
     const source = "print $ toString $ add 10 5"
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = program.statements[0] as AST.ExpressionStatement
+    const stmt = parseResult.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.FunctionApplicationOperator
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
@@ -56,9 +56,9 @@ describe("Function Application Operator ($)", () => {
   it("should have correct precedence (lowest)", () => {
     const source = "f $ x + y"
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = program.statements[0] as AST.ExpressionStatement
+    const stmt = parseResult.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.FunctionApplicationOperator
 
     expect(expr.kind).toBe("FunctionApplicationOperator")
@@ -75,8 +75,8 @@ describe("Function Application Operator ($)", () => {
   it("should generate correct TypeScript code", () => {
     const source = "f $ x"
     const parser = new Parser(source)
-    const program = parser.parse()
-    const generated = generateTypeScript(program.statements)
+    const parseResult = parser.parse()
+    const generated = generateTypeScript(parseResult.statements || [])
 
     expect(generated).toContain("f(x)")
   })
@@ -84,8 +84,8 @@ describe("Function Application Operator ($)", () => {
   it("should generate correct TypeScript for nested applications", () => {
     const source = "f $ g $ x"
     const parser = new Parser(source)
-    const program = parser.parse()
-    const generated = generateTypeScript(program.statements)
+    const parseResult = parser.parse()
+    const generated = generateTypeScript(parseResult.statements || [])
 
     // Should generate f(g(x)) due to right-associativity
     expect(generated).toContain("f(g(x))")
@@ -94,29 +94,29 @@ describe("Function Application Operator ($)", () => {
   it("should work with built-in functions", () => {
     const source = "print $ toString 42"
     const parser = new Parser(source)
-    const program = parser.parse()
-    const generated = generateTypeScript(program.statements)
+    const parseResult = parser.parse()
+    const generated = generateTypeScript(parseResult.statements || [])
 
-    // TypeScript生成では print -> console.log, toString -> String に変換される
-    expect(generated).toContain("console.log(String(42))")
+    // TypeScript生成では print -> console.log, toString はランタイム関数として残る
+    expect(generated).toContain("console.log(toString(42))")
   })
 
   it("should work with complex expressions", () => {
     const source = "print $ toString $ multiply 4 6"
     const parser = new Parser(source)
-    const program = parser.parse()
-    const generated = generateTypeScript(program.statements)
+    const parseResult = parser.parse()
+    const generated = generateTypeScript(parseResult.statements || [])
 
-    expect(generated).toContain("console.log(String(")
+    expect(generated).toContain("console.log(toString(")
     expect(generated).toContain("multiply")
   })
 
   it("should handle $ with parentheses correctly", () => {
     const source = "(f $ g) $ x"
     const parser = new Parser(source)
-    const program = parser.parse()
+    const parseResult = parser.parse()
 
-    const stmt = program.statements[0] as AST.ExpressionStatement
+    const stmt = parseResult.statements?.[0] as AST.ExpressionStatement
     const expr = stmt.expression as AST.FunctionApplicationOperator
 
     expect(expr.kind).toBe("FunctionApplicationOperator")

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
+import * as AST from "../src/ast"
 
 describe("Operator Overload Type Inference Tests", () => {
   test("should infer correct return type for struct operator overload", () => {
@@ -22,13 +23,14 @@ let u2 = User { name: "bar", age: 20, amount: 20 }
 
 let result = u1 + u2
     `
-    
+
     const parser = new Parser(code)
-    const program = parser.parse()
-    
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
-    
+
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
   })
@@ -56,13 +58,14 @@ let p2 = Point { x: 3, y: 4 }
 let pointResult = func p1 p2
 let intResult = func 1 2
     `
-    
+
     const parser = new Parser(code)
-    const program = parser.parse()
-    
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
-    
+
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
   })
@@ -90,13 +93,14 @@ let v2 = Vector { x: 3, y: 4 }
 let vectorSum = v1 + v2
 let dotProduct = v1 * v2
     `
-    
+
     const parser = new Parser(code)
-    const program = parser.parse()
-    
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements!)
+
     const typeInference = new TypeInferenceSystem()
     const result = typeInference.infer(program)
-    
+
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
   })

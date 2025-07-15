@@ -23,7 +23,7 @@ function transpileCode(code: string): string {
   return generateTypeScript(parseResult.statements, {
     generateComments: false,
     useArrowFunctions: true,
-    runtimeMode: "minimal",
+    runtimeMode: "embedded",
   })
 }
 

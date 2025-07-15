@@ -3,8 +3,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "bun:test"
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from "node:fs"
+import * as path from "node:path"
 import { compileCommand } from "../src/cli/compile"
 
 const testDir = path.join(__dirname, "tmp")
@@ -82,7 +82,7 @@ show x
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
 
     // show関数の定義が含まれることを確認
-    expect(compiledCode).toContain("const show = (value) => {")
+    expect(compiledCode).toContain("const show = (value: any): void => {")
     // show関数の呼び出しが含まれることを確認
     expect(compiledCode).toContain("show(x)")
   })

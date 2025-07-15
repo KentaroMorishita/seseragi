@@ -107,15 +107,17 @@ export class ArrayAccessConstraint {
         return (type as AST.PrimitiveType).name
       case "TypeVariable":
         return (type as TypeVariable).name
-      case "TupleType":
+      case "TupleType": {
         const tt = type as AST.TupleType
         return `(${tt.elementTypes.map((t) => this.typeToString(t)).join(", ")})`
-      case "GenericType":
+      }
+      case "GenericType": {
         const gt = type as AST.GenericType
         if (gt.typeArguments.length === 0) {
           return gt.name
         }
         return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
+      }
       default:
         return "Unknown"
     }
@@ -324,12 +326,19 @@ export interface InferenceResult {
   typeEnvironment?: Map<string, AST.Type>
 }
 
+// TypeInferenceSystemのinferメソッドの戻り値型
+export interface TypeInferenceSystemResult {
+  substitution: TypeSubstitution
+  errors: TypeInferenceError[]
+  nodeTypeMap: Map<AST.ASTNode, AST.Type>
+}
+
 // 型推論システムのメインクラス
 export class TypeInferenceSystem {
   private nextVarId = 1000 // Start from 1000 to avoid conflicts with parser-generated type variables
   private constraints: (TypeConstraint | ArrayAccessConstraint)[] = []
   private errors: TypeInferenceError[] = []
-  private nodeTypeMap: Map<any, AST.Type> = new Map() // Track types for AST nodes
+  private nodeTypeMap: Map<AST.ASTNode, AST.Type> = new Map() // Track types for AST nodes
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
 
@@ -356,7 +365,7 @@ export class TypeInferenceSystem {
         if (type instanceof TypeVariable) {
           return type.name
         } else {
-          return (type as AST.TypeVariable).name
+          return (type as TypeVariable).name
         }
       case "PolymorphicTypeVariable":
         return (type as PolymorphicTypeVariable).name
@@ -554,10 +563,15 @@ export class TypeInferenceSystem {
       case "RecordType": {
         const rt = type as AST.RecordType
         return new AST.RecordType(
-          rt.fields.map((f) => ({
-            name: f.name,
-            type: this.substituteTypeVariables(f.type, substitutionMap),
-          })),
+          rt.fields.map(
+            (f) =>
+              new AST.RecordField(
+                f.name,
+                this.substituteTypeVariables(f.type, substitutionMap),
+                f.line,
+                f.column
+              )
+          ),
           rt.line,
           rt.column
         )
@@ -675,11 +689,7 @@ export class TypeInferenceSystem {
   }
 
   // 型推論のメインエントリーポイント
-  infer(program: AST.Program): {
-    substitution: TypeSubstitution
-    errors: TypeInferenceError[]
-    nodeTypeMap: Map<any, AST.Type>
-  } {
+  infer(program: AST.Program): TypeInferenceSystemResult {
     this.constraints = []
     this.currentEnvironment.clear() // 環境をクリア
     this.errors = []
@@ -697,7 +707,7 @@ export class TypeInferenceSystem {
     const substitution = this.solveConstraints()
 
     // Apply substitution to all tracked node types
-    const resolvedNodeTypeMap = new Map<any, AST.Type>()
+    const resolvedNodeTypeMap = new Map<AST.ASTNode, AST.Type>()
     for (const [node, type] of this.nodeTypeMap) {
       resolvedNodeTypeMap.set(node, substitution.apply(type))
     }
@@ -1068,7 +1078,7 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     // 型注釈がある場合は期待される型として渡す
-    let expectedType: AST.Type | undefined = undefined
+    let expectedType: AST.Type | undefined
     if (varDecl.type) {
       expectedType = varDecl.type
       if (varDecl.type.kind === "PrimitiveType") {
@@ -1146,36 +1156,53 @@ export class TypeInferenceSystem {
   private findOperatorDefinition(
     structType: AST.Type,
     operator: string,
-    env: Map<string, AST.Type>
+    _env: Map<string, AST.Type>
   ): AST.OperatorDeclaration | null {
-    // 構造体型の場合のみ処理
-    if (structType.kind !== "StructType") {
+    if (!this.isValidStructType(structType)) {
       return null
     }
 
     const structTypeName = (structType as AST.StructType).name
+    return this.searchOperatorInImplBlocks(structTypeName, operator)
+  }
 
-    // プログラム全体からImplBlockを検索
-    if (!this.currentProgram) {
-      return null
-    }
+  private isValidStructType(structType: AST.Type): boolean {
+    return structType.kind === "StructType" && !!this.currentProgram
+  }
 
-    for (const stmt of this.currentProgram.statements) {
+  private searchOperatorInImplBlocks(
+    structTypeName: string,
+    operator: string
+  ): AST.OperatorDeclaration | null {
+    for (const stmt of this.currentProgram!.statements) {
       if (stmt.kind === "ImplBlock") {
-        const implBlock = stmt as AST.ImplBlock
-        
-        // 対象の構造体型のimplブロックかチェック
-        if (implBlock.typeName === structTypeName) {
-          // 該当する演算子定義を検索
-          for (const op of implBlock.operators) {
-            if (op.operator === operator) {
-              return op
-            }
-          }
+        const result = this.searchOperatorInImplBlock(
+          stmt as AST.ImplBlock,
+          structTypeName,
+          operator
+        )
+        if (result) {
+          return result
         }
       }
     }
+    return null
+  }
 
+  private searchOperatorInImplBlock(
+    implBlock: AST.ImplBlock,
+    structTypeName: string,
+    operator: string
+  ): AST.OperatorDeclaration | null {
+    if (implBlock.typeName !== structTypeName) {
+      return null
+    }
+
+    for (const op of implBlock.operators) {
+      if (op.operator === operator) {
+        return op
+      }
+    }
     return null
   }
 
@@ -1294,7 +1321,7 @@ export class TypeInferenceSystem {
         break
 
       case "TemplateExpression":
-        resultType = this.generateConstraintsForTemplateExpression(
+        resultType = (this as any).generateConstraintsForTemplateExpression(
           expr as AST.TemplateExpression,
           env
         )
@@ -1506,7 +1533,7 @@ export class TypeInferenceSystem {
         break
 
       case "TypeAssertion":
-        resultType = this.generateConstraintsForTypeAssertion(
+        resultType = (this as any).generateConstraintsForTypeAssertion(
           expr as AST.TypeAssertion,
           env
         )
@@ -1590,7 +1617,7 @@ export class TypeInferenceSystem {
     binOp.right.type = rightType
 
     switch (binOp.operator) {
-      case "+":
+      case "+": {
         // 構造体の演算子オーバーロードをチェック
         const plusOperatorDef = this.findOperatorDefinition(leftType, "+", env)
         if (plusOperatorDef) {
@@ -1613,6 +1640,7 @@ export class TypeInferenceSystem {
 
         // 結果の型は左のオペランドと同じ型
         return leftType
+      }
 
       case "-":
       case "*":
@@ -1620,7 +1648,11 @@ export class TypeInferenceSystem {
       case "%":
       case "**": {
         // 構造体の演算子オーバーロードをチェック
-        const operatorDef = this.findOperatorDefinition(leftType, binOp.operator, env)
+        const operatorDef = this.findOperatorDefinition(
+          leftType,
+          binOp.operator,
+          env
+        )
         if (operatorDef) {
           // 演算子定義が見つかった場合、その戻り値型を使用
           return operatorDef.returnType
@@ -1764,7 +1796,7 @@ export class TypeInferenceSystem {
           unaryOp.line,
           unaryOp.column
         )
-        const floatType = new AST.PrimitiveType(
+        const _floatType = new AST.PrimitiveType(
           "Float",
           unaryOp.line,
           unaryOp.column
@@ -3125,7 +3157,7 @@ export class TypeInferenceSystem {
 
     // 型変数の場合、Array<T>またはTuple型として推論
     if (arrayType.kind === "TypeVariable") {
-      const tv = arrayType as TypeVariable
+      const _tv = arrayType as TypeVariable
       const elementType = this.freshTypeVariable(
         constraint.line,
         constraint.column
@@ -3544,7 +3576,7 @@ export class TypeInferenceSystem {
       receiverTypeName = (receiverType as AST.PrimitiveType).name
     } else if (receiverType.kind === "TypeVariable") {
       // 型変数の場合、nodeTypeMapから解決を試みる
-      for (const [node, type] of this.nodeTypeMap.entries()) {
+      for (const [_node, type] of this.nodeTypeMap.entries()) {
         if (type === receiverType && type.kind === "StructType") {
           receiverTypeName = (type as AST.StructType).name
           break
@@ -3862,72 +3894,67 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>,
     implType: AST.Type
   ): void {
-    // メソッドをmethodEnvironmentに登録
-    if (implType.kind === "StructType") {
-      const structType = implType as AST.StructType
-      const methodKey = `${structType.name}.${method.name}`
-      this.methodEnvironment.set(methodKey, method)
-    }
-
-    // メソッドを関数として処理
+    this.registerMethodInEnvironment(method, implType)
     const functionType = this.buildFunctionType(
       method.parameters,
       method.returnType
     )
 
-    // 環境にメソッドを登録
     env.set(`${method.name}`, functionType)
     this.nodeTypeMap.set(method, functionType)
 
-    // メソッド本体を処理するために新しい環境を作成（元の環境をコピー）
+    const methodEnv = this.createMethodEnvironment(env, implType)
+    this.addMethodParametersToEnvironment(method, methodEnv, implType, env)
+
+    const bodyType = this.generateConstraintsForExpression(
+      method.body,
+      methodEnv
+    )
+    this.addMethodBodyTypeConstraint(method, bodyType)
+  }
+
+  private registerMethodInEnvironment(
+    method: AST.MethodDeclaration,
+    implType: AST.Type
+  ): void {
+    if (implType.kind === "StructType") {
+      const structType = implType as AST.StructType
+      const methodKey = `${structType.name}.${method.name}`
+      this.methodEnvironment.set(methodKey, method)
+    }
+  }
+
+  private createMethodEnvironment(
+    env: Map<string, AST.Type>,
+    implType: AST.Type
+  ): Map<string, AST.Type> {
     const methodEnv = new Map(env)
 
-    // 現在のimpl対象の型も環境に確実に追加
     if (implType.kind === "StructType") {
       const structType = implType as AST.StructType
       methodEnv.set(structType.name, implType)
     }
 
-    // 全ての構造体型を環境に確実に追加
-    for (const [key, value] of env.entries()) {
-      if (value.kind === "StructType") {
-        methodEnv.set(key, value)
-      }
-    }
+    this.addStructTypesToEnvironment(env, methodEnv)
+    return methodEnv
+  }
 
-    // パラメータを環境に追加（型エイリアスを解決）
+  private addMethodParametersToEnvironment(
+    method: AST.MethodDeclaration,
+    methodEnv: Map<string, AST.Type>,
+    implType: AST.Type,
+    env: Map<string, AST.Type>
+  ): void {
     for (const param of method.parameters) {
-      let resolvedType: AST.Type
-
-      // 暗黙的selfまたはotherパラメータの場合は、impl対象の型を使用
-      if (param.isImplicitSelf || param.isImplicitOther) {
-        resolvedType = implType
-        // param.typeも更新しておく（後の処理のため）
-        param.type = implType
-      } else {
-        resolvedType = this.resolveTypeAlias(param.type)
-
-        // 構造体型の場合は、環境から実際のStructTypeを取得
-        if (resolvedType.kind === "PrimitiveType") {
-          const structTypeFromEnv = env.get(
-            (resolvedType as AST.PrimitiveType).name
-          )
-          if (structTypeFromEnv && structTypeFromEnv.kind === "StructType") {
-            resolvedType = structTypeFromEnv
-          }
-        }
-      }
-
+      const resolvedType = this.resolveParameterType(param, implType, env)
       methodEnv.set(param.name, resolvedType)
     }
+  }
 
-    // メソッド本体の制約を生成
-    const bodyType = this.generateConstraintsForExpression(
-      method.body,
-      methodEnv
-    )
-
-    // 戻り値型との制約を追加
+  private addMethodBodyTypeConstraint(
+    method: AST.MethodDeclaration,
+    bodyType: AST.Type
+  ): void {
     this.addConstraint(
       new TypeConstraint(
         bodyType,
@@ -3944,67 +3971,104 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>,
     implType: AST.Type
   ): void {
-    // 演算子を関数として処理
     const functionType = this.buildFunctionType(
       operator.parameters,
       operator.returnType
     )
+    this.registerOperatorInEnvironment(operator, functionType, env)
 
-    // 環境に演算子を登録（多相性のため一般化）
+    const operatorEnv = this.createOperatorEnvironment(env, implType)
+    this.addParametersToEnvironment(operator, operatorEnv, implType, env)
+
+    const bodyType = this.generateConstraintsForExpression(
+      operator.body,
+      operatorEnv
+    )
+    this.addBodyTypeConstraint(operator, bodyType)
+  }
+
+  private registerOperatorInEnvironment(
+    operator: AST.OperatorDeclaration,
+    functionType: AST.Type,
+    env: Map<string, AST.Type>
+  ): void {
     const generalizedOperatorType = this.generalize(functionType, env)
     env.set(`${operator.operator}`, generalizedOperatorType)
     this.nodeTypeMap.set(operator, generalizedOperatorType)
+  }
 
-    // 演算子本体を処理するために新しい環境を作成（元の環境をコピー）
+  private createOperatorEnvironment(
+    env: Map<string, AST.Type>,
+    implType: AST.Type
+  ): Map<string, AST.Type> {
     const operatorEnv = new Map(env)
 
-    // 現在のimpl対象の型も環境に確実に追加
     if (implType.kind === "StructType") {
       const structType = implType as AST.StructType
       operatorEnv.set(structType.name, implType)
     }
 
-    // 全ての構造体型を環境に確実に追加
-    for (const [key, value] of env.entries()) {
+    this.addStructTypesToEnvironment(env, operatorEnv)
+    return operatorEnv
+  }
+
+  private addStructTypesToEnvironment(
+    sourceEnv: Map<string, AST.Type>,
+    targetEnv: Map<string, AST.Type>
+  ): void {
+    for (const [key, value] of sourceEnv.entries()) {
       if (value.kind === "StructType") {
-        operatorEnv.set(key, value)
+        targetEnv.set(key, value)
       }
     }
+  }
 
-    // パラメータを環境に追加（型エイリアスを解決）
+  private addParametersToEnvironment(
+    operator: AST.OperatorDeclaration,
+    operatorEnv: Map<string, AST.Type>,
+    implType: AST.Type,
+    env: Map<string, AST.Type>
+  ): void {
     for (const param of operator.parameters) {
-      let resolvedType: AST.Type
-
-      // 暗黙的selfまたはotherパラメータの場合は、impl対象の型を使用
-      if (param.isImplicitSelf || param.isImplicitOther) {
-        resolvedType = implType
-        // param.typeも更新しておく（後の処理のため）
-        param.type = implType
-      } else {
-        resolvedType = this.resolveTypeAlias(param.type)
-
-        // 構造体型の場合は、環境から実際のStructTypeを取得
-        if (resolvedType.kind === "PrimitiveType") {
-          const structTypeFromEnv = env.get(
-            (resolvedType as AST.PrimitiveType).name
-          )
-          if (structTypeFromEnv && structTypeFromEnv.kind === "StructType") {
-            resolvedType = structTypeFromEnv
-          }
-        }
-      }
-
+      const resolvedType = this.resolveParameterType(param, implType, env)
       operatorEnv.set(param.name, resolvedType)
       this.nodeTypeMap.set(param, resolvedType)
     }
+  }
 
-    // 演算子本体の制約を生成
-    const bodyType = this.generateConstraintsForExpression(
-      operator.body,
-      operatorEnv
-    )
+  private resolveParameterType(
+    param: AST.Parameter,
+    implType: AST.Type,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    if (param.isImplicitSelf || param.isImplicitOther) {
+      param.type = implType
+      return implType
+    }
 
-    // 戻り値型との制約を追加
+    const resolvedType = this.resolveTypeAlias(param.type)
+    return this.resolveStructTypeFromEnvironment(resolvedType, env)
+  }
+
+  private resolveStructTypeFromEnvironment(
+    resolvedType: AST.Type,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    if (resolvedType.kind === "PrimitiveType") {
+      const structTypeFromEnv = env.get(
+        (resolvedType as AST.PrimitiveType).name
+      )
+      if (structTypeFromEnv?.kind === "StructType") {
+        return structTypeFromEnv
+      }
+    }
+    return resolvedType
+  }
+
+  private addBodyTypeConstraint(
+    operator: AST.OperatorDeclaration,
+    bodyType: AST.Type
+  ): void {
     this.addConstraint(
       new TypeConstraint(
         bodyType,
@@ -4097,7 +4161,7 @@ export class TypeInferenceSystem {
   private generateConstraintsForStructExpression(
     structExpr: AST.StructExpression,
     env: Map<string, AST.Type>,
-    expectedType?: AST.Type
+    _expectedType?: AST.Type
   ): AST.Type {
     // 構造体型を環境から取得
     const structType = env.get(structExpr.structName)
@@ -4208,7 +4272,7 @@ export class TypeInferenceSystem {
     // ここでの自動補完は不要
 
     // 必要なフィールドがすべて提供されているかチェック
-    for (const field of structType.fields) {
+    for (const field of (structType as any).fields) {
       const providedData = providedFieldMap.get(field.name)
 
       if (!providedData) {
@@ -4239,7 +4303,7 @@ export class TypeInferenceSystem {
 
     // 余分なフィールドがないかチェック
     for (const [fieldName, _] of providedFieldMap) {
-      if (!structType.fields.find((f) => f.name === fieldName)) {
+      if (!(structType as any).fields.find((f: any) => f.name === fieldName)) {
         this.errors.push(
           new TypeInferenceError(
             `Unknown field '${fieldName}' in struct ${structExpr.structName}`,
@@ -5416,35 +5480,10 @@ export function infer(statements: AST.Statement[]): InferenceResult {
   const program = new AST.Program(statements)
   const result = inference.infer(program)
 
-  // Transform the result to match InferenceResult interface
   const inferredTypes = new Map<string, AST.Type>()
   const typeEnvironment = new Map<string, AST.Type>()
 
-  // Extract inferred types for variables, functions, and structs
-  for (const stmt of statements) {
-    if (stmt instanceof AST.VariableDeclaration) {
-      const type = result.nodeTypeMap.get(stmt)
-      if (type) {
-        const resolvedType = result.substitution.apply(type)
-        inferredTypes.set(stmt.name, resolvedType)
-        typeEnvironment.set(stmt.name, resolvedType)
-      }
-    } else if (stmt instanceof AST.FunctionDeclaration) {
-      const type = result.nodeTypeMap.get(stmt)
-      if (type) {
-        const resolvedType = result.substitution.apply(type)
-        inferredTypes.set(stmt.name, resolvedType)
-        typeEnvironment.set(stmt.name, resolvedType)
-      }
-    } else if (stmt instanceof AST.StructDeclaration) {
-      const type = result.nodeTypeMap.get(stmt)
-      if (type) {
-        const resolvedType = result.substitution.apply(type)
-        inferredTypes.set(stmt.name, resolvedType)
-        typeEnvironment.set(stmt.name, resolvedType)
-      }
-    }
-  }
+  extractInferredTypes(statements, result, inferredTypes, typeEnvironment)
 
   return {
     errors: result.errors,
@@ -5453,55 +5492,124 @@ export function infer(statements: AST.Statement[]): InferenceResult {
   }
 }
 
-// TemplateExpression の型推論メソッドを TypeInferenceSystem クラスに追加
-TypeInferenceSystem.prototype.generateConstraintsForTemplateExpression =
-  function (
-    templateExpr: AST.TemplateExpression,
-    env: Map<string, AST.Type>
-  ): AST.Type {
-    // テンプレートリテラルの結果型は常にString
-    const resultType = new AST.PrimitiveType(
-      "String",
-      templateExpr.line,
-      templateExpr.column
-    )
-
-    // 各埋め込み式の型を推論し、それらがtoString可能であることを確認
-    for (const part of templateExpr.parts) {
-      if (typeof part !== "string") {
-        // 埋め込み式の型を推論
-        const exprType = this.generateConstraintsForExpression(part, env)
-        this.nodeTypeMap.set(part, exprType)
-
-        // TODO: toString可能な型制約を追加する場合はここで実装
-        // 現在は全ての型がtoString可能と仮定
-      }
-    }
-
-    this.nodeTypeMap.set(templateExpr, resultType)
-    return resultType
+function extractInferredTypes(
+  statements: AST.Statement[],
+  result: TypeInferenceSystemResult,
+  inferredTypes: Map<string, AST.Type>,
+  typeEnvironment: Map<string, AST.Type>
+): void {
+  for (const stmt of statements) {
+    processStatement(stmt, result, inferredTypes, typeEnvironment)
   }
+}
 
-// TypeAssertion の型推論メソッドを TypeInferenceSystem クラスに追加
-TypeInferenceSystem.prototype.generateConstraintsForTypeAssertion = function (
-  assertion: AST.TypeAssertion,
+function processStatement(
+  stmt: AST.Statement,
+  result: TypeInferenceSystemResult,
+  inferredTypes: Map<string, AST.Type>,
+  typeEnvironment: Map<string, AST.Type>
+): void {
+  if (stmt instanceof AST.VariableDeclaration) {
+    processVariableDeclaration(stmt, result, inferredTypes, typeEnvironment)
+  } else if (stmt instanceof AST.FunctionDeclaration) {
+    processFunctionDeclaration(stmt, result, inferredTypes, typeEnvironment)
+  } else if (stmt instanceof AST.StructDeclaration) {
+    processStructDeclaration(stmt, result, inferredTypes, typeEnvironment)
+  }
+}
+
+function processVariableDeclaration(
+  stmt: AST.VariableDeclaration,
+  result: TypeInferenceSystemResult,
+  inferredTypes: Map<string, AST.Type>,
+  typeEnvironment: Map<string, AST.Type>
+): void {
+  addResolvedTypeToMaps(stmt, stmt.name, result, inferredTypes, typeEnvironment)
+}
+
+function processFunctionDeclaration(
+  stmt: AST.FunctionDeclaration,
+  result: TypeInferenceSystemResult,
+  inferredTypes: Map<string, AST.Type>,
+  typeEnvironment: Map<string, AST.Type>
+): void {
+  addResolvedTypeToMaps(stmt, stmt.name, result, inferredTypes, typeEnvironment)
+}
+
+function processStructDeclaration(
+  stmt: AST.StructDeclaration,
+  result: TypeInferenceSystemResult,
+  inferredTypes: Map<string, AST.Type>,
+  typeEnvironment: Map<string, AST.Type>
+): void {
+  addResolvedTypeToMaps(stmt, stmt.name, result, inferredTypes, typeEnvironment)
+}
+
+function addResolvedTypeToMaps(
+  stmt: AST.Statement,
+  name: string,
+  result: TypeInferenceSystemResult,
+  inferredTypes: Map<string, AST.Type>,
+  typeEnvironment: Map<string, AST.Type>
+): void {
+  const type = result.nodeTypeMap.get(stmt)
+  if (type) {
+    const resolvedType = result.substitution.apply(type)
+    inferredTypes.set(name, resolvedType)
+    typeEnvironment.set(name, resolvedType)
+  }
+}
+// TemplateExpression の型推論メソッドを TypeInferenceSystem クラスに追加
+;(
+  TypeInferenceSystem.prototype as any
+).generateConstraintsForTemplateExpression = function (
+  templateExpr: AST.TemplateExpression,
   env: Map<string, AST.Type>
 ): AST.Type {
-  // 元の式の型を推論
-  const exprType = this.generateConstraintsForExpression(
-    assertion.expression,
-    env
+  // テンプレートリテラルの結果型は常にString
+  const resultType = new AST.PrimitiveType(
+    "String",
+    templateExpr.line,
+    templateExpr.column
   )
 
-  // 型アサーションの場合、制約を生成せずに直接ターゲット型を返す
-  // これにより型チェックを緩める（TypeScript風の動作）
-  const targetType = assertion.targetType
+  // 各埋め込み式の型を推論し、それらがtoString可能であることを確認
+  for (const part of templateExpr.parts) {
+    if (typeof part !== "string") {
+      // 埋め込み式の型を推論
+      const exprType = this.generateConstraintsForExpression(part, env)
+      ;(this as any).nodeTypeMap.set(part, exprType)
 
-  // ノードタイプマップに記録
-  this.nodeTypeMap.set(assertion.expression, exprType)
-  this.nodeTypeMap.set(assertion, targetType)
+      // TODO: toString可能な型制約を追加する場合はここで実装
+      // 現在は全ての型がtoString可能と仮定
+    }
+  }
 
-  return targetType
+  ;(this as any).nodeTypeMap.set(templateExpr, resultType)
+  return resultType
 }
+
+// TypeAssertion の型推論メソッドを TypeInferenceSystem クラスに追加
+;(TypeInferenceSystem.prototype as any).generateConstraintsForTypeAssertion =
+  function (
+    assertion: AST.TypeAssertion,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // 元の式の型を推論
+    const exprType = this.generateConstraintsForExpression(
+      assertion.expression,
+      env
+    )
+
+    // 型アサーションの場合、制約を生成せずに直接ターゲット型を返す
+    // これにより型チェックを緩める（TypeScript風の動作）
+    const targetType = assertion.targetType
+
+    // ノードタイプマップに記録
+    ;(this as any).nodeTypeMap.set(assertion.expression, exprType)
+    ;(this as any).nodeTypeMap.set(assertion, targetType)
+
+    return targetType
+  }
 
 // MethodCall処理のためにTypeInferenceSystemクラスを拡張

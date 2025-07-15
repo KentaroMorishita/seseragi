@@ -1,12 +1,14 @@
 import { describe, test, expect } from "bun:test"
 import { Parser } from "../src/parser"
 import { TypeChecker } from "../src/typechecker"
+import * as AST from "../src/ast"
 
 function getTypeErrors(code: string) {
   const parser = new Parser(code)
-  const ast = parser.parse()
+  const parseResult = parser.parse()
   const typeChecker = new TypeChecker()
-  return typeChecker.check(ast)
+  const program = new AST.Program(parseResult.statements || [])
+  return typeChecker.check(program)
 }
 
 describe("TypeChecker - Enhanced Error Messages", () => {
@@ -64,9 +66,11 @@ describe("TypeChecker - Enhanced Error Messages", () => {
     expect(errors).toHaveLength(1)
     expect(errors[0].message).toBe("Invalid operands for '-' operator")
     expect(errors[0].code).toContain(
-      "Arithmetic operations require numeric types"
+      "Cannot apply '-' to types 'String' and 'String'"
     )
-    expect(errors[0].suggestion).toContain("Use numeric types (Int or Float)")
+    expect(errors[0].suggestion).toContain(
+      "Arithmetic operations require both operands to be numeric"
+    )
   })
 
   test("should provide helpful error for function argument type mismatch", () => {

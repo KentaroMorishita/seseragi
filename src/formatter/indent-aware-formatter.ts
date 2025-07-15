@@ -41,7 +41,7 @@ export function formatSeseragiCode(code: string): string {
     }
   }
 
-  return formatted.join("\n") + "\n"
+  return `${formatted.join("\n")}\n`
 }
 
 function formatLine(line: string, indentLevel: number): string {

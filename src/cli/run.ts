@@ -5,8 +5,6 @@ import { spawn } from "node:child_process"
 import { Parser } from "../parser.js"
 import { generateTypeScript } from "../codegen.js"
 import { infer } from "../type-inference.js"
-import { TypeChecker } from "../typechecker.js"
-import * as AST from "../ast.js"
 
 export interface RunOptions {
   input: string
@@ -117,8 +115,7 @@ async function compileToTemp(options: RunOptions): Promise<string> {
 
   // TypeScriptコードを生成
   console.log("Generating TypeScript code...")
-  const typeScriptCode = generateTypeScript(ast.statements, {
-    typeInferenceResult: inferenceResult,
+  const typeScriptCode = generateTypeScript(ast.statements || [], {
     runtimeMode: "embedded", // 一時ファイル実行のため埋め込みモード必須
   })
 
@@ -168,7 +165,7 @@ export function cleanupTempFiles(): void {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file)
       }
-    } catch (error) {
+    } catch (_error) {
       // クリーンアップエラーは無視
     }
   })

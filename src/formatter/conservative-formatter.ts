@@ -32,7 +32,7 @@ export function formatSeseragiCode(code: string): string {
     result.push(indent + cleaned)
   }
 
-  return result.join("\n") + "\n"
+  return `${result.join("\n")}\n`
 }
 
 function getIndentLevel(

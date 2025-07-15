@@ -29,7 +29,7 @@ export function formatSeseragiCode(code: string): string {
     result.push(indent + cleaned)
   }
 
-  return result.join("\n") + "\n"
+  return `${result.join("\n")}\n`
 }
 
 function getCorrectIndent(
@@ -42,69 +42,102 @@ function getCorrectIndent(
     return "  "
   }
 
-  // トップレベル（インデントなし）
-  if (
+  // トップレベル構文
+  if (isTopLevelStatement(line)) {
+    return ""
+  }
+
+  // パイプ記号（match case等）
+  if (line.startsWith("|")) {
+    return getPipeIndent(index, allLines)
+  }
+
+  // 特殊な構文（else, Left等）
+  const specialIndent = getSpecialStatementIndent(line)
+  if (specialIndent !== null) {
+    return specialIndent
+  }
+
+  // 波括弧内の内容
+  if (isInsideBraces(index, allLines)) {
+    return getBraceContentIndent(line, index, allLines)
+  }
+
+  // 関数本体や式の継続
+  if (isExpressionContinuation(index, allLines)) {
+    return getExpressionContinuationIndent(line, index, allLines)
+  }
+
+  // デフォルトはトップレベル
+  return ""
+}
+
+function isTopLevelStatement(line: string): boolean {
+  return (
     line.startsWith("fn ") ||
     line.startsWith("let ") ||
     line.startsWith("type ") ||
     line.startsWith("impl ") ||
     line.startsWith("monoid ") ||
     line.startsWith("effectful ")
-  ) {
-    return ""
+  )
+}
+
+function getPipeIndent(index: number, allLines: string[]): string {
+  if (isInsideFunctionBody(index, allLines)) {
+    return "    "
+  }
+  return "  "
+}
+
+function getSpecialStatementIndent(line: string): string | null {
+  if (line === "else") {
+    return "  "
+  }
+  if (line.startsWith("Left ")) {
+    return "    "
+  }
+  return null
+}
+
+function getBraceContentIndent(
+  line: string,
+  index: number,
+  allLines: string[]
+): string {
+  // match caseの継続行（パイプライン矢印の後）
+  if (isMatchCaseContinuation(index, allLines)) {
+    return "      "
   }
 
-  // match caseやtype定義の選択肢
+  // match case（implブロック内では4スペース）
   if (line.startsWith("|")) {
-    // 関数本体内のmatch caseは4スペース
     if (isInsideFunctionBody(index, allLines)) {
       return "    "
     }
     return "  "
   }
 
-  // else文とその後のLeft文
-  if (line === "else") {
-    return "  "
+  // impl/monoidブロック内のすべての内容（関数定義含む）
+  return "  "
+}
+
+function getExpressionContinuationIndent(
+  line: string,
+  index: number,
+  allLines: string[]
+): string {
+  // match caseの継続行
+  if (isMatchCaseContinuation(index, allLines)) {
+    return "      "
   }
 
-  if (line.startsWith("Left ")) {
+  // Right/Left等の深い継続
+  if (line.startsWith("Right ") || line.startsWith("Left ")) {
     return "    "
   }
 
-  // 波括弧で囲まれた内容
-  if (isInsideBraces(index, allLines)) {
-    // match caseの継続行（パイプライン矢印の後）
-    if (isMatchCaseContinuation(index, allLines)) {
-      return "      "
-    }
-    // match case（implブロック内では4スペース）
-    if (line.startsWith("|")) {
-      // 関数本体内のmatch caseかチェック
-      if (isInsideFunctionBody(index, allLines)) {
-        return "    "
-      }
-      return "  "
-    }
-    // impl/monoidブロック内のすべての内容（関数定義含む）
-    return "  "
-  }
-
-  // 関数本体や式の継続
-  if (isExpressionContinuation(index, allLines)) {
-    // match caseの継続行
-    if (isMatchCaseContinuation(index, allLines)) {
-      return "      "
-    }
-    // Right/Left等の深い継続
-    if (line.startsWith("Right ") || line.startsWith("Left ")) {
-      return "    "
-    }
-    return "  "
-  }
-
-  // デフォルトはトップレベル
-  return ""
+  return "  "
 }
 
 function isInsideBraces(index: number, lines: string[]): boolean {
@@ -158,7 +191,7 @@ function isMatchCaseContinuation(index: number, lines: string[]): boolean {
 
   // 直前の行が矢印で終わる場合
   const prevLine = lines[index - 1]?.trim()
-  return prevLine && prevLine.endsWith(" ->")
+  return prevLine?.endsWith(" ->")
 }
 
 function isInsideFunctionBody(index: number, lines: string[]): boolean {

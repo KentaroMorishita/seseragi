@@ -11,7 +11,7 @@ export interface CompileOptions {
   watch?: boolean
   generateComments?: boolean
   useArrowFunctions?: boolean
-  runtimeMode?: "embedded" | "import" | "minimal"
+  runtimeMode?: "embedded" | "import"
   skipTypeCheck?: boolean
 }
 
@@ -58,7 +58,7 @@ async function compile(options: CompileOptions): Promise<void> {
   const ast = { statements: parseResult.statements }
 
   // 型チェック
-  let inferenceResult: any = null
+  let inferenceResult: ReturnType<TypeInferenceSystem["infer"]> | null = null
   if (!options.skipTypeCheck) {
     console.log("Type checking...")
 
@@ -81,10 +81,10 @@ async function compile(options: CompileOptions): Promise<void> {
 
   // TypeScriptコードを生成
   console.log("Generating TypeScript code...")
-  const typeScriptCode = generateTypeScript(ast.statements, {
+  const typeScriptCode = generateTypeScript(ast.statements || [], {
     generateComments: options.generateComments,
     useArrowFunctions: options.useArrowFunctions,
-    runtimeMode: options.runtimeMode || "embedded",
+    runtimeMode: "embedded", // 常にembeddedを使用
     typeInferenceResult: inferenceResult,
   })
 
