@@ -71,6 +71,7 @@ export enum TokenType {
   GREATER_EQUAL = "GREATER_EQUAL", // >=
   AND = "AND", // &&
   OR = "OR", // ||
+  AMPERSAND = "AMPERSAND", // &
   NOT = "NOT", // !
   HEAD_OP = "HEAD_OP", // ^
   TAIL_OP = "TAIL_OP", // >>
@@ -477,7 +478,7 @@ export class Lexer {
       this.advance()
       return this.makeToken(TokenType.AND, "&&", startLine, startColumn)
     }
-    return null
+    return this.makeToken(TokenType.AMPERSAND, "&", startLine, startColumn)
   }
 
   private handlePipeTokens(startLine: number, startColumn: number): Token {

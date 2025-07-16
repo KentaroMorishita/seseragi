@@ -48,6 +48,8 @@ import {
   StructDeclaration,
   StructExpression,
   StructType,
+  UnionType,
+  IntersectionType,
   type SpreadExpression,
   type TypeAssertion,
   RecordDestructuring,
@@ -2566,6 +2568,16 @@ ${indent}}`
       return `[${elements}]`
     } else if (type instanceof StructType) {
       return type.name
+    } else if (type instanceof UnionType) {
+      const types = type.types
+        .map((t: Type) => this.generateType(t))
+        .join(" | ")
+      return `(${types})`
+    } else if (type instanceof IntersectionType) {
+      const types = type.types
+        .map((t: Type) => this.generateType(t))
+        .join(" & ")
+      return `(${types})`
     }
 
     return "any"

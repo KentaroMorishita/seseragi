@@ -42,7 +42,7 @@ type Age = Int
 test("Type alias vs union type distinction", () => {
   const source = `
 type Status = String
-type Color = Red | Green | Blue
+type Color = | Red | Green | Blue
 type Point { x: Int, y: Int }
 `
 
