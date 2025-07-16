@@ -142,4 +142,62 @@ let result = twice addOne 5
       typeInference.typeToString(result.substitution.apply(resultType!))
     ).toBe("Int")
   })
+
+  test("should parse explicit type arguments in function calls", () => {
+    const code = `
+fn identity<T> x: T -> T = x
+let result = identity<String> "hello"
+    `
+
+    const parser = new Parser(code)
+    const parseResult = parser.parse()
+
+    expect(parseResult.statements).toHaveLength(2)
+    const varDecl = parseResult.statements![1] as AST.VariableDeclaration
+
+    // Function call with explicit type arguments
+    expect(varDecl.initializer.kind).toBe("FunctionCall")
+    const funcCall = varDecl.initializer as AST.FunctionCall
+    expect(funcCall.function.kind).toBe("Identifier")
+
+    // Check for type arguments in function call
+    expect(funcCall.typeArguments).toBeDefined()
+    expect(funcCall.typeArguments).toHaveLength(1)
+    expect(funcCall.typeArguments![0].kind).toBe("PrimitiveType")
+    expect((funcCall.typeArguments![0] as AST.PrimitiveType).name).toBe(
+      "String"
+    )
+  })
+
+  test("should handle type annotations with generic types", () => {
+    const code = `
+fn identity<T> x: T -> T = x
+let result: String = identity<String> "hello"
+    `
+
+    const parser = new Parser(code)
+    const parseResult = parser.parse()
+
+    expect(parseResult.statements).toHaveLength(2)
+    const varDecl = parseResult.statements![1] as AST.VariableDeclaration
+
+    // Variable should have explicit type annotation
+    expect(varDecl.type).toBeDefined()
+    expect(varDecl.type!.kind).toBe("PrimitiveType")
+  })
+
+  test("should generate TypeScript with explicit type arguments", () => {
+    const code = `
+fn identity<T> x: T -> T = x
+let result = identity<String> "hello"
+    `
+
+    const parser = new Parser(code)
+    const parseResult = parser.parse()
+    const generated = generateTypeScript(parseResult.statements || [])
+
+    // TypeScript出力に型引数が含まれることを確認
+    expect(generated).toContain("identity<string>")
+    expect(generated).toContain("<T>")
+  })
 })

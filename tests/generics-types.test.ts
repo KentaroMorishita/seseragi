@@ -97,7 +97,7 @@ fn makeBox<T> value: T -> T = value
     const parseResult = parser.parse()
 
     expect(parseResult.statements).toHaveLength(2)
-    
+
     const typeAlias = parseResult.statements![0] as AST.TypeAliasDeclaration
     const funcDecl = parseResult.statements![1] as AST.FunctionDeclaration
 

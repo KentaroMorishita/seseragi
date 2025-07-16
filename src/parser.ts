@@ -250,6 +250,21 @@ export class Parser {
     return typeParameters
   }
 
+  private parseTypeArguments(): AST.Type[] {
+    const typeArguments: AST.Type[] = []
+
+    // Parse first type argument
+    typeArguments.push(this.parseType())
+
+    // Parse additional type arguments separated by commas
+    while (this.match(TokenType.COMMA)) {
+      typeArguments.push(this.parseType())
+    }
+
+    this.consume(TokenType.GREATER_THAN, "Expected '>' after type arguments")
+    return typeArguments
+  }
+
   private parseFunctionSignature(
     parameters: AST.Parameter[],
     implContext?: string
@@ -2245,6 +2260,12 @@ export class Parser {
   private callExpression(): AST.Expression {
     let expr = this.primaryExpression()
 
+    // 型引数がある場合の処理
+    let typeArguments: AST.Type[] | undefined
+    if (expr.kind === "Identifier" && this.match(TokenType.LESS_THAN)) {
+      typeArguments = this.parseTypeArguments()
+    }
+
     while (true) {
       if (this.match(TokenType.DOT)) {
         // Record field access: obj.field
@@ -2283,8 +2304,10 @@ export class Parser {
           expr,
           args,
           this.previous().line,
-          this.previous().column
+          this.previous().column,
+          typeArguments
         )
+        typeArguments = undefined // 一度使ったらクリア
       } else if (
         this.check(TokenType.IDENTIFIER) &&
         this.isMethodCall() &&
@@ -2419,6 +2442,18 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+        // 括弧なし関数適用の場合、型引数があればFunctionCallに変換
+        if (typeArguments) {
+          const funcApp = expr as AST.FunctionApplication
+          expr = new AST.FunctionCall(
+            funcApp.function,
+            [funcApp.argument],
+            expr.line,
+            expr.column,
+            typeArguments
+          )
+          typeArguments = undefined
+        }
       } else {
         break
       }

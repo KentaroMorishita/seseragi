@@ -1675,6 +1675,14 @@ ${indent}}`
     const func = this.generateExpression(call.function)
     const args = call.arguments.map((arg) => this.generateExpression(arg))
 
+    // 型引数がある場合の処理
+    if (call.typeArguments && call.typeArguments.length > 0) {
+      const typeArgs = call.typeArguments
+        .map((type) => this.generateType(type))
+        .join(", ")
+      return `${func}<${typeArgs}>(${args.join(", ")})`
+    }
+
     return `${func}(${args.join(", ")})`
   }
 

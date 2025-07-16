@@ -209,16 +209,19 @@ export class FunctionCall extends Expression {
   kind = "FunctionCall"
   function: Expression
   arguments: Expression[]
+  typeArguments?: Type[]
 
   constructor(
     func: Expression,
     args: Expression[],
     line: number,
-    column: number
+    column: number,
+    typeArguments?: Type[]
   ) {
     super(line, column)
     this.function = func
     this.arguments = args
+    this.typeArguments = typeArguments
   }
 }
 
