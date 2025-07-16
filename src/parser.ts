@@ -250,6 +250,34 @@ export class Parser {
     return typeParameters
   }
 
+  private isTypeArguments(): boolean {
+    // 先読みで型引数かどうかを判定
+    // 数値リテラルが続く場合は比較演算子
+    if (this.peekAhead(1)?.type === TokenType.INTEGER || 
+        this.peekAhead(1)?.type === TokenType.FLOAT) {
+      return false
+    }
+    
+    // 識別子の場合、次に関数呼び出しの括弧がないと型引数ではない
+    if (this.peekAhead(1)?.type === TokenType.IDENTIFIER) {
+      // 型引数の場合は > か , が続くはず
+      const nextToken = this.peekAhead(2)
+      if (nextToken?.type === TokenType.GREATER_THAN) {
+        // > の後に ( があれば型引数の可能性が高い
+        const afterGreater = this.peekAhead(3)
+        return afterGreater?.type === TokenType.LEFT_PAREN
+      }
+      return nextToken?.type === TokenType.COMMA
+    }
+    
+    return false
+  }
+  
+  private peekAhead(offset: number): Token | null {
+    const index = this.current + offset
+    return index < this.tokens.length ? this.tokens[index] : null
+  }
+
   private parseTypeArguments(): AST.Type[] {
     const typeArguments: AST.Type[] = []
 
@@ -2262,9 +2290,6 @@ export class Parser {
 
     // 型引数がある場合の処理
     let typeArguments: AST.Type[] | undefined
-    if (expr.kind === "Identifier" && this.match(TokenType.LESS_THAN)) {
-      typeArguments = this.parseTypeArguments()
-    }
 
     while (true) {
       if (this.match(TokenType.DOT)) {
@@ -2289,6 +2314,11 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
+      } else if (expr.kind === "Identifier" && this.check(TokenType.LESS_THAN) && this.isTypeArguments()) {
+        // 型引数の処理 - 関数呼び出しの直前でのみ
+        this.advance() // consume <
+        typeArguments = this.parseTypeArguments()
+        continue // 次のループで関数呼び出しをチェック
       } else if (this.match(TokenType.LEFT_PAREN)) {
         // 括弧付き関数呼び出し
         const args: AST.Expression[] = []
