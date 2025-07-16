@@ -4,7 +4,7 @@
 
 import { type Token, TokenType, Lexer } from "./lexer"
 import * as AST from "./ast"
-import { TypeVariable } from "./type-inference"
+import { TypeVariable, PolymorphicTypeVariable } from "./type-inference"
 
 export class ParseError extends Error {
   token: Token
@@ -29,6 +29,8 @@ export class Parser {
   private adtNames: Set<string> = new Set() // ADT型名の管理
   private structNames: Set<string> = new Set() // struct名の管理
   private adtDefinitions: Map<string, AST.TypeField[]> = new Map() // ADT名 -> コンストラクタ定義
+  private currentTypeParameters: Set<string> = new Set() // 現在のスコープの型パラメータ
+  private typeParameterMap: Map<string, TypeVariable> = new Map() // 型パラメータ名 -> TypeVariable
 
   constructor(input: string | Token[]) {
     if (typeof input === "string") {
@@ -165,6 +167,23 @@ export class Parser {
       "Expected function name"
     ).value
 
+    // Parse type parameters if present: fn name<T, U>
+    let typeParameters: AST.TypeParameter[] | undefined
+    if (this.match(TokenType.LESS_THAN)) {
+      typeParameters = this.parseTypeParameters()
+    }
+
+    // Save current type parameter context
+    const previousTypeParameters = new Set(this.currentTypeParameters)
+    const previousTypeParameterMap = new Map(this.typeParameterMap)
+
+    // Add function's type parameters to current context
+    if (typeParameters) {
+      for (const typeParam of typeParameters) {
+        this.currentTypeParameters.add(typeParam.name)
+      }
+    }
+
     const parameters: AST.Parameter[] = []
     const returnType = this.parseFunctionSignature(parameters)
 
@@ -184,6 +203,10 @@ export class Parser {
       )
     }
 
+    // Restore previous type parameter context
+    this.currentTypeParameters = previousTypeParameters
+    this.typeParameterMap = previousTypeParameterMap
+
     return new AST.FunctionDeclaration(
       name,
       parameters,
@@ -191,8 +214,40 @@ export class Parser {
       body,
       isEffectful,
       this.previous().line,
-      this.previous().column
+      this.previous().column,
+      typeParameters
     )
+  }
+
+  private parseTypeParameters(): AST.TypeParameter[] {
+    const typeParameters: AST.TypeParameter[] = []
+
+    // Parse first type parameter
+    const firstParam = this.consume(
+      TokenType.IDENTIFIER,
+      "Expected type parameter name"
+    )
+    typeParameters.push(
+      new AST.TypeParameter(
+        firstParam.value,
+        firstParam.line,
+        firstParam.column
+      )
+    )
+
+    // Parse additional type parameters separated by commas
+    while (this.match(TokenType.COMMA)) {
+      const param = this.consume(
+        TokenType.IDENTIFIER,
+        "Expected type parameter name"
+      )
+      typeParameters.push(
+        new AST.TypeParameter(param.value, param.line, param.column)
+      )
+    }
+
+    this.consume(TokenType.GREATER_THAN, "Expected '>' after type parameters")
+    return typeParameters
   }
 
   private parseFunctionSignature(
@@ -408,8 +463,14 @@ export class Parser {
 
     this.validateTypeName(name)
 
+    // Check for type parameters: type Name<T, U>
+    let typeParameters: AST.TypeParameter[] | undefined
+    if (this.match(TokenType.LESS_THAN)) {
+      typeParameters = this.parseTypeParameters()
+    }
+
     if (this.match(TokenType.ASSIGN)) {
-      return this.parseTypeWithAssignment(name)
+      return this.parseTypeWithAssignment(name, typeParameters)
     } else {
       return this.parseStructTypeDeclaration(name)
     }
@@ -425,7 +486,8 @@ export class Parser {
   }
 
   private parseTypeWithAssignment(
-    name: string
+    name: string,
+    typeParameters?: AST.TypeParameter[]
   ): AST.TypeDeclaration | AST.TypeAliasDeclaration {
     this.skipNewlines() // Allow newlines after '='
 
@@ -434,7 +496,7 @@ export class Parser {
     this.current = savedPosition
 
     if (isTypeAlias) {
-      return this.parseTypeAliasDeclaration(name)
+      return this.parseTypeAliasDeclaration(name, typeParameters)
     } else {
       return this.parseUnionTypeDeclaration(name)
     }
@@ -486,13 +548,34 @@ export class Parser {
     }
   }
 
-  private parseTypeAliasDeclaration(name: string): AST.TypeAliasDeclaration {
+  private parseTypeAliasDeclaration(
+    name: string,
+    typeParameters?: AST.TypeParameter[]
+  ): AST.TypeAliasDeclaration {
+    // Save current type parameter context
+    const previousTypeParameters = new Set(this.currentTypeParameters)
+    const previousTypeParameterMap = new Map(this.typeParameterMap)
+
+    // Add type alias's type parameters to current context
+    if (typeParameters) {
+      for (const typeParam of typeParameters) {
+        this.currentTypeParameters.add(typeParam.name)
+      }
+    }
+
+    // Note: ASSIGN token is already consumed by typeDeclaration() method
     const aliasedType = this.parseType()
+
+    // Restore previous type parameter context
+    this.currentTypeParameters = previousTypeParameters
+    this.typeParameterMap = previousTypeParameterMap
+
     return new AST.TypeAliasDeclaration(
       name,
       aliasedType,
       this.previous().line,
-      this.previous().column
+      this.previous().column,
+      typeParameters
     )
   }
 
@@ -1117,6 +1200,18 @@ export class Parser {
         this.consumeGreaterThan("Expected '>' after type arguments")
 
         return new AST.GenericType(name, typeArgs, token.line, token.column)
+      }
+
+      // 型パラメータかどうかをチェック
+      if (this.currentTypeParameters.has(name)) {
+        // 型パラメータのマッピングを取得または作成
+        if (!this.typeParameterMap.has(name)) {
+          this.typeParameterMap.set(
+            name,
+            this.freshTypeVariable(token.line, token.column)
+          )
+        }
+        return this.typeParameterMap.get(name)!
       }
 
       return new AST.PrimitiveType(name, token.line, token.column)

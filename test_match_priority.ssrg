@@ -1,6 +1,0 @@
-let arr = [1, 2, 3]
-
-match arr[0] {
-  Just value -> show value
-  Nothing -> show "nothing"
-}

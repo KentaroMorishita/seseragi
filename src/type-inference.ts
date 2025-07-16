@@ -45,6 +45,9 @@ export class TypeConstraint {
   }
 
   private typeToString(type: AST.Type): string {
+    if (!type) {
+      return "<undefined>"
+    }
     switch (type.kind) {
       case "PrimitiveType":
         return (type as AST.PrimitiveType).name
@@ -3184,11 +3187,26 @@ export class TypeInferenceSystem {
   // 単一化アルゴリズム
   private unify(type1: AST.Type, type2: AST.Type): TypeSubstitution {
     // console.log(`🔍 Unifying: ${this.typeToString(type1)} with ${this.typeToString(type2)}`)
+
+    // null/undefined チェック
+    if (!type1 || !type2) {
+      throw new Error(
+        `Cannot unify types: one or both types are undefined/null`
+      )
+    }
+
     const substitution = new TypeSubstitution()
 
     // 型エイリアスを解決
     const resolvedType1 = this.resolveTypeAlias(type1)
     const resolvedType2 = this.resolveTypeAlias(type2)
+
+    // 解決後の型のチェック
+    if (!resolvedType1 || !resolvedType2) {
+      throw new Error(
+        `Cannot resolve type aliases: resolved types are undefined/null`
+      )
+    }
 
     // 同じ型の場合
     if (this.typesEqual(resolvedType1, resolvedType2)) {

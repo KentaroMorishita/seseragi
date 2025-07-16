@@ -1,3 +1,0 @@
-let func = \x -> \y -> x + y
-let hoge = func 1 2
-show hoge
