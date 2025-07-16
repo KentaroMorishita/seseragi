@@ -62,6 +62,16 @@ export class GenericType extends Type {
   }
 }
 
+export class TypeParameter extends ASTNode {
+  kind = "TypeParameter"
+  name: string
+
+  constructor(name: string, line: number, column: number) {
+    super(line, column)
+    this.name = name
+  }
+}
+
 export class RecordField extends ASTNode {
   kind = "RecordField"
   name: string
@@ -199,16 +209,19 @@ export class FunctionCall extends Expression {
   kind = "FunctionCall"
   function: Expression
   arguments: Expression[]
+  typeArguments?: Type[]
 
   constructor(
     func: Expression,
     args: Expression[],
     line: number,
-    column: number
+    column: number,
+    typeArguments?: Type[]
   ) {
     super(line, column)
     this.function = func
     this.arguments = args
+    this.typeArguments = typeArguments
   }
 }
 
@@ -1019,6 +1032,7 @@ export class Parameter extends ASTNode {
 export class FunctionDeclaration extends Statement {
   kind = "FunctionDeclaration"
   name: string
+  typeParameters?: TypeParameter[]
   parameters: Parameter[]
   returnType: Type
   body: Expression
@@ -1031,10 +1045,12 @@ export class FunctionDeclaration extends Statement {
     body: Expression,
     isEffectful: boolean,
     line: number,
-    column: number
+    column: number,
+    typeParameters?: TypeParameter[]
   ) {
     super(line, column)
     this.name = name
+    this.typeParameters = typeParameters
     this.parameters = parameters
     this.returnType = returnType
     this.body = body
@@ -1140,11 +1156,19 @@ export class TypeDeclaration extends Statement {
 export class TypeAliasDeclaration extends Statement {
   kind = "TypeAliasDeclaration"
   name: string
+  typeParameters?: TypeParameter[]
   aliasedType: Type
 
-  constructor(name: string, aliasedType: Type, line: number, column: number) {
+  constructor(
+    name: string,
+    aliasedType: Type,
+    line: number,
+    column: number,
+    typeParameters?: TypeParameter[]
+  ) {
     super(line, column)
     this.name = name
+    this.typeParameters = typeParameters
     this.aliasedType = aliasedType
   }
 }

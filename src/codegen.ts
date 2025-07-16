@@ -769,6 +769,13 @@ export class CodeGenerator {
   // 関数宣言の生成
   generateFunctionDeclaration(func: FunctionDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
+
+    // TypeScriptジェネリクス型パラメータを生成
+    const typeParams =
+      func.typeParameters && func.typeParameters.length > 0
+        ? `<${func.typeParameters.map((tp) => tp.name).join(", ")}>`
+        : ""
+
     const params = func.parameters
       .map((p) => `${p.name}: ${this.generateType(p.type)}`)
       .join(", ")
@@ -781,15 +788,15 @@ export class CodeGenerator {
       const body = this.generateExpression(func.body)
       // オブジェクトリテラルの場合は括弧で囲む
       const wrappedBody = body.startsWith("{") ? `(${body})` : body
-      return `${indent}const ${this.sanitizeIdentifier(func.name)} = curry((${params}): ${returnType} => ${wrappedBody});`
+      return `${indent}const ${this.sanitizeIdentifier(func.name)} = curry(${typeParams}(${params}): ${returnType} => ${wrappedBody});`
     } else {
       const body = this.generateExpression(func.body)
       if (this.options.useArrowFunctions) {
         // オブジェクトリテラルの場合は括弧で囲む
         const wrappedBody = body.startsWith("{") ? `(${body})` : body
-        return `${indent}const ${this.sanitizeIdentifier(func.name)} = (${params}): ${returnType} => ${wrappedBody};`
+        return `${indent}const ${this.sanitizeIdentifier(func.name)} = ${typeParams}(${params}): ${returnType} => ${wrappedBody};`
       } else {
-        return `${indent}function ${this.sanitizeIdentifier(func.name)}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
+        return `${indent}function ${this.sanitizeIdentifier(func.name)}${typeParams}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
       }
     }
   }
@@ -885,7 +892,15 @@ export class CodeGenerator {
   generateTypeAliasDeclaration(typeAlias: TypeAliasDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
     const aliasedType = this.generateType(typeAlias.aliasedType)
-    return `${indent}type ${typeAlias.name} = ${aliasedType};`
+
+    // ジェネリック型パラメータがある場合は追加
+    let typeParametersStr = ""
+    if (typeAlias.typeParameters && typeAlias.typeParameters.length > 0) {
+      const paramNames = typeAlias.typeParameters.map((param) => param.name)
+      typeParametersStr = `<${paramNames.join(", ")}>`
+    }
+
+    return `${indent}type ${typeAlias.name}${typeParametersStr} = ${aliasedType};`
   }
 
   // 構造体宣言の生成
@@ -1659,6 +1674,14 @@ ${indent}}`
   generateFunctionCall(call: FunctionCall): string {
     const func = this.generateExpression(call.function)
     const args = call.arguments.map((arg) => this.generateExpression(arg))
+
+    // 型引数がある場合の処理
+    if (call.typeArguments && call.typeArguments.length > 0) {
+      const typeArgs = call.typeArguments
+        .map((type) => this.generateType(type))
+        .join(", ")
+      return `${func}<${typeArgs}>(${args.join(", ")})`
+    }
 
     return `${func}(${args.join(", ")})`
   }

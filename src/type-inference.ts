@@ -45,6 +45,9 @@ export class TypeConstraint {
   }
 
   private typeToString(type: AST.Type): string {
+    if (!type) {
+      return "<undefined>"
+    }
     switch (type.kind) {
       case "PrimitiveType":
         return (type as AST.PrimitiveType).name
@@ -530,6 +533,10 @@ export class TypeInferenceSystem {
         const tv = type as TypeVariable
         return substitutionMap.get(tv.name) || type
       }
+      case "PolymorphicTypeVariable": {
+        const ptv = type as PolymorphicTypeVariable
+        return substitutionMap.get(ptv.name) || type
+      }
       case "FunctionType": {
         const ft = type as AST.FunctionType
         return new AST.FunctionType(
@@ -680,6 +687,81 @@ export class TypeInferenceSystem {
     }
 
     return substitute(type)
+  }
+
+  // 明示的型引数で多相型を具体化
+  instantiateWithExplicitTypeArguments(
+    type: AST.Type,
+    typeArguments: AST.Type[],
+    line: number,
+    column: number
+  ): AST.Type {
+    // 多相型変数を収集
+    const polymorphicVars = this.collectPolymorphicTypeVariables(type)
+
+    // 型引数の数が一致しない場合はエラー
+    if (polymorphicVars.length !== typeArguments.length) {
+      throw new Error(
+        `Type argument count mismatch at ${line}:${column}. Expected ${polymorphicVars.length} but got ${typeArguments.length}`
+      )
+    }
+
+    // 多相型変数を明示的型引数で置換するマップを作成
+    const substitutionMap = new Map<string, AST.Type>()
+    for (let i = 0; i < polymorphicVars.length; i++) {
+      substitutionMap.set(polymorphicVars[i], typeArguments[i])
+    }
+
+    return this.substituteTypeVariables(type, substitutionMap)
+  }
+
+  // 型から多相型変数名を収集（出現順）
+  private collectPolymorphicTypeVariables(type: AST.Type): string[] {
+    const seen = new Set<string>()
+    const vars: string[] = []
+
+    const collect = (t: AST.Type): void => {
+      switch (t.kind) {
+        case "PolymorphicTypeVariable": {
+          const ptv = t as PolymorphicTypeVariable
+          if (!seen.has(ptv.name)) {
+            seen.add(ptv.name)
+            vars.push(ptv.name)
+          }
+          break
+        }
+        case "FunctionType": {
+          const ft = t as AST.FunctionType
+          collect(ft.paramType)
+          collect(ft.returnType)
+          break
+        }
+        case "TupleType": {
+          const tt = t as AST.TupleType
+          tt.elementTypes.forEach(collect)
+          break
+        }
+        case "GenericType": {
+          const gt = t as AST.GenericType
+          gt.typeArguments.forEach(collect)
+          break
+        }
+        case "RecordType": {
+          const rt = t as AST.RecordType
+          rt.fields.forEach((f) => collect(f.type))
+          break
+        }
+        case "StructType": {
+          const st = t as AST.StructType
+          st.fields.forEach((f) => collect(f.type))
+          break
+        }
+        // TypeVariable や PrimitiveType は処理不要
+      }
+    }
+
+    collect(type)
+    return vars
   }
 
   // 制約を追加
@@ -997,21 +1079,38 @@ export class TypeInferenceSystem {
     func: AST.FunctionDeclaration,
     env: Map<string, AST.Type>
   ): void {
+    // 型パラメータを多相型変数として扱うマップを作成
+    const typeParameterMap = new Map<string, AST.Type>()
+    if (func.typeParameters) {
+      for (const typeParam of func.typeParameters) {
+        typeParameterMap.set(
+          typeParam.name,
+          new PolymorphicTypeVariable(
+            typeParam.name,
+            typeParam.line,
+            typeParam.column
+          )
+        )
+      }
+    }
+
+    // 型の解決において、型パラメータを多相型変数で置換
+    const resolveTypeWithTypeParameters = (
+      type: AST.Type | undefined
+    ): AST.Type => {
+      if (!type) {
+        return this.freshTypeVariable(func.line, func.column)
+      }
+      return this.substituteTypeVariables(type, typeParameterMap)
+    }
+
     // 戻り値の型が指定されていない場合は型変数を作成
-    const returnType =
-      func.returnType || this.freshTypeVariable(func.line, func.column)
+    const returnType = resolveTypeWithTypeParameters(func.returnType)
 
     // パラメータの型を事前に決定
     const paramTypes: AST.Type[] = []
     for (const param of func.parameters) {
-      let paramType: AST.Type
-
-      if (param.type) {
-        paramType = param.type
-      } else {
-        paramType = this.freshTypeVariable(param.line, param.column)
-      }
-
+      const paramType = resolveTypeWithTypeParameters(param.type)
       paramTypes.push(paramType)
     }
 
@@ -1865,17 +1964,73 @@ export class TypeInferenceSystem {
       }
     }
 
-    const funcType = this.generateConstraintsForExpression(call.function, env)
+    // 明示的型引数がある場合と無い場合で処理を分ける
+    let funcType: AST.Type
+    let resultType: AST.Type
 
-    // 引数が0個の場合は、関数がユニット型を取る関数として扱う
-    if (call.arguments.length === 0) {
-      // 関数シグネチャが既知の場合、その戻り値型を抽出
-      if (funcType.kind === "FunctionType") {
-        const ft = funcType as AST.FunctionType
-        // Unit -> ReturnType の形を期待
+    if (call.typeArguments && call.typeArguments.length > 0) {
+      // 明示的型引数がある場合は、環境から直接多相型を取得
+      if (call.function.kind === "Identifier") {
+        const identifier = call.function as AST.Identifier
+        const rawFuncType = env.get(identifier.name)
+        if (!rawFuncType) {
+          throw new Error(`Undefined function: ${identifier.name}`)
+        }
+        // console.log(`🔍 Raw function type: ${this.typeToString(rawFuncType)}, explicit type args: ${call.typeArguments.length}`)
+        // console.log(`🎯 Using explicit type arguments: ${call.typeArguments.map(t => this.typeToString(t)).join(', ')}`)
+
+        resultType = this.instantiateWithExplicitTypeArguments(
+          rawFuncType,
+          call.typeArguments,
+          call.line,
+          call.column
+        )
+        funcType = resultType
+      } else {
+        // 複雑な式の場合はとりあえず従来の方法
+        funcType = this.generateConstraintsForExpression(call.function, env)
+        resultType = this.instantiateWithExplicitTypeArguments(
+          funcType,
+          call.typeArguments,
+          call.line,
+          call.column
+        )
+      }
+    } else {
+      // 従来の処理
+      funcType = this.generateConstraintsForExpression(call.function, env)
+
+      // 引数が0個の場合は、関数がユニット型を取る関数として扱う
+      if (call.arguments.length === 0) {
+        // 関数シグネチャが既知の場合、その戻り値型を抽出
+        if (funcType.kind === "FunctionType") {
+          const ft = funcType as AST.FunctionType
+          // Unit -> ReturnType の形を期待
+          const expectedFuncType = new AST.FunctionType(
+            new AST.PrimitiveType("Unit", call.line, call.column),
+            ft.returnType, // 既存の戻り値型を使用
+            call.line,
+            call.column
+          )
+
+          this.addConstraint(
+            new TypeConstraint(
+              funcType,
+              expectedFuncType,
+              call.line,
+              call.column,
+              `Unit function application`
+            )
+          )
+
+          return ft.returnType // 戻り値型を直接返す
+        }
+
+        // 関数シグネチャが不明な場合のフォールバック
+        const result = this.freshTypeVariable(call.line, call.column)
         const expectedFuncType = new AST.FunctionType(
           new AST.PrimitiveType("Unit", call.line, call.column),
-          ft.returnType, // 既存の戻り値型を使用
+          result,
           call.line,
           call.column
         )
@@ -1890,38 +2045,15 @@ export class TypeInferenceSystem {
           )
         )
 
-        return ft.returnType // 戻り値型を直接返す
+        return result
       }
 
-      // 関数シグネチャが不明な場合のフォールバック
-      const resultType = this.freshTypeVariable(call.line, call.column)
-      const expectedFuncType = new AST.FunctionType(
-        new AST.PrimitiveType("Unit", call.line, call.column),
-        resultType,
+      resultType = this.instantiatePolymorphicType(
+        funcType,
         call.line,
         call.column
       )
-
-      this.addConstraint(
-        new TypeConstraint(
-          funcType,
-          expectedFuncType,
-          call.line,
-          call.column,
-          `Unit function application`
-        )
-      )
-
-      return resultType
     }
-
-    // 関数呼び出しの結果型
-    // 多相型を具体化してから制約を生成
-    let resultType = this.instantiatePolymorphicType(
-      funcType,
-      call.line,
-      call.column
-    )
 
     // 各引数に対して関数適用の制約を生成
     for (const arg of call.arguments) {
@@ -3184,11 +3316,26 @@ export class TypeInferenceSystem {
   // 単一化アルゴリズム
   private unify(type1: AST.Type, type2: AST.Type): TypeSubstitution {
     // console.log(`🔍 Unifying: ${this.typeToString(type1)} with ${this.typeToString(type2)}`)
+
+    // null/undefined チェック
+    if (!type1 || !type2) {
+      throw new Error(
+        `Cannot unify types: one or both types are undefined/null`
+      )
+    }
+
     const substitution = new TypeSubstitution()
 
     // 型エイリアスを解決
     const resolvedType1 = this.resolveTypeAlias(type1)
     const resolvedType2 = this.resolveTypeAlias(type2)
+
+    // 解決後の型のチェック
+    if (!resolvedType1 || !resolvedType2) {
+      throw new Error(
+        `Cannot resolve type aliases: resolved types are undefined/null`
+      )
+    }
 
     // 同じ型の場合
     if (this.typesEqual(resolvedType1, resolvedType2)) {
