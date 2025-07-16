@@ -253,26 +253,32 @@ export class Parser {
   private isTypeArguments(): boolean {
     // 先読みで型引数かどうかを判定
     // 数値リテラルが続く場合は比較演算子
-    if (this.peekAhead(1)?.type === TokenType.INTEGER || 
-        this.peekAhead(1)?.type === TokenType.FLOAT) {
+    if (
+      this.peekAhead(1)?.type === TokenType.INTEGER ||
+      this.peekAhead(1)?.type === TokenType.FLOAT
+    ) {
       return false
     }
-    
-    // 識別子の場合、次に関数呼び出しの括弧がないと型引数ではない
+
+    // 識別子の場合、型引数の可能性をチェック
     if (this.peekAhead(1)?.type === TokenType.IDENTIFIER) {
       // 型引数の場合は > か , が続くはず
       const nextToken = this.peekAhead(2)
       if (nextToken?.type === TokenType.GREATER_THAN) {
-        // > の後に ( があれば型引数の可能性が高い
+        // > の後に引数（括弧または文字列リテラルなど）があれば型引数の可能性が高い
         const afterGreater = this.peekAhead(3)
-        return afterGreater?.type === TokenType.LEFT_PAREN
+        return afterGreater?.type === TokenType.LEFT_PAREN || 
+               afterGreater?.type === TokenType.STRING ||
+               afterGreater?.type === TokenType.INTEGER ||
+               afterGreater?.type === TokenType.FLOAT ||
+               afterGreater?.type === TokenType.IDENTIFIER
       }
       return nextToken?.type === TokenType.COMMA
     }
-    
+
     return false
   }
-  
+
   private peekAhead(offset: number): Token | null {
     const index = this.current + offset
     return index < this.tokens.length ? this.tokens[index] : null
@@ -2314,11 +2320,15 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
-      } else if (expr.kind === "Identifier" && this.check(TokenType.LESS_THAN) && this.isTypeArguments()) {
+      } else if (
+        expr.kind === "Identifier" &&
+        this.check(TokenType.LESS_THAN) &&
+        this.isTypeArguments()
+      ) {
         // 型引数の処理 - 関数呼び出しの直前でのみ
         this.advance() // consume <
         typeArguments = this.parseTypeArguments()
-        continue // 次のループで関数呼び出しをチェック
+        // 次のループで関数呼び出しをチェック
       } else if (this.match(TokenType.LEFT_PAREN)) {
         // 括弧付き関数呼び出し
         const args: AST.Expression[] = []
