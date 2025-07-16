@@ -3347,8 +3347,12 @@ export class TypeInferenceSystem {
     const substitution = new TypeSubstitution()
 
     // 型エイリアスを解決
+    // console.log("🔧 Unifying types:", this.typeToString(type1), "with", this.typeToString(type2))
+
     const resolvedType1 = this.resolveTypeAlias(type1)
     const resolvedType2 = this.resolveTypeAlias(type2)
+
+    // console.log("🔧 Resolved types:", this.typeToString(resolvedType1), "with", this.typeToString(resolvedType2))
 
     // 解決後の型のチェック
     if (!resolvedType1 || !resolvedType2) {
@@ -3635,6 +3639,7 @@ export class TypeInferenceSystem {
       type1.kind === "IntersectionType" ||
       type2.kind === "IntersectionType"
     ) {
+      // console.log("🔧 Unifying intersection types:", this.typeToString(type1), "with", this.typeToString(type2))
       return this.unifyIntersectionTypes(type1, type2)
     }
 
@@ -3705,7 +3710,15 @@ export class TypeInferenceSystem {
       const intersect1 = type1 as AST.IntersectionType
       const intersect2 = type2 as AST.IntersectionType
 
-      // 全ての型が統合可能かチェック
+      // Intersection型をRecord型に変換してから統合
+      const record1 = this.expandIntersectionToRecord(intersect1)
+      const record2 = this.expandIntersectionToRecord(intersect2)
+
+      if (record1 && record2) {
+        return this.unify(record1, record2)
+      }
+
+      // Record型への変換が失敗した場合は従来の方法
       let result = substitution
       for (const member1 of intersect1.types) {
         for (const member2 of intersect2.types) {
@@ -3720,9 +3733,17 @@ export class TypeInferenceSystem {
       return result
     }
 
-    // 片方がIntersection型の場合、全ての構成要素と統合可能かチェック
+    // 片方がIntersection型の場合
     if (type1.kind === "IntersectionType") {
       const intersect1 = type1 as AST.IntersectionType
+
+      // Intersection型をRecord型に変換してから統合
+      const record1 = this.expandIntersectionToRecord(intersect1)
+      if (record1) {
+        return this.unify(record1, type2)
+      }
+
+      // Record型への変換が失敗した場合は従来の方法
       let result = substitution
       for (const memberType of intersect1.types) {
         const sub = this.unify(memberType, type2)
@@ -3733,6 +3754,14 @@ export class TypeInferenceSystem {
 
     if (type2.kind === "IntersectionType") {
       const intersect2 = type2 as AST.IntersectionType
+
+      // Intersection型をRecord型に変換してから統合
+      const record2 = this.expandIntersectionToRecord(intersect2)
+      if (record2) {
+        return this.unify(type1, record2)
+      }
+
+      // Record型への変換が失敗した場合は従来の方法
       let result = substitution
       for (const memberType of intersect2.types) {
         const sub = this.unify(type1, memberType)
@@ -3744,6 +3773,87 @@ export class TypeInferenceSystem {
     throw new Error(
       `Cannot unify intersection types ${this.typeToString(type1)} with ${this.typeToString(type2)}`
     )
+  }
+
+  // Intersection型をRecord型に展開
+  private expandIntersectionToRecord(
+    intersectionType: AST.IntersectionType
+  ): AST.RecordType | null {
+    const mergedFields: AST.RecordField[] = []
+
+    // console.log("🔧 Expanding intersection type:", this.typeToString(intersectionType))
+
+    for (const memberType of intersectionType.types) {
+      // console.log("🔧 Processing member type:", this.typeToString(memberType))
+
+      // 型エイリアスを解決
+      const resolvedType = this.resolveTypeAlias(memberType)
+      // console.log("🔧 Resolved type:", this.typeToString(resolvedType))
+
+      if (resolvedType.kind === "RecordType") {
+        const recordType = resolvedType as AST.RecordType
+        // console.log("🔧 Record type fields:", recordType.fields.map(f => `${f.name}: ${this.typeToString(f.type)}`))
+
+        // フィールドをマージ
+        for (const field of recordType.fields) {
+          // 同じ名前のフィールドが既に存在するかチェック
+          const existingField = mergedFields.find((f) => f.name === field.name)
+          if (existingField) {
+            // 同じ名前のフィールドが異なる型を持つ場合はエラー
+            const existingTypeName = this.getTypeName(existingField.type)
+            const newTypeName = this.getTypeName(field.type)
+            if (existingTypeName !== newTypeName) {
+              throw new Error(
+                `Field '${field.name}' has conflicting types in intersection: ${existingTypeName} and ${newTypeName}`
+              )
+            }
+          } else {
+            mergedFields.push(field)
+          }
+        }
+      } else {
+        // Record型でない場合はRecord型への変換失敗
+        // console.log("🔧 Not a record type, expansion failed")
+        return null
+      }
+    }
+
+    // console.log("🔧 Merged fields:", mergedFields.map(f => `${f.name}: ${this.typeToString(f.type)}`))
+
+    // マージされたフィールドでRecord型を作成
+    return new AST.RecordType(
+      mergedFields,
+      intersectionType.line,
+      intersectionType.column
+    )
+  }
+
+  // 型の名前を取得するヘルパー関数
+  private getTypeName(type: AST.Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "GenericType":
+        return (type as AST.GenericType).name
+      case "FunctionType":
+        return "Function"
+      case "RecordType":
+        return "Record"
+      case "TupleType":
+        return "Tuple"
+      case "UnionType":
+        return (type as AST.UnionType).name
+      case "IntersectionType":
+        return (type as AST.IntersectionType).name
+      case "StructType":
+        return (type as AST.StructType).name
+      case "TypeVariable":
+        return (type as TypeVariable).name
+      case "PolymorphicTypeVariable":
+        return (type as PolymorphicTypeVariable).name
+      default:
+        return "Unknown"
+    }
   }
 
   // 型エイリアスの解決（循環参照対応版）
@@ -3768,8 +3878,62 @@ export class TypeInferenceSystem {
           return this.resolveTypeAlias(aliasedType, newVisited)
         }
       }
+    } else if (type.kind === "IntersectionType") {
+      // Intersection型の場合、各構成要素を再帰的に解決
+      const intersectionType = type as AST.IntersectionType
+      const resolvedTypes = intersectionType.types.map((t) =>
+        this.resolveTypeAlias(t, visited)
+      )
+
+      // 全ての構成要素がRecord型の場合、Record型に統合
+      if (resolvedTypes.every((t) => t.kind === "RecordType")) {
+        return this.mergeRecordTypes(resolvedTypes as AST.RecordType[])
+      }
+
+      // そうでない場合は、解決された型でIntersection型を再構築
+      return new AST.IntersectionType(resolvedTypes, type.line, type.column)
+    } else if (type.kind === "UnionType") {
+      // Union型の場合、各構成要素を再帰的に解決
+      const unionType = type as AST.UnionType
+      const resolvedTypes = unionType.types.map((t) =>
+        this.resolveTypeAlias(t, visited)
+      )
+      return new AST.UnionType(resolvedTypes, type.line, type.column)
     }
     return type
+  }
+
+  // Record型のマージ
+  private mergeRecordTypes(recordTypes: AST.RecordType[]): AST.RecordType {
+    const mergedFields: AST.RecordField[] = []
+
+    for (const recordType of recordTypes) {
+      for (const field of recordType.fields) {
+        // 同じ名前のフィールドが既に存在するかチェック
+        const existingField = mergedFields.find((f) => f.name === field.name)
+        if (existingField) {
+          // 同じ名前のフィールドが異なる型を持つ場合はエラー
+          if (
+            existingField.type.kind !== field.type.kind ||
+            existingField.type.name !== field.type.name
+          ) {
+            throw new Error(
+              `Field '${field.name}' has conflicting types in intersection: ${existingField.type.name} and ${field.type.name}`
+            )
+          }
+        } else {
+          mergedFields.push(field)
+        }
+      }
+    }
+
+    // 最初のRecord型の位置情報を使用
+    const firstRecord = recordTypes[0]
+    return new AST.RecordType(
+      mergedFields,
+      firstRecord.line,
+      firstRecord.column
+    )
   }
 
   // 環境を保持するためのフィールド（既に存在する可能性）
@@ -4135,10 +4299,10 @@ export class TypeInferenceSystem {
     )
 
     // Debug: Log struct registration
-    console.log(`🔧 Registering struct ${structDecl.name}`)
-    console.log(`🔧 StructType kind: ${structType.kind}`)
-    console.log(`🔧 StructType name: ${structType.name}`)
-    console.log(`🔧 StructType: ${this.typeToString(structType)}`)
+    // console.log(`🔧 Registering struct ${structDecl.name}`)
+    // console.log(`🔧 StructType kind: ${structType.kind}`)
+    // console.log(`🔧 StructType name: ${structType.name}`)
+    // console.log(`🔧 StructType: ${this.typeToString(structType)}`)
 
     // 環境に構造体型を登録
     env.set(structDecl.name, structType)
