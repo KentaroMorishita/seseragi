@@ -28,6 +28,7 @@ export class Parser {
   private variableTypes: Map<string, string> = new Map() // variable name -> type name
   private adtNames: Set<string> = new Set() // ADT型名の管理
   private structNames: Set<string> = new Set() // struct名の管理
+  private typeAliasNames: Set<string> = new Set() // 型エイリアス名の管理
   private adtDefinitions: Map<string, AST.TypeField[]> = new Map() // ADT名 -> コンストラクタ定義
   private currentTypeParameters: Set<string> = new Set() // 現在のスコープの型パラメータ
   private typeParameterMap: Map<string, TypeVariable> = new Map() // 型パラメータ名 -> TypeVariable
@@ -267,11 +268,13 @@ export class Parser {
       if (nextToken?.type === TokenType.GREATER_THAN) {
         // > の後に引数（括弧または文字列リテラルなど）があれば型引数の可能性が高い
         const afterGreater = this.peekAhead(3)
-        return afterGreater?.type === TokenType.LEFT_PAREN || 
-               afterGreater?.type === TokenType.STRING ||
-               afterGreater?.type === TokenType.INTEGER ||
-               afterGreater?.type === TokenType.FLOAT ||
-               afterGreater?.type === TokenType.IDENTIFIER
+        return (
+          afterGreater?.type === TokenType.LEFT_PAREN ||
+          afterGreater?.type === TokenType.STRING ||
+          afterGreater?.type === TokenType.INTEGER ||
+          afterGreater?.type === TokenType.FLOAT ||
+          afterGreater?.type === TokenType.IDENTIFIER
+        )
       }
       return nextToken?.type === TokenType.COMMA
     }
@@ -288,11 +291,11 @@ export class Parser {
     const typeArguments: AST.Type[] = []
 
     // Parse first type argument
-    typeArguments.push(this.parseType())
+    typeArguments.push(this.parseUnionTypeExpression())
 
     // Parse additional type arguments separated by commas
     while (this.match(TokenType.COMMA)) {
-      typeArguments.push(this.parseType())
+      typeArguments.push(this.parseUnionTypeExpression())
     }
 
     this.consume(TokenType.GREATER_THAN, "Expected '>' after type arguments")
@@ -306,7 +309,7 @@ export class Parser {
     // Check for immediate arrow (no parameters case: "fn name -> Type")
     if (this.check(TokenType.ARROW)) {
       this.advance() // consume ->
-      return this.parseType()
+      return this.parseUnionTypeExpression()
     }
 
     let hasTypedParameters = false
@@ -344,7 +347,7 @@ export class Parser {
   ): boolean {
     const paramName = this.advance().value
     this.consume(TokenType.COLON, "Expected ':'")
-    const paramType = this.parseType()
+    const paramType = this.parseUnionTypeExpression()
     this.consume(TokenType.ARROW, "Expected '->' after parameter type")
 
     const { isImplicitSelf, isImplicitOther } = this.checkImplicitParameters(
@@ -418,7 +421,7 @@ export class Parser {
   private parseExplicitReturnType(): AST.Type {
     if (this.check(TokenType.ARROW)) {
       this.advance() // consume ->
-      return this.parseType()
+      return this.parseUnionTypeExpression()
     }
     return this.freshTypeVariable(this.peek().line, this.peek().column)
   }
@@ -555,32 +558,17 @@ export class Parser {
     try {
       this.skipNewlines()
 
+      // ADT宣言は先頭に'|'が必要
       if (this.check(TokenType.PIPE)) {
-        return false // This is a union type
+        return false // This is an ADT (先頭|があるのでADT)
       }
 
-      if (this.check(TokenType.LEFT_PAREN)) {
-        return true // Function type
-      }
-
-      if (this.check(TokenType.IDENTIFIER)) {
-        return this.checkIdentifierTypeKind()
-      }
-
-      return true // Other type constructs are type aliases
+      // その他の場合は型エイリアス
+      // 関数型、Union型、Intersection型、プリミティブ型、ジェネリック型など
+      return true
     } catch (_e) {
       return true // If parsing fails, assume it's a complex type alias
     }
-  }
-
-  private checkIdentifierTypeKind(): boolean {
-    this.advance() // consume the identifier
-
-    this.skipGenericArguments()
-    this.parseVariantDataTypes()
-
-    this.skipNewlines()
-    return !this.check(TokenType.PIPE)
   }
 
   private skipGenericArguments(): void {
@@ -612,8 +600,11 @@ export class Parser {
       }
     }
 
+    // 型エイリアス名を登録
+    this.typeAliasNames.add(name)
+
     // Note: ASSIGN token is already consumed by typeDeclaration() method
-    const aliasedType = this.parseType()
+    const aliasedType = this.parseUnionTypeExpression()
 
     // Restore previous type parameter context
     this.currentTypeParameters = previousTypeParameters
@@ -641,11 +632,14 @@ export class Parser {
   private parseUnionType(name: string): AST.TypeDeclaration {
     const variants: AST.TypeField[] = []
 
-    // Skip optional newlines and pipes at the beginning
+    // ADT構文では先頭の'|'が必須
     this.skipNewlines()
-    if (this.match(TokenType.PIPE)) {
-      this.skipNewlines()
+    if (!this.match(TokenType.PIPE)) {
+      throw new Error(
+        `ADT definition must start with '|'. Found: ${this.peek().value}`
+      )
     }
+    this.skipNewlines()
 
     // Parse first variant
     const firstVariant = this.consume(
@@ -727,7 +721,7 @@ export class Parser {
 
     // Parse type parameters for constructor variants (RGB Int Int Int)
     while (this.check(TokenType.IDENTIFIER) && this.isTypeIdentifier()) {
-      types.push(this.parseType())
+      types.push(this.parseUnionTypeExpression())
     }
 
     return types
@@ -746,6 +740,59 @@ export class Parser {
       (name[0] === name[0].toUpperCase() &&
         name !== this.tokens[this.current + 1]?.value)
     )
+  }
+
+  private validateTypeExists(type: AST.Type): void {
+    if (type.kind === "PrimitiveType") {
+      const primitiveType = type as AST.PrimitiveType
+      const name = primitiveType.name
+
+      // ビルトイン型はチェック不要
+      if (["Int", "Float", "String", "Bool", "Unit", "Char"].includes(name)) {
+        return
+      }
+
+      // ビルトイン型（Maybe, Either, List, Array等）もチェック不要
+      if (["Maybe", "Either", "List", "Array", "Tuple"].includes(name)) {
+        return
+      }
+
+      // 型パラメータはチェック不要
+      if (this.currentTypeParameters.has(name)) {
+        return
+      }
+
+      // 定義済みの型（ADT、struct、型エイリアス）かチェック
+      if (
+        !this.adtNames.has(name) &&
+        !this.structNames.has(name) &&
+        !this.typeAliasNames.has(name)
+      ) {
+        throw new Error(
+          `Type '${name}' is not defined. Union types require all types to be previously defined.`
+        )
+      }
+    }
+    // GenericType, RecordType, UnionType, IntersectionType等は再帰的にチェック
+    else if (type.kind === "GenericType") {
+      const genericType = type as AST.GenericType
+      this.validateTypeExists(
+        new AST.PrimitiveType(genericType.name, type.line, type.column)
+      )
+      for (const typeArg of genericType.typeArguments) {
+        this.validateTypeExists(typeArg)
+      }
+    } else if (type.kind === "UnionType") {
+      const unionType = type as AST.UnionType
+      for (const memberType of unionType.types) {
+        this.validateTypeExists(memberType)
+      }
+    } else if (type.kind === "IntersectionType") {
+      const intersectionType = type as AST.IntersectionType
+      for (const memberType of intersectionType.types) {
+        this.validateTypeExists(memberType)
+      }
+    }
   }
 
   // ADTコンストラクタの引数数を動的に取得
@@ -832,7 +879,7 @@ export class Parser {
         "Expected field name"
       ).value
       this.consume(TokenType.COLON, "Expected ':' after field name")
-      const fieldType = this.parseType()
+      const fieldType = this.parseUnionTypeExpression()
 
       fields.push(
         new AST.RecordField(
@@ -879,7 +926,7 @@ export class Parser {
         "Expected field name"
       ).value
       this.consume(TokenType.COLON, "Expected ':' after field name")
-      const fieldType = this.parseType()
+      const fieldType = this.parseUnionTypeExpression()
 
       fields.push(
         new AST.TypeField(
@@ -1166,7 +1213,7 @@ export class Parser {
 
       let type: AST.Type | undefined
       if (this.match(TokenType.COLON)) {
-        type = this.parseType()
+        type = this.parseUnionTypeExpression()
       }
 
       this.consume(TokenType.ASSIGN, "Expected '=' after variable name")
@@ -1193,13 +1240,54 @@ export class Parser {
 
   // eslint-disable-next-line complexity
   private parseType(): AST.Type {
+    return this.parseUnionTypeExpression()
+  }
+
+  // Union型の解析 (最も低い優先度)
+  private parseUnionTypeExpression(): AST.Type {
+    let left = this.parseIntersectionTypeExpression()
+
+    while (this.check(TokenType.PIPE)) {
+      const token = this.advance()
+      const right = this.parseIntersectionTypeExpression()
+
+      // 型存在チェック: Union型で使用される型は既に定義されている必要がある
+      this.validateTypeExists(left)
+      this.validateTypeExists(right)
+
+      left = new AST.UnionType([left, right], token.line, token.column)
+    }
+
+    return left
+  }
+
+  // Intersection型の解析 (Union型より高い優先度)
+  private parseIntersectionTypeExpression(): AST.Type {
+    let left = this.parseBasicType()
+
+    while (this.check(TokenType.AMPERSAND)) {
+      const token = this.advance()
+      const right = this.parseBasicType()
+
+      // 型存在チェック: Intersection型で使用される型は既に定義されている必要がある
+      this.validateTypeExists(left)
+      this.validateTypeExists(right)
+
+      left = new AST.IntersectionType([left, right], token.line, token.column)
+    }
+
+    return left
+  }
+
+  // 基本的な型の解析
+  private parseBasicType(): AST.Type {
     // Check for parenthesized types first (function types, tuple types, or parenthesized types)
     if (this.check(TokenType.LEFT_PAREN)) {
       const token = this.advance() // consume '('
       const line = token.line
       const column = token.column
 
-      const firstType = this.parseType()
+      const firstType = this.parseUnionTypeExpression()
 
       // Check if this is a tuple type (has comma) or function type (has arrow)
       if (this.match(TokenType.COMMA)) {
@@ -1207,7 +1295,7 @@ export class Parser {
         const elementTypes = [firstType]
 
         do {
-          elementTypes.push(this.parseType())
+          elementTypes.push(this.parseUnionTypeExpression())
         } while (this.match(TokenType.COMMA))
 
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after tuple type")
@@ -1222,7 +1310,7 @@ export class Parser {
         return new AST.TupleType(elementTypes, line, column)
       } else if (this.match(TokenType.ARROW)) {
         // Function type (Param -> Return)
-        const returnType = this.parseType()
+        const returnType = this.parseUnionTypeExpression()
         this.consume(TokenType.RIGHT_PAREN, "Expected ')' after function type")
 
         return new AST.FunctionType(firstType, returnType, line, column)
@@ -1243,7 +1331,7 @@ export class Parser {
         const typeArgs: AST.Type[] = []
 
         do {
-          typeArgs.push(this.parseType())
+          typeArgs.push(this.parseUnionTypeExpression())
         } while (this.match(TokenType.COMMA))
 
         this.consumeGreaterThan("Expected '>' after type arguments")
@@ -1280,7 +1368,7 @@ export class Parser {
           this.skipNewlines()
           this.consume(TokenType.COLON, "Expected ':' after field name")
           this.skipNewlines()
-          const fieldType = this.parseType()
+          const fieldType = this.parseUnionTypeExpression()
 
           fields.push(
             new AST.RecordField(
@@ -2410,7 +2498,7 @@ export class Parser {
         )
       } else if (this.match(TokenType.AS)) {
         // 型アサーション: expr as Type
-        const targetType = this.parseType()
+        const targetType = this.parseUnionTypeExpression()
         expr = new AST.TypeAssertion(
           expr,
           targetType,
@@ -3234,7 +3322,7 @@ export class Parser {
 
     // Check for optional type annotation
     if (this.match(TokenType.COLON)) {
-      paramType = this.parseType()
+      paramType = this.parseUnionTypeExpression()
     } else {
       // Create a placeholder type that will be inferred
       paramType = new AST.PrimitiveType("_", startLine, startColumn)

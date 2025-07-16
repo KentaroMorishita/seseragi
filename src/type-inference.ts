@@ -84,6 +84,16 @@ export class TypeConstraint {
         const st = type as AST.StructType
         return st.name
       }
+      case "UnionType": {
+        const ut = type as AST.UnionType
+        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
+        return `(${types})`
+      }
+      case "IntersectionType": {
+        const it = type as AST.IntersectionType
+        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
+        return `(${types})`
+      }
       default:
         return "Unknown"
     }
@@ -297,6 +307,16 @@ export class TypeSubstitution {
           .map((t) => this.typeToString(t))
           .join(", ")
         return `(${elements})`
+      }
+      case "UnionType": {
+        const ut = type as AST.UnionType
+        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
+        return `(${types})`
+      }
+      case "IntersectionType": {
+        const it = type as AST.IntersectionType
+        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
+        return `(${types})`
       }
       default:
         return "Unknown"
@@ -3605,8 +3625,124 @@ export class TypeInferenceSystem {
       )
     }
 
+    // Union型の場合
+    if (type1.kind === "UnionType" || type2.kind === "UnionType") {
+      return this.unifyUnionTypes(type1, type2)
+    }
+
+    // Intersection型の場合
+    if (
+      type1.kind === "IntersectionType" ||
+      type2.kind === "IntersectionType"
+    ) {
+      return this.unifyIntersectionTypes(type1, type2)
+    }
+
     throw new Error(
       `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+    )
+  }
+
+  // Union型の統合
+  private unifyUnionTypes(type1: AST.Type, type2: AST.Type): TypeSubstitution {
+    const substitution = new TypeSubstitution()
+
+    // 両方がUnion型の場合
+    if (type1.kind === "UnionType" && type2.kind === "UnionType") {
+      const union1 = type1 as AST.UnionType
+      const union2 = type2 as AST.UnionType
+
+      // 簡単な実装: 型集合が同じかチェック
+      if (union1.types.length === union2.types.length) {
+        for (let i = 0; i < union1.types.length; i++) {
+          const sub = this.unify(union1.types[i], union2.types[i])
+          substitution.compose(sub)
+        }
+        return substitution
+      }
+    }
+
+    // 片方がUnion型の場合、もう片方がUnion型の構成要素と統合可能かチェック
+    if (type1.kind === "UnionType") {
+      const union1 = type1 as AST.UnionType
+      for (const memberType of union1.types) {
+        try {
+          return this.unify(memberType, type2)
+        } catch {
+          // 統合失敗時は次の型を試す
+        }
+      }
+    }
+
+    if (type2.kind === "UnionType") {
+      const union2 = type2 as AST.UnionType
+      for (const memberType of union2.types) {
+        try {
+          return this.unify(type1, memberType)
+        } catch {
+          // 統合失敗時は次の型を試す
+        }
+      }
+    }
+
+    throw new Error(
+      `Cannot unify union types ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+    )
+  }
+
+  // Intersection型の統合
+  private unifyIntersectionTypes(
+    type1: AST.Type,
+    type2: AST.Type
+  ): TypeSubstitution {
+    const substitution = new TypeSubstitution()
+
+    // 両方がIntersection型の場合
+    if (
+      type1.kind === "IntersectionType" &&
+      type2.kind === "IntersectionType"
+    ) {
+      const intersect1 = type1 as AST.IntersectionType
+      const intersect2 = type2 as AST.IntersectionType
+
+      // 全ての型が統合可能かチェック
+      let result = substitution
+      for (const member1 of intersect1.types) {
+        for (const member2 of intersect2.types) {
+          try {
+            const sub = this.unify(member1, member2)
+            result = result.compose(sub)
+          } catch {
+            // 統合失敗時は次の組み合わせを試す
+          }
+        }
+      }
+      return result
+    }
+
+    // 片方がIntersection型の場合、全ての構成要素と統合可能かチェック
+    if (type1.kind === "IntersectionType") {
+      const intersect1 = type1 as AST.IntersectionType
+      let result = substitution
+      for (const memberType of intersect1.types) {
+        const sub = this.unify(memberType, type2)
+        result = result.compose(sub)
+      }
+      return result
+    }
+
+    if (type2.kind === "IntersectionType") {
+      const intersect2 = type2 as AST.IntersectionType
+      let result = substitution
+      for (const memberType of intersect2.types) {
+        const sub = this.unify(type1, memberType)
+        result = result.compose(sub)
+      }
+      return result
+    }
+
+    throw new Error(
+      `Cannot unify intersection types ${this.typeToString(type1)} with ${this.typeToString(type2)}`
     )
   }
 
@@ -3951,6 +4087,18 @@ export class TypeInferenceSystem {
       case "StructType": {
         const st = type as AST.StructType
         return st.name
+      }
+
+      case "UnionType": {
+        const ut = type as AST.UnionType
+        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
+        return `(${types})`
+      }
+
+      case "IntersectionType": {
+        const it = type as AST.IntersectionType
+        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
+        return `(${types})`
       }
 
       default:

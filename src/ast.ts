@@ -95,6 +95,30 @@ export class RecordType extends Type {
   }
 }
 
+export class UnionType extends Type {
+  kind = "UnionType"
+  name: string
+  types: Type[]
+
+  constructor(types: Type[], line: number, column: number) {
+    super(line, column)
+    this.types = types
+    this.name = types.map((t) => t.name).join(" | ")
+  }
+}
+
+export class IntersectionType extends Type {
+  kind = "IntersectionType"
+  name: string
+  types: Type[]
+
+  constructor(types: Type[], line: number, column: number) {
+    super(line, column)
+    this.types = types
+    this.name = types.map((t) => t.name).join(" & ")
+  }
+}
+
 export class TupleType extends Type {
   kind = "TupleType"
   name = "Tuple"
