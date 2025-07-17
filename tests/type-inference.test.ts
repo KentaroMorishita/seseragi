@@ -302,7 +302,7 @@ describe("TypeInferenceSystem", () => {
       expect(result.errors).toHaveLength(0)
     })
 
-    it("条件式の分岐の型が異なる場合エラーになる", () => {
+    it("条件式の分岐の型が異なる場合ユニオン型になる", () => {
       const program = new AST.Program([
         new AST.ExpressionStatement(
           new AST.ConditionalExpression(
@@ -318,7 +318,8 @@ describe("TypeInferenceSystem", () => {
       ])
 
       const result = inference.infer(program)
-      expect(result.errors.length).toBeGreaterThan(0)
+      expect(result.errors).toHaveLength(0)
+      // 条件式の結果はユニオン型になる
     })
 
     it("条件式の条件部がBool型でない場合エラーになる", () => {

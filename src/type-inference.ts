@@ -2398,18 +2398,18 @@ export class TypeInferenceSystem {
       )
     )
 
-    // thenとelseの分岐は同じ型でなければならない
-    this.addConstraint(
-      new TypeConstraint(
-        thenType,
-        elseType,
-        cond.line,
-        cond.column,
-        `Conditional expression branches`
-      )
-    )
+    // thenとelseの型が同じかチェック
+    if (this.typesEqual(thenType, elseType)) {
+      // 同じ型の場合はそのまま返す
+      return thenType
+    }
 
-    return thenType
+    // 異なる型の場合は、ユニオン型として返す
+    return this.createFlattenedUnionType(
+      [thenType, elseType],
+      cond.line,
+      cond.column
+    )
   }
 
   private generateConstraintsForTernary(
@@ -2444,18 +2444,17 @@ export class TypeInferenceSystem {
       )
     )
 
-    // 真と偽の分岐は同じ型でなければならない
-    this.addConstraint(
-      new TypeConstraint(
-        trueType,
-        falseType,
-        ternary.line,
-        ternary.column,
-        `Ternary expression branches`
-      )
+    // trueとfalseの型が同じかチェック
+    if (this.typesEqual(trueType, falseType)) {
+      // 同じ型の場合はそのまま返す
+      return trueType
+    }
+    // 異なる型の場合は、ユニオン型として返す
+    return this.createFlattenedUnionType(
+      [trueType, falseType],
+      ternary.line,
+      ternary.column
     )
-
-    return trueType
   }
 
   private generateConstraintsForBlockExpression(
@@ -3522,12 +3521,13 @@ export class TypeInferenceSystem {
       return substitution
     }
 
-    // 多相型変数の場合 - これらは常に多相のまま残す
+    // 多相型変数の場合 - これらは統一可能
     if (
       resolvedType1.kind === "PolymorphicTypeVariable" ||
       resolvedType2.kind === "PolymorphicTypeVariable"
     ) {
-      // 多相型変数は統一しない（常に多相のまま）
+      // 多相型変数は統一可能（制約なし）
+      // 実際の多相型変数の置換は後で実装する
       return substitution
     }
 
@@ -3821,42 +3821,119 @@ export class TypeInferenceSystem {
   private unifyUnionTypes(type1: AST.Type, type2: AST.Type): TypeSubstitution {
     const substitution = new TypeSubstitution()
 
-    // 両方がUnion型の場合
-    if (type1.kind === "UnionType" && type2.kind === "UnionType") {
-      const union1 = type1 as AST.UnionType
-      const union2 = type2 as AST.UnionType
+    // 型エイリアスを解決してから処理
+    const resolvedType1 = this.resolveTypeAlias(type1)
+    const resolvedType2 = this.resolveTypeAlias(type2)
 
-      // 簡単な実装: 型集合が同じかチェック
+    // 両方がUnion型の場合
+    if (
+      resolvedType1.kind === "UnionType" &&
+      resolvedType2.kind === "UnionType"
+    ) {
+      const union1 = resolvedType1 as AST.UnionType
+      const union2 = resolvedType2 as AST.UnionType
+
+      // 型集合が同じかチェック（順序は関係なし）
       if (union1.types.length === union2.types.length) {
-        for (let i = 0; i < union1.types.length; i++) {
-          const sub = this.unify(union1.types[i], union2.types[i])
-          substitution.compose(sub)
+        const types1 = union1.types.map((t) => this.typeToString(t)).sort()
+        const types2 = union2.types.map((t) => this.typeToString(t)).sort()
+
+        if (types1.every((type, i) => type === types2[i])) {
+          // 同じユニオン型なので統一成功
+          return substitution
         }
+      }
+    }
+
+    // 型変数とユニオン型の場合、型変数をユニオン型に束縛
+    if (type1.kind === "TypeVariable" && resolvedType2.kind === "UnionType") {
+      const tv = type1 as TypeVariable
+      substitution.set(tv.id, resolvedType2)
+      return substitution
+    }
+
+    if (type2.kind === "TypeVariable" && resolvedType1.kind === "UnionType") {
+      const tv = type2 as TypeVariable
+      substitution.set(tv.id, resolvedType1)
+      return substitution
+    }
+
+    // 片方がUnion型の場合
+    // Union型は基本的にその構成要素の型には割り当てできない
+    // ただし、もう一方が型変数の場合は例外（型変数をUnion型に束縛）
+    if (resolvedType1.kind === "UnionType" && type2.kind !== "TypeVariable") {
+      const union1 = resolvedType1 as AST.UnionType
+
+      // 特殊ケース: Union型の全ての要素が目標の型と統一可能な場合のみ許可
+      // 例: Maybe<String> | Maybe<t1000> と Maybe<String> の統一（型変数を含む場合）
+      // ただし、String | Int と String のような場合は許可しない
+      let resultSubstitution = substitution
+      let allCanUnify = true
+      let hasTypeVariable = false
+
+      // Union型の要素をチェック
+      for (const memberType of union1.types) {
+        if (
+          memberType.kind === "TypeVariable" ||
+          memberType.kind === "PolymorphicTypeVariable" ||
+          (memberType.kind === "GenericType" &&
+            (memberType as AST.GenericType).typeArguments.some(
+              (arg) =>
+                arg.kind === "TypeVariable" ||
+                arg.kind === "PolymorphicTypeVariable"
+            ))
+        ) {
+          hasTypeVariable = true
+        }
+
+        try {
+          const memberSub = this.unify(memberType, resolvedType2)
+          resultSubstitution = resultSubstitution.compose(memberSub)
+        } catch {
+          allCanUnify = false
+          break
+        }
+      }
+
+      // 型変数を含み、全ての要素が統一可能な場合のみ成功
+      if (hasTypeVariable && allCanUnify) {
+        return resultSubstitution
+      }
+
+      // Union型を非Union型に統合することはできない
+      // 例外: type2もUnion型で、type1のすべてのメンバーがtype2に含まれる場合
+      if (resolvedType2.kind === "UnionType") {
+        const union2 = resolvedType2 as AST.UnionType
+        // union1のすべてのメンバーがunion2に含まれているかチェック
+        const allMembersIncluded = union1.types.every((member1) =>
+          union2.types.some((member2) => this.typesEqual(member1, member2))
+        )
+        if (allMembersIncluded) {
+          return substitution
+        }
+      }
+      throw new Error(
+        `Union type ${this.typeToString(resolvedType1)} cannot be assigned to ${this.typeToString(resolvedType2)}`
+      )
+    }
+
+    if (resolvedType2.kind === "UnionType" && type1.kind !== "TypeVariable") {
+      // 非Union型をUnion型に統合する場合は、非Union型がUnion型の構成要素である必要がある
+      const union2 = resolvedType2 as AST.UnionType
+      const isMember = union2.types.some((memberType) => {
+        try {
+          this.unify(resolvedType1, memberType)
+          return true
+        } catch {
+          return false
+        }
+      })
+      if (isMember) {
         return substitution
       }
-    }
-
-    // 片方がUnion型の場合、もう片方がUnion型の構成要素と統合可能かチェック
-    if (type1.kind === "UnionType") {
-      const union1 = type1 as AST.UnionType
-      for (const memberType of union1.types) {
-        try {
-          return this.unify(memberType, type2)
-        } catch {
-          // 統合失敗時は次の型を試す
-        }
-      }
-    }
-
-    if (type2.kind === "UnionType") {
-      const union2 = type2 as AST.UnionType
-      for (const memberType of union2.types) {
-        try {
-          return this.unify(type1, memberType)
-        } catch {
-          // 統合失敗時は次の型を試す
-        }
-      }
+      throw new Error(
+        `Type ${this.typeToString(resolvedType1)} is not assignable to union type ${this.typeToString(resolvedType2)}`
+      )
     }
 
     throw new Error(
@@ -4448,6 +4525,51 @@ export class TypeInferenceSystem {
       default:
         return false
     }
+  }
+
+  // ユニオン型を平坦化して作成（重複排除と型の正規化を行う）
+  private createFlattenedUnionType(
+    types: AST.Type[],
+    line: number,
+    column: number
+  ): AST.Type {
+    const flattenedTypes: AST.Type[] = []
+
+    // 型を平坦化する（ネストしたユニオン型を展開）
+    const flattenType = (type: AST.Type) => {
+      if (type.kind === "UnionType") {
+        const unionType = type as AST.UnionType
+        for (const memberType of unionType.types) {
+          flattenType(memberType)
+        }
+      } else {
+        flattenedTypes.push(type)
+      }
+    }
+
+    // 全ての型を平坦化
+    for (const type of types) {
+      flattenType(type)
+    }
+
+    // 重複を排除（同じ型は一つにまとめる）
+    const uniqueTypes: AST.Type[] = []
+    for (const type of flattenedTypes) {
+      const isDuplicate = uniqueTypes.some((existingType) =>
+        this.typesEqual(type, existingType)
+      )
+      if (!isDuplicate) {
+        uniqueTypes.push(type)
+      }
+    }
+
+    // 1つの型しかない場合はユニオン型ではなくその型を返す
+    if (uniqueTypes.length === 1) {
+      return uniqueTypes[0]
+    }
+
+    // 複数の型がある場合はユニオン型を作成
+    return new AST.UnionType(uniqueTypes, line, column)
   }
 
   // 型を文字列に変換
