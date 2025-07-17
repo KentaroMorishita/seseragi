@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run check"
+          },
+          {
+            "type": "command",
+            "command": "./script/test-examples.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

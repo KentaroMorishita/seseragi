@@ -1,36 +1,31 @@
 import {
-  createConnection,
-  TextDocuments,
-  type Diagnostic,
-  DiagnosticSeverity,
-  ProposedFeatures,
-  type InitializeParams,
-  DidChangeConfigurationNotification,
   type CompletionItem,
   CompletionItemKind,
+  createConnection,
+  type Definition,
+  type DefinitionParams,
+  type Diagnostic,
+  DiagnosticSeverity,
+  DidChangeConfigurationNotification,
+  type DocumentFormattingParams,
+  type Hover,
+  type InitializeParams,
+  type InitializeResult,
+  type Location,
+  MarkupKind,
+  ProposedFeatures,
   type TextDocumentPositionParams,
   TextDocumentSyncKind,
-  type InitializeResult,
-  type Hover,
-  MarkupKind,
-  type DocumentFormattingParams,
+  TextDocuments,
   type TextEdit,
-  type DefinitionParams,
-  type Definition,
-  type Location,
 } from "vscode-languageserver/node"
 
 import { TextDocument } from "vscode-languageserver-textdocument"
-import { URI } from "vscode-uri"
+import * as AST from "../ast"
+import { formatSeseragiCode } from "../formatter/index.js"
 import { Parser } from "../parser"
 import { TypeInferenceSystem } from "../type-inference"
-import { TypeChecker } from "../typechecker"
-import * as AST from "../ast"
-import {
-  formatSeseragiCode,
-  removeExtraWhitespace,
-  normalizeOperatorSpacing,
-} from "../formatter/index.js"
+import type { TypeChecker } from "../typechecker"
 
 // Create a connection for the server, using Node's IPC as a transport
 const connection = createConnection(ProposedFeatures.all)
@@ -53,11 +48,8 @@ connection.onInitialize((params: InitializeParams) => {
   hasWorkspaceFolderCapability = !!(
     capabilities.workspace && !!capabilities.workspace.workspaceFolders
   )
-  hasDiagnosticRelatedInformationCapability = !!(
-    capabilities.textDocument &&
-    capabilities.textDocument.publishDiagnostics &&
-    capabilities.textDocument.publishDiagnostics.relatedInformation
-  )
+  hasDiagnosticRelatedInformationCapability =
+    !!capabilities.textDocument?.publishDiagnostics?.relatedInformation
 
   const result: InitializeResult = {
     capabilities: {
@@ -155,7 +147,7 @@ documents.onDidChangeContent((change) => {
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   // In this simple example we get the settings for every validate run.
-  const settings = await getDocumentSettings(textDocument.uri)
+  const _settings = await getDocumentSettings(textDocument.uri)
 
   // The validator creates diagnostics for all uppercase words longer than 2 characters
   const text = textDocument.getText()
@@ -338,7 +330,7 @@ connection.onCompletion(
 
     const text = document.getText()
     const position = textDocumentPosition.position
-    const offset = document.offsetAt(position)
+    const _offset = document.offsetAt(position)
 
     // Get current line text for context
     const lineText = text.split("\n")[position.line] || ""
@@ -608,10 +600,10 @@ function getTypeInfoWithInference(
 }
 
 // Find symbol with type information from the type checker
-function findSymbolWithType(
+function _findSymbolWithType(
   ast: any,
   symbol: string,
-  typeChecker: TypeChecker
+  _typeChecker: TypeChecker
 ): any {
   if (!ast.statements) {
     return null
@@ -650,7 +642,7 @@ function findSymbolWithType(
 }
 
 // Format type information for hover display
-function formatTypeInfo(symbol: string, info: any): string {
+function _formatTypeInfo(symbol: string, info: any): string {
   switch (info.type) {
     case "function": {
       const params =
@@ -1002,10 +994,7 @@ function findSymbolInExpression(
 
           if (fieldType) {
             let finalFieldType = fieldType
-            if (
-              inferenceResult.substitution &&
-              inferenceResult.substitution.apply
-            ) {
+            if (inferenceResult.substitution?.apply) {
               finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
@@ -1041,10 +1030,7 @@ function findSymbolInExpression(
 
           if (fieldType) {
             let finalFieldType = fieldType
-            if (
-              inferenceResult.substitution &&
-              inferenceResult.substitution.apply
-            ) {
+            if (inferenceResult.substitution?.apply) {
               finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
@@ -1615,10 +1601,7 @@ function findSymbolWithEnhancedInference(
 
           if (fieldType) {
             let finalFieldType = fieldType
-            if (
-              inferenceResult.substitution &&
-              inferenceResult.substitution.apply
-            ) {
+            if (inferenceResult.substitution?.apply) {
               finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
@@ -1665,10 +1648,7 @@ function findSymbolWithEnhancedInference(
 
           if (fieldType) {
             let finalFieldType = fieldType
-            if (
-              inferenceResult.substitution &&
-              inferenceResult.substitution.apply
-            ) {
+            if (inferenceResult.substitution?.apply) {
               finalFieldType = inferenceResult.substitution.apply(fieldType)
             }
 
@@ -1940,9 +1920,9 @@ function resolveMonadBindType(monadBindExpr: any, inferenceResult: any): any {
 }
 
 // Extract variable type from type inference result
-function extractVariableTypeFromInference(
+function _extractVariableTypeFromInference(
   statement: any,
-  substitution: any
+  _substitution: any
 ): any {
   // This is a simplified approach - in a full implementation, we'd need to
   // track which type variables correspond to which expressions
@@ -2198,7 +2178,7 @@ function inferFunctionCallReturnType(call: any, ast?: any): any {
   }
 
   // If we have access to the AST, look up the function definition
-  if (ast && ast.statements) {
+  if (ast?.statements) {
     for (const statement of ast.statements) {
       if (
         statement.kind === "FunctionDeclaration" &&
@@ -2384,9 +2364,9 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
       if (info.hasExplicitType) {
         // Try to find the original type annotation from the AST
         const varDecl = findVariableDeclaration(symbol)
-        if (varDecl && varDecl.type && varDecl.type.kind === "PrimitiveType") {
+        if (varDecl?.type && varDecl.type.kind === "PrimitiveType") {
           const typeAlias = findTypeAliasDefinition(varDecl.type.name)
-          if (typeAlias && typeAlias.aliasedType) {
+          if (typeAlias?.aliasedType) {
             const aliasedTypeStr = formatInferredTypeForDisplay(
               typeAlias.aliasedType
             )
@@ -2429,7 +2409,7 @@ function formatInferredTypeForDisplay(type: any): string {
   if (type.kind === "PrimitiveType") {
     // Check if this "primitive" is actually a struct
     const structInfo = findStructDefinition(type.name)
-    if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
+    if (structInfo?.fields && structInfo.fields.length > 0) {
       connection.console.log(
         `[DEBUG] PrimitiveType '${type.name}' is actually a struct, converting to detailed display`
       )
@@ -2457,7 +2437,7 @@ function formatInferredTypeForDisplay(type: any): string {
     // For type variables, they should have been resolved by substitution
     // If we still have an unresolved type variable, show detailed info for debugging
     const tv = type as any
-    if (tv.name && tv.name.startsWith("t")) {
+    if (tv.name?.startsWith("t")) {
       // This indicates a type variable that wasn't fully resolved
       // Try to infer a more specific type based on context
       return `unknown` // Better than Monad<unknown>
@@ -2496,7 +2476,7 @@ function formatInferredTypeForDisplay(type: any): string {
         `[DEBUG] StructInfo fields: ${JSON.stringify(structInfo.fields)}`
       )
     }
-    if (structInfo && structInfo.fields && structInfo.fields.length > 0) {
+    if (structInfo?.fields && structInfo.fields.length > 0) {
       // Create a RecordType-like structure for consistent formatting
       const structAsRecord = {
         kind: "RecordType",
@@ -2574,11 +2554,11 @@ function formatTypeWithNestedStructures(
   switch (type.kind) {
     case "StructType": {
       let fields = []
-      if (ast && ast.fields) {
+      if (ast?.fields) {
         fields = ast.fields
       } else {
         const structInfo = findStructDefinition(type.name)
-        if (structInfo && structInfo.fields) {
+        if (structInfo?.fields) {
           fields = structInfo.fields
         }
       }
@@ -2589,7 +2569,7 @@ function formatTypeWithNestedStructures(
             field.type,
             null,
             depth + 1,
-            indent + "  "
+            `${indent}  `
           )
           return `${field.name}: ${fieldType}`
         })
@@ -2618,7 +2598,7 @@ function formatTypeWithNestedStructures(
             field.type,
             null,
             depth + 1,
-            indent + "  "
+            `${indent}  `
           )
           return `${field.name}: ${fieldType}`
         })

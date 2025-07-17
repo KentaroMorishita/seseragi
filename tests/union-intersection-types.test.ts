@@ -216,7 +216,7 @@ describe("Union and Intersection Types", () => {
         let x: AB = "hello"
       `
 
-      const { result } = runTypeInference(code)
+      runTypeInference(code)
       // This might fail during type checking depending on implementation
       // The behavior depends on how intersection types are handled
     })
