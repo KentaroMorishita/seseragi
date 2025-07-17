@@ -1202,7 +1202,12 @@ export class TypeInferenceSystem {
     }
 
     // 戻り値の型が指定されていない場合は型変数を作成
-    const returnType = resolveTypeWithTypeParameters(func.returnType)
+    let returnType = resolveTypeWithTypeParameters(func.returnType)
+
+    // 型エイリアスの解決
+    if (returnType) {
+      returnType = this.resolveTypeAlias(returnType)
+    }
 
     // パラメータの型を事前に決定
     const paramTypes: AST.Type[] = []
@@ -1255,7 +1260,11 @@ export class TypeInferenceSystem {
     }
 
     // 関数本体の型を推論
-    const bodyType = this.generateConstraintsForExpression(func.body, bodyEnv)
+    const bodyType = this.generateConstraintsForExpression(
+      func.body,
+      bodyEnv,
+      returnType
+    )
 
     // 関数本体の型と戻り値型が一致することを制約として追加
     this.addConstraint(
@@ -1582,7 +1591,8 @@ export class TypeInferenceSystem {
       case "TernaryExpression":
         resultType = this.generateConstraintsForTernary(
           expr as AST.TernaryExpression,
-          env
+          env,
+          expectedType
         )
         break
 
@@ -2412,9 +2422,78 @@ export class TypeInferenceSystem {
     )
   }
 
+  // 型統一を厳密にチェックする（Union型の特別ケースを除外）
+  private canUnifyWithoutUnion(type1: AST.Type, type2: AST.Type): boolean {
+    try {
+      // 型が完全に一致する場合
+      if (this.typesEqual(type1, type2)) {
+        return true
+      }
+
+      // 型変数の場合は統一可能
+      if (type1.kind === "TypeVariable" || type2.kind === "TypeVariable") {
+        return true
+      }
+
+      // 基本型の場合は名前が一致する必要がある
+      if (type1.kind === "PrimitiveType" && type2.kind === "PrimitiveType") {
+        return type1.name === type2.name
+      }
+
+      // Union型の場合は統一しない（厳密モード）
+      if (type1.kind === "UnionType" || type2.kind === "UnionType") {
+        return false
+      }
+
+      // 構造的な型の場合（ジェネリック型など）
+      if (type1.kind === "GenericType" && type2.kind === "GenericType") {
+        const param1 = type1 as AST.GenericType
+        const param2 = type2 as AST.GenericType
+
+        // 同じ型コンストラクタの場合
+        if (
+          param1.name === param2.name &&
+          param1.typeArguments.length === param2.typeArguments.length
+        ) {
+          // 各型引数が統一可能かチェック
+          for (let i = 0; i < param1.typeArguments.length; i++) {
+            if (
+              !this.canUnifyWithoutUnion(
+                param1.typeArguments[i],
+                param2.typeArguments[i]
+              )
+            ) {
+              return false
+            }
+          }
+          return true
+        }
+        return false
+      }
+
+      // 関数型の場合
+      if (type1.kind === "FunctionType" && type2.kind === "FunctionType") {
+        const func1 = type1 as AST.FunctionType
+        const func2 = type2 as AST.FunctionType
+        return (
+          this.canUnifyWithoutUnion(func1.paramType, func2.paramType) &&
+          this.canUnifyWithoutUnion(func1.returnType, func2.returnType)
+        )
+      }
+
+      // その他の複雑な型の場合は通常の統一を試みる
+      // ただし、実際の制約は追加せずに統一可能性のみチェック
+      this.unify(type1, type2)
+      return true
+    } catch {
+      return false
+    }
+  }
+
   private generateConstraintsForTernary(
     ternary: AST.TernaryExpression,
-    env: Map<string, AST.Type>
+    env: Map<string, AST.Type>,
+    expectedType?: AST.Type
   ): AST.Type {
     const condType = this.generateConstraintsForExpression(
       ternary.condition,
@@ -2422,11 +2501,13 @@ export class TypeInferenceSystem {
     )
     const trueType = this.generateConstraintsForExpression(
       ternary.trueExpression,
-      env
+      env,
+      expectedType
     )
     const falseType = this.generateConstraintsForExpression(
       ternary.falseExpression,
-      env
+      env,
+      expectedType
     )
 
     // 条件はBool型でなければならない
@@ -2449,7 +2530,57 @@ export class TypeInferenceSystem {
       // 同じ型の場合はそのまま返す
       return trueType
     }
-    // 異なる型の場合は、ユニオン型として返す
+
+    // 期待される型が指定されている場合、各分岐が期待される型と一致するかチェック
+    if (expectedType) {
+      // 各分岐が期待される型と統一できるかを個別にチェック
+      // Union型の場合は、単純な型変換ではなく、型の互換性を厳密にチェックする
+
+      // true分岐の型チェック
+      if (!this.canUnifyWithoutUnion(trueType, expectedType)) {
+        this.errors.push(
+          new TypeInferenceError(
+            `Ternary true branch type ${this.typeToString(trueType)} cannot be assigned to expected type ${this.typeToString(expectedType)}`,
+            ternary.trueExpression.line,
+            ternary.trueExpression.column
+          )
+        )
+      }
+
+      // false分岐の型チェック
+      if (!this.canUnifyWithoutUnion(falseType, expectedType)) {
+        this.errors.push(
+          new TypeInferenceError(
+            `Ternary false branch type ${this.typeToString(falseType)} cannot be assigned to expected type ${this.typeToString(expectedType)}`,
+            ternary.falseExpression.line,
+            ternary.falseExpression.column
+          )
+        )
+      }
+
+      // 制約を追加して期待される型を返す
+      this.addConstraint(
+        new TypeConstraint(
+          trueType,
+          expectedType,
+          ternary.trueExpression.line,
+          ternary.trueExpression.column,
+          `Ternary true branch type`
+        )
+      )
+      this.addConstraint(
+        new TypeConstraint(
+          falseType,
+          expectedType,
+          ternary.falseExpression.line,
+          ternary.falseExpression.column,
+          `Ternary false branch type`
+        )
+      )
+      return expectedType
+    }
+
+    // 期待される型が指定されていない場合は、ユニオン型として返す
     return this.createFlattenedUnionType(
       [trueType, falseType],
       ternary.line,
@@ -3843,6 +3974,40 @@ export class TypeInferenceSystem {
           return substitution
         }
       }
+
+      // 同じ型集合でない場合でも、各要素を個別に統合を試みる
+      // これは型エイリアスが解決されたUnion型と新しく作成されたUnion型の統合で重要
+      if (union1.types.length === union2.types.length) {
+        // 順序に関係なく統合を試みる
+        let result = substitution
+        const usedIndices = new Set<number>()
+
+        for (let i = 0; i < union1.types.length; i++) {
+          let found = false
+          for (let j = 0; j < union2.types.length; j++) {
+            if (usedIndices.has(j)) continue
+
+            try {
+              const memberSub = this.unify(union1.types[i], union2.types[j])
+              result = result.compose(memberSub)
+              usedIndices.add(j)
+              found = true
+              break
+            } catch {
+              // この組み合わせは失敗、次を試す
+            }
+          }
+
+          if (!found) {
+            // 対応する型が見つからない場合は統合失敗
+            throw new Error(
+              `Cannot match union type member ${this.typeToString(union1.types[i])}`
+            )
+          }
+        }
+
+        return result
+      }
     }
 
     // 型変数とユニオン型の場合、型変数をユニオン型に束縛
@@ -3900,8 +4065,8 @@ export class TypeInferenceSystem {
         return resultSubstitution
       }
 
-      // Union型を非Union型に統合することはできない
-      // 例外: type2もUnion型で、type1のすべてのメンバーがtype2に含まれる場合
+      // Union型を非Union型に統合する場合
+      // 例外1: type2もUnion型で、type1のすべてのメンバーがtype2に含まれる場合
       if (resolvedType2.kind === "UnionType") {
         const union2 = resolvedType2 as AST.UnionType
         // union1のすべてのメンバーがunion2に含まれているかチェック
@@ -3909,6 +4074,22 @@ export class TypeInferenceSystem {
           union2.types.some((member2) => this.typesEqual(member1, member2))
         )
         if (allMembersIncluded) {
+          return substitution
+        }
+      }
+
+      // 例外2: type2が非Union型で、type1のメンバーのひとつがtype2と統合可能な場合
+      if (resolvedType2.kind !== "UnionType") {
+        // Union型のメンバーのひとつがtype2と統合可能かチェック
+        const canUnifyWithMember = union1.types.some((memberType) => {
+          try {
+            this.unify(memberType, resolvedType2)
+            return true
+          } catch {
+            return false
+          }
+        })
+        if (canUnifyWithMember) {
           return substitution
         }
       }
@@ -5162,21 +5343,10 @@ export class TypeInferenceSystem {
       return this.freshTypeVariable(match.line, match.column)
     }
 
-    // 最初のケースの結果型を基準とする
-    const firstCase = match.cases[0]
+    // 各ケースの結果型を収集
+    const caseResultTypes: AST.Type[] = []
 
-    // パターンマッチングで新しい変数環境を作成
-    const patternEnv = new Map(env)
-    this.generateConstraintsForPattern(firstCase.pattern, exprType, patternEnv)
-
-    // 最初のケースの結果型を推論
-    const resultType = this.generateConstraintsForExpression(
-      firstCase.expression,
-      patternEnv
-    )
-
-    // 残りのケースの型をチェックし、すべて同じ型になるよう制約を追加
-    for (let i = 1; i < match.cases.length; i++) {
+    for (let i = 0; i < match.cases.length; i++) {
       const caseItem = match.cases[i]
 
       // パターンマッチングで新しい変数環境を作成
@@ -5189,17 +5359,18 @@ export class TypeInferenceSystem {
         caseEnv
       )
 
-      // 結果型が一致するよう制約を追加
-      this.addConstraint(
-        new TypeConstraint(
-          caseResultType,
-          resultType,
-          caseItem.expression.line,
-          caseItem.expression.column,
-          `Match case ${i + 1} result type`
-        )
-      )
+      caseResultTypes.push(caseResultType)
     }
+
+    // 複数の結果型がある場合はUnion型として統合
+    const resultType =
+      caseResultTypes.length === 1
+        ? caseResultTypes[0]
+        : this.createFlattenedUnionType(
+            caseResultTypes,
+            match.line,
+            match.column
+          )
 
     return resultType
   }
