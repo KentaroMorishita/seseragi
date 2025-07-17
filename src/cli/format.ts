@@ -1,8 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises"
 import {
   formatSeseragiCode,
-  removeExtraWhitespace,
   normalizeOperatorSpacing,
+  removeExtraWhitespace,
 } from "../formatter/index.js"
 
 export interface FormatCommandOptions {

@@ -2,9 +2,9 @@
  * Seseragi Parser - Recursive Descent Parser
  */
 
-import { type Token, TokenType, Lexer } from "./lexer"
 import * as AST from "./ast"
-import { TypeVariable, PolymorphicTypeVariable } from "./type-inference"
+import { Lexer, type Token, TokenType } from "./lexer"
+import { TypeVariable } from "./type-inference"
 
 export class ParseError extends Error {
   token: Token

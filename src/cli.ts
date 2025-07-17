@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import { Command } from "commander"
-import { formatCommand } from "./cli/format.js"
 import { compileCommand } from "./cli/compile.js"
+import { formatCommand } from "./cli/format.js"
 import { runCommand } from "./cli/run.js"
 
 const program = new Command()

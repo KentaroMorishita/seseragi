@@ -2154,11 +2154,8 @@ export class TypeInferenceSystem {
 
     // 各引数に対して関数適用の制約を生成
     for (const arg of call.arguments) {
-      const argType = this.generateConstraintsForExpression(arg, env)
-      const newResultType = this.freshTypeVariable(call.line, call.column)
-
-      // 実際の引数の型を取得
       const actualArgType = this.generateConstraintsForExpression(arg, env)
+      const newResultType = this.freshTypeVariable(call.line, call.column)
 
       // 関数型からパラメータ型を抽出する型変数を作成
       const expectedParamType = this.freshTypeVariable(call.line, call.column)
@@ -2181,14 +2178,14 @@ export class TypeInferenceSystem {
         )
       )
 
-      // 実際の引数型が関数の期待するパラメータ型の部分型であることを制約として追加
-      this.addSubtypeConstraint(
-        new SubtypeConstraint(
+      // 常に統一制約を使用（一旦元に戻す）
+      this.addConstraint(
+        new TypeConstraint(
           actualArgType,
           expectedParamType,
           call.line,
           call.column,
-          `Function parameter subtype: ${this.typeToString(actualArgType)} <: ${this.typeToString(expectedParamType)}`
+          `Function parameter type: ${this.typeToString(actualArgType)} ~ ${this.typeToString(expectedParamType)}`
         )
       )
 
@@ -2329,14 +2326,14 @@ export class TypeInferenceSystem {
       )
     )
 
-    // 実際の引数型が関数の期待するパラメータ型の部分型であることを制約として追加
-    this.addSubtypeConstraint(
-      new SubtypeConstraint(
+    // 常に統一制約を使用（一旦元に戻す）
+    this.addConstraint(
+      new TypeConstraint(
         argType,
         expectedParamType,
         app.line,
         app.column,
-        `Function application parameter subtype: ${this.typeToString(argType)} <: ${this.typeToString(expectedParamType)}`
+        `Function application parameter type: ${this.typeToString(argType)} ~ ${this.typeToString(expectedParamType)}`
       )
     )
 
@@ -3374,33 +3371,33 @@ export class TypeInferenceSystem {
       }
     }
 
-    // 部分型制約を解決
-    for (const subtypeConstraint of this.subtypeConstraints) {
-      try {
-        const subType = substitution.apply(subtypeConstraint.subType)
-        const superType = substitution.apply(subtypeConstraint.superType)
+    // 部分型制約を解決（一旦無効化）
+    // for (const subtypeConstraint of this.subtypeConstraints) {
+    //   try {
+    //     const subType = substitution.apply(subtypeConstraint.subType)
+    //     const superType = substitution.apply(subtypeConstraint.superType)
 
-        if (!this.isSubtype(subType, superType)) {
-          this.errors.push(
-            new TypeInferenceError(
-              `Subtype constraint violated: ${this.typeToString(subType)} is not a subtype of ${this.typeToString(superType)}`,
-              subtypeConstraint.line,
-              subtypeConstraint.column,
-              subtypeConstraint.context
-            )
-          )
-        }
-      } catch (error) {
-        this.errors.push(
-          new TypeInferenceError(
-            `Error checking subtype constraint: ${error}`,
-            subtypeConstraint.line,
-            subtypeConstraint.column,
-            subtypeConstraint.context
-          )
-        )
-      }
-    }
+    //     if (!this.isSubtype(subType, superType)) {
+    //       this.errors.push(
+    //         new TypeInferenceError(
+    //           `Subtype constraint violated: ${this.typeToString(subType)} is not a subtype of ${this.typeToString(superType)}`,
+    //           subtypeConstraint.line,
+    //           subtypeConstraint.column,
+    //           subtypeConstraint.context
+    //         )
+    //       )
+    //     }
+    //   } catch (error) {
+    //     this.errors.push(
+    //       new TypeInferenceError(
+    //         `Error checking subtype constraint: ${error}`,
+    //         subtypeConstraint.line,
+    //         subtypeConstraint.column,
+    //         subtypeConstraint.context
+    //       )
+    //     )
+    //   }
+    // }
 
     return substitution
   }
@@ -4127,6 +4124,21 @@ export class TypeInferenceSystem {
       // フィールドが見つかった場合、型の互換性は後で unify でチェックされる
     }
     return true
+  }
+
+  /**
+   * 型がRecord型になりうるかを判定（型変数や型エイリアスなど）
+   */
+  private couldBeRecordType(type: AST.Type): boolean {
+    // PrimitiveTypeが型エイリアスでRecord型を指している可能性をチェック
+    if (type.kind === "PrimitiveType") {
+      const resolvedType = this.resolveTypeAlias(type)
+      return resolvedType.kind === "RecordType"
+    }
+
+    // 型変数や多相型変数は統一制約を使用する
+    // 明確にRecord型だとわかる場合のみ部分型制約を適用
+    return false
   }
 
   /**

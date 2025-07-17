@@ -1,9 +1,9 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { Parser } from "../parser.js"
-import { generateTypeScript } from "../codegen.js"
-import { TypeInferenceSystem } from "../type-inference.js"
 import { Program } from "../ast.js"
+import { generateTypeScript } from "../codegen.js"
+import { Parser } from "../parser.js"
+import { TypeInferenceSystem } from "../type-inference.js"
 
 export interface CompileOptions {
   input: string

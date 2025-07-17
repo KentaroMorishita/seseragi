@@ -1,8 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
 import { generateTypeScript } from "../src/codegen"
-import * as AST from "../src/ast"
+import type * as AST from "../src/ast"
 
 describe("Generic Type Declarations", () => {
   test("should parse generic type alias with simple types", () => {
