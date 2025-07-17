@@ -19,6 +19,76 @@ export class TypeVariable extends AST.Type {
   }
 }
 
+// 部分型制約を表現するクラス
+export class SubtypeConstraint {
+  constructor(
+    public subType: AST.Type,
+    public superType: AST.Type,
+    public line: number,
+    public column: number,
+    public context?: string
+  ) {}
+
+  toString(): string {
+    return `${this.typeToString(this.subType)} <: ${this.typeToString(this.superType)}`
+  }
+
+  private typeToString(type: AST.Type): string {
+    if (!type) {
+      return "<undefined>"
+    }
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "TypeVariable":
+        return (type as TypeVariable).name
+      case "PolymorphicTypeVariable":
+        return `'${(type as PolymorphicTypeVariable).name}`
+      case "FunctionType": {
+        const ft = type as AST.FunctionType
+        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
+      }
+      case "GenericType": {
+        const gt = type as AST.GenericType
+        const args = gt.typeArguments
+          .map((t) => this.typeToString(t))
+          .join(", ")
+        return `${gt.name}<${args}>`
+      }
+      case "RecordType": {
+        const rt = type as AST.RecordType
+        const fields = rt.fields
+          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
+          .join(", ")
+        return `{${fields}}`
+      }
+      case "TupleType": {
+        const tupleType = type as AST.TupleType
+        const elements = tupleType.elementTypes
+          .map((elementType) => this.typeToString(elementType))
+          .join(", ")
+        return `(${elements})`
+      }
+      case "StructType": {
+        const st = type as AST.StructType
+        return st.name
+      }
+      case "UnionType": {
+        const ut = type as AST.UnionType
+        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
+        return `(${types})`
+      }
+      case "IntersectionType": {
+        const it = type as AST.IntersectionType
+        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
+        return `(${types})`
+      }
+      default:
+        return "Unknown"
+    }
+  }
+}
+
 // 多相型変数を表現するクラス (例: 'a, 'b)
 export class PolymorphicTypeVariable extends AST.Type {
   kind = "PolymorphicTypeVariable"
@@ -360,6 +430,7 @@ export interface TypeInferenceSystemResult {
 export class TypeInferenceSystem {
   private nextVarId = 1000 // Start from 1000 to avoid conflicts with parser-generated type variables
   private constraints: (TypeConstraint | ArrayAccessConstraint)[] = []
+  private subtypeConstraints: SubtypeConstraint[] = []
   private errors: TypeInferenceError[] = []
   private nodeTypeMap: Map<AST.ASTNode, AST.Type> = new Map() // Track types for AST nodes
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
@@ -790,9 +861,15 @@ export class TypeInferenceSystem {
     this.constraints.push(constraint)
   }
 
+  addSubtypeConstraint(constraint: SubtypeConstraint): void {
+    // console.log(`➕ Adding subtype constraint: ${constraint.toString()} at ${constraint.line}:${constraint.column}${constraint.context ? ` (${constraint.context})` : ''}`)
+    this.subtypeConstraints.push(constraint)
+  }
+
   // 型推論のメインエントリーポイント
   infer(program: AST.Program): TypeInferenceSystemResult {
     this.constraints = []
+    this.subtypeConstraints = []
     this.currentEnvironment.clear() // 環境をクリア
     this.errors = []
     this.nextVarId = 1000 // Reset to 1000 to avoid conflicts with parser-generated type variables
@@ -2080,9 +2157,15 @@ export class TypeInferenceSystem {
       const argType = this.generateConstraintsForExpression(arg, env)
       const newResultType = this.freshTypeVariable(call.line, call.column)
 
-      // 現在の結果型は引数型から新しい結果型へのFunction型でなければならない
+      // 実際の引数の型を取得
+      const actualArgType = this.generateConstraintsForExpression(arg, env)
+
+      // 関数型からパラメータ型を抽出する型変数を作成
+      const expectedParamType = this.freshTypeVariable(call.line, call.column)
+
+      // 現在の結果型は expectedParamType から newResultType へのFunction型でなければならない
       const expectedFuncType = new AST.FunctionType(
-        argType,
+        expectedParamType,
         newResultType,
         call.line,
         call.column
@@ -2094,7 +2177,18 @@ export class TypeInferenceSystem {
           expectedFuncType,
           call.line,
           call.column,
-          `Function application with ${this.typeToString(argType)}`
+          `Function application structure`
+        )
+      )
+
+      // 実際の引数型が関数の期待するパラメータ型の部分型であることを制約として追加
+      this.addSubtypeConstraint(
+        new SubtypeConstraint(
+          actualArgType,
+          expectedParamType,
+          call.line,
+          call.column,
+          `Function parameter subtype: ${this.typeToString(actualArgType)} <: ${this.typeToString(expectedParamType)}`
         )
       )
 
@@ -2214,9 +2308,12 @@ export class TypeInferenceSystem {
     const argType = this.generateConstraintsForExpression(app.argument, env)
     const resultType = this.freshTypeVariable(app.line, app.column)
 
-    // Function型は引数型から結果型への関数でなければならない
+    // 関数からパラメータ型を抽出する型変数を作成
+    const expectedParamType = this.freshTypeVariable(app.line, app.column)
+
+    // Function型は expectedParamType から resultType への関数でなければならない
     const expectedFuncType = new AST.FunctionType(
-      argType,
+      expectedParamType,
       resultType,
       app.line,
       app.column
@@ -2228,7 +2325,18 @@ export class TypeInferenceSystem {
         expectedFuncType,
         app.line,
         app.column,
-        `Function application`
+        `Function application structure`
+      )
+    )
+
+    // 実際の引数型が関数の期待するパラメータ型の部分型であることを制約として追加
+    this.addSubtypeConstraint(
+      new SubtypeConstraint(
+        argType,
+        expectedParamType,
+        app.line,
+        app.column,
+        `Function application parameter subtype: ${this.typeToString(argType)} <: ${this.typeToString(expectedParamType)}`
       )
     )
 
@@ -3266,6 +3374,34 @@ export class TypeInferenceSystem {
       }
     }
 
+    // 部分型制約を解決
+    for (const subtypeConstraint of this.subtypeConstraints) {
+      try {
+        const subType = substitution.apply(subtypeConstraint.subType)
+        const superType = substitution.apply(subtypeConstraint.superType)
+
+        if (!this.isSubtype(subType, superType)) {
+          this.errors.push(
+            new TypeInferenceError(
+              `Subtype constraint violated: ${this.typeToString(subType)} is not a subtype of ${this.typeToString(superType)}`,
+              subtypeConstraint.line,
+              subtypeConstraint.column,
+              subtypeConstraint.context
+            )
+          )
+        }
+      } catch (error) {
+        this.errors.push(
+          new TypeInferenceError(
+            `Error checking subtype constraint: ${error}`,
+            subtypeConstraint.line,
+            subtypeConstraint.column,
+            subtypeConstraint.context
+          )
+        )
+      }
+    }
+
     return substitution
   }
 
@@ -3484,12 +3620,48 @@ export class TypeInferenceSystem {
       return result
     }
 
-    // Record型の場合
-    if (type1.kind === "RecordType" && type2.kind === "RecordType") {
-      const rt1 = type1 as AST.RecordType
-      const rt2 = type2 as AST.RecordType
+    // Record型の場合 - 解決後の型で処理
+    if (
+      resolvedType1.kind === "RecordType" &&
+      resolvedType2.kind === "RecordType"
+    ) {
+      const rt1 = resolvedType1 as AST.RecordType
+      const rt2 = resolvedType2 as AST.RecordType
 
-      // 構造的部分型：一方が他方のサブセットの場合は統一可能
+      // 構造的部分型関係をチェック：rt1 <: rt2 または rt2 <: rt1
+      if (this.isSubtype(rt1, rt2)) {
+        // rt1は rt2の部分型：共通フィールドを統一
+        let result = substitution
+        for (const superField of rt2.fields) {
+          const subField = rt1.fields.find((f) => f.name === superField.name)
+          if (subField) {
+            const fieldSub = this.unify(
+              result.apply(subField.type),
+              result.apply(superField.type)
+            )
+            result = result.compose(fieldSub)
+          }
+        }
+        return result
+      }
+
+      if (this.isSubtype(rt2, rt1)) {
+        // rt2は rt1の部分型：共通フィールドを統一
+        let result = substitution
+        for (const superField of rt1.fields) {
+          const subField = rt2.fields.find((f) => f.name === superField.name)
+          if (subField) {
+            const fieldSub = this.unify(
+              result.apply(subField.type),
+              result.apply(superField.type)
+            )
+            result = result.compose(fieldSub)
+          }
+        }
+        return result
+      }
+
+      // 既存の構造的サブセット処理をバックアップとして保持
       // 長いレコードの方を基準にして、短いレコードがサブセットかチェック
       const [largerRecord, smallerRecord] =
         rt1.fields.length >= rt2.fields.length ? [rt1, rt2] : [rt2, rt1]
@@ -3953,6 +4125,65 @@ export class TypeInferenceSystem {
         return false // フィールドが見つからない
       }
       // フィールドが見つかった場合、型の互換性は後で unify でチェックされる
+    }
+    return true
+  }
+
+  /**
+   * 部分型関係を判定: subType <: superType
+   * subTypeがsuperTypeの部分型（サブタイプ）であるかを判定
+   */
+  private isSubtype(subType: AST.Type, superType: AST.Type): boolean {
+    // 同じ型なら部分型関係成立
+    if (this.typesEqual(subType, superType)) {
+      return true
+    }
+
+    // 型エイリアスを解決
+    const resolvedSub = this.resolveTypeAlias(subType)
+    const resolvedSuper = this.resolveTypeAlias(superType)
+
+    // 解決後に同じ型なら部分型関係成立
+    if (this.typesEqual(resolvedSub, resolvedSuper)) {
+      return true
+    }
+
+    // Record型の構造的部分型関係をチェック
+    if (
+      resolvedSub.kind === "RecordType" &&
+      resolvedSuper.kind === "RecordType"
+    ) {
+      return this.isRecordSubtype(
+        resolvedSub as AST.RecordType,
+        resolvedSuper as AST.RecordType
+      )
+    }
+
+    // その他の型の部分型関係（将来の拡張ポイント）
+    return false
+  }
+
+  /**
+   * Record型の構造的部分型関係を判定
+   * subRecord <: superRecord ⟺
+   * superRecordのすべてのフィールドがsubRecordに存在し、各フィールドが部分型関係にある
+   */
+  private isRecordSubtype(
+    subRecord: AST.RecordType,
+    superRecord: AST.RecordType
+  ): boolean {
+    for (const superField of superRecord.fields) {
+      const subField = subRecord.fields.find((f) => f.name === superField.name)
+
+      // スーパータイプのフィールドがサブタイプに存在しない場合は部分型関係なし
+      if (!subField) {
+        return false
+      }
+
+      // フィールドの型も部分型関係にある必要がある（再帰的チェック）
+      if (!this.isSubtype(subField.type, superField.type)) {
+        return false
+      }
     }
     return true
   }
