@@ -1,3 +1,0 @@
-type Box<T> = T
-let x: Box<Int> = 42
-let y = x

@@ -1,6 +1,0 @@
-type Animal = { name: String }
-type Dog = { name: String, breed: String }
-fn getName animal: Animal -> String = animal.name
-let dog: Dog = { name: "Buddy", breed: "Golden" }
-let result = getName dog
-show result
