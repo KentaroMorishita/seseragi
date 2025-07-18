@@ -119,3 +119,16 @@ src/
 bun install
 bun run all  # 初回ビルド + VS Code拡張インストール
 ```
+
+## コンパイル・実行コマンド
+
+```bash
+# ⚠️ 重要: CLIは必ずこのコマンドで実行する
+bun src/cli.ts <ファイル名>
+
+# 例:
+bun src/cli.ts examples/hello.ssrg
+bun src/cli.ts examples/generics-comprehensive.ssrg
+
+# dist/cli.js は使用禁止！
+```

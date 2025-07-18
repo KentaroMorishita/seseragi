@@ -1,0 +1,1 @@
+type Container<T> = { value: T, metadata: String }

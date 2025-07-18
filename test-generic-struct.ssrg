@@ -1,0 +1,8 @@
+// テスト用のジェネリックstruct
+struct Point<T> {
+  x: T,
+  y: T
+}
+
+let intPoint: Point<Int> = Point { x: 1, y: 2 }
+let floatPoint: Point<Float> = Point { x: 1.0, y: 2.0 }

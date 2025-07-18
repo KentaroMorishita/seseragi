@@ -24,7 +24,7 @@ import { TextDocument } from "vscode-languageserver-textdocument"
 import * as AST from "../ast"
 import { formatSeseragiCode } from "../formatter/index.js"
 import { Parser } from "../parser"
-import { TypeInferenceSystem } from "../type-inference"
+import { TypeInferenceSystem, infer } from "../type-inference"
 import type { TypeChecker } from "../typechecker"
 
 // Create a connection for the server, using Node's IPC as a transport
@@ -157,11 +157,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     // Parse the document
     const parser = new Parser(text)
     const parseResult = parser.parse()
-    const ast = new AST.Program(parseResult.statements || [])
+    const _ast = new AST.Program(parseResult.statements || [])
 
     // Use new type inference system
-    const typeInference = new TypeInferenceSystem()
-    const inferenceResult = typeInference.infer(ast)
+    const inferenceResult = infer(parseResult.statements || [])
 
     // Use only the new type inference system errors
     const allErrors = inferenceResult.errors

@@ -1,0 +1,9 @@
+type Hoge<T> = {
+//   value: T
+// }
+
+// let hoge: Hoge<Int> = { value: 42 };
+
+// show hoge;
+
+

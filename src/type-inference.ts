@@ -622,7 +622,16 @@ export class TypeInferenceSystem {
     switch (type.kind) {
       case "TypeVariable": {
         const tv = type as TypeVariable
-        return substitutionMap.get(tv.name) || type
+        const substituted = substitutionMap.get(tv.name)
+        if (substituted) {
+          console.log(
+            "🔧 Substituting TypeVariable:",
+            tv.name,
+            "->",
+            this.typeToString(substituted)
+          )
+        }
+        return substituted || type
       }
       case "PolymorphicTypeVariable": {
         const ptv = type as PolymorphicTypeVariable
@@ -691,9 +700,178 @@ export class TypeInferenceSystem {
           st.column
         )
       }
+      case "PrimitiveType": {
+        // PrimitiveTypeが型パラメータの場合は置換
+        const pt = type as AST.PrimitiveType
+        const substituted = substitutionMap.get(pt.name)
+        if (substituted) {
+          console.log(
+            "🔧 Substituting PrimitiveType:",
+            pt.name,
+            "->",
+            this.typeToString(substituted)
+          )
+          return substituted
+        }
+        return type
+      }
       default:
         return type
     }
+  }
+
+  // 型の中から型変数を収集する
+  private collectTypeVariables(
+    type: AST.Type,
+    typeVariables: Set<TypeVariable>
+  ): void {
+    switch (type.kind) {
+      case "TypeVariable":
+        typeVariables.add(type as TypeVariable)
+        break
+      case "TupleType": {
+        const tupleType = type as AST.TupleType
+        tupleType.elementTypes.forEach((t) =>
+          this.collectTypeVariables(t, typeVariables)
+        )
+        break
+      }
+      case "UnionType": {
+        const unionType = type as AST.UnionType
+        unionType.types.forEach((t) =>
+          this.collectTypeVariables(t, typeVariables)
+        )
+        break
+      }
+      case "IntersectionType": {
+        const intersectionType = type as AST.IntersectionType
+        intersectionType.types.forEach((t) =>
+          this.collectTypeVariables(t, typeVariables)
+        )
+        break
+      }
+      case "RecordType": {
+        const recordType = type as AST.RecordType
+        recordType.fields.forEach((field) =>
+          this.collectTypeVariables(field.type, typeVariables)
+        )
+        break
+      }
+      case "FunctionType": {
+        const functionType = type as AST.FunctionType
+        this.collectTypeVariables(functionType.paramType, typeVariables)
+        this.collectTypeVariables(functionType.returnType, typeVariables)
+        break
+      }
+      case "GenericType": {
+        const genericType = type as AST.GenericType
+        if (genericType.typeArguments) {
+          genericType.typeArguments.forEach((arg) =>
+            this.collectTypeVariables(arg, typeVariables)
+          )
+        }
+        break
+      }
+    }
+  }
+
+  // ジェネリック型エイリアス専用の型変数置換
+  private substituteTypeVariablesInGenericAlias(
+    type: AST.Type,
+    typeParameters: AST.TypeParameter[],
+    typeArguments: AST.Type[]
+  ): AST.Type {
+    // 型パラメータの名前と型引数の位置を使って置換マップを作成
+    const substitutionMap = new Map<string, AST.Type>()
+    for (
+      let i = 0;
+      i < typeParameters.length && i < typeArguments.length;
+      i++
+    ) {
+      substitutionMap.set(typeParameters[i].name, typeArguments[i])
+    }
+
+    // 型エイリアスの定義内で見つかった型変数を、型パラメータの位置に基づいて置換
+    const typeVariablesToReplace = new Set<TypeVariable>()
+    this.collectTypeVariables(type, typeVariablesToReplace)
+
+    // 型変数を位置ベースで置換するマップを作成
+    const typeVariableArray = Array.from(typeVariablesToReplace).sort(
+      (a, b) => a.id - b.id
+    )
+    const positionMap = new Map<number, AST.Type>()
+    for (
+      let i = 0;
+      i < typeVariableArray.length && i < typeArguments.length;
+      i++
+    ) {
+      positionMap.set(typeVariableArray[i].id, typeArguments[i])
+    }
+
+    const substitute = (t: AST.Type): AST.Type => {
+      switch (t.kind) {
+        case "TypeVariable": {
+          const tv = t as TypeVariable
+          console.log(
+            "🔧 Checking TypeVariable:",
+            tv.name,
+            "ID:",
+            tv.id,
+            "Available substitutions:",
+            Array.from(positionMap.keys())
+          )
+          // 型変数のIDを使って対応する型引数を取得
+          const substituted = positionMap.get(tv.id)
+          if (substituted) {
+            console.log(
+              "🔧 Substituting TypeVariable by ID:",
+              tv.id,
+              "->",
+              this.typeToString(substituted)
+            )
+            return substituted
+          }
+          return t
+        }
+        case "TupleType": {
+          const tt = t as AST.TupleType
+          return new AST.TupleType(
+            tt.elementTypes.map(substitute),
+            tt.line,
+            tt.column
+          )
+        }
+        case "RecordType": {
+          const rt = t as AST.RecordType
+          return new AST.RecordType(
+            rt.fields.map(
+              (f) =>
+                new AST.RecordField(
+                  f.name,
+                  substitute(f.type),
+                  f.line,
+                  f.column
+                )
+            ),
+            rt.line,
+            rt.column
+          )
+        }
+        case "FunctionType": {
+          const ft = t as AST.FunctionType
+          return new AST.FunctionType(
+            substitute(ft.paramType),
+            substitute(ft.returnType),
+            ft.line,
+            ft.column
+          )
+        }
+        default:
+          return t
+      }
+    }
+
+    return substitute(type)
   }
 
   // 多相型を具体化（インスタンス化）
@@ -871,6 +1049,8 @@ export class TypeInferenceSystem {
     this.constraints = []
     this.subtypeConstraints = []
     this.currentEnvironment.clear() // 環境をクリア
+    this.typeAliases.clear() // ジェネリック型エイリアス情報をクリア
+    this.typeAliasParameterMappings.clear() // 型パラメータマッピングをクリア
     this.errors = []
     this.nextVarId = 1000 // Reset to 1000 to avoid conflicts with parser-generated type variables
     this.nodeTypeMap.clear()
@@ -1466,12 +1646,15 @@ export class TypeInferenceSystem {
     typeAlias: AST.TypeAliasDeclaration,
     env: Map<string, AST.Type>
   ): void {
-    // 型エイリアスを環境に追加
-    // エイリアスされる型がそのままエイリアス名で参照される
-    env.set(typeAlias.name, typeAlias.aliasedType)
+    // ジェネリック型エイリアス情報を保存
+    this.typeAliases.set(typeAlias.name, typeAlias)
 
-    // 型エイリアス解決用の環境にも追加
-    this.currentEnvironment.set(typeAlias.name, typeAlias.aliasedType)
+    // 非ジェネリック型エイリアスの場合は従来通り環境に追加
+    if (!typeAlias.typeParameters || typeAlias.typeParameters.length === 0) {
+      env.set(typeAlias.name, typeAlias.aliasedType)
+      this.currentEnvironment.set(typeAlias.name, typeAlias.aliasedType)
+    }
+    // ジェネリック型エイリアスは resolveTypeAlias で具体化時に処理
   }
 
   private createConstructorType(
@@ -4305,6 +4488,63 @@ export class TypeInferenceSystem {
           return this.resolveTypeAlias(aliasedType, newVisited)
         }
       }
+    } else if (type.kind === "GenericType") {
+      // ジェネリック型の場合（例: Box<Int>）
+      const genericType = type as AST.GenericType
+      console.log(
+        "🔧 Resolving GenericType:",
+        genericType.name,
+        "with args:",
+        genericType.typeArguments.map((t) => this.typeToString(t))
+      )
+
+      // 循環参照チェック
+      if (visited.has(genericType.name)) {
+        return type
+      }
+
+      // ジェネリック型エイリアスをチェック
+      const typeAlias = this.typeAliases.get(genericType.name)
+      console.log(
+        "🔧 Found type alias:",
+        typeAlias?.name,
+        "with params:",
+        typeAlias?.typeParameters?.map((p) => p.name)
+      )
+      if (typeAlias?.typeParameters) {
+        // 型パラメータと型引数のマッピングを作成
+        const typeParameterMap = new Map<string, AST.Type>()
+        for (
+          let i = 0;
+          i < typeAlias.typeParameters.length &&
+          i < genericType.typeArguments.length;
+          i++
+        ) {
+          const param = typeAlias.typeParameters[i]
+          const arg = genericType.typeArguments[i]
+          typeParameterMap.set(param.name, arg)
+          console.log("🔧 Mapping:", param.name, "->", this.typeToString(arg))
+          console.log(
+            "🔧 Aliased type:",
+            this.typeToString(typeAlias.aliasedType)
+          )
+        }
+
+        // 型変数名で置換する（型変数名がパラメータ名と異なる場合のため）
+        const instantiatedType = this.substituteTypeVariablesInGenericAlias(
+          typeAlias.aliasedType,
+          typeAlias.typeParameters,
+          genericType.typeArguments
+        )
+
+        console.log(
+          "🔧 Instantiated type:",
+          this.typeToString(instantiatedType)
+        )
+        const newVisited = new Set(visited)
+        newVisited.add(genericType.name)
+        return this.resolveTypeAlias(instantiatedType, newVisited)
+      }
     } else if (type.kind === "IntersectionType") {
       // Intersection型の場合、各構成要素を再帰的に解決
       const intersectionType = type as AST.IntersectionType
@@ -4365,6 +4605,13 @@ export class TypeInferenceSystem {
 
   // 環境を保持するためのフィールド（既に存在する可能性）
   private currentEnvironment: Map<string, AST.Type> = new Map()
+
+  // ジェネリック型エイリアス情報を保持
+  private typeAliases: Map<string, AST.TypeAliasDeclaration> = new Map()
+
+  // 型エイリアス内の型パラメータと型変数の対応関係を保持
+  private typeAliasParameterMappings: Map<string, Map<string, string>> =
+    new Map()
 
   // 構造的部分型：小さいレコードが大きいレコードのサブセットかどうかチェック
   private isRecordSubset(

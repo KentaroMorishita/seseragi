@@ -143,7 +143,7 @@ const headList = <T>(list: List<T>): Maybe<T> => list.tag === 'Cons' ? { tag: 'J
 const tailList = <T>(list: List<T>): List<T> => list.tag === 'Cons' ? list.tail : Empty;
 
 const print = (value: any): void => {
-  // Seseragiåã®å ´åã¯ç¾ããæ´å½¢
+  // Seseragi型の場合は美しく整形
   if (value && typeof value === 'object' && (
     value.tag === 'Just' || value.tag === 'Nothing' ||
     value.tag === 'Left' || value.tag === 'Right' ||
@@ -151,14 +151,14 @@ const print = (value: any): void => {
   )) {
     console.log(toString(value))
   }
-  // éå¸¸ã®ãªãã¸ã§ã¯ãã¯ãã®ã¾ã¾
+  // 通常のオブジェクトはそのまま
   else {
     console.log(value)
   }
 };
 const putStrLn = (value: string): void => console.log(value);
 const toString = (value: any): string => {
-  // Maybeåã®ç¾ããè¡¨ç¤º
+  // Maybe型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Just') {
     return `Just(${toString(value.value)})`
   }
@@ -166,7 +166,7 @@ const toString = (value: any): string => {
     return 'Nothing'
   }
 
-  // Eitheråã®ç¾ããè¡¨ç¤º
+  // Either型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Left') {
     return `Left(${toString(value.value)})`
   }
@@ -174,7 +174,7 @@ const toString = (value: any): string => {
     return `Right(${toString(value.value)})`
   }
 
-  // Liståã®ç¾ããè¡¨ç¤º
+  // List型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Empty') {
     return "`[]"
   }
@@ -188,17 +188,17 @@ const toString = (value: any): string => {
     return "`[" + items.join(', ') + "]"
   }
 
-  // Tupleåã®ç¾ããè¡¨ç¤º
+  // Tuple型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Tuple') {
     return `(${value.elements.map(toString).join(', ')})`
   }
 
-  // éåã®è¡¨ç¤º
+  // 配列の表示
   if (Array.isArray(value)) {
     return `[${value.map(toString).join(', ')}]`
   }
 
-  // ããªããã£ãå
+  // プリミティブ型
   if (typeof value === 'string') {
     return `"${value}"`
   }
@@ -209,7 +209,7 @@ const toString = (value: any): string => {
     return value ? 'True' : 'False'
   }
 
-  // æ®éã®ãªãã¸ã§ã¯ãï¼æ§é ä½ãªã©ï¼
+  // 普通のオブジェクト（構造体など）
   if (typeof value === 'object' && value !== null) {
     const pairs = []
     for (const key in value) {
@@ -218,12 +218,12 @@ const toString = (value: any): string => {
       }
     }
 
-    // æ§é ä½åãåå¾ï¼constructor.nameãä½¿ç¨ï¼
+    // 構造体名を取得（constructor.nameを使用）
     const structName = value.constructor && value.constructor.name !== 'Object'
       ? value.constructor.name
       : ''
 
-    // è¤æ°ãã£ã¼ã«ããããå ´åã¯ã¤ã³ãã³ãè¡¨ç¤º
+    // 複数フィールドがある場合はインデント表示
     if (pairs.length > 2) {
       return `${structName} {\n  ${pairs.join(',\n  ')}\n}`
     } else {
@@ -281,14 +281,115 @@ const listToArray = curry(<T>(list: List<T>): T[] => {
   return result;
 });
 
-type Animal = { name: string };
+// Struct method and operator dispatch tables
+let __structMethods: Record<string, Record<string, Function>> = {};
+let __structOperators: Record<string, Record<string, Function>> = {};
 
-type Dog = { name: string, breed: string };
+// Method dispatch helper
+function __dispatchMethod(obj: any, methodName: string, ...args: any[]): any {
+  // 構造体のフィールドアクセスの場合は直接返す
+  if (args.length === 0 && obj.hasOwnProperty(methodName)) {
+    return obj[methodName];
+  }
+  const structName = obj.constructor.name;
+  const structMethods = __structMethods[structName];
+  if (structMethods && structMethods[methodName]) {
+    return structMethods[methodName](obj, ...args);
+  }
+  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);
+}
 
-const getName = (animal: Animal): string => animal.name;
+// Operator dispatch helper
+function __dispatchOperator(left: any, operator: string, right: any): any {
+  const structName = left.constructor.name;
+  const structOperators = __structOperators[structName];
+  if (structOperators && structOperators[operator]) {
+    return structOperators[operator](left, right);
+  }
+  // Fall back to native JavaScript operator
+  switch (operator) {
+    case '+': return left + right;
+    case '-': return left - right;
+    case '*': return left * right;
+    case '/': return left / right;
+    case '%': return left % right;
+    case '==': return left == right;
+    case '!=': return left != right;
+    case '<': return left < right;
+    case '>': return left > right;
+    case '<=': return left <= right;
+    case '>=': return left >= right;
+    case '&&': return left && right;
+    case '||': return left || right;
+    default: throw new Error(`Unknown operator: ${operator}`);
+  }
+}
 
-const dog: Dog = { name: "Buddy", breed: "Golden" };
 
-const result = getName(dog);
+const identity = <T>(x: any): any => x;
 
-show(result);
+const const = curry(<A, B>(a: any, b: any): any => a);
+
+const intResult = identity(42);
+
+const stringResult = identity("hello");
+
+const boolResult = identity(true);
+
+const explicitString = identity<string>("world");
+
+const explicitInt = identity<number>(100);
+
+const constResult = const(42)("ignored");
+
+const twice = curry(<T>(f: (arg: any) => any, x: any): any => f(f(x)));
+
+const addOne = (x: any) => (x + 1);
+
+const twiceAddOne = twice(addOne)(5);
+
+const nestedResult = const(identity(42))("ignored");
+
+type Box<T> = any;
+
+type Pair<A, B> = [any, any];
+
+type Container<T> = { value: any, metadata: string };
+
+type Array<T> = List<any>;
+
+const intBox: Box<number> = 42;
+
+const stringBox: Box<string> = "hello";
+
+const pairIntString: Pair<number, string> = { tag: 'Tuple', elements: [42, "hello"] };
+
+const pairBoolFloat: Pair<boolean, number> = { tag: 'Tuple', elements: [true, 3.14] };
+
+const intContainer: Container<number> = { value: 42, metadata: "number" };
+
+const stringContainer: Container<string> = { value: "hello", metadata: "text" };
+
+const makeBox = <T>(value: any): any => value;
+
+const wrapValue = <T>(value: any): any => value;
+
+const wrappedInt = wrapValue(42);
+
+const wrappedString = wrapValue("hello");
+
+const apply = curry(<A, B>(f: (arg: any) => any, x: any): any => f(x));
+
+const typedResult: string = identity<string>("typed");
+
+const complexResult = apply(twice(addOne))(10);
+
+const chainedResult = apply(identity)(identity(42));
+
+const partialConst = const(42);
+
+const finalResult = partialConst("ignored");
+
+const lambdaMap = (f: any) => (x: any) => f(x);
+
+const mappedResult = lambdaMap(identity)(123);
