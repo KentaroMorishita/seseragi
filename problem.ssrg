@@ -1,0 +1,6 @@
+type ID = String | Int
+
+let hoge: Array<ID> = [1, "2", 3, "4"] as Array<ID>
+
+
+show hoge

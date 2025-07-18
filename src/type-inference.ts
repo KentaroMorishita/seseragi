@@ -866,6 +866,30 @@ export class TypeInferenceSystem {
             ft.column
           )
         }
+        case "GenericType": {
+          const gt = t as AST.GenericType
+          return new AST.GenericType(
+            gt.name,
+            gt.typeArguments.map(substitute),
+            gt.line,
+            gt.column
+          )
+        }
+        case "PrimitiveType": {
+          const pt = t as AST.PrimitiveType
+          // 型パラメータ名が一致する場合は置換
+          const substituted = substitutionMap.get(pt.name)
+          if (substituted) {
+            console.log(
+              "🔧 Substituting PrimitiveType by name:",
+              pt.name,
+              "->",
+              this.typeToString(substituted)
+            )
+            return substituted
+          }
+          return t
+        }
         default:
           return t
       }
@@ -4501,6 +4525,22 @@ export class TypeInferenceSystem {
       // 循環参照チェック
       if (visited.has(genericType.name)) {
         return type
+      }
+
+      // まず組み込み型をチェック
+      const builtinTypes = ["Maybe", "Either", "List", "Array"]
+      if (builtinTypes.includes(genericType.name)) {
+        console.log("🔧 Found builtin type:", genericType.name)
+        // 組み込み型は型引数を解決して返す
+        const resolvedTypeArgs = genericType.typeArguments.map((arg) =>
+          this.resolveTypeAlias(arg, visited)
+        )
+        return new AST.GenericType(
+          genericType.name,
+          resolvedTypeArgs,
+          genericType.line,
+          genericType.column
+        )
       }
 
       // ジェネリック型エイリアスをチェック
