@@ -1,6 +1,7 @@
 import { Parser } from "@seseragi/core/parser"
-import { infer } from "@seseragi/core/type-inference"
+import { infer, TypeInferenceSystem } from "@seseragi/core/type-inference"
 import { generateTypeScript } from "@seseragi/core/codegen"
+import * as AST from "@seseragi/core/ast"
 import * as ts from "typescript"
 
 export async function compileAndRun(seseragiCode: string): Promise<string> {
@@ -14,7 +15,9 @@ export async function compileAndRun(seseragiCode: string): Promise<string> {
     }
 
     // 型推論
-    const inferenceResult = infer(parseResult.statements!)
+    const inference = new TypeInferenceSystem()
+    const program = new AST.Program(parseResult.statements!)
+    const inferenceResult = inference.infer(program)
 
     if (inferenceResult.errors.length > 0) {
       throw new Error(inferenceResult.errors.map((e) => e.message).join("\n"))

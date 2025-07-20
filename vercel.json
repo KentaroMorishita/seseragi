@@ -1,5 +1,5 @@
 {
-  "buildCommand": "./scripts/build-vercel.sh && cd playground && bun install && bun run build",
+  "buildCommand": "cd playground && bun install && bun run build",
   "outputDirectory": "playground/dist",
   "installCommand": "bun install",
   "framework": null,
