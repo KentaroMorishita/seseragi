@@ -36,6 +36,7 @@ import {
   type MethodCall,
   type MethodDeclaration,
   type MonadBind,
+  type NullishCoalescingExpression,
   type MonoidDeclaration,
   type OperatorDeclaration,
   type OrPattern,
@@ -572,6 +573,19 @@ export class CodeGenerator {
       "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });",
       "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });",
       "",
+      "// Nullish coalescing helper functions",
+      "const fromMaybe = <T>(defaultValue: T, maybe: Maybe<T>): T => {",
+      "  return maybe.tag === 'Just' ? maybe.value : defaultValue;",
+      "};",
+      "",
+      "const fromRight = <L, R>(defaultValue: R, either: Either<L, R>): R => {",
+      "  return either.tag === 'Right' ? either.value : defaultValue;",
+      "};",
+      "",
+      "const fromLeft = <L, R>(defaultValue: L, either: Either<L, R>): L => {",
+      "  return either.tag === 'Left' ? either.value : defaultValue;",
+      "};",
+      "",
       "const Empty: List<never> = { tag: 'Empty' };",
       "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });",
       "",
@@ -944,11 +958,17 @@ ${indent}}`
   }
 
   // Maybe型かどうかをチェック（コード生成用）
-  private isMaybeType(type: Type): boolean {
-    if (type.kind === "GenericType" && type.name === "Maybe") {
-      return true
-    }
-    return false
+  private isMaybeType(type: Type | undefined): boolean {
+    return (
+      type?.kind === "GenericType" && (type as GenericType).name === "Maybe"
+    )
+  }
+
+  // Either型かどうかをチェック
+  private isEitherType(type: Type | undefined): boolean {
+    return (
+      type?.kind === "GenericType" && (type as GenericType).name === "Either"
+    )
   }
 
   // impl ブロックの生成
@@ -1229,6 +1249,10 @@ ${indent}}`
         return this.generateTemplateExpression(expr as TemplateExpression)
       case "BinaryOperation":
         return this.generateBinaryOperation(expr as BinaryOperation)
+      case "NullishCoalescingExpression":
+        return this.generateNullishCoalescing(
+          expr as NullishCoalescingExpression
+        )
       case "UnaryOperation":
         return this.generateUnaryOperation(expr as UnaryOperation)
       case "FunctionCall":
@@ -1353,6 +1377,72 @@ ${indent}}`
 
     // 構造体の演算子オーバーロードの可能性がある場合は演算子ディスパッチを使用
     return this.generateOperatorDispatch(binOp.operator, left, right)
+  }
+
+  // Nullish Coalescing演算子の生成
+  generateNullishCoalescing(
+    nullishCoalescing: NullishCoalescingExpression
+  ): string {
+    const left = this.generateExpression(nullishCoalescing.left)
+    const right = this.generateExpression(nullishCoalescing.right)
+
+    // 左辺の型を取得して適切なランタイム関数を選択
+    const leftType = this.getResolvedType(nullishCoalescing.left)
+
+    // デバッグ: 左辺の型情報を出力
+    if (nullishCoalescing.left.kind === "FunctionApplication") {
+      console.log("[DEBUG] FunctionApplication left type:", leftType)
+      console.log("[DEBUG] Left expr kind:", nullishCoalescing.left.kind)
+      console.log(
+        "[DEBUG] Left expr type from expr:",
+        nullishCoalescing.left.type
+      )
+      if (this.typeInferenceResult?.nodeTypeMap) {
+        const mappedType = this.typeInferenceResult.nodeTypeMap.get(
+          nullishCoalescing.left
+        )
+        console.log("[DEBUG] Type from nodeTypeMap:", mappedType)
+
+        // 関数名を取得
+        const funcApp = nullishCoalescing.left as FunctionApplication
+        if (funcApp.function.kind === "Identifier") {
+          const funcName = (funcApp.function as Identifier).name
+          console.log("[DEBUG] Function name:", funcName)
+          console.log("[DEBUG] Function expr type:", funcApp.function.type)
+          const funcType = this.typeInferenceResult.nodeTypeMap.get(
+            funcApp.function
+          )
+          console.log("[DEBUG] Function type from nodeTypeMap:", funcType)
+        }
+      }
+    }
+
+    if (this.isMaybeType(leftType)) {
+      const rightType = this.getResolvedType(nullishCoalescing.right)
+
+      // 右辺もMaybe型の場合: 特別な処理が必要
+      if (this.isMaybeType(rightType)) {
+        // Maybe<T> ?? Maybe<U> の場合、左辺がJustなら左辺の値、そうでなければ右辺の値
+        return `(${left}.tag === 'Just' ? ${left}.value : (${right}.tag === 'Just' ? ${right}.value : undefined))`
+      }
+
+      // Maybe型の場合: fromMaybe(defaultValue, maybe)
+      return `fromMaybe(${right}, ${left})`
+    } else if (this.isEitherType(leftType)) {
+      const rightType = this.getResolvedType(nullishCoalescing.right)
+
+      // 右辺もEither型の場合: 特別な処理が必要
+      if (this.isEitherType(rightType)) {
+        // Either<L, R> ?? Either<L2, R2> の場合、左辺がRightなら左辺の値、そうでなければ右辺の値
+        return `(${left}.tag === 'Right' ? ${left}.value : (${right}.tag === 'Right' ? ${right}.value : undefined))`
+      }
+
+      // Either型の場合: fromRight(defaultValue, either)
+      return `fromRight(${right}, ${left})`
+    } else {
+      // その他の場合: TypeScriptのnull合体演算子を使用
+      return `(${left} ?? ${right})`
+    }
   }
 
   // 基本演算子かどうかをチェック
