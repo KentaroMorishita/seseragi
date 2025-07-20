@@ -1525,7 +1525,7 @@ export class Parser {
   }
 
   private ternaryExpression(): AST.Expression {
-    let expr = this.functionApplicationExpression()
+    let expr = this.nullishCoalescingExpression()
 
     if (this.match(TokenType.QUESTION)) {
       const startLine = this.previous().line
@@ -2143,6 +2143,19 @@ export class Parser {
         this.previous().line,
         this.previous().column
       )
+    }
+
+    return expr
+  }
+
+  private nullishCoalescingExpression(): AST.Expression {
+    let expr = this.functionApplicationExpression()
+
+    while (this.match(TokenType.NULLISH_COALESCING)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      const right = this.functionApplicationExpression()
+      expr = new AST.NullishCoalescingExpression(expr, right, line, column)
     }
 
     return expr

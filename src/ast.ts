@@ -767,6 +767,23 @@ export class TypeAssertion extends Expression {
   }
 }
 
+export class NullishCoalescingExpression extends Expression {
+  kind = "NullishCoalescingExpression"
+  left: Expression
+  right: Expression
+
+  constructor(
+    left: Expression,
+    right: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.left = left
+    this.right = right
+  }
+}
+
 export class RecordSpreadField extends ASTNode {
   kind = "RecordSpreadField"
   spreadExpression: SpreadExpression

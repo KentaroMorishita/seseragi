@@ -1746,6 +1746,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "NullishCoalescingExpression":
+        resultType = this.generateConstraintsForNullishCoalescing(
+          expr as AST.NullishCoalescingExpression,
+          env
+        )
+        break
+
       case "UnaryOperation":
         resultType = this.generateConstraintsForUnaryOperation(
           expr as AST.UnaryOperation,
@@ -2190,6 +2197,228 @@ export class TypeInferenceSystem {
         )
         return this.freshTypeVariable(binOp.line, binOp.column)
     }
+  }
+
+  private generateConstraintsForNullishCoalescing(
+    nullishCoalescing: AST.NullishCoalescingExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    const leftType = this.generateConstraintsForExpression(
+      nullishCoalescing.left,
+      env
+    )
+    const rightType = this.generateConstraintsForExpression(
+      nullishCoalescing.right,
+      env
+    )
+
+    // 左辺と右辺の式に型情報を設定
+    nullishCoalescing.left.type = leftType
+    nullishCoalescing.right.type = rightType
+
+    // 型変数の場合は、Maybe型の可能性を考慮した特別な制約を追加
+    if (leftType.kind === "TypeVariable") {
+      // 右辺も型変数の場合は、より柔軟な制約を追加
+      if (rightType.kind === "TypeVariable") {
+        const resultTypeVar = this.freshTypeVariable(
+          nullishCoalescing.line,
+          nullishCoalescing.column
+        )
+
+        // 左辺がMaybe<resultTypeVar>または右辺がresultTypeVarである制約
+        const maybeType = new AST.GenericType(
+          "Maybe",
+          [resultTypeVar],
+          nullishCoalescing.line,
+          nullishCoalescing.column
+        )
+
+        // 左辺型をMaybe型として制約
+        this.addConstraint(
+          new TypeConstraint(
+            leftType,
+            maybeType,
+            nullishCoalescing.line,
+            nullishCoalescing.column,
+            "Nullish coalescing left operand should be Maybe type"
+          )
+        )
+
+        // 右辺型は結果型と互換
+        this.addConstraint(
+          new TypeConstraint(
+            rightType,
+            resultTypeVar,
+            nullishCoalescing.line,
+            nullishCoalescing.column,
+            "Nullish coalescing right operand should be compatible with result"
+          )
+        )
+
+        return resultTypeVar
+      }
+
+      // 右辺もMaybe型の場合は特別な処理
+      if (this.isMaybeType(rightType)) {
+        const rightMaybeInnerType = (rightType as AST.GenericType)
+          .typeArguments[0]
+
+        // 左辺がMaybe型である可能性を考慮
+        const innerTypeVar = this.freshTypeVariable(
+          nullishCoalescing.line,
+          nullishCoalescing.column
+        )
+        const maybeType = new AST.GenericType(
+          "Maybe",
+          [innerTypeVar],
+          nullishCoalescing.line,
+          nullishCoalescing.column
+        )
+
+        // 左辺型をMaybe型として制約
+        this.addConstraint(
+          new TypeConstraint(
+            leftType,
+            maybeType,
+            nullishCoalescing.line,
+            nullishCoalescing.column,
+            "Nullish coalescing left operand should be Maybe type"
+          )
+        )
+
+        // 両方の内部型の互換性制約
+        this.addConstraint(
+          new TypeConstraint(
+            innerTypeVar,
+            rightMaybeInnerType,
+            nullishCoalescing.line,
+            nullishCoalescing.column,
+            "Maybe inner types should be compatible"
+          )
+        )
+
+        return innerTypeVar
+      }
+
+      // 右辺が非Maybe型の場合
+      const innerTypeVar = this.freshTypeVariable(
+        nullishCoalescing.line,
+        nullishCoalescing.column
+      )
+      const maybeType = new AST.GenericType(
+        "Maybe",
+        [innerTypeVar],
+        nullishCoalescing.line,
+        nullishCoalescing.column
+      )
+
+      // 左辺型をMaybe型として制約
+      this.addConstraint(
+        new TypeConstraint(
+          leftType,
+          maybeType,
+          nullishCoalescing.line,
+          nullishCoalescing.column,
+          "Nullish coalescing left operand should be Maybe type"
+        )
+      )
+
+      // 内部型と右辺型の互換性制約
+      this.addConstraint(
+        new TypeConstraint(
+          innerTypeVar,
+          rightType,
+          nullishCoalescing.line,
+          nullishCoalescing.column,
+          "Maybe inner type should be compatible with default value"
+        )
+      )
+
+      return innerTypeVar
+    }
+
+    // Maybe型の場合: Maybe<T> ?? U => T | U (実際にはTが返される)
+    if (this.isMaybeType(leftType)) {
+      const maybeInnerType = (leftType as AST.GenericType).typeArguments[0]
+
+      // 右辺もMaybe型の場合: Maybe<T> ?? Maybe<U> => T | U
+      if (this.isMaybeType(rightType)) {
+        const rightMaybeInnerType = (rightType as AST.GenericType)
+          .typeArguments[0]
+        // 両方の内部型の互換性をチェック
+        this.addConstraint(
+          new TypeConstraint(
+            maybeInnerType,
+            rightMaybeInnerType,
+            nullishCoalescing.line,
+            nullishCoalescing.column,
+            "Maybe inner types should be compatible"
+          )
+        )
+        return maybeInnerType
+      }
+
+      // 内部型と右辺型の互換性をチェック
+      this.addConstraint(
+        new TypeConstraint(
+          maybeInnerType,
+          rightType,
+          nullishCoalescing.line,
+          nullishCoalescing.column,
+          "Maybe inner type should be compatible with default value"
+        )
+      )
+      return maybeInnerType
+    }
+
+    // Either型の場合: Either<L, R> ?? U => R | U (実際にはRが返される)
+    if (this.isEitherType(leftType)) {
+      const rightTypeFromEither = (leftType as AST.GenericType).typeArguments[1]
+
+      // 右辺もEither型の場合: Either<L1, R1> ?? Either<L2, R2> => R1 | R2
+      if (rightType.kind === "GenericType" && rightType.name === "Either") {
+        const rightEitherRightType = (rightType as AST.GenericType)
+          .typeArguments[1]
+        // 両方のRight型の互換性をチェック
+        this.addConstraint(
+          new TypeConstraint(
+            rightTypeFromEither,
+            rightEitherRightType,
+            nullishCoalescing.line,
+            nullishCoalescing.column,
+            "Either Right types should be compatible"
+          )
+        )
+        return rightTypeFromEither
+      }
+
+      // Right型と右辺型の互換性をチェック
+      this.addConstraint(
+        new TypeConstraint(
+          rightTypeFromEither,
+          rightType,
+          nullishCoalescing.line,
+          nullishCoalescing.column,
+          "Either Right type should be compatible with default value"
+        )
+      )
+      return rightTypeFromEither
+    }
+
+    // その他の場合: 通常のnull合体演算子として扱う（TypeScript風）
+    // 左辺と右辺の型が互換である必要がある
+    this.addConstraint(
+      new TypeConstraint(
+        leftType,
+        rightType,
+        nullishCoalescing.line,
+        nullishCoalescing.column,
+        "?? operands should have compatible types for non-Maybe/Either types"
+      )
+    )
+
+    // TypeScript風の場合、より寛容な型を返す（通常は右辺の型）
+    return rightType
   }
 
   private generateConstraintsForUnaryOperation(
@@ -6164,6 +6393,14 @@ export class TypeInferenceSystem {
     if (type.kind === "GenericType") {
       const genericType = type as AST.GenericType
       return genericType.name === "Maybe"
+    }
+    return false
+  }
+
+  private isEitherType(type: AST.Type): boolean {
+    if (type.kind === "GenericType") {
+      const genericType = type as AST.GenericType
+      return genericType.name === "Either"
     }
     return false
   }

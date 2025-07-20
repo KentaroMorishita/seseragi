@@ -73,6 +73,7 @@ export enum TokenType {
   OR = "OR", // ||
   AMPERSAND = "AMPERSAND", // &
   NOT = "NOT", // !
+  NULLISH_COALESCING = "NULLISH_COALESCING", // ??
   HEAD_OP = "HEAD_OP", // ^
   TAIL_OP = "TAIL_OP", // >>
 
@@ -240,7 +241,7 @@ export class Lexer {
       case ":":
         return this.makeToken(TokenType.COLON, char, startLine, startColumn)
       case "?":
-        return this.makeToken(TokenType.QUESTION, char, startLine, startColumn)
+        return this.handleQuestionTokens(startLine, startColumn)
       case ".":
         return this.handleDotTokens(startLine, startColumn)
       case "+":
@@ -296,6 +297,19 @@ export class Lexer {
       return this.makeToken(TokenType.RANGE, "..", startLine, startColumn)
     }
     return this.makeToken(TokenType.DOT, ".", startLine, startColumn)
+  }
+
+  private handleQuestionTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "?") {
+      this.advance() // consume second ?
+      return this.makeToken(
+        TokenType.NULLISH_COALESCING,
+        "??",
+        startLine,
+        startColumn
+      )
+    }
+    return this.makeToken(TokenType.QUESTION, "?", startLine, startColumn)
   }
 
   private handleStarTokens(startLine: number, startColumn: number): Token {

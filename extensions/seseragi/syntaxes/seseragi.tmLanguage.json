@@ -211,6 +211,10 @@
           "match": ":"
         },
         {
+          "name": "keyword.operator.nullish-coalescing.seseragi",
+          "match": "\\?\\?"
+        },
+        {
           "name": "keyword.operator.ternary.seseragi",
           "match": "\\?"
         }
