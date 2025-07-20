@@ -4,7 +4,8 @@ import * as os from "node:os"
 import * as path from "node:path"
 import { generateTypeScript } from "../codegen.js"
 import { Parser } from "../parser.js"
-import { infer } from "../type-inference.js"
+import { infer, TypeInferenceSystem } from "../type-inference.js"
+import * as AST from "../ast.js"
 
 export interface RunOptions {
   input: string
@@ -97,7 +98,9 @@ async function compileToTemp(options: RunOptions): Promise<string> {
 
   // 型推論
   console.log("Running type inference...")
-  const inferenceResult = infer(ast.statements!)
+  const inference = new TypeInferenceSystem()
+  const program = new AST.Program(ast.statements!)
+  const inferenceResult = inference.infer(program)
 
   if (inferenceResult.errors.length > 0) {
     throw new Error(inferenceResult.errors.map((e) => e.message).join("\n"))
@@ -117,6 +120,7 @@ async function compileToTemp(options: RunOptions): Promise<string> {
   console.log("Generating TypeScript code...")
   const typeScriptCode = generateTypeScript(ast.statements || [], {
     runtimeMode: "embedded", // 一時ファイル実行のため埋め込みモード必須
+    typeInferenceResult: inferenceResult, // 型推論結果を渡す
   })
 
   // 一時ファイルに書き込み

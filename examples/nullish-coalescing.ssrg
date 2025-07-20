@@ -1,0 +1,86 @@
+// ??演算子のサンプルコード: Maybe/Either型のunwrap構文
+
+print "=== ??演算子（Nullish Coalescing）の使い方 ==="
+
+// =============================================================================
+// Maybe型のサンプル
+// =============================================================================
+
+print "--- Maybe型の例 ---"
+
+let value1 = Just 42
+let value2 = Nothing
+
+let result1 = value1 ?? 0    // 42 (Justの中身を取得)
+let result2 = value2 ?? 0    // 0 (Nothingの場合はデフォルト値)
+
+show result1  // 42
+show result2  // 0
+
+// 文字列のMaybe型
+let maybeString1 = Just "Hello"
+let maybeString2 = Nothing
+
+let stringResult1 = maybeString1 ?? "Default"  // "Hello"
+let stringResult2 = maybeString2 ?? "Default"  // "Default"
+
+show stringResult1  // "Hello"
+show stringResult2  // "Default"
+
+// =============================================================================
+// Either型のサンプル
+// =============================================================================
+
+print "--- Either型の例 ---"
+
+let success = Right 100
+let failure = Left "error"
+
+let eitherResult1 = success ?? -1   // 100 (Rightの中身を取得)
+let eitherResult2 = failure ?? -1   // -1 (Leftの場合はデフォルト値)
+
+show eitherResult1  // 100
+show eitherResult2  // -1
+
+// =============================================================================
+// 関数との組み合わせ
+// =============================================================================
+
+print "--- 関数との組み合わせ ---"
+
+// 安全な除算関数
+fn safeDivide x: Int -> y: Int -> Maybe<Int> =
+  y == 0 ? Nothing : Just (x / y)
+
+let divResult1 = safeDivide 10 2 ?? 0  // 5
+let divResult2 = safeDivide 10 0 ?? 0  // 0 (ゼロ除算)
+
+show divResult1  // 5
+show divResult2  // 0
+
+// ユーザー検索関数
+fn findUser id: Int -> Maybe<String> =
+  id == 1 ? Just "Alice" :
+  id == 2 ? Just "Bob" :
+  Nothing
+
+let user1 = findUser 1 ?? "Unknown"   // "Alice"
+let user2 = findUser 99 ?? "Unknown"  // "Unknown"
+
+show user1  // "Alice"
+show user2  // "Unknown"
+
+// =============================================================================
+// チェーンされた例
+// =============================================================================
+
+print "--- チェーンされた例 ---"
+
+let maybeA: Maybe<Int> = Just 10
+let maybeB: Maybe<Int> = Nothing
+let maybeC: Maybe<Int> = Just 30
+
+// 複数の??を連鎖
+let chainResult = maybeB ?? maybeC ?? 0  // 30 (最初に値があるものを取得)
+
+show chainResult  // 30

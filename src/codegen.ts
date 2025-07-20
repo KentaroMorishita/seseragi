@@ -959,16 +959,53 @@ ${indent}}`
 
   // Maybe型かどうかをチェック（コード生成用）
   private isMaybeType(type: Type | undefined): boolean {
-    return (
-      type?.kind === "GenericType" && (type as GenericType).name === "Maybe"
-    )
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "Maybe"
+      ) {
+        return true
+      }
+    }
+
+    // 直接GenericTypeの場合もチェック
+    if (type.kind === "GenericType" && (type as GenericType).name === "Maybe") {
+      return true
+    }
+
+    return false
   }
 
   // Either型かどうかをチェック
   private isEitherType(type: Type | undefined): boolean {
-    return (
-      type?.kind === "GenericType" && (type as GenericType).name === "Either"
-    )
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "Either"
+      ) {
+        return true
+      }
+    }
+
+    // 直接GenericTypeの場合もチェック
+    if (
+      type.kind === "GenericType" &&
+      (type as GenericType).name === "Either"
+    ) {
+      return true
+    }
+
+    return false
   }
 
   // impl ブロックの生成
@@ -1388,6 +1425,7 @@ ${indent}}`
 
     // 左辺の型を取得して適切なランタイム関数を選択
     const leftType = this.getResolvedType(nullishCoalescing.left)
+    console.log(`[DEBUG] Nullish coalescing left type:`, leftType)
 
     // デバッグ: 左辺の型情報を出力
     if (nullishCoalescing.left.kind === "FunctionApplication") {
