@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd playground && bun install && bun run build",
+  "buildCommand": "bun run build && cd playground && bun install && bun run build",
   "outputDirectory": "playground/dist",
   "installCommand": "bun install",
   "framework": null,
