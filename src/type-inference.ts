@@ -2492,6 +2492,11 @@ export class TypeInferenceSystem {
     call: AST.FunctionCall,
     env: Map<string, AST.Type>
   ): AST.Type {
+    console.log(`🔧 Processing function call at line ${call.line}`)
+    if (call.function.kind === "Identifier") {
+      const funcName = (call.function as AST.Identifier).name
+      console.log(`🔧 Function call: ${funcName}`)
+    }
     // print/putStrLn/show関数の特別処理
     if (call.function.kind === "Identifier") {
       const funcName = (call.function as AST.Identifier).name
@@ -2541,7 +2546,43 @@ export class TypeInferenceSystem {
       }
     } else {
       // 従来の処理
-      funcType = this.generateConstraintsForExpression(call.function, env)
+      // 関数が識別子の場合、環境から直接型を取得し、適切にインスタンス化
+      if (call.function.kind === "Identifier") {
+        const identifier = call.function as AST.Identifier
+        const rawFuncType = env.get(identifier.name)
+        if (rawFuncType) {
+          console.log(
+            `🔧 Found function type in env: ${this.typeToString(rawFuncType)}`
+          )
+          // 多相型のインスタンス化を確実に実行
+          resultType = this.instantiatePolymorphicType(
+            rawFuncType,
+            call.line,
+            call.column
+          )
+          funcType = resultType
+          console.log(
+            `🔧 Instantiated function type: ${this.typeToString(resultType)} (kind: ${resultType.kind})`
+          )
+        } else {
+          console.log(
+            `🔧 Function ${identifier.name} not found in env, generating constraints`
+          )
+          funcType = this.generateConstraintsForExpression(call.function, env)
+          resultType = this.instantiatePolymorphicType(
+            funcType,
+            call.line,
+            call.column
+          )
+        }
+      } else {
+        funcType = this.generateConstraintsForExpression(call.function, env)
+        resultType = this.instantiatePolymorphicType(
+          funcType,
+          call.line,
+          call.column
+        )
+      }
 
       // 引数が0個の場合は、関数がユニット型を取る関数として扱う
       if (call.arguments.length === 0) {
@@ -2590,21 +2631,57 @@ export class TypeInferenceSystem {
 
         return result
       }
-
-      resultType = this.instantiatePolymorphicType(
-        funcType,
-        call.line,
-        call.column
-      )
     }
 
     // 各引数に対して関数適用の制約を生成
     for (const arg of call.arguments) {
-      const actualArgType = this.generateConstraintsForExpression(arg, env)
-      const newResultType = this.freshTypeVariable(call.line, call.column)
+      let expectedParamType: AST.Type = this.freshTypeVariable(
+        call.line,
+        call.column
+      )
 
-      // 関数型からパラメータ型を抽出する型変数を作成
-      const expectedParamType = this.freshTypeVariable(call.line, call.column)
+      console.log(
+        `🔧 Function call result type: ${this.typeToString(resultType)} (kind: ${resultType.kind})`
+      )
+
+      if (call.function.kind === "Identifier") {
+        const funcName = (call.function as AST.Identifier).name
+        console.log(`🔧 Function name: ${funcName}`)
+        const funcTypeFromEnv = env.get(funcName)
+        console.log(
+          `🔧 Function type from env: ${funcTypeFromEnv ? this.typeToString(funcTypeFromEnv) : "undefined"}`
+        )
+        if (funcName === "p" || funcName === "div") {
+          console.log(`🔧 DEBUG: Special attention for ${funcName}`)
+          console.log(`🔧 DEBUG: resultType kind: ${resultType.kind}`)
+          if (funcTypeFromEnv) {
+            console.log(
+              `🔧 DEBUG: funcTypeFromEnv kind: ${funcTypeFromEnv.kind}`
+            )
+          }
+        }
+      }
+
+      // 関数型が既知の場合、パラメータ型を抽出
+      if (resultType.kind === "FunctionType") {
+        const funcTypeInstance = resultType as AST.FunctionType
+        expectedParamType = funcTypeInstance.paramType
+        console.log(
+          `🔧 Expected param type from function: ${this.typeToString(expectedParamType)}`
+        )
+      } else {
+        console.log(
+          `🔧 Function type not FunctionType, kind: ${resultType.kind}, using fresh type variable`
+        )
+      }
+
+      const actualArgType = this.generateConstraintsForExpression(
+        arg,
+        env,
+        expectedParamType
+      )
+      console.log(`🔧 Actual arg type: ${this.typeToString(actualArgType)}`)
+      const newResultType = this.freshTypeVariable(call.line, call.column)
 
       // 現在の結果型は expectedParamType から newResultType へのFunction型でなければならない
       const expectedFuncType = new AST.FunctionType(
@@ -2747,43 +2824,104 @@ export class TypeInferenceSystem {
     app: AST.FunctionApplication,
     env: Map<string, AST.Type>
   ): AST.Type {
-    const funcType = this.generateConstraintsForExpression(app.function, env)
-    const argType = this.generateConstraintsForExpression(app.argument, env)
+    console.log(`🔧 Processing function application at line ${app.line}`)
+    if (app.function.kind === "Identifier") {
+      const funcName = (app.function as AST.Identifier).name
+      console.log(`🔧 Function application: ${funcName}`)
+    }
+
+    // 関数型を取得（環境から直接取得を優先）
+    let funcType: AST.Type
+    if (app.function.kind === "Identifier") {
+      const identifier = app.function as AST.Identifier
+      const rawFuncType = env.get(identifier.name)
+      if (rawFuncType) {
+        console.log(
+          `🔧 Found function type in env for application: ${this.typeToString(rawFuncType)}`
+        )
+        funcType = this.instantiatePolymorphicType(
+          rawFuncType,
+          app.line,
+          app.column
+        )
+        console.log(
+          `🔧 Instantiated function type for application: ${this.typeToString(funcType)} (kind: ${funcType.kind})`
+        )
+      } else {
+        funcType = this.generateConstraintsForExpression(app.function, env)
+      }
+    } else {
+      funcType = this.generateConstraintsForExpression(app.function, env)
+    }
+
+    // 期待されるパラメータ型を抽出
+    let expectedParamType: AST.Type
+    if (funcType.kind === "FunctionType") {
+      const funcTypeInstance = funcType as AST.FunctionType
+      expectedParamType = funcTypeInstance.paramType
+      console.log(
+        `🔧 Expected param type from function application: ${this.typeToString(expectedParamType)}`
+      )
+    } else {
+      expectedParamType = this.freshTypeVariable(app.line, app.column)
+      console.log(
+        `🔧 Function type not FunctionType in application, kind: ${funcType.kind}, using fresh type variable`
+      )
+    }
+
+    const argType = this.generateConstraintsForExpression(
+      app.argument,
+      env,
+      expectedParamType
+    )
     const resultType = this.freshTypeVariable(app.line, app.column)
 
-    // 関数からパラメータ型を抽出する型変数を作成
-    const expectedParamType = this.freshTypeVariable(app.line, app.column)
-
-    // Function型は expectedParamType から resultType への関数でなければならない
-    const expectedFuncType = new AST.FunctionType(
-      expectedParamType,
-      resultType,
-      app.line,
-      app.column
-    )
-
-    this.addConstraint(
-      new TypeConstraint(
-        funcType,
-        expectedFuncType,
-        app.line,
-        app.column,
-        `Function application structure`
+    // 関数型が既知の場合は、その戻り値型を使用
+    if (funcType.kind === "FunctionType") {
+      const funcTypeInstance = funcType as AST.FunctionType
+      // 引数型の制約を追加
+      this.addConstraint(
+        new TypeConstraint(
+          argType,
+          expectedParamType,
+          app.line,
+          app.column,
+          `Function application argument type`
+        )
       )
-    )
-
-    // 常に統一制約を使用（一旦元に戻す）
-    this.addConstraint(
-      new TypeConstraint(
-        argType,
+      return funcTypeInstance.returnType
+    } else {
+      // Function型は expectedParamType から resultType への関数でなければならない
+      const expectedFuncType = new AST.FunctionType(
         expectedParamType,
+        resultType,
         app.line,
-        app.column,
-        `Function application parameter type: ${this.typeToString(argType)} ~ ${this.typeToString(expectedParamType)}`
+        app.column
       )
-    )
 
-    return resultType
+      this.addConstraint(
+        new TypeConstraint(
+          funcType,
+          expectedFuncType,
+          app.line,
+          app.column,
+          `Function application structure`
+        )
+      )
+
+      // 常に統一制約を使用（一旦元に戻す）
+      this.addConstraint(
+        new TypeConstraint(
+          argType,
+          expectedParamType,
+          app.line,
+          app.column,
+          `Function application parameter type: ${this.typeToString(argType)} ~ ${this.typeToString(expectedParamType)}`
+        )
+      )
+
+      return resultType
+    }
   }
 
   private generateConstraintsForPipeline(
@@ -4051,6 +4189,24 @@ export class TypeInferenceSystem {
     const resolvedType1 = this.resolveTypeAlias(type1)
     const resolvedType2 = this.resolveTypeAlias(type2)
 
+    // デバッグ：型エイリアス解決の確認
+    if (
+      type1.kind === "PrimitiveType" &&
+      (type1 as AST.PrimitiveType).name === "Node"
+    ) {
+      console.log(
+        `🔧 Node type alias resolution: ${this.typeToString(type1)} -> ${this.typeToString(resolvedType1)}`
+      )
+    }
+    if (
+      type2.kind === "PrimitiveType" &&
+      (type2 as AST.PrimitiveType).name === "Node"
+    ) {
+      console.log(
+        `🔧 Node type alias resolution: ${this.typeToString(type2)} -> ${this.typeToString(resolvedType2)}`
+      )
+    }
+
     // console.log("🔧 Resolved types:", this.typeToString(resolvedType1), "with", this.typeToString(resolvedType2))
 
     // 解決後の型のチェック
@@ -4060,9 +4216,18 @@ export class TypeInferenceSystem {
       )
     }
 
-    // 同じ型の場合
+    // 同じ型の場合（解決後の型で比較）
     if (this.typesEqual(resolvedType1, resolvedType2)) {
       return substitution
+    }
+
+    // 型エイリアスの場合、解決前の名前でも比較
+    if (type1.kind === "PrimitiveType" && type2.kind === "PrimitiveType") {
+      const prim1 = type1 as AST.PrimitiveType
+      const prim2 = type2 as AST.PrimitiveType
+      if (prim1.name === prim2.name) {
+        return substitution
+      }
     }
 
     // 型変数の場合（解決前の元の型で処理）
@@ -4367,6 +4532,9 @@ export class TypeInferenceSystem {
 
     // Union型の場合
     if (type1.kind === "UnionType" || type2.kind === "UnionType") {
+      console.log(
+        `🔧 Processing union types: ${this.typeToString(type1)} <-> ${this.typeToString(type2)}`
+      )
       return this.unifyUnionTypes(type1, type2)
     }
 
@@ -4382,6 +4550,66 @@ export class TypeInferenceSystem {
     throw new Error(
       `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
     )
+  }
+
+  // Union型の構造的等価性をチェック
+  private areUnionTypesStructurallyEqual(
+    union1: AST.UnionType,
+    union2: AST.UnionType
+  ): boolean {
+    if (union1.types.length !== union2.types.length) {
+      return false
+    }
+
+    // 各型を正規化して比較
+    const normalizedTypes1 = union1.types
+      .map((t) => this.normalizeType(t))
+      .sort()
+    const normalizedTypes2 = union2.types
+      .map((t) => this.normalizeType(t))
+      .sort()
+
+    return normalizedTypes1.every((type1, i) => {
+      const type2 = normalizedTypes2[i]
+      return this.areTypesStructurallyEqual(type1, type2)
+    })
+  }
+
+  // 型の正規化（型エイリアスを解決し、一貫した形式に変換）
+  private normalizeType(type: AST.Type): string {
+    const resolved = this.resolveTypeAlias(type)
+    return this.typeToCanonicalString(resolved)
+  }
+
+  // 正規化された型の文字列表現を生成
+  private typeToCanonicalString(type: AST.Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "GenericType": {
+        const gt = type as AST.GenericType
+        const args = gt.typeArguments
+          .map((t) => this.typeToCanonicalString(t))
+          .join(", ")
+        return `${gt.name}<${args}>`
+      }
+      case "UnionType": {
+        const ut = type as AST.UnionType
+        const types = ut.types.map((t) => this.typeToCanonicalString(t)).sort()
+        return types.join(" | ")
+      }
+      case "ArrayType": {
+        const at = type as any // ArrayType might not be in AST yet
+        return `Array<${this.typeToCanonicalString(at.elementType)}>`
+      }
+      default:
+        return this.typeToString(type)
+    }
+  }
+
+  // 構造的等価性のチェック
+  private areTypesStructurallyEqual(type1: string, type2: string): boolean {
+    return type1 === type2
   }
 
   // Union型の統合
@@ -4402,10 +4630,8 @@ export class TypeInferenceSystem {
 
       // 型集合が同じかチェック（順序は関係なし）
       if (union1.types.length === union2.types.length) {
-        const types1 = union1.types.map((t) => this.typeToString(t)).sort()
-        const types2 = union2.types.map((t) => this.typeToString(t)).sort()
-
-        if (types1.every((type, i) => type === types2[i])) {
+        // より深い構造比較を実行
+        if (this.areUnionTypesStructurallyEqual(union1, union2)) {
           // 同じユニオン型なので統一成功
           return substitution
         }
@@ -4537,17 +4763,27 @@ export class TypeInferenceSystem {
     if (resolvedType2.kind === "UnionType" && type1.kind !== "TypeVariable") {
       // 非Union型をUnion型に統合する場合は、非Union型がUnion型の構成要素である必要がある
       const union2 = resolvedType2 as AST.UnionType
+      console.log(
+        `🔧 Checking if ${this.typeToString(resolvedType1)} is member of union ${this.typeToString(resolvedType2)}`
+      )
       const isMember = union2.types.some((memberType) => {
         try {
+          console.log(
+            `🔧 Testing member: ${this.typeToString(resolvedType1)} vs ${this.typeToString(memberType)}`
+          )
           this.unify(resolvedType1, memberType)
+          console.log(`🔧 Member match succeeded!`)
           return true
-        } catch {
+        } catch (e) {
+          console.log(`🔧 Member match failed: ${e}`)
           return false
         }
       })
       if (isMember) {
+        console.log(`🔧 Union membership confirmed`)
         return substitution
       }
+      console.log(`🔧 Union membership failed`)
       throw new Error(
         `Type ${this.typeToString(resolvedType1)} is not assignable to union type ${this.typeToString(resolvedType2)}`
       )
@@ -6239,13 +6475,61 @@ export class TypeInferenceSystem {
     // Mapを使って重複フィールドを避ける（後から来たフィールドで上書き）
     const fieldMap = new Map<string, AST.RecordField>()
 
+    // 期待される型からレコード型を取得
+    let expectedRecordType: AST.RecordType | null = null
+    if (expectedType) {
+      const resolvedExpectedType = this.resolveTypeAlias(expectedType)
+      if (resolvedExpectedType.kind === "RecordType") {
+        expectedRecordType = resolvedExpectedType as AST.RecordType
+      }
+    }
+
     for (const field of record.fields) {
       if (field.kind === "RecordInitField") {
         const initField = field as AST.RecordInitField
-        const fieldType = this.generateConstraintsForExpression(
+
+        // 期待されるフィールド型を取得
+        let expectedFieldType: AST.Type | undefined
+        if (expectedRecordType) {
+          const expectedField = expectedRecordType.fields.find(
+            (f) => f.name === initField.name
+          )
+          if (expectedField) {
+            expectedFieldType = expectedField.type
+          }
+        }
+
+        let fieldType = this.generateConstraintsForExpression(
           initField.value,
-          env
+          env,
+          expectedFieldType
         )
+
+        // 期待されるフィールド型がある場合の特殊処理
+        if (expectedFieldType) {
+          const resolvedExpectedFieldType =
+            this.resolveTypeAlias(expectedFieldType)
+
+          // 期待される型がUnion型の場合、フィールド型をUnion型に統一を試みる
+          if (resolvedExpectedFieldType.kind === "UnionType") {
+            const union = resolvedExpectedFieldType as AST.UnionType
+            // フィールド型がUnion型の構成要素の一つかチェック
+            const isMember = union.types.some((memberType) => {
+              try {
+                this.unify(fieldType, memberType)
+                return true
+              } catch {
+                return false
+              }
+            })
+
+            if (isMember) {
+              // 統一可能な場合、期待される型（Union型）をフィールド型として使用
+              fieldType = expectedFieldType
+            }
+          }
+        }
+
         // 同名フィールドは上書き
         fieldMap.set(
           initField.name,
@@ -6320,11 +6604,17 @@ export class TypeInferenceSystem {
     }
 
     // Maybe型フィールドの自動補完
+    console.log(
+      `🔧 Maybe auto-completion check: expectedType = ${expectedType ? this.typeToString(expectedType) : "undefined"}`
+    )
     if (
       expectedType &&
       (expectedType.kind === "RecordType" ||
         expectedType.kind === "PrimitiveType")
     ) {
+      console.log(
+        `🔧 Maybe auto-completion: entering with expected type ${this.typeToString(expectedType)}`
+      )
       let expectedRecordType: AST.RecordType | null = null
 
       // 期待される型がRecord型の場合
@@ -6341,11 +6631,21 @@ export class TypeInferenceSystem {
 
       // 期待されるRecord型が見つかった場合、省略されたMaybe型フィールドを自動補完
       if (expectedRecordType) {
+        console.log(
+          `🔧 Auto-completing Maybe fields for expected record type with ${expectedRecordType.fields.length} fields`
+        )
         for (const expectedField of expectedRecordType.fields) {
+          console.log(
+            `🔧 Checking field: ${expectedField.name}, type: ${this.typeToString(expectedField.type)}, has field: ${fieldMap.has(expectedField.name)}`
+          )
           // フィールドが省略されている場合
           if (!fieldMap.has(expectedField.name)) {
             // Maybe型かどうかをチェック
-            if (this.isMaybeType(expectedField.type)) {
+            const isMaybe = this.isMaybeType(expectedField.type)
+            console.log(
+              `🔧 Field ${expectedField.name} is Maybe type: ${isMaybe}`
+            )
+            if (isMaybe) {
               // Nothing値を自動設定
               const nothingConstructor = new AST.ConstructorExpression(
                 "Nothing",
@@ -6361,12 +6661,15 @@ export class TypeInferenceSystem {
               )
 
               // RecordExpressionのfieldsに追加
+              console.log(`🔧 Adding Nothing field: ${expectedField.name}`)
               record.fields.push(nothingField)
 
               // fieldMapにも追加（型推論用）
+              // 期待される型（Maybe<T>）を渡してNothingの型を正しく推論
               const nothingType = this.generateConstraintsForExpression(
                 nothingConstructor,
-                env
+                env,
+                expectedField.type
               )
               fieldMap.set(
                 expectedField.name,

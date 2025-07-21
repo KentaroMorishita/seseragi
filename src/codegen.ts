@@ -2779,6 +2779,16 @@ ${indent}}`
       return "{}"
     }
 
+    // 型推論結果から期待される型を取得してMaybe型フィールドを補完
+    const fieldStrings = this.generateRecordFieldsWithMaybeCompletion(record)
+
+    return `{ ${fieldStrings.join(", ")} }`
+  }
+
+  private generateRecordFieldsWithMaybeCompletion(
+    record: RecordExpression
+  ): string[] {
+    // 既存のフィールドを処理
     const fieldStrings = record.fields.map((field) => {
       if (field.kind === "RecordInitField") {
         const initField = field as RecordInitField
@@ -2798,7 +2808,51 @@ ${indent}}`
       return ""
     })
 
-    return `{ ${fieldStrings.join(", ")} }`
+    // 型推論結果から期待される型を取得（しかし、これは推論された型であり期待される型ではない）
+    const resolvedType = this.getResolvedType(record)
+    if (resolvedType && resolvedType.kind === "RecordType") {
+      const recordType = resolvedType as RecordType
+      const existingFieldNames = new Set(
+        record.fields
+          .filter((f) => f.kind === "RecordInitField")
+          .map((f) => (f as RecordInitField).name)
+      )
+
+      // 不足しているMaybe型フィールドを補完
+      for (const expectedField of recordType.fields) {
+        if (!existingFieldNames.has(expectedField.name)) {
+          if (this.isMaybeType(expectedField.type)) {
+            fieldStrings.push(`${expectedField.name}: Nothing`)
+          }
+        }
+      }
+    }
+
+    return fieldStrings.filter((f) => f !== "")
+  }
+
+  // 型を文字列に変換
+  private typeToString(type: Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as PrimitiveType).name
+      case "RecordType": {
+        const recordType = type as RecordType
+        const fields = recordType.fields
+          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
+          .join(", ")
+        return `{${fields}}`
+      }
+      case "GenericType": {
+        const genericType = type as GenericType
+        const args = genericType.typeArguments
+          .map((arg) => this.typeToString(arg))
+          .join(", ")
+        return `${genericType.name}<${args}>`
+      }
+      default:
+        return type.kind || "Unknown"
+    }
   }
 
   // Recordアクセスの生成

@@ -1,6 +1,58 @@
-type ID = String | Int
+type Node = Array<String> | String
 
-let hoge: Array<ID> = [1, "2", 3, "4"] as Array<ID>
+type Props = { id: Maybe<String>, className: Maybe<String>, children: Node }
 
+fn add<A, B> a: A -> b: B -> A = a + b
 
-show hoge
+fn reduce<A, B> f: (B -> (A -> B)) -> acc: B -> xs: Array<A> -> B = match xs {
+  [x, ...rest] -> reduce f (f acc x) rest
+  [] -> acc
+}
+
+fn getChildren props: Props -> Node = match props.children {
+  [x, ...rest] -> reduce add x rest
+  [] -> ""
+  _ -> props.children
+}
+
+fn genTag props: Props -> tag: String -> Node {
+  let id = match props.id {
+    Just id -> `id=${id}`
+    Nothing -> ""
+  }
+  let className = match props.className {
+    Just className -> `className=${className}`
+    Nothing -> ""
+  }
+  let children = getChildren props
+  `<${tag} ${id} ${className}>${children}</${tag}>`
+}
+
+fn div props: Props -> Node = genTag props "div"
+fn p props: Props -> Node = genTag props "p"
+
+fn app -> Node {
+  div {
+    id: Just "app",
+    className: Just "container",
+    children : [
+      div {
+        id: Just "header",
+        children: "Welcome to Seseragi!"
+      },
+      div {
+        id: Just "content",
+        children : [
+          p { children:  "This is a simple SSRG application." }
+        ]
+      },
+      div {
+        id: Just "footer",
+        children: "© 2024 Seseragi Project"
+      }
+    ]
+  }
+}
+
+show $ app()
+

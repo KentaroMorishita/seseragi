@@ -136,6 +136,19 @@ const Nothing: Maybe<never> = { tag: 'Nothing' };
 const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });
 const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });
 
+// Nullish coalescing helper functions
+const fromMaybe = <T>(defaultValue: T, maybe: Maybe<T>): T => {
+  return maybe.tag === 'Just' ? maybe.value : defaultValue;
+};
+
+const fromRight = <L, R>(defaultValue: R, either: Either<L, R>): R => {
+  return either.tag === 'Right' ? either.value : defaultValue;
+};
+
+const fromLeft = <L, R>(defaultValue: L, either: Either<L, R>): L => {
+  return either.tag === 'Left' ? either.value : defaultValue;
+};
+
 const Empty: List<never> = { tag: 'Empty' };
 const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });
 
@@ -281,22 +294,118 @@ const listToArray = curry(<T>(list: List<T>): T[] => {
   return result;
 });
 
-type ID = (string | number);
+// Struct method and operator dispatch tables
+let __structMethods: Record<string, Record<string, Function>> = {};
+let __structOperators: Record<string, Record<string, Function>> = {};
 
-type Hoge<T> = any;
+// Method dispatch helper
+function __dispatchMethod(obj: any, methodName: string, ...args: any[]): any {
+  // 構造体のフィールドアクセスの場合は直接返す
+  if (args.length === 0 && obj.hasOwnProperty(methodName)) {
+    return obj[methodName];
+  }
+  const structName = obj.constructor.name;
+  const structMethods = __structMethods[structName];
+  if (structMethods && structMethods[methodName]) {
+    return structMethods[methodName](obj, ...args);
+  }
+  throw new Error(`Method '${methodName}' not found for struct '${structName}'`);
+}
 
-type Fuga<T> = Hoge<any>;
+// Operator dispatch helper
+function __dispatchOperator(left: any, operator: string, right: any): any {
+  const structName = left.constructor.name;
+  const structOperators = __structOperators[structName];
+  if (structOperators && structOperators[operator]) {
+    return structOperators[operator](left, right);
+  }
+  // Fall back to native JavaScript operator
+  switch (operator) {
+    case '+': return left + right;
+    case '-': return left - right;
+    case '*': return left * right;
+    case '/': return left / right;
+    case '%': return left % right;
+    case '==': return left == right;
+    case '!=': return left != right;
+    case '<': return left < right;
+    case '>': return left > right;
+    case '<=': return left <= right;
+    case '>=': return left >= right;
+    case '&&': return left && right;
+    case '||': return left || right;
+    default: throw new Error(`Unknown operator: ${operator}`);
+  }
+}
 
-type Option<T> = Maybe<any>;
 
-const f = (x: Fuga<ID>): string => `${x}`;
+type Node = (Array<string> | string);
 
-const g = (x: Option<ID>): string => `${x}`;
+type Props = { id: Maybe<string>, className: Maybe<string>, children: Node };
 
-show(f("hoge"));
+const add = curry(<A, B>(a: any, b: any): any => __dispatchOperator(a, "+", b));
 
-show(f(1000));
+const reduce = curry(<A, B>(f: (arg: any) => (arg: any) => any, acc: any, xs: Array<any>): any => (() => {
+  const matchValue = xs;
+  if ((matchValue.length >= 1)) {
+    const x = matchValue[0];
+    const rest = matchValue.slice(1);
+    return reduce(f)(f(acc)(x))(rest);
+  }  if (matchValue.length === 0) {
+    return acc;
+  } else {
+    throw new Error('Non-exhaustive pattern match');
+  }
+})());
 
-show(g(Just("hoge")));
+const getChildren = (props: Props): Node => (() => {
+  const matchValue = props.children;
+  if ((matchValue.length >= 1)) {
+    const x = matchValue[0];
+    const rest = matchValue.slice(1);
+    return reduce(add)(x)(rest);
+  }  if (matchValue.length === 0) {
+    return "";
+  }  if (true) {
+    return props.children;
+  } else {
+    throw new Error('Non-exhaustive pattern match');
+  }
+})();
 
-show(g(Just(1000)));
+const genTag = curry((props: Props, tag: string): Node => (() => {
+  const id = (() => {
+  const matchValue = props.id;
+  if (matchValue.tag === 'Just') {
+    const id = matchValue.value;
+    return `id=${id}`;
+  }  if (matchValue.tag === 'Nothing') {
+    return "";
+  } else {
+    throw new Error('Non-exhaustive pattern match');
+  }
+})();
+  const className = (() => {
+  const matchValue = props.className;
+  if (matchValue.tag === 'Just') {
+    const className = matchValue.value;
+    return `className=${className}`;
+  }  if (matchValue.tag === 'Nothing') {
+    return "";
+  } else {
+    throw new Error('Non-exhaustive pattern match');
+  }
+})();
+  const children = getChildren(props);
+  return `<${tag} ${id} ${className}>${children}</${tag}>`;
+})());
+
+const div = (props: Props): Node => genTag(props)("div");
+
+const p = (props: Props): Node => genTag(props)("p");
+
+const app = (): Node => (() => {
+  return div({ id: Just("app"), className: Just("container"), children: [div({ id: Just("header"), children: "Welcome to Seseragi!", className: Nothing }), div({ id: Just("content"), children: [p({ children: "This is a simple SSRG application.", id: Nothing, className: Nothing })], className: Nothing }), div({ id: Just("footer"), children: "© 2024 Seseragi Project", className: Nothing })] });
+})();
+
+show(app());

@@ -4,7 +4,7 @@ import * as os from "node:os"
 import * as path from "node:path"
 import { generateTypeScript } from "../codegen.js"
 import { Parser } from "../parser.js"
-import { infer, TypeInferenceSystem } from "../type-inference.js"
+import { TypeInferenceSystem } from "../type-inference.js"
 import * as AST from "../ast.js"
 
 export interface RunOptions {
