@@ -82,8 +82,8 @@ show x
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
 
     // show関数の定義が含まれることを確認
-    expect(compiledCode).toContain("function show(value: any): void {")
+    expect(compiledCode).toContain("function ssrgShow(value: unknown): void {")
     // show関数の呼び出しが含まれることを確認
-    expect(compiledCode).toContain("show(x)")
+    expect(compiledCode).toContain("ssrgShow(x)")
   })
 })

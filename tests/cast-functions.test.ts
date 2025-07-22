@@ -41,7 +41,7 @@ describe("Cast functions (toInt/toFloat)", () => {
     expect(fs.existsSync(testOutputFile)).toBe(true)
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain("toInt(")
+    expect(compiledCode).toContain("ssrgToInt(")
     expect(compiledCode).toContain("Math.trunc(value)")
   })
 
@@ -64,8 +64,10 @@ describe("Cast functions (toInt/toFloat)", () => {
     expect(fs.existsSync(testOutputFile)).toBe(true)
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain("toFloat(")
-    expect(compiledCode).toContain("function toFloat(value: any): number")
+    expect(compiledCode).toContain("ssrgToFloat(")
+    expect(compiledCode).toContain(
+      "function ssrgToFloat(value: unknown): number"
+    )
   })
 
   it("should work with string conversion", async () => {
@@ -89,8 +91,8 @@ describe("Cast functions (toInt/toFloat)", () => {
     expect(fs.existsSync(testOutputFile)).toBe(true)
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain("toInt(")
-    expect(compiledCode).toContain("toFloat(")
+    expect(compiledCode).toContain("ssrgToInt(")
+    expect(compiledCode).toContain("ssrgToFloat(")
   })
 
   it("should work with pipe operator", async () => {

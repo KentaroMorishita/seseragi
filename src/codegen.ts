@@ -379,7 +379,7 @@ export class CodeGenerator {
       "",
       "function reversePipe<T, U>(fn: (arg: T) => U, value: T): U { return fn(value); }",
       "",
-      "function map<T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> {",
+      "function map<T, U>(fn: (value: T) => U, container: Maybe<T> | Either<unknown, T>): Maybe<U> | Either<unknown, U> {",
       "  if ('tag' in container) {",
       "    if (container.tag === 'Just') return Just(fn(container.value));",
       "    if (container.tag === 'Right') return Right(fn(container.value));",
@@ -389,7 +389,7 @@ export class CodeGenerator {
       "  return Nothing;",
       "}",
       "",
-      "function applyWrapped<T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> {",
+      "function applyWrapped<T, U>(wrapped: Maybe<(value: T) => U> | Either<unknown, (value: T) => U>, container: Maybe<T> | Either<unknown, T>): Maybe<U> | Either<unknown, U> {",
       "  // Maybe types",
       "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;",
       "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));",
@@ -400,7 +400,7 @@ export class CodeGenerator {
       "  return Nothing;",
       "}",
       "",
-      "function bind<T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> {",
+      "function bind<T, U>(container: Maybe<T> | Either<unknown, T>, fn: (value: T) => Maybe<U> | Either<unknown, U>): Maybe<U> | Either<unknown, U> {",
       "  if (container.tag === 'Just') return fn(container.value);",
       "  if (container.tag === 'Right') return fn(container.value);",
       "  if (container.tag === 'Nothing') return Nothing;",
@@ -436,24 +436,24 @@ export class CodeGenerator {
       "}",
       "",
       "// List monadic functions",
-      "function mapList<T, U>(fa: any, f: (a: T) => U): any {",
+      "function mapList<T, U>(fa: List<T>, f: (a: T) => U): List<U> {",
       "  if (fa.tag === 'Empty') return { tag: 'Empty' };",
       "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };",
       "}",
       "",
-      "function applyList<T, U>(ff: any, fa: any): any {",
+      "function applyList<T, U>(ff: List<(a: T) => U>, fa: List<T>): List<U> {",
       "  if (ff.tag === 'Empty') return { tag: 'Empty' };",
       "  const mappedValues = mapList(fa, ff.head);",
       "  const restApplied = applyList(ff.tail, fa);",
       "  return concatList(mappedValues, restApplied);",
       "}",
       "",
-      "function concatList<T>(list1: any, list2: any): any {",
+      "function concatList<T>(list1: List<T>, list2: List<T>): List<T> {",
       "  if (list1.tag === 'Empty') return list2;",
       "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };",
       "}",
       "",
-      "function bindList<T, U>(ma: any, f: (value: T) => any): any {",
+      "function bindList<T, U>(ma: List<T>, f: (value: T) => List<U>): List<U> {",
       "  if (ma.tag === 'Empty') return { tag: 'Empty' };",
       "  const headResult = f(ma.head);",
       "  const tailResult = bindList(ma.tail, f);",
@@ -512,60 +512,60 @@ export class CodeGenerator {
       "function headList<T>(list: List<T>): Maybe<T> { return list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' }; }",
       "function tailList<T>(list: List<T>): List<T> { return list.tag === 'Cons' ? list.tail : Empty; }",
       "",
-      `function print(value: any): void {
+      `function ssrgPrint(value: unknown): void {
   // Seseragi型の場合は美しく整形
   if (value && typeof value === 'object' && (
-    value.tag === 'Just' || value.tag === 'Nothing' ||
-    value.tag === 'Left' || value.tag === 'Right' ||
-    value.tag === 'Cons' || value.tag === 'Empty'
+    (value as any).tag === 'Just' || (value as any).tag === 'Nothing' ||
+    (value as any).tag === 'Left' || (value as any).tag === 'Right' ||
+    (value as any).tag === 'Cons' || (value as any).tag === 'Empty'
   )) {
-    console.log(toString(value))
+    console.log(ssrgToString(value))
   }
   // 通常のオブジェクトはそのまま
   else {
     console.log(value)
   }
 }`,
-      "function putStrLn(value: string): void { console.log(value); }",
-      `function toString(value: any): string {
+      "function ssrgPutStrLn(value: string): void { console.log(value); }",
+      `function ssrgToString(value: unknown): string {
   // Maybe型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Just') {
-    return \`Just(\${toString(value.value)})\`
+  if (value && typeof value === 'object' && (value as any).tag === 'Just') {
+    return \`Just(\${ssrgToString((value as any).value)})\`
   }
-  if (value && typeof value === 'object' && value.tag === 'Nothing') {
+  if (value && typeof value === 'object' && (value as any).tag === 'Nothing') {
     return 'Nothing'
   }
 
   // Either型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Left') {
-    return \`Left(\${toString(value.value)})\`
+  if (value && typeof value === 'object' && (value as any).tag === 'Left') {
+    return \`Left(\${ssrgToString((value as any).value)})\`
   }
-  if (value && typeof value === 'object' && value.tag === 'Right') {
-    return \`Right(\${toString(value.value)})\`
+  if (value && typeof value === 'object' && (value as any).tag === 'Right') {
+    return \`Right(\${ssrgToString((value as any).value)})\`
   }
 
   // List型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Empty') {
+  if (value && typeof value === 'object' && (value as any).tag === 'Empty') {
     return "\`[]"
   }
-  if (value && typeof value === 'object' && value.tag === 'Cons') {
-    const items = []
-    let current = value
+  if (value && typeof value === 'object' && (value as any).tag === 'Cons') {
+    const items: string[] = []
+    let current = value as any
     while (current.tag === 'Cons') {
-      items.push(toString(current.head))
+      items.push(ssrgToString(current.head))
       current = current.tail
     }
     return "\`[" + items.join(', ') + "]"
   }
 
   // Tuple型の美しい表示
-  if (value && typeof value === 'object' && value.tag === 'Tuple') {
-    return \`(\${value.elements.map(toString).join(', ')})\`
+  if (value && typeof value === 'object' && (value as any).tag === 'Tuple') {
+    return \`(\${(value as any).elements.map(ssrgToString).join(', ')})\`
   }
 
   // 配列の表示
   if (Array.isArray(value)) {
-    return \`[\${value.map(toString).join(', ')}]\`
+    return \`[\${value.map(ssrgToString).join(', ')}]\`
   }
 
   // プリミティブ型
@@ -581,16 +581,16 @@ export class CodeGenerator {
 
   // 普通のオブジェクト（構造体など）
   if (typeof value === 'object' && value !== null) {
-    const pairs = []
+    const pairs: string[] = []
     for (const key in value) {
-      if (value.hasOwnProperty(key)) {
-        pairs.push(\`\${key}: \${toString(value[key])}\`)
+      if ((value as any).hasOwnProperty(key)) {
+        pairs.push(\`\${key}: \${ssrgToString((value as any)[key])}\`)
       }
     }
 
     // 構造体名を取得（constructor.nameを使用）
-    const structName = value.constructor && value.constructor.name !== 'Object'
-      ? value.constructor.name
+    const structName = (value as any).constructor && (value as any).constructor.name !== 'Object'
+      ? (value as any).constructor.name
       : ''
 
     // 複数フィールドがある場合はインデント表示
@@ -603,7 +603,7 @@ export class CodeGenerator {
 
   return String(value)
 }`,
-      `function toInt(value: any): number {
+      `function ssrgToInt(value: unknown): number {
   if (typeof value === 'number') {
     return Math.trunc(value)
   }
@@ -616,7 +616,7 @@ export class CodeGenerator {
   }
   throw new Error(\`Cannot convert \${typeof value} to Int\`)
 }`,
-      `function toFloat(value: any): number {
+      `function ssrgToFloat(value: unknown): number {
   if (typeof value === 'number') {
     return value
   }
@@ -629,8 +629,8 @@ export class CodeGenerator {
   }
   throw new Error(\`Cannot convert \${typeof value} to Float\`)
 }`,
-      `function show(value: any): void {
-  console.log(toString(value))
+      `function ssrgShow(value: unknown): void {
+  console.log(ssrgToString(value))
 }`,
       "",
       "function arrayToList<T>(arr: T[]): List<T> {",
@@ -1758,6 +1758,31 @@ ${indent}}`
 
   // 関数呼び出しの生成
   generateFunctionCall(call: FunctionCall): string {
+    // ビルトイン関数の場合は直接変換
+    if (call.function.kind === "Identifier") {
+      const identifier = call.function as Identifier
+      const args = call.arguments.map((arg) => this.generateExpression(arg))
+
+      switch (identifier.name) {
+        case "print":
+          return `ssrgPrint(${args.join(", ")})`
+        case "putStrLn":
+          return `ssrgPutStrLn(${args.join(", ")})`
+        case "toString":
+          return `ssrgToString(${args.join(", ")})`
+        case "toInt":
+          return `ssrgToInt(${args.join(", ")})`
+        case "toFloat":
+          return `ssrgToFloat(${args.join(", ")})`
+        case "show":
+          return `ssrgShow(${args.join(", ")})`
+        case "head":
+          return `headList(${args.join(", ")})`
+        case "tail":
+          return `tailList(${args.join(", ")})`
+      }
+    }
+
     const func = this.generateExpression(call.function)
     const args = call.arguments.map((arg) => this.generateExpression(arg))
 
@@ -1800,14 +1825,14 @@ ${indent}}`
     if (app.function instanceof Identifier) {
       const funcName = app.function.name
       const builtinMap: Record<string, string> = {
-        print: `console.log(${arg})`,
-        putStrLn: `console.log(${arg})`,
-        toString: `toString(${arg})`,
-        toInt: `toInt(${arg})`,
-        toFloat: `toFloat(${arg})`,
+        print: `ssrgPrint(${arg})`,
+        putStrLn: `ssrgPutStrLn(${arg})`,
+        toString: `ssrgToString(${arg})`,
+        toInt: `ssrgToInt(${arg})`,
+        toFloat: `ssrgToFloat(${arg})`,
         head: `headList(${arg})`,
         tail: `tailList(${arg})`,
-        show: `show(${arg})`,
+        show: `ssrgShow(${arg})`,
       }
       return builtinMap[funcName] || null
     }
@@ -1849,24 +1874,24 @@ ${indent}}`
 
     switch (call.functionName) {
       case "print":
-        return `console.log(${args.join(", ")})`
+        return `ssrgPrint(${args.join(", ")})`
       case "putStrLn":
-        return `console.log(${args.join(", ")})`
+        return `ssrgPutStrLn(${args.join(", ")})`
       case "toString":
         if (args.length !== 1) {
           throw new Error("toString requires exactly one argument")
         }
-        return `toString(${args[0]})`
+        return `ssrgToString(${args[0]})`
       case "toInt":
         if (args.length !== 1) {
           throw new Error("toInt requires exactly one argument")
         }
-        return `toInt(${args[0]})`
+        return `ssrgToInt(${args[0]})`
       case "toFloat":
         if (args.length !== 1) {
           throw new Error("toFloat requires exactly one argument")
         }
-        return `toFloat(${args[0]})`
+        return `ssrgToFloat(${args[0]})`
       case "head":
         if (args.length !== 1) {
           throw new Error("head requires exactly one argument")
@@ -1881,7 +1906,7 @@ ${indent}}`
         if (args.length !== 1) {
           throw new Error("show requires exactly one argument")
         }
-        return `show(${args[0]})`
+        return `ssrgShow(${args[0]})`
       default:
         throw new Error(`Unknown builtin function: ${call.functionName}`)
     }
@@ -2232,15 +2257,18 @@ ${indent}}`
   ): string {
     // 空配列パターン []
     if (pattern.patterns.length === 0 && !pattern.restPattern) {
-      return `${valueVar}.length === 0`
+      return `Array.isArray(${valueVar}) && ${valueVar}.length === 0`
     }
 
     // restのみのパターン [...rest]
     if (pattern.patterns.length === 0 && pattern.restPattern) {
-      return "true" // すべての配列にマッチ
+      return `Array.isArray(${valueVar})` // 配列かどうかのみチェック
     }
 
     const conditions: string[] = []
+
+    // 配列型チェックを最初に追加
+    conditions.push(`Array.isArray(${valueVar})`)
 
     // 要素数チェック
     if (!pattern.restPattern) {
@@ -2468,6 +2496,31 @@ ${indent}}`
 
   // 逆パイプ演算子の生成
   generateReversePipe(reversePipe: ReversePipe): string {
+    // ビルトイン関数の場合は直接変換
+    if (reversePipe.left.kind === "Identifier") {
+      const identifier = reversePipe.left as Identifier
+      const right = this.generateExpression(reversePipe.right)
+
+      switch (identifier.name) {
+        case "print":
+          return `ssrgPrint(${right})`
+        case "putStrLn":
+          return `ssrgPutStrLn(${right})`
+        case "toString":
+          return `ssrgToString(${right})`
+        case "toInt":
+          return `ssrgToInt(${right})`
+        case "toFloat":
+          return `ssrgToFloat(${right})`
+        case "show":
+          return `ssrgShow(${right})`
+        case "head":
+          return `headList(${right})`
+        case "tail":
+          return `tailList(${right})`
+      }
+    }
+
     const left = this.generateExpression(reversePipe.left)
     const right = this.generateExpression(reversePipe.right)
 
@@ -2561,12 +2614,22 @@ ${indent}}`
     // ビルトイン関数の特別処理
     if (app.left instanceof Identifier) {
       const funcName = app.left.name
-      if (funcName === "print" || funcName === "putStrLn") {
-        return `console.log(${right})`
+      if (funcName === "print") {
+        return `ssrgPrint(${right})`
+      } else if (funcName === "putStrLn") {
+        return `ssrgPutStrLn(${right})`
       } else if (funcName === "toString") {
-        return `toString(${right})`
+        return `ssrgToString(${right})`
+      } else if (funcName === "toInt") {
+        return `ssrgToInt(${right})`
+      } else if (funcName === "toFloat") {
+        return `ssrgToFloat(${right})`
       } else if (funcName === "show") {
-        return `show(${right})`
+        return `ssrgShow(${right})`
+      } else if (funcName === "head") {
+        return `headList(${right})`
+      } else if (funcName === "tail") {
+        return `tailList(${right})`
       }
     }
 
