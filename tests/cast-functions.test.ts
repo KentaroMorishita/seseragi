@@ -65,7 +65,7 @@ describe("Cast functions (toInt/toFloat)", () => {
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
     expect(compiledCode).toContain("toFloat(")
-    expect(compiledCode).toContain("const toFloat = (value: any): number =>")
+    expect(compiledCode).toContain("function toFloat(value: any): number")
   })
 
   it("should work with string conversion", async () => {

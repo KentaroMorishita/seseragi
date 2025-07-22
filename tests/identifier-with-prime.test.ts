@@ -44,7 +44,7 @@ fn f' x = x * 2
 let result = f' 5
 `
     const result = transpileCode(code)
-    expect(result).toContain("const f_prime = (x: any): any =>")
+    expect(result).toContain("function f_prime(")
     expect(result).toContain("const result = f_prime(5);")
   })
 
@@ -69,7 +69,7 @@ fn fact' n = fact n
 let result = fact' 5
 `
     const result = transpileCode(code)
-    expect(result).toContain("const fact_prime = (n: any): any => fact(n);")
+    expect(result).toContain("function fact_prime(")
     expect(result).toContain("const result = fact_prime(5);")
   })
 
@@ -80,7 +80,7 @@ let x' = 5
 let result = f' x'
 `
     const result = transpileCode(code)
-    expect(result).toContain("const f_prime = (x: any): any =>")
+    expect(result).toContain("function f_prime(")
     expect(result).toContain("const x_prime = 5;")
     expect(result).toContain("const result = f_prime(x_prime);")
   })
@@ -92,7 +92,7 @@ let f' = add' 1
 let result = f' 2
 `
     const result = transpileCode(code)
-    expect(result).toContain("const add_prime = curry(")
+    expect(result).toContain("function add_prime(")
     expect(result).toContain("const f_prime = add_prime(1);")
     expect(result).toContain("const result = f_prime(2);")
   })

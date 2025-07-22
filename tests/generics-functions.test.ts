@@ -78,7 +78,7 @@ let stringResult = identity "hello"
     // TypeScriptジェネリクス構文が含まれているかチェック
     expect(generated).toContain("<T>")
     expect(generated).toContain("identity")
-    expect(generated).toContain("=> x")
+    expect(generated).toContain("return x;")
   })
 
   test("should handle generic function with constraints", () => {

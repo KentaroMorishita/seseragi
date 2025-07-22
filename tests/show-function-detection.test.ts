@@ -34,7 +34,7 @@ describe("Show Function Detection", () => {
     const generatedCode = generateTypeScript(parseResult.statements, {
       runtimeMode: "embedded",
     })
-    return generatedCode.includes("const show = ")
+    return generatedCode.includes("function show(")
   }
 
   test("should detect show function in function application operator syntax (show $ expr)", () => {

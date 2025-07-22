@@ -60,7 +60,7 @@ test("Performance test - Currying and partial application", () => {
   const generated = generateTypeScript(program.statements)
   const endTime = Date.now()
 
-  expect(generated).toContain("curry")
+  expect(generated).toContain("function(y: number)")
   expect(generated).toContain("add")
   expect(endTime - startTime).toBeLessThan(500)
 })

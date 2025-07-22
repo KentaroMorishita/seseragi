@@ -119,7 +119,7 @@ describe("Nullish Coalescing Operator", () => {
     })
 
     // ランタイム関数が含まれているかチェック
-    expect(tsCode).toContain("const fromMaybe")
+    expect(tsCode).toContain("function fromMaybe")
     expect(tsCode).toContain(
       "return maybe.tag === 'Just' ? maybe.value : defaultValue"
     )

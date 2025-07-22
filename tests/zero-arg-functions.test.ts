@@ -38,8 +38,8 @@ test("Zero-argument functions - should generate correct TypeScript", () => {
   const program = new AST.Program(parseResult.statements || [])
   const generated = generateTypeScript(program.statements)
 
-  expect(generated).toContain('const getMessage = (): string => "Hello!";')
-  expect(generated).toContain("const getNumber = (): number => 42;")
+  expect(generated).toContain("function getMessage(): string {")
+  expect(generated).toContain("function getNumber(): number {")
   expect(generated).toContain("const message = getMessage;")
   expect(generated).toContain("const number = getNumber;")
 })
