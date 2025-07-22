@@ -1,6 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { Program } from "../ast.js"
+import { Program, TypeAliasDeclaration } from "../ast.js"
 import { generateTypeScript } from "../codegen.js"
 import { Parser } from "../parser.js"
 import { TypeInferenceSystem } from "../type-inference.js"
@@ -64,6 +64,22 @@ async function compile(options: CompileOptions): Promise<void> {
 
     // 新しい型推論システムを使用
     const typeInference = new TypeInferenceSystem()
+
+    // 型エイリアス情報を収集して設定
+    const typeAliases = new Map<string, any>()
+    for (const stmt of ast.statements || []) {
+      if (stmt.kind === "TypeAliasDeclaration") {
+        const aliasDecl = stmt as TypeAliasDeclaration
+        console.log(
+          `🔧 Registering type alias: ${aliasDecl.name} = ${aliasDecl.aliasedType.kind}`
+        )
+        console.log(`🔧 Storing aliasedType:`, aliasDecl.aliasedType)
+        // 重要: aliasedTypeを格納し、宣言全体ではない
+        typeAliases.set(aliasDecl.name, aliasDecl.aliasedType)
+      }
+    }
+    typeInference.setTypeAliases(typeAliases)
+
     inferenceResult = typeInference.infer(new Program(ast.statements!, 1, 1))
 
     if (inferenceResult.errors.length > 0) {

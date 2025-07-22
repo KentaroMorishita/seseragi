@@ -47,6 +47,7 @@ import {
   type RecordAccess,
   RecordDestructuring,
   type RecordExpression,
+  RecordField,
   type RecordInitField,
   type RecordShorthandField,
   type RecordSpreadField,
@@ -116,6 +117,8 @@ export class CodeGenerator {
   structOperators: Map<string, Set<string>> = new Map() // 構造体名 → 演算子のセット
   typeInferenceResult: TypeInferenceSystemResult | null = null // 型推論結果
   currentFunctionTypeParams: any[] = [] // 現在処理中の関数のジェネリック型パラメータ
+  typeAliases: Map<string, Type> = new Map() // 型エイリアス名 → 実際の型
+  functionTypes: Map<string, Type> = new Map() // 関数名 → 関数型
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -480,7 +483,7 @@ export class CodeGenerator {
       "",
       "function applyEither<L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> {",
       "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :",
-      "         ef.tag === 'Left' ? ef : ea;",
+      "         ef.tag === 'Left' ? ef : ea as Either<L, U>;",
       "}",
       "",
       "function bindEither<L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> {",
@@ -695,6 +698,32 @@ export class CodeGenerator {
   generateFunctionDeclaration(func: FunctionDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
 
+    // 関数の型を登録
+    const funcType = new FunctionType(
+      func.parameters[0]?.type || new PrimitiveType("unknown", 0, 0),
+      func.returnType,
+      0,
+      0
+    )
+    // カリー化された関数の場合、ネストした関数型を構築
+    if (func.parameters.length > 1) {
+      let currentType = funcType.returnType
+      for (let i = func.parameters.length - 1; i > 0; i--) {
+        currentType = new FunctionType(
+          func.parameters[i].type,
+          currentType,
+          0,
+          0
+        )
+      }
+      this.functionTypes.set(
+        func.name,
+        new FunctionType(func.parameters[0].type, currentType, 0, 0)
+      )
+    } else {
+      this.functionTypes.set(func.name, funcType)
+    }
+
     // 元の型注釈情報を優先使用（どれか一つでも存在すれば優先）
     const useOriginalTypes =
       func.originalTypeParameters ||
@@ -864,6 +893,9 @@ export class CodeGenerator {
   generateTypeAliasDeclaration(typeAlias: TypeAliasDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
     const aliasedType = this.generateType(typeAlias.aliasedType)
+
+    // 型エイリアスを登録
+    this.typeAliases.set(typeAlias.name, typeAlias.aliasedType)
 
     // ジェネリック型パラメータがある場合は追加
     let typeParametersStr = ""
@@ -1463,13 +1495,85 @@ ${indent}}`
 
   // 型推論結果から解決済みの型を取得
   private getResolvedType(expr: Expression): Type | undefined {
+    // まず型推論結果を確認
     if (this.typeInferenceResult?.nodeTypeMap) {
       const resolvedType = this.typeInferenceResult.nodeTypeMap.get(expr)
       if (resolvedType) {
         return resolvedType
       }
     }
-    return expr.type
+
+    // 関数宣言を直接探す（シンプルなアプローチ）
+    if (expr instanceof Identifier && this.functionTypes) {
+      const funcType = this.functionTypes.get(expr.name)
+      if (funcType) {
+        return funcType
+      }
+    }
+
+    // 直接expr.typeを確認
+    if (expr.type) {
+      return expr.type
+    }
+
+    return undefined
+  }
+
+  // レコード系の型かどうかを判定
+  private isRecordLikeType(type: Type): boolean {
+    if (type.kind === "RecordType" || type.kind === "StructType") {
+      return true
+    }
+
+    // IntersectionType（&で結合された型）の場合、すべての型がレコード系かチェック
+    if (type.kind === "IntersectionType") {
+      const intersectionType = type as IntersectionType
+      return intersectionType.types.some((t) => this.isRecordLikeType(t))
+    }
+
+    // 型エイリアスの場合、その定義を確認
+    if (type.kind === "PrimitiveType" && this.typeAliases) {
+      const aliasedType = this.typeAliases.get((type as PrimitiveType).name)
+      if (aliasedType) {
+        return this.isRecordLikeType(aliasedType)
+      }
+    }
+
+    return false
+  }
+
+  // 関数型から指定されたインデックスの引数の期待型を取得
+  private getExpectedArgumentType(
+    functionType: Type | undefined,
+    argumentIndex: number
+  ): Type | undefined {
+    if (!functionType || functionType.kind !== "FunctionType") {
+      return undefined
+    }
+
+    const funcType = functionType as FunctionType
+
+    // 単一引数の場合
+    if (argumentIndex === 0) {
+      return funcType.paramType
+    }
+
+    // カリー化された関数の場合（複数引数）
+    let currentType: Type = funcType
+    for (let i = 0; i <= argumentIndex; i++) {
+      if (currentType.kind !== "FunctionType") {
+        return undefined
+      }
+
+      const currentFuncType = currentType as FunctionType
+      if (i === argumentIndex) {
+        return currentFuncType.paramType
+      }
+
+      currentType = currentFuncType.returnType
+    }
+
+    return undefined
   }
 
   // プリミティブ型かどうかをチェック
@@ -1784,7 +1888,23 @@ ${indent}}`
     }
 
     const func = this.generateExpression(call.function)
-    const args = call.arguments.map((arg) => this.generateExpression(arg))
+
+    // 引数の型アサーション付き生成
+    const args = call.arguments.map((arg, index) => {
+      const argCode = this.generateExpression(arg)
+
+      // 期待される型がレコード/構造体の場合、型アサーション追加
+      if (this.typeInferenceResult?.nodeTypeMap) {
+        const functionType = this.getResolvedType(call.function)
+        const expectedType = this.getExpectedArgumentType(functionType, index)
+
+        if (expectedType && this.isRecordLikeType(expectedType)) {
+          return `(${argCode}) as ${this.generateType(expectedType)}`
+        }
+      }
+
+      return argCode
+    })
 
     // 型引数がある場合の処理
     if (call.typeArguments && call.typeArguments.length > 0) {
@@ -1800,7 +1920,17 @@ ${indent}}`
   // 関数適用の生成
   generateFunctionApplication(app: FunctionApplication): string {
     const func = this.generateExpression(app.function)
-    const arg = this.generateExpression(app.argument)
+    let arg = this.generateExpression(app.argument)
+
+    // 期待される型がレコード/構造体の場合、型アサーション追加
+    if (this.typeInferenceResult?.nodeTypeMap) {
+      const functionType = this.getResolvedType(app.function)
+      const expectedType = this.getExpectedArgumentType(functionType, 0)
+
+      if (expectedType && this.isRecordLikeType(expectedType)) {
+        arg = `(${arg}) as ${this.generateType(expectedType)}`
+      }
+    }
 
     // ビルトイン関数の特別処理
     const builtinResult = this.tryGenerateBuiltinApplication(app, arg)

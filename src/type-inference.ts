@@ -435,10 +435,110 @@ export class TypeInferenceSystem {
   private nodeTypeMap: Map<AST.ASTNode, AST.Type> = new Map() // Track types for AST nodes
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
+  private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
     return new TypeVariable(this.nextVarId++, line, column)
+  }
+
+  // 型エイリアス情報を設定
+  setTypeAliases(typeAliases: Map<string, AST.Type>): void {
+    this.typeAliases = typeAliases
+  }
+
+  // 再帰的に型エイリアスを解決
+  private resolveTypeAliasRecursively(
+    typeName: string,
+    visited: Set<string> = new Set()
+  ): AST.Type | null {
+    if (visited.has(typeName)) {
+      // 循環参照を防ぐ
+      return null
+    }
+
+    const aliasData = this.typeAliases.get(typeName)
+    if (!aliasData) {
+      return null
+    }
+
+    // TypeAliasDeclarationの場合は、その中のaliasedTypeを取得
+    let aliasedType: AST.Type
+    if (aliasData.kind === "TypeAliasDeclaration") {
+      aliasedType = (aliasData as AST.TypeAliasDeclaration).aliasedType
+    } else {
+      aliasedType = aliasData
+    }
+
+    // RecordTypeなら直接返す
+    if (aliasedType.kind === "RecordType") {
+      return aliasedType
+    }
+
+    // 別のPrimitiveType（型エイリアス）なら再帰的に解決
+    if (aliasedType.kind === "PrimitiveType") {
+      visited.add(typeName)
+      const nextTypeName = (aliasedType as AST.PrimitiveType).name
+      return this.resolveTypeAliasRecursively(nextTypeName, visited)
+    }
+
+    return aliasedType
+  }
+
+  // IntersectionTypeからRecordTypeを抽出・統合
+  private extractRecordFromIntersection(
+    intersectionType: AST.IntersectionType
+  ): AST.RecordType | null {
+    const allFields: AST.RecordField[] = []
+
+    for (const type of intersectionType.types) {
+      const recordType = this.extractRecordTypeFromAnyType(type)
+      if (recordType) {
+        allFields.push(...recordType.fields)
+      }
+    }
+
+    if (allFields.length === 0) {
+      return null
+    }
+
+    // 統合されたRecordTypeを作成
+    return new AST.RecordType(
+      allFields,
+      intersectionType.line,
+      intersectionType.column
+    )
+  }
+
+  // 任意の型からRecordTypeを抽出する汎用メソッド
+  private extractRecordTypeFromAnyType(type: AST.Type): AST.RecordType | null {
+    switch (type.kind) {
+      case "RecordType":
+        return type as AST.RecordType
+
+      case "PrimitiveType": {
+        // 型エイリアスを解決
+        const resolvedType = this.resolveTypeAliasRecursively(
+          (type as AST.PrimitiveType).name
+        )
+        return resolvedType
+          ? this.extractRecordTypeFromAnyType(resolvedType)
+          : null
+      }
+
+      case "IntersectionType":
+        // ネストしたIntersectionTypeも処理
+        return this.extractRecordFromIntersection(type as AST.IntersectionType)
+
+      case "GenericType":
+      case "UnionType":
+      case "FunctionType":
+      case "TupleType":
+      case "StructType":
+      default:
+        // これらの型からはRecordTypeは抽出できない
+        return null
+    }
   }
 
   private formatType(
@@ -6610,7 +6710,8 @@ export class TypeInferenceSystem {
     if (
       expectedType &&
       (expectedType.kind === "RecordType" ||
-        expectedType.kind === "PrimitiveType")
+        expectedType.kind === "PrimitiveType" ||
+        expectedType.kind === "IntersectionType")
     ) {
       console.log(
         `🔧 Maybe auto-completion: entering with expected type ${this.typeToString(expectedType)}`
@@ -6623,9 +6724,38 @@ export class TypeInferenceSystem {
       }
       // 期待される型がPrimitiveType（型エイリアス）の場合は解決を試みる
       else if (expectedType.kind === "PrimitiveType") {
-        const aliasedType = env.get(expectedType.name)
+        console.log(`🔧 Type alias lookup for: ${expectedType.name}`)
+        const aliasedType = this.resolveTypeAliasRecursively(expectedType.name)
+        console.log(
+          `🔧 Found aliased type: ${aliasedType ? this.typeToString(aliasedType) : "none"}`
+        )
         if (aliasedType && aliasedType.kind === "RecordType") {
           expectedRecordType = aliasedType as AST.RecordType
+          console.log(
+            `🔧 Using aliased record type with ${expectedRecordType.fields.length} fields`
+          )
+        }
+        // IntersectionTypeの場合も処理
+        else if (aliasedType && aliasedType.kind === "IntersectionType") {
+          expectedRecordType = this.extractRecordFromIntersection(
+            aliasedType as AST.IntersectionType
+          )
+          if (expectedRecordType) {
+            console.log(
+              `🔧 Using record type from intersection with ${expectedRecordType.fields.length} fields`
+            )
+          }
+        }
+      }
+      // 期待される型がIntersectionType（型エイリアス）の場合も処理
+      else if (expectedType.kind === "IntersectionType") {
+        expectedRecordType = this.extractRecordFromIntersection(
+          expectedType as AST.IntersectionType
+        )
+        if (expectedRecordType) {
+          console.log(
+            `🔧 Using record type from direct intersection with ${expectedRecordType.fields.length} fields`
+          )
         }
       }
 
