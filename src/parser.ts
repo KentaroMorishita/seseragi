@@ -169,24 +169,25 @@ export class Parser {
     ).value
 
     // Parse type parameters if present: fn name<T, U>
-    let typeParameters: AST.TypeParameter[] | undefined
-    if (this.match(TokenType.LESS_THAN)) {
-      typeParameters = this.parseTypeParameters()
-    }
+    const typeParameters = this.match(TokenType.LESS_THAN)
+      ? this.parseTypeParameters()
+      : []
 
     // Save current type parameter context
     const previousTypeParameters = new Set(this.currentTypeParameters)
     const previousTypeParameterMap = new Map(this.typeParameterMap)
 
     // Add function's type parameters to current context
-    if (typeParameters) {
-      for (const typeParam of typeParameters) {
-        this.currentTypeParameters.add(typeParam.name)
-      }
+    for (const typeParam of typeParameters) {
+      this.currentTypeParameters.add(typeParam.name)
     }
 
     const parameters: AST.Parameter[] = []
-    const returnType = this.parseFunctionSignature(parameters)
+    const returnType = this.parseFunctionSignature(
+      parameters,
+      "",
+      typeParameters
+    )
 
     let body: AST.Expression
 
@@ -304,8 +305,13 @@ export class Parser {
 
   private parseFunctionSignature(
     parameters: AST.Parameter[],
-    implContext?: string
+    implContext: string,
+    typeParameters: AST.TypeParameter[]
   ): AST.Type {
+    // 関数の型パラメータを一時的に保存
+    for (const tp of typeParameters) {
+      this.currentTypeParameters.add(tp.name)
+    }
     // Check for immediate arrow (no parameters case: "fn name -> Type")
     if (this.check(TokenType.ARROW)) {
       this.advance() // consume ->
@@ -1014,7 +1020,11 @@ export class Parser {
     ).value
 
     const parameters: AST.Parameter[] = []
-    const returnType = this.parseFunctionSignature(parameters, implTypeName)
+    const returnType = this.parseFunctionSignature(
+      parameters,
+      implTypeName || "",
+      []
+    )
 
     let body: AST.Expression
 
@@ -1073,7 +1083,11 @@ export class Parser {
     }
 
     const parameters: AST.Parameter[] = []
-    const returnType = this.parseFunctionSignature(parameters, implTypeName)
+    const returnType = this.parseFunctionSignature(
+      parameters,
+      implTypeName || "",
+      []
+    )
 
     let body: AST.Expression
 
@@ -1341,14 +1355,8 @@ export class Parser {
 
       // 型パラメータかどうかをチェック
       if (this.currentTypeParameters.has(name)) {
-        // 型パラメータのマッピングを取得または作成
-        if (!this.typeParameterMap.has(name)) {
-          this.typeParameterMap.set(
-            name,
-            this.freshTypeVariable(token.line, token.column)
-          )
-        }
-        return this.typeParameterMap.get(name)!
+        // 型パラメータはそのまま識別子として返す（型推論時に処理される）
+        return new AST.PrimitiveType(name, token.line, token.column)
       }
 
       return new AST.PrimitiveType(name, token.line, token.column)

@@ -1073,6 +1073,11 @@ export class Parameter extends ASTNode {
 export class FunctionDeclaration extends Statement {
   kind = "FunctionDeclaration"
   name: string
+  // 元の型注釈情報（パース時に保存）
+  originalTypeParameters?: TypeParameter[]
+  originalParameters: Parameter[]
+  originalReturnType: Type
+  // 型推論後の情報
   typeParameters?: TypeParameter[]
   parameters: Parameter[]
   returnType: Type
@@ -1091,6 +1096,23 @@ export class FunctionDeclaration extends Statement {
   ) {
     super(line, column)
     this.name = name
+    // 元の情報を保存
+    this.originalTypeParameters = typeParameters
+      ? [...typeParameters]
+      : undefined
+    this.originalParameters = parameters.map(
+      (p) =>
+        new Parameter(
+          p.name,
+          p.type,
+          p.line,
+          p.column,
+          p.isImplicitSelf,
+          p.isImplicitOther
+        )
+    )
+    this.originalReturnType = returnType
+    // 型推論用の情報
     this.typeParameters = typeParameters
     this.parameters = parameters
     this.returnType = returnType

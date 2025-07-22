@@ -72,7 +72,7 @@ import {
   UnionType,
   VariableDeclaration,
 } from "./ast"
-import type { TypeInferenceSystemResult } from "./type-inference"
+import type { TypeInferenceSystemResult, TypeVariable } from "./type-inference"
 import { type UsageAnalysis, UsageAnalyzer } from "./usage-analyzer"
 
 /**
@@ -115,6 +115,7 @@ export class CodeGenerator {
   structMethods: Map<string, Set<string>> = new Map() // 構造体名 → メソッド名のセット
   structOperators: Map<string, Set<string>> = new Map() // 構造体名 → 演算子のセット
   typeInferenceResult: TypeInferenceSystemResult | null = null // 型推論結果
+  currentFunctionTypeParams: any[] = [] // 現在処理中の関数のジェネリック型パラメータ
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -356,93 +357,12 @@ export class CodeGenerator {
   // 外部ランタイムライブラリからのインポート
   generateRuntimeImports(): string[] {
     const lines: string[] = []
-    const imports: string[] = []
-
-    if (!this.usageAnalysis) return lines
-
-    // 必要な機能のみインポート
-    this.collectBasicImports(imports)
-    this.collectTypeImports(imports)
-    this.collectFunctionalImports(imports)
-    this.collectBuiltinImports(imports)
-
-    if (imports.length > 0) {
-      lines.push(
-        `import { ${imports.join(", ")} } from './runtime/seseragi-runtime.js';`
-      )
-    }
+    // インポートは不要（すべてfunction宣言で定義済み）
 
     return lines
   }
 
-  private collectBasicImports(imports: string[]): void {
-    if (!this.usageAnalysis) return
-
-    if (this.usageAnalysis.needsCurrying) {
-      imports.push("curry")
-    }
-    if (this.usageAnalysis.needsPipeline) {
-      imports.push("pipe")
-    }
-    if (this.usageAnalysis.needsReversePipe) {
-      imports.push("reversePipe")
-    }
-    if (this.usageAnalysis.needsFunctionApplication) {
-      imports.push("apply")
-    }
-  }
-
-  private collectTypeImports(imports: string[]): void {
-    if (!this.usageAnalysis) return
-
-    if (this.usageAnalysis.needsMaybe) {
-      imports.push("Just", "Nothing", "type Maybe")
-    }
-    if (this.usageAnalysis.needsEither) {
-      imports.push("Left", "Right", "type Either")
-    }
-  }
-
-  private collectFunctionalImports(imports: string[]): void {
-    if (!this.usageAnalysis) return
-
-    if (this.usageAnalysis.needsFunctorMap) {
-      imports.push("mapMaybe", "mapEither", "mapList", "mapArray")
-    }
-    if (this.usageAnalysis.needsApplicativeApply) {
-      imports.push("applyMaybe", "applyEither", "applyList", "applyArray")
-    }
-    if (this.usageAnalysis.needsMonadBind) {
-      imports.push("bindMaybe", "bindEither", "bindList", "bindArray")
-    }
-    if (this.usageAnalysis.needsFoldMonoid) {
-      imports.push("foldMonoid")
-    }
-  }
-
-  private collectBuiltinImports(imports: string[]): void {
-    if (!this.usageAnalysis) return
-
-    const builtins = this.usageAnalysis.needsBuiltins
-    const builtinMap: Record<string, string> = {
-      print: "print",
-      putStrLn: "putStrLn",
-      toString: "toString",
-      toInt: "toInt",
-      toFloat: "toFloat",
-      show: "show",
-      arrayToList: "arrayToList",
-      listToArray: "listToArray",
-      head: "headList",
-      tail: "tailList",
-    }
-
-    for (const [key, value] of Object.entries(builtinMap)) {
-      if (builtins[key as keyof typeof builtins]) {
-        imports.push(value)
-      }
-    }
-  }
+  // インポート関連のメソッドは不要（すべてfunction宣言で定義済み）
 
   // 従来の埋め込み式ランタイム（下位互換性用）
   generateEmbeddedRuntime(): string[] {
@@ -455,11 +375,11 @@ export class CodeGenerator {
       "",
       ...this.generateCurryFunction(),
       "",
-      "const pipe = <T, U>(value: T, fn: (arg: T) => U): U => fn(value);",
+      "function pipe<T, U>(value: T, fn: (arg: T) => U): U { return fn(value); }",
       "",
-      "const reversePipe = <T, U>(fn: (arg: T) => U, value: T): U => fn(value);",
+      "function reversePipe<T, U>(fn: (arg: T) => U, value: T): U { return fn(value); }",
       "",
-      "const map = <T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {",
+      "function map<T, U>(fn: (value: T) => U, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> {",
       "  if ('tag' in container) {",
       "    if (container.tag === 'Just') return Just(fn(container.value));",
       "    if (container.tag === 'Right') return Right(fn(container.value));",
@@ -467,9 +387,9 @@ export class CodeGenerator {
       "    if (container.tag === 'Left') return container;",
       "  }",
       "  return Nothing;",
-      "};",
+      "}",
       "",
-      "const applyWrapped = <T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> => {",
+      "function applyWrapped<T, U>(wrapped: Maybe<(value: T) => U> | Either<any, (value: T) => U>, container: Maybe<T> | Either<any, T>): Maybe<U> | Either<any, U> {",
       "  // Maybe types",
       "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;",
       "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));",
@@ -478,26 +398,26 @@ export class CodeGenerator {
       "  if (container.tag === 'Left') return container;",
       "  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));",
       "  return Nothing;",
-      "};",
+      "}",
       "",
-      "const bind = <T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> => {",
+      "function bind<T, U>(container: Maybe<T> | Either<any, T>, fn: (value: T) => Maybe<U> | Either<any, U>): Maybe<U> | Either<any, U> {",
       "  if (container.tag === 'Just') return fn(container.value);",
       "  if (container.tag === 'Right') return fn(container.value);",
       "  if (container.tag === 'Nothing') return Nothing;",
       "  if (container.tag === 'Left') return container;",
       "  return Nothing;",
-      "};",
+      "}",
       "",
-      "const foldMonoid = <T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T => {",
+      "function foldMonoid<T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T {",
       "  return arr.reduce(combine, empty);",
-      "};",
+      "}",
       "",
       "// Array monadic functions",
-      "const mapArray = <T, U>(fa: T[], f: (a: T) => U): U[] => {",
+      "function mapArray<T, U>(fa: T[], f: (a: T) => U): U[] {",
       "  return fa.map(f);",
-      "};",
+      "}",
       "",
-      "const applyArray = <T, U>(ff: ((a: T) => U)[], fa: T[]): U[] => {",
+      "function applyArray<T, U>(ff: ((a: T) => U)[], fa: T[]): U[] {",
       "  const result: U[] = [];",
       "  for (const func of ff) {",
       "    for (const value of fa) {",
@@ -505,94 +425,94 @@ export class CodeGenerator {
       "    }",
       "  }",
       "  return result;",
-      "};",
+      "}",
       "",
-      "const bindArray = <T, U>(ma: T[], f: (value: T) => U[]): U[] => {",
+      "function bindArray<T, U>(ma: T[], f: (value: T) => U[]): U[] {",
       "  const result: U[] = [];",
       "  for (const value of ma) {",
       "    result.push(...f(value));",
       "  }",
       "  return result;",
-      "};",
+      "}",
       "",
       "// List monadic functions",
-      "const mapList = <T, U>(fa: any, f: (a: T) => U): any => {",
+      "function mapList<T, U>(fa: any, f: (a: T) => U): any {",
       "  if (fa.tag === 'Empty') return { tag: 'Empty' };",
       "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };",
-      "};",
+      "}",
       "",
-      "const applyList = <T, U>(ff: any, fa: any): any => {",
+      "function applyList<T, U>(ff: any, fa: any): any {",
       "  if (ff.tag === 'Empty') return { tag: 'Empty' };",
       "  const mappedValues = mapList(fa, ff.head);",
       "  const restApplied = applyList(ff.tail, fa);",
       "  return concatList(mappedValues, restApplied);",
-      "};",
+      "}",
       "",
-      "const concatList = <T>(list1: any, list2: any): any => {",
+      "function concatList<T>(list1: any, list2: any): any {",
       "  if (list1.tag === 'Empty') return list2;",
       "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };",
-      "};",
+      "}",
       "",
-      "const bindList = <T, U>(ma: any, f: (value: T) => any): any => {",
+      "function bindList<T, U>(ma: any, f: (value: T) => any): any {",
       "  if (ma.tag === 'Empty') return { tag: 'Empty' };",
       "  const headResult = f(ma.head);",
       "  const tailResult = bindList(ma.tail, f);",
       "  return concatList(headResult, tailResult);",
-      "};",
+      "}",
       "",
       "// Maybe monadic functions",
-      "const mapMaybe = <T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> => {",
+      "function mapMaybe<T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> {",
       "  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;",
-      "};",
+      "}",
       "",
-      "const applyMaybe = <T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> => {",
+      "function applyMaybe<T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> {",
       "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;",
-      "};",
+      "}",
       "",
-      "const bindMaybe = <T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> => {",
+      "function bindMaybe<T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> {",
       "  return ma.tag === 'Just' ? f(ma.value) : Nothing;",
-      "};",
+      "}",
       "",
       "// Either monadic functions",
-      "const mapEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> => {",
+      "function mapEither<L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> {",
       "  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;",
-      "};",
+      "}",
       "",
-      "const applyEither = <L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> => {",
+      "function applyEither<L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> {",
       "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :",
       "         ef.tag === 'Left' ? ef : ea;",
-      "};",
+      "}",
       "",
-      "const bindEither = <L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> => {",
+      "function bindEither<L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> {",
       "  return ea.tag === 'Right' ? f(ea.value) : ea;",
-      "};",
+      "}",
       "",
-      "const Just = <T>(value: T): Maybe<T> => ({ tag: 'Just', value });",
+      "function Just<T>(value: T): Maybe<T> { return { tag: 'Just', value }; }",
       "const Nothing: Maybe<never> = { tag: 'Nothing' };",
       "",
-      "const Left = <L>(value: L): Either<L, never> => ({ tag: 'Left', value });",
-      "const Right = <R>(value: R): Either<never, R> => ({ tag: 'Right', value });",
+      "function Left<L>(value: L): Either<L, never> { return { tag: 'Left', value }; }",
+      "function Right<R>(value: R): Either<never, R> { return { tag: 'Right', value }; }",
       "",
       "// Nullish coalescing helper functions",
-      "const fromMaybe = <T>(defaultValue: T, maybe: Maybe<T>): T => {",
+      "function fromMaybe<T>(defaultValue: T, maybe: Maybe<T>): T {",
       "  return maybe.tag === 'Just' ? maybe.value : defaultValue;",
-      "};",
+      "}",
       "",
-      "const fromRight = <L, R>(defaultValue: R, either: Either<L, R>): R => {",
+      "function fromRight<L, R>(defaultValue: R, either: Either<L, R>): R {",
       "  return either.tag === 'Right' ? either.value : defaultValue;",
-      "};",
+      "}",
       "",
-      "const fromLeft = <L, R>(defaultValue: L, either: Either<L, R>): L => {",
+      "function fromLeft<L, R>(defaultValue: L, either: Either<L, R>): L {",
       "  return either.tag === 'Left' ? either.value : defaultValue;",
-      "};",
+      "}",
       "",
       "const Empty: List<never> = { tag: 'Empty' };",
-      "const Cons = <T>(head: T, tail: List<T>): List<T> => ({ tag: 'Cons', head, tail });",
+      "function Cons<T>(head: T, tail: List<T>): List<T> { return { tag: 'Cons', head, tail }; }",
       "",
-      "const headList = <T>(list: List<T>): Maybe<T> => list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' };",
-      "const tailList = <T>(list: List<T>): List<T> => list.tag === 'Cons' ? list.tail : Empty;",
+      "function headList<T>(list: List<T>): Maybe<T> { return list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' }; }",
+      "function tailList<T>(list: List<T>): List<T> { return list.tag === 'Cons' ? list.tail : Empty; }",
       "",
-      `const print = (value: any): void => {
+      `function print(value: any): void {
   // Seseragi型の場合は美しく整形
   if (value && typeof value === 'object' && (
     value.tag === 'Just' || value.tag === 'Nothing' ||
@@ -605,9 +525,9 @@ export class CodeGenerator {
   else {
     console.log(value)
   }
-};`,
-      "const putStrLn = (value: string): void => console.log(value);",
-      `const toString = (value: any): string => {
+}`,
+      "function putStrLn(value: string): void { console.log(value); }",
+      `function toString(value: any): string {
   // Maybe型の美しい表示
   if (value && typeof value === 'object' && value.tag === 'Just') {
     return \`Just(\${toString(value.value)})\`
@@ -682,8 +602,8 @@ export class CodeGenerator {
   }
 
   return String(value)
-};`,
-      `const toInt = (value: any): number => {
+}`,
+      `function toInt(value: any): number {
   if (typeof value === 'number') {
     return Math.trunc(value)
   }
@@ -695,8 +615,8 @@ export class CodeGenerator {
     return n
   }
   throw new Error(\`Cannot convert \${typeof value} to Int\`)
-};`,
-      `const toFloat = (value: any): number => {
+}`,
+      `function toFloat(value: any): number {
   if (typeof value === 'number') {
     return value
   }
@@ -708,20 +628,20 @@ export class CodeGenerator {
     return n
   }
   throw new Error(\`Cannot convert \${typeof value} to Float\`)
-};`,
-      `const show = (value: any): void => {
+}`,
+      `function show(value: any): void {
   console.log(toString(value))
-};`,
+}`,
       "",
-      "const arrayToList = curry(<T>(arr: T[]): List<T> => {",
+      "function arrayToList<T>(arr: T[]): List<T> {",
       "  let result: List<T> = Empty;",
       "  for (let i = arr.length - 1; i >= 0; i--) {",
       "    result = Cons(arr[i], result);",
       "  }",
       "  return result;",
-      "});",
+      "}",
       "",
-      "const listToArray = curry(<T>(list: List<T>): T[] => {",
+      "function listToArray<T>(list: List<T>): T[] {",
       "  const result: T[] = [];",
       "  let current = list;",
       "  while (current.tag === 'Cons') {",
@@ -729,24 +649,13 @@ export class CodeGenerator {
       "    current = current.tail;",
       "  }",
       "  return result;",
-      "});",
+      "}",
     ]
   }
 
   private generateCurryFunction(): string[] {
-    return [
-      "const curry = (fn: Function) => {",
-      "  return function curried(...args: any[]) {",
-      "    if (args.length >= fn.length) {",
-      "      return fn.apply(this, args);",
-      "    } else {",
-      "      return function(...args2: any[]) {",
-      "        return curried.apply(this, args.concat(args2));",
-      "      };",
-      "    }",
-      "  };",
-      "};",
-    ]
+    // curry関数は不要になったので空配列を返す
+    return []
   }
 
   // 文の生成
@@ -786,34 +695,81 @@ export class CodeGenerator {
   generateFunctionDeclaration(func: FunctionDeclaration): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
 
-    // TypeScriptジェネリクス型パラメータを生成
+    // 元の型注釈情報を優先使用（どれか一つでも存在すれば優先）
+    const useOriginalTypes =
+      func.originalTypeParameters ||
+      func.originalParameters ||
+      func.originalReturnType
     const typeParams =
-      func.typeParameters && func.typeParameters.length > 0
-        ? `<${func.typeParameters.map((tp) => tp.name).join(", ")}>`
-        : ""
+      useOriginalTypes &&
+      func.originalTypeParameters &&
+      func.originalTypeParameters.length > 0
+        ? `<${func.originalTypeParameters.map((tp) => tp.name).join(", ")}>`
+        : func.typeParameters && func.typeParameters.length > 0
+          ? `<${func.typeParameters.map((tp) => tp.name).join(", ")}>`
+          : ""
 
-    const params = func.parameters
-      .map((p) => `${p.name}: ${this.generateType(p.type)}`)
+    // 関数のジェネリック型パラメータコンテキストを設定（元の型パラメータを優先）
+    this.currentFunctionTypeParams =
+      (useOriginalTypes ? func.originalTypeParameters : func.typeParameters) ||
+      []
+
+    // 元の型注釈を優先して使用
+    const parameters = useOriginalTypes
+      ? func.originalParameters
+      : func.parameters
+    const funcReturnType = useOriginalTypes
+      ? func.originalReturnType
+      : func.returnType
+
+    const params = parameters
+      .map((p) => `${p.name}: ${this.generateDirectType(p.type)}`)
       .join(", ")
-    const returnType = func.returnType
-      ? this.generateType(func.returnType)
+
+    const returnType = funcReturnType
+      ? this.generateDirectType(funcReturnType)
       : "any"
 
     // カリー化された関数として生成
-    if (func.parameters.length > 1) {
+    if (parameters.length > 1) {
+      // 複数パラメータの場合は、実際のクロージャーとして生成
       const body = this.generateExpression(func.body)
-      // オブジェクトリテラルの場合は括弧で囲む
-      const wrappedBody = body.startsWith("{") ? `(${body})` : body
-      return `${indent}const ${this.sanitizeIdentifier(func.name)} = curry(${typeParams}(${params}): ${returnType} => ${wrappedBody});`
-    } else {
-      const body = this.generateExpression(func.body)
-      if (this.options.useArrowFunctions) {
-        // オブジェクトリテラルの場合は括弧で囲む
-        const wrappedBody = body.startsWith("{") ? `(${body})` : body
-        return `${indent}const ${this.sanitizeIdentifier(func.name)} = ${typeParams}(${params}): ${returnType} => ${wrappedBody};`
-      } else {
-        return `${indent}function ${this.sanitizeIdentifier(func.name)}${typeParams}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
+
+      // カリー化された戻り値型を構築: B => C => ... => ReturnType
+      let curriedReturnType = returnType
+      for (let i = parameters.length - 1; i >= 1; i--) {
+        const paramType = this.generateDirectType(parameters[i].type)
+        curriedReturnType = `(arg: ${paramType}) => ${curriedReturnType}`
       }
+
+      // パラメータを逆順に処理してネストしたクロージャを作成
+      let result = body
+      for (let i = parameters.length - 1; i >= 1; i--) {
+        const param = parameters[i]
+        const paramName = this.sanitizeIdentifier(param.name)
+        const paramType = this.generateDirectType(param.type)
+
+        result = `function(${paramName}: ${paramType}) {\n${indent}      return ${result};\n${indent}    }`
+      }
+
+      // 最初のパラメータで関数を定義
+      const firstParam = parameters[0]
+      const firstParamName = this.sanitizeIdentifier(firstParam.name)
+      const firstParamType = this.generateDirectType(firstParam.type)
+
+      const generatedFunc = `${indent}function ${this.sanitizeIdentifier(func.name)}${typeParams}(${firstParamName}: ${firstParamType}): ${curriedReturnType} {\n${indent}  return ${result};\n${indent}}`
+
+      // コンテキストをクリア
+      this.currentFunctionTypeParams = []
+      return generatedFunc
+    } else {
+      // 単一パラメータの場合
+      const body = this.generateExpression(func.body)
+      const generatedFunc = `${indent}function ${this.sanitizeIdentifier(func.name)}${typeParams}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
+
+      // コンテキストをクリア
+      this.currentFunctionTypeParams = []
+      return generatedFunc
     }
   }
 
@@ -882,9 +838,9 @@ export class CodeGenerator {
               const dataArray = field.type.typeArguments
                 .map((_, i) => `data${i}`)
                 .join(", ")
-              return `${indent}const ${field.name} = (${params}) => ({ type: '${field.name}' as const, data: [${dataArray}] });`
+              return `${indent}function ${field.name}(${params}) { return { type: '${field.name}' as const, data: [${dataArray}] }; }`
             } else {
-              return `${indent}const ${field.name} = (data: ${this.generateType(field.type)}) => ({ type: '${field.name}' as const, data: [data] });`
+              return `${indent}function ${field.name}(data: ${this.generateType(field.type)}) { return { type: '${field.name}' as const, data: [data] }; }`
             }
           })
           .join("\n")
@@ -2704,6 +2660,355 @@ ${indent}}`
     } else if (type instanceof IntersectionType) {
       const types = type.types
         .map((t: Type) => this.generateType(t))
+        .join(" & ")
+      return `(${types})`
+    } else if ((type as any).kind === "TypeVariable") {
+      // TypeVariable のケース: 型推論で生成された型変数
+      const typeVar = type as any
+
+      // 元の関数のジェネリック型パラメータを直接使用する
+      // 型推論結果の変数マッピングではなく、元の関数定義から取得
+      if (this.currentFunctionTypeParams) {
+        const paramIndex = parseInt(typeVar.name.substring(1)) // "t0" -> 0, "t1" -> 1
+        if (paramIndex < this.currentFunctionTypeParams.length) {
+          return this.currentFunctionTypeParams[paramIndex].name
+        }
+      }
+
+      // フォールバック: 従来のマッピング
+      if (typeVar.name === "t0") return "A"
+      if (typeVar.name === "t1") return "B"
+      if (typeVar.name === "t2") return "C"
+      return `T${typeVar.id}`
+    } else if ((type as any).kind === "PolymorphicTypeVariable") {
+      // PolymorphicTypeVariable のケース: 型引数で指定された型変数
+      const polyVar = type as any
+      return polyVar.name
+    }
+
+    return "any"
+  }
+
+  // 元のSeseragi型定義から直接TypeScriptを生成（型推論結果を使わない）
+  generateSeseragiType(type: Type | undefined): string {
+    if (!type) return "any"
+
+    if (type instanceof PrimitiveType) {
+      switch (type.name) {
+        case "Int":
+          return "number"
+        case "Float":
+          return "number"
+        case "Bool":
+          return "boolean"
+        case "String":
+          return "string"
+        case "Char":
+          return "string"
+        case "Unit":
+          return "void"
+        case "_":
+          return "any"
+        default:
+          return type.name
+      }
+    } else if (type instanceof FunctionType) {
+      const paramType = this.generateSeseragiType(type.paramType)
+      const returnType = this.generateSeseragiType(type.returnType)
+      return `(arg: ${paramType}) => ${returnType}`
+    } else if (type instanceof GenericType) {
+      // ジェネリック型パラメータA, Bなどをそのまま使用
+      if (this.currentFunctionTypeParams) {
+        const matchingParam = this.currentFunctionTypeParams.find(
+          (param) => param.name === type.name
+        )
+        if (matchingParam) {
+          return matchingParam.name
+        }
+      }
+
+      if (type.typeArguments.length === 0) {
+        return this.generateGenericTypeName(type.name)
+      }
+      const params = type.typeArguments
+        .map((p) => this.generateSeseragiType(p))
+        .join(", ")
+      return `${this.generateGenericTypeName(type.name)}<${params}>`
+    } else if (type instanceof RecordType) {
+      if (type.fields.length === 0) {
+        return "{}"
+      }
+      const fields = type.fields
+        .map(
+          (field) => `${field.name}: ${this.generateSeseragiType(field.type)}`
+        )
+        .join(", ")
+      return `{ ${fields} }`
+    } else if (type instanceof TupleType) {
+      if (type.elementTypes.length === 0) {
+        return "[]"
+      }
+      const elements = type.elementTypes
+        .map((elementType) => this.generateSeseragiType(elementType))
+        .join(", ")
+      return `[${elements}]`
+    } else if (type instanceof StructType) {
+      return type.name
+    } else if (type instanceof UnionType) {
+      const types = type.types
+        .map((t: Type) => this.generateSeseragiType(t))
+        .join(" | ")
+      return `(${types})`
+    } else if (type instanceof IntersectionType) {
+      const types = type.types
+        .map((t: Type) => this.generateSeseragiType(t))
+        .join(" & ")
+      return `(${types})`
+    }
+
+    return "any"
+  }
+
+  // 元のSeseragiの型定義をそのまま使用（型推論を避ける）
+  generateOriginalType(type: Type | undefined): string {
+    if (!type) return "any"
+
+    console.log(
+      `DEBUG generateOriginalType: type = ${type.constructor.name}, instanceof checks:`
+    )
+    console.log(`  PrimitiveType: ${type instanceof PrimitiveType}`)
+    console.log(`  GenericType: ${type instanceof GenericType}`)
+    console.log(`  FunctionType: ${type instanceof FunctionType}`)
+    if (type instanceof PrimitiveType) {
+      console.log(`  PrimitiveType.name: ${type.name}`)
+    }
+    if ((type as any).kind) {
+      console.log(`  type.kind: ${(type as any).kind}`)
+    }
+
+    if (type instanceof PrimitiveType) {
+      switch (type.name) {
+        case "Int":
+          return "number"
+        case "Float":
+          return "number"
+        case "Bool":
+          return "boolean"
+        case "String":
+          return "string"
+        case "Char":
+          return "string"
+        case "Unit":
+          return "void"
+        case "_":
+          return "any"
+        default:
+          // A, B等のジェネリック型パラメータもここに該当
+          console.log(`DEBUG: Returning PrimitiveType.name: ${type.name}`)
+          return type.name
+      }
+    } else if (type instanceof FunctionType) {
+      const paramType = this.generateOriginalType(type.paramType)
+      const returnType = this.generateOriginalType(type.returnType)
+      return `(arg: ${paramType}) => ${returnType}`
+    } else if (type instanceof GenericType) {
+      if (type.typeArguments.length === 0) {
+        return this.generateGenericTypeName(type.name)
+      }
+      const params = type.typeArguments
+        .map((p) => this.generateOriginalType(p))
+        .join(", ")
+      return `${this.generateGenericTypeName(type.name)}<${params}>`
+    } else if (type instanceof RecordType) {
+      if (type.fields.length === 0) {
+        return "{}"
+      }
+      const fields = type.fields
+        .map(
+          (field) => `${field.name}: ${this.generateOriginalType(field.type)}`
+        )
+        .join(", ")
+      return `{ ${fields} }`
+    } else if (type instanceof TupleType) {
+      if (type.elementTypes.length === 0) {
+        return "[]"
+      }
+      const elements = type.elementTypes
+        .map((elementType) => this.generateOriginalType(elementType))
+        .join(", ")
+      return `[${elements}]`
+    } else if (type instanceof StructType) {
+      return type.name
+    } else if (type instanceof UnionType) {
+      const types = type.types
+        .map((t: Type) => this.generateOriginalType(t))
+        .join(" | ")
+      return `(${types})`
+    } else if (type instanceof IntersectionType) {
+      const types = type.types
+        .map((t: Type) => this.generateOriginalType(t))
+        .join(" & ")
+      return `(${types})`
+    } else if ((type as any).kind === "TypeVariable") {
+      // TypeVariableの場合は、元の関数の型パラメータから対応する名前を使用
+      const typeVar = type as any
+      if (this.currentFunctionTypeParams) {
+        const paramIndex = parseInt(typeVar.name.substring(1)) // "t0" -> 0, "t1" -> 1
+        if (paramIndex < this.currentFunctionTypeParams.length) {
+          console.log(
+            `DEBUG: Mapping TypeVariable ${typeVar.name} -> ${this.currentFunctionTypeParams[paramIndex].name}`
+          )
+          return this.currentFunctionTypeParams[paramIndex].name
+        }
+      }
+      // フォールバック: anyじゃなくて適当な型名を返す
+      console.log(
+        `DEBUG: TypeVariable ${typeVar.name} (id: ${typeVar.id}) -> fallback to T${typeVar.id}`
+      )
+      console.log(
+        `DEBUG: currentFunctionTypeParams: ${this.currentFunctionTypeParams?.map((p) => p.name).join(", ") || "null"}`
+      )
+      return `T${typeVar.id}`
+    } else if ((type as any).kind === "PolymorphicTypeVariable") {
+      // PolymorphicTypeVariable のケース: 型引数で指定された型変数
+      const polyVar = type as any
+      return polyVar.name
+    }
+
+    console.log(`DEBUG: Falling back to any for type: ${type.constructor.name}`)
+    return "any"
+  }
+
+  // 元の型注釈を直接TypeScriptに変換（型推論を一切使わない）
+  generateDirectType(type: Type | undefined): string {
+    if (!type) return "any"
+
+    // PolymorphicTypeVariableの場合は直接名前を返す
+    if (type.constructor.name === "PolymorphicTypeVariable") {
+      const polyVar = type as any
+      return polyVar.name
+    }
+
+    // TypeVariableの場合は元の型パラメータにマッピング
+    if (type.constructor.name === "TypeVariable") {
+      const typeVar = type as any as TypeVariable
+
+      // 型推論結果から置換情報を使って解決を試行
+      if (this.typeInferenceResult) {
+        const substitutedType =
+          this.typeInferenceResult.substitution.apply(type)
+        console.log(
+          `DEBUG: TypeVariable ${typeVar.name} substituted to:`,
+          substitutedType
+        )
+        if (
+          substitutedType !== type &&
+          substitutedType instanceof PrimitiveType
+        ) {
+          // 置換されてPrimitiveTypeになった場合、小文字を大文字の型パラメータにマッピング
+          const substitutedName = substitutedType.name
+          console.log(`DEBUG: Substituted name: "${substitutedName}"`)
+          if (this.currentFunctionTypeParams) {
+            console.log(
+              `DEBUG: Current function type params:`,
+              this.currentFunctionTypeParams.map((p) => p.name)
+            )
+            // 小文字の型パラメータ名（a, b, c...）を大文字の型パラメータ（A, B, C...）にマッピング
+            for (const param of this.currentFunctionTypeParams) {
+              const lowerCase = param.name.toLowerCase()
+              const withQuote = `'${lowerCase}`
+              console.log(
+                `DEBUG: Checking ${substitutedName} against ${lowerCase} and ${withQuote}`
+              )
+              if (
+                substitutedName === lowerCase ||
+                substitutedName === withQuote
+              ) {
+                console.log(`DEBUG: Match found! Returning ${param.name}`)
+                return param.name
+              }
+            }
+          }
+          console.log(
+            `DEBUG: No match found, returning substituted name: ${substitutedName}`
+          )
+          return substitutedName
+        }
+      }
+
+      // 現在の関数の型パラメータから対応するものを探す
+      if (this.currentFunctionTypeParams) {
+        // 標準的なt0, t1パターンのマッピング
+        const match = typeVar.name.match(/^t(\d+)$/)
+        if (match) {
+          const index = parseInt(match[1])
+          if (index < this.currentFunctionTypeParams.length) {
+            return this.currentFunctionTypeParams[index].name
+          }
+        }
+      }
+      // フォールバックとしてTypeVariableの名前をそのまま使用
+      return typeVar.name
+    }
+
+    if (type instanceof PrimitiveType) {
+      switch (type.name) {
+        case "Int":
+          return "number"
+        case "Float":
+          return "number"
+        case "Bool":
+          return "boolean"
+        case "String":
+          return "string"
+        case "Char":
+          return "string"
+        case "Unit":
+          return "void"
+        case "_":
+          return "any"
+        default:
+          // A, B等のジェネリック型パラメータ
+          return type.name
+      }
+    } else if (type instanceof FunctionType) {
+      const paramType = this.generateDirectType(type.paramType)
+      const returnType = this.generateDirectType(type.returnType)
+      return `(arg: ${paramType}) => ${returnType}`
+    } else if (type instanceof GenericType) {
+      if (type.typeArguments.length === 0) {
+        return this.generateGenericTypeName(type.name)
+      }
+      const params = type.typeArguments
+        .map((p) => this.generateDirectType(p))
+        .join(", ")
+      return `${this.generateGenericTypeName(type.name)}<${params}>`
+    } else if (type instanceof RecordType) {
+      if (type.fields.length === 0) {
+        return "{}"
+      }
+      const fields = type.fields
+        .map((field) => `${field.name}: ${this.generateDirectType(field.type)}`)
+        .join(", ")
+      return `{ ${fields} }`
+    } else if (type instanceof TupleType) {
+      if (type.elementTypes.length === 0) {
+        return "[]"
+      }
+      const elements = type.elementTypes
+        .map((elementType) => this.generateDirectType(elementType))
+        .join(", ")
+      return `[${elements}]`
+    } else if (type instanceof StructType) {
+      return type.name
+    } else if (type instanceof UnionType) {
+      const types = type.types
+        .map((t: Type) => this.generateDirectType(t))
+        .join(" | ")
+      return `(${types})`
+    } else if (type instanceof IntersectionType) {
+      const types = type.types
+        .map((t: Type) => this.generateDirectType(t))
         .join(" & ")
       return `(${types})`
     }
