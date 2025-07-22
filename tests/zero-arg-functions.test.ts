@@ -60,7 +60,7 @@ test("Zero-argument functions - should work with complex expressions", () => {
 
   expect(generated).toContain("getBase")
   expect(generated).toContain("getMultiplier")
-  expect(generated).toContain("console.log")
+  expect(generated).toContain("ssrgPrint")
 })
 
 test("Zero-argument functions - lexer should handle arrow correctly", () => {

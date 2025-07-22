@@ -530,11 +530,6 @@ export class TypeInferenceSystem {
         // ネストしたIntersectionTypeも処理
         return this.extractRecordFromIntersection(type as AST.IntersectionType)
 
-      case "GenericType":
-      case "UnionType":
-      case "FunctionType":
-      case "TupleType":
-      case "StructType":
       default:
         // これらの型からはRecordTypeは抽出できない
         return null
@@ -5110,35 +5105,34 @@ export class TypeInferenceSystem {
 
       // ジェネリック型エイリアスをチェック
       const typeAlias = this.typeAliases.get(genericType.name)
-      console.log(
-        "🔧 Found type alias:",
-        typeAlias?.name,
-        "with params:",
-        typeAlias?.typeParameters?.map((p) => p.name)
-      )
-      if (typeAlias?.typeParameters) {
+      console.log("🔧 Found type alias:", typeAlias?.name)
+      if (
+        typeAlias?.kind === "TypeAliasDeclaration" &&
+        (typeAlias as AST.TypeAliasDeclaration).typeParameters
+      ) {
+        const genericAlias = typeAlias as AST.TypeAliasDeclaration
         // 型パラメータと型引数のマッピングを作成
         const typeParameterMap = new Map<string, AST.Type>()
         for (
           let i = 0;
-          i < typeAlias.typeParameters.length &&
+          i < genericAlias.typeParameters.length &&
           i < genericType.typeArguments.length;
           i++
         ) {
-          const param = typeAlias.typeParameters[i]
+          const param = genericAlias.typeParameters[i]
           const arg = genericType.typeArguments[i]
           typeParameterMap.set(param.name, arg)
           console.log("🔧 Mapping:", param.name, "->", this.typeToString(arg))
           console.log(
             "🔧 Aliased type:",
-            this.typeToString(typeAlias.aliasedType)
+            this.typeToString(genericAlias.aliasedType)
           )
         }
 
         // 型変数名で置換する（型変数名がパラメータ名と異なる場合のため）
         const instantiatedType = this.substituteTypeVariablesInGenericAlias(
-          typeAlias.aliasedType,
-          typeAlias.typeParameters,
+          genericAlias.aliasedType,
+          genericAlias.typeParameters,
           genericType.typeArguments
         )
 
@@ -5210,9 +5204,6 @@ export class TypeInferenceSystem {
 
   // 環境を保持するためのフィールド（既に存在する可能性）
   private currentEnvironment: Map<string, AST.Type> = new Map()
-
-  // ジェネリック型エイリアス情報を保持
-  private typeAliases: Map<string, AST.TypeAliasDeclaration> = new Map()
 
   // 型エイリアス内の型パラメータと型変数の対応関係を保持
   private typeAliasParameterMappings: Map<string, Map<string, string>> =

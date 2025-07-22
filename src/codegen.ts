@@ -47,7 +47,6 @@ import {
   type RecordAccess,
   RecordDestructuring,
   type RecordExpression,
-  RecordField,
   type RecordInitField,
   type RecordShorthandField,
   type RecordSpreadField,

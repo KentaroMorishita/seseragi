@@ -19,7 +19,7 @@ test("Performance test - Large factorial calculation", () => {
   const endTime = Date.now()
 
   expect(generated).toContain("factorial")
-  expect(generated).toContain("console.log")
+  expect(generated).toContain("ssrgPrint")
   expect(endTime - startTime).toBeLessThan(1000) // Should complete within 1 second
 })
 

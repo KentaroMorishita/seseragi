@@ -37,7 +37,7 @@ describe("Builtin Functions", () => {
     expect(fs.existsSync(testOutputFile)).toBe(true)
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain('console.log("Hello, World!")')
+    expect(compiledCode).toContain('ssrgPrint("Hello, World!")')
   })
 
   it("should compile putStrLn function to console.log", async () => {
@@ -53,7 +53,7 @@ describe("Builtin Functions", () => {
     })
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain('console.log("Hello, Seseragi!")')
+    expect(compiledCode).toContain('ssrgPutStrLn("Hello, Seseragi!")')
   })
 
   it("should compile toString function to toString()", async () => {
@@ -72,8 +72,8 @@ describe("Builtin Functions", () => {
     })
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain("toString(age)")
-    expect(compiledCode).toContain("console.log(toString(age))")
+    expect(compiledCode).toContain("ssrgToString(age)")
+    expect(compiledCode).toContain("ssrgPrint(ssrgToString(age))")
   })
 
   it("should compile multiple builtin functions", async () => {
@@ -94,8 +94,8 @@ describe("Builtin Functions", () => {
     })
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain('console.log(("Name: " + name))')
-    expect(compiledCode).toContain("console.log(toString(age))")
+    expect(compiledCode).toContain('ssrgPrint(("Name: " + name))')
+    expect(compiledCode).toContain("ssrgPutStrLn(ssrgToString(age))")
   })
 
   it("should handle builtin functions in function definitions", async () => {
@@ -113,6 +113,6 @@ describe("Builtin Functions", () => {
     })
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain('console.log(("Hello, " + name))')
+    expect(compiledCode).toContain('ssrgPrint(("Hello, " + name))')
   })
 })

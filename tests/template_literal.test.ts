@@ -145,6 +145,6 @@ describe("Template Literal Tests", () => {
     const result = parser.parse()
 
     const generatedCode = generateTypeScript(result.statements!)
-    expect(generatedCode).toContain("show(`Hello World`)")
+    expect(generatedCode).toContain("ssrgShow(`Hello World`)")
   })
 })

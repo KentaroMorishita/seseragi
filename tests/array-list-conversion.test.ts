@@ -23,7 +23,7 @@ print list
 print arr2
 `,
       expectedOutput:
-        '[ 1, 2, 3, 4, 5 ]\n{\n  tag: "Cons",\n  head: 1,\n  tail: {\n    tag: "Cons",\n    head: 2,\n    tail: {\n      tag: "Cons",\n      head: 3,\n      tail: [Object ...],\n    },\n  },\n}\n[ 1, 2, 3, 4, 5 ]\n',
+        "[ 1, 2, 3, 4, 5 ]\n`[1, 2, 3, 4, 5]\n[ 1, 2, 3, 4, 5 ]\n",
     },
     {
       name: "List operations after arrayToList",
@@ -46,7 +46,7 @@ print empty
 print emptyList
 print backToArray
 `,
-      expectedOutput: '[]\n{\n  tag: "Empty",\n}\n[]\n',
+      expectedOutput: "[]\n`[]\n[]\n",
     },
     {
       name: "String array conversion",
@@ -60,7 +60,7 @@ print wordList
 print wordsBack
 `,
       expectedOutput:
-        '[ "hello", "world", "seseragi" ]\n{\n  tag: "Cons",\n  head: "hello",\n  tail: {\n    tag: "Cons",\n    head: "world",\n    tail: {\n      tag: "Cons",\n      head: "seseragi",\n      tail: [Object ...],\n    },\n  },\n}\n[ "hello", "world", "seseragi" ]\n',
+        '[ "hello", "world", "seseragi" ]\n`["hello", "world", "seseragi"]\n[ "hello", "world", "seseragi" ]\n',
     },
     {
       name: "Mixed with backtick list syntax",

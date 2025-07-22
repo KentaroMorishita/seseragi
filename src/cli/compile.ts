@@ -1,6 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { Program, TypeAliasDeclaration } from "../ast.js"
+import { Program, type TypeAliasDeclaration } from "../ast.js"
 import { generateTypeScript } from "../codegen.js"
 import { Parser } from "../parser.js"
 import { TypeInferenceSystem } from "../type-inference.js"

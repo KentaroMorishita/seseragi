@@ -7,7 +7,7 @@ describe("Template Function Integration Tests", () => {
 
     const result = compileSeseragi(source)
     expect(typeof result).toBe("string")
-    expect(result).toContain("show(`Hello World`)")
+    expect(result).toContain("ssrgShow(`Hello World`)")
   })
 
   test("should compile print with template literal and expression", () => {
@@ -15,6 +15,6 @@ describe("Template Function Integration Tests", () => {
 
     const result = compileSeseragi(source)
     expect(typeof result).toBe("string")
-    expect(result).toContain(`console.log(\`Count: \${42}\`)`)
+    expect(result).toContain(`ssrgPrint(\`Count: \${42}\`)`)
   })
 })

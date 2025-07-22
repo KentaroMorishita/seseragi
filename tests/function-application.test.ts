@@ -97,8 +97,8 @@ describe("Function Application Operator ($)", () => {
     const parseResult = parser.parse()
     const generated = generateTypeScript(parseResult.statements || [])
 
-    // TypeScript生成では print -> console.log, toString はランタイム関数として残る
-    expect(generated).toContain("console.log(toString(42))")
+    // TypeScript生成では print -> ssrgPrint, toString -> ssrgToString
+    expect(generated).toContain("ssrgPrint(ssrgToString(42))")
   })
 
   it("should work with complex expressions", () => {
@@ -107,7 +107,7 @@ describe("Function Application Operator ($)", () => {
     const parseResult = parser.parse()
     const generated = generateTypeScript(parseResult.statements || [])
 
-    expect(generated).toContain("console.log(toString(")
+    expect(generated).toContain("ssrgPrint(ssrgToString(")
     expect(generated).toContain("multiply")
   })
 

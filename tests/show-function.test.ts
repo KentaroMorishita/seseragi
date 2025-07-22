@@ -41,7 +41,7 @@ describe("Show Function", () => {
     expect(fs.existsSync(testOutputFile)).toBe(true)
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain("show(42)")
+    expect(compiledCode).toContain("ssrgShow(42)")
   })
 
   it("should compile show function with string", async () => {
@@ -59,7 +59,7 @@ describe("Show Function", () => {
     expect(fs.existsSync(testOutputFile)).toBe(true)
 
     const compiledCode = fs.readFileSync(testOutputFile, "utf-8")
-    expect(compiledCode).toContain('show("Hello World")')
+    expect(compiledCode).toContain('ssrgShow("Hello World")')
   })
 
   it("should include show function definition in generated code", async () => {
