@@ -2,10 +2,10 @@ import { spawn } from "node:child_process"
 import * as fs from "node:fs"
 import * as os from "node:os"
 import * as path from "node:path"
+import * as AST from "../ast.js"
 import { generateTypeScript } from "../codegen.js"
 import { Parser } from "../parser.js"
 import { TypeInferenceSystem } from "../type-inference.js"
-import * as AST from "../ast.js"
 
 export interface RunOptions {
   input: string
@@ -100,7 +100,7 @@ async function compileToTemp(options: RunOptions): Promise<string> {
   console.log("Running type inference...")
   const inference = new TypeInferenceSystem()
   const program = new AST.Program(ast.statements!)
-  const inferenceResult = inference.infer(program)
+  const inferenceResult = inference.infer(program, path.resolve(options.input))
 
   if (inferenceResult.errors.length > 0) {
     throw new Error(inferenceResult.errors.map((e) => e.message).join("\n"))

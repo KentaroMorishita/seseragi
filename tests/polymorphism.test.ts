@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import * as AST from "../src/ast"
 
 describe("Polymorphism Tests", () => {
   test("should handle polymorphic lambda with multiple different type applications", () => {

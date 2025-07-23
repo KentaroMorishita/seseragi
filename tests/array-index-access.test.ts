@@ -1,10 +1,10 @@
 /**
  * Tests for Array and Tuple index access functionality
  */
-import { expect, test, describe } from "bun:test"
-import { Parser } from "../src/parser"
-import { generateTypeScript } from "../src/codegen"
+import { describe, expect, test } from "bun:test"
 import type * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
+import { Parser } from "../src/parser"
 
 describe("Array Index Access", () => {
   test("should parse array access expression", () => {

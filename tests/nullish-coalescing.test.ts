@@ -1,12 +1,12 @@
 // テスト: ??演算子（Nullish Coalescing）
 
 import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
 import { lex, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
 import { compileSeseragi } from "./test-utils"
-import * as AST from "../src/ast"
 
 describe("Nullish Coalescing Operator", () => {
   test("should tokenize ?? operator correctly", () => {

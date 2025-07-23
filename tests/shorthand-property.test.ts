@@ -1,8 +1,8 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
-import * as AST from "../src/ast"
 
 describe("Shorthand Property Notation Tests", () => {
   test("should parse shorthand property in record expression", () => {

@@ -1,7 +1,7 @@
-import { describe, test, expect } from "bun:test"
-import { Parser } from "../src/parser"
-import { generateTypeScript } from "../src/codegen"
+import { describe, expect, test } from "bun:test"
 import type * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
+import { Parser } from "../src/parser"
 
 describe("Array Basic Implementation", () => {
   test("Array literal parsing", () => {

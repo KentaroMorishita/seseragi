@@ -1,3 +1,4 @@
+import * as path from "node:path"
 import {
   type CompletionItem,
   CompletionItemKind,
@@ -19,12 +20,11 @@ import {
   TextDocuments,
   type TextEdit,
 } from "vscode-languageserver/node"
-
 import { TextDocument } from "vscode-languageserver-textdocument"
 import * as AST from "../ast"
 import { formatSeseragiCode } from "../formatter/index.js"
 import { Parser } from "../parser"
-import { TypeInferenceSystem, infer } from "../type-inference"
+import { TypeInferenceSystem } from "../type-inference"
 import type { TypeChecker } from "../typechecker"
 
 // Create a connection for the server, using Node's IPC as a transport
@@ -159,8 +159,24 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const parseResult = parser.parse()
     const _ast = new AST.Program(parseResult.statements || [])
 
-    // Use new type inference system
-    const inferenceResult = infer(parseResult.statements || [])
+    // Use new type inference system with file path (same as CLI)
+    const filePath = textDocument.uri.replace("file://", "")
+    const absolutePath = path.resolve(filePath)
+    connection.console.log(`LSP DEBUG: Processing file: ${absolutePath}`)
+
+    // Create TypeInferenceSystem instance and set type aliases (same as CLI)
+    const typeInference = new TypeInferenceSystem()
+    const typeAliases = new Map<string, any>()
+    for (const stmt of parseResult.statements || []) {
+      if (stmt.kind === "TypeAliasDeclaration") {
+        const aliasDecl = stmt as AST.TypeAliasDeclaration
+        typeAliases.set(aliasDecl.name, aliasDecl.aliasedType)
+      }
+    }
+    typeInference.setTypeAliases(typeAliases)
+
+    const ast = new AST.Program(parseResult.statements || [], 1, 1)
+    const inferenceResult = typeInference.infer(ast, absolutePath)
 
     // Use only the new type inference system errors
     const allErrors = inferenceResult.errors
@@ -471,7 +487,8 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
     connection.console.log(`Parsed AST: ${JSON.stringify(ast, null, 2)}`)
 
     // Get hover information from the position
-    const hoverInfo = getHoverInfo(ast, offset, text)
+    const filePath = params.textDocument.uri.replace("file://", "")
+    const hoverInfo = getHoverInfo(ast, offset, text, filePath)
 
     if (hoverInfo) {
       return {
@@ -492,7 +509,12 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
 })
 
 // Helper function to get hover information at a specific offset
-function getHoverInfo(ast: any, offset: number, text: string): string | null {
+function getHoverInfo(
+  ast: any,
+  offset: number,
+  text: string,
+  filePath?: string
+): string | null {
   // Check if this is a field access first
   const fieldAccessInfo = getFieldAccessInfo(text, offset)
   if (fieldAccessInfo) {
@@ -511,10 +533,39 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
     cachedAST = ast
 
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(ast.statements || [])
+    const result = typeInference.infer(program, filePath)
     connection.console.log(
       `[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`
     )
+    // Debug: log the structure of inferenceResult
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] InferenceResult keys: ${Object.keys(result)}`
+    )
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Environment exists: ${!!result.environment}`
+    )
+    // Debug: log the structure of inferenceResult
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] InferenceResult keys: ${Object.keys(result)}`
+    )
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Environment exists: ${!!result.environment}`
+    )
+    if (result.environment) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Environment type: ${typeof result.environment}`
+      )
+      if (result.environment.get) {
+        connection.console.log(
+          `[SESERAGI LSP DEBUG] Environment has get method`
+        )
+      } else {
+        connection.console.log(
+          `[SESERAGI LSP DEBUG] Environment keys: ${Object.keys(result.environment)}`
+        )
+      }
+    }
     if (result.errors.length > 0) {
       connection.console.log(
         `Type inference errors: ${JSON.stringify(result.errors, null, 2)}`
@@ -773,7 +824,8 @@ function handleFieldAccessHover(
   try {
     // Get type inference result
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(ast.statements || [])
+    const result = typeInference.infer(program)
 
     // Find the object's type
     // Note: For field access, we use offset=0 as a temporary workaround
@@ -1089,6 +1141,34 @@ function findSymbolInStatement(
   }
 
   switch (statement.kind) {
+    case "ImportDeclaration":
+      // Check if the symbol is one of the imported items (functions, types, values)
+      if (statement.items) {
+        const importedItem = statement.items.find(
+          (item: any) => item.name === symbol
+        )
+        if (importedItem) {
+          // Get the imported item type from the type inference environment
+          if (inferenceResult.environment?.get) {
+            const importedType = inferenceResult.environment.get(symbol)
+            if (importedType) {
+              connection.console.log(
+                `Found imported item ${symbol} with type: ${JSON.stringify(importedType, null, 2)}`
+              )
+              return {
+                type: "imported_item",
+                name: symbol,
+                finalType: importedType,
+                hasExplicitType: true,
+                modulePath: statement.module,
+                itemType: importedItem.type || "unknown",
+              }
+            }
+          }
+        }
+      }
+      break
+
     case "VariableDeclaration":
     case "RecordDestructuring":
     case "StructDestructuring":
@@ -1117,6 +1197,29 @@ function findSymbolWithEnhancedInference(
   connection.console.log(
     `[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`
   )
+
+  // First, check if the symbol is in the environment (for imported functions)
+  if (inferenceResult.environment?.get) {
+    const envType = inferenceResult.environment.get(symbol)
+    if (envType) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Found ${symbol} in environment with type: ${JSON.stringify(envType, null, 2)}`
+      )
+
+      // Apply substitution if available
+      let finalType = envType
+      if (inferenceResult.substitution?.apply) {
+        finalType = inferenceResult.substitution.apply(envType)
+      }
+
+      return {
+        type: "imported_function",
+        name: symbol,
+        finalType: finalType,
+        isImported: true,
+      }
+    }
+  }
 
   if (!ast.statements) {
     return null
@@ -2390,6 +2493,12 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
     case "typealias": {
       const aliasedType = formatInferredTypeForDisplay(info.aliasedType)
       return `\`\`\`seseragi\ntype ${symbol} = ${aliasedType}\n\`\`\`\n**Type:** type alias`
+    }
+
+    case "imported_function": {
+      // Format imported function type
+      const funcType = formatInferredTypeForDisplay(info.finalType)
+      return `\`\`\`seseragi\nfn ${symbol}: ${funcType}\n\`\`\`\n**Type:** imported function`
     }
 
     default:

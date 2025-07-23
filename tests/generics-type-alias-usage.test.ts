@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import * as AST from "../src/ast"
 
 describe("Generic Type Alias Usage", () => {
   test("should resolve simple generic type alias in variable declaration", () => {

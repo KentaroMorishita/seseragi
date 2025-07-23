@@ -1,7 +1,7 @@
-import { Parser } from "@seseragi/core/parser"
-import { infer, TypeInferenceSystem } from "@seseragi/core/type-inference"
-import { generateTypeScript } from "@seseragi/core/codegen"
 import * as AST from "@seseragi/core/ast"
+import { generateTypeScript } from "@seseragi/core/codegen"
+import { Parser } from "@seseragi/core/parser"
+import { TypeInferenceSystem } from "@seseragi/core/type-inference"
 import * as ts from "typescript"
 
 export async function compileAndRun(seseragiCode: string): Promise<string> {
@@ -43,7 +43,7 @@ export async function compileAndRun(seseragiCode: string): Promise<string> {
     )
 
     // 3. export/CommonJS関連をクリーンアップ
-    let jsCode = jsResult
+    const jsCode = jsResult
       .replace(/export\s+/g, "")
       .replace(/exports\./g, "")
       .replace(/"use strict";/g, "")
@@ -58,7 +58,7 @@ export async function compileAndRun(seseragiCode: string): Promise<string> {
 
     // console.logをオーバーライド
     console.log = (...args: any[]) => {
-      output += args.map((arg) => String(arg)).join(" ") + "\n"
+      output += `${args.map((arg) => String(arg)).join(" ")}\n`
     }
 
     try {

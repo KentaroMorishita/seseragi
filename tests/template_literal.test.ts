@@ -1,9 +1,9 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import type * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import type * as AST from "../src/ast"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
 
 describe("Template Literal Tests", () => {
   test("should tokenize simple template literal", () => {

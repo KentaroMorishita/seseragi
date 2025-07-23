@@ -1,8 +1,8 @@
-import { test, expect } from "bun:test"
-import { Parser } from "../src/parser.js"
-import { generateTypeScript } from "../src/codegen.js"
-import { TokenType, Lexer } from "../src/lexer.js"
+import { expect, test } from "bun:test"
 import * as AST from "../src/ast.js"
+import { generateTypeScript } from "../src/codegen.js"
+import { Lexer, TokenType } from "../src/lexer.js"
+import { Parser } from "../src/parser.js"
 
 test("Zero-argument functions - should parse correctly", () => {
   const source = `

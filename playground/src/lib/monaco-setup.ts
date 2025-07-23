@@ -1,4 +1,4 @@
-import { Monaco } from "@monaco-editor/react"
+import type { Monaco } from "@monaco-editor/react"
 
 export function setupSeseragiLanguage(monaco: Monaco) {
   // Seseragi言語の登録
@@ -86,14 +86,14 @@ export function setupSeseragiLanguage(monaco: Monaco) {
         [/[+\-*/%=><:!~?@]/, "operator"],
 
         // デリミタ
-        [/[{}()\[\]]/, "@brackets"],
+        [/[{}()[\]]/, "@brackets"],
         [/[,;]/, "delimiter"],
       ],
 
       comment: [
-        [/[^\/*]+/, "comment"],
+        [/[^/*]+/, "comment"],
         [/\*\//, "comment", "@pop"],
-        [/[\/*]/, "comment"],
+        [/[/*]/, "comment"],
       ],
 
       string: [

@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { compileSeseragi } from "./test-utils"
 
 test("Ternary operator should work with union types", () => {

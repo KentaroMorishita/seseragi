@@ -1,8 +1,8 @@
-import { describe, test, expect } from "bun:test"
-import { UsageAnalyzer } from "../src/usage-analyzer"
-import { parse } from "../src/parser"
-import { lex } from "../src/lexer"
+import { describe, expect, test } from "bun:test"
 import { generateTypeScript } from "../src/codegen"
+import { lex } from "../src/lexer"
+import { parse } from "../src/parser"
+import { UsageAnalyzer } from "../src/usage-analyzer"
 
 describe("Show Function Detection", () => {
   function analyzeShowUsage(source: string) {

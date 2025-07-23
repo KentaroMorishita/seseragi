@@ -50,7 +50,7 @@ export function parseCodeSections(
     // 次の行がタイトル行（// で始まる）の場合のみセクション開始とする
     if (line.startsWith("// ===") && line.endsWith("===") && line.length > 10) {
       const nextLine = lines[i + 1]?.trim()
-      if (nextLine && nextLine.startsWith("//") && !nextLine.includes("===")) {
+      if (nextLine?.startsWith("//") && !nextLine.includes("===")) {
         console.log(`Found section marker at line ${i}: "${line}"`)
         // 前のセクションを完了
         if (currentSection) {
@@ -77,7 +77,7 @@ export function parseCodeSections(
 
         // 新しいセクションのタイトルを取得（次の行から）
         const titleLine = lines[i + 1]?.trim()
-        if (titleLine && titleLine.startsWith("//")) {
+        if (titleLine?.startsWith("//")) {
           const title = titleLine.replace(/^\/\/\s*/, "").replace(/\s*---$/, "")
           // console.log(`Found section title: "${title}"`)
           currentSection = {
@@ -158,7 +158,7 @@ function extractSectionCode(
   // startLine + 2 = 閉じる === 行
   // startLine + 3 = 空行
   // startLine + 4 = コード開始
-  let codeStartLine = startLine + 3 // === 行、タイトル行、閉じる=== 行をスキップ
+  const codeStartLine = startLine + 3 // === 行、タイトル行、閉じる=== 行をスキップ
 
   // 次のセクションまたはファイル末尾まで
   let codeEndLine = endLine
@@ -168,12 +168,11 @@ function extractSectionCode(
     const line = lines[i]?.trim()
     const nextLine = lines[i + 1]?.trim()
     if (
-      line &&
-      line.startsWith("// ===") &&
+      line?.startsWith("// ===") &&
       line.endsWith("===") &&
       line.length > 10
     ) {
-      if (nextLine && nextLine.startsWith("//") && !nextLine.includes("===")) {
+      if (nextLine?.startsWith("//") && !nextLine.includes("===")) {
         codeEndLine = i - 1
         break
       }

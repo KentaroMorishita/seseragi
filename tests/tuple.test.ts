@@ -2,12 +2,12 @@
  * タプル機能のテスト
  */
 
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
+import { CodeGenerator } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { CodeGenerator } from "../src/codegen"
-import * as AST from "../src/ast"
 
 describe("Tuple Feature Tests", () => {
   describe("Lexer - Wildcard Token", () => {

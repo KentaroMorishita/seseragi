@@ -5,6 +5,7 @@
  */
 
 import * as AST from "./ast"
+import { ModuleResolver } from "./module-resolver"
 
 // 型変数を表現するクラス
 export class TypeVariable extends AST.Type {
@@ -424,6 +425,9 @@ export interface TypeInferenceSystemResult {
   substitution: TypeSubstitution
   errors: TypeInferenceError[]
   nodeTypeMap: Map<AST.ASTNode, AST.Type>
+  moduleResolver?: ModuleResolver
+  currentFilePath?: string
+  environment: Map<string, AST.Type>
 }
 
 // 型推論システムのメインクラス
@@ -436,10 +440,22 @@ export class TypeInferenceSystem {
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
   private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
+  private moduleResolver: ModuleResolver = new ModuleResolver()
+  private currentFilePath: string = ""
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
     return new TypeVariable(this.nextVarId++, line, column)
+  }
+
+  // エラーを追加
+  addError(
+    message: string,
+    line: number,
+    column: number,
+    context?: string
+  ): void {
+    this.errors.push(new TypeInferenceError(message, line, column, context))
   }
 
   // 型エイリアス情報を設定
@@ -1164,7 +1180,7 @@ export class TypeInferenceSystem {
   }
 
   // 型推論のメインエントリーポイント
-  infer(program: AST.Program): TypeInferenceSystemResult {
+  infer(program: AST.Program, filePath?: string): TypeInferenceSystemResult {
     this.constraints = []
     this.subtypeConstraints = []
     this.currentEnvironment.clear() // 環境をクリア
@@ -1174,6 +1190,7 @@ export class TypeInferenceSystem {
     this.nextVarId = 1000 // Reset to 1000 to avoid conflicts with parser-generated type variables
     this.nodeTypeMap.clear()
     this.currentProgram = program // プログラム情報を保存
+    this.currentFilePath = filePath || ""
 
     // 型環境の初期化
     const env = this.createInitialEnvironment()
@@ -1194,6 +1211,9 @@ export class TypeInferenceSystem {
       substitution,
       errors: this.errors,
       nodeTypeMap: resolvedNodeTypeMap,
+      moduleResolver: this.moduleResolver,
+      currentFilePath: this.currentFilePath,
+      environment: new Map(this.currentEnvironment),
     }
   }
 
@@ -1368,10 +1388,11 @@ export class TypeInferenceSystem {
     this.currentEnvironment = env
 
     // Two-pass approach to handle forward references:
-    // Pass 1: Process all function declarations, type declarations, and struct declarations first
+    // Pass 1: Process imports first, then all function declarations, type declarations, and struct declarations
     // This allows variables to reference functions and types defined later in the file
     for (const statement of program.statements) {
       if (
+        statement.kind === "ImportDeclaration" ||
         statement.kind === "FunctionDeclaration" ||
         statement.kind === "TypeDeclaration" ||
         statement.kind === "TypeAliasDeclaration" ||
@@ -1407,7 +1428,17 @@ export class TypeInferenceSystem {
     statement: AST.Statement,
     env: Map<string, AST.Type>
   ): void {
+    console.log(`🔧 Processing statement kind: ${statement.kind}`)
     switch (statement.kind) {
+      case "ImportDeclaration":
+        console.log(
+          `🔧 Processing ImportDeclaration: ${(statement as AST.ImportDeclaration).module}`
+        )
+        this.generateConstraintsForImportDeclaration(
+          statement as AST.ImportDeclaration,
+          env
+        )
+        break
       case "FunctionDeclaration":
         this.generateConstraintsForFunctionDeclaration(
           statement as AST.FunctionDeclaration,
@@ -1575,6 +1606,96 @@ export class TypeInferenceSystem {
         `Function ${func.name} body type`
       )
     )
+  }
+
+  private generateConstraintsForImportDeclaration(
+    importDecl: AST.ImportDeclaration,
+    env: Map<string, AST.Type>
+  ): void {
+    console.log(
+      `🔧 Processing ImportDeclaration in TypeInferenceSystem: ${importDecl.module}`
+    )
+
+    // モジュールを解決
+    const resolvedModule = this.moduleResolver.resolve(
+      importDecl.module,
+      this.currentFilePath
+    )
+
+    if (!resolvedModule) {
+      this.addError(
+        `Cannot resolve module '${importDecl.module}'`,
+        importDecl.line,
+        importDecl.column
+      )
+      return
+    }
+
+    console.log(`✅ Module resolved: ${resolvedModule.path}`)
+    console.log(
+      `📦 Available exports: functions=${Array.from(resolvedModule.exports.functions.keys()).join(", ")}, types=${Array.from(resolvedModule.exports.types.keys()).join(", ")}`
+    )
+
+    // インポートした項目を環境に追加
+    for (const item of importDecl.items) {
+      const exportedFunction = resolvedModule.exports.functions.get(item.name)
+      const exportedType = resolvedModule.exports.types.get(item.name)
+
+      if (exportedFunction) {
+        // 関数をインポート
+        const funcType =
+          this.createFunctionTypeFromDeclaration(exportedFunction)
+        const importName = item.alias || item.name
+        env.set(importName, funcType)
+        console.log(
+          `✅ Imported function: ${importName} with type ${this.typeToString(funcType)}`
+        )
+      } else if (exportedType) {
+        // 型をインポート
+        const importName = item.alias || item.name
+
+        // 型エイリアスの場合は、その定義する型を取得する
+        if (exportedType && exportedType.kind === "TypeAliasDeclaration") {
+          const aliasDecl = exportedType as AST.TypeAliasDeclaration
+          env.set(importName, aliasDecl.aliasedType)
+          console.log(
+            `✅ Imported type alias: ${importName} = ${this.typeToString(aliasDecl.aliasedType)}`
+          )
+        } else {
+          // その他の型はそのまま
+          env.set(importName, exportedType as AST.Type)
+          console.log(`✅ Imported type: ${importName}`)
+        }
+      } else {
+        // エクスポートされていないアイテム
+        this.addError(
+          `Module '${importDecl.module}' does not export '${item.name}'`,
+          importDecl.line,
+          importDecl.column
+        )
+        console.log(`❌ Export not found: ${item.name}`)
+      }
+    }
+  }
+
+  private createFunctionTypeFromDeclaration(
+    funcDecl: AST.FunctionDeclaration
+  ): AST.Type {
+    // 関数の型を作成（パラメータ → 戻り値）
+    let resultType = funcDecl.returnType
+
+    // カリー化された関数型を構築（右結合）
+    for (let i = funcDecl.parameters.length - 1; i >= 0; i--) {
+      const param = funcDecl.parameters[i]
+      resultType = new AST.FunctionType(
+        param.type,
+        resultType,
+        funcDecl.line,
+        funcDecl.column
+      )
+    }
+
+    return resultType
   }
 
   private generateConstraintsForVariableDeclaration(
@@ -2902,6 +3023,24 @@ export class TypeInferenceSystem {
           return expectedListType
         }
         throw new Error("tail function requires exactly one argument")
+
+      case "toInt":
+        // Type: 'a -> Int
+        if (call.arguments.length === 1) {
+          // 引数の型をチェックするが、何でも受け付ける
+          this.generateConstraintsForExpression(call.arguments[0], env)
+          return new AST.PrimitiveType("Int", call.line, call.column)
+        }
+        throw new Error("toInt function requires exactly one argument")
+
+      case "toFloat":
+        // Type: 'a -> Float
+        if (call.arguments.length === 1) {
+          // 引数の型をチェックするが、何でも受け付ける
+          this.generateConstraintsForExpression(call.arguments[0], env)
+          return new AST.PrimitiveType("Float", call.line, call.column)
+        }
+        throw new Error("toFloat function requires exactly one argument")
 
       default:
         this.errors.push(
@@ -7418,10 +7557,13 @@ export class TypeInferenceSystem {
 }
 
 // Convenience function for type inference
-export function infer(statements: AST.Statement[]): InferenceResult {
+export function infer(
+  statements: AST.Statement[],
+  filePath?: string
+): InferenceResult {
   const inference = new TypeInferenceSystem()
   const program = new AST.Program(statements)
-  const result = inference.infer(program)
+  const result = inference.infer(program, filePath)
 
   const inferredTypes = new Map<string, AST.Type>()
   const typeEnvironment = new Map<string, AST.Type>()

@@ -24,6 +24,7 @@ import {
   Identifier,
   type IdentifierPattern,
   ImplBlock,
+  ImportDeclaration,
   IntersectionType,
   LambdaExpression,
   ListComprehension,
@@ -36,8 +37,8 @@ import {
   type MethodCall,
   type MethodDeclaration,
   type MonadBind,
-  type NullishCoalescingExpression,
   type MonoidDeclaration,
+  type NullishCoalescingExpression,
   type OperatorDeclaration,
   type OrPattern,
   type Pattern,
@@ -662,7 +663,9 @@ export class CodeGenerator {
 
   // 文の生成
   generateStatement(stmt: Statement): string {
-    if (stmt instanceof FunctionDeclaration) {
+    if (stmt instanceof ImportDeclaration) {
+      return this.generateImportDeclaration(stmt)
+    } else if (stmt instanceof FunctionDeclaration) {
       return this.generateFunctionDeclaration(stmt)
     } else if (stmt instanceof VariableDeclaration) {
       return this.generateVariableDeclaration(stmt)
@@ -691,6 +694,62 @@ export class CodeGenerator {
   generateExpressionStatement(stmt: ExpressionStatement): string {
     const expr = this.generateExpression(stmt.expression)
     return `${expr};`
+  }
+
+  // インポート宣言の生成（インライン化）
+  generateImportDeclaration(stmt: ImportDeclaration): string {
+    // 型推論結果からインポートされたモジュール情報を取得
+    if (!this.options.typeInferenceResult?.moduleResolver) {
+      return `// Import resolution not available: ${stmt.module}`
+    }
+
+    const resolver = this.options.typeInferenceResult.moduleResolver
+    const resolvedModule = resolver.resolve(
+      stmt.module,
+      this.options.typeInferenceResult.currentFilePath || ""
+    )
+
+    if (!resolvedModule) {
+      return `// Failed to resolve module: ${stmt.module}`
+    }
+
+    const lines: string[] = []
+    lines.push(`// Inlined from module: ${stmt.module}`)
+
+    // インポートされた項目のみを含める
+    for (const item of stmt.items) {
+      // まず関数として確認
+      const funcDecl = resolvedModule.exports.functions.get(item.name)
+      if (funcDecl) {
+        const funcCode = this.generateFunctionDeclaration(funcDecl)
+        lines.push(funcCode)
+        continue
+      }
+
+      // 次に型として確認
+      const typeDecl = resolvedModule.exports.types.get(item.name)
+      if (typeDecl) {
+        if (typeDecl.kind === "TypeDeclaration") {
+          lines.push(this.generateTypeDeclaration(typeDecl as TypeDeclaration))
+        } else if (typeDecl.kind === "TypeAliasDeclaration") {
+          lines.push(
+            this.generateTypeAliasDeclaration(typeDecl as TypeAliasDeclaration)
+          )
+        } else if (typeDecl.kind === "StructDeclaration") {
+          lines.push(
+            this.generateStructDeclaration(typeDecl as StructDeclaration)
+          )
+        }
+        continue
+      }
+
+      // 見つからない場合
+      lines.push(
+        `// Warning: Could not find export '${item.name}' in module ${stmt.module}`
+      )
+    }
+
+    return lines.join("\n")
   }
 
   // 関数宣言の生成
@@ -1119,6 +1178,7 @@ ${indent}}`
     lines.push("    case '*': return left * right;")
     lines.push("    case '/': return left / right;")
     lines.push("    case '%': return left % right;")
+    lines.push("    case '**': return left ** right;")
     lines.push("    case '==': return left == right;")
     lines.push("    case '!=': return left != right;")
     lines.push("    case '<': return left < right;")

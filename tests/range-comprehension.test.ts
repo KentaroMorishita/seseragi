@@ -2,10 +2,10 @@
  * 範囲指定とリスト内包表記のテスト
  */
 
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import type * as AST from "../src/ast"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import type * as AST from "../src/ast"
 
 describe("Range Literals", () => {
   test("basic range parsing", () => {

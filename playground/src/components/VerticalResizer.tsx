@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react"
+import type React from "react"
+import { useCallback, useEffect, useState } from "react"
 
 interface VerticalResizerProps {
   onResize: (topHeight: number) => void

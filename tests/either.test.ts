@@ -1,6 +1,6 @@
-import { test, expect } from "bun:test"
-import { Parser } from "../src/parser"
+import { expect, test } from "bun:test"
 import { generateTypeScript } from "../src/codegen"
+import { Parser } from "../src/parser"
 
 test("Either - should parse Left constructor", () => {
   const source = 'let errorValue: Either<String, Int> = Left "Error message"'

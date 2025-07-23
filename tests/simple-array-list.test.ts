@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test"
+import { generateTypeScript } from "../src/codegen"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
 import { infer } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
 
 describe("Simple Array↔List Conversion Test", () => {
   test("basic arrayToList and listToArray", () => {

@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
-import * as AST from "../src/ast"
 
 describe("Generic Functions", () => {
   test("should parse simple generic function", () => {
