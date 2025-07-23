@@ -5,7 +5,18 @@
  */
 
 import * as AST from "./ast"
-import { ModuleResolver } from "./module-resolver"
+// ブラウザ環境でもエラーが出ないように条件分岐
+let ModuleResolver: any
+if (typeof window === 'undefined') {
+  // Node.js環境
+  ModuleResolver = require('./module-resolver').ModuleResolver
+} else {
+  // ブラウザ環境：ダミークラス
+  ModuleResolver = class {
+    resolve() { return null }
+    clearCache() {}
+  }
+}
 
 // 型変数を表現するクラス
 export class TypeVariable extends AST.Type {
@@ -440,7 +451,7 @@ export class TypeInferenceSystem {
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
   private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
-  private moduleResolver: ModuleResolver = new ModuleResolver()
+  private moduleResolver = new ModuleResolver()
   private currentFilePath: string = ""
 
   // 新しい型変数を生成

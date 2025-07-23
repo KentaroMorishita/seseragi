@@ -7,7 +7,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@seseragi/core': path.resolve(__dirname, '../src'),
-      '@seseragi/core/module-resolver': path.resolve(__dirname, '../src/module-resolver.browser.ts'),
     }
   },
   define: {
@@ -16,10 +15,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    outDir: 'dist',
-    rollupOptions: {
-      external: ['node:fs', 'node:path', 'fs', 'path']
-    }
+    outDir: 'dist'
   },
   optimizeDeps: {
     include: ['monaco-editor', '@monaco-editor/react']
