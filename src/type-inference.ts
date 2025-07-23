@@ -7,14 +7,19 @@
 import * as AST from "./ast"
 // ブラウザ環境でもエラーが出ないように条件分岐
 let ModuleResolver: any
-if (typeof window === 'undefined') {
+if (
+  typeof globalThis !== "undefined" &&
+  (globalThis as any).window === undefined
+) {
   // Node.js環境
-  ModuleResolver = require('./module-resolver').ModuleResolver
+  ModuleResolver = require("./module-resolver").ModuleResolver
 } else {
   // ブラウザ環境：ダミークラス
   ModuleResolver = class {
-    resolve() { return null }
-    clearCache() {}
+    resolve(): null {
+      return null
+    }
+    clearCache(): void {}
   }
 }
 
@@ -436,7 +441,7 @@ export interface TypeInferenceSystemResult {
   substitution: TypeSubstitution
   errors: TypeInferenceError[]
   nodeTypeMap: Map<AST.ASTNode, AST.Type>
-  moduleResolver?: ModuleResolver
+  moduleResolver?: typeof ModuleResolver
   currentFilePath?: string
   environment: Map<string, AST.Type>
 }
@@ -451,7 +456,7 @@ export class TypeInferenceSystem {
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
   private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
-  private moduleResolver = new ModuleResolver()
+  private moduleResolver: any = new ModuleResolver()
   private currentFilePath: string = ""
 
   // 新しい型変数を生成
