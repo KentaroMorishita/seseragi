@@ -240,12 +240,51 @@ export class CodeGenerator {
       }
     }
 
+    // インポートされたimplブロックも前処理
+    this.preProcessImportedImpls(statements)
+
     // ディスパッチテーブルが必要かどうかを判定
     const needsDispatchTables = this.shouldGenerateDispatchTables(statements)
 
     if (needsDispatchTables) {
       lines.push(this.generateDispatchTables())
       lines.push("")
+      // ディスパッチテーブルを即座に初期化
+      this.generateDispatchTableInit(lines)
+    }
+  }
+
+  private preProcessImportedImpls(statements: Statement[]): void {
+    if (!this.options.typeInferenceResult?.moduleResolver) {
+      return
+    }
+
+    const resolver = this.options.typeInferenceResult.moduleResolver
+
+    for (const stmt of statements) {
+      if (stmt instanceof ImportDeclaration) {
+        const resolvedModule = resolver.resolve(
+          stmt.module,
+          this.options.typeInferenceResult.currentFilePath || ""
+        )
+
+        if (!resolvedModule) {
+          continue
+        }
+
+        // インポートされた各項目をチェック
+        for (const item of stmt.items) {
+          // 構造体がインポートされた場合、対応するimplもチェック
+          const typeDecl = resolvedModule.exports.types.get(item.name)
+          if (typeDecl && typeDecl.kind === "StructDeclaration") {
+            const implBlock = resolvedModule.exports.impls.get(item.name)
+            if (implBlock) {
+              console.log(`🔧 Preprocessing imported impl for: ${item.name}`)
+              this.preProcessImplBlock(implBlock)
+            }
+          }
+        }
+      }
     }
   }
 
@@ -286,10 +325,7 @@ export class CodeGenerator {
     // 実装ブロック
     this.generateStatementsOfType(implStatements, lines)
 
-    // ディスパッチテーブル初期化
-    this.generateDispatchTableInit(lines)
-
-    // 残りの文
+    // 残りの文（ImportDeclarationを含む）
     this.generateStatementsOfType(otherStatements, lines)
   }
 
@@ -329,7 +365,11 @@ export class CodeGenerator {
   }
 
   private generateDispatchTableInit(lines: string[]): void {
+    console.log(
+      `🔧 generateDispatchTableInit called: structMethods.size=${this.structMethods.size}, structOperators.size=${this.structOperators.size}`
+    )
     if (this.structMethods.size > 0 || this.structOperators.size > 0) {
+      console.log(`🔧 Generating dispatch table initialization`)
       lines.push("// Initialize dispatch tables immediately")
       lines.push("(() => {")
       const initCode = this.generateDispatchTableInitialization()
@@ -338,6 +378,10 @@ export class CodeGenerator {
       )
       lines.push("})();")
       lines.push("")
+    } else {
+      console.log(
+        `🔧 No dispatch table initialization needed - no methods or operators`
+      )
     }
   }
 
@@ -739,6 +783,11 @@ export class CodeGenerator {
           lines.push(
             this.generateStructDeclaration(typeDecl as StructDeclaration)
           )
+          // structに対応するimplも生成
+          const implBlock = resolvedModule.exports.impls.get(item.name)
+          if (implBlock) {
+            lines.push(this.generateImplBlock(implBlock))
+          }
         }
         continue
       }
@@ -1082,6 +1131,9 @@ ${indent}}`
       const methodCode = this.generateMethodDeclaration(method)
       lines.push(methodCode)
       methodSet.add(method.name)
+      console.log(
+        `🔧 Added method to structMethods: ${implBlock.typeName}.${method.name}`
+      )
     }
 
     // 演算子の生成
@@ -1202,6 +1254,11 @@ ${indent}}`
     const lines: string[] = []
 
     // メソッドディスパッチテーブル初期化
+    console.log(`🔧 structMethods size: ${this.structMethods.size}`)
+    console.log(
+      `🔧 structMethods contents:`,
+      Array.from(this.structMethods.entries())
+    )
     if (this.structMethods.size > 0) {
       lines.push("// Initialize method dispatch table")
       lines.push("__structMethods = {")

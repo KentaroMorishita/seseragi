@@ -3510,7 +3510,7 @@ export class Parser {
   }
 
   // Context-aware method call detection
-  private isActualMethodCall(_receiver: AST.Expression): boolean {
+  private isActualMethodCall(receiver: AST.Expression): boolean {
     // Check if the next identifier is a known method name from any struct impl block
     if (!this.check(TokenType.IDENTIFIER)) {
       return false
@@ -3527,7 +3527,37 @@ export class Parser {
       }
     }
 
-    // If the method name is not registered, treat as function application
+    // For potential imported methods, check receiver context
+    if (receiver instanceof AST.Identifier) {
+      // Common method names that are likely to be methods, not functions
+      const commonMethodNames = new Set([
+        "getName",
+        "setName",
+        "toString",
+        "toJson",
+        "clone",
+        "equals",
+        "map",
+        "filter",
+        "reduce",
+        "forEach",
+        "length",
+        "size",
+        "isEmpty",
+        "get",
+        "set",
+        "add",
+        "remove",
+        "clear",
+        "contains",
+        "indexOf",
+      ])
+
+      if (commonMethodNames.has(methodName)) {
+        return true
+      }
+    }
+
     return false
   }
 

@@ -458,6 +458,8 @@ export class TypeInferenceSystem {
   private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
   private moduleResolver: any = new ModuleResolver()
   private currentFilePath: string = ""
+  private structMethods: Map<string, AST.MethodDeclaration[]> = new Map() // インポートされた構造体のメソッド
+  private structOperators: Map<string, AST.OperatorDeclaration[]> = new Map() // インポートされた構造体の演算子
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
@@ -1632,6 +1634,9 @@ export class TypeInferenceSystem {
       `🔧 Processing ImportDeclaration in TypeInferenceSystem: ${importDecl.module}`
     )
 
+    // キャッシュをクリアして最新の内容を読み込む
+    this.moduleResolver.clearCache()
+
     // モジュールを解決
     const resolvedModule = this.moduleResolver.resolve(
       importDecl.module,
@@ -1649,7 +1654,7 @@ export class TypeInferenceSystem {
 
     console.log(`✅ Module resolved: ${resolvedModule.path}`)
     console.log(
-      `📦 Available exports: functions=${Array.from(resolvedModule.exports.functions.keys()).join(", ")}, types=${Array.from(resolvedModule.exports.types.keys()).join(", ")}`
+      `📦 Available exports: functions=${Array.from(resolvedModule.exports.functions.keys()).join(", ")}, types=${Array.from(resolvedModule.exports.types.keys()).join(", ")}, impls=${Array.from(resolvedModule.exports.impls.keys()).join(", ")}`
     )
 
     // インポートした項目を環境に追加
@@ -1677,6 +1682,39 @@ export class TypeInferenceSystem {
           console.log(
             `✅ Imported type alias: ${importName} = ${this.typeToString(aliasDecl.aliasedType)}`
           )
+        } else if (exportedType.kind === "StructDeclaration") {
+          // StructDeclarationの場合は、StructTypeに変換してインポート
+          const structDecl = exportedType as AST.StructDeclaration
+          const structType = new AST.StructType(
+            structDecl.name,
+            structDecl.fields,
+            structDecl.line,
+            structDecl.column
+          )
+          env.set(importName, structType)
+
+          // 対応するimpl定義も取得してメソッドを登録
+          const implBlock = resolvedModule.exports.impls.get(structDecl.name)
+          if (implBlock) {
+            // ローカルのImplBlockと同じように制約を生成
+            for (const method of implBlock.methods) {
+              this.generateConstraintsForMethodDeclaration(
+                method,
+                env,
+                structType
+              )
+            }
+            for (const operator of implBlock.operators) {
+              this.generateConstraintsForOperatorDeclaration(
+                operator,
+                env,
+                structType
+              )
+            }
+            console.log(`✅ Imported impl methods for struct: ${importName}`)
+          }
+
+          console.log(`✅ Imported struct as StructType: ${importName}`)
         } else {
           // その他の型はそのまま
           env.set(importName, exportedType as AST.Type)

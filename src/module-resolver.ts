@@ -21,6 +21,8 @@ export interface ModuleExports {
     string,
     AST.TypeDeclaration | AST.TypeAliasDeclaration | AST.StructDeclaration
   >
+  // struct名をキーとして、そのstructに対するimpl定義を保持
+  impls: Map<string, AST.ImplBlock>
 }
 
 export class ModuleResolver {
@@ -112,8 +114,11 @@ export class ModuleResolver {
       string,
       AST.TypeDeclaration | AST.TypeAliasDeclaration | AST.StructDeclaration
     >()
+    const impls = new Map<string, AST.ImplBlock>()
 
+    console.log(`🔧 Extracting exports from ${statements.length} statements`)
     for (const stmt of statements) {
+      console.log(`🔧 Processing statement kind: ${stmt.kind}`)
       switch (stmt.kind) {
         case "FunctionDeclaration": {
           const funcDecl = stmt as AST.FunctionDeclaration
@@ -139,11 +144,22 @@ export class ModuleResolver {
           break
         }
 
+        case "ImplBlock": {
+          const implBlock = stmt as AST.ImplBlock
+          console.log(`🔧 Found ImplBlock for struct: ${implBlock.typeName}`)
+          // struct名をキーとしてimpl定義を保存
+          impls.set(implBlock.typeName, implBlock)
+          break
+        }
+
         // let文は意図的にエクスポートしない（設計方針）
       }
     }
 
-    return { functions, types }
+    console.log(
+      `🔧 Export summary: functions=${functions.size}, types=${types.size}, impls=${impls.size}`
+    )
+    return { functions, types, impls }
   }
 
   /**

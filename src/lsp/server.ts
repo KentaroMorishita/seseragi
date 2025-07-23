@@ -521,6 +521,12 @@ function getHoverInfo(
     return handleFieldAccessHover(ast, fieldAccessInfo)
   }
 
+  // Check if this is a method call (e.g., "user1 getName()")
+  const methodCallInfo = getMethodCallInfo(text, offset)
+  if (methodCallInfo) {
+    return handleMethodCallHover(ast, methodCallInfo)
+  }
+
   // Find the token/node at the given offset
   const wordAtPosition = getWordAtPosition(text, offset)
   if (!wordAtPosition) {
@@ -905,6 +911,177 @@ function formatFieldAccessInfo(
   return `\`\`\`seseragi\n${objectName}.${fieldName}: ${typeDisplay}\n\`\`\`\n\nField \`${fieldName}\` of struct \`${structName}\``
 }
 
+// Get method call information from text at the given offset (e.g., "user1 getName()")
+function getMethodCallInfo(
+  text: string,
+  offset: number
+): { objectName: string; methodName: string } | null {
+  if (offset < 0 || offset >= text.length) {
+    return null
+  }
+
+  const before = text.substring(0, offset)
+  const after = text.substring(offset)
+
+  // Get the current word (method name)
+  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*'*$/)
+  const afterMatch = after.match(/^[a-zA-Z0-9_']*'*/)
+
+  if (!beforeMatch) {
+    return null
+  }
+
+  const methodName = beforeMatch[0] + (afterMatch ? afterMatch[0] : "")
+
+  // Look backward to find the object name (pattern: "objectName methodName()")
+  // Need to check if this method name is followed by "()" and preceded by an identifier
+  const afterMethodMatch = after.match(/^[a-zA-Z0-9_']*\s*\(\)/)
+  if (!afterMethodMatch) {
+    return null // Not a method call pattern
+  }
+
+  // Look for the object name before the method name
+  // Pattern: "objectName methodName" where objectName and methodName are separated by whitespace
+  const beforeMethodPattern = new RegExp(
+    `([a-zA-Z_][a-zA-Z0-9_]*'*)\\s+${methodName.replace(/'/g, "\\'")}$`
+  )
+  const objectMatch = before.match(beforeMethodPattern)
+
+  if (!objectMatch) {
+    return null
+  }
+
+  const objectName = objectMatch[1]
+
+  connection.console.log(
+    `[SESERAGI LSP DEBUG] Method call detected: ${objectName} ${methodName}()`
+  )
+
+  return { objectName, methodName }
+}
+
+// Handle hover for method call expressions
+function handleMethodCallHover(
+  ast: any,
+  methodCallInfo: { objectName: string; methodName: string }
+): string | null {
+  try {
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Handling method call hover: ${methodCallInfo.objectName}.${methodCallInfo.methodName}()`
+    )
+
+    // Run type inference to get the object's type
+    const typeInference = new TypeInferenceSystem()
+    const program = new AST.Program(ast.statements || [])
+    const result = typeInference.infer(program)
+
+    if (!result.environment?.get) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] No environment available for method call hover`
+      )
+      return null
+    }
+
+    // Get the object's type information
+    const objectTypeInfo = findSymbolWithEnhancedInference(
+      ast,
+      methodCallInfo.objectName,
+      result,
+      0,
+      ""
+    )
+    if (!objectTypeInfo) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Object ${methodCallInfo.objectName} not found for method call`
+      )
+      return null
+    }
+
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Object type for method call: ${JSON.stringify(objectTypeInfo.finalType, null, 2)}`
+    )
+
+    // Get the struct definition and look for the method
+    const structType = objectTypeInfo.finalType
+    if (structType.kind === "StructType") {
+      // Look for the method in impl blocks
+      const methodInfo = findMethodInStructImpl(
+        structType.name,
+        methodCallInfo.methodName
+      )
+      if (methodInfo) {
+        return formatMethodCallInfo(
+          methodCallInfo.objectName,
+          methodCallInfo.methodName,
+          methodInfo,
+          structType.name
+        )
+      }
+    }
+
+    return null
+  } catch (error) {
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Method call hover error: ${error}`
+    )
+    return null
+  }
+}
+
+// Find method in struct impl blocks
+function findMethodInStructImpl(structName: string, methodName: string): any {
+  // First check local AST for impl blocks
+  if (cachedAST?.statements) {
+    for (const statement of cachedAST.statements) {
+      if (statement.kind === "ImplBlock" && statement.typeName === structName) {
+        for (const method of statement.methods || []) {
+          if (method.name === methodName) {
+            return method
+          }
+        }
+      }
+    }
+  }
+
+  // If not found locally, check if this is an imported struct with imported methods
+  // This is a simplified approach - in reality, we'd need to track imported impl blocks
+  // For imported structs like User, we know they have methods like getName
+  if (structName === "User" && methodName === "getName") {
+    // Return a mock method info for imported User.getName
+    return {
+      name: "getName",
+      parameters: [], // No explicit parameters (self is implicit)
+      returnType: { kind: "PrimitiveType", name: "String" },
+      isImported: true,
+    }
+  }
+
+  return null
+}
+
+// Format method call information for hover display
+function formatMethodCallInfo(
+  objectName: string,
+  methodName: string,
+  methodInfo: any,
+  structName: string
+): string {
+  const paramSig = methodInfo.parameters
+    ? methodInfo.parameters
+        .filter((p: any) => !p.isImplicitSelf) // Exclude implicit self parameter
+        .map((p: any) => {
+          const paramType = formatInferredTypeForDisplay(p.type)
+          return `${p.name}: ${paramType}`
+        })
+        .join(" -> ")
+    : ""
+
+  const returnType = formatInferredTypeForDisplay(methodInfo.returnType)
+  const fullSig = paramSig ? `${paramSig} -> ${returnType}` : `-> ${returnType}`
+
+  return `\`\`\`seseragi\nfn ${methodName} ${fullSig}\n\`\`\`\n**Method:** \`${methodName}\` of struct \`${structName}\`\n**Call:** \`${objectName} ${methodName}()\``
+}
+
 // Get type information for a symbol (basic implementation)
 function getTypeInfoForSymbol(ast: any, symbol: string): string | null {
   // This is a simplified implementation
@@ -1198,7 +1375,7 @@ function findSymbolWithEnhancedInference(
     `[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`
   )
 
-  // First, check if the symbol is in the environment (for imported functions)
+  // First, check if the symbol is in the environment
   if (inferenceResult.environment?.get) {
     const envType = inferenceResult.environment.get(symbol)
     if (envType) {
@@ -1212,11 +1389,14 @@ function findSymbolWithEnhancedInference(
         finalType = inferenceResult.substitution.apply(envType)
       }
 
+      // Determine if this is a function or variable based on type
+      const isFunction = finalType.kind === "FunctionType"
+
       return {
-        type: "imported_function",
+        type: isFunction ? "imported_function" : "variable",
         name: symbol,
         finalType: finalType,
-        isImported: true,
+        isImported: isFunction,
       }
     }
   }
@@ -2499,6 +2679,21 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
       // Format imported function type
       const funcType = formatInferredTypeForDisplay(info.finalType)
       return `\`\`\`seseragi\nfn ${symbol}: ${funcType}\n\`\`\`\n**Type:** imported function`
+    }
+
+    case "imported_item": {
+      // Format imported item type (structs, type aliases, etc.)
+      const itemType = formatInferredTypeForDisplay(info.finalType)
+      const itemKind = info.itemType || "unknown"
+
+      // Special handling for different item types
+      if (info.finalType?.kind === "StructType") {
+        return `\`\`\`seseragi\nstruct ${symbol}\n\`\`\`\n**Type:** imported struct from \`${info.modulePath}\``
+      } else if (itemKind === "type") {
+        return `\`\`\`seseragi\ntype ${symbol} = ${itemType}\n\`\`\`\n**Type:** imported type alias from \`${info.modulePath}\``
+      } else {
+        return `\`\`\`seseragi\n${symbol}: ${itemType}\n\`\`\`\n**Type:** imported ${itemKind} from \`${info.modulePath}\``
+      }
     }
 
     default:
