@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test"
-import { Parser } from "../src/parser"
-import { TypeChecker } from "../src/typechecker"
-import { TypeInferenceSystem } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
 import * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
+import { Parser } from "../src/parser"
+import { TypeInferenceSystem } from "../src/type-inference"
+import { TypeChecker } from "../src/typechecker"
 
 describe("Lambda Expression Tests", () => {
   test("should parse simple lambda expression", () => {

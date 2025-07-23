@@ -4,10 +4,10 @@
  */
 
 import { expect, test } from "bun:test"
+import * as AST from "../src/ast"
+import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { CodeGenerator } from "../src/codegen"
-import * as AST from "../src/ast"
 
 test("Basic record subtyping - Dog <: Animal", () => {
   const source = `

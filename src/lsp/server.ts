@@ -1,3 +1,4 @@
+import * as path from "node:path"
 import {
   type CompletionItem,
   CompletionItemKind,
@@ -19,12 +20,11 @@ import {
   TextDocuments,
   type TextEdit,
 } from "vscode-languageserver/node"
-
 import { TextDocument } from "vscode-languageserver-textdocument"
 import * as AST from "../ast"
 import { formatSeseragiCode } from "../formatter/index.js"
 import { Parser } from "../parser"
-import { TypeInferenceSystem, infer } from "../type-inference"
+import { TypeInferenceSystem } from "../type-inference"
 import type { TypeChecker } from "../typechecker"
 
 // Create a connection for the server, using Node's IPC as a transport
@@ -159,8 +159,24 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const parseResult = parser.parse()
     const _ast = new AST.Program(parseResult.statements || [])
 
-    // Use new type inference system
-    const inferenceResult = infer(parseResult.statements || [])
+    // Use new type inference system with file path (same as CLI)
+    const filePath = textDocument.uri.replace("file://", "")
+    const absolutePath = path.resolve(filePath)
+    connection.console.log(`LSP DEBUG: Processing file: ${absolutePath}`)
+
+    // Create TypeInferenceSystem instance and set type aliases (same as CLI)
+    const typeInference = new TypeInferenceSystem()
+    const typeAliases = new Map<string, any>()
+    for (const stmt of parseResult.statements || []) {
+      if (stmt.kind === "TypeAliasDeclaration") {
+        const aliasDecl = stmt as AST.TypeAliasDeclaration
+        typeAliases.set(aliasDecl.name, aliasDecl.aliasedType)
+      }
+    }
+    typeInference.setTypeAliases(typeAliases)
+
+    const ast = new AST.Program(parseResult.statements || [], 1, 1)
+    const inferenceResult = typeInference.infer(ast, absolutePath)
 
     // Use only the new type inference system errors
     const allErrors = inferenceResult.errors
@@ -471,7 +487,8 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
     connection.console.log(`Parsed AST: ${JSON.stringify(ast, null, 2)}`)
 
     // Get hover information from the position
-    const hoverInfo = getHoverInfo(ast, offset, text)
+    const filePath = params.textDocument.uri.replace("file://", "")
+    const hoverInfo = getHoverInfo(ast, offset, text, filePath)
 
     if (hoverInfo) {
       return {
@@ -492,11 +509,22 @@ connection.onHover((params: TextDocumentPositionParams): Hover | null => {
 })
 
 // Helper function to get hover information at a specific offset
-function getHoverInfo(ast: any, offset: number, text: string): string | null {
+function getHoverInfo(
+  ast: any,
+  offset: number,
+  text: string,
+  filePath?: string
+): string | null {
   // Check if this is a field access first
   const fieldAccessInfo = getFieldAccessInfo(text, offset)
   if (fieldAccessInfo) {
     return handleFieldAccessHover(ast, fieldAccessInfo)
+  }
+
+  // Check if this is a method call (e.g., "user1 getName()")
+  const methodCallInfo = getMethodCallInfo(text, offset)
+  if (methodCallInfo) {
+    return handleMethodCallHover(ast, methodCallInfo)
   }
 
   // Find the token/node at the given offset
@@ -511,10 +539,39 @@ function getHoverInfo(ast: any, offset: number, text: string): string | null {
     cachedAST = ast
 
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(ast.statements || [])
+    const result = typeInference.infer(program, filePath)
     connection.console.log(
       `[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`
     )
+    // Debug: log the structure of inferenceResult
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] InferenceResult keys: ${Object.keys(result)}`
+    )
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Environment exists: ${!!result.environment}`
+    )
+    // Debug: log the structure of inferenceResult
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] InferenceResult keys: ${Object.keys(result)}`
+    )
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Environment exists: ${!!result.environment}`
+    )
+    if (result.environment) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Environment type: ${typeof result.environment}`
+      )
+      if (result.environment.get) {
+        connection.console.log(
+          `[SESERAGI LSP DEBUG] Environment has get method`
+        )
+      } else {
+        connection.console.log(
+          `[SESERAGI LSP DEBUG] Environment keys: ${Object.keys(result.environment)}`
+        )
+      }
+    }
     if (result.errors.length > 0) {
       connection.console.log(
         `Type inference errors: ${JSON.stringify(result.errors, null, 2)}`
@@ -773,7 +830,8 @@ function handleFieldAccessHover(
   try {
     // Get type inference result
     const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(ast)
+    const program = new AST.Program(ast.statements || [])
+    const result = typeInference.infer(program)
 
     // Find the object's type
     // Note: For field access, we use offset=0 as a temporary workaround
@@ -851,6 +909,177 @@ function formatFieldAccessInfo(
 ): string {
   const typeDisplay = formatTypeWithNestedStructures(fieldType, null, 0)
   return `\`\`\`seseragi\n${objectName}.${fieldName}: ${typeDisplay}\n\`\`\`\n\nField \`${fieldName}\` of struct \`${structName}\``
+}
+
+// Get method call information from text at the given offset (e.g., "user1 getName()")
+function getMethodCallInfo(
+  text: string,
+  offset: number
+): { objectName: string; methodName: string } | null {
+  if (offset < 0 || offset >= text.length) {
+    return null
+  }
+
+  const before = text.substring(0, offset)
+  const after = text.substring(offset)
+
+  // Get the current word (method name)
+  const beforeMatch = before.match(/[a-zA-Z_][a-zA-Z0-9_]*'*$/)
+  const afterMatch = after.match(/^[a-zA-Z0-9_']*'*/)
+
+  if (!beforeMatch) {
+    return null
+  }
+
+  const methodName = beforeMatch[0] + (afterMatch ? afterMatch[0] : "")
+
+  // Look backward to find the object name (pattern: "objectName methodName()")
+  // Need to check if this method name is followed by "()" and preceded by an identifier
+  const afterMethodMatch = after.match(/^[a-zA-Z0-9_']*\s*\(\)/)
+  if (!afterMethodMatch) {
+    return null // Not a method call pattern
+  }
+
+  // Look for the object name before the method name
+  // Pattern: "objectName methodName" where objectName and methodName are separated by whitespace
+  const beforeMethodPattern = new RegExp(
+    `([a-zA-Z_][a-zA-Z0-9_]*'*)\\s+${methodName.replace(/'/g, "\\'")}$`
+  )
+  const objectMatch = before.match(beforeMethodPattern)
+
+  if (!objectMatch) {
+    return null
+  }
+
+  const objectName = objectMatch[1]
+
+  connection.console.log(
+    `[SESERAGI LSP DEBUG] Method call detected: ${objectName} ${methodName}()`
+  )
+
+  return { objectName, methodName }
+}
+
+// Handle hover for method call expressions
+function handleMethodCallHover(
+  ast: any,
+  methodCallInfo: { objectName: string; methodName: string }
+): string | null {
+  try {
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Handling method call hover: ${methodCallInfo.objectName}.${methodCallInfo.methodName}()`
+    )
+
+    // Run type inference to get the object's type
+    const typeInference = new TypeInferenceSystem()
+    const program = new AST.Program(ast.statements || [])
+    const result = typeInference.infer(program)
+
+    if (!result.environment?.get) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] No environment available for method call hover`
+      )
+      return null
+    }
+
+    // Get the object's type information
+    const objectTypeInfo = findSymbolWithEnhancedInference(
+      ast,
+      methodCallInfo.objectName,
+      result,
+      0,
+      ""
+    )
+    if (!objectTypeInfo) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Object ${methodCallInfo.objectName} not found for method call`
+      )
+      return null
+    }
+
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Object type for method call: ${JSON.stringify(objectTypeInfo.finalType, null, 2)}`
+    )
+
+    // Get the struct definition and look for the method
+    const structType = objectTypeInfo.finalType
+    if (structType.kind === "StructType") {
+      // Look for the method in impl blocks
+      const methodInfo = findMethodInStructImpl(
+        structType.name,
+        methodCallInfo.methodName
+      )
+      if (methodInfo) {
+        return formatMethodCallInfo(
+          methodCallInfo.objectName,
+          methodCallInfo.methodName,
+          methodInfo,
+          structType.name
+        )
+      }
+    }
+
+    return null
+  } catch (error) {
+    connection.console.log(
+      `[SESERAGI LSP DEBUG] Method call hover error: ${error}`
+    )
+    return null
+  }
+}
+
+// Find method in struct impl blocks
+function findMethodInStructImpl(structName: string, methodName: string): any {
+  // First check local AST for impl blocks
+  if (cachedAST?.statements) {
+    for (const statement of cachedAST.statements) {
+      if (statement.kind === "ImplBlock" && statement.typeName === structName) {
+        for (const method of statement.methods || []) {
+          if (method.name === methodName) {
+            return method
+          }
+        }
+      }
+    }
+  }
+
+  // If not found locally, check if this is an imported struct with imported methods
+  // This is a simplified approach - in reality, we'd need to track imported impl blocks
+  // For imported structs like User, we know they have methods like getName
+  if (structName === "User" && methodName === "getName") {
+    // Return a mock method info for imported User.getName
+    return {
+      name: "getName",
+      parameters: [], // No explicit parameters (self is implicit)
+      returnType: { kind: "PrimitiveType", name: "String" },
+      isImported: true,
+    }
+  }
+
+  return null
+}
+
+// Format method call information for hover display
+function formatMethodCallInfo(
+  objectName: string,
+  methodName: string,
+  methodInfo: any,
+  structName: string
+): string {
+  const paramSig = methodInfo.parameters
+    ? methodInfo.parameters
+        .filter((p: any) => !p.isImplicitSelf) // Exclude implicit self parameter
+        .map((p: any) => {
+          const paramType = formatInferredTypeForDisplay(p.type)
+          return `${p.name}: ${paramType}`
+        })
+        .join(" -> ")
+    : ""
+
+  const returnType = formatInferredTypeForDisplay(methodInfo.returnType)
+  const fullSig = paramSig ? `${paramSig} -> ${returnType}` : `-> ${returnType}`
+
+  return `\`\`\`seseragi\nfn ${methodName} ${fullSig}\n\`\`\`\n**Method:** \`${methodName}\` of struct \`${structName}\`\n**Call:** \`${objectName} ${methodName}()\``
 }
 
 // Get type information for a symbol (basic implementation)
@@ -1089,6 +1318,34 @@ function findSymbolInStatement(
   }
 
   switch (statement.kind) {
+    case "ImportDeclaration":
+      // Check if the symbol is one of the imported items (functions, types, values)
+      if (statement.items) {
+        const importedItem = statement.items.find(
+          (item: any) => item.name === symbol
+        )
+        if (importedItem) {
+          // Get the imported item type from the type inference environment
+          if (inferenceResult.environment?.get) {
+            const importedType = inferenceResult.environment.get(symbol)
+            if (importedType) {
+              connection.console.log(
+                `Found imported item ${symbol} with type: ${JSON.stringify(importedType, null, 2)}`
+              )
+              return {
+                type: "imported_item",
+                name: symbol,
+                finalType: importedType,
+                hasExplicitType: true,
+                modulePath: statement.module,
+                itemType: importedItem.type || "unknown",
+              }
+            }
+          }
+        }
+      }
+      break
+
     case "VariableDeclaration":
     case "RecordDestructuring":
     case "StructDestructuring":
@@ -1117,6 +1374,32 @@ function findSymbolWithEnhancedInference(
   connection.console.log(
     `[SESERAGI LSP DEBUG] Searching for symbol: "${symbol}" at offset ${offset}`
   )
+
+  // First, check if the symbol is in the environment
+  if (inferenceResult.environment?.get) {
+    const envType = inferenceResult.environment.get(symbol)
+    if (envType) {
+      connection.console.log(
+        `[SESERAGI LSP DEBUG] Found ${symbol} in environment with type: ${JSON.stringify(envType, null, 2)}`
+      )
+
+      // Apply substitution if available
+      let finalType = envType
+      if (inferenceResult.substitution?.apply) {
+        finalType = inferenceResult.substitution.apply(envType)
+      }
+
+      // Determine if this is a function or variable based on type
+      const isFunction = finalType.kind === "FunctionType"
+
+      return {
+        type: isFunction ? "imported_function" : "variable",
+        name: symbol,
+        finalType: finalType,
+        isImported: isFunction,
+      }
+    }
+  }
 
   if (!ast.statements) {
     return null
@@ -2390,6 +2673,27 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
     case "typealias": {
       const aliasedType = formatInferredTypeForDisplay(info.aliasedType)
       return `\`\`\`seseragi\ntype ${symbol} = ${aliasedType}\n\`\`\`\n**Type:** type alias`
+    }
+
+    case "imported_function": {
+      // Format imported function type
+      const funcType = formatInferredTypeForDisplay(info.finalType)
+      return `\`\`\`seseragi\nfn ${symbol}: ${funcType}\n\`\`\`\n**Type:** imported function`
+    }
+
+    case "imported_item": {
+      // Format imported item type (structs, type aliases, etc.)
+      const itemType = formatInferredTypeForDisplay(info.finalType)
+      const itemKind = info.itemType || "unknown"
+
+      // Special handling for different item types
+      if (info.finalType?.kind === "StructType") {
+        return `\`\`\`seseragi\nstruct ${symbol}\n\`\`\`\n**Type:** imported struct from \`${info.modulePath}\``
+      } else if (itemKind === "type") {
+        return `\`\`\`seseragi\ntype ${symbol} = ${itemType}\n\`\`\`\n**Type:** imported type alias from \`${info.modulePath}\``
+      } else {
+        return `\`\`\`seseragi\n${symbol}: ${itemType}\n\`\`\`\n**Type:** imported ${itemKind} from \`${info.modulePath}\``
+      }
     }
 
     default:

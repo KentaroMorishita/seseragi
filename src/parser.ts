@@ -1136,28 +1136,19 @@ export class Parser {
   }
 
   private importDeclaration(): AST.ImportDeclaration {
-    const module = this.consume(
-      TokenType.IDENTIFIER,
-      "Expected module name"
-    ).value
-
-    this.consume(TokenType.COLON, "Expected ':' after module name")
-    this.consume(TokenType.COLON, "Expected '::' after module name")
-    this.consume(TokenType.LEFT_BRACE, "Expected '{' after '::'")
+    // import { items } from "path" 構文
+    this.consume(TokenType.LEFT_BRACE, "Expected '{' after 'import'")
 
     const items: AST.ImportItem[] = []
-
     do {
       const name = this.consume(
         TokenType.IDENTIFIER,
         "Expected import item name"
       ).value
       let alias: string | undefined
-
       if (this.match(TokenType.AS)) {
         alias = this.consume(TokenType.IDENTIFIER, "Expected alias name").value
       }
-
       items.push(
         new AST.ImportItem(
           name,
@@ -1169,9 +1160,22 @@ export class Parser {
     } while (this.match(TokenType.COMMA))
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after import items")
+    this.consume(TokenType.FROM, "Expected 'from' after import items")
+
+    const stringToken = this.consume(
+      TokenType.STRING,
+      "Expected module path string"
+    )
+    // 文字列リテラルからクォートを正しく削除
+    const modulePath =
+      stringToken.value.startsWith('"') && stringToken.value.endsWith('"')
+        ? stringToken.value.slice(1, -1)
+        : stringToken.value.startsWith("'") && stringToken.value.endsWith("'")
+          ? stringToken.value.slice(1, -1)
+          : stringToken.value
 
     return new AST.ImportDeclaration(
-      module,
+      modulePath,
       items,
       this.previous().line,
       this.previous().column
@@ -3506,7 +3510,7 @@ export class Parser {
   }
 
   // Context-aware method call detection
-  private isActualMethodCall(_receiver: AST.Expression): boolean {
+  private isActualMethodCall(receiver: AST.Expression): boolean {
     // Check if the next identifier is a known method name from any struct impl block
     if (!this.check(TokenType.IDENTIFIER)) {
       return false
@@ -3523,7 +3527,37 @@ export class Parser {
       }
     }
 
-    // If the method name is not registered, treat as function application
+    // For potential imported methods, check receiver context
+    if (receiver instanceof AST.Identifier) {
+      // Common method names that are likely to be methods, not functions
+      const commonMethodNames = new Set([
+        "getName",
+        "setName",
+        "toString",
+        "toJson",
+        "clone",
+        "equals",
+        "map",
+        "filter",
+        "reduce",
+        "forEach",
+        "length",
+        "size",
+        "isEmpty",
+        "get",
+        "set",
+        "add",
+        "remove",
+        "clear",
+        "contains",
+        "indexOf",
+      ])
+
+      if (commonMethodNames.has(methodName)) {
+        return true
+      }
+    }
+
     return false
   }
 

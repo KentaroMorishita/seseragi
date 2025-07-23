@@ -1,6 +1,6 @@
-import { loadWASM } from "onigasm"
-import { Registry } from "monaco-textmate"
 import { wireTmGrammars } from "monaco-editor-textmate"
+import { Registry } from "monaco-textmate"
+import { loadWASM } from "onigasm"
 
 let isInitialized = false
 

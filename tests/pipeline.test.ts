@@ -1,7 +1,7 @@
-import { describe, it, expect } from "bun:test"
+import { describe, expect, it } from "bun:test"
+import { generateTypeScript } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { generateTypeScript } from "../src/codegen"
 
 describe("Pipeline Operator", () => {
   it("should parse pipeline operator expressions", () => {

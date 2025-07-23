@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { formatSeseragiCode } from "../src/formatter/relative-indent-formatter.js"
 
 test("format struct spacing - basic", () => {

@@ -1,10 +1,10 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
 import {
   TypeInferenceSystem,
   type TypeInferenceSystemResult,
 } from "../src/type-inference"
-import * as AST from "../src/ast"
 
 // LSPサーバーから同じ関数をコピーしてテスト用に使用
 interface SymbolInfo {

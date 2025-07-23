@@ -1,8 +1,8 @@
-import { describe, it, expect } from "bun:test"
-import { Parser } from "../src/parser"
-import { generateTypeScript } from "../src/codegen"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { describe, expect, it } from "bun:test"
 import * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
+import { Parser } from "../src/parser"
+import { TypeInferenceSystem } from "../src/type-inference"
 
 function transpileCode(code: string): string {
   const parser = new Parser(code)

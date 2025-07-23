@@ -5,6 +5,7 @@
  */
 
 import * as AST from "./ast"
+import { ModuleResolver } from "./module-resolver"
 
 // Type environment for tracking variable and function types
 export class TypeEnvironment {
@@ -64,10 +65,15 @@ export class SeseragiTypeError {
 export class TypeChecker {
   private errors: SeseragiTypeError[] = []
   private globalEnv: TypeEnvironment
+  private moduleResolver: ModuleResolver
+  private currentFilePath: string = ""
 
-  constructor(typeEnvironment?: Map<string, AST.Type>) {
+  constructor(typeEnvironment?: Map<string, AST.Type>, filePath?: string) {
     this.globalEnv = new TypeEnvironment()
     this.initializeBuiltins()
+
+    this.moduleResolver = new ModuleResolver()
+    this.currentFilePath = filePath || ""
 
     // Add types from type inference system if provided
     if (typeEnvironment) {
@@ -139,6 +145,9 @@ export class TypeChecker {
 
   private checkStatement(statement: AST.Statement, env: TypeEnvironment): void {
     switch (statement.kind) {
+      case "ImportDeclaration":
+        this.checkImportDeclaration(statement as AST.ImportDeclaration, env)
+        break
       case "FunctionDeclaration":
         this.checkFunctionDeclaration(statement as AST.FunctionDeclaration, env)
         break
@@ -388,6 +397,7 @@ export class TypeChecker {
       case "*":
       case "/":
       case "%":
+      case "**":
         return this.checkArithmeticOperator(binOp, leftType, rightType)
 
       case "==":
@@ -634,6 +644,32 @@ export class TypeChecker {
           this.checkExpression(call.arguments[0], env)
         }
         return new AST.PrimitiveType("Unit", call.line, call.column)
+
+      case "toInt":
+        if (call.arguments.length !== 1) {
+          this.addError(
+            `toInt expects exactly 1 argument, got ${call.arguments.length}`,
+            call.line,
+            call.column
+          )
+        } else {
+          // toInt accepts any type and converts to Int
+          this.checkExpression(call.arguments[0], env)
+        }
+        return new AST.PrimitiveType("Int", call.line, call.column)
+
+      case "toFloat":
+        if (call.arguments.length !== 1) {
+          this.addError(
+            `toFloat expects exactly 1 argument, got ${call.arguments.length}`,
+            call.line,
+            call.column
+          )
+        } else {
+          // toFloat accepts any type and converts to Float
+          this.checkExpression(call.arguments[0], env)
+        }
+        return new AST.PrimitiveType("Float", call.line, call.column)
 
       default:
         this.addError(
@@ -1481,5 +1517,71 @@ export class TypeChecker {
 
     // テンプレートリテラルの結果型は常にString
     return new AST.PrimitiveType("String", expr.line, expr.column)
+  }
+
+  private checkImportDeclaration(
+    importDecl: AST.ImportDeclaration,
+    env: TypeEnvironment
+  ): void {
+    // モジュールを解決
+    const resolvedModule = this.moduleResolver.resolve(
+      importDecl.module,
+      this.currentFilePath
+    )
+
+    if (!resolvedModule) {
+      this.addError(
+        `Cannot resolve module '${importDecl.module}'`,
+        importDecl.line,
+        importDecl.column,
+        "MODULE_NOT_FOUND",
+        `Check that the file '${importDecl.module}.ssrg' exists`
+      )
+      return
+    }
+
+    // インポートした項目を環境に追加
+    for (const item of importDecl.items) {
+      const exportedFunction = resolvedModule.exports.functions.get(item.name)
+      const exportedType = resolvedModule.exports.types.get(item.name)
+
+      if (exportedFunction) {
+        // 関数をインポート
+        const funcType = this.createFunctionType(exportedFunction)
+        const importName = item.alias || item.name
+        env.define(importName, funcType)
+      } else if (exportedType) {
+        // 型をインポート
+        const importName = item.alias || item.name
+        env.define(importName, exportedType as AST.Type)
+      } else {
+        // エクスポートされていないアイテム
+        this.addError(
+          `Module '${importDecl.module}' does not export '${item.name}'`,
+          importDecl.line,
+          importDecl.column,
+          "EXPORT_NOT_FOUND",
+          `Check available exports in '${importDecl.module}.ssrg'`
+        )
+      }
+    }
+  }
+
+  private createFunctionType(funcDecl: AST.FunctionDeclaration): AST.Type {
+    // 関数の型を作成（パラメータ → 戻り値）
+    let resultType = funcDecl.returnType
+
+    // カリー化された関数型を構築（右結合）
+    for (let i = funcDecl.parameters.length - 1; i >= 0; i--) {
+      const param = funcDecl.parameters[i]
+      resultType = new AST.FunctionType(
+        param.type,
+        resultType,
+        funcDecl.line,
+        funcDecl.column
+      )
+    }
+
+    return resultType
   }
 }

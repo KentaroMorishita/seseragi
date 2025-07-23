@@ -5,6 +5,23 @@
  */
 
 import * as AST from "./ast"
+// ブラウザ環境でもエラーが出ないように条件分岐
+let ModuleResolver: any
+if (
+  typeof globalThis !== "undefined" &&
+  (globalThis as any).window === undefined
+) {
+  // Node.js環境
+  ModuleResolver = require("./module-resolver").ModuleResolver
+} else {
+  // ブラウザ環境：ダミークラス
+  ModuleResolver = class {
+    resolve(): null {
+      return null
+    }
+    clearCache(): void {}
+  }
+}
 
 // 型変数を表現するクラス
 export class TypeVariable extends AST.Type {
@@ -424,6 +441,9 @@ export interface TypeInferenceSystemResult {
   substitution: TypeSubstitution
   errors: TypeInferenceError[]
   nodeTypeMap: Map<AST.ASTNode, AST.Type>
+  moduleResolver?: typeof ModuleResolver
+  currentFilePath?: string
+  environment: Map<string, AST.Type>
 }
 
 // 型推論システムのメインクラス
@@ -436,10 +456,24 @@ export class TypeInferenceSystem {
   private methodEnvironment: Map<string, AST.MethodDeclaration> = new Map() // Track methods by type.method
   private currentProgram: AST.Program | null = null // 現在処理中のプログラム
   private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
+  private moduleResolver: any = new ModuleResolver()
+  private currentFilePath: string = ""
+  private structMethods: Map<string, AST.MethodDeclaration[]> = new Map() // インポートされた構造体のメソッド
+  private structOperators: Map<string, AST.OperatorDeclaration[]> = new Map() // インポートされた構造体の演算子
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
     return new TypeVariable(this.nextVarId++, line, column)
+  }
+
+  // エラーを追加
+  addError(
+    message: string,
+    line: number,
+    column: number,
+    context?: string
+  ): void {
+    this.errors.push(new TypeInferenceError(message, line, column, context))
   }
 
   // 型エイリアス情報を設定
@@ -1164,7 +1198,7 @@ export class TypeInferenceSystem {
   }
 
   // 型推論のメインエントリーポイント
-  infer(program: AST.Program): TypeInferenceSystemResult {
+  infer(program: AST.Program, filePath?: string): TypeInferenceSystemResult {
     this.constraints = []
     this.subtypeConstraints = []
     this.currentEnvironment.clear() // 環境をクリア
@@ -1174,6 +1208,7 @@ export class TypeInferenceSystem {
     this.nextVarId = 1000 // Reset to 1000 to avoid conflicts with parser-generated type variables
     this.nodeTypeMap.clear()
     this.currentProgram = program // プログラム情報を保存
+    this.currentFilePath = filePath || ""
 
     // 型環境の初期化
     const env = this.createInitialEnvironment()
@@ -1194,6 +1229,9 @@ export class TypeInferenceSystem {
       substitution,
       errors: this.errors,
       nodeTypeMap: resolvedNodeTypeMap,
+      moduleResolver: this.moduleResolver,
+      currentFilePath: this.currentFilePath,
+      environment: new Map(this.currentEnvironment),
     }
   }
 
@@ -1368,10 +1406,11 @@ export class TypeInferenceSystem {
     this.currentEnvironment = env
 
     // Two-pass approach to handle forward references:
-    // Pass 1: Process all function declarations, type declarations, and struct declarations first
+    // Pass 1: Process imports first, then all function declarations, type declarations, and struct declarations
     // This allows variables to reference functions and types defined later in the file
     for (const statement of program.statements) {
       if (
+        statement.kind === "ImportDeclaration" ||
         statement.kind === "FunctionDeclaration" ||
         statement.kind === "TypeDeclaration" ||
         statement.kind === "TypeAliasDeclaration" ||
@@ -1407,7 +1446,17 @@ export class TypeInferenceSystem {
     statement: AST.Statement,
     env: Map<string, AST.Type>
   ): void {
+    console.log(`🔧 Processing statement kind: ${statement.kind}`)
     switch (statement.kind) {
+      case "ImportDeclaration":
+        console.log(
+          `🔧 Processing ImportDeclaration: ${(statement as AST.ImportDeclaration).module}`
+        )
+        this.generateConstraintsForImportDeclaration(
+          statement as AST.ImportDeclaration,
+          env
+        )
+        break
       case "FunctionDeclaration":
         this.generateConstraintsForFunctionDeclaration(
           statement as AST.FunctionDeclaration,
@@ -1575,6 +1624,194 @@ export class TypeInferenceSystem {
         `Function ${func.name} body type`
       )
     )
+  }
+
+  private generateConstraintsForImportDeclaration(
+    importDecl: AST.ImportDeclaration,
+    env: Map<string, AST.Type>
+  ): void {
+    console.log(
+      `🔧 Processing ImportDeclaration in TypeInferenceSystem: ${importDecl.module}`
+    )
+
+    // キャッシュをクリアして最新の内容を読み込む
+    this.moduleResolver.clearCache()
+
+    // モジュールを解決
+    const resolvedModule = this.moduleResolver.resolve(
+      importDecl.module,
+      this.currentFilePath
+    )
+
+    if (!resolvedModule) {
+      this.addError(
+        `Cannot resolve module '${importDecl.module}'`,
+        importDecl.line,
+        importDecl.column
+      )
+      return
+    }
+
+    console.log(`✅ Module resolved: ${resolvedModule.path}`)
+    console.log(
+      `📦 Available exports: functions=${Array.from(resolvedModule.exports.functions.keys()).join(", ")}, types=${Array.from(resolvedModule.exports.types.keys()).join(", ")}, impls=${Array.from(resolvedModule.exports.impls.keys()).join(", ")}`
+    )
+
+    // インポートした項目を環境に追加（依存順序で処理：型 -> 関数 -> 構造体）
+    console.log(
+      `🔧 Processing ${importDecl.items.length} import items from ${importDecl.module}`
+    )
+
+    // Phase 1: ADT types first (no dependencies)
+    for (const item of importDecl.items) {
+      const exportedType = resolvedModule.exports.types.get(item.name)
+      if (exportedType && exportedType.kind === "TypeDeclaration") {
+        console.log(`🔧 Processing ADT import item: ${item.name}`)
+        const importName = item.alias || item.name
+        const typeDecl = exportedType as AST.TypeDeclaration
+
+        // Union型を作成してADT型として環境に追加
+        const unionTypes = typeDecl.fields.map(
+          (field) =>
+            new AST.PrimitiveType(
+              field.name,
+              field.line || 0,
+              field.column || 0
+            )
+        )
+        const unionType = new AST.UnionType(
+          unionTypes,
+          typeDecl.line,
+          typeDecl.column
+        )
+        env.set(importName, unionType)
+
+        // 各コンストラクタも環境に追加
+        for (const field of typeDecl.fields) {
+          const constructorType = new AST.PrimitiveType(
+            field.name,
+            field.line || 0,
+            field.column || 0
+          )
+          env.set(field.name, constructorType)
+          console.log(
+            `✅ Imported ADT constructor: ${field.name} -> ${importName}`
+          )
+          console.log(
+            `🔍 Constructor added to env object: ${env === this.currentEnvironment ? "SAME" : "DIFFERENT"}`
+          )
+          console.log(
+            `🔍 Environment size after adding ${field.name}: ${env.size}`
+          )
+        }
+
+        console.log(
+          `✅ Imported ADT: ${importName} with ${typeDecl.fields.length} constructors`
+        )
+      }
+    }
+
+    // Phase 2: Other types and functions
+    for (const item of importDecl.items) {
+      console.log(`🔧 Processing remaining import item: ${item.name}`)
+      const exportedFunction = resolvedModule.exports.functions.get(item.name)
+      const exportedType = resolvedModule.exports.types.get(item.name)
+      console.log(
+        `🔧 Found function: ${exportedFunction ? "YES" : "NO"}, Found type: ${exportedType ? "YES" : "NO"}`
+      )
+
+      if (exportedFunction) {
+        // 関数をインポート
+        const funcType =
+          this.createFunctionTypeFromDeclaration(exportedFunction)
+        const importName = item.alias || item.name
+        env.set(importName, funcType)
+        console.log(
+          `✅ Imported function: ${importName} with type ${this.typeToString(funcType)}`
+        )
+      } else if (exportedType) {
+        // 型をインポート
+        const importName = item.alias || item.name
+
+        // 型エイリアスの場合は、その定義する型を取得する
+        if (exportedType && exportedType.kind === "TypeAliasDeclaration") {
+          const aliasDecl = exportedType as AST.TypeAliasDeclaration
+          env.set(importName, aliasDecl.aliasedType)
+          console.log(
+            `✅ Imported type alias: ${importName} = ${this.typeToString(aliasDecl.aliasedType)}`
+          )
+        } else if (exportedType.kind === "TypeDeclaration") {
+          // ADTは既にPhase 1で処理済み
+          console.log(`✅ ADT ${importName} already processed in Phase 1`)
+        } else if (exportedType.kind === "StructDeclaration") {
+          // StructDeclarationの場合は、StructTypeに変換してインポート
+          const structDecl = exportedType as AST.StructDeclaration
+          const structType = new AST.StructType(
+            structDecl.name,
+            structDecl.fields,
+            structDecl.line,
+            structDecl.column
+          )
+          env.set(importName, structType)
+
+          // 対応するimpl定義も取得してメソッドを登録
+          const implBlock = resolvedModule.exports.impls.get(structDecl.name)
+          if (implBlock) {
+            // ローカルのImplBlockと同じように制約を生成（制約生成は後で実行）
+            // TODO: 制約生成をインポート完了後に実行するように変更
+            for (const method of implBlock.methods) {
+              this.generateConstraintsForMethodDeclaration(
+                method,
+                env,
+                structType
+              )
+            }
+            for (const operator of implBlock.operators) {
+              this.generateConstraintsForOperatorDeclaration(
+                operator,
+                env,
+                structType
+              )
+            }
+            console.log(`✅ Imported impl methods for struct: ${importName}`)
+          }
+
+          console.log(`✅ Imported struct as StructType: ${importName}`)
+        } else {
+          // その他の型はそのまま
+          env.set(importName, exportedType as AST.Type)
+          console.log(`✅ Imported type: ${importName}`)
+        }
+      } else {
+        // エクスポートされていないアイテム
+        this.addError(
+          `Module '${importDecl.module}' does not export '${item.name}'`,
+          importDecl.line,
+          importDecl.column
+        )
+        console.log(`❌ Export not found: ${item.name}`)
+      }
+    }
+  }
+
+  private createFunctionTypeFromDeclaration(
+    funcDecl: AST.FunctionDeclaration
+  ): AST.Type {
+    // 関数の型を作成（パラメータ → 戻り値）
+    let resultType = funcDecl.returnType
+
+    // カリー化された関数型を構築（右結合）
+    for (let i = funcDecl.parameters.length - 1; i >= 0; i--) {
+      const param = funcDecl.parameters[i]
+      resultType = new AST.FunctionType(
+        param.type,
+        resultType,
+        funcDecl.line,
+        funcDecl.column
+      )
+    }
+
+    return resultType
   }
 
   private generateConstraintsForVariableDeclaration(
@@ -2090,6 +2327,17 @@ export class TypeInferenceSystem {
     identifier: AST.Identifier,
     env: Map<string, AST.Type>
   ): AST.Type {
+    // Debug: Log environment contents when looking for Red
+    if (identifier.name === "Red") {
+      console.log(
+        `🔍 Looking for "${identifier.name}" in environment at line ${identifier.line}`
+      )
+      console.log(`🔍 Environment has ${env.size} entries:`)
+      console.log(
+        `🔍 Environment object: ${env === this.currentEnvironment ? "SAME" : "DIFFERENT"}`
+      )
+    }
+
     // Normal identifier lookup
     const type = env.get(identifier.name)
     if (!type) {
@@ -2902,6 +3150,24 @@ export class TypeInferenceSystem {
           return expectedListType
         }
         throw new Error("tail function requires exactly one argument")
+
+      case "toInt":
+        // Type: 'a -> Int
+        if (call.arguments.length === 1) {
+          // 引数の型をチェックするが、何でも受け付ける
+          this.generateConstraintsForExpression(call.arguments[0], env)
+          return new AST.PrimitiveType("Int", call.line, call.column)
+        }
+        throw new Error("toInt function requires exactly one argument")
+
+      case "toFloat":
+        // Type: 'a -> Float
+        if (call.arguments.length === 1) {
+          // 引数の型をチェックするが、何でも受け付ける
+          this.generateConstraintsForExpression(call.arguments[0], env)
+          return new AST.PrimitiveType("Float", call.line, call.column)
+        }
+        throw new Error("toFloat function requires exactly one argument")
 
       default:
         this.errors.push(
@@ -4781,6 +5047,67 @@ export class TypeInferenceSystem {
     }
 
     // 片方がUnion型の場合
+    // ADTコンストラクタ（PrimitiveType）とADT型（UnionType）の統合をチェック
+    if (
+      resolvedType1.kind === "UnionType" &&
+      resolvedType2.kind === "PrimitiveType"
+    ) {
+      const union = resolvedType1 as AST.UnionType
+      const primitive = resolvedType2 as AST.PrimitiveType
+
+      console.log(
+        `🔧 Attempting to unify Union ${this.typeToString(resolvedType1)} with Primitive ${primitive.name}`
+      )
+
+      // PrimitiveTypeがUnion型の構成要素かチェック
+      const isConstructor = union.types.some(
+        (memberType) =>
+          memberType.kind === "PrimitiveType" &&
+          (memberType as AST.PrimitiveType).name === primitive.name
+      )
+
+      if (isConstructor) {
+        console.log(
+          `✅ ADT constructor ${primitive.name} unified with Union type ${this.typeToString(resolvedType1)}`
+        )
+        return substitution
+      } else {
+        console.log(
+          `❌ ADT constructor ${primitive.name} not found in Union type ${this.typeToString(resolvedType1)}`
+        )
+      }
+    }
+
+    if (
+      resolvedType2.kind === "UnionType" &&
+      resolvedType1.kind === "PrimitiveType"
+    ) {
+      const union = resolvedType2 as AST.UnionType
+      const primitive = resolvedType1 as AST.PrimitiveType
+
+      console.log(
+        `🔧 Attempting to unify Primitive ${primitive.name} with Union ${this.typeToString(resolvedType2)}`
+      )
+
+      // PrimitiveTypeがUnion型の構成要素かチェック
+      const isConstructor = union.types.some(
+        (memberType) =>
+          memberType.kind === "PrimitiveType" &&
+          (memberType as AST.PrimitiveType).name === primitive.name
+      )
+
+      if (isConstructor) {
+        console.log(
+          `✅ ADT constructor ${primitive.name} unified with Union type ${this.typeToString(resolvedType2)}`
+        )
+        return substitution
+      } else {
+        console.log(
+          `❌ ADT constructor ${primitive.name} not found in Union type ${this.typeToString(resolvedType2)}`
+        )
+      }
+    }
+
     // Union型は基本的にその構成要素の型には割り当てできない
     // ただし、もう一方が型変数の場合は例外（型変数をUnion型に束縛）
     if (resolvedType1.kind === "UnionType" && type2.kind !== "TypeVariable") {
@@ -5743,8 +6070,15 @@ export class TypeInferenceSystem {
     implType: AST.Type
   ): void {
     this.registerMethodInEnvironment(method, implType)
+
+    // パラメータの型を先に解決してからFunctionTypeを作成
+    const resolvedParameters = method.parameters.map((param) => ({
+      ...param,
+      type: this.resolveParameterType(param, implType, env),
+    }))
+
     const functionType = this.buildFunctionType(
-      method.parameters,
+      resolvedParameters,
       method.returnType
     )
 
@@ -5819,8 +6153,14 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>,
     implType: AST.Type
   ): void {
+    // パラメータの型を先に解決してからFunctionTypeを作成
+    const resolvedParameters = operator.parameters.map((param) => ({
+      ...param,
+      type: this.resolveParameterType(param, implType, env),
+    }))
+
     const functionType = this.buildFunctionType(
-      operator.parameters,
+      resolvedParameters,
       operator.returnType
     )
     this.registerOperatorInEnvironment(operator, functionType, env)
@@ -7418,10 +7758,13 @@ export class TypeInferenceSystem {
 }
 
 // Convenience function for type inference
-export function infer(statements: AST.Statement[]): InferenceResult {
+export function infer(
+  statements: AST.Statement[],
+  filePath?: string
+): InferenceResult {
   const inference = new TypeInferenceSystem()
   const program = new AST.Program(statements)
-  const result = inference.infer(program)
+  const result = inference.infer(program, filePath)
 
   const inferredTypes = new Map<string, AST.Type>()
   const typeEnvironment = new Map<string, AST.Type>()

@@ -1,9 +1,9 @@
-import { describe, it, expect } from "bun:test"
+import { describe, expect, it } from "bun:test"
+import * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
 import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { generateTypeScript } from "../src/codegen"
 import { TypeInferenceSystem } from "../src/type-inference"
-import * as AST from "../src/ast"
 
 describe("Union and Intersection Types", () => {
   const parseAndGenerate = (code: string) => {

@@ -1,7 +1,7 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import * as AST from "../src/ast"
 
 test("Maybe type inference", () => {
   const content = `

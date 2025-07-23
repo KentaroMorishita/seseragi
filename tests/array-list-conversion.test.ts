@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test"
+import { execSync } from "node:child_process"
+import * as fs from "node:fs"
+import * as path from "node:path"
+import { generateTypeScript } from "../src/codegen"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
 import { infer } from "../src/type-inference"
-import { generateTypeScript } from "../src/codegen"
-import * as fs from "node:fs"
-import * as path from "node:path"
-import { execSync } from "node:child_process"
 
 describe("Array↔List Conversion", () => {
   const testCases = [

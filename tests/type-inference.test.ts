@@ -2,13 +2,13 @@
  * 型推論システムのテストケース
  */
 
-import { describe, it, expect, beforeEach } from "bun:test"
+import { beforeEach, describe, expect, it } from "bun:test"
 import * as AST from "../src/ast"
 import {
-  TypeInferenceSystem,
-  TypeVariable,
   TypeConstraint,
+  TypeInferenceSystem,
   TypeSubstitution,
+  TypeVariable,
 } from "../src/type-inference"
 
 describe("TypeInferenceSystem", () => {

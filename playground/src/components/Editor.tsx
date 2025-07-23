@@ -1,5 +1,6 @@
-import React, { useRef, useState, useEffect } from "react"
-import MonacoEditor, { Monaco } from "@monaco-editor/react"
+import MonacoEditor, { type Monaco } from "@monaco-editor/react"
+import type React from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   initializeSeseragiLanguage,
   setSeseragiTheme,

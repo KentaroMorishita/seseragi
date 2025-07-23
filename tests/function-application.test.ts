@@ -1,7 +1,7 @@
-import { describe, it, expect } from "bun:test"
-import { Parser } from "../src/parser"
-import { generateTypeScript } from "../src/codegen"
+import { describe, expect, it } from "bun:test"
 import type * as AST from "../src/ast"
+import { generateTypeScript } from "../src/codegen"
+import { Parser } from "../src/parser"
 
 describe("Function Application Operator ($)", () => {
   it("should tokenize $ operator", () => {

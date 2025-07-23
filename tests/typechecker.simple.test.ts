@@ -1,7 +1,7 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
 import { TypeChecker } from "../src/typechecker"
-import * as AST from "../src/ast"
 
 function checkTypes(code: string) {
   const parser = new Parser(code)

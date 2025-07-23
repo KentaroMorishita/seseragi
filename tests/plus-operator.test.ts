@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { TypeInferenceSystem } from "../src/type-inference"
 

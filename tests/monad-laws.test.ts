@@ -1,19 +1,19 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import {
-  Just,
-  Nothing,
-  mapMaybe,
-  pureMaybe,
-  applyMaybe,
-  bindMaybe,
-  Left,
-  Right,
-  mapEither,
-  pureEither,
   applyEither,
+  applyMaybe,
   bindEither,
-  type Maybe,
+  bindMaybe,
   type Either,
+  Just,
+  Left,
+  type Maybe,
+  mapEither,
+  mapMaybe,
+  Nothing,
+  pureEither,
+  pureMaybe,
+  Right,
 } from "../src/runtime/seseragi-runtime"
 
 // =============================================================================

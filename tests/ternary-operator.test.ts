@@ -2,11 +2,11 @@
  * 三項演算子のテスト
  */
 
-import { describe, test, expect } from "bun:test"
-import { Parser } from "../src/parser"
-import { CodeGenerator } from "../src/codegen"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
+import { CodeGenerator } from "../src/codegen"
+import { Parser } from "../src/parser"
+import { TypeInferenceSystem } from "../src/type-inference"
 
 describe("Ternary Operator", () => {
   test("should parse simple ternary expression", () => {

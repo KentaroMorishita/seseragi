@@ -1,6 +1,6 @@
-import { test, expect } from "bun:test"
-import { Parser } from "../src/parser.js"
+import { expect, test } from "bun:test"
 import { generateTypeScript } from "../src/codegen.js"
+import { Parser } from "../src/parser.js"
 
 test("Performance test - Large factorial calculation", () => {
   const source = `

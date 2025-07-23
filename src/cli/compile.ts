@@ -63,6 +63,7 @@ async function compile(options: CompileOptions): Promise<void> {
     console.log("Type checking...")
 
     // 新しい型推論システムを使用
+    const absolutePath = path.resolve(options.input)
     const typeInference = new TypeInferenceSystem()
 
     // 型エイリアス情報を収集して設定
@@ -80,7 +81,10 @@ async function compile(options: CompileOptions): Promise<void> {
     }
     typeInference.setTypeAliases(typeAliases)
 
-    inferenceResult = typeInference.infer(new Program(ast.statements!, 1, 1))
+    inferenceResult = typeInference.infer(
+      new Program(ast.statements!, 1, 1),
+      absolutePath
+    )
 
     if (inferenceResult.errors.length > 0) {
       console.error("\n❌ Type checking failed:\n")
