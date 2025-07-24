@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "keyword.control.seseragi",
-          "match": "\\b(fn|let|type|struct|impl|monoid|operator|effectful|match|when|import|from|as|if|then|else)\\b"
+          "match": "\\b(fn|let|type|struct|impl|monoid|operator|effectful|match|when|import|from|as|if|then|else|is)\\b"
         }
       ]
     },
@@ -224,15 +224,15 @@
       "patterns": [
         {
           "name": "support.function.builtin.io.seseragi",
-          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*\\()"
+          "match": "\\b(print|putStrLn|toString|show|head|tail|typeof)(?=\\s*\\()"
         },
         {
           "name": "support.function.builtin.io.functional.seseragi",
-          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s+[^\\(])"
+          "match": "\\b(print|putStrLn|toString|show|head|tail|typeof)(?=\\s+[^\\(])"
         },
         {
           "name": "support.function.builtin.io.standalone.seseragi",
-          "match": "\\b(print|putStrLn|toString|show|head|tail)(?=\\s*$)"
+          "match": "\\b(print|putStrLn|toString|show|head|tail|typeof)(?=\\s*$)"
         },
         {
           "name": "entity.name.function.definition.seseragi",

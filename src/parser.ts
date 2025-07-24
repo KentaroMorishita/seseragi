@@ -1341,6 +1341,11 @@ export class Parser {
 
     const token = this.advance()
 
+    // ワイルドカード型の処理
+    if (token.type === TokenType.WILDCARD) {
+      return new AST.WildcardType(token.line, token.column)
+    }
+
     if (token.type === TokenType.IDENTIFIER) {
       const name = token.value
 
@@ -2201,18 +2206,32 @@ export class Parser {
         TokenType.GREATER_THAN,
         TokenType.GREATER_EQUAL,
         TokenType.LESS_THAN,
-        TokenType.LESS_EQUAL
+        TokenType.LESS_EQUAL,
+        TokenType.IS
       )
     ) {
       const operator = this.previous().value
-      const right = this.termExpression()
-      expr = new AST.BinaryOperation(
-        expr,
-        operator,
-        right,
-        this.previous().line,
-        this.previous().column
-      )
+
+      if (operator === "is") {
+        // is式の処理
+        const rightType = this.parseType()
+        expr = new AST.IsExpression(
+          expr,
+          rightType,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        // 通常の比較演算子
+        const right = this.termExpression()
+        expr = new AST.BinaryOperation(
+          expr,
+          operator,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      }
     }
 
     return expr
@@ -2632,6 +2651,8 @@ export class Parser {
       type === TokenType.TO_FLOAT ||
       type === TokenType.HEAD ||
       type === TokenType.TAIL ||
+      type === TokenType.TYPEOF ||
+      type === TokenType.TYPEOF_WITH_ALIASES ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||
@@ -2700,7 +2721,9 @@ export class Parser {
         TokenType.TO_INT,
         TokenType.TO_FLOAT,
         TokenType.HEAD,
-        TokenType.TAIL
+        TokenType.TAIL,
+        TokenType.TYPEOF,
+        TokenType.TYPEOF_WITH_ALIASES
       )
     ) {
       const functionName = this.previous().value as
@@ -2711,6 +2734,8 @@ export class Parser {
         | "toFloat"
         | "head"
         | "tail"
+        | "typeof"
+        | "typeof'"
       const line = this.previous().line
       const column = this.previous().column
 
@@ -3202,6 +3227,8 @@ export class Parser {
       type === TokenType.TO_FLOAT ||
       type === TokenType.HEAD ||
       type === TokenType.TAIL ||
+      type === TokenType.TYPEOF ||
+      type === TokenType.TYPEOF_WITH_ALIASES ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||

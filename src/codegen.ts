@@ -26,6 +26,7 @@ import {
   ImplBlock,
   ImportDeclaration,
   IntersectionType,
+  type IsExpression,
   LambdaExpression,
   ListComprehension,
   type ListComprehensionSugar,
@@ -119,6 +120,8 @@ export class CodeGenerator {
   currentFunctionTypeParams: any[] = [] // 現在処理中の関数のジェネリック型パラメータ
   typeAliases: Map<string, Type> = new Map() // 型エイリアス名 → 実際の型
   functionTypes: Map<string, Type> = new Map() // 関数名 → 関数型
+  variableTypes: Map<string, string> = new Map() // 変数名 → 構造的型文字列
+  variableAliases: Map<string, string[]> = new Map() // 変数名 → エイリアス配列
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -126,6 +129,104 @@ export class CodeGenerator {
     this.wildcardCounter = 1
     this.typeInferenceResult = options.typeInferenceResult
     this.filePrefix = this.generateFilePrefix(options.filePath || "unknown")
+  }
+
+  // 変数の型情報を登録
+  private registerVariableType(variableName: string, type: Type): void {
+    const structuralType = this.typeToStructuralString(type)
+    this.variableTypes.set(variableName, structuralType)
+
+    // 型エイリアスの場合は別途記録
+    const aliases = this.findMatchingAliases(structuralType)
+    if (aliases.length > 0) {
+      this.variableAliases.set(variableName, aliases)
+    }
+  }
+
+  // 型を構造的型文字列に変換
+  private typeToStructuralString(type: Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as PrimitiveType).name
+      case "GenericType": {
+        const genericType = type as GenericType
+        if (genericType.typeArguments && genericType.typeArguments.length > 0) {
+          const args = genericType.typeArguments
+            .map((arg) => this.typeToStructuralString(arg))
+            .join(", ")
+          return `${genericType.name}<${args}>`
+        }
+        return genericType.name
+      }
+      case "RecordType": {
+        const recordType = type as RecordType
+        const fields = recordType.fields
+          .map(
+            (field) =>
+              `${field.name}: ${this.typeToStructuralString(field.type)}`
+          )
+          .sort() // キーをソートして順序統一
+          .join(", ")
+        return `{ ${fields} }`
+      }
+      case "TupleType": {
+        const tupleType = type as TupleType
+        const elements = tupleType.elementTypes
+          .map((t) => this.typeToStructuralString(t))
+          .join(", ")
+        return `(${elements})`
+      }
+      case "FunctionType":
+        return "function" // 関数型は簡略化
+      default:
+        return "unknown"
+    }
+  }
+
+  // 構造的型文字列に一致する型エイリアスを検索
+  private findMatchingAliases(structuralType: string): string[] {
+    const aliases: string[] = []
+    for (const [aliasName, aliasType] of this.typeAliases) {
+      const aliasStructural = this.typeToStructuralString(aliasType)
+      if (aliasStructural === structuralType) {
+        aliases.push(aliasName)
+      }
+    }
+    return aliases
+  }
+
+  // 変数型情報テーブルを生成
+  private generateVariableTypesTables(): string[] {
+    const lines: string[] = []
+
+    // __variableTypes テーブル
+    if (this.variableTypes.size > 0) {
+      const entries: string[] = []
+      for (const [varName, typeStr] of this.variableTypes) {
+        entries.push(`"${varName}": "${typeStr}"`)
+      }
+      lines.push("// 変数型情報テーブルの初期化")
+      lines.push("Object.assign(__variableTypes, {")
+      lines.push(`  ${entries.join(",\n  ")}`)
+      lines.push("});")
+      lines.push("")
+    }
+
+    // __variableAliases テーブル
+    if (this.variableAliases.size > 0) {
+      const entries: string[] = []
+      for (const [varName, aliases] of this.variableAliases) {
+        const aliasArray = JSON.stringify(aliases)
+        entries.push(`"${varName}": ${aliasArray}`)
+      }
+      lines.push("// 変数エイリアス情報テーブルの初期化")
+      lines.push("Object.assign(__variableAliases, {")
+      lines.push(`  ${entries.join(",\n  ")}`)
+      lines.push("});")
+      lines.push("")
+    }
+
+    return lines
   }
 
   // ビルトインコンストラクタかどうかを判定
@@ -206,6 +307,12 @@ export class CodeGenerator {
 
     // 構造体前処理とディスパッチテーブル生成
     this.processStructuresAndDispatch(statements, lines)
+
+    // 変数型情報テーブルを生成（実行文より前に配置）
+    const variableTypesTables = this.generateVariableTypesTables()
+    if (variableTypesTables.length > 0) {
+      lines.push(...variableTypesTables)
+    }
 
     // 文を分類して生成
     this.generateStatementsByType(statements, lines)
@@ -679,6 +786,333 @@ export class CodeGenerator {
       `function ssrgShow(value: unknown): void {
   console.log(ssrgToString(value))
 }`,
+      `function ssrgTypeOf(value: unknown, variableName?: string): string {
+  if (value === null) return "null"
+  if (value === undefined) return "undefined"
+  
+  // 1. 変数名がある場合は型テーブルから取得
+  if (variableName && __variableTypes[variableName]) {
+    return __variableTypes[variableName]
+  }
+  
+  // 2. __typename プロパティをチェック（型エイリアス対応）
+  if (value && typeof value === "object" && "__typename" in value) {
+    return (value as any).__typename
+  }
+  
+  // 3. プリミティブ型
+  if (typeof value === "string") return "String"
+  if (typeof value === "number") return "Int"
+  if (typeof value === "boolean") return "Bool"
+  
+  // 4. 組み込み型の特別処理
+  if (value && typeof value === "object") {
+    // Maybe型
+    if ((value as any).tag === "Just" || (value as any).tag === "Nothing") {
+      if ((value as any).tag === "Just") {
+        const innerType = ssrgTypeOf((value as any).value)
+        return \`Maybe<\${innerType}>\`
+      }
+      return "Maybe<unknown>"
+    }
+    
+    // Either型
+    if ((value as any).tag === "Left" || (value as any).tag === "Right") {
+      const innerType = ssrgTypeOf((value as any).value)
+      if ((value as any).tag === "Left") {
+        return \`Either<\${innerType}, unknown>\`
+      } else {
+        return \`Either<unknown, \${innerType}>\`
+      }
+    }
+    
+    // Tuple型
+    if ((value as any).tag === "Tuple" && Array.isArray((value as any).elements)) {
+      const elemTypes = (value as any).elements.map((elem: any) => ssrgTypeOf(elem))
+      return \`(\${elemTypes.join(', ')})\`
+    }
+    
+    // Array型
+    if (Array.isArray(value)) {
+      if (value.length > 0) {
+        const elemType = ssrgTypeOf(value[0])
+        return \`Array<\${elemType}>\`
+      }
+      return "Array<unknown>"
+    }
+    
+    // 4. 構造体の場合はコンストラクタ名を返す
+    if ((value as any).constructor && (value as any).constructor.name !== 'Object') {
+      return (value as any).constructor.name
+    }
+    
+    // 5. 匿名オブジェクトの場合は型構造を返す（構造的型システム）
+    const keys = Object.keys(value as any).sort() // キーをソートして順序を統一
+    if (keys.length > 0) {
+      const fields = keys.map(key => \`\${key}: \${ssrgTypeOf((value as any)[key])}\`).join(', ')
+      return \`{ \${fields} }\`
+    }
+  }
+  
+  return "unknown"
+}
+function ssrgTypeOfWithAliases(value: unknown, variableName?: string): string {
+  // 基本の構造的型を取得
+  const structuralType = ssrgTypeOf(value, variableName)
+  
+  // 変数エイリアステーブルから取得（優先）
+  let matchingAliases: string[] = []
+  if (variableName && __variableAliases[variableName]) {
+    matchingAliases = __variableAliases[variableName]
+  } else {
+    // フォールバック: 型レジストリから該当するエイリアスを検索
+    if (value && typeof value === "object") {
+      const structuralTypeForMatch = getStructuralTypeString(value)
+      for (const [typeName, typeInfo] of Object.entries(__typeRegistry)) {
+        if (typeMatches(structuralTypeForMatch, typeInfo)) {
+          matchingAliases.push(typeName)
+        }
+      }
+    }
+  }
+  
+  // エイリアスがある場合は追加情報として表示
+  if (matchingAliases.length > 0) {
+    return structuralType + " (" + matchingAliases.join(', ') + ")"
+  }
+  
+  return structuralType
+}
+
+function getStructuralTypeString(value: any): string {
+  if (!value || typeof value !== "object") return "unknown"
+  const keys = Object.keys(value).sort() // キーをソートして順序を統一
+  if (keys.length === 0) return "{}"
+  const fields = keys.map(key => \`\${key}: \${ssrgTypeOf(value[key])}\`).join(', ')
+  return \`{ \${fields} }\`
+}
+
+function typeMatches(structuralType: string, typeInfo: any): boolean {
+  if (!typeInfo || typeof typeInfo !== "object") return false
+  
+  switch (typeInfo.kind) {
+    case "record":
+      const expectedFields = Object.keys(typeInfo.fields)
+        .sort() // キーをソートして順序を統一
+        .map(name => \`\${name}: \${getTypeInfoString(typeInfo.fields[name])}\`)
+        .join(', ')
+      return structuralType === \`{ \${expectedFields} }\`
+    case "tuple":
+      const expectedElements = typeInfo.elements
+        .map((elem: any) => getTypeInfoString(elem))
+        .join(', ')
+      return structuralType === \`(\${expectedElements})\`
+    default:
+      return false
+  }
+}
+
+function getTypeInfoString(typeInfo: any): string {
+  if (!typeInfo || typeof typeInfo !== "object") return "unknown"
+  
+  switch (typeInfo.kind) {
+    case "primitive":
+      return typeInfo.name || "unknown"
+    case "array":
+      return \`Array<\${getTypeInfoString(typeInfo.elementType)}>\`
+    case "maybe":
+      return \`Maybe<\${getTypeInfoString(typeInfo.innerType)}>\`
+    case "either":
+      return \`Either<\${getTypeInfoString(typeInfo.leftType)}, \${getTypeInfoString(typeInfo.rightType)}>\`
+    case "tuple":
+      return \`(\${typeInfo.elements.map((elem: any) => getTypeInfoString(elem)).join(', ')})\`
+    case "record":
+      const fields = Object.keys(typeInfo.fields)
+        .map(name => \`\${name}: \${getTypeInfoString(typeInfo.fields[name])}\`)
+        .join(', ')
+      return \`{ \${fields} }\`
+    default:
+      return "unknown"
+  }
+}`,
+      `function ssrgIsType(value: unknown, typeString: string, variableName?: string): boolean {
+  // 1. 変数型テーブルからの型情報チェック
+  if (variableName && __variableTypes[variableName]) {
+    const variableType = __variableTypes[variableName]
+    if (variableType === typeString) return true
+  }
+  
+  // 2. 直接的な型名マッチ
+  const actualType = ssrgTypeOf(value)
+  if (actualType === typeString) return true
+  
+  // 3. 型レジストリを使った同等性チェック
+  const registryType = __typeRegistry[typeString]
+  if (registryType) {
+    return typeMatchesRegistry(value, registryType)
+  }
+  
+  // 4. 組み込み型の特別処理
+  if (value && typeof value === "object") {
+    // Maybe型チェック
+    if (typeString.startsWith("Maybe<")) {
+      if ((value as any).tag === "Just" || (value as any).tag === "Nothing") {
+        if ((value as any).tag === "Nothing") {
+          return true // Nothing は任意の Maybe<T> にマッチ
+        }
+        // Just の場合は内部型をチェック
+        const innerTypeMatch = typeString.match(/Maybe<(.+)>/)
+        if (innerTypeMatch) {
+          const expectedInnerType = innerTypeMatch[1]
+          // ワイルドカードの場合は任意の型にマッチ
+          if (expectedInnerType === "_") return true
+          return ssrgIsType((value as any).value, expectedInnerType)
+        }
+      }
+      return false
+    }
+    
+    // Either型チェック
+    if (typeString.startsWith("Either<")) {
+      if ((value as any).tag === "Left" || (value as any).tag === "Right") {
+        const typeMatch = typeString.match(/Either<(.+),\\s*(.+)>/)
+        if (typeMatch) {
+          const leftType = typeMatch[1]
+          const rightType = typeMatch[2]
+          if ((value as any).tag === "Left") {
+            // ワイルドカードの場合は任意の型にマッチ
+            if (leftType === "_") return true
+            return ssrgIsType((value as any).value, leftType)
+          } else {
+            // ワイルドカードの場合は任意の型にマッチ
+            if (rightType === "_") return true
+            return ssrgIsType((value as any).value, rightType)
+          }
+        }
+      }
+      return false
+    }
+    
+    // Array型チェック
+    if (typeString.startsWith("Array<")) {
+      if (Array.isArray(value)) {
+        const typeMatch = typeString.match(/Array<(.+)>/)
+        if (typeMatch) {
+          const elemType = typeMatch[1]
+          // ワイルドカードの場合は任意の型にマッチ
+          if (elemType === "_") return true
+          return value.every(item => ssrgIsType(item, elemType))
+        }
+      }
+      return false
+    }
+    
+    // Tuple型チェック
+    if (typeString.startsWith("(") && typeString.endsWith(")")) {
+      if ((value as any).tag === "Tuple" && Array.isArray((value as any).elements)) {
+        const tupleContent = typeString.slice(1, -1)
+        const expectedTypes = tupleContent.split(',').map(t => t.trim())
+        const actualElements = (value as any).elements
+        if (expectedTypes.length !== actualElements.length) return false
+        return expectedTypes.every((expectedType, index) => {
+          // ワイルドカードの場合は任意の型にマッチ
+          if (expectedType === "_") return true
+          return ssrgIsType(actualElements[index], expectedType)
+        })
+      }
+      return false
+    }
+  }
+  
+  // 5. 構造的型チェック（レコード型）
+  if (typeString.startsWith("{") && typeString.endsWith("}")) {
+    return checkStructuralType(value, typeString)
+  }
+  
+  return false
+}
+
+function typeMatchesRegistry(value: any, typeInfo: any): boolean {
+  if (!typeInfo || typeof typeInfo !== "object") return false
+  
+  switch (typeInfo.kind) {
+    case "primitive":
+      return ssrgTypeOf(value) === typeInfo.name
+    case "record":
+      if (!value || typeof value !== "object") return false
+      return Object.keys(typeInfo.fields).every(fieldName => {
+        if (!(fieldName in value)) return false
+        return typeMatchesRegistry(value[fieldName], typeInfo.fields[fieldName])
+      })
+    case "tuple":
+      if (!value || typeof value !== "object" || (value as any).tag !== "Tuple") return false
+      const elements = (value as any).elements
+      if (!Array.isArray(elements) || elements.length !== typeInfo.elements.length) return false
+      return typeInfo.elements.every((expectedType: any, index: number) => 
+        typeMatchesRegistry(elements[index], expectedType)
+      )
+    case "array":
+      if (!Array.isArray(value)) return false
+      return value.every(item => typeMatchesRegistry(item, typeInfo.elementType))
+    case "maybe":
+      if (!value || typeof value !== "object") return false
+      if ((value as any).tag === "Nothing") return true
+      if ((value as any).tag === "Just") {
+        return typeMatchesRegistry((value as any).value, typeInfo.innerType)
+      }
+      return false
+    case "either":
+      if (!value || typeof value !== "object") return false
+      if ((value as any).tag === "Left") {
+        return typeMatchesRegistry((value as any).value, typeInfo.leftType)
+      }
+      if ((value as any).tag === "Right") {
+        return typeMatchesRegistry((value as any).value, typeInfo.rightType)
+      }
+      return false
+    default:
+      return false
+  }
+}
+
+function checkStructuralType(value: any, typeString: string): boolean {
+  if (!value || typeof value !== "object") return false
+  
+  // "{ name: String, age: Int }" のような形式をパース
+  const content = typeString.slice(1, -1).trim()
+  if (!content) return Object.keys(value).length === 0
+  
+  const fields = content.split(',').map(f => f.trim())
+  const expectedFields: Record<string, string> = {}
+  
+  for (const field of fields) {
+    const colonIndex = field.indexOf(':')
+    if (colonIndex === -1) continue
+    const fieldName = field.slice(0, colonIndex).trim()
+    const fieldType = field.slice(colonIndex + 1).trim()
+    expectedFields[fieldName] = fieldType
+  }
+  
+  // 期待されるフィールドがすべて存在し、型が一致するかチェック
+  for (const [fieldName, expectedType] of Object.entries(expectedFields)) {
+    if (!(fieldName in value)) return false
+    // ワイルドカードの場合は任意の型にマッチ
+    if (expectedType === "_") continue
+    if (!ssrgIsType(value[fieldName], expectedType)) return false
+  }
+  
+  // 余分なフィールドがないかチェック
+  const actualFieldCount = Object.keys(value).filter(key => key !== "__typename").length
+  const expectedFieldCount = Object.keys(expectedFields).length
+  return actualFieldCount === expectedFieldCount
+}`,
+      "",
+      "// 型レジストリ（コンパイル時型情報の実行時保持）",
+      "const __typeRegistry: Record<string, any> = {};",
+      "",
+      "// 変数型情報テーブル（完全型情報保持）",
+      "const __variableTypes: Record<string, string> = {};",
+      "const __variableAliases: Record<string, string[]> = {};",
       "",
       "function arrayToList<T>(arr: T[]): List<T> {",
       "  let result: List<T> = Empty;",
@@ -915,7 +1349,48 @@ export class CodeGenerator {
     const type = varDecl.type ? `: ${this.generateType(varDecl.type)}` : ""
     const value = this.generateExpression(varDecl.initializer)
 
+    // 変数型情報を登録（型推論結果または明示的型注釈から）
+    if (varDecl.type) {
+      this.registerVariableType(varDecl.name, varDecl.type)
+    } else if (this.typeInferenceResult) {
+      // 型推論結果から型情報を取得
+      const inferredType = this.typeInferenceResult.environment.get(
+        varDecl.name
+      )
+      if (inferredType) {
+        this.registerVariableType(varDecl.name, inferredType)
+      }
+    }
+
+    // 型エイリアスが使われている場合、__typename を付与
+    if (varDecl.type && this.isTypeAlias(varDecl.type)) {
+      const typeName = this.getTypeAliasName(varDecl.type)
+      if (typeName) {
+        return `${indent}const ${this.sanitizeIdentifier(varDecl.name)}${type} = { ...${value}, __typename: "${typeName}" };`
+      }
+    }
+
     return `${indent}const ${this.sanitizeIdentifier(varDecl.name)}${type} = ${value};`
+  }
+
+  // 型エイリアスかどうかチェック
+  private isTypeAlias(type: Type): boolean {
+    if (type.kind === "Identifier") {
+      const identifier = type as Identifier
+      return this.typeAliases.has(identifier.name)
+    }
+    return false
+  }
+
+  // 型エイリアス名を取得
+  private getTypeAliasName(type: Type): string | null {
+    if (type.kind === "Identifier") {
+      const identifier = type as Identifier
+      if (this.typeAliases.has(identifier.name)) {
+        return identifier.name
+      }
+    }
+    return null
   }
 
   // 型宣言の生成
@@ -1004,6 +1479,10 @@ export class CodeGenerator {
     // 型エイリアスを登録
     this.typeAliases.set(typeAlias.name, typeAlias.aliasedType)
 
+    // 型レジストリに型情報を登録
+    const typeInfo = this.serializeTypeInfo(typeAlias.aliasedType)
+    const registryEntry = `__typeRegistry["${typeAlias.name}"] = ${JSON.stringify(typeInfo)};`
+
     // ジェネリック型パラメータがある場合は追加
     let typeParametersStr = ""
     if (typeAlias.typeParameters && typeAlias.typeParameters.length > 0) {
@@ -1011,7 +1490,84 @@ export class CodeGenerator {
       typeParametersStr = `<${paramNames.join(", ")}>`
     }
 
-    return `${indent}type ${typeAlias.name}${typeParametersStr} = ${aliasedType};`
+    return `${registryEntry}\n${indent}type ${typeAlias.name}${typeParametersStr} = ${aliasedType};`
+  }
+
+  // 型情報のシリアライゼーション（組み込み型対応）
+  private serializeTypeInfo(type: Type): any {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return { kind: "primitive", name: (type as PrimitiveType).name }
+
+      case "RecordType": {
+        const recordType = type as RecordType
+        const fields: Record<string, any> = {}
+        for (const field of recordType.fields) {
+          fields[field.name] = this.serializeTypeInfo(field.type)
+        }
+        return { kind: "record", fields }
+      }
+
+      case "TupleType": {
+        const tupleType = type as TupleType
+        return {
+          kind: "tuple",
+          elements: tupleType.elementTypes.map((t) =>
+            this.serializeTypeInfo(t)
+          ),
+        }
+      }
+
+      case "GenericType": {
+        const genericType = type as GenericType
+        const args =
+          genericType.typeArguments?.map((arg) =>
+            this.serializeTypeInfo(arg)
+          ) || []
+
+        // 組み込み型の特別処理
+        switch (genericType.name) {
+          case "Maybe":
+            return {
+              kind: "maybe",
+              innerType: args[0] || { kind: "primitive", name: "unknown" },
+            }
+          case "Either":
+            return {
+              kind: "either",
+              leftType: args[0] || { kind: "primitive", name: "unknown" },
+              rightType: args[1] || { kind: "primitive", name: "unknown" },
+            }
+          case "Array":
+            return {
+              kind: "array",
+              elementType: args[0] || { kind: "primitive", name: "unknown" },
+            }
+          default:
+            return { kind: "generic", name: genericType.name, args }
+        }
+      }
+
+      case "UnionType": {
+        const unionType = type as UnionType
+        return {
+          kind: "union",
+          types: unionType.types.map((t) => this.serializeTypeInfo(t)),
+        }
+      }
+
+      case "FunctionType": {
+        const funcType = type as FunctionType
+        return {
+          kind: "function",
+          paramType: this.serializeTypeInfo(funcType.paramType),
+          returnType: this.serializeTypeInfo(funcType.returnType),
+        }
+      }
+
+      default:
+        return { kind: "unknown", originalKind: type.kind }
+    }
   }
 
   // 構造体宣言の生成
@@ -1460,6 +2016,8 @@ ${indent}}`
         return this.generateSpreadExpression(expr as SpreadExpression)
       case "TypeAssertion":
         return this.generateTypeAssertion(expr as TypeAssertion)
+      case "IsExpression":
+        return this.generateIsExpression(expr as IsExpression)
       default:
         return `/* Unsupported expression: ${expr.constructor.name} */`
     }
@@ -2079,10 +2637,33 @@ ${indent}}`
         head: `headList(${arg})`,
         tail: `tailList(${arg})`,
         show: `ssrgShow(${arg})`,
+        typeof: this.generateTypeOfCall(app, arg),
+        "typeof'": this.generateTypeOfWithAliasesCall(app, arg),
       }
       return builtinMap[funcName] || null
     }
     return null
+  }
+
+  private generateTypeOfCall(app: FunctionApplication, arg: string): string {
+    // 引数が単純な変数の場合は変数名も渡す
+    if (app.argument.kind === "Identifier") {
+      const variableName = (app.argument as Identifier).name
+      return `ssrgTypeOf(${arg}, "${variableName}")`
+    }
+    return `ssrgTypeOf(${arg})`
+  }
+
+  private generateTypeOfWithAliasesCall(
+    app: FunctionApplication,
+    arg: string
+  ): string {
+    // 引数が単純な変数の場合は変数名も渡す
+    if (app.argument.kind === "Identifier") {
+      const variableName = (app.argument as Identifier).name
+      return `ssrgTypeOfWithAliases(${arg}, "${variableName}")`
+    }
+    return `ssrgTypeOfWithAliases(${arg})`
   }
 
   private tryGenerateNestedApplication(
@@ -2153,8 +2734,98 @@ ${indent}}`
           throw new Error("show requires exactly one argument")
         }
         return `ssrgShow(${args[0]})`
+      case "typeof":
+        if (args.length !== 1) {
+          throw new Error("typeof requires exactly one argument")
+        }
+        // 引数が単純な変数の場合は変数名も渡す
+        if (call.arguments[0].kind === "Identifier") {
+          const variableName = (call.arguments[0] as Identifier).name
+          return `ssrgTypeOf(${args[0]}, "${variableName}")`
+        }
+        return `ssrgTypeOf(${args[0]})`
+      case "typeof'":
+        if (args.length !== 1) {
+          throw new Error("typeof' requires exactly one argument")
+        }
+        // 引数が単純な変数の場合は変数名も渡す
+        if (call.arguments[0].kind === "Identifier") {
+          const variableName = (call.arguments[0] as Identifier).name
+          return `ssrgTypeOfWithAliases(${args[0]}, "${variableName}")`
+        }
+        return `ssrgTypeOfWithAliases(${args[0]})`
       default:
         throw new Error(`Unknown builtin function: ${call.functionName}`)
+    }
+  }
+
+  // is式の生成
+  generateIsExpression(isExpr: IsExpression): string {
+    const leftExpr = this.generateExpression(isExpr.left)
+    const rightType = this.generateTypeString(isExpr.rightType)
+
+    // 左辺が単純な変数の場合は変数名も渡す
+    if (isExpr.left.kind === "Identifier") {
+      const variableName = (isExpr.left as Identifier).name
+      return `ssrgIsType(${leftExpr}, "${rightType}", "${variableName}")`
+    }
+
+    return `ssrgIsType(${leftExpr}, "${rightType}")`
+  }
+
+  // 型を文字列表現に変換
+  generateTypeString(type: Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as PrimitiveType).name
+      case "RecordType": {
+        const rt = type as RecordType
+        const fields = rt.fields
+          .map(
+            (field) => `${field.name}: ${this.generateTypeString(field.type)}`
+          )
+          .join(", ")
+        return `{ ${fields} }`
+      }
+      case "GenericType": {
+        const gt = type as GenericType
+        if (gt.typeArguments.length === 0) {
+          return gt.name
+        }
+        const args = gt.typeArguments
+          .map((t) => this.generateTypeString(t))
+          .join(", ")
+        return `${gt.name}<${args}>`
+      }
+      case "StructType":
+        return (type as StructType).name
+      case "FunctionType": {
+        const ft = type as FunctionType
+        return `(${this.generateTypeString(ft.paramType)} -> ${this.generateTypeString(ft.returnType)})`
+      }
+      case "TupleType": {
+        const tt = type as TupleType
+        const elements = tt.elementTypes
+          .map((t) => this.generateTypeString(t))
+          .join(", ")
+        return `(${elements})`
+      }
+      case "UnionType": {
+        const ut = type as UnionType
+        const types = ut.types
+          .map((t) => this.generateTypeString(t))
+          .join(" | ")
+        return types
+      }
+      case "IntersectionType": {
+        const it = type as IntersectionType
+        const types = it.types
+          .map((t) => this.generateTypeString(t))
+          .join(" & ")
+        return types
+      }
+      default:
+        return type.name || "unknown"
     }
   }
 
