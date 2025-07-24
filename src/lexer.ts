@@ -35,6 +35,7 @@ export enum TokenType {
   PURE = "PURE",
   PERFORM = "PERFORM",
   WHEN = "WHEN",
+  IS = "IS",
 
   // Built-in functions
   PRINT = "PRINT",
@@ -44,6 +45,8 @@ export enum TokenType {
   TO_FLOAT = "TO_FLOAT",
   HEAD = "HEAD",
   TAIL = "TAIL",
+  TYPEOF = "TYPEOF",
+  TYPEOF_WITH_ALIASES = "TYPEOF_WITH_ALIASES",
 
   // Operators
   PIPE = "PIPE", // |
@@ -141,6 +144,7 @@ export class Lexer {
     ["then", TokenType.THEN],
     ["else", TokenType.ELSE],
     ["when", TokenType.WHEN],
+    ["is", TokenType.IS],
     ["pure", TokenType.PURE],
     ["perform", TokenType.PERFORM],
     ["print", TokenType.PRINT],
@@ -150,6 +154,8 @@ export class Lexer {
     ["toFloat", TokenType.TO_FLOAT],
     ["head", TokenType.HEAD],
     ["tail", TokenType.TAIL],
+    ["typeof", TokenType.TYPEOF],
+    ["typeof'", TokenType.TYPEOF_WITH_ALIASES],
     ["True", TokenType.BOOLEAN],
     ["False", TokenType.BOOLEAN],
   ])

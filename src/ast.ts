@@ -130,6 +130,11 @@ export class TupleType extends Type {
   }
 }
 
+export class WildcardType extends Type {
+  kind = "WildcardType"
+  name = "_"
+}
+
 export class StructType extends Type {
   kind = "StructType"
   name: string
@@ -260,6 +265,8 @@ export class BuiltinFunctionCall extends Expression {
     | "toFloat"
     | "head"
     | "tail"
+    | "typeof"
+    | "typeof'"
   arguments: Expression[]
 
   constructor(
@@ -271,7 +278,9 @@ export class BuiltinFunctionCall extends Expression {
       | "toInt"
       | "toFloat"
       | "head"
-      | "tail",
+      | "tail"
+      | "typeof"
+      | "typeof'",
     args: Expression[],
     line: number,
     column: number
@@ -764,6 +773,18 @@ export class TypeAssertion extends Expression {
     this.expression = expression
     this.targetType = targetType
     this.assertionKind = assertionKind
+  }
+}
+
+export class IsExpression extends Expression {
+  kind = "IsExpression"
+  left: Expression
+  rightType: Type
+
+  constructor(left: Expression, rightType: Type, line: number, column: number) {
+    super(line, column)
+    this.left = left
+    this.rightType = rightType
   }
 }
 

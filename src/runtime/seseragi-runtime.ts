@@ -799,3 +799,70 @@ export const compose =
   <A, B, C>(f: (b: B) => C, g: (a: A) => B) =>
   (a: A): C =>
     f(g(a))
+
+// =============================================================================
+// 型チェック関数
+// =============================================================================
+
+// typeof 関数の実装
+export const ssrgTypeOf = (value: unknown): string => {
+  if (value === null) return "null"
+  if (value === undefined) return "undefined"
+
+  // プリミティブ型
+  if (typeof value === "string") return "String"
+  if (typeof value === "number") return "Int" // Seseragiでは数値はIntとして扱う
+  if (typeof value === "boolean") return "Bool"
+
+  // 配列型
+  if (Array.isArray(value)) {
+    if (value.length === 0) return "Array<unknown>"
+    const firstItemType = __typeOf(value[0])
+    return `Array<${firstItemType}>`
+  }
+
+  // オブジェクト型
+  if (typeof value === "object" && value !== null) {
+    // Maybe型
+    if (typeof (value as any).tag === "string") {
+      const tag = (value as any).tag
+      if (tag === "Just" || tag === "Nothing") {
+        return "Maybe"
+      }
+      if (tag === "Left" || tag === "Right") {
+        return "Either"
+      }
+      if (tag === "Empty" || tag === "Cons") {
+        return "List"
+      }
+    }
+
+    // レコード型 - フィールドから型を推測
+    const keys = Object.keys(value).sort()
+    const fieldTypes = keys
+      .map((key) => {
+        const fieldType = __typeOf((value as any)[key])
+        return `${key}: ${fieldType}`
+      })
+      .join(", ")
+
+    return `{ ${fieldTypes} }`
+  }
+
+  return "unknown"
+}
+
+// is 演算子の実装
+export const ssrgIsType = (value: unknown, typeString: string): boolean => {
+  const actualType = ssrgTypeOf(value)
+
+  // 型文字列の正規化（スペースを統一）
+  const normalizeTypeString = (str: string): string => {
+    return str.replace(/\s+/g, " ").trim()
+  }
+
+  const normalizedActual = normalizeTypeString(actualType)
+  const normalizedExpected = normalizeTypeString(typeString)
+
+  return normalizedActual === normalizedExpected
+}

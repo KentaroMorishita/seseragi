@@ -1394,6 +1394,24 @@ export class TypeInferenceSystem {
     env.set("true", boolType)
     env.set("false", boolType)
 
+    // typeof: 'a -> String (多相関数)
+    const typeofType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("String", 0, 0),
+      0,
+      0
+    )
+    env.set("typeof", typeofType)
+
+    // typeof': 'a -> String (エイリアス情報付き)
+    const typeofWithAliasesType = new AST.FunctionType(
+      new PolymorphicTypeVariable("a", 0, 0),
+      new AST.PrimitiveType("String", 0, 0),
+      0,
+      0
+    )
+    env.set("typeof'", typeofWithAliasesType)
+
     return env
   }
 
@@ -2291,6 +2309,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "IsExpression":
+        resultType = this.generateConstraintsForIsExpression(
+          expr as AST.IsExpression,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -3169,6 +3194,15 @@ export class TypeInferenceSystem {
         }
         throw new Error("toFloat function requires exactly one argument")
 
+      case "typeof":
+        // Type: 'a -> String (polymorphic)
+        if (call.arguments.length === 1) {
+          // 引数の型をチェックするが、何でも受け付ける
+          this.generateConstraintsForExpression(call.arguments[0], env)
+          return new AST.PrimitiveType("String", call.line, call.column)
+        }
+        throw new Error("typeof function requires exactly one argument")
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -3179,6 +3213,22 @@ export class TypeInferenceSystem {
         )
         return this.freshTypeVariable(call.line, call.column)
     }
+  }
+
+  private generateConstraintsForIsExpression(
+    isExpr: AST.IsExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // is式は常にBool型を返す
+    // Type: 'a -> Type -> Bool
+
+    // 左辺の式の型を推論
+    this.generateConstraintsForExpression(isExpr.left, env)
+
+    // 右辺の型は型注釈なので型推論は不要
+    // 実際の型等価性チェックは実行時に行われる
+
+    return new AST.PrimitiveType("Bool", isExpr.line, isExpr.column)
   }
 
   private generateConstraintsForFunctionApplication(

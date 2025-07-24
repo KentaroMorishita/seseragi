@@ -2676,6 +2676,29 @@ function formatInferredTypeInfo(symbol: string, info: any): string {
     }
 
     case "imported_function": {
+      // 組み込み関数の特別処理
+      if (symbol === "typeof") {
+        return `\`\`\`seseragi\ntypeof: 'a -> String\n\`\`\`\n**Built-in function:** Returns the type name of any value as a String`
+      }
+      if (symbol === "print") {
+        return `\`\`\`seseragi\nprint: 'a -> ()\n\`\`\`\n**Built-in function:** Prints any value to console with pretty formatting`
+      }
+      if (symbol === "show") {
+        return `\`\`\`seseragi\nshow: 'a -> ()\n\`\`\`\n**Built-in function:** Shows any value in beautiful Seseragi format`
+      }
+      if (symbol === "putStrLn") {
+        return `\`\`\`seseragi\nputStrLn: String -> ()\n\`\`\`\n**Built-in function:** Prints a string followed by a newline`
+      }
+      if (symbol === "toInt") {
+        return `\`\`\`seseragi\ntoInt: 'a -> Int\n\`\`\`\n**Built-in function:** Converts a value to an integer`
+      }
+      if (symbol === "toFloat") {
+        return `\`\`\`seseragi\ntoFloat: 'a -> Float\n\`\`\`\n**Built-in function:** Converts a value to a floating-point number`
+      }
+      if (symbol === "toString") {
+        return `\`\`\`seseragi\ntoString: 'a -> String\n\`\`\`\n**Built-in function:** Converts any value to its string representation`
+      }
+
       // Format imported function type
       const funcType = formatInferredTypeForDisplay(info.finalType)
       return `\`\`\`seseragi\nfn ${symbol}: ${funcType}\n\`\`\`\n**Type:** imported function`
