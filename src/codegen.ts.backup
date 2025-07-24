@@ -1098,12 +1098,6 @@ function wildcardTypeMatches(actualType: string, expectedType: string): boolean 
       }
     }
     
-    // 構造的型の場合は順序を無視した比較
-    if (variableType.startsWith("{") && variableType.endsWith("}") && 
-        typeString.startsWith("{") && typeString.endsWith("}")) {
-      return checkStructuralType(value, typeString)
-    }
-    
     return false
   }
   
