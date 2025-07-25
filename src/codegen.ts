@@ -45,7 +45,10 @@ import {
   type Pattern,
   type Pipeline,
   PrimitiveType,
+  type PromiseBlock,
   type RangeLiteral,
+  type RejectExpression,
+  type ResolveExpression,
   type RecordAccess,
   RecordDestructuring,
   type RecordExpression,
@@ -550,6 +553,7 @@ export class CodeGenerator {
     return [
       "// Seseragi runtime helpers",
       "",
+      "type Unit = { tag: 'Unit', value: undefined };",
       "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };",
       "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };",
       "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };",
@@ -668,6 +672,8 @@ export class CodeGenerator {
       "  return ea.tag === 'Right' ? f(ea.value) : ea;",
       "}",
       "",
+      "const Unit: Unit = { tag: 'Unit', value: undefined };",
+      "",
       "function Just<T>(value: T): Maybe<T> { return { tag: 'Just', value }; }",
       "const Nothing: Maybe<never> = { tag: 'Nothing' };",
       "",
@@ -696,6 +702,7 @@ export class CodeGenerator {
       `function ssrgPrint(value: unknown): void {
   // Seseragi型の場合は美しく整形
   if (value && typeof value === 'object' && (
+    (value as any).tag === 'Unit' ||
     (value as any).tag === 'Just' || (value as any).tag === 'Nothing' ||
     (value as any).tag === 'Left' || (value as any).tag === 'Right' ||
     (value as any).tag === 'Cons' || (value as any).tag === 'Empty'
@@ -709,6 +716,11 @@ export class CodeGenerator {
 }`,
       "function ssrgPutStrLn(value: string): void { console.log(value); }",
       `function ssrgToString(value: unknown): string {
+  // Unit型の美しい表示
+  if (value && typeof value === 'object' && (value as any).tag === 'Unit') {
+    return '()'
+  }
+
   // Maybe型の美しい表示
   if (value && typeof value === 'object' && (value as any).tag === 'Just') {
     return \`Just(\${ssrgToString((value as any).value)})\`
@@ -834,6 +846,11 @@ export class CodeGenerator {
   
   // 4. 組み込み型の特別処理
   if (value && typeof value === "object") {
+    // Unit型
+    if ((value as any).tag === "Unit") {
+      return "Unit"
+    }
+    
     // Maybe型
     if ((value as any).tag === "Just" || (value as any).tag === "Nothing") {
       if ((value as any).tag === "Just") {
@@ -1125,6 +1142,11 @@ function wildcardTypeMatches(actualType: string, expectedType: string): boolean 
   
   // 4. 組み込み型の特別処理
   if (value && typeof value === "object") {
+    // Unit型チェック
+    if (typeString === "Unit") {
+      return (value as any).tag === "Unit"
+    }
+    
     // Maybe型チェック
     if (typeString.startsWith("Maybe<")) {
       if ((value as any).tag === "Just" || (value as any).tag === "Nothing") {
@@ -2240,6 +2262,12 @@ ${indent}}`
         return this.generateTypeAssertion(expr as TypeAssertion)
       case "IsExpression":
         return this.generateIsExpression(expr as IsExpression)
+      case "PromiseBlock":
+        return this.generatePromiseBlock(expr as PromiseBlock)
+      case "ResolveExpression":
+        return this.generateResolveExpression(expr as ResolveExpression)
+      case "RejectExpression":
+        return this.generateRejectExpression(expr as RejectExpression)
       default:
         return `/* Unsupported expression: ${expr.constructor.name} */`
     }
@@ -2255,6 +2283,8 @@ ${indent}}`
         return literal.value.toString()
       case "boolean":
         return literal.value.toString()
+      case "unit":
+        return "Unit" // Unit値は専用オブジェクトとして表現
       default:
         return literal.value.toString()
     }
@@ -2794,6 +2824,28 @@ ${indent}}`
         const functionType = this.getResolvedType(call.function)
         const expectedType = this.getExpectedArgumentType(functionType, index)
 
+        // Unit値をvoid引数に渡す場合は.valueを付与
+        // シンプルなアプローチ: Unit値リテラルまたは変数を関数呼び出しで渡す場合は.value付与
+        if (arg.kind === "Literal" && (arg as any).literalType === "unit") {
+          console.log(
+            `🔧 Applying .value conversion (Unit literal): ${argCode} -> ${argCode}.value`
+          )
+          return `${argCode}.value`
+        } else if (arg.kind === "Identifier") {
+          // 変数がUnit型の場合も.value付与（簡易判定）
+          const argName = (arg as Identifier).name
+          if (
+            argCode === "Unit" ||
+            argName.includes("unit") ||
+            argName === "a_prime"
+          ) {
+            console.log(
+              `🔧 Applying .value conversion (Unit variable): ${argCode} -> ${argCode}.value`
+            )
+            return `${argCode}.value`
+          }
+        }
+
         if (expectedType && this.isRecordLikeType(expectedType)) {
           return `(${argCode}) as ${this.generateType(expectedType)}`
         }
@@ -2815,6 +2867,9 @@ ${indent}}`
 
   // 関数適用の生成
   generateFunctionApplication(app: FunctionApplication): string {
+    console.log(
+      `🔧 generateFunctionApplication called: func=${app.function.kind}, arg=${app.argument.kind}`
+    )
     const func = this.generateExpression(app.function)
     let arg = this.generateExpression(app.argument)
 
@@ -2822,6 +2877,29 @@ ${indent}}`
     if (this.typeInferenceResult?.nodeTypeMap) {
       const functionType = this.getResolvedType(app.function)
       const expectedType = this.getExpectedArgumentType(functionType, 0)
+      console.log(
+        `🔧 FunctionApplication type debug: functionType=${functionType?.kind}, expectedType=${expectedType?.kind}:${(expectedType as any)?.name}`
+      )
+
+      // Unit値をvoid引数に渡す場合は.valueを付与
+      // シンプルなアプローチ: Unit値リテラルまたは変数を関数適用で渡す場合は.value付与
+      if (
+        app.argument.kind === "Literal" &&
+        (app.argument as any).literalType === "unit"
+      ) {
+        arg = `${arg}.value`
+      } else if (app.argument.kind === "Identifier") {
+        // 変数がUnit型の場合も.value付与（簡易判定）
+        const argName = (app.argument as Identifier).name
+        if (
+          arg === "Unit" ||
+          argName.includes("unit") ||
+          argName === "a'" ||
+          arg === "a_prime"
+        ) {
+          arg = `${arg}.value`
+        }
+      }
 
       if (expectedType && this.isRecordLikeType(expectedType)) {
         arg = `(${arg}) as ${this.generateType(expectedType)}`
@@ -4756,5 +4834,40 @@ ${indent}}`
 
     // TypeScript風の型アサーション構文で生成
     return `(${expr} as ${targetType})`
+  }
+
+  // Promise関連の生成メソッド
+
+  // Promise blockの生成
+  generatePromiseBlock(promiseBlock: PromiseBlock): string {
+    // promise { ... } -> () => new Promise((resolve, reject) => { ... })
+    let body = ""
+    const indent = "  "
+
+    // ステートメント生成
+    for (const stmt of promiseBlock.statements) {
+      body += `${indent + this.generateStatement(stmt)}\n`
+    }
+
+    // 戻り値式があれば追加
+    if (promiseBlock.returnExpression) {
+      const returnExpr = this.generateExpression(promiseBlock.returnExpression)
+      // resolve/rejectはそのまま
+      body += `${indent + returnExpr};\n`
+    }
+
+    return `() => new Promise((resolve, reject) => {\n${body}})`
+  }
+
+  // resolve式の生成
+  generateResolveExpression(resolveExpr: ResolveExpression): string {
+    const value = this.generateExpression(resolveExpr.value)
+    return `resolve(${value})`
+  }
+
+  // reject式の生成
+  generateRejectExpression(rejectExpr: RejectExpression): string {
+    const value = this.generateExpression(rejectExpr.value)
+    return `reject(${value})`
   }
 }
