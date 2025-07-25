@@ -553,7 +553,7 @@ export class CodeGenerator {
     return [
       "// Seseragi runtime helpers",
       "",
-      "type Unit = { tag: 'Unit' };",
+      "type Unit = { tag: 'Unit', value: undefined };",
       "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };",
       "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };",
       "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };",
@@ -672,7 +672,7 @@ export class CodeGenerator {
       "  return ea.tag === 'Right' ? f(ea.value) : ea;",
       "}",
       "",
-      "const Unit: Unit = { tag: 'Unit' };",
+      "const Unit: Unit = { tag: 'Unit', value: undefined };",
       "",
       "function Just<T>(value: T): Maybe<T> { return { tag: 'Just', value }; }",
       "const Nothing: Maybe<never> = { tag: 'Nothing' };",
@@ -2824,6 +2824,28 @@ ${indent}}`
         const functionType = this.getResolvedType(call.function)
         const expectedType = this.getExpectedArgumentType(functionType, index)
 
+        // Unit値をvoid引数に渡す場合は.valueを付与
+        // シンプルなアプローチ: Unit値リテラルまたは変数を関数呼び出しで渡す場合は.value付与
+        if (arg.kind === "Literal" && (arg as any).literalType === "unit") {
+          console.log(
+            `🔧 Applying .value conversion (Unit literal): ${argCode} -> ${argCode}.value`
+          )
+          return `${argCode}.value`
+        } else if (arg.kind === "Identifier") {
+          // 変数がUnit型の場合も.value付与（簡易判定）
+          const argName = (arg as Identifier).name
+          if (
+            argCode === "Unit" ||
+            argName.includes("unit") ||
+            argName === "a_prime"
+          ) {
+            console.log(
+              `🔧 Applying .value conversion (Unit variable): ${argCode} -> ${argCode}.value`
+            )
+            return `${argCode}.value`
+          }
+        }
+
         if (expectedType && this.isRecordLikeType(expectedType)) {
           return `(${argCode}) as ${this.generateType(expectedType)}`
         }
@@ -2845,6 +2867,9 @@ ${indent}}`
 
   // 関数適用の生成
   generateFunctionApplication(app: FunctionApplication): string {
+    console.log(
+      `🔧 generateFunctionApplication called: func=${app.function.kind}, arg=${app.argument.kind}`
+    )
     const func = this.generateExpression(app.function)
     let arg = this.generateExpression(app.argument)
 
@@ -2852,6 +2877,29 @@ ${indent}}`
     if (this.typeInferenceResult?.nodeTypeMap) {
       const functionType = this.getResolvedType(app.function)
       const expectedType = this.getExpectedArgumentType(functionType, 0)
+      console.log(
+        `🔧 FunctionApplication type debug: functionType=${functionType?.kind}, expectedType=${expectedType?.kind}:${(expectedType as any)?.name}`
+      )
+
+      // Unit値をvoid引数に渡す場合は.valueを付与
+      // シンプルなアプローチ: Unit値リテラルまたは変数を関数適用で渡す場合は.value付与
+      if (
+        app.argument.kind === "Literal" &&
+        (app.argument as any).literalType === "unit"
+      ) {
+        arg = `${arg}.value`
+      } else if (app.argument.kind === "Identifier") {
+        // 変数がUnit型の場合も.value付与（簡易判定）
+        const argName = (app.argument as Identifier).name
+        if (
+          arg === "Unit" ||
+          argName.includes("unit") ||
+          argName === "a'" ||
+          arg === "a_prime"
+        ) {
+          arg = `${arg}.value`
+        }
+      }
 
       if (expectedType && this.isRecordLikeType(expectedType)) {
         arg = `(${arg}) as ${this.generateType(expectedType)}`

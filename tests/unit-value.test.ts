@@ -267,9 +267,11 @@ describe("Unit value () literal", () => {
       const tsCode = codegen.generateProgram(program.statements)
 
       // Should contain Unit type definition
-      expect(tsCode).toContain("type Unit = { tag: 'Unit' }")
+      expect(tsCode).toContain("type Unit = { tag: 'Unit', value: undefined }")
       // Should contain Unit constant
-      expect(tsCode).toContain("const Unit: Unit = { tag: 'Unit' }")
+      expect(tsCode).toContain(
+        "const Unit: Unit = { tag: 'Unit', value: undefined }"
+      )
       // Should contain Unit display function
       expect(tsCode).toContain("return '()'")
     })
