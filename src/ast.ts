@@ -162,12 +162,12 @@ export abstract class Expression extends ASTNode {
 
 export class Literal extends Expression {
   kind = "Literal"
-  value: string | number | boolean
-  literalType: "string" | "integer" | "float" | "boolean"
+  value: string | number | boolean | null
+  literalType: "string" | "integer" | "float" | "boolean" | "unit"
 
   constructor(
-    value: string | number | boolean,
-    literalType: "string" | "integer" | "float" | "boolean",
+    value: string | number | boolean | null,
+    literalType: "string" | "integer" | "float" | "boolean" | "unit",
     line: number,
     column: number
   ) {
@@ -753,6 +753,43 @@ export class SpreadExpression extends Expression {
   constructor(expression: Expression, line: number, column: number) {
     super(line, column)
     this.expression = expression
+  }
+}
+
+export class PromiseBlock extends Expression {
+  kind = "PromiseBlock"
+  statements: Statement[]
+  returnExpression?: Expression
+
+  constructor(
+    statements: Statement[],
+    returnExpression: Expression | undefined,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.statements = statements
+    this.returnExpression = returnExpression
+  }
+}
+
+export class ResolveExpression extends Expression {
+  kind = "ResolveExpression"
+  value: Expression
+
+  constructor(value: Expression, line: number, column: number) {
+    super(line, column)
+    this.value = value
+  }
+}
+
+export class RejectExpression extends Expression {
+  kind = "RejectExpression"
+  value: Expression
+
+  constructor(value: Expression, line: number, column: number) {
+    super(line, column)
+    this.value = value
   }
 }
 

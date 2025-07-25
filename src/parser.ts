@@ -318,10 +318,76 @@ export class Parser {
       return this.parseUnionTypeExpression()
     }
 
+    // Check for unit parameter cases: "fn name () -> Type" or "fn name (): Unit -> Type"
+    if (this.check(TokenType.LEFT_PAREN)) {
+      this.advance() // consume (
+
+      if (this.match(TokenType.RIGHT_PAREN)) {
+        // Case: fn name () -> Type
+        if (this.check(TokenType.ARROW)) {
+          this.advance() // consume ->
+          return this.parseUnionTypeExpression()
+        }
+        // Case: fn name (): Unit -> Type
+        else if (this.match(TokenType.COLON)) {
+          const _unitType = this.parseUnionTypeExpression()
+          this.consume(TokenType.ARROW, "Expected '->' after unit type")
+          return this.parseUnionTypeExpression()
+        }
+      }
+
+      throw new ParseError(
+        "Expected ')' after '(' in unit parameter function signature",
+        this.peek()
+      )
+    }
+
     let hasTypedParameters = false
 
     // Parse parameters until we reach assignment or return type
-    while (this.check(TokenType.IDENTIFIER)) {
+    while (
+      this.check(TokenType.IDENTIFIER) ||
+      this.check(TokenType.LEFT_PAREN)
+    ) {
+      // Handle unit parameter in the middle: "a: Int -> () -> String"
+      if (this.check(TokenType.LEFT_PAREN)) {
+        this.advance() // consume (
+
+        if (this.match(TokenType.RIGHT_PAREN)) {
+          // Add unit parameter to parameters list
+          const unitParam = new AST.Parameter(
+            "_unit", // implicit parameter name
+            new AST.PrimitiveType(
+              "Unit",
+              this.previous().line,
+              this.previous().column
+            ),
+            this.previous().line,
+            this.previous().column,
+            false,
+            false
+          )
+          parameters.push(unitParam)
+
+          // Parse the continuation: -> Type or : Unit -> Type
+          if (this.check(TokenType.ARROW)) {
+            this.advance() // consume ->
+            // Continue parsing, might be more parameters or return type
+            continue
+          } else if (this.match(TokenType.COLON)) {
+            const _unitType = this.parseUnionTypeExpression()
+            this.consume(TokenType.ARROW, "Expected '->' after unit type")
+            // Continue parsing
+            continue
+          }
+        }
+
+        throw new ParseError(
+          "Expected ')' after '(' in unit parameter",
+          this.peek()
+        )
+      }
+
       const paramNameToken = this.peek()
 
       if (this.checkNext(TokenType.COLON)) {
@@ -2663,6 +2729,27 @@ export class Parser {
 
   // eslint-disable-next-line complexity
   private primaryExpression(): AST.Expression {
+    // Promise blocks: promise { ... }
+    if (this.match(TokenType.PROMISE)) {
+      return this.promiseBlock()
+    }
+
+    // Resolve expressions: resolve value
+    if (this.match(TokenType.RESOLVE)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      const value = this.expression()
+      return new AST.ResolveExpression(value, line, column)
+    }
+
+    // Reject expressions: reject value
+    if (this.match(TokenType.REJECT)) {
+      const line = this.previous().line
+      const column = this.previous().column
+      const value = this.expression()
+      return new AST.RejectExpression(value, line, column)
+    }
+
     // Lambda expressions: \x -> expr or \x :Type -> expr
     if (this.match(TokenType.LAMBDA)) {
       return this.lambdaExpression()
@@ -2912,9 +2999,10 @@ export class Parser {
       const line = this.previous().line
       const column = this.previous().column
 
-      // Check for empty tuple () - not allowed in our design
+      // Check for Unit value ()
       if (this.check(TokenType.RIGHT_PAREN)) {
-        throw new ParseError("Empty tuples are not supported", this.peek())
+        this.advance() // consume ')'
+        return new AST.Literal(null, "unit", line, column)
       }
 
       const firstExpr = this.expression()
@@ -3297,6 +3385,40 @@ export class Parser {
     }
   }
 
+  private promiseBlock(): AST.PromiseBlock {
+    const line = this.previous().line
+    const column = this.previous().column
+
+    this.consume(TokenType.LEFT_BRACE, "Expected '{' after 'promise'")
+
+    const statements: AST.Statement[] = []
+    let returnExpression: AST.Expression | undefined
+
+    while (!this.check(TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+      if (this.match(TokenType.NEWLINE, TokenType.COMMENT)) {
+        continue
+      }
+
+      const result = this.parseBlockStatement()
+      if (result.returnExpression) {
+        returnExpression = result.returnExpression
+        break
+      }
+
+      if (result.statement) {
+        const finalExpression = this.checkForFinalExpression(result.statement)
+        if (finalExpression) {
+          returnExpression = finalExpression
+        } else {
+          statements.push(result.statement)
+        }
+      }
+    }
+
+    this.consume(TokenType.RIGHT_BRACE, "Expected '}' after promise block")
+    return new AST.PromiseBlock(statements, returnExpression, line, column)
+  }
+
   private blockExpression(): AST.BlockExpression {
     const statements: AST.Statement[] = []
     let returnExpression: AST.Expression | undefined
@@ -3362,27 +3484,48 @@ export class Parser {
 
     const parameters: AST.Parameter[] = []
 
-    // Parse parameter(s) - support both single param and nested lambdas
-    // \x -> expr  or  \x :Type -> expr
-    // Parse one parameter per lambda
-    const paramName = this.consume(
-      TokenType.IDENTIFIER,
-      "Expected parameter name after '\\'"
-    ).value
+    // Parse parameter(s) - support both single param, Unit (), and nested lambdas
+    // \x -> expr  or  \x :Type -> expr  or  \() -> expr
 
-    let paramType: AST.Type | undefined
-
-    // Check for optional type annotation
-    if (this.match(TokenType.COLON)) {
-      paramType = this.parseUnionTypeExpression()
+    // Check for Unit parameter ()
+    if (this.match(TokenType.LEFT_PAREN)) {
+      this.consume(
+        TokenType.RIGHT_PAREN,
+        "Expected ')' after '(' in lambda parameter"
+      )
+      // Create a Unit parameter
+      const unitParam = new AST.Parameter(
+        "_unit",
+        new AST.PrimitiveType("Unit", startLine, startColumn),
+        startLine,
+        startColumn
+      )
+      parameters.push(unitParam)
     } else {
-      // Create a placeholder type that will be inferred
-      paramType = new AST.PrimitiveType("_", startLine, startColumn)
-    }
+      // Parse one parameter per lambda
+      const paramName = this.consume(
+        TokenType.IDENTIFIER,
+        "Expected parameter name or '()' after '\\'"
+      ).value
 
-    parameters.push(
-      new AST.Parameter(paramName, paramType, startLine, startColumn)
-    )
+      let paramType: AST.Type | undefined
+
+      // Check for optional type annotation
+      if (this.match(TokenType.COLON)) {
+        paramType = this.parseUnionTypeExpression()
+      } else {
+        // Create a placeholder type that will be inferred
+        paramType = new AST.PrimitiveType("_", startLine, startColumn)
+      }
+
+      const param = new AST.Parameter(
+        paramName,
+        paramType,
+        startLine,
+        startColumn
+      )
+      parameters.push(param)
+    }
 
     this.consume(TokenType.ARROW, "Expected '->' after lambda parameter")
 

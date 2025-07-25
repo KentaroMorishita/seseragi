@@ -55,11 +55,18 @@ describe("Tuple Feature Tests", () => {
       expect(stmt.expression.kind).toBe("Literal")
     })
 
-    test("should reject empty tuple", () => {
+    test("should parse empty parentheses as Unit value", () => {
       const parser = new Parser("()")
       const result = parser.parse()
 
-      expect(result.errors.length).toBeGreaterThan(0)
+      // () は now Unit値として扱われるのでエラーではない
+      expect(result.errors.length).toBe(0)
+      expect(result.statements.length).toBe(1)
+
+      const stmt = result.statements[0] as any
+      expect(stmt.kind).toBe("ExpressionStatement")
+      expect(stmt.expression.kind).toBe("Literal")
+      expect(stmt.expression.literalType).toBe("unit")
     })
   })
 

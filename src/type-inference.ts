@@ -2063,6 +2063,96 @@ export class TypeInferenceSystem {
     }
   }
 
+  // Promise関連の型推論メソッド
+  generateConstraintsForPromiseBlock(
+    promiseBlock: AST.PromiseBlock,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // Promise blockは () -> Promise<T> 型を返す
+    // 内部のresolve/rejectから戻り値の型Tを推論する
+
+    const promiseEnv = new Map(env)
+    let resolvedType: AST.Type | undefined
+    let _rejectedType: AST.Type | undefined
+
+    // ステートメントを処理
+    for (const stmt of promiseBlock.statements) {
+      this.generateConstraintsForStatement(stmt, promiseEnv)
+    }
+
+    // 最後の式の戻り値を取得
+    const lastStmt = promiseBlock.statements[promiseBlock.statements.length - 1]
+    if (lastStmt && lastStmt.kind === "ExpressionStatement") {
+      const lastExpr = (lastStmt as AST.ExpressionStatement).expression
+      if (lastExpr.kind === "ResolveExpression") {
+        const resolveExpr = lastExpr as AST.ResolveExpression
+        resolvedType = this.generateConstraintsForExpression(
+          resolveExpr.value,
+          promiseEnv
+        )
+      }
+    }
+
+    // Promiseの型を構築
+    const promiseTypeVar =
+      resolvedType ||
+      this.freshTypeVariable(promiseBlock.line, promiseBlock.column)
+    const promiseType = new AST.GenericType(
+      "Promise",
+      [promiseTypeVar],
+      promiseBlock.line,
+      promiseBlock.column
+    )
+
+    // () -> Promise<T> 関数型を作成
+    const unitType = new AST.PrimitiveType(
+      "Unit",
+      promiseBlock.line,
+      promiseBlock.column
+    )
+    const functionType = new AST.FunctionType(
+      unitType,
+      promiseType,
+      promiseBlock.line,
+      promiseBlock.column
+    )
+
+    // ノード型マップに記録
+    this.nodeTypeMap.set(promiseBlock, functionType)
+
+    return functionType
+  }
+
+  generateConstraintsForResolveExpression(
+    resolveExpr: AST.ResolveExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // resolve valueの型推論
+    const _valueType = this.generateConstraintsForExpression(
+      resolveExpr.value,
+      env
+    )
+
+    // resolve式自体はPromise内でのみ有効で、Never型として扱う
+    // （通常のコードフローを停止する）
+    return new AST.PrimitiveType("Never", resolveExpr.line, resolveExpr.column)
+  }
+
+  generateConstraintsForRejectExpression(
+    rejectExpr: AST.RejectExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // reject valueの型推論
+    const _valueType = this.generateConstraintsForExpression(
+      rejectExpr.value,
+      env
+    )
+
+    // reject式自体はPromise内でのみ有効で、Never型として扱う
+    // （通常のコードフローを停止する）
+    return new AST.PrimitiveType("Never", rejectExpr.line, rejectExpr.column)
+  }
+
   public generateConstraintsForExpression(
     expr: AST.Expression,
     env: Map<string, AST.Type>,
@@ -2316,6 +2406,27 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "PromiseBlock":
+        resultType = this.generateConstraintsForPromiseBlock(
+          expr as AST.PromiseBlock,
+          env
+        )
+        break
+
+      case "ResolveExpression":
+        resultType = this.generateConstraintsForResolveExpression(
+          expr as AST.ResolveExpression,
+          env
+        )
+        break
+
+      case "RejectExpression":
+        resultType = this.generateConstraintsForRejectExpression(
+          expr as AST.RejectExpression,
+          env
+        )
+        break
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -2343,6 +2454,8 @@ export class TypeInferenceSystem {
         return new AST.PrimitiveType("Float", literal.line, literal.column)
       case "boolean":
         return new AST.PrimitiveType("Bool", literal.line, literal.column)
+      case "unit":
+        return new AST.PrimitiveType("Unit", literal.line, literal.column)
       default:
         return this.freshTypeVariable(literal.line, literal.column)
     }
@@ -7947,5 +8060,7 @@ function addResolvedTypeToMaps(
 
     return targetType
   }
+
+// Promise関連の型推論メソッドは上記のクラス内に実装済み
 
 // MethodCall処理のためにTypeInferenceSystemクラスを拡張

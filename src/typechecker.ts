@@ -351,6 +351,10 @@ export class TypeChecker {
         return new AST.PrimitiveType("Float", lit.line, lit.column)
       case "boolean":
         return new AST.PrimitiveType("Bool", lit.line, lit.column)
+      case "unit":
+        return new AST.PrimitiveType("Unit", lit.line, lit.column)
+      default:
+        return new AST.PrimitiveType("Unknown", lit.line, lit.column)
     }
   }
 
