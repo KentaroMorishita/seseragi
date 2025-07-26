@@ -820,7 +820,11 @@ export class Parser {
       const name = primitiveType.name
 
       // ビルトイン型はチェック不要
-      if (["Int", "Float", "String", "Bool", "Unit", "Char"].includes(name)) {
+      if (
+        ["Int", "Float", "String", "Bool", "Unit", "Char", "Void"].includes(
+          name
+        )
+      ) {
         return
       }
 
@@ -1327,6 +1331,11 @@ export class Parser {
     return this.parseUnionTypeExpression()
   }
 
+  // 型注釈のパース（parseTypeのエイリアス）
+  private parseTypeAnnotation(): AST.Type {
+    return this.parseType()
+  }
+
   // Union型の解析 (最も低い優先度)
   private parseUnionTypeExpression(): AST.Type {
     let left = this.parseIntersectionTypeExpression()
@@ -1410,6 +1419,11 @@ export class Parser {
     // ワイルドカード型の処理
     if (token.type === TokenType.WILDCARD) {
       return new AST.WildcardType(token.line, token.column)
+    }
+
+    // Void型の処理
+    if (token.type === TokenType.VOID) {
+      return new AST.VoidType(token.line, token.column)
     }
 
     if (token.type === TokenType.IDENTIFIER) {
@@ -2738,16 +2752,34 @@ export class Parser {
     if (this.match(TokenType.RESOLVE)) {
       const line = this.previous().line
       const column = this.previous().column
+
+      // 型引数のパース（省略可能）
+      let typeArgument: AST.Type | undefined
+      if (this.check(TokenType.LESS_THAN)) {
+        this.advance() // consume '<'
+        typeArgument = this.parseTypeAnnotation()
+        this.consume(TokenType.GREATER_THAN, "Expected '>' after type argument")
+      }
+
       const value = this.expression()
-      return new AST.ResolveExpression(value, line, column)
+      return new AST.ResolveExpression(value, line, column, typeArgument)
     }
 
     // Reject expressions: reject value
     if (this.match(TokenType.REJECT)) {
       const line = this.previous().line
       const column = this.previous().column
+
+      // 型引数のパース（省略可能）
+      let typeArgument: AST.Type | undefined
+      if (this.check(TokenType.LESS_THAN)) {
+        this.advance() // consume '<'
+        typeArgument = this.parseTypeAnnotation()
+        this.consume(TokenType.GREATER_THAN, "Expected '>' after type argument")
+      }
+
       const value = this.expression()
-      return new AST.RejectExpression(value, line, column)
+      return new AST.RejectExpression(value, line, column, typeArgument)
     }
 
     // Lambda expressions: \x -> expr or \x :Type -> expr
@@ -3389,6 +3421,14 @@ export class Parser {
     const line = this.previous().line
     const column = this.previous().column
 
+    // 型引数のパース（省略可能）
+    let typeArgument: AST.Type | undefined
+    if (this.check(TokenType.LESS_THAN)) {
+      this.advance() // consume '<'
+      typeArgument = this.parseTypeAnnotation()
+      this.consume(TokenType.GREATER_THAN, "Expected '>' after type argument")
+    }
+
     this.consume(TokenType.LEFT_BRACE, "Expected '{' after 'promise'")
 
     const statements: AST.Statement[] = []
@@ -3416,7 +3456,13 @@ export class Parser {
     }
 
     this.consume(TokenType.RIGHT_BRACE, "Expected '}' after promise block")
-    return new AST.PromiseBlock(statements, returnExpression, line, column)
+    return new AST.PromiseBlock(
+      statements,
+      returnExpression,
+      line,
+      column,
+      typeArgument
+    )
   }
 
   private blockExpression(): AST.BlockExpression {
