@@ -2630,7 +2630,7 @@ export class Parser {
           this.previous().line,
           this.previous().column
         )
-      } else if (this.canStartExpression()) {
+      } else if (this.canStartExpression() && !this.isNewStatementStarting()) {
         // builtin関数の特別処理（show, print, putStrLn, toString用）
         if (expr.kind === "Identifier") {
           const identifierExpr = expr as AST.Identifier
@@ -2741,6 +2741,38 @@ export class Parser {
     )
   }
 
+  // 文の開始トークンかチェック
+  private isStatementStart(): boolean {
+    const type = this.peek().type
+    return (
+      type === TokenType.LET ||
+      type === TokenType.FN ||
+      type === TokenType.TYPE ||
+      type === TokenType.STRUCT ||
+      type === TokenType.IMPL ||
+      type === TokenType.IMPORT ||
+      type === TokenType.RETURN ||
+      type === TokenType.PRINT ||
+      type === TokenType.PUT_STR_LN ||
+      type === TokenType.TO_STRING ||
+      type === TokenType.TYPEOF ||
+      type === TokenType.TYPEOF_WITH_ALIASES
+    )
+  }
+
+  // 改行後に新しい文が始まるかチェック
+  private isNewStatementStarting(): boolean {
+    if (this.check(TokenType.NEWLINE)) {
+      // 改行をスキップして次のトークンをチェック
+      const current = this.current
+      this.advance() // consume newline
+      const isStatement = this.isStatementStart()
+      this.current = current // 位置を戻す
+      return isStatement
+    }
+    return false
+  }
+
   // eslint-disable-next-line complexity
   private primaryExpression(): AST.Expression {
     // Promise blocks: promise { ... }
@@ -2761,7 +2793,7 @@ export class Parser {
         this.consume(TokenType.GREATER_THAN, "Expected '>' after type argument")
       }
 
-      const value = this.expression()
+      const value = this.primaryExpression()
       return new AST.ResolveExpression(value, line, column, typeArgument)
     }
 
@@ -2778,7 +2810,7 @@ export class Parser {
         this.consume(TokenType.GREATER_THAN, "Expected '>' after type argument")
       }
 
-      const value = this.expression()
+      const value = this.primaryExpression()
       return new AST.RejectExpression(value, line, column, typeArgument)
     }
 
@@ -3576,9 +3608,292 @@ export class Parser {
     this.consume(TokenType.ARROW, "Expected '->' after lambda parameter")
 
     // Parse the body - could be another lambda or expression
-    const body = this.expression()
+    const body = this.lambdaBodyExpression()
 
     return new AST.LambdaExpression(parameters, body, startLine, startColumn)
+  }
+
+  // ラムダ式のbody用の expression parser - 文境界を尊重
+  private lambdaBodyExpression(): AST.Expression {
+    // 条件式から開始（一番高いレベル）
+    if (this.match(TokenType.IF)) {
+      const condition = this.binaryExpressionWithBoundaryCheck()
+      this.skipNewlines()
+      this.consume(TokenType.THEN, "Expected 'then' after condition")
+      this.skipNewlines()
+      const thenExpr = this.lambdaBodyExpression()
+      this.skipNewlines()
+      this.consume(TokenType.ELSE, "Expected 'else' after then expression")
+      this.skipNewlines()
+      const elseExpr = this.lambdaBodyExpression()
+      return new AST.ConditionalExpression(
+        condition,
+        thenExpr,
+        elseExpr,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return this.pipelineExpressionWithBoundaryCheck()
+  }
+
+  // パイプライン演算子をサポートする expression parser
+  private pipelineExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.binaryExpressionWithBoundaryCheck()
+
+    while (this.match(TokenType.PIPE, TokenType.REVERSE_PIPE)) {
+      const operator = this.previous().value
+      const right = this.binaryExpressionWithBoundaryCheck()
+
+      if (operator === "|") {
+        expr = new AST.Pipeline(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        // Reverse pipeline
+        expr = new AST.Pipeline(
+          right,
+          expr,
+          this.previous().line,
+          this.previous().column
+        )
+      }
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする二項式 parser
+  private binaryExpressionWithBoundaryCheck(): AST.Expression {
+    return this.ternaryExpressionWithBoundaryCheck()
+  }
+
+  // 文境界をチェックする三項式 parser
+  private ternaryExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.logicalOrExpressionWithBoundaryCheck()
+
+    if (this.match(TokenType.QUESTION)) {
+      const thenExpr = this.logicalOrExpressionWithBoundaryCheck()
+      this.consume(
+        TokenType.COLON,
+        "Expected ':' after '?' in ternary expression"
+      )
+      const elseExpr = this.ternaryExpressionWithBoundaryCheck()
+      expr = new AST.TernaryExpression(
+        expr,
+        thenExpr,
+        elseExpr,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする論理OR式 parser
+  private logicalOrExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.logicalAndExpressionWithBoundaryCheck()
+
+    while (this.match(TokenType.OR)) {
+      const operator = this.previous().value
+      const right = this.logicalAndExpressionWithBoundaryCheck()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする論理AND式 parser
+  private logicalAndExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.equalityExpressionWithBoundaryCheck()
+
+    while (this.match(TokenType.AND)) {
+      const operator = this.previous().value
+      const right = this.equalityExpressionWithBoundaryCheck()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする等価性式 parser
+  private equalityExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.relationalExpressionWithBoundaryCheck()
+
+    while (this.match(TokenType.EQUAL, TokenType.NOT_EQUAL)) {
+      const operator = this.previous().value
+      const right = this.relationalExpressionWithBoundaryCheck()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする関係式 parser
+  private relationalExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.additiveExpressionWithBoundaryCheck()
+
+    while (
+      this.match(
+        TokenType.LESS_THAN,
+        TokenType.GREATER_THAN,
+        TokenType.LESS_EQUAL,
+        TokenType.GREATER_EQUAL
+      )
+    ) {
+      const operator = this.previous().value
+      const right = this.additiveExpressionWithBoundaryCheck()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする加算式 parser
+  private additiveExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.multiplicativeExpressionWithBoundaryCheck()
+
+    while (this.match(TokenType.PLUS, TokenType.MINUS)) {
+      const operator = this.previous().value
+      const right = this.multiplicativeExpressionWithBoundaryCheck()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする乗算式 parser
+  private multiplicativeExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.unaryExpressionWithBoundaryCheck()
+
+    while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
+      const operator = this.previous().value
+      const right = this.unaryExpressionWithBoundaryCheck()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  // 文境界をチェックする単項式 parser
+  private unaryExpressionWithBoundaryCheck(): AST.Expression {
+    if (this.match(TokenType.NOT, TokenType.MINUS)) {
+      const operator = this.previous().value
+      const right = this.unaryExpressionWithBoundaryCheck()
+      return new AST.UnaryOperation(
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return this.callExpressionWithBoundaryCheck()
+  }
+
+  // 文境界をチェックする関数呼び出し式 parser - ここが重要
+  private callExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.primaryExpression()
+
+    while (true) {
+      // 文境界チェック - 改行後に新しい文が来る場合は停止
+      if (this.isNewStatementStarting()) {
+        break
+      }
+
+      if (this.match(TokenType.LEFT_PAREN)) {
+        // 関数呼び出し (...)
+        const args: AST.Expression[] = []
+        if (!this.check(TokenType.RIGHT_PAREN)) {
+          do {
+            args.push(this.lambdaBodyExpression())
+          } while (this.match(TokenType.COMMA))
+        }
+        this.consume(TokenType.RIGHT_PAREN, "Expected ')' after arguments")
+        expr = new AST.FunctionCall(
+          expr,
+          args,
+          this.previous().line,
+          this.previous().column
+        )
+      } else if (this.match(TokenType.LEFT_BRACKET)) {
+        // 配列アクセス [...]
+        const index = this.lambdaBodyExpression()
+        this.consume(TokenType.RIGHT_BRACKET, "Expected ']' after array index")
+        expr = new AST.ArrayAccess(
+          expr,
+          index,
+          this.previous().line,
+          this.previous().column
+        )
+      } else if (this.match(TokenType.DOT)) {
+        // フィールドアクセス .field
+        const fieldName = this.consume(
+          TokenType.IDENTIFIER,
+          "Expected field name after '.'"
+        ).value
+        expr = new AST.RecordAccess(
+          expr,
+          fieldName,
+          this.previous().line,
+          this.previous().column
+        )
+      } else if (this.canStartExpression() && !this.isNewStatementStarting()) {
+        // 関数適用（スペース区切り）- 文境界をチェック
+        const arg = this.primaryExpression()
+        expr = new AST.FunctionApplication(
+          expr,
+          arg,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
+    }
+
+    return expr
   }
 
   private checkStatementStart(): boolean {
