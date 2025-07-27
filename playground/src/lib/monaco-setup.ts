@@ -22,6 +22,13 @@ export function setupSeseragiLanguage(monaco: Monaco) {
       "where",
       "do",
       "return",
+      "import",
+      "from",
+      "as",
+      "is",
+      "promise",
+      "resolve",
+      "reject",
     ],
 
     builtinTypes: [

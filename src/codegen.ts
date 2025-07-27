@@ -125,6 +125,7 @@ export class CodeGenerator {
   functionTypes: Map<string, Type> = new Map() // 関数名 → 関数型
   variableTypes: Map<string, string> = new Map() // 変数名 → 構造的型文字列
   variableAliases: Map<string, string[]> = new Map() // 変数名 → エイリアス配列
+  private promiseBlockDepth: number = 0 // promiseブロックのネスト深度
 
   constructor(options: CodeGenOptions) {
     this.options = options
@@ -132,6 +133,21 @@ export class CodeGenerator {
     this.wildcardCounter = 1
     this.typeInferenceResult = options.typeInferenceResult
     this.filePrefix = this.generateFilePrefix(options.filePath || "unknown")
+  }
+
+  // promiseブロック内かどうかを判定
+  private isInsidePromiseBlock(): boolean {
+    return this.promiseBlockDepth > 0
+  }
+
+  // promiseブロックに入る際の処理
+  private enterPromiseBlock(): void {
+    this.promiseBlockDepth++
+  }
+
+  // promiseブロックから出る際の処理
+  private exitPromiseBlock(): void {
+    this.promiseBlockDepth = Math.max(0, this.promiseBlockDepth - 1)
   }
 
   // 変数の型情報を登録
@@ -167,6 +183,8 @@ export class CodeGenerator {
     switch (type.kind) {
       case "PrimitiveType":
         return (type as PrimitiveType).name
+      case "VoidType":
+        return "Void"
       case "GenericType": {
         const genericType = type as GenericType
         if (genericType.typeArguments && genericType.typeArguments.length > 0) {
@@ -3078,6 +3096,8 @@ ${indent}}`
     switch (type.kind) {
       case "PrimitiveType":
         return (type as PrimitiveType).name
+      case "VoidType":
+        return "never"
       case "RecordType": {
         const rt = type as RecordType
         const fields = rt.fields
@@ -4840,7 +4860,11 @@ ${indent}}`
 
   // Promise blockの生成
   generatePromiseBlock(promiseBlock: PromiseBlock): string {
-    // promise { ... } -> () => new Promise((resolve, reject) => { ... })
+    // promise<T> { ... } -> () => new Promise<T>((resolve, reject) => { ... })
+
+    // promiseブロックに入る
+    this.enterPromiseBlock()
+
     let body = ""
     const indent = "  "
 
@@ -4856,18 +4880,53 @@ ${indent}}`
       body += `${indent + returnExpr};\n`
     }
 
-    return `() => new Promise((resolve, reject) => {\n${body}})`
+    // promiseブロックから出る
+    this.exitPromiseBlock()
+
+    // 型引数がある場合はTypeScript型注釈を追加
+    let typeAnnotation = ""
+    if (promiseBlock.typeArgument) {
+      typeAnnotation = `<${this.generateType(promiseBlock.typeArgument)}>`
+    }
+
+    return `() => new Promise${typeAnnotation}((resolve, reject) => {\n${body}})`
   }
 
   // resolve式の生成
   generateResolveExpression(resolveExpr: ResolveExpression): string {
     const value = this.generateExpression(resolveExpr.value)
-    return `resolve(${value})`
+
+    if (this.isInsidePromiseBlock()) {
+      // promiseブロック内では型引数に関係なくローカルresolve呼び出し
+      return `resolve(${value})`
+    } else {
+      // promiseブロック外では独立関数として処理
+      if (resolveExpr.typeArgument) {
+        const typeAnnotation = this.generateTypeString(resolveExpr.typeArgument)
+        return `() => Promise.resolve<${typeAnnotation}>(${value})`
+      } else {
+        // 型推論の場合
+        return `() => Promise.resolve(${value})`
+      }
+    }
   }
 
   // reject式の生成
   generateRejectExpression(rejectExpr: RejectExpression): string {
     const value = this.generateExpression(rejectExpr.value)
-    return `reject(${value})`
+
+    if (this.isInsidePromiseBlock()) {
+      // promiseブロック内では型引数に関係なくローカルreject呼び出し
+      return `reject(${value})`
+    } else {
+      // promiseブロック外では独立関数として処理
+      if (rejectExpr.typeArgument) {
+        const typeAnnotation = this.generateTypeString(rejectExpr.typeArgument)
+        return `() => Promise.reject<${typeAnnotation}>(${value})`
+      } else {
+        // 型推論の場合
+        return `() => Promise.reject(${value})`
+      }
+    }
   }
 }
