@@ -40,6 +40,7 @@ export enum TokenType {
   WHEN = "WHEN",
   IS = "IS",
   VOID = "VOID",
+  TRY = "TRY",
 
   // Built-in functions
   PRINT = "PRINT",
@@ -153,6 +154,7 @@ export class Lexer {
     ["when", TokenType.WHEN],
     ["is", TokenType.IS],
     ["Void", TokenType.VOID],
+    ["try", TokenType.TRY],
     ["pure", TokenType.PURE],
     ["perform", TokenType.PERFORM],
     ["print", TokenType.PRINT],

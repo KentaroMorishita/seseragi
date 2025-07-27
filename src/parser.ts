@@ -1527,7 +1527,7 @@ export class Parser {
       return this.matchExpression()
     }
 
-    return this.binaryExpression()
+    return this.tryExpressionOrNext()
   }
 
   private conditionalExpressionWithoutPipeline(): AST.Expression {
@@ -4222,6 +4222,32 @@ export class Parser {
     }
 
     return new AST.TemplateExpression(parts, startToken.line, startToken.column)
+  }
+
+  private tryExpressionOrNext(): AST.Expression {
+    if (this.match(TokenType.TRY)) {
+      return this.tryExpression()
+    }
+    return this.binaryExpression()
+  }
+
+  private tryExpression(): AST.TryExpression {
+    const line = this.previous().line
+    const column = this.previous().column
+
+    // オプショナル型パラメータの解析（try<ErrorType>）
+    let errorType: AST.Type | undefined
+
+    if (this.check(TokenType.LESS_THAN)) {
+      this.advance() // consume '<'
+      errorType = this.parseTypeAnnotation()
+      this.consume(TokenType.GREATER_THAN, "Expected '>' after error type")
+    }
+
+    // try式の本体（右結合のため、再帰的にtryExpressionOrNextを呼ぶ）
+    const expression = this.tryExpressionOrNext()
+
+    return new AST.TryExpression(expression, line, column, errorType)
   }
 }
 

@@ -878,6 +878,23 @@ export class RecordSpreadField extends ASTNode {
   }
 }
 
+export class TryExpression extends Expression {
+  kind = "TryExpression"
+  expression: Expression
+  errorType?: Type
+
+  constructor(
+    expression: Expression,
+    line: number,
+    column: number,
+    errorType?: Type
+  ) {
+    super(line, column)
+    this.expression = expression
+    this.errorType = errorType
+  }
+}
+
 // =============================================================================
 // Pattern Matching
 // =============================================================================

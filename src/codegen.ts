@@ -65,6 +65,7 @@ import {
   StructType,
   type TemplateExpression,
   type TernaryExpression,
+  type TryExpression,
   TupleDestructuring,
   type TupleExpression,
   type TuplePattern,
@@ -2286,6 +2287,8 @@ ${indent}}`
         return this.generateResolveExpression(expr as ResolveExpression)
       case "RejectExpression":
         return this.generateRejectExpression(expr as RejectExpression)
+      case "TryExpression":
+        return this.generateTryExpression(expr as TryExpression)
       default:
         return `/* Unsupported expression: ${expr.constructor.name} */`
     }
@@ -2833,6 +2836,10 @@ ${indent}}`
 
     const func = this.generateExpression(call.function)
 
+    // PromiseBlockの関数呼び出しの場合は括弧で囲む
+    const wrappedFunc =
+      call.function.kind === "PromiseBlock" ? `(${func})` : func
+
     // 引数の型アサーション付き生成
     const args = call.arguments.map((arg, index) => {
       const argCode = this.generateExpression(arg)
@@ -2877,10 +2884,10 @@ ${indent}}`
       const typeArgs = call.typeArguments
         .map((type) => this.generateType(type))
         .join(", ")
-      return `${func}<${typeArgs}>(${args.join(", ")})`
+      return `${wrappedFunc}<${typeArgs}>(${args.join(", ")})`
     }
 
-    return `${func}(${args.join(", ")})`
+    return `${wrappedFunc}(${args.join(", ")})`
   }
 
   // 関数適用の生成
@@ -4928,5 +4935,208 @@ ${indent}}`
         return `() => Promise.reject(${value})`
       }
     }
+  }
+
+  generateTryExpression(expr: TryExpression): string {
+    const innerExpr = this.generateExpression(expr.expression)
+
+    // Promise型検出：resolve呼び出しやpromiseブロックかどうか
+    const isPromise = this.isPromiseExpression(expr.expression)
+
+    if (isPromise) {
+      // seseragiのPromise関数（Unit -> Promise<T>）かどうか判定
+      const needsExecution = this.isSeseragiPromiseFunction(expr.expression)
+      const awaitTarget = needsExecution ? `(${innerExpr})()` : innerExpr
+
+      // 非同期版: () => Promise<Either<L, T>>
+      if (expr.errorType) {
+        // 型指定あり: error as L
+        return `async (): Promise<Either<${this.generateTypeString(expr.errorType)}, any>> => {
+  try {
+    const value = await ${awaitTarget};
+    return { tag: "Right" as const, value };
+  } catch (error) {
+    return { tag: "Left" as const, value: error as ${this.generateTypeString(expr.errorType)} };
+  }
+}`
+      } else {
+        // 型指定なし: String(error)
+        return `async (): Promise<Either<string, any>> => {
+  try {
+    const value = await ${awaitTarget};
+    return { tag: "Right" as const, value };
+  } catch (error) {
+    return { tag: "Left" as const, value: String(error) };
+  }
+}`
+      }
+    } else {
+      // 同期版: () => Either<L, T>
+      if (expr.errorType) {
+        // 型指定あり: error as L
+        return `(): Either<${this.generateTypeString(expr.errorType)}, any> => {
+  try {
+    return { tag: "Right" as const, value: ${innerExpr} };
+  } catch (error) {
+    return { tag: "Left" as const, value: error as ${this.generateTypeString(expr.errorType)} };
+  }
+}`
+      } else {
+        // 型指定なし: String(error)
+        return `(): Either<string, any> => {
+  try {
+    return { tag: "Right" as const, value: ${innerExpr} };
+  } catch (error) {
+    return { tag: "Left" as const, value: String(error) };
+  }
+}`
+      }
+    }
+  }
+
+  private isPromiseExpression(expr: Expression): boolean {
+    if (!expr || !expr.kind) {
+      return false
+    }
+
+    // ParenthesesExpressionの場合は中身を確認
+    if (expr.kind === "ParenthesesExpression") {
+      return this.isPromiseExpression((expr as any).expression)
+    }
+
+    // resolve/reject呼び出しの場合
+    if (expr.kind === "FunctionCall") {
+      const funcCall = expr as FunctionCall
+      if (
+        funcCall.function.kind === "Identifier" &&
+        ((funcCall.function as Identifier).name === "resolve" ||
+          (funcCall.function as Identifier).name === "reject")
+      ) {
+        return true
+      }
+    }
+
+    // promiseブロックの場合
+    if (expr.kind === "PromiseBlock") {
+      return true
+    }
+
+    // TernaryExpressionの場合、両分岐がPromiseならPromise
+    if (expr.kind === "TernaryExpression") {
+      const ternaryExpr = expr as any // TernaryExpression
+      const trueIsPromise = this.isPromiseExpression(ternaryExpr.trueExpression)
+      const falseIsPromise = this.isPromiseExpression(
+        ternaryExpr.falseExpression
+      )
+      return trueIsPromise && falseIsPromise
+    }
+
+    // Identifierの場合は型推論結果を重点的にチェック
+    if (expr.kind === "Identifier") {
+      const identifier = expr as Identifier
+      // 型推論結果を使ってPromise型をチェック
+      if (this.typeInferenceResult?.nodeTypeMap?.has(expr)) {
+        const exprType = this.typeInferenceResult.nodeTypeMap.get(expr)
+        if (exprType && this.isPromiseType(exprType)) {
+          return true
+        }
+      }
+    }
+
+    // 型推論結果を使ってPromise型をチェック
+    if (this.typeInferenceResult?.nodeTypeMap?.has(expr)) {
+      const exprType = this.typeInferenceResult.nodeTypeMap.get(expr)
+      if (exprType && this.isPromiseType(exprType)) {
+        return true
+      }
+    }
+
+    // 関数呼び出しで関数名に"async"が含まれる場合（簡易判定）
+    if (expr.kind === "FunctionCall") {
+      const funcCall = expr as FunctionCall
+      if (funcCall.function.kind === "Identifier") {
+        const funcName = (funcCall.function as Identifier).name
+        return funcName.includes("async") || funcName.includes("Promise")
+      }
+    }
+
+    return false
+  }
+
+  private isPromiseType(type: Type): boolean {
+    if (type.kind === "GenericType") {
+      const genericType = type as GenericType
+      return genericType.name === "Promise"
+    }
+
+    // 関数型の場合、戻り値型がPromiseかチェック
+    if (type.kind === "FunctionType") {
+      const funcType = type as FunctionType
+      return this.isPromiseType(funcType.returnType)
+    }
+
+    // UnionType の場合、すべてのメンバーがPromise型かチェック
+    if (type.kind === "UnionType") {
+      const unionType = type as any // UnionType
+      return (
+        unionType.types &&
+        unionType.types.every((memberType: Type) =>
+          this.isPromiseType(memberType)
+        )
+      )
+    }
+
+    return false
+  }
+
+  private isSeseragiPromiseFunction(expr: Expression): boolean {
+    if (!expr || !expr.kind) {
+      return false
+    }
+
+    // ParenthesesExpressionの場合は中身を確認
+    if (expr.kind === "ParenthesesExpression") {
+      return this.isSeseragiPromiseFunction((expr as any).expression)
+    }
+
+    // promiseブロック（Unit -> Promise<T>として生成される）
+    if (expr.kind === "PromiseBlock") {
+      return true
+    }
+
+    // TernaryExpressionの場合、両分岐をチェック
+    if (expr.kind === "TernaryExpression") {
+      const ternaryExpr = expr as any // TernaryExpression
+      const trueNeedsExecution = this.isSeseragiPromiseFunction(
+        ternaryExpr.trueExpression
+      )
+      const falseNeedsExecution = this.isSeseragiPromiseFunction(
+        ternaryExpr.falseExpression
+      )
+      // 両方とも同じ実行要件を持つ場合のみtrue
+      return trueNeedsExecution && falseNeedsExecution
+    }
+
+    // resolve/reject呼び出し（Unit -> Promise<T>として生成される）
+    if (expr.kind === "FunctionCall") {
+      const funcCall = expr as FunctionCall
+      if (funcCall.function.kind === "Identifier") {
+        const funcName = (funcCall.function as Identifier).name
+        return funcName === "resolve" || funcName === "reject"
+      }
+    }
+
+    // Identifierの場合、Promise関数を格納している変数は呼び出し必要
+    if (expr.kind === "Identifier") {
+      // 型推論結果を使ってPromise関数型かチェック
+      if (this.typeInferenceResult?.nodeTypeMap?.has(expr)) {
+        const exprType = this.typeInferenceResult.nodeTypeMap.get(expr)
+        if (exprType && this.isPromiseType(exprType)) {
+          return true // Promise関数なので()付きで呼び出し必要
+        }
+      }
+    }
+
+    return false
   }
 }
