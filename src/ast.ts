@@ -135,6 +135,11 @@ export class WildcardType extends Type {
   name = "_"
 }
 
+export class VoidType extends Type {
+  kind = "VoidType"
+  name = "Void"
+}
+
 export class StructType extends Type {
   kind = "StructType"
   name: string
@@ -760,36 +765,53 @@ export class PromiseBlock extends Expression {
   kind = "PromiseBlock"
   statements: Statement[]
   returnExpression?: Expression
+  typeArgument?: Type
 
   constructor(
     statements: Statement[],
     returnExpression: Expression | undefined,
     line: number,
-    column: number
+    column: number,
+    typeArgument?: Type
   ) {
     super(line, column)
     this.statements = statements
     this.returnExpression = returnExpression
+    this.typeArgument = typeArgument
   }
 }
 
 export class ResolveExpression extends Expression {
   kind = "ResolveExpression"
   value: Expression
+  typeArgument?: Type
 
-  constructor(value: Expression, line: number, column: number) {
+  constructor(
+    value: Expression,
+    line: number,
+    column: number,
+    typeArgument?: Type
+  ) {
     super(line, column)
     this.value = value
+    this.typeArgument = typeArgument
   }
 }
 
 export class RejectExpression extends Expression {
   kind = "RejectExpression"
   value: Expression
+  typeArgument?: Type
 
-  constructor(value: Expression, line: number, column: number) {
+  constructor(
+    value: Expression,
+    line: number,
+    column: number,
+    typeArgument?: Type
+  ) {
     super(line, column)
     this.value = value
+    this.typeArgument = typeArgument
   }
 }
 
