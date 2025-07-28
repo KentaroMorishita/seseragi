@@ -2455,6 +2455,13 @@ export class TypeInferenceSystem {
         )
         break
 
+      case "TryExpression":
+        resultType = (this as any).generateConstraintsForTryExpression(
+          expr as AST.TryExpression,
+          env
+        )
+        break
+
       case "TypeAssertion":
         resultType = (this as any).generateConstraintsForTypeAssertion(
           expr as AST.TypeAssertion,
@@ -8125,5 +8132,118 @@ function addResolvedTypeToMaps(
   }
 
 // Promise関連の型推論メソッドは上記のクラス内に実装済み
+
+// TryExpression の型推論メソッドを TypeInferenceSystem クラスに追加
+;(TypeInferenceSystem.prototype as any).generateConstraintsForTryExpression =
+  function (tryExpr: AST.TryExpression, env: Map<string, AST.Type>): AST.Type {
+    // 内部式の型を推論
+    const innerType = this.generateConstraintsForExpression(
+      tryExpr.expression,
+      env
+    )
+    ;(this as any).nodeTypeMap.set(tryExpr.expression, innerType)
+
+    // エラー型を決定
+    let errorType: AST.Type
+    if (tryExpr.errorType) {
+      errorType = tryExpr.errorType
+    } else {
+      // デフォルトはString型
+      errorType = new AST.PrimitiveType("String", tryExpr.line, tryExpr.column)
+    }
+
+    // Promise型かどうかチェック
+    const isPromiseType = this.isPromiseType(innerType)
+
+    if (isPromiseType) {
+      // Promise関数型 (Unit -> Promise<T>) -> Unit -> Promise<Either<L, T>>
+      let valueType = innerType
+
+      // Function型の場合、戻り値型(Promise<T>)からT部分を取得
+      if (innerType.kind === "FunctionType") {
+        const funcType = innerType as AST.FunctionType
+        const returnType = funcType.returnType
+        if (
+          returnType.kind === "GenericType" &&
+          (returnType as AST.GenericType).name === "Promise" &&
+          (returnType as AST.GenericType).typeArguments.length > 0
+        ) {
+          valueType = (returnType as AST.GenericType).typeArguments[0]
+        }
+      }
+      // 直接Promise<T>の場合、T部分を取得
+      else if (
+        innerType.kind === "GenericType" &&
+        (innerType as AST.GenericType).name === "Promise" &&
+        (innerType as AST.GenericType).typeArguments.length > 0
+      ) {
+        valueType = (innerType as AST.GenericType).typeArguments[0]
+      }
+
+      // Either<L, T>を構築
+      const eitherType = new AST.GenericType(
+        "Either",
+        [errorType, valueType],
+        tryExpr.line,
+        tryExpr.column
+      )
+
+      // Promise<Either<L, T>>を構築
+      const promiseEitherType = new AST.GenericType(
+        "Promise",
+        [eitherType],
+        tryExpr.line,
+        tryExpr.column
+      )
+
+      // Unit -> Promise<Either<L, T>>を構築
+      const resultType = new AST.FunctionType(
+        new AST.PrimitiveType("Unit", tryExpr.line, tryExpr.column),
+        promiseEitherType,
+        tryExpr.line,
+        tryExpr.column
+      )
+
+      ;(this as any).nodeTypeMap.set(tryExpr, resultType)
+      return resultType
+    } else {
+      // T -> Unit -> Either<L, T>
+      const eitherType = new AST.GenericType(
+        "Either",
+        [errorType, innerType],
+        tryExpr.line,
+        tryExpr.column
+      )
+
+      // Unit -> Either<L, T>を構築
+      const resultType = new AST.FunctionType(
+        new AST.PrimitiveType("Unit", tryExpr.line, tryExpr.column),
+        eitherType,
+        tryExpr.line,
+        tryExpr.column
+      )
+
+      ;(this as any).nodeTypeMap.set(tryExpr, resultType)
+      return resultType
+    }
+  }
+
+// Promise型判定メソッド
+;(TypeInferenceSystem.prototype as any).isPromiseType = function (
+  type: AST.Type
+): boolean {
+  if (type.kind === "GenericType") {
+    const genericType = type as AST.GenericType
+    return genericType.name === "Promise"
+  }
+
+  // 関数型の場合、戻り値型がPromiseかチェック
+  if (type.kind === "FunctionType") {
+    const funcType = type as AST.FunctionType
+    return this.isPromiseType(funcType.returnType)
+  }
+
+  return false
+}
 
 // MethodCall処理のためにTypeInferenceSystemクラスを拡張

@@ -391,11 +391,18 @@ export class Parser {
       const paramNameToken = this.peek()
 
       if (this.checkNext(TokenType.COLON)) {
-        hasTypedParameters = this.parseTypedParameter(
+        const continueParameters = this.parseTypedParameter(
           parameters,
           implContext,
           paramNameToken
         )
+
+        if (!continueParameters) {
+          // The typed parameter detected this is the start of return type
+          // Parse the return type now
+          return this.parseExplicitReturnType()
+        }
+        hasTypedParameters = true
       } else {
         const returnType = this.parseUntypedParameterOrReturnType(
           parameters,
@@ -420,8 +427,8 @@ export class Parser {
     const paramName = this.advance().value
     this.consume(TokenType.COLON, "Expected ':'")
     const paramType = this.parseUnionTypeExpression()
-    this.consume(TokenType.ARROW, "Expected '->' after parameter type")
 
+    // First, add the parameter we just parsed
     const { isImplicitSelf, isImplicitOther } = this.checkImplicitParameters(
       implContext,
       paramName,
@@ -438,7 +445,56 @@ export class Parser {
         isImplicitOther
       )
     )
-    return true
+
+    // Check if the next arrow leads to the return type (complex function type)
+    // vs more parameters. Look ahead to see if we have a parenthesized type
+    // or other patterns that indicate a return type rather than another parameter
+    if (this.check(TokenType.ARROW)) {
+      const nextToken = this.peekAhead(1)
+
+      // Special case: If next token is '(' followed by ')', this is a Unit parameter
+      // Example: "name: String -> () -> String" - () is a Unit parameter
+      if (nextToken?.type === TokenType.LEFT_PAREN) {
+        const tokenAfterParen = this.peekAhead(2)
+        if (tokenAfterParen?.type === TokenType.RIGHT_PAREN) {
+          // Check what comes after (): if it's -> or :, it's a parameter
+          const tokenAfterClose = this.peekAhead(3)
+          if (
+            tokenAfterClose?.type === TokenType.ARROW ||
+            tokenAfterClose?.type === TokenType.COLON
+          ) {
+            // This is "-> () ->" or "-> (): Type ->", continue as parameter
+            this.advance() // consume ->
+            return true
+          }
+        }
+
+        // Otherwise, check for complex return types like "(Unit -> Promise<String>)"
+        // Look for additional tokens that suggest a complex type
+        let parenDepth = 0
+        let i = 1
+        while (i < 10 && this.peekAhead(i)) {
+          // Look ahead up to 10 tokens
+          const token = this.peekAhead(i)
+          if (token?.type === TokenType.LEFT_PAREN) parenDepth++
+          else if (token?.type === TokenType.RIGHT_PAREN) parenDepth--
+          else if (token?.type === TokenType.ARROW && parenDepth > 0) {
+            // Found arrow inside parentheses - this is a complex function type
+            return false // Don't consume the arrow, let the caller handle return type
+          } else if (parenDepth === 0) break
+          i++
+        }
+
+        // If no arrow found inside parentheses, treat as simple return type
+        return false // Don't consume the arrow, let the caller handle return type
+      }
+
+      this.advance() // consume ->
+      return true // Continue parsing more parameters
+    } else {
+      // No arrow after type - end of parameters
+      return false
+    }
   }
 
   private parseUntypedParameterOrReturnType(
@@ -1527,7 +1583,7 @@ export class Parser {
       return this.matchExpression()
     }
 
-    return this.binaryExpression()
+    return this.tryExpressionOrNext()
   }
 
   private conditionalExpressionWithoutPipeline(): AST.Expression {
@@ -4222,6 +4278,32 @@ export class Parser {
     }
 
     return new AST.TemplateExpression(parts, startToken.line, startToken.column)
+  }
+
+  private tryExpressionOrNext(): AST.Expression {
+    if (this.match(TokenType.TRY)) {
+      return this.tryExpression()
+    }
+    return this.binaryExpression()
+  }
+
+  private tryExpression(): AST.TryExpression {
+    const line = this.previous().line
+    const column = this.previous().column
+
+    // オプショナル型パラメータの解析（try<ErrorType>）
+    let errorType: AST.Type | undefined
+
+    if (this.check(TokenType.LESS_THAN)) {
+      this.advance() // consume '<'
+      errorType = this.parseTypeAnnotation()
+      this.consume(TokenType.GREATER_THAN, "Expected '>' after error type")
+    }
+
+    // try式の本体（右結合のため、再帰的にtryExpressionOrNextを呼ぶ）
+    const expression = this.tryExpressionOrNext()
+
+    return new AST.TryExpression(expression, line, column, errorType)
   }
 }
 
