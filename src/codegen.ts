@@ -1518,7 +1518,26 @@ function checkStructuralType(value: any, typeString: string): boolean {
     // カリー化された関数として生成
     if (parameters.length > 1) {
       // 複数パラメータの場合は、実際のクロージャーとして生成
-      const body = this.generateExpression(func.body)
+      let body: string
+
+      // 関数本体が単一のPromise ブロックの場合は、IIFEを避けて直接生成
+      if (func.body.kind === "BlockExpression") {
+        const blockExpr = func.body as BlockExpression
+        if (
+          blockExpr.statements.length === 0 &&
+          blockExpr.returnExpression &&
+          blockExpr.returnExpression.kind === "PromiseBlock"
+        ) {
+          // 単一のPromise ブロックの場合は直接生成
+          body = this.generateExpression(blockExpr.returnExpression)
+        } else {
+          // その他のブロック式は通常通り
+          body = this.generateExpression(func.body)
+        }
+      } else {
+        // 非ブロック式は通常通り
+        body = this.generateExpression(func.body)
+      }
 
       // カリー化された戻り値型を構築: B => C => ... => ReturnType
       let curriedReturnType = returnType
@@ -1549,7 +1568,27 @@ function checkStructuralType(value: any, typeString: string): boolean {
       return generatedFunc
     } else {
       // 単一パラメータの場合
-      const body = this.generateExpression(func.body)
+      let body: string
+
+      // 関数本体が単一のPromise ブロックの場合は、IIFEを避けて直接生成
+      if (func.body.kind === "BlockExpression") {
+        const blockExpr = func.body as BlockExpression
+        if (
+          blockExpr.statements.length === 0 &&
+          blockExpr.returnExpression &&
+          blockExpr.returnExpression.kind === "PromiseBlock"
+        ) {
+          // 単一のPromise ブロックの場合は直接生成
+          body = this.generateExpression(blockExpr.returnExpression)
+        } else {
+          // その他のブロック式は通常通り
+          body = this.generateExpression(func.body)
+        }
+      } else {
+        // 非ブロック式は通常通り
+        body = this.generateExpression(func.body)
+      }
+
       const generatedFunc = `${indent}function ${this.sanitizeIdentifier(func.name)}${typeParams}(${params}): ${returnType} {\n${indent}  return ${body};\n${indent}}`
 
       // コンテキストをクリア
@@ -5033,7 +5072,6 @@ ${indent}}`
 
     // Identifierの場合は型推論結果を重点的にチェック
     if (expr.kind === "Identifier") {
-      const identifier = expr as Identifier
       // 型推論結果を使ってPromise型をチェック
       if (this.typeInferenceResult?.nodeTypeMap?.has(expr)) {
         const exprType = this.typeInferenceResult.nodeTypeMap.get(expr)
@@ -5078,11 +5116,8 @@ ${indent}}`
     // UnionType の場合、すべてのメンバーがPromise型かチェック
     if (type.kind === "UnionType") {
       const unionType = type as any // UnionType
-      return (
-        unionType.types &&
-        unionType.types.every((memberType: Type) =>
-          this.isPromiseType(memberType)
-        )
+      return unionType.types?.every((memberType: Type) =>
+        this.isPromiseType(memberType)
       )
     }
 
