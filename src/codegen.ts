@@ -576,6 +576,7 @@ export class CodeGenerator {
       "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };",
       "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };",
       "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };",
+      "type Task<T> = { tag: 'Task'; computation: () => Promise<T> };",
       "",
       ...this.generateCurryFunction(),
       "",
@@ -1346,6 +1347,40 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "  }",
       "  return result;",
       "}",
+      "",
+      "// Task型 - Monad",
+      "function Task<T>(computation: () => Promise<T>): Task<T> {",
+      "  return { tag: 'Task', computation };",
+      "}",
+      "",
+      "function resolve<T>(value: T): () => Promise<T> {",
+      "  return () => Promise.resolve(value);",
+      "}",
+      "",
+      "// Task Functor: <$>",
+      "function mapTask<A, B>(f: (a: A) => B, fa: Task<A>): Task<B> {",
+      "  return Task(async () => {",
+      "    const a = await fa.computation();",
+      "    return f(a);",
+      "  });",
+      "}",
+      "",
+      "// Task Applicative: <*>",
+      "function applyTask<A, B>(ff: Task<(a: A) => B>, fa: Task<A>): Task<B> {",
+      "  return Task(async () => {",
+      "    const [f, a] = await Promise.all([ff.computation(), fa.computation()]);",
+      "    return f(a);",
+      "  });",
+      "}",
+      "",
+      "// Task Monad: >>=",
+      "function bindTask<A, B>(ma: Task<A>, f: (a: A) => Task<B>): Task<B> {",
+      "  return Task(async () => {",
+      "    const a = await ma.computation();",
+      "    const mb = f(a);",
+      "    return mb.computation();",
+      "  });",
+      "}",
     ]
   }
 
@@ -1961,6 +1996,98 @@ ${indent}}`
     return false
   }
 
+  // Task型かどうかをチェック
+  private isTaskType(type: Type | undefined): boolean {
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "Task"
+      ) {
+        return true
+      }
+    }
+
+    // 直接GenericTypeの場合もチェック
+    if (type.kind === "GenericType" && (type as GenericType).name === "Task") {
+      return true
+    }
+
+    return false
+  }
+
+  // List型かどうかをチェック
+  private isListType(type: Type | undefined): boolean {
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "List"
+      ) {
+        return true
+      }
+    }
+
+    // 直接GenericTypeの場合もチェック
+    if (type.kind === "GenericType" && (type as GenericType).name === "List") {
+      return true
+    }
+
+    return false
+  }
+
+  // Array型かどうかをチェック
+  private isArrayType(type: Type | undefined): boolean {
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "Array"
+      ) {
+        return true
+      }
+    }
+
+    // 直接GenericTypeの場合もチェック
+    if (type.kind === "GenericType" && (type as GenericType).name === "Array") {
+      return true
+    }
+
+    return false
+  }
+
+  // Tuple型かどうかをチェック
+  private isTupleType(type: Type | undefined): boolean {
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (resolvedType && resolvedType.kind === "TupleType") {
+        return true
+      }
+    }
+
+    // 直接TupleTypeの場合もチェック
+    if (type.kind === "TupleType") {
+      return true
+    }
+
+    return false
+  }
+
   // impl ブロックの生成
   generateImplBlock(implBlock: ImplBlock): string {
     const indent = (this.options.indent || "  ").repeat(this.indentLevel)
@@ -2358,6 +2485,78 @@ ${indent}}`
     // CONS演算子の特別処理
     if (binOp.operator === ":") {
       return `Cons(${left}, ${right})`
+    }
+
+    // モナド演算子の特別処理
+    if (
+      binOp.operator === "<$>" ||
+      binOp.operator === "<*>" ||
+      binOp.operator === ">>="
+    ) {
+      const leftType = this.getResolvedType(binOp.left)
+
+      // 右辺の型を取得（<$>の場合は関数）
+      const _rightType = this.getResolvedType(binOp.right)
+
+      // Task型の場合
+      if (this.isTaskType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapTask(${right}, ${left})`
+          case "<*>":
+            return `applyTask(${left}, ${right})`
+          case ">>=":
+            return `bindTask(${left}, ${right})`
+        }
+      }
+
+      // Maybe型の場合
+      if (this.isMaybeType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapMaybe(${left}, ${right})`
+          case "<*>":
+            return `applyMaybe(${left}, ${right})`
+          case ">>=":
+            return `bindMaybe(${left}, ${right})`
+        }
+      }
+
+      // Either型の場合
+      if (this.isEitherType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapEither(${left}, ${right})`
+          case "<*>":
+            return `applyEither(${left}, ${right})`
+          case ">>=":
+            return `bindEither(${left}, ${right})`
+        }
+      }
+
+      // List型の場合
+      if (this.isListType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapList(${left}, ${right})`
+          case "<*>":
+            return `applyList(${left}, ${right})`
+          case ">>=":
+            return `bindList(${left}, ${right})`
+        }
+      }
+
+      // Array型の場合
+      if (this.isArrayType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapArray(${left}, ${right})`
+          case "<*>":
+            return `applyArray(${left}, ${right})`
+          case ">>=":
+            return `bindArray(${left}, ${right})`
+        }
+      }
     }
 
     // 解決済みの型を取得
@@ -2870,6 +3069,8 @@ ${indent}}`
           return `headList(${args.join(", ")})`
         case "tail":
           return `tailList(${args.join(", ")})`
+        case "resolve":
+          return `resolve(${args.join(", ")})`
       }
     }
 
@@ -3815,22 +4016,41 @@ ${indent}}`
     const func = this.generateExpression(map.left)
     const value = this.generateExpression(map.right)
 
-    // 型に基づいて適切なランタイム関数を選択
-    // 実際の型判定はランタイムで行う
-    return `(() => {
-      const _value = ${value};
-      if (_value && _value.tag === 'Tuple') {
-        return { tag: 'Tuple', elements: mapArray(_value.elements, ${func}) };
-      } else if (Array.isArray(_value)) {
-        return mapArray(_value, ${func});
-      } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
-        return mapList(_value, ${func});
-      } else if (_value && (_value.tag === 'Left' || _value.tag === 'Right')) {
-        return mapEither(_value, ${func});
-      } else {
-        return mapMaybe(_value, ${func});
-      }
-    })()`
+    // コンパイル時に型推論結果から適切な関数を選択
+    const valueType = this.getResolvedType(map.right)
+
+    if (this.isTaskType(valueType)) {
+      return `mapTask(${func}, ${value})`
+    } else if (this.isArrayType(valueType)) {
+      return `mapArray(${value}, ${func})`
+    } else if (this.isListType(valueType)) {
+      return `mapList(${value}, ${func})`
+    } else if (this.isEitherType(valueType)) {
+      return `mapEither(${value}, ${func})`
+    } else if (this.isMaybeType(valueType)) {
+      return `mapMaybe(${value}, ${func})`
+    } else if (this.isTupleType(valueType)) {
+      // Tuple型の場合は要素をmapする
+      return `{ tag: 'Tuple', elements: mapArray((${value}).elements, ${func}) }`
+    } else {
+      // 型が不明な場合はランタイム判定にフォールバック
+      return `(() => {
+        const _value = ${value};
+        if (_value && _value.tag === 'Task') {
+          return mapTask(${func}, _value);
+        } else if (_value && _value.tag === 'Tuple') {
+          return { tag: 'Tuple', elements: mapArray(_value.elements, ${func}) };
+        } else if (Array.isArray(_value)) {
+          return mapArray(_value, ${func});
+        } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
+          return mapList(_value, ${func});
+        } else if (_value && (_value.tag === 'Left' || _value.tag === 'Right')) {
+          return mapEither(_value, ${func});
+        } else {
+          return mapMaybe(_value, ${func});
+        }
+      })()`
+    }
   }
 
   // アプリカティブ適用の生成
@@ -3838,22 +4058,41 @@ ${indent}}`
     const funcContainer = this.generateExpression(apply.left)
     const valueContainer = this.generateExpression(apply.right)
 
-    // 型に基づいて適切なランタイム関数を選択
-    return `(() => {
-      const _funcs = ${funcContainer};
-      const _values = ${valueContainer};
-      if (Array.isArray(_funcs) && Array.isArray(_values)) {
-        return applyArray(_funcs, _values);
-      } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') &&
-                _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
-        return applyList(_funcs, _values);
-      } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
-                _values && (_values.tag === 'Left' || _values.tag === 'Right')) {
-        return applyEither(_funcs, _values);
-      } else {
-        return applyMaybe(_funcs, _values);
-      }
-    })()`
+    // コンパイル時に型推論結果から適切な関数を選択
+    const leftType = this.getResolvedType(apply.left)
+    const rightType = this.getResolvedType(apply.right)
+
+    // 両方の型が同じモナド型である必要がある
+    if (this.isTaskType(leftType) && this.isTaskType(rightType)) {
+      return `applyTask(${funcContainer}, ${valueContainer})`
+    } else if (this.isArrayType(leftType) && this.isArrayType(rightType)) {
+      return `applyArray(${funcContainer}, ${valueContainer})`
+    } else if (this.isListType(leftType) && this.isListType(rightType)) {
+      return `applyList(${funcContainer}, ${valueContainer})`
+    } else if (this.isEitherType(leftType) && this.isEitherType(rightType)) {
+      return `applyEither(${funcContainer}, ${valueContainer})`
+    } else if (this.isMaybeType(leftType) && this.isMaybeType(rightType)) {
+      return `applyMaybe(${funcContainer}, ${valueContainer})`
+    } else {
+      // 型が不明な場合はランタイム判定にフォールバック
+      return `(() => {
+        const _funcs = ${funcContainer};
+        const _values = ${valueContainer};
+        if (_funcs && _funcs.tag === 'Task' && _values && _values.tag === 'Task') {
+          return applyTask(_funcs, _values);
+        } else if (Array.isArray(_funcs) && Array.isArray(_values)) {
+          return applyArray(_funcs, _values);
+        } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') &&
+                  _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
+          return applyList(_funcs, _values);
+        } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
+                  _values && (_values.tag === 'Left' || _values.tag === 'Right')) {
+          return applyEither(_funcs, _values);
+        } else {
+          return applyMaybe(_funcs, _values);
+        }
+      })()`
+    }
   }
 
   // モナドバインドの生成
@@ -3861,22 +4100,42 @@ ${indent}}`
     const monadValue = this.generateExpression(bind.left)
     const bindFunc = this.generateExpression(bind.right)
 
-    // 型に基づいて適切なランタイム関数を選択
-    return `(() => {
-      const _monad = ${monadValue};
-      if (_monad && _monad.tag === 'Tuple') {
-        const results = bindArray(_monad.elements, ${bindFunc});
-        return { tag: 'Tuple', elements: results };
-      } else if (Array.isArray(_monad)) {
-        return bindArray(_monad, ${bindFunc});
-      } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
-        return bindList(_monad, ${bindFunc});
-      } else if (_monad && (_monad.tag === 'Left' || _monad.tag === 'Right')) {
-        return bindEither(_monad, ${bindFunc});
-      } else {
-        return bindMaybe(_monad, ${bindFunc});
-      }
-    })()`
+    // コンパイル時に型推論結果から適切な関数を選択
+    const monadType = this.getResolvedType(bind.left)
+
+    if (this.isTaskType(monadType)) {
+      return `bindTask(${monadValue}, ${bindFunc})`
+    } else if (this.isArrayType(monadType)) {
+      return `bindArray(${monadValue}, ${bindFunc})`
+    } else if (this.isListType(monadType)) {
+      return `bindList(${monadValue}, ${bindFunc})`
+    } else if (this.isEitherType(monadType)) {
+      return `bindEither(${monadValue}, ${bindFunc})`
+    } else if (this.isMaybeType(monadType)) {
+      return `bindMaybe(${monadValue}, ${bindFunc})`
+    } else if (this.isTupleType(monadType)) {
+      // Tuple型の場合は要素をbindする
+      return `{ tag: 'Tuple', elements: bindArray((${monadValue}).elements, ${bindFunc}) }`
+    } else {
+      // 型が不明な場合はランタイム判定にフォールバック
+      return `(() => {
+        const _monad = ${monadValue};
+        if (_monad && _monad.tag === 'Task') {
+          return bindTask(_monad, ${bindFunc});
+        } else if (_monad && _monad.tag === 'Tuple') {
+          const results = bindArray(_monad.elements, ${bindFunc});
+          return { tag: 'Tuple', elements: results };
+        } else if (Array.isArray(_monad)) {
+          return bindArray(_monad, ${bindFunc});
+        } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
+          return bindList(_monad, ${bindFunc});
+        } else if (_monad && (_monad.tag === 'Left' || _monad.tag === 'Right')) {
+          return bindEither(_monad, ${bindFunc});
+        } else {
+          return bindMaybe(_monad, ${bindFunc});
+        }
+      })()`
+    }
   }
 
   // 畳み込みモノイドの生成
@@ -3939,6 +4198,8 @@ ${indent}}`
         return "Empty"
       case "Cons":
         return args.length === 2 ? `Cons(${args[0]}, ${args[1]})` : "Cons"
+      case "Task":
+        return args.length > 0 ? `Task(${args[0]})` : "Task"
       default:
         // 一般的なコンストラクタ
         return args.length > 0 ? `${name}(${args.join(", ")})` : name
@@ -4948,7 +5209,7 @@ ${indent}}`
     } else {
       // promiseブロック外では独立関数として処理
       if (resolveExpr.typeArgument) {
-        const typeAnnotation = this.generateTypeString(resolveExpr.typeArgument)
+        const typeAnnotation = this.generateType(resolveExpr.typeArgument)
         return `() => Promise.resolve<${typeAnnotation}>(${value})`
       } else {
         // 型推論の場合
@@ -4967,7 +5228,7 @@ ${indent}}`
     } else {
       // promiseブロック外では独立関数として処理
       if (rejectExpr.typeArgument) {
-        const typeAnnotation = this.generateTypeString(rejectExpr.typeArgument)
+        const typeAnnotation = this.generateType(rejectExpr.typeArgument)
         return `() => Promise.reject<${typeAnnotation}>(${value})`
       } else {
         // 型推論の場合

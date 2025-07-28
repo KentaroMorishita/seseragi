@@ -1397,6 +1397,104 @@ export class TypeInferenceSystem {
     const rightType = new AST.FunctionType(rightTypeVar, rightEitherType, 0, 0)
     env.set("Right", rightType)
 
+    // Task constructor for pattern matching and expressions
+    // Task : (() -> Promise<'a>) -> Task<'a>
+    const taskTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const promiseType = new AST.GenericType("Promise", [taskTypeVar], 0, 0)
+    const computationType = new AST.FunctionType(
+      new AST.PrimitiveType("Unit", 0, 0), // () ->
+      promiseType, // Promise<'a>
+      0,
+      0
+    )
+    const taskResultType = new AST.GenericType("Task", [taskTypeVar], 0, 0)
+    const taskType = new AST.FunctionType(computationType, taskResultType, 0, 0)
+    env.set("Task", taskType)
+
+    // resolve function: 'a -> (() -> Promise<'a>)
+    const resolveTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const resolvePromiseType = new AST.GenericType(
+      "Promise",
+      [resolveTypeVar],
+      0,
+      0
+    )
+    const resolveComputationType = new AST.FunctionType(
+      new AST.PrimitiveType("Unit", 0, 0),
+      resolvePromiseType,
+      0,
+      0
+    )
+    const resolveType = new AST.FunctionType(
+      resolveTypeVar,
+      resolveComputationType,
+      0,
+      0
+    )
+    env.set("resolve", resolveType)
+
+    // reject function: 'a -> (() -> Promise<'b>)
+    const rejectTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const rejectResultTypeVar = new PolymorphicTypeVariable("b", 0, 0)
+    const rejectPromiseType = new AST.GenericType(
+      "Promise",
+      [rejectResultTypeVar],
+      0,
+      0
+    )
+    const rejectComputationType = new AST.FunctionType(
+      new AST.PrimitiveType("Unit", 0, 0),
+      rejectPromiseType,
+      0,
+      0
+    )
+    const rejectType = new AST.FunctionType(
+      rejectTypeVar,
+      rejectComputationType,
+      0,
+      0
+    )
+    env.set("reject", rejectType)
+
+    // Task Functor operation: <$>
+    // (<$>) : ('a -> 'b) -> Task<'a> -> Task<'b>
+    const fmapA = new PolymorphicTypeVariable("a", 0, 0)
+    const fmapB = new PolymorphicTypeVariable("b", 0, 0)
+    const fmapFunc = new AST.FunctionType(fmapA, fmapB, 0, 0)
+    const fmapTaskA = new AST.GenericType("Task", [fmapA], 0, 0)
+    const fmapTaskB = new AST.GenericType("Task", [fmapB], 0, 0)
+    const fmapCurried = new AST.FunctionType(fmapTaskA, fmapTaskB, 0, 0)
+    const fmapTaskType = new AST.FunctionType(fmapFunc, fmapCurried, 0, 0)
+    env.set("mapTask", fmapTaskType)
+
+    // Task Applicative operation: <*>
+    // (<*>) : Task<'a -> 'b> -> Task<'a> -> Task<'b>
+    const applyA = new PolymorphicTypeVariable("a", 0, 0)
+    const applyB = new PolymorphicTypeVariable("b", 0, 0)
+    const applyFunc = new AST.FunctionType(applyA, applyB, 0, 0)
+    const applyTaskFunc = new AST.GenericType("Task", [applyFunc], 0, 0)
+    const applyTaskA = new AST.GenericType("Task", [applyA], 0, 0)
+    const applyTaskB = new AST.GenericType("Task", [applyB], 0, 0)
+    const applyCurried = new AST.FunctionType(applyTaskA, applyTaskB, 0, 0)
+    const applyTaskType = new AST.FunctionType(
+      applyTaskFunc,
+      applyCurried,
+      0,
+      0
+    )
+    env.set("applyTask", applyTaskType)
+
+    // Task Monad operation: >>=
+    // (>>=) : Task<'a> -> ('a -> Task<'b>) -> Task<'b>
+    const bindA = new PolymorphicTypeVariable("a", 0, 0)
+    const bindB = new PolymorphicTypeVariable("b", 0, 0)
+    const bindTaskA = new AST.GenericType("Task", [bindA], 0, 0)
+    const bindTaskB = new AST.GenericType("Task", [bindB], 0, 0)
+    const bindFunc = new AST.FunctionType(bindA, bindTaskB, 0, 0)
+    const bindResult = new AST.FunctionType(bindFunc, bindTaskB, 0, 0)
+    const bindTaskType = new AST.FunctionType(bindTaskA, bindResult, 0, 0)
+    env.set("bindTask", bindTaskType)
+
     // Boolean constants
     const boolType = new AST.PrimitiveType("Bool", 0, 0)
     env.set("true", boolType)
@@ -4440,6 +4538,91 @@ export class TypeInferenceSystem {
             new PolymorphicTypeVariable("a", ctor.line, ctor.column),
             new PolymorphicTypeVariable("b", ctor.line, ctor.column),
           ],
+          ctor.line,
+          ctor.column
+        )
+
+      case "Task":
+        if (ctor.arguments && ctor.arguments.length > 0) {
+          const argType = this.generateConstraintsForExpression(
+            ctor.arguments[0],
+            env
+          )
+          // Task expects (() -> Promise<T>) -> Task<T>
+          // So the argument should be a computation of type () -> Promise<T>
+          const typeVar = new PolymorphicTypeVariable(
+            "a",
+            ctor.line,
+            ctor.column
+          )
+          const promiseType = new AST.GenericType(
+            "Promise",
+            [typeVar],
+            ctor.line,
+            ctor.column
+          )
+          const expectedArgType = new AST.FunctionType(
+            new AST.PrimitiveType("Unit", ctor.line, ctor.column),
+            promiseType,
+            ctor.line,
+            ctor.column
+          )
+
+          // Add constraint that argument must be () -> Promise<T>
+          this.addConstraint(
+            new TypeConstraint(
+              argType,
+              expectedArgType,
+              ctor.line,
+              ctor.column,
+              "Task constructor argument constraint"
+            )
+          )
+
+          return new AST.GenericType("Task", [typeVar], ctor.line, ctor.column)
+        } else if (!ctor.arguments || ctor.arguments.length === 0) {
+          // Task without arguments - treat as a curried function
+          // Task : (() -> Promise<'a>) -> Task<'a>
+          const typeVar = new PolymorphicTypeVariable(
+            "a",
+            ctor.line,
+            ctor.column
+          )
+          const promiseType = new AST.GenericType(
+            "Promise",
+            [typeVar],
+            ctor.line,
+            ctor.column
+          )
+          const computationType = new AST.FunctionType(
+            new AST.PrimitiveType("Unit", ctor.line, ctor.column),
+            promiseType,
+            ctor.line,
+            ctor.column
+          )
+          const taskType = new AST.GenericType(
+            "Task",
+            [typeVar],
+            ctor.line,
+            ctor.column
+          )
+          return new AST.FunctionType(
+            computationType,
+            taskType,
+            ctor.line,
+            ctor.column
+          )
+        }
+        this.errors.push(
+          new TypeInferenceError(
+            "Task constructor requires exactly one argument",
+            ctor.line,
+            ctor.column
+          )
+        )
+        return new AST.GenericType(
+          "Task",
+          [new PolymorphicTypeVariable("a", ctor.line, ctor.column)],
           ctor.line,
           ctor.column
         )

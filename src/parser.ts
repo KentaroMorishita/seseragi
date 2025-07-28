@@ -3885,7 +3885,33 @@ export class Parser {
       )
     }
 
-    return this.callExpressionWithBoundaryCheck()
+    return this.functionApplicationExpressionWithBoundaryCheck()
+  }
+
+  private functionApplicationExpressionWithBoundaryCheck(): AST.Expression {
+    let expr = this.callExpressionWithBoundaryCheck()
+
+    while (true) {
+      // 文境界チェック - 改行後に新しい文が来る場合は停止
+      if (this.isNewStatementStarting()) {
+        break
+      }
+
+      if (this.match(TokenType.FUNCTION_APPLICATION)) {
+        this.skipNewlines()
+        const right = this.functionApplicationExpressionWithBoundaryCheck() // 右結合のため再帰
+        expr = new AST.FunctionApplicationOperator(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
+    }
+
+    return expr
   }
 
   // 文境界をチェックする関数呼び出し式 parser - ここが重要

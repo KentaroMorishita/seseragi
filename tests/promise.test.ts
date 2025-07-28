@@ -80,7 +80,7 @@ describe("Promise System", () => {
         let resolver = resolve<String> "success"
       `
       const result = compileSeseragi(source)
-      expect(result).toContain("Promise.resolve<String>")
+      expect(result).toContain("Promise.resolve<string>")
       expect(result).toContain('"success"')
     })
 
