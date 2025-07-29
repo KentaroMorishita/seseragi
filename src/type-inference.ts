@@ -1433,6 +1433,43 @@ export class TypeInferenceSystem {
     )
     env.set("resolve", resolveType)
 
+    // run function: Task<'a> -> Promise<'a>
+    const runTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const runTaskType = new AST.GenericType("Task", [runTypeVar], 0, 0)
+    const runPromiseType = new AST.GenericType("Promise", [runTypeVar], 0, 0)
+    const runType = new AST.FunctionType(runTaskType, runPromiseType, 0, 0)
+    env.set("run", runType)
+    env.set("ssrgRun", runType)
+
+    // ssrgTryRun function: Task<'a> -> Promise<Either<String, 'a>>
+    const tryRunTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const tryRunInputTaskType = new AST.GenericType(
+      "Task",
+      [tryRunTypeVar],
+      0,
+      0
+    )
+    const tryRunEitherType = new AST.GenericType(
+      "Either",
+      [new AST.PrimitiveType("String", 0, 0), tryRunTypeVar],
+      0,
+      0
+    )
+    const tryRunOutputPromiseType = new AST.GenericType(
+      "Promise",
+      [tryRunEitherType],
+      0,
+      0
+    )
+    const tryRunType = new AST.FunctionType(
+      tryRunInputTaskType,
+      tryRunOutputPromiseType,
+      0,
+      0
+    )
+    env.set("ssrgTryRun", tryRunType)
+    env.set("tryRun", tryRunType)
+
     // reject function: 'a -> (() -> Promise<'b>)
     const rejectTypeVar = new PolymorphicTypeVariable("a", 0, 0)
     const rejectResultTypeVar = new PolymorphicTypeVariable("b", 0, 0)
@@ -3158,6 +3195,53 @@ export class TypeInferenceSystem {
         // print/putStrLn/show関数は任意の型を受け取り、Unit型を返す
         this.generateConstraintsForExpression(call.arguments[0], env)
         return new AST.PrimitiveType("Unit", call.line, call.column)
+      }
+
+      // tryRun関数の特別処理
+      if (
+        (funcName === "tryRun" || funcName === "ssrgTryRun") &&
+        call.arguments.length === 1
+      ) {
+        // 引数の型を推論
+        const argType = this.generateConstraintsForExpression(
+          call.arguments[0],
+          env
+        )
+
+        // エラー型を決定（型引数があれば使用、なければString）
+        let errorType: AST.Type
+        if (call.typeArguments && call.typeArguments.length > 0) {
+          errorType = call.typeArguments[0]
+        } else {
+          errorType = new AST.PrimitiveType("String", call.line, call.column)
+        }
+
+        // Task<T> から T を取得
+        let valueType: AST.Type
+        if (
+          argType.kind === "GenericType" &&
+          (argType as AST.GenericType).name === "Task"
+        ) {
+          const taskType = argType as AST.GenericType
+          valueType = taskType.typeArguments[0]
+        } else {
+          // エラー: 引数はTask型でなければならない
+          valueType = this.freshTypeVariable(call.line, call.column)
+        }
+
+        // Promise<Either<ErrorType, T>> を返す
+        const eitherType = new AST.GenericType(
+          "Either",
+          [errorType, valueType],
+          call.line,
+          call.column
+        )
+        return new AST.GenericType(
+          "Promise",
+          [eitherType],
+          call.line,
+          call.column
+        )
       }
     }
 

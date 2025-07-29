@@ -1357,6 +1357,23 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "  return () => Promise.resolve(value);",
       "}",
       "",
+      "// Task runner: run",
+      "function ssrgRun<T>(task: Task<T>): Promise<T> {",
+      "  return task.computation();",
+      "}",
+      "",
+      "// Task runner with error handling: tryRun",
+      "function ssrgTryRun<T>(task: Task<T>): Promise<Either<string, T>> {",
+      "  return (async () => {",
+      "    try {",
+      "      const result = await task.computation();",
+      "      return Right(result);",
+      "    } catch (error) {",
+      "      return Left(error instanceof Error ? error.message : String(error));",
+      "    }",
+      "  })();",
+      "}",
+      "",
       "// Task Functor: <$>",
       "function mapTask<A, B>(f: (a: A) => B, fa: Task<A>): Task<B> {",
       "  return Task(async () => {",
@@ -3071,6 +3088,10 @@ ${indent}}`
           return `tailList(${args.join(", ")})`
         case "resolve":
           return `resolve(${args.join(", ")})`
+        case "run":
+          return `ssrgRun(${args.join(", ")})`
+        case "tryRun":
+          return `ssrgTryRun(${args.join(", ")})`
       }
     }
 
@@ -3135,6 +3156,20 @@ ${indent}}`
     console.log(
       `🔧 generateFunctionApplication called: func=${app.function.kind}, arg=${app.argument.kind}`
     )
+
+    // ビルトイン関数の特別処理
+    if (app.function.kind === "Identifier") {
+      const identifier = app.function as Identifier
+      const arg = this.generateExpression(app.argument)
+
+      switch (identifier.name) {
+        case "run":
+          return `ssrgRun(${arg})`
+        case "tryRun":
+          return `ssrgTryRun(${arg})`
+      }
+    }
+
     const func = this.generateExpression(app.function)
     let arg = this.generateExpression(app.argument)
 
