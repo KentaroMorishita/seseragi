@@ -15,6 +15,7 @@ export type Either<L, R> =
   | { tag: "Left"; value: L }
   | { tag: "Right"; value: R }
 export type List<T> = { tag: "Empty" } | { tag: "Cons"; head: T; tail: List<T> }
+export type Task<T> = { tag: "Task"; computation: () => Promise<T> }
 
 // =============================================================================
 // カリー化関数
@@ -866,3 +867,51 @@ export const ssrgIsType = (value: unknown, typeString: string): boolean => {
 
   return normalizedActual === normalizedExpected
 }
+
+// =============================================================================
+// Task型 - Monad
+// =============================================================================
+
+export const Task = <T>(computation: () => Promise<T>): Task<T> => ({
+  tag: "Task",
+  computation,
+})
+
+// Task型のrunner
+export const runTask = <T>(task: Task<T>): Promise<T> => {
+  return task.computation()
+}
+
+// resolve関数 - 値をPromiseに包む
+export const resolve = <T>(value: T): (() => Promise<T>) => {
+  return () => Promise.resolve(value)
+}
+
+// Functor: map (<$>)
+export const mapTask = <T, U>(task: Task<T>, f: (a: T) => U): Task<U> =>
+  Task(async () => f(await task.computation()))
+
+// Applicative: pure + apply (<*>)
+export const pureTask = <T>(value: T): Task<T> =>
+  Task(() => Promise.resolve(value))
+
+export const applyTask = <T, U>(
+  taskF: Task<(a: T) => U>,
+  taskA: Task<T>
+): Task<U> =>
+  Task(async () => {
+    const f = await taskF.computation()
+    const a = await taskA.computation()
+    return f(a)
+  })
+
+// Monad: flatMap (>>=)
+export const bindTask = <T, U>(
+  task: Task<T>,
+  f: (value: T) => Task<U>
+): Task<U> =>
+  Task(async () => {
+    const value = await task.computation()
+    const newTask = f(value)
+    return await newTask.computation()
+  })
