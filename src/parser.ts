@@ -149,12 +149,7 @@ export class Parser {
         return null
       }
 
-      // Signal代入をチェック
-      if (this.checkSignalAssignment()) {
-        return this.signalAssignmentStatement()
-      }
-
-      // 式ステートメントとして処理
+      // 式ステートメントとして処理（Signal代入も含む）
       const expr = this.expression()
       return new AST.ExpressionStatement(
         expr,
@@ -1564,6 +1559,29 @@ export class Parser {
   }
 
   private conditionalExpression(): AST.Expression {
+    return this.assignmentExpression()
+  }
+
+  // Signal代入演算子（最弱優先順位）
+  private assignmentExpression(): AST.Expression {
+    let expr = this.conditionalExpressionWithoutAssignment()
+
+    while (this.match(TokenType.SIGNAL_ASSIGN)) {
+      const operator = this.previous().value
+      const right = this.conditionalExpressionWithoutAssignment()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private conditionalExpressionWithoutAssignment(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpression()
       this.skipNewlines()
@@ -2709,9 +2727,14 @@ export class Parser {
         if (expr.kind === "Identifier") {
           const identifierExpr = expr as AST.Identifier
           if (
-            ["show", "print", "putStrLn", "toString", "detach", "unsubscribe"].includes(
-              identifierExpr.name
-            )
+            [
+              "show",
+              "print",
+              "putStrLn",
+              "toString",
+              "detach",
+              "unsubscribe",
+            ].includes(identifierExpr.name)
           ) {
             // builtin関数の場合は、引数として一つの完全な式を解析
             // 再帰を避けるため、primaryExpression()からpostfix操作を手動で処理
@@ -2750,7 +2773,13 @@ export class Parser {
             }
 
             return new AST.BuiltinFunctionCall(
-              identifierExpr.name as "print" | "putStrLn" | "toString" | "show" | "detach" | "unsubscribe",
+              identifierExpr.name as
+                | "print"
+                | "putStrLn"
+                | "toString"
+                | "show"
+                | "detach"
+                | "unsubscribe",
               [arg],
               identifierExpr.line,
               identifierExpr.column
@@ -2764,7 +2793,7 @@ export class Parser {
             const arg2 = this.check(TokenType.NOT)
               ? this.parseUnaryOnly()
               : this.primaryExpression()
-            
+
             return new AST.BuiltinFunctionCall(
               "subscribe",
               [arg1, arg2],
@@ -2823,9 +2852,6 @@ export class Parser {
       type === TokenType.TAIL ||
       type === TokenType.TYPEOF ||
       type === TokenType.TYPEOF_WITH_ALIASES ||
-      type === TokenType.SUBSCRIBE ||
-      type === TokenType.UNSUBSCRIBE ||
-      type === TokenType.DETACH ||
       type === TokenType.SUBSCRIBE ||
       type === TokenType.UNSUBSCRIBE ||
       type === TokenType.DETACH ||
@@ -3493,9 +3519,6 @@ export class Parser {
       type === TokenType.TAIL ||
       type === TokenType.TYPEOF ||
       type === TokenType.TYPEOF_WITH_ALIASES ||
-      type === TokenType.SUBSCRIBE ||
-      type === TokenType.UNSUBSCRIBE ||
-      type === TokenType.DETACH ||
       type === TokenType.SUBSCRIBE ||
       type === TokenType.UNSUBSCRIBE ||
       type === TokenType.DETACH ||
@@ -4364,74 +4387,77 @@ export class Parser {
   }
 
   // * が単項演算子として解釈されるべき文脈かどうかを判定
+  private isBuiltinFunction(identifier: string): boolean {
+    const builtinFunctions = [
+      "print",
+      "println",
+      "show",
+      "toString",
+      "toInt",
+      "toFloat",
+      "head",
+      "tail",
+      "length",
+      "reverse",
+      "map",
+      "filter",
+      "fold",
+      "subscribe",
+      "unsubscribe",
+      "detach",
+      "getValue",
+    ]
+    return builtinFunctions.includes(identifier)
+  }
+
   private isUnaryMultiplyContext(): boolean {
     // * の前のトークンをチェック
     if (this.current === 0) {
       return true // 式の開始位置
     }
-    
+
     const prevToken = this.tokens[this.current - 1]
-    
+
     // 以下の場合は単項演算子として解釈
     switch (prevToken.type) {
-      case TokenType.LEFT_PAREN:        // (*signal)
-      case TokenType.ASSIGN:            // = *signal
-      case TokenType.SIGNAL_ASSIGN:     // := *signal
-      case TokenType.COMMA:             // , *signal
-      case TokenType.PIPE:              // | *signal
-      case TokenType.ARROW:             // -> *signal
-      case TokenType.LEFT_BRACE:        // { *signal
-      case TokenType.LEFT_BRACKET:      // [ *signal
-      case TokenType.COLON:             // : *signal
-      case TokenType.SEMICOLON:         // ; *signal
-      case TokenType.NEWLINE:           // 改行後の *signal
-      case TokenType.IF:                // if *signal
-      case TokenType.THEN:              // then *signal
-      case TokenType.ELSE:              // else *signal
-      case TokenType.CASE:              // case *signal
-      case TokenType.WHEN:              // when *signal
-      case TokenType.LET:               // let x = *signal
-      case TokenType.FN:                // fn f = *signal
+      case TokenType.LEFT_PAREN: // (*signal)
+      case TokenType.ASSIGN: // = *signal
+      case TokenType.SIGNAL_ASSIGN: // := *signal
+      case TokenType.COMMA: // , *signal
+      case TokenType.PIPE: // | *signal
+      case TokenType.ARROW: // -> *signal
+      case TokenType.LEFT_BRACE: // { *signal
+      case TokenType.LEFT_BRACKET: // [ *signal
+      case TokenType.COLON: // : *signal
+      case TokenType.SEMICOLON: // ; *signal
+      case TokenType.NEWLINE: // 改行後の *signal
+      case TokenType.IF: // if *signal
+      case TokenType.THEN: // then *signal
+      case TokenType.ELSE: // else *signal
+      case TokenType.CASE: // case *signal
+      case TokenType.WHEN: // when *signal
+      case TokenType.LET: // let x = *signal
+      case TokenType.FN: // fn f = *signal
         return true
-      
+
       // 以下の場合は二項演算子（乗算）として解釈
-      case TokenType.IDENTIFIER:        // x *signal (乗算)
-      case TokenType.INTEGER:           // 42 *signal (乗算)
-      case TokenType.FLOAT:             // 3.14 *signal (乗算)
-      case TokenType.RIGHT_PAREN:       // (x) *signal (乗算)
-      case TokenType.RIGHT_BRACE:       // } *signal (乗算)
-      case TokenType.RIGHT_BRACKET:     // ] *signal (乗算)
+      case TokenType.IDENTIFIER:
+        // ただし、組み込み関数の場合は単項演算子として扱う
+        if (this.isBuiltinFunction(prevToken.value)) {
+          return true
+        }
+        return false // x *signal (乗算)
+      case TokenType.INTEGER: // 42 *signal (乗算)
+      case TokenType.FLOAT: // 3.14 *signal (乗算)
+      case TokenType.RIGHT_PAREN: // (x) *signal (乗算)
+      case TokenType.RIGHT_BRACE: // } *signal (乗算)
+      case TokenType.RIGHT_BRACKET: // ] *signal (乗算)
         return false
-      
+
       default:
         // その他の演算子の後は単項演算子として解釈
         return true
     }
-  }
-
-  // Signal代入のチェック（identifier := value の形式）
-  private checkSignalAssignment(): boolean {
-    if (this.check(TokenType.IDENTIFIER)) {
-      const saved = this.current
-      this.advance() // identifier を消費
-      const hasAssign = this.check(TokenType.SIGNAL_ASSIGN)
-      this.current = saved // 位置を戻す
-      return hasAssign
-    }
-    return false
-  }
-
-  // Signal代入文の解析
-  private signalAssignmentStatement(): AST.ExpressionStatement {
-    const target = this.primaryExpression() // identifier
-    const line = this.current < this.tokens.length ? this.tokens[this.current].line : 1
-    const column = this.current < this.tokens.length ? this.tokens[this.current].column : 1
-    
-    this.consume(TokenType.SIGNAL_ASSIGN, "Expected ':=' for signal assignment")
-    const value = this.expression()
-    
-    const assignmentExpr = new AST.AssignmentExpression(target, value, line, column)
-    return new AST.ExpressionStatement(assignmentExpr, line, column)
   }
 }
 

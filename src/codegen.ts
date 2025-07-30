@@ -1405,7 +1405,7 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "type Signal<T> = {",
       "  readonly isSignal: true",
       "  readonly getValue: () => T",
-      "  readonly setValue: ((value: T) => void) & ((value: (prev: T) => T) => void)",
+      "  readonly setValue: (value: T) => void",
       "  readonly subscribe: (observer: (value: T) => void) => string",
       "  readonly unsubscribe: (key: string) => void",
       "  readonly detach: () => void",
@@ -1421,13 +1421,8 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "  const signal: Signal<T> = {",
       "    isSignal: true,",
       "    getValue: () => currentValue,",
-      "    setValue: (value: T | ((prev: T) => T)) => {",
-      "      if (typeof value === 'function') {",
-      "        const fn = value as (prev: T) => T",
-      "        currentValue = fn(currentValue)",
-      "      } else {",
-      "        currentValue = value",
-      "      }",
+      "    setValue: (value: T) => {",
+      "      currentValue = value",
       "      for (const observer of observers.values()) {",
       "        observer(currentValue)",
       "      }",
@@ -1452,7 +1447,7 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "  return signal",
       "}",
       "",
-      "function setSignal<T>(signal: Signal<T>, value: T | ((prev: T) => T)): void {",
+      "function setSignal<T>(signal: Signal<T>, value: T): void {",
       "  signal.setValue(value)",
       "}",
       "",
@@ -1480,10 +1475,19 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "function applySignal<T, U>(fnSignal: Signal<(value: T) => U>, valueSignal: Signal<T>): Signal<U> {",
       "  const resultSignal = createSignal(fnSignal.getValue()(valueSignal.getValue()))",
       "  const fnSubscriptionKey = fnSignal.subscribe((newFn) => {",
-      "    resultSignal.setValue(newFn(valueSignal.getValue()))",
+      "    if (typeof newFn === 'function') {",
+      "      resultSignal.setValue(newFn(valueSignal.getValue()))",
+      "    } else {",
+      "      console.error('applySignal: newFn is not a function:', newFn, typeof newFn)",
+      "    }",
       "  })",
       "  const valueSubscriptionKey = valueSignal.subscribe((newValue) => {",
-      "    resultSignal.setValue(fnSignal.getValue()(newValue))",
+      "    const currentFn = fnSignal.getValue()",
+      "    if (typeof currentFn === 'function') {",
+      "      resultSignal.setValue(currentFn(newValue))",
+      "    } else {",
+      "      console.error('applySignal: currentFn is not a function:', currentFn, typeof currentFn)",
+      "    }",
       "  })",
       "  resultSignal.detachHandlers.push(() => fnSignal.unsubscribe(fnSubscriptionKey))",
       "  resultSignal.detachHandlers.push(() => valueSignal.unsubscribe(valueSubscriptionKey))",
@@ -2173,6 +2177,14 @@ ${indent}}`
   private isSignalType(type: Type | undefined): boolean {
     if (!type) return false
 
+    // 直接GenericTypeの場合をチェック（最優先）
+    if (
+      type.kind === "GenericType" &&
+      (type as GenericType).name === "Signal"
+    ) {
+      return true
+    }
+
     // 型推論結果がある場合は置換を適用
     if (this.typeInferenceResult?.substitution) {
       const resolvedType = this.typeInferenceResult.substitution.apply(type)
@@ -2185,10 +2197,8 @@ ${indent}}`
       }
     }
 
-    // 直接GenericTypeの場合もチェック
-    if (type.kind === "GenericType" && (type as GenericType).name === "Signal") {
-      return true
-    }
+    // デバッグ用ログ
+    console.log(`🔧 isSignalType check: type.kind=${type.kind}, type=`, type)
 
     return false
   }
@@ -2383,12 +2393,23 @@ ${indent}}`
     lines.push("  }")
     lines.push("  // Fall back to native JavaScript operator")
     lines.push("  switch (operator) {")
-    lines.push("    case '+': return left + right;")
-    lines.push("    case '-': return left - right;")
-    lines.push("    case '*': return left * right;")
-    lines.push("    case '/': return left / right;")
-    lines.push("    case '%': return left % right;")
-    lines.push("    case '**': return left ** right;")
+    lines.push("    case '+': {")
+    lines.push(
+      "      // 型安全な加算：両方が数値の場合のみ数値演算、それ以外は文字列連結"
+    )
+    lines.push(
+      "      if (typeof left === 'number' && typeof right === 'number') return left + right;"
+    )
+    lines.push(
+      "      if (typeof left === 'string' || typeof right === 'string') return String(left) + String(right);"
+    )
+    lines.push("      return left + right;")
+    lines.push("    }")
+    lines.push("    case '-': return Number(left) - Number(right);")
+    lines.push("    case '*': return Number(left) * Number(right);")
+    lines.push("    case '/': return Number(left) / Number(right);")
+    lines.push("    case '%': return Number(left) % Number(right);")
+    lines.push("    case '**': return Number(left) ** Number(right);")
     lines.push("    case '==': return left == right;")
     lines.push("    case '!=': return left != right;")
     lines.push("    case '<': return left < right;")
@@ -2664,6 +2685,11 @@ ${indent}}`
       return `Cons(${left}, ${right})`
     }
 
+    // Signal代入演算子の特別処理
+    if (binOp.operator === ":=") {
+      return `${left}.setValue(${right})`
+    }
+
     // モナド演算子の特別処理
     if (
       binOp.operator === "<$>" ||
@@ -2671,6 +2697,7 @@ ${indent}}`
       binOp.operator === ">>="
     ) {
       const leftType = this.getResolvedType(binOp.left)
+      console.log(`🔧 BinaryOperation ${binOp.operator}: leftType =`, leftType)
 
       // 右辺の型を取得（<$>の場合は関数）
       const _rightType = this.getResolvedType(binOp.right)
@@ -4247,7 +4274,9 @@ ${indent}}`
     // コンパイル時に型推論結果から適切な関数を選択
     const valueType = this.getResolvedType(map.right)
 
-    if (this.isTaskType(valueType)) {
+    if (this.isSignalType(valueType)) {
+      return `mapSignal(${value}, ${func})`
+    } else if (this.isTaskType(valueType)) {
       return `mapTask(${func}, ${value})`
     } else if (this.isArrayType(valueType)) {
       return `mapArray(${value}, ${func})`
@@ -4261,23 +4290,10 @@ ${indent}}`
       // Tuple型の場合は要素をmapする
       return `{ tag: 'Tuple', elements: mapArray((${value}).elements, ${func}) }`
     } else {
-      // 型が不明な場合はランタイム判定にフォールバック
-      return `(() => {
-        const _value = ${value};
-        if (_value && _value.tag === 'Task') {
-          return mapTask(${func}, _value);
-        } else if (_value && _value.tag === 'Tuple') {
-          return { tag: 'Tuple', elements: mapArray(_value.elements, ${func}) };
-        } else if (Array.isArray(_value)) {
-          return mapArray(_value, ${func});
-        } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
-          return mapList(_value, ${func});
-        } else if (_value && (_value.tag === 'Left' || _value.tag === 'Right')) {
-          return mapEither(_value, ${func});
-        } else {
-          return mapMaybe(_value, ${func});
-        }
-      })()`
+      // 型推論失敗時のフォールバック
+      throw new Error(
+        `Unknown type for functor map: ${JSON.stringify(valueType)}`
+      )
     }
   }
 
@@ -4291,7 +4307,9 @@ ${indent}}`
     const rightType = this.getResolvedType(apply.right)
 
     // 両方の型が同じモナド型である必要がある
-    if (this.isTaskType(leftType) && this.isTaskType(rightType)) {
+    if (this.isSignalType(leftType) && this.isSignalType(rightType)) {
+      return `applySignal(${funcContainer}, ${valueContainer})`
+    } else if (this.isTaskType(leftType) && this.isTaskType(rightType)) {
       return `applyTask(${funcContainer}, ${valueContainer})`
     } else if (this.isArrayType(leftType) && this.isArrayType(rightType)) {
       return `applyArray(${funcContainer}, ${valueContainer})`
@@ -4302,24 +4320,10 @@ ${indent}}`
     } else if (this.isMaybeType(leftType) && this.isMaybeType(rightType)) {
       return `applyMaybe(${funcContainer}, ${valueContainer})`
     } else {
-      // 型が不明な場合はランタイム判定にフォールバック
-      return `(() => {
-        const _funcs = ${funcContainer};
-        const _values = ${valueContainer};
-        if (_funcs && _funcs.tag === 'Task' && _values && _values.tag === 'Task') {
-          return applyTask(_funcs, _values);
-        } else if (Array.isArray(_funcs) && Array.isArray(_values)) {
-          return applyArray(_funcs, _values);
-        } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') &&
-                  _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
-          return applyList(_funcs, _values);
-        } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
-                  _values && (_values.tag === 'Left' || _values.tag === 'Right')) {
-          return applyEither(_funcs, _values);
-        } else {
-          return applyMaybe(_funcs, _values);
-        }
-      })()`
+      // 型推論失敗時のフォールバック
+      throw new Error(
+        `Unknown types for applicative apply: left=${JSON.stringify(leftType)}, right=${JSON.stringify(rightType)}`
+      )
     }
   }
 
@@ -4341,28 +4345,16 @@ ${indent}}`
       return `bindEither(${monadValue}, ${bindFunc})`
     } else if (this.isMaybeType(monadType)) {
       return `bindMaybe(${monadValue}, ${bindFunc})`
+    } else if (this.isSignalType(monadType)) {
+      return `bindSignal(${monadValue}, ${bindFunc})`
     } else if (this.isTupleType(monadType)) {
       // Tuple型の場合は要素をbindする
       return `{ tag: 'Tuple', elements: bindArray((${monadValue}).elements, ${bindFunc}) }`
     } else {
-      // 型が不明な場合はランタイム判定にフォールバック
-      return `(() => {
-        const _monad = ${monadValue};
-        if (_monad && _monad.tag === 'Task') {
-          return bindTask(_monad, ${bindFunc});
-        } else if (_monad && _monad.tag === 'Tuple') {
-          const results = bindArray(_monad.elements, ${bindFunc});
-          return { tag: 'Tuple', elements: results };
-        } else if (Array.isArray(_monad)) {
-          return bindArray(_monad, ${bindFunc});
-        } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
-          return bindList(_monad, ${bindFunc});
-        } else if (_monad && (_monad.tag === 'Left' || _monad.tag === 'Right')) {
-          return bindEither(_monad, ${bindFunc});
-        } else {
-          return bindMaybe(_monad, ${bindFunc});
-        }
-      })()`
+      // 型推論失敗時のフォールバック
+      throw new Error(
+        `Unknown type for monad bind: ${JSON.stringify(monadType)}`
+      )
     }
   }
 

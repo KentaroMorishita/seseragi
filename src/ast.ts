@@ -484,10 +484,15 @@ export class SignalExpression extends Expression {
 // Signal代入式 (signal := value)
 export class AssignmentExpression extends Expression {
   kind = "AssignmentExpression"
-  target: Expression  // Signal変数
-  value: Expression   // 代入する値または関数
+  target: Expression // Signal変数
+  value: Expression // 代入する値または関数
 
-  constructor(target: Expression, value: Expression, line: number, column: number) {
+  constructor(
+    target: Expression,
+    value: Expression,
+    line: number,
+    column: number
+  ) {
     super(line, column)
     this.target = target
     this.value = value

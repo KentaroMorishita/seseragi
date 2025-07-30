@@ -1224,7 +1224,9 @@ export class TypeInferenceSystem {
     console.log("🔧 PHASE 1: Starting constraint generation")
     // 制約生成
     this.generateConstraints(program, env)
-    console.log(`🔧 PHASE 1 COMPLETE: Generated ${this.constraints.length} constraints`)
+    console.log(
+      `🔧 PHASE 1 COMPLETE: Generated ${this.constraints.length} constraints`
+    )
 
     console.log("🔧 PHASE 2: Starting constraint resolution")
     // 制約解決（単一化）
@@ -2032,16 +2034,22 @@ export class TypeInferenceSystem {
         finalType = generalizedType
       } else {
         // 値型の場合：段階的制約解決を試行
-        console.log(`🔧 Attempting staged resolution for variable ${varDecl.name}`)
+        console.log(
+          `🔧 Attempting staged resolution for variable ${varDecl.name}`
+        )
         const newConstraints = this.constraints.slice(constraintsBeforeInit)
-        console.log(`🔧 Variable ${varDecl.name} generated ${newConstraints.length} new constraints`)
-        
+        console.log(
+          `🔧 Variable ${varDecl.name} generated ${newConstraints.length} new constraints`
+        )
+
         // 新しい制約のみを解決してinitTypeを具体化を試行
         const partialSubstitution = this.solveConstraintsPartial(newConstraints)
         const resolvedInitType = partialSubstitution.apply(initType)
-        
-        console.log(`🔧 Variable ${varDecl.name}: ${this.typeToString(initType)} -> ${this.typeToString(resolvedInitType)}`)
-        
+
+        console.log(
+          `🔧 Variable ${varDecl.name}: ${this.typeToString(initType)} -> ${this.typeToString(resolvedInitType)}`
+        )
+
         // 解決された型を環境に設定
         env.set(varDecl.name, resolvedInitType)
         finalType = resolvedInitType
@@ -2723,7 +2731,7 @@ export class TypeInferenceSystem {
       )
       return this.freshTypeVariable(identifier.line, identifier.column)
     }
-    
+
     // Debug: Log the type we found
     if (identifier.name === "task1" || identifier.name === "taskFunc") {
       console.log(`🔧 Found type for ${identifier.name}: ${type.kind}`)
@@ -2910,6 +2918,41 @@ export class TypeInferenceSystem {
 
         // 結果の型もList<leftType>
         return expectedListType
+      }
+
+      case ":=": {
+        // Signal代入演算子: Signal<a> := a -> Signal<a>
+        // 左オペランドはSignal<T>、右オペランドはT、結果はSignal<T>
+        if (leftType.kind === "GenericType") {
+          const genType = leftType as AST.GenericType
+          if (genType.name === "Signal" && genType.typeArguments.length === 1) {
+            const signalValueType = genType.typeArguments[0]
+
+            // 右オペランドはSignalの値型と一致する必要がある
+            this.addConstraint(
+              new TypeConstraint(
+                rightType,
+                signalValueType,
+                binOp.right.line,
+                binOp.right.column,
+                `Signal assignment (:=) value must match Signal type ${this.typeToString(signalValueType)}`
+              )
+            )
+
+            // 結果は左オペランドと同じSignal<T>型
+            return leftType
+          }
+        }
+
+        // 左オペランドがSignal型でない場合はエラー
+        this.errors.push(
+          new TypeInferenceError(
+            `Signal assignment (:=) can only be applied to Signal types, but got ${this.typeToString(leftType)}`,
+            binOp.left.line,
+            binOp.left.column
+          )
+        )
+        return this.freshTypeVariable(binOp.line, binOp.column)
       }
 
       default:
@@ -3207,10 +3250,10 @@ export class TypeInferenceSystem {
         if (operandType.kind === "GenericType") {
           const genType = operandType as AST.GenericType
           if (genType.name === "Signal" && genType.typeArguments.length === 1) {
-            return genType.typeArguments[0]  // Signal<T> -> T
+            return genType.typeArguments[0] // Signal<T> -> T
           }
         }
-        
+
         // Signal型でない場合はエラー
         this.errors.push(
           new TypeInferenceError(
@@ -3631,56 +3674,101 @@ export class TypeInferenceSystem {
       case "subscribe":
         // Type: Signal<T> -> (T -> Unit) -> String
         if (call.arguments.length === 2) {
-          const signalType = this.generateConstraintsForExpression(call.arguments[0], env)
-          const observerType = this.generateConstraintsForExpression(call.arguments[1], env)
-          
+          const signalType = this.generateConstraintsForExpression(
+            call.arguments[0],
+            env
+          )
+          const observerType = this.generateConstraintsForExpression(
+            call.arguments[1],
+            env
+          )
+
           const valueType = this.freshTypeVariable(call.line, call.column)
-          const expectedSignalType = new AST.GenericType("Signal", [valueType], call.line, call.column)
+          const expectedSignalType = new AST.GenericType(
+            "Signal",
+            [valueType],
+            call.line,
+            call.column
+          )
           const expectedObserverType = new AST.FunctionType(
             valueType,
             new AST.PrimitiveType("Unit", call.line, call.column),
             call.line,
             call.column
           )
-          
-          this.addConstraint(new TypeConstraint(
-            signalType, expectedSignalType, call.line, call.column,
-            "subscribe requires Signal<T> as first argument"
-          ))
-          this.addConstraint(new TypeConstraint(
-            observerType, expectedObserverType, call.line, call.column,
-            "subscribe requires (T -> Unit) observer function as second argument"
-          ))
-          
+
+          this.addConstraint(
+            new TypeConstraint(
+              signalType,
+              expectedSignalType,
+              call.line,
+              call.column,
+              "subscribe requires Signal<T> as first argument"
+            )
+          )
+          this.addConstraint(
+            new TypeConstraint(
+              observerType,
+              expectedObserverType,
+              call.line,
+              call.column,
+              "subscribe requires (T -> Unit) observer function as second argument"
+            )
+          )
+
           return new AST.PrimitiveType("String", call.line, call.column)
         }
-        throw new Error("subscribe function requires exactly two arguments: signal and observer")
+        throw new Error(
+          "subscribe function requires exactly two arguments: signal and observer"
+        )
 
       case "unsubscribe":
         // Type: String -> Unit
         if (call.arguments.length === 1) {
-          const keyType = this.generateConstraintsForExpression(call.arguments[0], env)
-          this.addConstraint(new TypeConstraint(
-            keyType, new AST.PrimitiveType("String", call.line, call.column),
-            call.line, call.column,
-            "unsubscribe requires String subscription key"
-          ))
+          const keyType = this.generateConstraintsForExpression(
+            call.arguments[0],
+            env
+          )
+          this.addConstraint(
+            new TypeConstraint(
+              keyType,
+              new AST.PrimitiveType("String", call.line, call.column),
+              call.line,
+              call.column,
+              "unsubscribe requires String subscription key"
+            )
+          )
           return new AST.PrimitiveType("Unit", call.line, call.column)
         }
-        throw new Error("unsubscribe function requires exactly one argument: subscription key")
+        throw new Error(
+          "unsubscribe function requires exactly one argument: subscription key"
+        )
 
       case "detach":
         // Type: Signal<T> -> Unit
         if (call.arguments.length === 1) {
-          const signalType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const signalType = this.generateConstraintsForExpression(
+            call.arguments[0],
+            env
+          )
           const valueType = this.freshTypeVariable(call.line, call.column)
-          const expectedSignalType = new AST.GenericType("Signal", [valueType], call.line, call.column)
-          
-          this.addConstraint(new TypeConstraint(
-            signalType, expectedSignalType, call.line, call.column,
-            "detach requires Signal<T> argument"
-          ))
-          
+          const expectedSignalType = new AST.GenericType(
+            "Signal",
+            [valueType],
+            call.line,
+            call.column
+          )
+
+          this.addConstraint(
+            new TypeConstraint(
+              signalType,
+              expectedSignalType,
+              call.line,
+              call.column,
+              "detach requires Signal<T> argument"
+            )
+          )
+
           return new AST.PrimitiveType("Unit", call.line, call.column)
         }
         throw new Error("detach function requires exactly one argument: signal")
@@ -4230,19 +4318,27 @@ export class TypeInferenceSystem {
     } else if (containerType.kind === "TypeVariable") {
       // Container is a type variable - we don't know the specific functor type yet
       // Return a fresh type variable that will be resolved later
-      const resultType = this.freshTypeVariable(functorMap.line, functorMap.column)
-      
+      const resultType = this.freshTypeVariable(
+        functorMap.line,
+        functorMap.column
+      )
+
       // Add constraint that this should be a functor application result
       this.addConstraint(
         new TypeConstraint(
           resultType,
-          new AST.GenericType("Functor", [outputType], functorMap.line, functorMap.column),
+          new AST.GenericType(
+            "Functor",
+            [outputType],
+            functorMap.line,
+            functorMap.column
+          ),
           functorMap.line,
           functorMap.column,
           `FunctorMap result type for TypeVariable container`
         )
       )
-      
+
       return resultType
     }
 
@@ -4290,11 +4386,11 @@ export class TypeInferenceSystem {
     // Handle case where funcContainerType is GenericType but valueContainerType might be TypeVariable
     if (funcContainerType.kind === "GenericType") {
       const funcGt = funcContainerType as AST.GenericType
-      
+
       // If valueContainerType is also GenericType, ensure they match
       if (valueContainerType.kind === "GenericType") {
         const valueGt = valueContainerType as AST.GenericType
-        
+
         // Ensure both containers are of the same type
         if (funcGt.name !== valueGt.name) {
           // Type mismatch - add constraint to unify them
@@ -4316,7 +4412,7 @@ export class TypeInferenceSystem {
           applicativeApply.line,
           applicativeApply.column
         )
-        
+
         this.addConstraint(
           new TypeConstraint(
             valueContainerType,
@@ -4327,7 +4423,7 @@ export class TypeInferenceSystem {
           )
         )
       }
-      
+
       // Handle specific applicative types based on funcGt
       if (funcGt.name === "Maybe" && funcGt.typeArguments.length === 1) {
         // Maybe case: Maybe<(a -> b)> <*> Maybe<a> -> Maybe<b>
@@ -4347,7 +4443,10 @@ export class TypeInferenceSystem {
           applicativeApply.line,
           applicativeApply.column
         )
-      } else if (funcGt.name === "Either" && funcGt.typeArguments.length === 2) {
+      } else if (
+        funcGt.name === "Either" &&
+        funcGt.typeArguments.length === 2
+      ) {
         // Either case: Either<e, (a -> b)> <*> Either<e, a> -> Either<e, b>
         const errorType = funcGt.typeArguments[0]
 
@@ -4406,7 +4505,7 @@ export class TypeInferenceSystem {
       } else {
         // Generic case for other types
         const funcArgIndex = funcGt.typeArguments.length - 1
-        
+
         this.addConstraint(
           new TypeConstraint(
             funcGt.typeArguments[funcArgIndex],
@@ -4438,23 +4537,33 @@ export class TypeInferenceSystem {
       (valueContainerType as AST.PrimitiveType).name === "Array"
     ) {
       // Array case: Array <*> Array -> Array
-      return new AST.PrimitiveType("Array", applicativeApply.line, applicativeApply.column)
+      return new AST.PrimitiveType(
+        "Array",
+        applicativeApply.line,
+        applicativeApply.column
+      )
     }
 
     // Handle case where both are TypeVariables
-    if (funcContainerType.kind === "TypeVariable" && valueContainerType.kind === "TypeVariable") {
+    if (
+      funcContainerType.kind === "TypeVariable" &&
+      valueContainerType.kind === "TypeVariable"
+    ) {
       // Create a fresh type variable for the result
-      const resultType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
-      
+      const resultType = this.freshTypeVariable(
+        applicativeApply.line,
+        applicativeApply.column
+      )
+
       // Add constraints that will be resolved later
       // The funcContainer should be of form f<(a -> b)>
       // The valueContainer should be of form f<a>
       // The result should be of form f<b>
-      
+
       // For now, return the result type variable
       return resultType
     }
-    
+
     // Fallback - should rarely reach here if type inference is working correctly
     return new AST.GenericType(
       "Applicative",
@@ -5148,8 +5257,16 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     // Signal<T>の型を推論
-    const valueType = this.generateConstraintsForExpression(signal.initialValue, env)
-    return new AST.GenericType("Signal", [valueType], signal.line, signal.column)
+    const valueType = this.generateConstraintsForExpression(
+      signal.initialValue,
+      env
+    )
+    return new AST.GenericType(
+      "Signal",
+      [valueType],
+      signal.line,
+      signal.column
+    )
   }
 
   private generateConstraintsForAssignmentExpression(
@@ -5157,17 +5274,23 @@ export class TypeInferenceSystem {
     env: Map<string, AST.Type>
   ): AST.Type {
     // target（代入先）の型を推論
-    const targetType = this.generateConstraintsForExpression(assignment.target, env)
+    const targetType = this.generateConstraintsForExpression(
+      assignment.target,
+      env
+    )
     // value（代入する値）の型を推論
-    const valueType = this.generateConstraintsForExpression(assignment.value, env)
+    const valueType = this.generateConstraintsForExpression(
+      assignment.value,
+      env
+    )
 
     // targetがSignal<T>型かチェック
     if (targetType.kind === "GenericType") {
       const genType = targetType as AST.GenericType
       if (genType.name === "Signal" && genType.typeArguments.length === 1) {
         const signalElementType = genType.typeArguments[0]
-        
-        // valueが T または T -> T のどちらかをチェック  
+
+        // valueが T または T -> T のどちらかをチェック
         // 関数型かどうかを構文的に判定
         if (assignment.value.kind === "LambdaExpression") {
           // Lambda式の場合は関数型として扱う
@@ -5177,24 +5300,28 @@ export class TypeInferenceSystem {
             assignment.value.line,
             assignment.value.column
           )
-          this.addConstraint(new TypeConstraint(
-            valueType,
-            functionType,
-            assignment.value.line,
-            assignment.value.column,
-            "Signal assignment function type"
-          ))
+          this.addConstraint(
+            new TypeConstraint(
+              valueType,
+              functionType,
+              assignment.value.line,
+              assignment.value.column,
+              "Signal assignment function type"
+            )
+          )
         } else {
           // その他の場合は直接値として扱う
-          this.addConstraint(new TypeConstraint(
-            valueType,
-            signalElementType,
-            assignment.value.line,
-            assignment.value.column,
-            "Signal assignment value type"
-          ))
+          this.addConstraint(
+            new TypeConstraint(
+              valueType,
+              signalElementType,
+              assignment.value.line,
+              assignment.value.column,
+              "Signal assignment value type"
+            )
+          )
         }
-        
+
         // Signal代入は代入先のSignal型を返す
         return targetType
       }
@@ -5320,7 +5447,9 @@ export class TypeInferenceSystem {
   }
 
   // 部分的制約解決：指定した制約のみを解決
-  private solveConstraintsPartial(constraintsToSolve: (TypeConstraint | ArrayAccessConstraint)[]): TypeSubstitution {
+  private solveConstraintsPartial(
+    constraintsToSolve: (TypeConstraint | ArrayAccessConstraint)[]
+  ): TypeSubstitution {
     let substitution = new TypeSubstitution()
 
     for (const constraint of constraintsToSolve) {
@@ -5342,7 +5471,9 @@ export class TypeInferenceSystem {
         }
       } catch (error) {
         // 部分解決では、エラーが起きても他の制約解決を続行
-        console.log(`🔧 Partial constraint resolution failed (continuing): ${error}`)
+        console.log(
+          `🔧 Partial constraint resolution failed (continuing): ${error}`
+        )
       }
     }
 
