@@ -4010,7 +4010,7 @@ export class TypeInferenceSystem {
       )
     )
 
-    // Container must be of type f a (for the same 'a' as function input)
+    // Handle case where containerType might be TypeVariable
     if (containerType.kind === "GenericType") {
       const gt = containerType as AST.GenericType
 
@@ -4051,6 +4051,42 @@ export class TypeInferenceSystem {
           functorMap.line,
           functorMap.column
         )
+      } else if (gt.name === "List" && gt.typeArguments.length === 1) {
+        // List<a> case
+        this.addConstraint(
+          new TypeConstraint(
+            gt.typeArguments[0],
+            inputType,
+            functorMap.line,
+            functorMap.column,
+            `FunctorMap List container input type`
+          )
+        )
+
+        return new AST.GenericType(
+          "List",
+          [outputType],
+          functorMap.line,
+          functorMap.column
+        )
+      } else if (gt.name === "Task" && gt.typeArguments.length === 1) {
+        // Task<a> case
+        this.addConstraint(
+          new TypeConstraint(
+            gt.typeArguments[0],
+            inputType,
+            functorMap.line,
+            functorMap.column,
+            `FunctorMap Task container input type`
+          )
+        )
+
+        return new AST.GenericType(
+          "Task",
+          [outputType],
+          functorMap.line,
+          functorMap.column
+        )
       } else if (gt.typeArguments.length > 0) {
         // Generic functor case
         this.addConstraint(
@@ -4074,6 +4110,23 @@ export class TypeInferenceSystem {
           functorMap.column
         )
       }
+    } else if (containerType.kind === "TypeVariable") {
+      // Container is a type variable - we don't know the specific functor type yet
+      // Return a fresh type variable that will be resolved later
+      const resultType = this.freshTypeVariable(functorMap.line, functorMap.column)
+      
+      // Add constraint that this should be a functor application result
+      this.addConstraint(
+        new TypeConstraint(
+          resultType,
+          new AST.GenericType("Functor", [outputType], functorMap.line, functorMap.column),
+          functorMap.line,
+          functorMap.column,
+          `FunctorMap result type for TypeVariable container`
+        )
+      )
+      
+      return resultType
     }
 
     // Fallback: assume container is a generic type and return a generic result
@@ -4117,98 +4170,161 @@ export class TypeInferenceSystem {
       applicativeApply.column
     )
 
-    if (
-      funcContainerType.kind === "GenericType" &&
-      valueContainerType.kind === "GenericType"
-    ) {
+    // Handle case where funcContainerType is GenericType but valueContainerType might be TypeVariable
+    if (funcContainerType.kind === "GenericType") {
       const funcGt = funcContainerType as AST.GenericType
-      const valueGt = valueContainerType as AST.GenericType
-
-      // Ensure both containers are of the same type
-      if (funcGt.name === valueGt.name) {
-        if (
-          funcGt.name === "Maybe" &&
-          funcGt.typeArguments.length === 1 &&
-          valueGt.typeArguments.length === 1
-        ) {
-          // Maybe case: Maybe<(a -> b)> <*> Maybe<a> -> Maybe<b>
+      
+      // If valueContainerType is also GenericType, ensure they match
+      if (valueContainerType.kind === "GenericType") {
+        const valueGt = valueContainerType as AST.GenericType
+        
+        // Ensure both containers are of the same type
+        if (funcGt.name !== valueGt.name) {
+          // Type mismatch - add constraint to unify them
           this.addConstraint(
             new TypeConstraint(
-              funcGt.typeArguments[0],
-              funcType,
+              funcContainerType,
+              valueContainerType,
               applicativeApply.line,
               applicativeApply.column,
-              `ApplicativeApply Maybe function container type`
+              `ApplicativeApply container type mismatch`
             )
-          )
-
-          this.addConstraint(
-            new TypeConstraint(
-              valueGt.typeArguments[0],
-              inputType,
-              applicativeApply.line,
-              applicativeApply.column,
-              `ApplicativeApply Maybe value container type`
-            )
-          )
-
-          return new AST.GenericType(
-            "Maybe",
-            [outputType],
-            applicativeApply.line,
-            applicativeApply.column
-          )
-        } else if (
-          funcGt.name === "Either" &&
-          funcGt.typeArguments.length === 2 &&
-          valueGt.typeArguments.length === 2
-        ) {
-          // Either case: Either<e, (a -> b)> <*> Either<e, a> -> Either<e, b>
-          const errorType1 = funcGt.typeArguments[0]
-          const errorType2 = valueGt.typeArguments[0]
-
-          // Error types must match
-          this.addConstraint(
-            new TypeConstraint(
-              errorType1,
-              errorType2,
-              applicativeApply.line,
-              applicativeApply.column,
-              `ApplicativeApply Either error type consistency`
-            )
-          )
-
-          this.addConstraint(
-            new TypeConstraint(
-              funcGt.typeArguments[1],
-              funcType,
-              applicativeApply.line,
-              applicativeApply.column,
-              `ApplicativeApply Either function container type`
-            )
-          )
-
-          this.addConstraint(
-            new TypeConstraint(
-              valueGt.typeArguments[1],
-              inputType,
-              applicativeApply.line,
-              applicativeApply.column,
-              `ApplicativeApply Either value container type`
-            )
-          )
-
-          return new AST.GenericType(
-            "Either",
-            [errorType1, outputType],
-            applicativeApply.line,
-            applicativeApply.column
           )
         }
+      } else {
+        // valueContainerType is TypeVariable - constrain it to match funcContainerType structure
+        const expectedValueType = new AST.GenericType(
+          funcGt.name,
+          [inputType],
+          applicativeApply.line,
+          applicativeApply.column
+        )
+        
+        this.addConstraint(
+          new TypeConstraint(
+            valueContainerType,
+            expectedValueType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply value container type constraint`
+          )
+        )
+      }
+      
+      // Handle specific applicative types based on funcGt
+      if (funcGt.name === "Maybe" && funcGt.typeArguments.length === 1) {
+        // Maybe case: Maybe<(a -> b)> <*> Maybe<a> -> Maybe<b>
+        this.addConstraint(
+          new TypeConstraint(
+            funcGt.typeArguments[0],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Maybe function container type`
+          )
+        )
+
+        return new AST.GenericType(
+          "Maybe",
+          [outputType],
+          applicativeApply.line,
+          applicativeApply.column
+        )
+      } else if (funcGt.name === "Either" && funcGt.typeArguments.length === 2) {
+        // Either case: Either<e, (a -> b)> <*> Either<e, a> -> Either<e, b>
+        const errorType = funcGt.typeArguments[0]
+
+        this.addConstraint(
+          new TypeConstraint(
+            funcGt.typeArguments[1],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Either function container type`
+          )
+        )
+
+        return new AST.GenericType(
+          "Either",
+          [errorType, outputType],
+          applicativeApply.line,
+          applicativeApply.column
+        )
+      } else if (funcGt.name === "List" && funcGt.typeArguments.length === 1) {
+        // List case: List<(a -> b)> <*> List<a> -> List<b>
+        this.addConstraint(
+          new TypeConstraint(
+            funcGt.typeArguments[0],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply List function container type`
+          )
+        )
+
+        return new AST.GenericType(
+          "List",
+          [outputType],
+          applicativeApply.line,
+          applicativeApply.column
+        )
+      } else if (funcGt.name === "Task" && funcGt.typeArguments.length === 1) {
+        // Task case: Task<(a -> b)> <*> Task<a> -> Task<b>
+        this.addConstraint(
+          new TypeConstraint(
+            funcGt.typeArguments[0],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply Task function container type`
+          )
+        )
+
+        return new AST.GenericType(
+          "Task",
+          [outputType],
+          applicativeApply.line,
+          applicativeApply.column
+        )
+      } else {
+        // Generic case for other types
+        const funcArgIndex = funcGt.typeArguments.length - 1
+        
+        this.addConstraint(
+          new TypeConstraint(
+            funcGt.typeArguments[funcArgIndex],
+            funcType,
+            applicativeApply.line,
+            applicativeApply.column,
+            `ApplicativeApply generic function container type`
+          )
+        )
+
+        // Preserve other type arguments
+        const newArgs = [...funcGt.typeArguments]
+        newArgs[funcArgIndex] = outputType
+
+        return new AST.GenericType(
+          funcGt.name,
+          newArgs,
+          applicativeApply.line,
+          applicativeApply.column
+        )
       }
     }
 
-    // Fallback
+    // Handle Array type (JavaScript arrays)
+    if (
+      funcContainerType.kind === "PrimitiveType" &&
+      valueContainerType.kind === "PrimitiveType" &&
+      (funcContainerType as AST.PrimitiveType).name === "Array" &&
+      (valueContainerType as AST.PrimitiveType).name === "Array"
+    ) {
+      // Array case: Array <*> Array -> Array
+      return new AST.PrimitiveType("Array", applicativeApply.line, applicativeApply.column)
+    }
+
+    // Fallback - should rarely reach here if type inference is working correctly
     return new AST.GenericType(
       "Applicative",
       [outputType],
@@ -4393,6 +4509,44 @@ export class TypeInferenceSystem {
 
         return new AST.GenericType(
           "List",
+          [outputType],
+          monadBind.line,
+          monadBind.column
+        )
+      } else if (
+        monadGt.name === "Task" &&
+        monadGt.typeArguments.length === 1
+      ) {
+        // Task case: Task<a> >>= (a -> Task<b>) -> Task<b>
+        this.addConstraint(
+          new TypeConstraint(
+            monadGt.typeArguments[0],
+            inputType,
+            monadBind.line,
+            monadBind.column,
+            `MonadBind Task input type`
+          )
+        )
+
+        const outputMonadType = new AST.GenericType(
+          "Task",
+          [outputType],
+          monadBind.line,
+          monadBind.column
+        )
+
+        this.addConstraint(
+          new TypeConstraint(
+            expectedOutputMonad,
+            outputMonadType,
+            monadBind.line,
+            monadBind.column,
+            `MonadBind Task output type`
+          )
+        )
+
+        return new AST.GenericType(
+          "Task",
           [outputType],
           monadBind.line,
           monadBind.column
