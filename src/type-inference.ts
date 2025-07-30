@@ -2479,6 +2479,18 @@ export class TypeInferenceSystem {
           env
         )
         break
+      case "SignalExpression":
+        resultType = this.generateConstraintsForSignalExpression(
+          expr as AST.SignalExpression,
+          env
+        )
+        break
+      case "AssignmentExpression":
+        resultType = this.generateConstraintsForAssignmentExpression(
+          expr as AST.AssignmentExpression,
+          env
+        )
+        break
 
       case "FunctorMap":
         resultType = this.generateConstraintsForFunctorMap(
@@ -3189,6 +3201,27 @@ export class TypeInferenceSystem {
         return boolType
       }
 
+      case "*": {
+        // Signal値取得: Signal<T> -> T
+        // operandTypeがSignal<T>の場合、Tを返す
+        if (operandType.kind === "GenericType") {
+          const genType = operandType as AST.GenericType
+          if (genType.name === "Signal" && genType.typeArguments.length === 1) {
+            return genType.typeArguments[0]  // Signal<T> -> T
+          }
+        }
+        
+        // Signal型でない場合はエラー
+        this.errors.push(
+          new TypeInferenceError(
+            `getValue operator (*) can only be applied to Signal types, got ${this.typeToString(operandType)}`,
+            unaryOp.operand.line,
+            unaryOp.operand.column
+          )
+        )
+        return this.freshTypeVariable(unaryOp.line, unaryOp.column)
+      }
+
       default:
         this.errors.push(
           new TypeInferenceError(
@@ -3594,6 +3627,63 @@ export class TypeInferenceSystem {
           return new AST.PrimitiveType("String", call.line, call.column)
         }
         throw new Error("typeof function requires exactly one argument")
+
+      case "subscribe":
+        // Type: Signal<T> -> (T -> Unit) -> String
+        if (call.arguments.length === 2) {
+          const signalType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const observerType = this.generateConstraintsForExpression(call.arguments[1], env)
+          
+          const valueType = this.freshTypeVariable(call.line, call.column)
+          const expectedSignalType = new AST.GenericType("Signal", [valueType], call.line, call.column)
+          const expectedObserverType = new AST.FunctionType(
+            valueType,
+            new AST.PrimitiveType("Unit", call.line, call.column),
+            call.line,
+            call.column
+          )
+          
+          this.addConstraint(new TypeConstraint(
+            signalType, expectedSignalType, call.line, call.column,
+            "subscribe requires Signal<T> as first argument"
+          ))
+          this.addConstraint(new TypeConstraint(
+            observerType, expectedObserverType, call.line, call.column,
+            "subscribe requires (T -> Unit) observer function as second argument"
+          ))
+          
+          return new AST.PrimitiveType("String", call.line, call.column)
+        }
+        throw new Error("subscribe function requires exactly two arguments: signal and observer")
+
+      case "unsubscribe":
+        // Type: String -> Unit
+        if (call.arguments.length === 1) {
+          const keyType = this.generateConstraintsForExpression(call.arguments[0], env)
+          this.addConstraint(new TypeConstraint(
+            keyType, new AST.PrimitiveType("String", call.line, call.column),
+            call.line, call.column,
+            "unsubscribe requires String subscription key"
+          ))
+          return new AST.PrimitiveType("Unit", call.line, call.column)
+        }
+        throw new Error("unsubscribe function requires exactly one argument: subscription key")
+
+      case "detach":
+        // Type: Signal<T> -> Unit
+        if (call.arguments.length === 1) {
+          const signalType = this.generateConstraintsForExpression(call.arguments[0], env)
+          const valueType = this.freshTypeVariable(call.line, call.column)
+          const expectedSignalType = new AST.GenericType("Signal", [valueType], call.line, call.column)
+          
+          this.addConstraint(new TypeConstraint(
+            signalType, expectedSignalType, call.line, call.column,
+            "detach requires Signal<T> argument"
+          ))
+          
+          return new AST.PrimitiveType("Unit", call.line, call.column)
+        }
+        throw new Error("detach function requires exactly one argument: signal")
 
       default:
         this.errors.push(
@@ -5051,6 +5141,73 @@ export class TypeInferenceSystem {
     }
 
     return resultType
+  }
+
+  private generateConstraintsForSignalExpression(
+    signal: AST.SignalExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // Signal<T>の型を推論
+    const valueType = this.generateConstraintsForExpression(signal.initialValue, env)
+    return new AST.GenericType("Signal", [valueType], signal.line, signal.column)
+  }
+
+  private generateConstraintsForAssignmentExpression(
+    assignment: AST.AssignmentExpression,
+    env: Map<string, AST.Type>
+  ): AST.Type {
+    // target（代入先）の型を推論
+    const targetType = this.generateConstraintsForExpression(assignment.target, env)
+    // value（代入する値）の型を推論
+    const valueType = this.generateConstraintsForExpression(assignment.value, env)
+
+    // targetがSignal<T>型かチェック
+    if (targetType.kind === "GenericType") {
+      const genType = targetType as AST.GenericType
+      if (genType.name === "Signal" && genType.typeArguments.length === 1) {
+        const signalElementType = genType.typeArguments[0]
+        
+        // valueが T または T -> T のどちらかをチェック  
+        // 関数型かどうかを構文的に判定
+        if (assignment.value.kind === "LambdaExpression") {
+          // Lambda式の場合は関数型として扱う
+          const functionType = new AST.FunctionType(
+            signalElementType,
+            signalElementType,
+            assignment.value.line,
+            assignment.value.column
+          )
+          this.addConstraint(new TypeConstraint(
+            valueType,
+            functionType,
+            assignment.value.line,
+            assignment.value.column,
+            "Signal assignment function type"
+          ))
+        } else {
+          // その他の場合は直接値として扱う
+          this.addConstraint(new TypeConstraint(
+            valueType,
+            signalElementType,
+            assignment.value.line,
+            assignment.value.column,
+            "Signal assignment value type"
+          ))
+        }
+        
+        // Signal代入は代入先のSignal型を返す
+        return targetType
+      }
+    }
+
+    this.errors.push(
+      new TypeInferenceError(
+        "Assignment target must be a Signal type",
+        assignment.target.line,
+        assignment.target.column
+      )
+    )
+    return this.freshTypeVariable(assignment.line, assignment.column)
   }
 
   private generateConstraintsForLambdaExpression(

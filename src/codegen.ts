@@ -49,6 +49,8 @@ import {
   type RangeLiteral,
   type RejectExpression,
   type ResolveExpression,
+  type SignalExpression,
+  type AssignmentExpression,
   type RecordAccess,
   RecordDestructuring,
   type RecordExpression,
@@ -1398,6 +1400,136 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "    return mb.computation();",
       "  });",
       "}",
+      "",
+      "// Signal型の実装",
+      "type Signal<T> = {",
+      "  readonly isSignal: true",
+      "  readonly getValue: () => T",
+      "  readonly setValue: ((value: T) => void) & ((value: (prev: T) => T) => void)",
+      "  readonly subscribe: (observer: (value: T) => void) => string",
+      "  readonly unsubscribe: (key: string) => void",
+      "  readonly detach: () => void",
+      "  readonly detachHandlers: (() => void)[]",
+      "}",
+      "",
+      "function createSignal<T>(initialValue: T): Signal<T> {",
+      "  let currentValue = initialValue",
+      "  const observers: Map<string, (value: T) => void> = new Map()",
+      "  let keyCounter = 0",
+      "  const detachHandlers: (() => void)[] = []",
+      "",
+      "  const signal: Signal<T> = {",
+      "    isSignal: true,",
+      "    getValue: () => currentValue,",
+      "    setValue: (value: T | ((prev: T) => T)) => {",
+      "      if (typeof value === 'function') {",
+      "        const fn = value as (prev: T) => T",
+      "        currentValue = fn(currentValue)",
+      "      } else {",
+      "        currentValue = value",
+      "      }",
+      "      for (const observer of observers.values()) {",
+      "        observer(currentValue)",
+      "      }",
+      "    },",
+      "    subscribe: (observer: (value: T) => void) => {",
+      "      const key = `observer_${keyCounter++}`",
+      "      observers.set(key, observer)",
+      "      return key",
+      "    },",
+      "    unsubscribe: (key: string) => {",
+      "      observers.delete(key)",
+      "    },",
+      "    detach: () => {",
+      "      for (const detachHandler of detachHandlers) {",
+      "        detachHandler()",
+      "      }",
+      "      detachHandlers.length = 0",
+      "    },",
+      "    detachHandlers",
+      "  }",
+      "",
+      "  return signal",
+      "}",
+      "",
+      "function setSignal<T>(signal: Signal<T>, value: T | ((prev: T) => T)): void {",
+      "  signal.setValue(value)",
+      "}",
+      "",
+      "function subscribeSignal<T>(signal: Signal<T>, observer: (value: T) => void): string {",
+      "  return signal.subscribe(observer)",
+      "}",
+      "",
+      "function unsubscribeSignal<T>(signal: Signal<T>, key: string): void {",
+      "  signal.unsubscribe(key)",
+      "}",
+      "",
+      "function detachSignal<T>(signal: Signal<T>): void {",
+      "  signal.detach()",
+      "}",
+      "",
+      "function mapSignal<T, U>(sourceSignal: Signal<T>, f: (value: T) => U): Signal<U> {",
+      "  const resultSignal = createSignal(f(sourceSignal.getValue()))",
+      "  const subscriptionKey = sourceSignal.subscribe((newValue) => {",
+      "    resultSignal.setValue(f(newValue))",
+      "  })",
+      "  resultSignal.detachHandlers.push(() => sourceSignal.unsubscribe(subscriptionKey))",
+      "  return resultSignal",
+      "}",
+      "",
+      "function applySignal<T, U>(fnSignal: Signal<(value: T) => U>, valueSignal: Signal<T>): Signal<U> {",
+      "  const resultSignal = createSignal(fnSignal.getValue()(valueSignal.getValue()))",
+      "  const fnSubscriptionKey = fnSignal.subscribe((newFn) => {",
+      "    resultSignal.setValue(newFn(valueSignal.getValue()))",
+      "  })",
+      "  const valueSubscriptionKey = valueSignal.subscribe((newValue) => {",
+      "    resultSignal.setValue(fnSignal.getValue()(newValue))",
+      "  })",
+      "  resultSignal.detachHandlers.push(() => fnSignal.unsubscribe(fnSubscriptionKey))",
+      "  resultSignal.detachHandlers.push(() => valueSignal.unsubscribe(valueSubscriptionKey))",
+      "  return resultSignal",
+      "}",
+      "",
+      "function bindSignal<T, U>(sourceSignal: Signal<T>, f: (value: T) => Signal<U>): Signal<U> {",
+      "  let currentInnerSignal = f(sourceSignal.getValue())",
+      "  const resultSignal = createSignal(currentInnerSignal.getValue())",
+      "  const forwardInnerValue = (newValue: U) => resultSignal.setValue(newValue)",
+      "  const switchToNewInnerSignal = (newSourceValue: T) => {",
+      "    const newInnerSignal = f(newSourceValue)",
+      "    currentInnerSignal = newInnerSignal",
+      "    resultSignal.setValue(newInnerSignal.getValue())",
+      "    const newInnerSubscriptionKey = newInnerSignal.subscribe(forwardInnerValue)",
+      "    resultSignal.detachHandlers.push(() => newInnerSignal.unsubscribe(newInnerSubscriptionKey))",
+      "  }",
+      "  const sourceSubscriptionKey = sourceSignal.subscribe(switchToNewInnerSignal)",
+      "  resultSignal.detachHandlers.push(() => sourceSignal.unsubscribe(sourceSubscriptionKey))",
+      "  const initialInnerSubscriptionKey = currentInnerSignal.subscribe(forwardInnerValue)",
+      "  resultSignal.detachHandlers.push(() => currentInnerSignal.unsubscribe(initialInnerSubscriptionKey))",
+      "  return resultSignal",
+      "}",
+      "",
+      "// グローバルなサブスクリプション管理",
+      "const __signalSubscriptions: Map<string, { signal: Signal<any>, key: string }> = new Map()",
+      "",
+      "// Signal組み込み関数",
+      "function ssrgSignalSubscribe<T>(signal: Signal<T>, observer: (value: T) => void): string {",
+      "  const subscriptionKey = signal.subscribe(observer)",
+      "  const globalKey = `${Date.now()}_${Math.random()}`",
+      "  __signalSubscriptions.set(globalKey, { signal, key: subscriptionKey })",
+      "  return globalKey",
+      "}",
+      "",
+      "function ssrgSignalUnsubscribe(globalKey: string): void {",
+      "  const subscription = __signalSubscriptions.get(globalKey)",
+      "  if (subscription) {",
+      "    subscription.signal.unsubscribe(subscription.key)",
+      "    __signalSubscriptions.delete(globalKey)",
+      "  }",
+      "}",
+      "",
+      "function ssrgSignalDetach<T>(signal: Signal<T>): void {",
+      "  signal.detach()",
+      "}",
     ]
   }
 
@@ -2037,6 +2169,30 @@ ${indent}}`
     return false
   }
 
+  // Signal型かどうかをチェック
+  private isSignalType(type: Type | undefined): boolean {
+    if (!type) return false
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "Signal"
+      ) {
+        return true
+      }
+    }
+
+    // 直接GenericTypeの場合もチェック
+    if (type.kind === "GenericType" && (type as GenericType).name === "Signal") {
+      return true
+    }
+
+    return false
+  }
+
   // List型かどうかをチェック
   private isListType(type: Type | undefined): boolean {
     if (!type) return false
@@ -2472,6 +2628,10 @@ ${indent}}`
         return this.generateRejectExpression(expr as RejectExpression)
       case "TryExpression":
         return this.generateTryExpression(expr as TryExpression)
+      case "SignalExpression":
+        return this.generateSignalExpression(expr as SignalExpression)
+      case "AssignmentExpression":
+        return this.generateAssignmentExpression(expr as AssignmentExpression)
       default:
         return `/* Unsupported expression: ${expr.constructor.name} */`
     }
@@ -2572,6 +2732,18 @@ ${indent}}`
             return `applyArray(${left}, ${right})`
           case ">>=":
             return `bindArray(${left}, ${right})`
+        }
+      }
+
+      // Signal型の場合
+      if (this.isSignalType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapSignal(${left}, ${right})`
+          case "<*>":
+            return `applySignal(${left}, ${right})`
+          case ">>=":
+            return `bindSignal(${left}, ${right})`
         }
       }
     }
@@ -3058,8 +3230,14 @@ ${indent}}`
   generateUnaryOperation(unaryOp: UnaryOperation): string {
     const operand = this.generateExpression(unaryOp.operand)
 
-    // 演算子をそのまま使用（TypeScriptと同じ）
-    return `(${unaryOp.operator}${operand})`
+    switch (unaryOp.operator) {
+      case "*":
+        // Signal getValue: *signal -> signal.getValue()
+        return `(${operand}.getValue())`
+      default:
+        // 演算子をそのまま使用（TypeScriptと同じ）
+        return `(${unaryOp.operator}${operand})`
+    }
   }
 
   // 関数呼び出しの生成
@@ -3354,6 +3532,21 @@ ${indent}}`
           return `ssrgTypeOfWithAliases(${args[0]}, "${variableName}")`
         }
         return `ssrgTypeOfWithAliases(${args[0]})`
+      case "subscribe":
+        if (args.length !== 2) {
+          throw new Error("subscribe requires exactly two arguments")
+        }
+        return `ssrgSignalSubscribe(${args[0]}, ${args[1]})`
+      case "unsubscribe":
+        if (args.length !== 1) {
+          throw new Error("unsubscribe requires exactly one argument")
+        }
+        return `ssrgSignalUnsubscribe(${args[0]})`
+      case "detach":
+        if (args.length !== 1) {
+          throw new Error("detach requires exactly one argument")
+        }
+        return `ssrgSignalDetach(${args[0]})`
       default:
         throw new Error(`Unknown builtin function: ${call.functionName}`)
     }
@@ -5469,5 +5662,18 @@ ${indent}}`
     }
 
     return false
+  }
+
+  // Signal式の生成 (Signal 42)
+  generateSignalExpression(signalExpr: SignalExpression): string {
+    const initialValue = this.generateExpression(signalExpr.initialValue)
+    return `createSignal(${initialValue})`
+  }
+
+  // Signal代入式の生成 (signal := value)
+  generateAssignmentExpression(assignmentExpr: AssignmentExpression): string {
+    const target = this.generateExpression(assignmentExpr.target)
+    const value = this.generateExpression(assignmentExpr.value)
+    return `setSignal(${target}, ${value})`
   }
 }

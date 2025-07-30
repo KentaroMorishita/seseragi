@@ -16,6 +16,15 @@ export type Either<L, R> =
   | { tag: "Right"; value: R }
 export type List<T> = { tag: "Empty" } | { tag: "Cons"; head: T; tail: List<T> }
 export type Task<T> = { tag: "Task"; computation: () => Promise<T> }
+export type Signal<T> = {
+  readonly isSignal: true
+  readonly getValue: () => T
+  readonly setValue: ((value: T) => void) & ((value: (prev: T) => T) => void)
+  readonly subscribe: (observer: (value: T) => void) => string
+  readonly unsubscribe: (key: string) => void
+  readonly detach: () => void
+  readonly detachHandlers: (() => void)[]
+}
 
 // =============================================================================
 // カリー化関数
@@ -915,3 +924,160 @@ export const bindTask = <T, U>(
     const newTask = f(value)
     return await newTask.computation()
   })
+
+// =============================================================================
+// Signal型 - Reactive Programming
+// =============================================================================
+
+// Signal作成関数（RBoxのdetachHandlers設計採用）
+export const createSignal = <T>(initialValue: T): Signal<T> => {
+  let value: T = initialValue
+  const observers: Map<string, (value: T) => void> = new Map()
+  const detachHandlers: (() => void)[] = []
+
+  const notify = () => {
+    observers.forEach((observer) => observer(value))
+  }
+
+  const getValue = () => value
+
+  const setValue = (newValue: T | ((prev: T) => T)) => {
+    if (typeof newValue === "function") {
+      value = (newValue as (prev: T) => T)(value)
+    } else {
+      value = newValue
+    }
+    notify()
+  }
+
+  const subscribe = (observer: (value: T) => void): string => {
+    const key = Math.random().toString(36).substr(2, 9)
+    observers.set(key, observer)
+    return key
+  }
+
+  const unsubscribe = (key: string): void => {
+    observers.delete(key)
+  }
+
+  const detach = () => {
+    detachHandlers.forEach((handler) => handler())
+    detachHandlers.length = 0
+  }
+
+  return {
+    isSignal: true,
+    getValue,
+    setValue,
+    subscribe,
+    unsubscribe,
+    detach,
+    detachHandlers,
+  }
+}
+
+// Signal専用ランタイム関数（prefix統一）
+export const setSignal = <T>(signal: Signal<T>, value: T | ((prev: T) => T)): void => {
+  signal.setValue(value)
+}
+
+export const subscribeSignal = <T>(signal: Signal<T>, observer: (value: T) => void): string => {
+  return signal.subscribe(observer)
+}
+
+export const unsubscribeSignal = <T>(signal: Signal<T>, key: string): void => {
+  signal.unsubscribe(key)
+}
+
+export const detachSignal = <T>(signal: Signal<T>): void => {
+  signal.detach()
+}
+
+// =============================================================================
+// Signal型モナド演算子（用語整理版）
+// =============================================================================
+
+// Functor: map (<$>)
+export const mapSignal = <T, U>(sourceSignal: Signal<T>, f: (value: T) => U): Signal<U> => {
+  const resultSignal = createSignal(f(sourceSignal.getValue()))
+  
+  const sourceSubscriptionKey = sourceSignal.subscribe((newValue) => {
+    resultSignal.setValue(f(newValue))
+  })
+
+  // resultSignalのdetachHandlersに親Signal購読解除関数を登録
+  resultSignal.detachHandlers.push(() => sourceSignal.unsubscribe(sourceSubscriptionKey))
+  
+  return resultSignal
+}
+
+// Applicative: apply (<*>)
+export const applySignal = <T, U>(
+  functionSignal: Signal<(a: T) => U>, 
+  valueSignal: Signal<T>
+): Signal<U> => {
+  const resultSignal = createSignal(functionSignal.getValue()(valueSignal.getValue()))
+  
+  const updateResult = () => {
+    resultSignal.setValue(functionSignal.getValue()(valueSignal.getValue()))
+  }
+  
+  // 両方の親Signalの変更を監視
+  const functionSubscriptionKey = functionSignal.subscribe(updateResult)
+  const valueSubscriptionKey = valueSignal.subscribe(updateResult)
+  
+  // resultSignalのdetachHandlersに両方の購読解除関数を登録
+  resultSignal.detachHandlers.push(() => {
+    functionSignal.unsubscribe(functionSubscriptionKey)
+    valueSignal.unsubscribe(valueSubscriptionKey)
+  })
+  
+  return resultSignal
+}
+
+// Monad: bind (>>=) - 動的依存切り替え
+export const bindSignal = <T, U>(
+  sourceSignal: Signal<T>, 
+  f: (value: T) => Signal<U>
+): Signal<U> => {
+  // Step 1: 初期状態のセットアップ
+  let currentInnerSignal = f(sourceSignal.getValue())
+  const resultSignal = createSignal(currentInnerSignal.getValue())
+  
+  // Step 2: innerSignalの変更を結果に反映するヘルパー
+  const forwardInnerValue = (innerValue: U) => {
+    resultSignal.setValue(innerValue)
+  }
+  
+  // Step 3: 新しいinnerSignalに切り替えるヘルパー
+  const switchToNewInnerSignal = (newSourceValue: T) => {
+    // 古いinnerSignalとの接続を切断
+    currentInnerSignal.detach()
+    
+    // 新しいinnerSignalを作成
+    currentInnerSignal = f(newSourceValue)
+    resultSignal.setValue(currentInnerSignal.getValue())
+    
+    // 新しいinnerSignalの変更を監視開始
+    const innerSubscriptionKey = currentInnerSignal.subscribe(forwardInnerValue)
+    resultSignal.detachHandlers.push(() => 
+      currentInnerSignal.unsubscribe(innerSubscriptionKey)
+    )
+  }
+  
+  // Step 4: sourceSignalの値の変更を監視
+  const sourceSubscriptionKey = sourceSignal.subscribe(switchToNewInnerSignal)
+  resultSignal.detachHandlers.push(() => sourceSignal.unsubscribe(sourceSubscriptionKey))
+  
+  // Step 5: 初期のinnerSignalの変更を監視
+  const initialInnerSubscriptionKey = currentInnerSignal.subscribe(forwardInnerValue)
+  resultSignal.detachHandlers.push(() => 
+    currentInnerSignal.unsubscribe(initialInnerSubscriptionKey)
+  )
+  
+  return resultSignal
+}
+
+// TypeScript生成用のSignal関数（createSignal、setSignal）
+// これらの関数はcodegen.tsから呼び出される
+export { createSignal, setSignal, subscribeSignal, unsubscribeSignal, detachSignal, mapSignal, applySignal, bindSignal }
