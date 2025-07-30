@@ -1221,11 +1221,15 @@ export class TypeInferenceSystem {
     // 型環境の初期化
     const env = this.createInitialEnvironment()
 
+    console.log("🔧 PHASE 1: Starting constraint generation")
     // 制約生成
     this.generateConstraints(program, env)
+    console.log(`🔧 PHASE 1 COMPLETE: Generated ${this.constraints.length} constraints`)
 
+    console.log("🔧 PHASE 2: Starting constraint resolution")
     // 制約解決（単一化）
     const substitution = this.solveConstraints()
+    console.log("🔧 PHASE 2 COMPLETE: Constraint resolution finished")
 
     // Apply substitution to all tracked node types
     const resolvedNodeTypeMap = new Map<AST.ASTNode, AST.Type>()
@@ -1991,6 +1995,9 @@ export class TypeInferenceSystem {
       }
     }
 
+    // 制約生成前の状態を記録
+    const constraintsBeforeInit = this.constraints.length
+
     // 初期化式の型を推論
     const initType = this.generateConstraintsForExpression(
       varDecl.initializer,
@@ -2024,9 +2031,20 @@ export class TypeInferenceSystem {
         env.set(varDecl.name, generalizedType)
         finalType = generalizedType
       } else {
-        // 値型（関数呼び出し結果など）は具体的な型をそのまま使用
-        env.set(varDecl.name, initType)
-        finalType = initType
+        // 値型の場合：段階的制約解決を試行
+        console.log(`🔧 Attempting staged resolution for variable ${varDecl.name}`)
+        const newConstraints = this.constraints.slice(constraintsBeforeInit)
+        console.log(`🔧 Variable ${varDecl.name} generated ${newConstraints.length} new constraints`)
+        
+        // 新しい制約のみを解決してinitTypeを具体化を試行
+        const partialSubstitution = this.solveConstraintsPartial(newConstraints)
+        const resolvedInitType = partialSubstitution.apply(initType)
+        
+        console.log(`🔧 Variable ${varDecl.name}: ${this.typeToString(initType)} -> ${this.typeToString(resolvedInitType)}`)
+        
+        // 解決された型を環境に設定
+        env.set(varDecl.name, resolvedInitType)
+        finalType = resolvedInitType
       }
     }
 
@@ -2692,6 +2710,15 @@ export class TypeInferenceSystem {
         )
       )
       return this.freshTypeVariable(identifier.line, identifier.column)
+    }
+    
+    // Debug: Log the type we found
+    if (identifier.name === "task1" || identifier.name === "taskFunc") {
+      console.log(`🔧 Found type for ${identifier.name}: ${type.kind}`)
+      if (type.kind === "GenericType") {
+        const gt = type as AST.GenericType
+        console.log(`🔧   GenericType name: ${gt.name}`)
+      }
     }
 
     // Debug logging for makeTuple function type resolution
@@ -4324,6 +4351,20 @@ export class TypeInferenceSystem {
       return new AST.PrimitiveType("Array", applicativeApply.line, applicativeApply.column)
     }
 
+    // Handle case where both are TypeVariables
+    if (funcContainerType.kind === "TypeVariable" && valueContainerType.kind === "TypeVariable") {
+      // Create a fresh type variable for the result
+      const resultType = this.freshTypeVariable(applicativeApply.line, applicativeApply.column)
+      
+      // Add constraints that will be resolved later
+      // The funcContainer should be of form f<(a -> b)>
+      // The valueContainer should be of form f<a>
+      // The result should be of form f<b>
+      
+      // For now, return the result type variable
+      return resultType
+    }
+    
     // Fallback - should rarely reach here if type inference is working correctly
     return new AST.GenericType(
       "Applicative",
@@ -5090,7 +5131,7 @@ export class TypeInferenceSystem {
       }
     }
 
-    // 部分型制約を解決（一旦無効化）
+    // 部分型制約を解決（一旧無効化）
     // for (const subtypeConstraint of this.subtypeConstraints) {
     //   try {
     //     const subType = substitution.apply(subtypeConstraint.subType)
@@ -5117,6 +5158,36 @@ export class TypeInferenceSystem {
     //     )
     //   }
     // }
+
+    return substitution
+  }
+
+  // 部分的制約解決：指定した制約のみを解決
+  private solveConstraintsPartial(constraintsToSolve: (TypeConstraint | ArrayAccessConstraint)[]): TypeSubstitution {
+    let substitution = new TypeSubstitution()
+
+    for (const constraint of constraintsToSolve) {
+      try {
+        if (constraint instanceof ArrayAccessConstraint) {
+          // ArrayAccessConstraintの特別な処理
+          const constraintSub = this.solveArrayAccessConstraint(
+            constraint,
+            substitution
+          )
+          substitution = substitution.compose(constraintSub)
+        } else {
+          // 通常のTypeConstraint処理
+          const constraintSub = this.unify(
+            substitution.apply(constraint.type1),
+            substitution.apply(constraint.type2)
+          )
+          substitution = substitution.compose(constraintSub)
+        }
+      } catch (error) {
+        // 部分解決では、エラーが起きても他の制約解決を続行
+        console.log(`🔧 Partial constraint resolution failed (continuing): ${error}`)
+      }
+    }
 
     return substitution
   }
