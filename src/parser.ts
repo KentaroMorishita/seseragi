@@ -885,7 +885,7 @@ export class Parser {
       }
 
       // ビルトイン型（Maybe, Either, List, Array等）もチェック不要
-      if (["Maybe", "Either", "List", "Array", "Tuple"].includes(name)) {
+      if (["Maybe", "Either", "List", "Array", "Tuple", "Signal", "Task"].includes(name)) {
         return
       }
 
@@ -1482,7 +1482,7 @@ export class Parser {
       return new AST.VoidType(token.line, token.column)
     }
 
-    if (token.type === TokenType.IDENTIFIER) {
+    if (token.type === TokenType.IDENTIFIER || token.type === TokenType.SIGNAL || token.type === TokenType.TASK) {
       const name = token.value
 
       // Check for generic types List<T>, Maybe<T>, etc.
