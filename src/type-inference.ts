@@ -6428,7 +6428,14 @@ export class TypeInferenceSystem {
       }
 
       // まず組み込み型をチェック
-      const builtinTypes = ["Maybe", "Either", "List", "Array", "Signal", "Task"]
+      const builtinTypes = [
+        "Maybe",
+        "Either",
+        "List",
+        "Array",
+        "Signal",
+        "Task",
+      ]
       if (builtinTypes.includes(genericType.name)) {
         console.log("🔧 Found builtin type:", genericType.name)
         // 組み込み型は型引数を解決して返す

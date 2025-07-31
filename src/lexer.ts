@@ -42,6 +42,7 @@ export enum TokenType {
   VOID = "VOID",
   TRY = "TRY",
   SIGNAL = "SIGNAL",
+  TASK = "TASK",
 
   // Built-in functions
   PRINT = "PRINT",
@@ -161,6 +162,7 @@ export class Lexer {
     ["Void", TokenType.VOID],
     ["try", TokenType.TRY],
     ["Signal", TokenType.SIGNAL],
+    ["Task", TokenType.TASK],
     ["pure", TokenType.PURE],
     ["perform", TokenType.PERFORM],
     ["print", TokenType.PRINT],
