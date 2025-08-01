@@ -41,7 +41,6 @@ export enum TokenType {
   IS = "IS",
   VOID = "VOID",
   TRY = "TRY",
-
   // Built-in functions
   PRINT = "PRINT",
   PUT_STR_LN = "PUT_STR_LN",
@@ -52,6 +51,9 @@ export enum TokenType {
   TAIL = "TAIL",
   TYPEOF = "TYPEOF",
   TYPEOF_WITH_ALIASES = "TYPEOF_WITH_ALIASES",
+  SUBSCRIBE = "SUBSCRIBE",
+  UNSUBSCRIBE = "UNSUBSCRIBE",
+  DETACH = "DETACH",
 
   // Operators
   PIPE = "PIPE", // |
@@ -92,6 +94,7 @@ export enum TokenType {
   COMMA = "COMMA", // ,
   DOT = "DOT", // .
   ASSIGN = "ASSIGN", // =
+  SIGNAL_ASSIGN = "SIGNAL_ASSIGN", // :=
   QUESTION = "QUESTION", // ?
 
   // Brackets
@@ -166,6 +169,9 @@ export class Lexer {
     ["tail", TokenType.TAIL],
     ["typeof", TokenType.TYPEOF],
     ["typeof'", TokenType.TYPEOF_WITH_ALIASES],
+    ["subscribe", TokenType.SUBSCRIBE],
+    ["unsubscribe", TokenType.UNSUBSCRIBE],
+    ["detach", TokenType.DETACH],
     ["True", TokenType.BOOLEAN],
     ["False", TokenType.BOOLEAN],
   ])
@@ -257,7 +263,7 @@ export class Lexer {
       case ";":
         return this.makeToken(TokenType.SEMICOLON, char, startLine, startColumn)
       case ":":
-        return this.makeToken(TokenType.COLON, char, startLine, startColumn)
+        return this.handleColonTokens(startLine, startColumn)
       case "?":
         return this.handleQuestionTokens(startLine, startColumn)
       case ".":
@@ -328,6 +334,19 @@ export class Lexer {
       )
     }
     return this.makeToken(TokenType.QUESTION, "?", startLine, startColumn)
+  }
+
+  private handleColonTokens(startLine: number, startColumn: number): Token {
+    if (this.peek() === "=") {
+      this.advance() // consume =
+      return this.makeToken(
+        TokenType.SIGNAL_ASSIGN,
+        ":=",
+        startLine,
+        startColumn
+      )
+    }
+    return this.makeToken(TokenType.COLON, ":", startLine, startColumn)
   }
 
   private handleStarTokens(startLine: number, startColumn: number): Token {

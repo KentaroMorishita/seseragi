@@ -149,7 +149,7 @@ export class Parser {
         return null
       }
 
-      // 式ステートメントとして処理
+      // 式ステートメントとして処理（Signal代入も含む）
       const expr = this.expression()
       return new AST.ExpressionStatement(
         expr,
@@ -885,7 +885,17 @@ export class Parser {
       }
 
       // ビルトイン型（Maybe, Either, List, Array等）もチェック不要
-      if (["Maybe", "Either", "List", "Array", "Tuple"].includes(name)) {
+      if (
+        [
+          "Maybe",
+          "Either",
+          "List",
+          "Array",
+          "Tuple",
+          "Signal",
+          "Task",
+        ].includes(name)
+      ) {
         return
       }
 
@@ -948,7 +958,9 @@ export class Parser {
     return (
       constructorName === "Just" ||
       constructorName === "Left" ||
-      constructorName === "Right"
+      constructorName === "Right" ||
+      constructorName === "Signal" ||
+      constructorName === "Task"
     )
   }
 
@@ -1559,6 +1571,29 @@ export class Parser {
   }
 
   private conditionalExpression(): AST.Expression {
+    return this.assignmentExpression()
+  }
+
+  // Signal代入演算子（最弱優先順位）
+  private assignmentExpression(): AST.Expression {
+    let expr = this.conditionalExpressionWithoutAssignment()
+
+    while (this.match(TokenType.SIGNAL_ASSIGN)) {
+      const operator = this.previous().value
+      const right = this.conditionalExpressionWithoutAssignment()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
+  private conditionalExpressionWithoutAssignment(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpression()
       this.skipNewlines()
@@ -2440,6 +2475,19 @@ export class Parser {
       )
     }
 
+    // Handle * as unary operator for Signal getValue (context-dependent)
+    if (this.check(TokenType.MULTIPLY) && this.isUnaryMultiplyContext()) {
+      this.advance() // consume *
+      const operator = this.previous().value
+      const expr = this.unaryExpression()
+      return new AST.UnaryOperation(
+        operator,
+        expr,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
     // Handle prefix operators ^ and >> as function applications
     if (this.match(TokenType.HEAD_OP, TokenType.TAIL_OP)) {
       const operator = this.previous()
@@ -2691,9 +2739,14 @@ export class Parser {
         if (expr.kind === "Identifier") {
           const identifierExpr = expr as AST.Identifier
           if (
-            ["show", "print", "putStrLn", "toString"].includes(
-              identifierExpr.name
-            )
+            [
+              "show",
+              "print",
+              "putStrLn",
+              "toString",
+              "detach",
+              "unsubscribe",
+            ].includes(identifierExpr.name)
           ) {
             // builtin関数の場合は、引数として一つの完全な式を解析
             // 再帰を避けるため、primaryExpression()からpostfix操作を手動で処理
@@ -2732,8 +2785,30 @@ export class Parser {
             }
 
             return new AST.BuiltinFunctionCall(
-              identifierExpr.name as "print" | "putStrLn" | "toString" | "show",
+              identifierExpr.name as
+                | "print"
+                | "putStrLn"
+                | "toString"
+                | "show"
+                | "detach"
+                | "unsubscribe",
               [arg],
+              identifierExpr.line,
+              identifierExpr.column
+            )
+          } else if (identifierExpr.name === "subscribe") {
+            // subscribeは2引数を取る特別な組み込み関数
+            // subscribe signal observer の形式
+            const arg1 = this.check(TokenType.NOT)
+              ? this.parseUnaryOnly()
+              : this.primaryExpression()
+            const arg2 = this.check(TokenType.NOT)
+              ? this.parseUnaryOnly()
+              : this.primaryExpression()
+
+            return new AST.BuiltinFunctionCall(
+              "subscribe",
+              [arg1, arg2],
               identifierExpr.line,
               identifierExpr.column
             )
@@ -2789,6 +2864,9 @@ export class Parser {
       type === TokenType.TAIL ||
       type === TokenType.TYPEOF ||
       type === TokenType.TYPEOF_WITH_ALIASES ||
+      type === TokenType.SUBSCRIBE ||
+      type === TokenType.UNSUBSCRIBE ||
+      type === TokenType.DETACH ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||
@@ -2812,7 +2890,10 @@ export class Parser {
       type === TokenType.PUT_STR_LN ||
       type === TokenType.TO_STRING ||
       type === TokenType.TYPEOF ||
-      type === TokenType.TYPEOF_WITH_ALIASES
+      type === TokenType.TYPEOF_WITH_ALIASES ||
+      type === TokenType.SUBSCRIBE ||
+      type === TokenType.UNSUBSCRIBE ||
+      type === TokenType.DETACH
     )
   }
 
@@ -2930,7 +3011,10 @@ export class Parser {
         TokenType.HEAD,
         TokenType.TAIL,
         TokenType.TYPEOF,
-        TokenType.TYPEOF_WITH_ALIASES
+        TokenType.TYPEOF_WITH_ALIASES,
+        TokenType.SUBSCRIBE,
+        TokenType.UNSUBSCRIBE,
+        TokenType.DETACH
       )
     ) {
       const functionName = this.previous().value as
@@ -2943,6 +3027,9 @@ export class Parser {
         | "tail"
         | "typeof"
         | "typeof'"
+        | "subscribe"
+        | "unsubscribe"
+        | "detach"
       const line = this.previous().line
       const column = this.previous().column
 
@@ -3437,6 +3524,9 @@ export class Parser {
       type === TokenType.TAIL ||
       type === TokenType.TYPEOF ||
       type === TokenType.TYPEOF_WITH_ALIASES ||
+      type === TokenType.SUBSCRIBE ||
+      type === TokenType.UNSUBSCRIBE ||
+      type === TokenType.DETACH ||
       type === TokenType.LEFT_PAREN ||
       type === TokenType.LEFT_BRACKET ||
       type === TokenType.LEFT_BRACE ||
@@ -4299,6 +4389,80 @@ export class Parser {
     const expression = this.tryExpressionOrNext()
 
     return new AST.TryExpression(expression, line, column, errorType)
+  }
+
+  // * が単項演算子として解釈されるべき文脈かどうかを判定
+  private isBuiltinFunction(identifier: string): boolean {
+    const builtinFunctions = [
+      "print",
+      "println",
+      "show",
+      "toString",
+      "toInt",
+      "toFloat",
+      "head",
+      "tail",
+      "length",
+      "reverse",
+      "map",
+      "filter",
+      "fold",
+      "subscribe",
+      "unsubscribe",
+      "detach",
+      "getValue",
+    ]
+    return builtinFunctions.includes(identifier)
+  }
+
+  private isUnaryMultiplyContext(): boolean {
+    // * の前のトークンをチェック
+    if (this.current === 0) {
+      return true // 式の開始位置
+    }
+
+    const prevToken = this.tokens[this.current - 1]
+
+    // 以下の場合は単項演算子として解釈
+    switch (prevToken.type) {
+      case TokenType.LEFT_PAREN: // (*signal)
+      case TokenType.ASSIGN: // = *signal
+      case TokenType.SIGNAL_ASSIGN: // := *signal
+      case TokenType.COMMA: // , *signal
+      case TokenType.PIPE: // | *signal
+      case TokenType.ARROW: // -> *signal
+      case TokenType.LEFT_BRACE: // { *signal
+      case TokenType.LEFT_BRACKET: // [ *signal
+      case TokenType.COLON: // : *signal
+      case TokenType.SEMICOLON: // ; *signal
+      case TokenType.NEWLINE: // 改行後の *signal
+      case TokenType.IF: // if *signal
+      case TokenType.THEN: // then *signal
+      case TokenType.ELSE: // else *signal
+      case TokenType.CASE: // case *signal
+      case TokenType.WHEN: // when *signal
+      case TokenType.LET: // let x = *signal
+      case TokenType.FN: // fn f = *signal
+        return true
+
+      // 以下の場合は二項演算子（乗算）として解釈
+      case TokenType.IDENTIFIER:
+        // ただし、組み込み関数の場合は単項演算子として扱う
+        if (this.isBuiltinFunction(prevToken.value)) {
+          return true
+        }
+        return false // x *signal (乗算)
+      case TokenType.INTEGER: // 42 *signal (乗算)
+      case TokenType.FLOAT: // 3.14 *signal (乗算)
+      case TokenType.RIGHT_PAREN: // (x) *signal (乗算)
+      case TokenType.RIGHT_BRACE: // } *signal (乗算)
+      case TokenType.RIGHT_BRACKET: // ] *signal (乗算)
+        return false
+
+      default:
+        // その他の演算子の後は単項演算子として解釈
+        return true
+    }
   }
 }
 

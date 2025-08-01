@@ -272,6 +272,9 @@ export class BuiltinFunctionCall extends Expression {
     | "tail"
     | "typeof"
     | "typeof'"
+    | "subscribe"
+    | "unsubscribe"
+    | "detach"
   arguments: Expression[]
 
   constructor(
@@ -285,7 +288,10 @@ export class BuiltinFunctionCall extends Expression {
       | "head"
       | "tail"
       | "typeof"
-      | "typeof'",
+      | "typeof'"
+      | "subscribe"
+      | "unsubscribe"
+      | "detach",
     args: Expression[],
     line: number,
     column: number
@@ -461,6 +467,35 @@ export class ConstructorExpression extends Expression {
     super(line, column)
     this.constructorName = constructorName
     this.arguments = args
+  }
+}
+
+// Signal型構築式 (Signal 42)
+export class SignalExpression extends Expression {
+  kind = "SignalExpression"
+  initialValue: Expression
+
+  constructor(initialValue: Expression, line: number, column: number) {
+    super(line, column)
+    this.initialValue = initialValue
+  }
+}
+
+// Signal代入式 (signal := value)
+export class AssignmentExpression extends Expression {
+  kind = "AssignmentExpression"
+  target: Expression // Signal変数
+  value: Expression // 代入する値または関数
+
+  constructor(
+    target: Expression,
+    value: Expression,
+    line: number,
+    column: number
+  ) {
+    super(line, column)
+    this.target = target
+    this.value = value
   }
 }
 

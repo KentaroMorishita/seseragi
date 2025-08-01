@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test"
-import { compileSeseragi, compileAndExecute } from "./test-utils"
+import { compileAndExecute, compileSeseragi } from "./test-utils"
 
 describe("Promise Function System", () => {
   describe("Complex Function Type Annotations", () => {

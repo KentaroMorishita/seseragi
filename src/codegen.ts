@@ -3,6 +3,7 @@ import {
   type ArrayAccess,
   type ArrayLiteral,
   type ArrayPattern,
+  type AssignmentExpression,
   type BinaryOperation,
   BlockExpression,
   type BuiltinFunctionCall,
@@ -47,8 +48,6 @@ import {
   PrimitiveType,
   type PromiseBlock,
   type RangeLiteral,
-  type RejectExpression,
-  type ResolveExpression,
   type RecordAccess,
   RecordDestructuring,
   type RecordExpression,
@@ -56,7 +55,10 @@ import {
   type RecordShorthandField,
   type RecordSpreadField,
   RecordType,
+  type RejectExpression,
+  type ResolveExpression,
   type ReversePipe,
+  type SignalExpression,
   type SpreadExpression,
   type Statement,
   StructDeclaration,
@@ -78,6 +80,8 @@ import {
   UnionType,
   VariableDeclaration,
 } from "./ast"
+// @ts-ignore - ?rawインポートの型エラーを回避
+import runtimeSource from "./runtime/index.ts?raw"
 import type { TypeInferenceSystemResult, TypeVariable } from "./type-inference"
 import { type UsageAnalysis, UsageAnalyzer } from "./usage-analyzer"
 
@@ -560,7 +564,51 @@ export class CodeGenerator {
   // 外部ランタイムライブラリからのインポート
   generateRuntimeImports(): string[] {
     const lines: string[] = []
-    // インポートは不要（すべてfunction宣言で定義済み）
+
+    // 型定義のインポート
+    lines.push("import type {")
+    lines.push("  Unit, Maybe, Either, List, Signal")
+    lines.push("} from '@seseragi/runtime';")
+    lines.push("")
+
+    // 関数のインポート
+    lines.push("import {")
+    lines.push("  // 基本ユーティリティ")
+    lines.push("  pipe, reversePipe, map, applyWrapped, bind, foldMonoid,")
+    lines.push("  // Unit型")
+    lines.push("  Unit as UnitValue,")
+    lines.push("  // Maybe型")
+    lines.push("  Just, Nothing, mapMaybe, applyMaybe, bindMaybe, fromMaybe,")
+    lines.push("  // Either型")
+    lines.push(
+      "  Left, Right, mapEither, applyEither, bindEither, fromRight, fromLeft,"
+    )
+    lines.push("  // List型")
+    lines.push(
+      "  Empty, Cons, headList, tailList, mapList, applyList, concatList, bindList,"
+    )
+    lines.push("  // Array型")
+    lines.push("  mapArray, applyArray, bindArray, arrayToList, listToArray,")
+    lines.push("  // Task型")
+    lines.push(
+      "  Task, resolve, ssrgRun, ssrgTryRun, mapTask, applyTask, bindTask,"
+    )
+    lines.push("  // Signal型")
+    lines.push(
+      "  createSignal, setSignal, subscribeSignal, unsubscribeSignal, detachSignal,"
+    )
+    lines.push(
+      "  mapSignal, applySignal, bindSignal, ssrgSignalSubscribe, ssrgSignalUnsubscribe, ssrgSignalDetach,"
+    )
+    lines.push("  // 組み込み関数")
+    lines.push(
+      "  ssrgPrint, ssrgPutStrLn, ssrgToString, ssrgToInt, ssrgToFloat, ssrgShow,"
+    )
+    lines.push("  // 型システム")
+    lines.push("  __typeRegistry, __variableTypes, __variableAliases,")
+    lines.push("  ssrgTypeOf, ssrgTypeOfWithAliases, ssrgIsType")
+    lines.push("} from '@seseragi/runtime';")
+    lines.push("")
 
     return lines
   }
@@ -569,836 +617,18 @@ export class CodeGenerator {
 
   // 従来の埋め込み式ランタイム（下位互換性用）
   generateEmbeddedRuntime(): string[] {
-    return [
-      "// Seseragi runtime helpers",
-      "",
-      "type Unit = { tag: 'Unit', value: undefined };",
-      "type Maybe<T> = { tag: 'Just'; value: T } | { tag: 'Nothing' };",
-      "type Either<L, R> = { tag: 'Left'; value: L } | { tag: 'Right'; value: R };",
-      "type List<T> = { tag: 'Empty' } | { tag: 'Cons'; head: T; tail: List<T> };",
-      "type Task<T> = { tag: 'Task'; computation: () => Promise<T> };",
-      "",
-      ...this.generateCurryFunction(),
-      "",
-      "function pipe<T, U>(value: T, fn: (arg: T) => U): U { return fn(value); }",
-      "",
-      "function reversePipe<T, U>(fn: (arg: T) => U, value: T): U { return fn(value); }",
-      "",
-      "function map<T, U>(fn: (value: T) => U, container: Maybe<T> | Either<unknown, T>): Maybe<U> | Either<unknown, U> {",
-      "  if ('tag' in container) {",
-      "    if (container.tag === 'Just') return Just(fn(container.value));",
-      "    if (container.tag === 'Right') return Right(fn(container.value));",
-      "    if (container.tag === 'Nothing') return Nothing;",
-      "    if (container.tag === 'Left') return container;",
-      "  }",
-      "  return Nothing;",
-      "}",
-      "",
-      "function applyWrapped<T, U>(wrapped: Maybe<(value: T) => U> | Either<unknown, (value: T) => U>, container: Maybe<T> | Either<unknown, T>): Maybe<U> | Either<unknown, U> {",
-      "  // Maybe types",
-      "  if (wrapped.tag === 'Nothing' || container.tag === 'Nothing') return Nothing;",
-      "  if (wrapped.tag === 'Just' && container.tag === 'Just') return Just(wrapped.value(container.value));",
-      "  // Either types",
-      "  if (wrapped.tag === 'Left') return wrapped;",
-      "  if (container.tag === 'Left') return container;",
-      "  if (wrapped.tag === 'Right' && container.tag === 'Right') return Right(wrapped.value(container.value));",
-      "  return Nothing;",
-      "}",
-      "",
-      "function bind<T, U>(container: Maybe<T> | Either<unknown, T>, fn: (value: T) => Maybe<U> | Either<unknown, U>): Maybe<U> | Either<unknown, U> {",
-      "  if (container.tag === 'Just') return fn(container.value);",
-      "  if (container.tag === 'Right') return fn(container.value);",
-      "  if (container.tag === 'Nothing') return Nothing;",
-      "  if (container.tag === 'Left') return container;",
-      "  return Nothing;",
-      "}",
-      "",
-      "function foldMonoid<T>(arr: T[], empty: T, combine: (a: T, b: T) => T): T {",
-      "  return arr.reduce(combine, empty);",
-      "}",
-      "",
-      "// Array monadic functions",
-      "function mapArray<T, U>(fa: T[], f: (a: T) => U): U[] {",
-      "  return fa.map(f);",
-      "}",
-      "",
-      "function applyArray<T, U>(ff: ((a: T) => U)[], fa: T[]): U[] {",
-      "  const result: U[] = [];",
-      "  for (const func of ff) {",
-      "    for (const value of fa) {",
-      "      result.push(func(value));",
-      "    }",
-      "  }",
-      "  return result;",
-      "}",
-      "",
-      "function bindArray<T, U>(ma: T[], f: (value: T) => U[]): U[] {",
-      "  const result: U[] = [];",
-      "  for (const value of ma) {",
-      "    result.push(...f(value));",
-      "  }",
-      "  return result;",
-      "}",
-      "",
-      "// List monadic functions",
-      "function mapList<T, U>(fa: List<T>, f: (a: T) => U): List<U> {",
-      "  if (fa.tag === 'Empty') return { tag: 'Empty' };",
-      "  return { tag: 'Cons', head: f(fa.head), tail: mapList(fa.tail, f) };",
-      "}",
-      "",
-      "function applyList<T, U>(ff: List<(a: T) => U>, fa: List<T>): List<U> {",
-      "  if (ff.tag === 'Empty') return { tag: 'Empty' };",
-      "  const mappedValues = mapList(fa, ff.head);",
-      "  const restApplied = applyList(ff.tail, fa);",
-      "  return concatList(mappedValues, restApplied);",
-      "}",
-      "",
-      "function concatList<T>(list1: List<T>, list2: List<T>): List<T> {",
-      "  if (list1.tag === 'Empty') return list2;",
-      "  return { tag: 'Cons', head: list1.head, tail: concatList(list1.tail, list2) };",
-      "}",
-      "",
-      "function bindList<T, U>(ma: List<T>, f: (value: T) => List<U>): List<U> {",
-      "  if (ma.tag === 'Empty') return { tag: 'Empty' };",
-      "  const headResult = f(ma.head);",
-      "  const tailResult = bindList(ma.tail, f);",
-      "  return concatList(headResult, tailResult);",
-      "}",
-      "",
-      "// Maybe monadic functions",
-      "function mapMaybe<T, U>(fa: Maybe<T>, f: (a: T) => U): Maybe<U> {",
-      "  return fa.tag === 'Just' ? Just(f(fa.value)) : Nothing;",
-      "}",
-      "",
-      "function applyMaybe<T, U>(ff: Maybe<(a: T) => U>, fa: Maybe<T>): Maybe<U> {",
-      "  return ff.tag === 'Just' && fa.tag === 'Just' ? Just(ff.value(fa.value)) : Nothing;",
-      "}",
-      "",
-      "function bindMaybe<T, U>(ma: Maybe<T>, f: (value: T) => Maybe<U>): Maybe<U> {",
-      "  return ma.tag === 'Just' ? f(ma.value) : Nothing;",
-      "}",
-      "",
-      "// Either monadic functions",
-      "function mapEither<L, R, U>(ea: Either<L, R>, f: (value: R) => U): Either<L, U> {",
-      "  return ea.tag === 'Right' ? Right(f(ea.value)) : ea;",
-      "}",
-      "",
-      "function applyEither<L, R, U>(ef: Either<L, (value: R) => U>, ea: Either<L, R>): Either<L, U> {",
-      "  return ef.tag === 'Right' && ea.tag === 'Right' ? Right(ef.value(ea.value)) :",
-      "         ef.tag === 'Left' ? ef : ea as Either<L, U>;",
-      "}",
-      "",
-      "function bindEither<L, R, U>(ea: Either<L, R>, f: (value: R) => Either<L, U>): Either<L, U> {",
-      "  return ea.tag === 'Right' ? f(ea.value) : ea;",
-      "}",
-      "",
-      "const Unit: Unit = { tag: 'Unit', value: undefined };",
-      "",
-      "function Just<T>(value: T): Maybe<T> { return { tag: 'Just', value }; }",
-      "const Nothing: Maybe<never> = { tag: 'Nothing' };",
-      "",
-      "function Left<L>(value: L): Either<L, never> { return { tag: 'Left', value }; }",
-      "function Right<R>(value: R): Either<never, R> { return { tag: 'Right', value }; }",
-      "",
-      "// Nullish coalescing helper functions",
-      "function fromMaybe<T>(defaultValue: T, maybe: Maybe<T>): T {",
-      "  return maybe.tag === 'Just' ? maybe.value : defaultValue;",
-      "}",
-      "",
-      "function fromRight<L, R>(defaultValue: R, either: Either<L, R>): R {",
-      "  return either.tag === 'Right' ? either.value : defaultValue;",
-      "}",
-      "",
-      "function fromLeft<L, R>(defaultValue: L, either: Either<L, R>): L {",
-      "  return either.tag === 'Left' ? either.value : defaultValue;",
-      "}",
-      "",
-      "const Empty: List<never> = { tag: 'Empty' };",
-      "function Cons<T>(head: T, tail: List<T>): List<T> { return { tag: 'Cons', head, tail }; }",
-      "",
-      "function headList<T>(list: List<T>): Maybe<T> { return list.tag === 'Cons' ? { tag: 'Just', value: list.head } : { tag: 'Nothing' }; }",
-      "function tailList<T>(list: List<T>): List<T> { return list.tag === 'Cons' ? list.tail : Empty; }",
-      "",
-      `function ssrgPrint(value: unknown): void {
-  // Seseragi型の場合は美しく整形
-  if (value && typeof value === 'object' && (
-    (value as any).tag === 'Unit' ||
-    (value as any).tag === 'Just' || (value as any).tag === 'Nothing' ||
-    (value as any).tag === 'Left' || (value as any).tag === 'Right' ||
-    (value as any).tag === 'Cons' || (value as any).tag === 'Empty'
-  )) {
-    console.log(ssrgToString(value))
-  }
-  // 通常のオブジェクトはそのまま
-  else {
-    console.log(value)
-  }
-}`,
-      "function ssrgPutStrLn(value: string): void { console.log(value); }",
-      `function ssrgToString(value: unknown): string {
-  // Unit型の美しい表示
-  if (value && typeof value === 'object' && (value as any).tag === 'Unit') {
-    return '()'
+    return this.processRuntimeSource(runtimeSource)
   }
 
-  // Maybe型の美しい表示
-  if (value && typeof value === 'object' && (value as any).tag === 'Just') {
-    return \`Just(\${ssrgToString((value as any).value)})\`
-  }
-  if (value && typeof value === 'object' && (value as any).tag === 'Nothing') {
-    return 'Nothing'
-  }
+  private processRuntimeSource(source: string): string[] {
+    // export文削除、import文削除、必要な変換処理
+    const processed = source
+      .replace(/^export\s+/gm, "") // export削除
+      .replace(/^import\s+.*$/gm, "") // import削除
+      .split("\n")
+      .filter((line) => line.trim() !== "") // 空行を除去（import削除後の空行対策）
 
-  // Either型の美しい表示
-  if (value && typeof value === 'object' && (value as any).tag === 'Left') {
-    return \`Left(\${ssrgToString((value as any).value)})\`
-  }
-  if (value && typeof value === 'object' && (value as any).tag === 'Right') {
-    return \`Right(\${ssrgToString((value as any).value)})\`
-  }
-
-  // List型の美しい表示
-  if (value && typeof value === 'object' && (value as any).tag === 'Empty') {
-    return "\`[]"
-  }
-  if (value && typeof value === 'object' && (value as any).tag === 'Cons') {
-    const items: string[] = []
-    let current = value as any
-    while (current.tag === 'Cons') {
-      items.push(ssrgToString(current.head))
-      current = current.tail
-    }
-    return "\`[" + items.join(', ') + "]"
-  }
-
-  // Tuple型の美しい表示
-  if (value && typeof value === 'object' && (value as any).tag === 'Tuple') {
-    return \`(\${(value as any).elements.map(ssrgToString).join(', ')})\`
-  }
-
-  // 配列の表示
-  if (Array.isArray(value)) {
-    return \`[\${value.map(ssrgToString).join(', ')}]\`
-  }
-
-  // プリミティブ型
-  if (typeof value === 'string') {
-    return \`"\${value}"\`
-  }
-  if (typeof value === 'number') {
-    return String(value)
-  }
-  if (typeof value === 'boolean') {
-    return value ? 'True' : 'False'
-  }
-
-  // 普通のオブジェクト（構造体など）
-  if (typeof value === 'object' && value !== null) {
-    const pairs: string[] = []
-    for (const key in value) {
-      if ((value as any).hasOwnProperty(key)) {
-        pairs.push(\`\${key}: \${ssrgToString((value as any)[key])}\`)
-      }
-    }
-
-    // 構造体名を取得（constructor.nameを使用）
-    const structName = (value as any).constructor && (value as any).constructor.name !== 'Object'
-      ? (value as any).constructor.name
-      : ''
-
-    // 複数フィールドがある場合はインデント表示
-    if (pairs.length > 2) {
-      return \`\${structName} {\\n  \${pairs.join(',\\n  ')}\\n}\`
-    } else {
-      return \`\${structName} { \${pairs.join(', ')} }\`
-    }
-  }
-
-  return String(value)
-}`,
-      `function ssrgToInt(value: unknown): number {
-  if (typeof value === 'number') {
-    return Math.trunc(value)
-  }
-  if (typeof value === 'string') {
-    const n = parseInt(value, 10)
-    if (isNaN(n)) {
-      throw new Error(\`Cannot convert "\${value}" to Int\`)
-    }
-    return n
-  }
-  throw new Error(\`Cannot convert \${typeof value} to Int\`)
-}`,
-      `function ssrgToFloat(value: unknown): number {
-  if (typeof value === 'number') {
-    return value
-  }
-  if (typeof value === 'string') {
-    const n = parseFloat(value)
-    if (isNaN(n)) {
-      throw new Error(\`Cannot convert "\${value}" to Float\`)
-    }
-    return n
-  }
-  throw new Error(\`Cannot convert \${typeof value} to Float\`)
-}`,
-      `function ssrgShow(value: unknown): void {
-  console.log(ssrgToString(value))
-}`,
-      `function ssrgTypeOf(value: unknown, variableName?: string): string {
-  if (value === null) return "null"
-  if (value === undefined) return "undefined"
-  
-  // 1. 変数名がある場合は型テーブルから取得
-  if (variableName && __variableTypes[variableName]) {
-    return __variableTypes[variableName]
-  }
-  
-  // 2. __typename プロパティをチェック（型エイリアス対応）
-  if (value && typeof value === "object" && "__typename" in value) {
-    return (value as any).__typename
-  }
-  
-  // 3. プリミティブ型
-  if (typeof value === "string") return "String"
-  if (typeof value === "number") return "Int"
-  if (typeof value === "boolean") return "Bool"
-  
-  // 4. 組み込み型の特別処理
-  if (value && typeof value === "object") {
-    // Unit型
-    if ((value as any).tag === "Unit") {
-      return "Unit"
-    }
-    
-    // Maybe型
-    if ((value as any).tag === "Just" || (value as any).tag === "Nothing") {
-      if ((value as any).tag === "Just") {
-        const innerType = ssrgTypeOf((value as any).value)
-        return \`Maybe<\${innerType}>\`
-      }
-      return "Maybe<unknown>"
-    }
-    
-    // Either型
-    if ((value as any).tag === "Left" || (value as any).tag === "Right") {
-      const innerType = ssrgTypeOf((value as any).value)
-      if ((value as any).tag === "Left") {
-        return \`Either<\${innerType}, unknown>\`
-      } else {
-        return \`Either<unknown, \${innerType}>\`
-      }
-    }
-    
-    // Tuple型
-    if ((value as any).tag === "Tuple" && Array.isArray((value as any).elements)) {
-      const elemTypes = (value as any).elements.map((elem: any) => ssrgTypeOf(elem))
-      return \`(\${elemTypes.join(', ')})\`
-    }
-    
-    // Array型
-    if (Array.isArray(value)) {
-      if (value.length > 0) {
-        const elemType = ssrgTypeOf(value[0])
-        return \`Array<\${elemType}>\`
-      }
-      return "Array<unknown>"
-    }
-    
-    // 4. 構造体の場合はコンストラクタ名を返す
-    if ((value as any).constructor && (value as any).constructor.name !== 'Object') {
-      return (value as any).constructor.name
-    }
-    
-    // 5. 匿名オブジェクトの場合は型構造を返す（構造的型システム）
-    const keys = Object.keys(value as any).sort() // キーをソートして順序を統一
-    if (keys.length > 0) {
-      const fields = keys.map(key => \`\${key}: \${ssrgTypeOf((value as any)[key])}\`).join(', ')
-      return \`{ \${fields} }\`
-    }
-  }
-  
-  return "unknown"
-}
-function ssrgTypeOfWithAliases(value: unknown, variableName?: string): string {
-  // 構造的型を取得（変数テーブルを使わずに）
-  const structuralType = ssrgTypeOf(value)  // 変数名なしで呼ぶ
-  
-  // 変数エイリアステーブルから取得（優先）
-  let matchingAliases: string[] = []
-  if (variableName && __variableAliases[variableName]) {
-    matchingAliases = __variableAliases[variableName]
-  } else {
-    // フォールバック: 型レジストリから該当するエイリアスを検索
-    if (value && typeof value === "object") {
-      const structuralTypeForMatch = getStructuralTypeString(value)
-      for (const [typeName, typeInfo] of Object.entries(__typeRegistry)) {
-        if (typeMatches(structuralTypeForMatch, typeInfo)) {
-          matchingAliases.push(typeName)
-        }
-      }
-    }
-  }
-  
-  // エイリアスがある場合は追加情報として表示
-  if (matchingAliases.length > 0) {
-    return structuralType + " (" + matchingAliases.join(', ') + ")"
-  }
-  
-  return structuralType
-}
-
-function getStructuralTypeString(value: any): string {
-  if (!value || typeof value !== "object") return "unknown"
-  const keys = Object.keys(value).sort() // キーをソートして順序を統一
-  if (keys.length === 0) return "{}"
-  const fields = keys.map(key => \`\${key}: \${ssrgTypeOf(value[key])}\`).join(', ')
-  return \`{ \${fields} }\`
-}
-
-function typeMatches(structuralType: string, typeInfo: any): boolean {
-  if (!typeInfo || typeof typeInfo !== "object") return false
-  
-  switch (typeInfo.kind) {
-    case "record":
-      const expectedFields = Object.keys(typeInfo.fields)
-        .sort() // キーをソートして順序を統一
-        .map(name => \`\${name}: \${getTypeInfoString(typeInfo.fields[name])}\`)
-        .join(', ')
-      return structuralType === \`{ \${expectedFields} }\`
-    case "tuple":
-      const expectedElements = typeInfo.elements
-        .map((elem: any) => getTypeInfoString(elem))
-        .join(', ')
-      return structuralType === \`(\${expectedElements})\`
-    default:
-      return false
-  }
-}
-
-function getTypeInfoString(typeInfo: any): string {
-  if (!typeInfo || typeof typeInfo !== "object") return "unknown"
-  
-  switch (typeInfo.kind) {
-    case "primitive":
-      return typeInfo.name || "unknown"
-    case "array":
-      return \`Array<\${getTypeInfoString(typeInfo.elementType)}>\`
-    case "maybe":
-      return \`Maybe<\${getTypeInfoString(typeInfo.innerType)}>\`
-    case "either":
-      return \`Either<\${getTypeInfoString(typeInfo.leftType)}, \${getTypeInfoString(typeInfo.rightType)}>\`
-    case "tuple":
-      return \`(\${typeInfo.elements.map((elem: any) => getTypeInfoString(elem)).join(', ')})\`
-    case "record":
-      const fields = Object.keys(typeInfo.fields)
-        .map(name => \`\${name}: \${getTypeInfoString(typeInfo.fields[name])}\`)
-        .join(', ')
-      return \`{ \${fields} }\`
-    default:
-      return "unknown"
-  }
-}
-
-function wildcardTypeMatches(actualType: string, expectedType: string): boolean {
-  // ワイルドカード型マッチング：Either<String, Int> と Either<String, _> などをマッチ
-  if (expectedType.startsWith("Either<")) {
-    if (!actualType.startsWith("Either<")) return false
-    
-    const actualContent = actualType.slice(7, -1)
-    const expectedContent = expectedType.slice(7, -1)
-    
-    const actualCommaIndex = actualContent.indexOf(',')
-    const expectedCommaIndex = expectedContent.indexOf(',')
-    
-    if (actualCommaIndex === -1 || expectedCommaIndex === -1) return false
-    
-    const actualLeft = actualContent.slice(0, actualCommaIndex).trim()
-    const actualRight = actualContent.slice(actualCommaIndex + 1).trim()
-    const expectedLeft = expectedContent.slice(0, expectedCommaIndex).trim()
-    const expectedRight = expectedContent.slice(expectedCommaIndex + 1).trim()
-    
-    // ワイルドカードチェック
-    const leftMatches = expectedLeft === "_" || actualLeft === expectedLeft
-    const rightMatches = expectedRight === "_" || actualRight === expectedRight
-    
-    return leftMatches && rightMatches
-  }
-  
-  // Maybe型のワイルドカードマッチング
-  if (expectedType.startsWith("Maybe<")) {
-    if (!actualType.startsWith("Maybe<")) return false
-    
-    const actualInner = actualType.slice(6, -1)
-    const expectedInner = expectedType.slice(6, -1)
-    
-    return expectedInner === "_" || actualInner === expectedInner
-  }
-  
-  // Array型のワイルドカードマッチング
-  if (expectedType.startsWith("Array<")) {
-    if (!actualType.startsWith("Array<")) return false
-    
-    const actualInner = actualType.slice(6, -1)
-    const expectedInner = expectedType.slice(6, -1)
-    
-    return expectedInner === "_" || actualInner === expectedInner
-  }
-  
-  // レコード型のワイルドカードマッチング
-  if (expectedType.startsWith("{") && expectedType.endsWith("}")) {
-    if (!actualType.startsWith("{") || !actualType.endsWith("}")) return false
-    
-    // 両方の型を構造的にパース
-    const actualContent = actualType.slice(1, -1).trim()
-    const expectedContent = expectedType.slice(1, -1).trim()
-    
-    const actualFields: Record<string, string> = {}
-    const expectedFields: Record<string, string> = {}
-    
-    // actualTypeをパース
-    actualContent.split(',').forEach(field => {
-      const colonIndex = field.indexOf(':')
-      if (colonIndex !== -1) {
-        const name = field.slice(0, colonIndex).trim()
-        const type = field.slice(colonIndex + 1).trim()
-        actualFields[name] = type
-      }
-    })
-    
-    // expectedTypeをパース
-    expectedContent.split(',').forEach(field => {
-      const colonIndex = field.indexOf(':')
-      if (colonIndex !== -1) {
-        const name = field.slice(0, colonIndex).trim()
-        const type = field.slice(colonIndex + 1).trim()
-        expectedFields[name] = type
-      }
-    })
-    
-    // フィールド数が一致する必要がある
-    if (Object.keys(actualFields).length !== Object.keys(expectedFields).length) return false
-    
-    // 各フィールドをチェック
-    for (const [fieldName, expectedFieldType] of Object.entries(expectedFields)) {
-      if (!(fieldName in actualFields)) return false
-      if (expectedFieldType === "_") continue // ワイルドカードは任意の型にマッチ
-      if (actualFields[fieldName] !== expectedFieldType) return false
-    }
-    
-    return true
-  }
-  
-  // Tuple型のワイルドカードマッチング
-  if (expectedType.startsWith("(") && expectedType.endsWith(")")) {
-    if (!actualType.startsWith("(") || !actualType.endsWith(")")) return false
-    
-    const actualContent = actualType.slice(1, -1).trim()
-    const expectedContent = expectedType.slice(1, -1).trim()
-    
-    const actualElements = actualContent.split(',').map(e => e.trim())
-    const expectedElements = expectedContent.split(',').map(e => e.trim())
-    
-    // 要素数が一致する必要がある
-    if (actualElements.length !== expectedElements.length) return false
-    
-    // 各要素をチェック
-    for (let i = 0; i < actualElements.length; i++) {
-      if (expectedElements[i] === "_") continue // ワイルドカードは任意の型にマッチ
-      if (actualElements[i] !== expectedElements[i]) return false
-    }
-    
-    return true
-  }
-  
-  return false
-}`,
-      `function ssrgIsType(value: unknown, typeString: string, variableName?: string): boolean {
-  // 1. 変数型テーブルからの型情報チェック（ワイルドカードがない場合のみ最優先）
-  if (variableName && __variableTypes[variableName] && !typeString.includes('_')) {
-    const variableType = __variableTypes[variableName]
-    
-    // struct型の場合は構造体名のみで比較
-    if (variableType.includes(\" { \")) {
-      const structName = variableType.split(\" { \")[0]
-      if (structName === typeString) return true
-    }
-    
-    // 完全一致の場合
-    if (variableType === typeString) return true
-    
-    // type aliasの場合は変数エイリアステーブルをチェック
-    if (variableName && __variableAliases[variableName]) {
-      const aliases = __variableAliases[variableName]
-      if (aliases.includes(typeString)) {
-        return true
-      }
-    }
-    
-    // 構造的型の場合は順序を無視した比較
-    if (variableType.startsWith("{") && variableType.endsWith("}") && 
-        typeString.startsWith("{") && typeString.endsWith("}")) {
-      return checkStructuralType(value, typeString)
-    }
-    
-    return false
-  }
-  
-  // 2. ワイルドカード型の場合は、変数型テーブルの情報とワイルドカードマッチングを組み合わせる
-  if (variableName && __variableTypes[variableName] && typeString.includes('_')) {
-    const variableType = __variableTypes[variableName]
-    return wildcardTypeMatches(variableType, typeString)
-  }
-  
-  // 2. 直接的な型名マッチ
-  const actualType = ssrgTypeOf(value)
-  if (actualType === typeString) return true
-  
-  // 3. 型レジストリを使った同等性チェック
-  const registryType = __typeRegistry[typeString]
-  if (registryType) {
-    return typeMatchesRegistry(value, registryType)
-  }
-  
-  // 4. 組み込み型の特別処理
-  if (value && typeof value === "object") {
-    // Unit型チェック
-    if (typeString === "Unit") {
-      return (value as any).tag === "Unit"
-    }
-    
-    // Maybe型チェック
-    if (typeString.startsWith("Maybe<")) {
-      if ((value as any).tag === "Just" || (value as any).tag === "Nothing") {
-        if ((value as any).tag === "Nothing") {
-          return true // Nothing は任意の Maybe<T> にマッチ
-        }
-        // Just の場合は内部型をチェック
-        const innerTypeMatch = typeString.match(/Maybe<(.+)>/)
-        if (innerTypeMatch) {
-          const expectedInnerType = innerTypeMatch[1]
-          // ワイルドカードの場合は任意の型にマッチ
-          if (expectedInnerType === "_") return true
-          return ssrgIsType((value as any).value, expectedInnerType)
-        }
-      }
-      return false
-    }
-    
-    // Either型チェック
-    if (typeString.startsWith("Either<")) {
-      if ((value as any).tag === "Left" || (value as any).tag === "Right") {
-        // Either<A, B> から A と B を正確に抽出
-        const content = typeString.slice(7, -1) // "Either<" と ">" を除く
-        const commaIndex = content.indexOf(',')
-        if (commaIndex !== -1) {
-          const leftType = content.slice(0, commaIndex).trim()
-          const rightType = content.slice(commaIndex + 1).trim()
-          
-          if ((value as any).tag === "Left") {
-            // ワイルドカードの場合は任意の型にマッチ
-            if (leftType === "_") return true
-            return ssrgIsType((value as any).value, leftType)
-          } else {
-            // ワイルドカードの場合は任意の型にマッチ
-            if (rightType === "_") return true
-            return ssrgIsType((value as any).value, rightType)
-          }
-        }
-      }
-      return false
-    }
-    
-    // Array型チェック
-    if (typeString.startsWith("Array<")) {
-      if (Array.isArray(value)) {
-        const typeMatch = typeString.match(/Array<(.+)>/)
-        if (typeMatch) {
-          const elemType = typeMatch[1]
-          // ワイルドカードの場合は任意の型にマッチ
-          if (elemType === "_") return true
-          return value.every(item => ssrgIsType(item, elemType))
-        }
-      }
-      return false
-    }
-    
-    // Tuple型チェック
-    if (typeString.startsWith("(") && typeString.endsWith(")")) {
-      if ((value as any).tag === "Tuple" && Array.isArray((value as any).elements)) {
-        const tupleContent = typeString.slice(1, -1)
-        const expectedTypes = tupleContent.split(',').map(t => t.trim())
-        const actualElements = (value as any).elements
-        if (expectedTypes.length !== actualElements.length) return false
-        return expectedTypes.every((expectedType, index) => {
-          // ワイルドカードの場合は任意の型にマッチ
-          if (expectedType === "_") return true
-          return ssrgIsType(actualElements[index], expectedType)
-        })
-      }
-      return false
-    }
-  }
-  
-  // 5. 構造的型チェック（レコード型）
-  if (typeString.startsWith("{") && typeString.endsWith("}")) {
-    return checkStructuralType(value, typeString)
-  }
-  
-  return false
-}
-
-function typeMatchesRegistry(value: any, typeInfo: any): boolean {
-  if (!typeInfo || typeof typeInfo !== "object") return false
-  
-  switch (typeInfo.kind) {
-    case "primitive":
-      return ssrgTypeOf(value) === typeInfo.name
-    case "record":
-      if (!value || typeof value !== "object") return false
-      return Object.keys(typeInfo.fields).every(fieldName => {
-        if (!(fieldName in value)) return false
-        return typeMatchesRegistry(value[fieldName], typeInfo.fields[fieldName])
-      })
-    case "tuple":
-      if (!value || typeof value !== "object" || (value as any).tag !== "Tuple") return false
-      const elements = (value as any).elements
-      if (!Array.isArray(elements) || elements.length !== typeInfo.elements.length) return false
-      return typeInfo.elements.every((expectedType: any, index: number) => 
-        typeMatchesRegistry(elements[index], expectedType)
-      )
-    case "array":
-      if (!Array.isArray(value)) return false
-      return value.every(item => typeMatchesRegistry(item, typeInfo.elementType))
-    case "maybe":
-      if (!value || typeof value !== "object") return false
-      if ((value as any).tag === "Nothing") return true
-      if ((value as any).tag === "Just") {
-        return typeMatchesRegistry((value as any).value, typeInfo.innerType)
-      }
-      return false
-    case "either":
-      if (!value || typeof value !== "object") return false
-      if ((value as any).tag === "Left") {
-        return typeMatchesRegistry((value as any).value, typeInfo.leftType)
-      }
-      if ((value as any).tag === "Right") {
-        return typeMatchesRegistry((value as any).value, typeInfo.rightType)
-      }
-      return false
-    default:
-      return false
-  }
-}
-
-function checkStructuralType(value: any, typeString: string): boolean {
-  if (!value || typeof value !== "object") return false
-  
-  // "{ name: String, age: Int }" のような形式をパース
-  const content = typeString.slice(1, -1).trim()
-  if (!content) return Object.keys(value).length === 0
-  
-  const fields = content.split(',').map(f => f.trim())
-  const expectedFields: Record<string, string> = {}
-  
-  for (const field of fields) {
-    const colonIndex = field.indexOf(':')
-    if (colonIndex === -1) continue
-    const fieldName = field.slice(0, colonIndex).trim()
-    const fieldType = field.slice(colonIndex + 1).trim()
-    expectedFields[fieldName] = fieldType
-  }
-  
-  // 期待されるフィールドがすべて存在し、型が一致するかチェック
-  for (const [fieldName, expectedType] of Object.entries(expectedFields)) {
-    if (!(fieldName in value)) return false
-    // ワイルドカードの場合は任意の型にマッチ
-    if (expectedType === "_") continue
-    if (!ssrgIsType(value[fieldName], expectedType)) return false
-  }
-  
-  // 余分なフィールドがないかチェック
-  const actualFieldCount = Object.keys(value).filter(key => key !== "__typename").length
-  const expectedFieldCount = Object.keys(expectedFields).length
-  return actualFieldCount === expectedFieldCount
-}`,
-      "",
-      "// 型レジストリ（コンパイル時型情報の実行時保持）",
-      "const __typeRegistry: Record<string, any> = {};",
-      "",
-      "// 変数型情報テーブル（完全型情報保持）",
-      "const __variableTypes: Record<string, string> = {};",
-      "const __variableAliases: Record<string, string[]> = {};",
-      "",
-      "function arrayToList<T>(arr: T[]): List<T> {",
-      "  let result: List<T> = Empty;",
-      "  for (let i = arr.length - 1; i >= 0; i--) {",
-      "    result = Cons(arr[i], result);",
-      "  }",
-      "  return result;",
-      "}",
-      "",
-      "function listToArray<T>(list: List<T>): T[] {",
-      "  const result: T[] = [];",
-      "  let current = list;",
-      "  while (current.tag === 'Cons') {",
-      "    result.push(current.head);",
-      "    current = current.tail;",
-      "  }",
-      "  return result;",
-      "}",
-      "",
-      "// Task型 - Monad",
-      "function Task<T>(computation: () => Promise<T>): Task<T> {",
-      "  return { tag: 'Task', computation };",
-      "}",
-      "",
-      "function resolve<T>(value: T): () => Promise<T> {",
-      "  return () => Promise.resolve(value);",
-      "}",
-      "",
-      "// Task runner: run",
-      "function ssrgRun<T>(task: Task<T>): Promise<T> {",
-      "  return task.computation();",
-      "}",
-      "",
-      "// Task runner with error handling: tryRun",
-      "function ssrgTryRun<T>(task: Task<T>): Promise<Either<string, T>> {",
-      "  return (async () => {",
-      "    try {",
-      "      const result = await task.computation();",
-      "      return Right(result);",
-      "    } catch (error) {",
-      "      return Left(error instanceof Error ? error.message : String(error));",
-      "    }",
-      "  })();",
-      "}",
-      "",
-      "// Task Functor: <$>",
-      "function mapTask<A, B>(f: (a: A) => B, fa: Task<A>): Task<B> {",
-      "  return Task(async () => {",
-      "    const a = await fa.computation();",
-      "    return f(a);",
-      "  });",
-      "}",
-      "",
-      "// Task Applicative: <*>",
-      "function applyTask<A, B>(ff: Task<(a: A) => B>, fa: Task<A>): Task<B> {",
-      "  return Task(async () => {",
-      "    const [f, a] = await Promise.all([ff.computation(), fa.computation()]);",
-      "    return f(a);",
-      "  });",
-      "}",
-      "",
-      "// Task Monad: >>=",
-      "function bindTask<A, B>(ma: Task<A>, f: (a: A) => Task<B>): Task<B> {",
-      "  return Task(async () => {",
-      "    const a = await ma.computation();",
-      "    const mb = f(a);",
-      "    return mb.computation();",
-      "  });",
-      "}",
-    ]
+    return processed
   }
 
   private generateCurryFunction(): string[] {
@@ -2037,6 +1267,36 @@ ${indent}}`
     return false
   }
 
+  // Signal型かどうかをチェック
+  private isSignalType(type: Type | undefined): boolean {
+    if (!type) return false
+
+    // 直接GenericTypeの場合をチェック（最優先）
+    if (
+      type.kind === "GenericType" &&
+      (type as GenericType).name === "Signal"
+    ) {
+      return true
+    }
+
+    // 型推論結果がある場合は置換を適用
+    if (this.typeInferenceResult?.substitution) {
+      const resolvedType = this.typeInferenceResult.substitution.apply(type)
+      if (
+        resolvedType &&
+        resolvedType.kind === "GenericType" &&
+        (resolvedType as GenericType).name === "Signal"
+      ) {
+        return true
+      }
+    }
+
+    // デバッグ用ログ
+    console.log(`🔧 isSignalType check: type.kind=${type.kind}, type=`, type)
+
+    return false
+  }
+
   // List型かどうかをチェック
   private isListType(type: Type | undefined): boolean {
     if (!type) return false
@@ -2227,12 +1487,23 @@ ${indent}}`
     lines.push("  }")
     lines.push("  // Fall back to native JavaScript operator")
     lines.push("  switch (operator) {")
-    lines.push("    case '+': return left + right;")
-    lines.push("    case '-': return left - right;")
-    lines.push("    case '*': return left * right;")
-    lines.push("    case '/': return left / right;")
-    lines.push("    case '%': return left % right;")
-    lines.push("    case '**': return left ** right;")
+    lines.push("    case '+': {")
+    lines.push(
+      "      // 型安全な加算：両方が数値の場合のみ数値演算、それ以外は文字列連結"
+    )
+    lines.push(
+      "      if (typeof left === 'number' && typeof right === 'number') return left + right;"
+    )
+    lines.push(
+      "      if (typeof left === 'string' || typeof right === 'string') return String(left) + String(right);"
+    )
+    lines.push("      return left + right;")
+    lines.push("    }")
+    lines.push("    case '-': return Number(left) - Number(right);")
+    lines.push("    case '*': return Number(left) * Number(right);")
+    lines.push("    case '/': return Number(left) / Number(right);")
+    lines.push("    case '%': return Number(left) % Number(right);")
+    lines.push("    case '**': return Number(left) ** Number(right);")
     lines.push("    case '==': return left == right;")
     lines.push("    case '!=': return left != right;")
     lines.push("    case '<': return left < right;")
@@ -2472,6 +1743,10 @@ ${indent}}`
         return this.generateRejectExpression(expr as RejectExpression)
       case "TryExpression":
         return this.generateTryExpression(expr as TryExpression)
+      case "SignalExpression":
+        return this.generateSignalExpression(expr as SignalExpression)
+      case "AssignmentExpression":
+        return this.generateAssignmentExpression(expr as AssignmentExpression)
       default:
         return `/* Unsupported expression: ${expr.constructor.name} */`
     }
@@ -2504,6 +1779,11 @@ ${indent}}`
       return `Cons(${left}, ${right})`
     }
 
+    // Signal代入演算子の特別処理
+    if (binOp.operator === ":=") {
+      return `${left}.setValue(${right})`
+    }
+
     // モナド演算子の特別処理
     if (
       binOp.operator === "<$>" ||
@@ -2511,6 +1791,7 @@ ${indent}}`
       binOp.operator === ">>="
     ) {
       const leftType = this.getResolvedType(binOp.left)
+      console.log(`🔧 BinaryOperation ${binOp.operator}: leftType =`, leftType)
 
       // 右辺の型を取得（<$>の場合は関数）
       const _rightType = this.getResolvedType(binOp.right)
@@ -2572,6 +1853,18 @@ ${indent}}`
             return `applyArray(${left}, ${right})`
           case ">>=":
             return `bindArray(${left}, ${right})`
+        }
+      }
+
+      // Signal型の場合
+      if (this.isSignalType(leftType)) {
+        switch (binOp.operator) {
+          case "<$>":
+            return `mapSignal(${left}, ${right})`
+          case "<*>":
+            return `applySignal(${left}, ${right})`
+          case ">>=":
+            return `bindSignal(${left}, ${right})`
         }
       }
     }
@@ -3058,8 +2351,14 @@ ${indent}}`
   generateUnaryOperation(unaryOp: UnaryOperation): string {
     const operand = this.generateExpression(unaryOp.operand)
 
-    // 演算子をそのまま使用（TypeScriptと同じ）
-    return `(${unaryOp.operator}${operand})`
+    switch (unaryOp.operator) {
+      case "*":
+        // Signal getValue: *signal -> signal.getValue()
+        return `(${operand}.getValue())`
+      default:
+        // 演算子をそのまま使用（TypeScriptと同じ）
+        return `(${unaryOp.operator}${operand})`
+    }
   }
 
   // 関数呼び出しの生成
@@ -3354,6 +2653,21 @@ ${indent}}`
           return `ssrgTypeOfWithAliases(${args[0]}, "${variableName}")`
         }
         return `ssrgTypeOfWithAliases(${args[0]})`
+      case "subscribe":
+        if (args.length !== 2) {
+          throw new Error("subscribe requires exactly two arguments")
+        }
+        return `ssrgSignalSubscribe(${args[0]}, ${args[1]})`
+      case "unsubscribe":
+        if (args.length !== 1) {
+          throw new Error("unsubscribe requires exactly one argument")
+        }
+        return `ssrgSignalUnsubscribe(${args[0]})`
+      case "detach":
+        if (args.length !== 1) {
+          throw new Error("detach requires exactly one argument")
+        }
+        return `ssrgSignalDetach(${args[0]})`
       default:
         throw new Error(`Unknown builtin function: ${call.functionName}`)
     }
@@ -4054,7 +3368,9 @@ ${indent}}`
     // コンパイル時に型推論結果から適切な関数を選択
     const valueType = this.getResolvedType(map.right)
 
-    if (this.isTaskType(valueType)) {
+    if (this.isSignalType(valueType)) {
+      return `mapSignal(${value}, ${func})`
+    } else if (this.isTaskType(valueType)) {
       return `mapTask(${func}, ${value})`
     } else if (this.isArrayType(valueType)) {
       return `mapArray(${value}, ${func})`
@@ -4068,23 +3384,10 @@ ${indent}}`
       // Tuple型の場合は要素をmapする
       return `{ tag: 'Tuple', elements: mapArray((${value}).elements, ${func}) }`
     } else {
-      // 型が不明な場合はランタイム判定にフォールバック
-      return `(() => {
-        const _value = ${value};
-        if (_value && _value.tag === 'Task') {
-          return mapTask(${func}, _value);
-        } else if (_value && _value.tag === 'Tuple') {
-          return { tag: 'Tuple', elements: mapArray(_value.elements, ${func}) };
-        } else if (Array.isArray(_value)) {
-          return mapArray(_value, ${func});
-        } else if (_value && _value.tag === 'Cons' || _value && _value.tag === 'Empty') {
-          return mapList(_value, ${func});
-        } else if (_value && (_value.tag === 'Left' || _value.tag === 'Right')) {
-          return mapEither(_value, ${func});
-        } else {
-          return mapMaybe(_value, ${func});
-        }
-      })()`
+      // 型推論失敗時のフォールバック
+      throw new Error(
+        `Unknown type for functor map: ${JSON.stringify(valueType)}`
+      )
     }
   }
 
@@ -4098,7 +3401,9 @@ ${indent}}`
     const rightType = this.getResolvedType(apply.right)
 
     // 両方の型が同じモナド型である必要がある
-    if (this.isTaskType(leftType) && this.isTaskType(rightType)) {
+    if (this.isSignalType(leftType) && this.isSignalType(rightType)) {
+      return `applySignal(${funcContainer}, ${valueContainer})`
+    } else if (this.isTaskType(leftType) && this.isTaskType(rightType)) {
       return `applyTask(${funcContainer}, ${valueContainer})`
     } else if (this.isArrayType(leftType) && this.isArrayType(rightType)) {
       return `applyArray(${funcContainer}, ${valueContainer})`
@@ -4109,24 +3414,10 @@ ${indent}}`
     } else if (this.isMaybeType(leftType) && this.isMaybeType(rightType)) {
       return `applyMaybe(${funcContainer}, ${valueContainer})`
     } else {
-      // 型が不明な場合はランタイム判定にフォールバック
-      return `(() => {
-        const _funcs = ${funcContainer};
-        const _values = ${valueContainer};
-        if (_funcs && _funcs.tag === 'Task' && _values && _values.tag === 'Task') {
-          return applyTask(_funcs, _values);
-        } else if (Array.isArray(_funcs) && Array.isArray(_values)) {
-          return applyArray(_funcs, _values);
-        } else if (_funcs && (_funcs.tag === 'Cons' || _funcs.tag === 'Empty') &&
-                  _values && (_values.tag === 'Cons' || _values.tag === 'Empty')) {
-          return applyList(_funcs, _values);
-        } else if (_funcs && (_funcs.tag === 'Left' || _funcs.tag === 'Right') &&
-                  _values && (_values.tag === 'Left' || _values.tag === 'Right')) {
-          return applyEither(_funcs, _values);
-        } else {
-          return applyMaybe(_funcs, _values);
-        }
-      })()`
+      // 型推論失敗時のフォールバック
+      throw new Error(
+        `Unknown types for applicative apply: left=${JSON.stringify(leftType)}, right=${JSON.stringify(rightType)}`
+      )
     }
   }
 
@@ -4148,28 +3439,16 @@ ${indent}}`
       return `bindEither(${monadValue}, ${bindFunc})`
     } else if (this.isMaybeType(monadType)) {
       return `bindMaybe(${monadValue}, ${bindFunc})`
+    } else if (this.isSignalType(monadType)) {
+      return `bindSignal(${monadValue}, ${bindFunc})`
     } else if (this.isTupleType(monadType)) {
       // Tuple型の場合は要素をbindする
       return `{ tag: 'Tuple', elements: bindArray((${monadValue}).elements, ${bindFunc}) }`
     } else {
-      // 型が不明な場合はランタイム判定にフォールバック
-      return `(() => {
-        const _monad = ${monadValue};
-        if (_monad && _monad.tag === 'Task') {
-          return bindTask(_monad, ${bindFunc});
-        } else if (_monad && _monad.tag === 'Tuple') {
-          const results = bindArray(_monad.elements, ${bindFunc});
-          return { tag: 'Tuple', elements: results };
-        } else if (Array.isArray(_monad)) {
-          return bindArray(_monad, ${bindFunc});
-        } else if (_monad && (_monad.tag === 'Cons' || _monad.tag === 'Empty')) {
-          return bindList(_monad, ${bindFunc});
-        } else if (_monad && (_monad.tag === 'Left' || _monad.tag === 'Right')) {
-          return bindEither(_monad, ${bindFunc});
-        } else {
-          return bindMaybe(_monad, ${bindFunc});
-        }
-      })()`
+      // 型推論失敗時のフォールバック
+      throw new Error(
+        `Unknown type for monad bind: ${JSON.stringify(monadType)}`
+      )
     }
   }
 
@@ -4235,6 +3514,8 @@ ${indent}}`
         return args.length === 2 ? `Cons(${args[0]}, ${args[1]})` : "Cons"
       case "Task":
         return args.length > 0 ? `Task(${args[0]})` : "Task"
+      case "Signal":
+        return args.length > 0 ? `createSignal(${args[0]})` : "createSignal"
       default:
         // 一般的なコンストラクタ
         return args.length > 0 ? `${name}(${args.join(", ")})` : name
@@ -5469,5 +4750,18 @@ ${indent}}`
     }
 
     return false
+  }
+
+  // Signal式の生成 (Signal 42)
+  generateSignalExpression(signalExpr: SignalExpression): string {
+    const initialValue = this.generateExpression(signalExpr.initialValue)
+    return `createSignal(${initialValue})`
+  }
+
+  // Signal代入式の生成 (signal := value)
+  generateAssignmentExpression(assignmentExpr: AssignmentExpression): string {
+    const target = this.generateExpression(assignmentExpr.target)
+    const value = this.generateExpression(assignmentExpr.value)
+    return `setSignal(${target}, ${value})`
   }
 }

@@ -577,6 +577,12 @@ export function normalizeOperatorSpacing(code: string): string {
         protectedParts.push(" >>= ") // 行中の場合は適切なスペーシング
         return `__PROTECTED_${index}__`
       })
+      // Signal代入演算子を保護
+      .replace(/\s*:=\s*/g, (_match) => {
+        const index = protectedParts.length
+        protectedParts.push(" := ") // 適切なスペーシングで保存
+        return `__PROTECTED_${index}__`
+      })
 
     // その他の行は演算子のスペーシングを正規化
     processed = processed

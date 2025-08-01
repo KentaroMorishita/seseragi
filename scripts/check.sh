@@ -1,11 +1,8 @@
 #!/bin/bash
 set -e
 
-# フォーマット実行
-./scripts/format.sh
-
-echo "🔍 Linting..."
-bunx biome lint src tests
+echo "🔍 Checking (format + lint)..."
+bunx biome check --write src tests playground/src
 
 echo "🏷️ Type checking..."
 bunx tsc --noEmit --project tsconfig.test.json

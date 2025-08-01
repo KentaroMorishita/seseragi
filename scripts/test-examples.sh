@@ -15,12 +15,6 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}🔧 Seseragi Examples Test Runner${NC}"
 echo "================================"
 
-# CLI存在チェック
-if [ ! -f "./dist/cli.js" ]; then
-    echo -e "${RED}❌ CLI not found. Running build first...${NC}"
-    bun run build
-fi
-
 # 統計情報
 TOTAL=0
 PASSED=0
@@ -31,13 +25,13 @@ FAILED_FILES=()
 test_file() {
     local file="$1"
     local name=$(basename "$file" .ssrg)
-    
+
     echo -e "${YELLOW}📝 Testing: $file${NC}"
-    
+
     # コンパイル
     if seseragi "$file" -o "temp_${name}.ts" >/dev/null 2>&1; then
         echo -e "   ✅ Compile: OK"
-        
+
         # TypeScript実行
         if bun run "temp_${name}.ts" >/dev/null 2>&1; then
             echo -e "   ✅ Execute: OK"
@@ -49,7 +43,7 @@ test_file() {
             ((FAILED++))
             FAILED_FILES+=("$file")
         fi
-        
+
         # 一時ファイル削除
         rm -f "temp_${name}.ts"
     else
@@ -58,7 +52,7 @@ test_file() {
         ((FAILED++))
         FAILED_FILES+=("$file")
     fi
-    
+
     ((TOTAL++))
     echo ""
 }

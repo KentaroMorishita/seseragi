@@ -82,7 +82,7 @@ describe("Nullish Coalescing Operator", () => {
   test("should handle chained ?? operators", () => {
     const source = `
       let a: Maybe<Int> = Nothing
-      let b: Maybe<Int> = Just 10  
+      let b: Maybe<Int> = Just 10
       let result = (a ?? b) ?? 0
     `
 
@@ -121,7 +121,7 @@ describe("Nullish Coalescing Operator", () => {
     // ランタイム関数が含まれているかチェック
     expect(tsCode).toContain("function fromMaybe")
     expect(tsCode).toContain(
-      "return maybe.tag === 'Just' ? maybe.value : defaultValue"
+      'maybe.tag === "Just" ? maybe.value : defaultValue'
     )
 
     // 正しい関数呼び出しが生成されているかチェック
@@ -155,9 +155,9 @@ describe("Nullish Coalescing Operator", () => {
 
   test("should handle function returning Maybe with ?? fallback", () => {
     const source = `
-      fn safeDivide a: Int -> b: Int -> Maybe<Int> = 
+      fn safeDivide a: Int -> b: Int -> Maybe<Int> =
         if b == 0 then Nothing else Just (a / b)
-      
+
       let result1 = safeDivide 10 2 ?? -1
       let result2 = safeDivide 10 0 ?? -1
     `
