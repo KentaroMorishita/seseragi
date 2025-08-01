@@ -1,8 +1,8 @@
-import { describe, test, expect } from "bun:test"
+import { describe, expect, test } from "bun:test"
+import { Program } from "../src/ast"
+import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
-import { CodeGenerator } from "../src/codegen"
-import { Program } from "../src/ast"
 
 describe("Unit value () literal", () => {
   describe("Basic Unit value parsing", () => {
@@ -267,13 +267,13 @@ describe("Unit value () literal", () => {
       const tsCode = codegen.generateProgram(program.statements)
 
       // Should contain Unit type definition
-      expect(tsCode).toContain("type Unit = { tag: 'Unit', value: undefined }")
+      expect(tsCode).toContain('type Unit = { tag: "Unit"; value: undefined }')
       // Should contain Unit constant
       expect(tsCode).toContain(
-        "const Unit: Unit = { tag: 'Unit', value: undefined }"
+        'const Unit: Unit = { tag: "Unit", value: undefined }'
       )
       // Should contain Unit display function
-      expect(tsCode).toContain("return '()'")
+      expect(tsCode).toContain('return "()"')
     })
   })
 

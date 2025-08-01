@@ -104,7 +104,7 @@ async function compile(options: CompileOptions): Promise<void> {
   const typeScriptCode = generateTypeScript(ast.statements || [], {
     generateComments: options.generateComments,
     useArrowFunctions: options.useArrowFunctions,
-    runtimeMode: "embedded", // 常にembeddedを使用
+    runtimeMode: options.runtimeMode || "embedded",
     typeInferenceResult: inferenceResult,
   })
 

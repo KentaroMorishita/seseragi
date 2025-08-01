@@ -1,229 +1,387 @@
 import { describe, expect, test } from "bun:test"
 import {
   applyList,
+  arrayToList,
   bindList,
   Cons,
   concatList,
-  dropList,
   Empty,
-  filterList,
-  foldLeftList,
-  foldRightList,
-  fromArray,
   headList,
-  isCons,
-  isEmpty,
+  Just,
   type List,
-  lengthList,
+  listToArray,
   mapList,
-  pureList,
-  reverseList,
+  Nothing,
   tailList,
-  takeList,
-  toArray,
-} from "../src/runtime/seseragi-runtime"
+} from "@seseragi/runtime"
 
-describe("List型", () => {
-  describe("基本的なコンストラクタ", () => {
+// =============================================================================
+// List型の基本操作テスト
+// =============================================================================
+
+describe("List型の基本操作", () => {
+  describe("コンストラクタとパターンマッチング", () => {
     test("Empty リストの作成", () => {
-      const emptyList = Empty
-      expect(emptyList.tag).toBe("Empty")
-      expect(isEmpty(emptyList)).toBe(true)
+      expect(Empty.tag).toBe("Empty")
     })
 
-    test("Cons でリストの作成", () => {
+    test("Cons を使ったリスト作成", () => {
       const list = Cons(1, Cons(2, Cons(3, Empty)))
       expect(list.tag).toBe("Cons")
-      if (isCons(list)) {
+      if (list.tag === "Cons") {
         expect(list.head).toBe(1)
+        expect(list.tail.tag).toBe("Cons")
+        if (list.tail.tag === "Cons") {
+          expect(list.tail.head).toBe(2)
+        }
       }
-      expect(isCons(list)).toBe(true)
-      expect(isEmpty(list)).toBe(false)
+    })
+
+    test("単一要素のリスト", () => {
+      const singleItem = Cons(42, Empty)
+      expect(singleItem.tag).toBe("Cons")
+      if (singleItem.tag === "Cons") {
+        expect(singleItem.head).toBe(42)
+        expect(singleItem.tail).toEqual(Empty)
+      }
     })
   })
 
-  describe("基本操作", () => {
-    test("headList - リストの先頭要素を取得", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
+  describe("headList - リストの先頭要素", () => {
+    test("空でないリストの先頭", () => {
+      const list = Cons("a", Cons("b", Cons("c", Empty)))
       const head = headList(list)
-      expect(head.tag === "Just" ? head.value : undefined).toBe(1)
-      const emptyHead = headList(Empty)
-      expect(
-        emptyHead.tag === "Just" ? emptyHead.value : undefined
-      ).toBeUndefined()
+      expect(head).toEqual(Just("a"))
     })
 
-    test("tailList - リストの末尾を取得", () => {
+    test("空リストの先頭", () => {
+      const head = headList(Empty)
+      expect(head).toEqual(Nothing)
+    })
+
+    test("単一要素リストの先頭", () => {
+      const list = Cons(999, Empty)
+      const head = headList(list)
+      expect(head).toEqual(Just(999))
+    })
+  })
+
+  describe("tailList - リストの尻尾", () => {
+    test("複数要素リストの尻尾", () => {
       const list = Cons(1, Cons(2, Cons(3, Empty)))
       const tail = tailList(list)
-      expect(tail.tag).toBe("Cons")
-      if (isCons(tail)) {
-        expect(tail.head).toBe(2)
-      }
-      expect(tailList(Empty)).toEqual(Empty)
+      expect(tail).toEqual(Cons(2, Cons(3, Empty)))
     })
 
-    test("lengthList - リストの長さ", () => {
-      expect(lengthList(Empty)).toBe(0)
-      expect(lengthList(Cons(1, Empty))).toBe(1)
-      expect(lengthList(Cons(1, Cons(2, Cons(3, Empty))))).toBe(3)
+    test("単一要素リストの尻尾", () => {
+      const list = Cons(42, Empty)
+      const tail = tailList(list)
+      expect(tail).toEqual(Empty)
+    })
+
+    test("空リストの尻尾", () => {
+      const tail = tailList(Empty)
+      expect(tail).toEqual(Empty)
+    })
+  })
+})
+
+// =============================================================================
+// List型の関数操作テスト
+// =============================================================================
+
+describe("List型の関数操作", () => {
+  describe("mapList - リストの写像", () => {
+    test("数値リストの変換", () => {
+      const numbers = Cons(1, Cons(2, Cons(3, Empty)))
+      const doubled = mapList(numbers, (x) => x * 2)
+      expect(doubled).toEqual(Cons(2, Cons(4, Cons(6, Empty))))
+    })
+
+    test("文字列リストの変換", () => {
+      const words = Cons("hello", Cons("world", Empty))
+      const lengths = mapList(words, (s) => s.length)
+      expect(lengths).toEqual(Cons(5, Cons(5, Empty)))
+    })
+
+    test("空リストの写像", () => {
+      const empty: List<number> = Empty
+      const result = mapList(empty, (x) => x * 2)
+      expect(result).toEqual(Empty)
+    })
+
+    test("型変換の写像", () => {
+      const numbers = Cons(42, Cons(100, Empty))
+      const strings = mapList(numbers, (n) => n.toString())
+      expect(strings).toEqual(Cons("42", Cons("100", Empty)))
     })
   })
 
-  describe("Functor法則 (mapList)", () => {
-    test("fmap id = id", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const identity = <T>(x: T): T => x
-      const mapped = mapList(list, identity)
-      expect(toArray(mapped)).toEqual([1, 2, 3])
-    })
-
-    test("fmap (f . g) = fmap f . fmap g", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const f = (x: number): number => x * 2
-      const g = (x: number): number => x + 1
-
-      const composed = (x: number): number => f(g(x))
-      const left = mapList(list, composed)
-      const right = mapList(mapList(list, g), f)
-
-      expect(toArray(left)).toEqual(toArray(right))
-    })
-
-    test("mapList で要素を変換", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const doubled = mapList(list, (x) => x * 2)
-      expect(toArray(doubled)).toEqual([2, 4, 6])
-    })
-  })
-
-  describe("Applicative法則", () => {
-    test("pure関数でリストを作成", () => {
-      const list = pureList(42)
-      expect(toArray(list)).toEqual([42])
-    })
-
-    test("applicative apply で関数を適用", () => {
-      const funcs = Cons(
-        (x: number) => x * 2,
-        Cons((x: number) => x + 1, Empty)
-      )
-      const values = Cons(1, Cons(2, Empty))
-      const result = applyList(funcs, values)
-      // [(*2), (+1)] <*> [1, 2] = [2, 4, 2, 3]
-      expect(toArray(result)).toEqual([2, 4, 2, 3])
-    })
-  })
-
-  describe("Monad法則 (bindList)", () => {
-    test("left identity: return a >>= f = f a", () => {
-      const a = 42
-      const f = (x: number): List<number> => Cons(x, Cons(x * 2, Empty))
-
-      const left = bindList(pureList(a), f)
-      const right = f(a)
-
-      expect(toArray(left)).toEqual(toArray(right))
-    })
-
-    test("right identity: m >>= return = m", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-
-      const left = bindList(list, pureList)
-      const right = list
-
-      expect(toArray(left)).toEqual(toArray(right))
-    })
-
-    test("associativity: (m >>= f) >>= g = m >>= (\\x -> f x >>= g)", () => {
-      const list = Cons(1, Cons(2, Empty))
-      const f = (x: number): List<number> => Cons(x, Cons(x + 10, Empty))
-      const g = (x: number): List<number> => Cons(x * 2, Empty)
-
-      const left = bindList(bindList(list, f), g)
-      const right = bindList(list, (x) => bindList(f(x), g))
-
-      expect(toArray(left)).toEqual(toArray(right))
-    })
-
-    test("bindList でリストを展開", () => {
-      const list = Cons(1, Cons(2, Empty))
-      const result = bindList(list, (x) => Cons(x, Cons(x * 2, Empty)))
-      expect(toArray(result)).toEqual([1, 2, 2, 4])
-    })
-  })
-
-  describe("リスト操作", () => {
-    test("concatList - リストの連結", () => {
+  describe("concatList - リストの連結", () => {
+    test("2つの非空リストの連結", () => {
       const list1 = Cons(1, Cons(2, Empty))
       const list2 = Cons(3, Cons(4, Empty))
       const result = concatList(list1, list2)
-      expect(toArray(result)).toEqual([1, 2, 3, 4])
+      expect(result).toEqual(Cons(1, Cons(2, Cons(3, Cons(4, Empty)))))
     })
 
-    test("reverseList - リストの反転", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const reversed = reverseList(list)
-      expect(toArray(reversed)).toEqual([3, 2, 1])
+    test("空リストとの連結", () => {
+      const list = Cons("a", Cons("b", Empty))
+      expect(concatList(Empty, list)).toEqual(list)
+      expect(concatList(list, Empty)).toEqual(list)
     })
 
-    test("takeList - 先頭からn個取得", () => {
-      const list = Cons(1, Cons(2, Cons(3, Cons(4, Empty))))
-      expect(toArray(takeList(2, list))).toEqual([1, 2])
-      expect(toArray(takeList(0, list))).toEqual([])
-      expect(toArray(takeList(5, list))).toEqual([1, 2, 3, 4])
+    test("両方とも空リストの連結", () => {
+      const result = concatList(Empty, Empty)
+      expect(result).toEqual(Empty)
     })
 
-    test("dropList - 先頭からn個削除", () => {
-      const list = Cons(1, Cons(2, Cons(3, Cons(4, Empty))))
-      expect(toArray(dropList(2, list))).toEqual([3, 4])
-      expect(toArray(dropList(0, list))).toEqual([1, 2, 3, 4])
-      expect(toArray(dropList(5, list))).toEqual([])
-    })
-
-    test("filterList - 条件に合う要素をフィルタ", () => {
-      const list = Cons(1, Cons(2, Cons(3, Cons(4, Empty))))
-      const evens = filterList((x) => x % 2 === 0, list)
-      expect(toArray(evens)).toEqual([2, 4])
+    test("複数リストの連鎖連結", () => {
+      const list1 = Cons(1, Empty)
+      const list2 = Cons(2, Empty)
+      const list3 = Cons(3, Empty)
+      const result = concatList(concatList(list1, list2), list3)
+      expect(result).toEqual(Cons(1, Cons(2, Cons(3, Empty))))
     })
   })
 
-  describe("fold操作", () => {
-    test("foldLeftList - 左畳み込み", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const sum = foldLeftList((acc, x) => acc + x, 0, list)
-      expect(sum).toBe(6)
+  describe("applyList - アプリカティブ操作", () => {
+    test("関数リストと値リストの適用", () => {
+      const add1 = (x: number) => x + 1
+      const mul2 = (x: number) => x * 2
+      const functions = Cons(add1, Cons(mul2, Empty))
+      const values = Cons(3, Cons(5, Empty))
 
-      const concat = foldLeftList((acc, x) => acc + x.toString(), "", list)
-      expect(concat).toBe("123")
+      const result = applyList(functions, values)
+      // [add1, mul2] <*> [3, 5] = [add1(3), add1(5), mul2(3), mul2(5)] = [4, 6, 6, 10]
+      expect(result).toEqual(Cons(4, Cons(6, Cons(6, Cons(10, Empty)))))
     })
 
-    test("foldRightList - 右畳み込み", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const sum = foldRightList((x, acc) => x + acc, 0, list)
-      expect(sum).toBe(6)
+    test("空の関数リストとの適用", () => {
+      const values = Cons(1, Cons(2, Empty))
+      const result = applyList(Empty, values)
+      expect(result).toEqual(Empty)
+    })
 
-      const concat = foldRightList((x, acc) => x.toString() + acc, "", list)
-      expect(concat).toBe("123")
+    test("空の値リストとの適用", () => {
+      const double = (x: number) => x * 2
+      const functions = Cons(double, Empty)
+      const result = applyList(functions, Empty)
+      expect(result).toEqual(Empty)
+    })
+
+    test("単一関数と単一値", () => {
+      const square = (x: number) => x * x
+      const functions = Cons(square, Empty)
+      const values = Cons(7, Empty)
+      const result = applyList(functions, values)
+      expect(result).toEqual(Cons(49, Empty))
+    })
+
+    test("カリー化関数での複数引数適用", () => {
+      const add = (x: number) => (y: number) => x + y
+      const partialApplied = applyList(Cons(add, Empty), Cons(10, Empty))
+      const finalResult = applyList(partialApplied, Cons(5, Cons(7, Empty)))
+      expect(finalResult).toEqual(Cons(15, Cons(17, Empty)))
     })
   })
 
-  describe("配列との相互変換", () => {
-    test("fromArray - 配列からリストに変換", () => {
+  describe("bindList - モナディック操作", () => {
+    test("基本的な bind 操作", () => {
+      const list = Cons(1, Cons(2, Empty))
+      const duplicate = (x: number): List<number> => Cons(x, Cons(x, Empty))
+
+      const result = bindList(list, duplicate)
+      expect(result).toEqual(Cons(1, Cons(1, Cons(2, Cons(2, Empty)))))
+    })
+
+    test("リストを展開する bind", () => {
+      const list = Cons(3, Cons(4, Empty))
+      const range = (n: number): List<number> => {
+        if (n <= 0) return Empty
+        return Cons(n, range(n - 1))
+      }
+
+      const result = bindList(list, range)
+      // [3, 4] >>= range = range(3) ++ range(4) = [3, 2, 1] ++ [4, 3, 2, 1]
+      expect(result).toEqual(
+        Cons(3, Cons(2, Cons(1, Cons(4, Cons(3, Cons(2, Cons(1, Empty)))))))
+      )
+    })
+
+    test("空リストとの bind", () => {
+      const duplicate = (x: number): List<number> => Cons(x, Cons(x, Empty))
+      const result = bindList(Empty, duplicate)
+      expect(result).toEqual(Empty)
+    })
+
+    test("Empty を返す関数との bind", () => {
+      const list = Cons(1, Cons(2, Empty))
+      const alwaysEmpty = (_: number): List<number> => Empty
+      const result = bindList(list, alwaysEmpty)
+      expect(result).toEqual(Empty)
+    })
+
+    test("フィルタリング風の使用", () => {
+      const numbers = Cons(1, Cons(2, Cons(3, Cons(4, Empty))))
+      const evenOnly = (x: number): List<number> =>
+        x % 2 === 0 ? Cons(x, Empty) : Empty
+
+      const result = bindList(numbers, evenOnly)
+      expect(result).toEqual(Cons(2, Cons(4, Empty)))
+    })
+  })
+})
+
+// =============================================================================
+// 配列との相互変換テスト
+// =============================================================================
+
+describe("配列との相互変換", () => {
+  describe("arrayToList - 配列からリストへ", () => {
+    test("数値配列の変換", () => {
       const arr = [1, 2, 3, 4]
-      const list = fromArray(arr)
-      expect(toArray(list)).toEqual(arr)
+      const result = arrayToList(arr)
+      expect(result).toEqual(Cons(1, Cons(2, Cons(3, Cons(4, Empty)))))
     })
 
-    test("toArray - リストから配列に変換", () => {
-      const list = Cons(1, Cons(2, Cons(3, Empty)))
-      const arr = toArray(list)
-      expect(arr).toEqual([1, 2, 3])
+    test("文字列配列の変換", () => {
+      const arr = ["hello", "world"]
+      const result = arrayToList(arr)
+      expect(result).toEqual(Cons("hello", Cons("world", Empty)))
+    })
+
+    test("空配列の変換", () => {
+      const arr: number[] = []
+      const result = arrayToList(arr)
+      expect(result).toEqual(Empty)
+    })
+
+    test("単一要素配列の変換", () => {
+      const arr = [42]
+      const result = arrayToList(arr)
+      expect(result).toEqual(Cons(42, Empty))
+    })
+  })
+
+  describe("listToArray - リストから配列へ", () => {
+    test("数値リストの変換", () => {
+      const list = Cons(5, Cons(10, Cons(15, Empty)))
+      const result = listToArray(list)
+      expect(result).toEqual([5, 10, 15])
+    })
+
+    test("文字列リストの変換", () => {
+      const list = Cons("a", Cons("b", Cons("c", Empty)))
+      const result = listToArray(list)
+      expect(result).toEqual(["a", "b", "c"])
     })
 
     test("空リストの変換", () => {
-      expect(toArray(fromArray([]))).toEqual([])
-      expect(fromArray(toArray(Empty))).toEqual(Empty)
+      const result = listToArray(Empty)
+      expect(result).toEqual([])
     })
+
+    test("単一要素リストの変換", () => {
+      const list = Cons("only", Empty)
+      const result = listToArray(list)
+      expect(result).toEqual(["only"])
+    })
+  })
+
+  describe("相互変換の恒等性", () => {
+    test("list -> array -> list", () => {
+      const originalList = Cons(1, Cons(2, Cons(3, Empty)))
+      const converted = arrayToList(listToArray(originalList))
+      expect(converted).toEqual(originalList)
+    })
+
+    test("array -> list -> array", () => {
+      const originalArray = [10, 20, 30]
+      const converted = listToArray(arrayToList(originalArray))
+      expect(converted).toEqual(originalArray)
+    })
+
+    test("空での相互変換", () => {
+      expect(arrayToList(listToArray(Empty))).toEqual(Empty)
+      expect(listToArray(arrayToList([]))).toEqual([])
+    })
+  })
+})
+
+// =============================================================================
+// 実用的な使用例テスト
+// =============================================================================
+
+describe("実用的な使用例", () => {
+  test("リスト内包表記風の操作", () => {
+    // [(x, y) | x <- [1, 2], y <- [10, 20], x + y > 12]
+    const xs = Cons(1, Cons(2, Empty))
+    const ys = Cons(10, Cons(20, Empty))
+
+    const result = bindList(xs, (x) =>
+      bindList(ys, (y) => (x + y > 12 ? Cons([x, y], Empty) : Empty))
+    )
+
+    expect(result).toEqual(Cons([1, 20], Cons([2, 20], Empty)))
+  })
+
+  test("リストの平坦化", () => {
+    const list1: List<number> = Cons(1, Cons(2, Empty))
+    const list2: List<number> = Cons(3, Empty)
+    const list3: List<number> = Cons(4, Cons(5, Empty))
+    const nestedList: List<List<number>> = Cons(
+      list1,
+      Cons(list2, Cons(list3, Empty))
+    )
+
+    const flattened = bindList(nestedList, (innerList) => innerList)
+    expect(flattened).toEqual(
+      Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, Empty)))))
+    )
+  })
+
+  test("パイプライン処理", () => {
+    const numbers = Cons(1, Cons(2, Cons(3, Cons(4, Empty))))
+
+    // 偶数のみフィルタ -> 2倍 -> 文字列化
+    const evenNumbers = bindList(numbers, (x) =>
+      x % 2 === 0 ? Cons(x, Empty) : Empty
+    )
+    const doubled = mapList(evenNumbers, (x) => x * 2)
+    const strings = mapList(doubled, (x) => `num: ${x}`)
+
+    expect(strings).toEqual(Cons("num: 4", Cons("num: 8", Empty)))
+  })
+
+  test("リストの連鎖操作", () => {
+    const words = Cons("hello", Cons("world", Empty))
+
+    // 各単語を文字のリストに展開
+    const chars = bindList(words, (word) => arrayToList(word.split("")))
+
+    expect(listToArray(chars)).toEqual([
+      "h",
+      "e",
+      "l",
+      "l",
+      "o",
+      "w",
+      "o",
+      "r",
+      "l",
+      "d",
+    ])
+  })
+
+  test("Maybe との組み合わせ", () => {
+    const maybeNumbers = Cons(Just(1), Cons(Nothing, Cons(Just(3), Empty)))
+
+    // Just から値を取り出してリストに展開
+    const validNumbers = bindList(maybeNumbers, (maybeNum) =>
+      maybeNum.tag === "Just" ? Cons(maybeNum.value, Empty) : Empty
+    )
+
+    expect(validNumbers).toEqual(Cons(1, Cons(3, Empty)))
   })
 })

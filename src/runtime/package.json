@@ -1,0 +1,14 @@
+{
+  "name": "@seseragi/runtime",
+  "version": "1.0.0",
+  "description": "Seseragi language runtime library",
+  "main": "index.ts",
+  "types": "index.ts",
+  "keywords": [
+    "seseragi",
+    "runtime",
+    "functional-programming"
+  ],
+  "author": "",
+  "license": "Apache-2.0"
+}

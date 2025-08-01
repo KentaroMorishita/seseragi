@@ -5,6 +5,7 @@
  */
 
 import * as AST from "./ast"
+
 // ブラウザ環境でもエラーが出ないように条件分岐
 let ModuleResolver: any
 if (
