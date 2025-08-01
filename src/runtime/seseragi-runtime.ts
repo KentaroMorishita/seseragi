@@ -1096,13 +1096,4 @@ export const bindSignal = <T, U>(
 
 // TypeScript生成用のSignal関数（createSignal、setSignal）
 // これらの関数はcodegen.tsから呼び出される
-export {
-  createSignal,
-  setSignal,
-  subscribeSignal,
-  unsubscribeSignal,
-  detachSignal,
-  mapSignal,
-  applySignal,
-  bindSignal,
-}
+// Note: All Signal functions are already exported individually above

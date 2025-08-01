@@ -1428,7 +1428,7 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "      }",
       "    },",
       "    subscribe: (observer: (value: T) => void) => {",
-      "      const key = `observer_${keyCounter++}`",
+      "      const key = `observer_` + (keyCounter++)",
       "      observers.set(key, observer)",
       "      return key",
       "    },",
@@ -1518,7 +1518,7 @@ function checkStructuralType(value: any, typeString: string): boolean {
       "// Signal組み込み関数",
       "function ssrgSignalSubscribe<T>(signal: Signal<T>, observer: (value: T) => void): string {",
       "  const subscriptionKey = signal.subscribe(observer)",
-      "  const globalKey = `${Date.now()}_${Math.random()}`",
+      "  const globalKey = Date.now() + '_' + Math.random()",
       "  __signalSubscriptions.set(globalKey, { signal, key: subscriptionKey })",
       "  return globalKey",
       "}",
@@ -4420,6 +4420,8 @@ ${indent}}`
         return args.length === 2 ? `Cons(${args[0]}, ${args[1]})` : "Cons"
       case "Task":
         return args.length > 0 ? `Task(${args[0]})` : "Task"
+      case "Signal":
+        return args.length > 0 ? `createSignal(${args[0]})` : "createSignal"
       default:
         // 一般的なコンストラクタ
         return args.length > 0 ? `${name}(${args.join(", ")})` : name

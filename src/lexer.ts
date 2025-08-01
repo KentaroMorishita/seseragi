@@ -41,9 +41,6 @@ export enum TokenType {
   IS = "IS",
   VOID = "VOID",
   TRY = "TRY",
-  SIGNAL = "SIGNAL",
-  TASK = "TASK",
-
   // Built-in functions
   PRINT = "PRINT",
   PUT_STR_LN = "PUT_STR_LN",
@@ -161,8 +158,6 @@ export class Lexer {
     ["is", TokenType.IS],
     ["Void", TokenType.VOID],
     ["try", TokenType.TRY],
-    ["Signal", TokenType.SIGNAL],
-    ["Task", TokenType.TASK],
     ["pure", TokenType.PURE],
     ["perform", TokenType.PERFORM],
     ["print", TokenType.PRINT],

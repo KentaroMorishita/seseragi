@@ -958,7 +958,9 @@ export class Parser {
     return (
       constructorName === "Just" ||
       constructorName === "Left" ||
-      constructorName === "Right"
+      constructorName === "Right" ||
+      constructorName === "Signal" ||
+      constructorName === "Task"
     )
   }
 
@@ -1492,11 +1494,7 @@ export class Parser {
       return new AST.VoidType(token.line, token.column)
     }
 
-    if (
-      token.type === TokenType.IDENTIFIER ||
-      token.type === TokenType.SIGNAL ||
-      token.type === TokenType.TASK
-    ) {
+    if (token.type === TokenType.IDENTIFIER) {
       const name = token.value
 
       // Check for generic types List<T>, Maybe<T>, etc.
@@ -2431,12 +2429,7 @@ export class Parser {
   private factorExpression(): AST.Expression {
     let expr = this.powerExpression()
 
-    while (
-      this.match(TokenType.DIVIDE, TokenType.MODULO) ||
-      (this.check(TokenType.MULTIPLY) &&
-        !this.isUnaryMultiplyContext() &&
-        this.advance())
-    ) {
+    while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
       const operator = this.previous().value
       const right = this.powerExpression()
       expr = new AST.BinaryOperation(
@@ -2919,13 +2912,6 @@ export class Parser {
 
   // eslint-disable-next-line complexity
   private primaryExpression(): AST.Expression {
-    // Signal constructor: Signal value
-    if (this.match(TokenType.SIGNAL)) {
-      const line = this.previous().line
-      const column = this.previous().column
-      const initialValue = this.primaryExpression()
-      return new AST.SignalExpression(initialValue, line, column)
-    }
     // Promise blocks: promise { ... }
     if (this.match(TokenType.PROMISE)) {
       return this.promiseBlock()
@@ -3961,12 +3947,7 @@ export class Parser {
   private multiplicativeExpressionWithBoundaryCheck(): AST.Expression {
     let expr = this.unaryExpressionWithBoundaryCheck()
 
-    while (
-      this.match(TokenType.DIVIDE, TokenType.MODULO) ||
-      (this.check(TokenType.MULTIPLY) &&
-        !this.isUnaryMultiplyContext() &&
-        this.advance())
-    ) {
+    while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
       const operator = this.previous().value
       const right = this.unaryExpressionWithBoundaryCheck()
       expr = new AST.BinaryOperation(
@@ -3989,19 +3970,6 @@ export class Parser {
       return new AST.UnaryOperation(
         operator,
         right,
-        this.previous().line,
-        this.previous().column
-      )
-    }
-
-    // Signal値取得演算子 *signal の処理
-    if (this.check(TokenType.MULTIPLY) && this.isUnaryMultiplyContext()) {
-      this.advance() // consume *
-      const operator = this.previous().value
-      const expr = this.unaryExpressionWithBoundaryCheck()
-      return new AST.UnaryOperation(
-        operator,
-        expr,
         this.previous().line,
         this.previous().column
       )
@@ -4475,18 +4443,6 @@ export class Parser {
       case TokenType.WHEN: // when *signal
       case TokenType.LET: // let x = *signal
       case TokenType.FN: // fn f = *signal
-      case TokenType.PRINT: // print *signal
-      case TokenType.PUT_STR_LN: // putStrLn *signal
-      case TokenType.TO_STRING: // toString *signal
-      case TokenType.TO_INT: // toInt *signal
-      case TokenType.TO_FLOAT: // toFloat *signal
-      case TokenType.HEAD: // head *signal
-      case TokenType.TAIL: // tail *signal
-      case TokenType.TYPEOF: // typeof *signal
-      case TokenType.TYPEOF_WITH_ALIASES: // typeof' *signal
-      case TokenType.SUBSCRIBE: // subscribe *signal
-      case TokenType.UNSUBSCRIBE: // unsubscribe *signal
-      case TokenType.DETACH: // detach *signal
         return true
 
       // 以下の場合は二項演算子（乗算）として解釈

@@ -1378,6 +1378,23 @@ export class TypeInferenceSystem {
     const justType = new AST.FunctionType(justTypeVar, justMaybeType, 0, 0)
     env.set("Just", justType)
 
+    // Signal constructor for reactive programming
+    // Signal : 'a -> Signal<'a>
+    const signalTypeVar = new PolymorphicTypeVariable("a", 0, 0)
+    const signalReturnType = new AST.GenericType(
+      "Signal",
+      [signalTypeVar],
+      0,
+      0
+    )
+    const signalConstructorType = new AST.FunctionType(
+      signalTypeVar,
+      signalReturnType,
+      0,
+      0
+    )
+    env.set("Signal", signalConstructorType)
+
     // Either constructors for pattern matching and expressions
     // Left : 'a -> Either<'a, 'b>
     const leftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
@@ -3401,9 +3418,6 @@ export class TypeInferenceSystem {
             `🔧 Instantiated function type: ${this.typeToString(resultType)} (kind: ${resultType.kind})`
           )
         } else {
-          console.log(
-            `🔧 Function ${identifier.name} not found in env, generating constraints`
-          )
           funcType = this.generateConstraintsForExpression(call.function, env)
           resultType = this.instantiatePolymorphicType(
             funcType,
