@@ -2,7 +2,7 @@
 set -e
 
 echo "🔍 Checking (format + lint)..."
-bunx biome check --write src tests
+bunx biome check --write src tests playground/src
 
 echo "🏷️ Type checking..."
 bunx tsc --noEmit --project tsconfig.test.json

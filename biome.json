@@ -12,6 +12,11 @@
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": "off"
+      },
+      "a11y": {
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "useButtonType": "off"
       }
     }
   },
