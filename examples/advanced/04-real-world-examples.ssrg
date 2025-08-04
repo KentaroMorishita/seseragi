@@ -18,7 +18,7 @@ fn fizzBuzz n: Int -> String = match (n % 3, n % 5) {
 }
 
 // FizzBuzzのテスト
-[print $ fizzBuzz n | n <- 1..=100]
+[print (fizzBuzz n) | n <- 1..=100]
 
 // =============================================================================
 // 計算器の実装
