@@ -34,8 +34,5 @@
       "trailingCommas": "es5",
       "semicolons": "asNeeded"
     }
-  },
-  "files": {
-    "includes": ["src/**/*", "tests/**/*", "playground/src/**/*"]
   }
 }

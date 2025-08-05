@@ -1562,25 +1562,25 @@ export class Parser {
   // =============================================================================
 
   private expression(): AST.Expression {
-    return this.conditionalExpression()
+    return this.topLevelExpression()
   }
 
   // パイプライン演算子を処理しない式（配列リテラルの最初の要素用）
   private expressionWithoutPipeline(): AST.Expression {
-    return this.conditionalExpressionWithoutPipeline()
+    return this.topLevelExpressionWithoutPipeline()
   }
 
-  private conditionalExpression(): AST.Expression {
+  private topLevelExpression(): AST.Expression {
     return this.assignmentExpression()
   }
 
   // Signal代入演算子（最弱優先順位）
   private assignmentExpression(): AST.Expression {
-    let expr = this.conditionalExpressionWithoutAssignment()
+    let expr = this.functionApplicationExpression()
 
     while (this.match(TokenType.SIGNAL_ASSIGN)) {
       const operator = this.previous().value
-      const right = this.conditionalExpressionWithoutAssignment()
+      const right = this.functionApplicationExpression()
       expr = new AST.BinaryOperation(
         expr,
         operator,
@@ -1593,17 +1593,40 @@ export class Parser {
     return expr
   }
 
-  private conditionalExpressionWithoutAssignment(): AST.Expression {
+  // 関数適用演算子（最低優先順位）
+  private functionApplicationExpression(): AST.Expression {
+    let expr = this.conditionalExpression()
+
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.FUNCTION_APPLICATION)) {
+        this.skipNewlines()
+        const right = this.functionApplicationExpression() // 右結合のため再帰
+        expr = new AST.FunctionApplicationOperator(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
+    }
+
+    return expr
+  }
+
+  private conditionalExpression(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpression()
       this.skipNewlines()
       this.consume(TokenType.THEN, "Expected 'then' after condition")
       this.skipNewlines()
-      const thenExpr = this.conditionalExpression()
+      const thenExpr = this.topLevelExpression()
       this.skipNewlines()
       this.consume(TokenType.ELSE, "Expected 'else' after then expression")
       this.skipNewlines()
-      const elseExpr = this.conditionalExpression()
+      const elseExpr = this.topLevelExpression()
 
       return new AST.ConditionalExpression(
         condition,
@@ -1621,17 +1644,17 @@ export class Parser {
     return this.tryExpressionOrNext()
   }
 
-  private conditionalExpressionWithoutPipeline(): AST.Expression {
+  private topLevelExpressionWithoutPipeline(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpressionWithoutPipeline()
       this.skipNewlines()
       this.consume(TokenType.THEN, "Expected 'then' after condition")
       this.skipNewlines()
-      const thenExpr = this.conditionalExpressionWithoutPipeline()
+      const thenExpr = this.topLevelExpressionWithoutPipeline()
       this.skipNewlines()
       this.consume(TokenType.ELSE, "Expected 'else' after then expression")
       this.skipNewlines()
-      const elseExpr = this.conditionalExpressionWithoutPipeline()
+      const elseExpr = this.topLevelExpressionWithoutPipeline()
 
       return new AST.ConditionalExpression(
         condition,
@@ -1742,7 +1765,7 @@ export class Parser {
   }
 
   private ternaryExpressionWithoutPipeline(): AST.Expression {
-    let expr = this.functionApplicationExpressionWithoutPipeline()
+    let expr = this.bindExpression()
 
     if (this.match(TokenType.QUESTION)) {
       const startLine = this.previous().line
@@ -2127,50 +2150,6 @@ export class Parser {
     return this.ternaryExpressionWithoutPipeline()
   }
 
-  private functionApplicationExpression(): AST.Expression {
-    let expr = this.pipelineExpression()
-
-    while (true) {
-      this.skipNewlines()
-      if (this.match(TokenType.FUNCTION_APPLICATION)) {
-        this.skipNewlines()
-        const right = this.functionApplicationExpression() // 右結合のため再帰
-        expr = new AST.FunctionApplicationOperator(
-          expr,
-          right,
-          this.previous().line,
-          this.previous().column
-        )
-      } else {
-        break
-      }
-    }
-
-    return expr
-  }
-
-  private functionApplicationExpressionWithoutPipeline(): AST.Expression {
-    let expr = this.bindExpression() // パイプライン演算子をスキップ
-
-    while (true) {
-      this.skipNewlines()
-      if (this.match(TokenType.FUNCTION_APPLICATION)) {
-        this.skipNewlines()
-        const right = this.functionApplicationExpressionWithoutPipeline() // 右結合のため再帰
-        expr = new AST.FunctionApplicationOperator(
-          expr,
-          right,
-          this.previous().line,
-          this.previous().column
-        )
-      } else {
-        break
-      }
-    }
-
-    return expr
-  }
-
   private pipelineExpression(): AST.Expression {
     let expr = this.bindExpression()
 
@@ -2337,12 +2316,12 @@ export class Parser {
   }
 
   private nullishCoalescingExpression(): AST.Expression {
-    let expr = this.functionApplicationExpression()
+    let expr = this.pipelineExpression()
 
     while (this.match(TokenType.NULLISH_COALESCING)) {
       const line = this.previous().line
       const column = this.previous().column
-      const right = this.functionApplicationExpression()
+      const right = this.pipelineExpression()
       expr = new AST.NullishCoalescingExpression(expr, right, line, column)
     }
 
