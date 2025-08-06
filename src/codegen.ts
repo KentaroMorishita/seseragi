@@ -132,6 +132,21 @@ export class CodeGenerator {
   variableAliases: Map<string, string[]> = new Map() // 変数名 → エイリアス配列
   private promiseBlockDepth: number = 0 // promiseブロックのネスト深度
 
+  // ビルトイン関数の共通マッピング
+  private readonly builtinFunctions: Record<string, string> = {
+    print: "ssrgPrint",
+    putStrLn: "ssrgPutStrLn",
+    toString: "ssrgToString",
+    toInt: "ssrgToInt",
+    toFloat: "ssrgToFloat",
+    show: "ssrgShow",
+    head: "headList",
+    tail: "tailList",
+    resolve: "resolve",
+    run: "ssrgRun",
+    tryRun: "ssrgTryRun",
+  }
+
   constructor(options: CodeGenOptions) {
     this.options = options
     this.indentLevel = 0
@@ -567,7 +582,7 @@ export class CodeGenerator {
 
     // 型定義のインポート
     lines.push("import type {")
-    lines.push("  Unit, Maybe, Either, List, Signal")
+    lines.push("  Maybe, Either, List, Signal")
     lines.push("} from '@seseragi/runtime';")
     lines.push("")
 
@@ -576,7 +591,7 @@ export class CodeGenerator {
     lines.push("  // 基本ユーティリティ")
     lines.push("  pipe, reversePipe, map, applyWrapped, bind, foldMonoid,")
     lines.push("  // Unit型")
-    lines.push("  Unit as UnitValue,")
+    lines.push("  Unit,")
     lines.push("  // Maybe型")
     lines.push("  Just, Nothing, mapMaybe, applyMaybe, bindMaybe, fromMaybe,")
     lines.push("  // Either型")
@@ -2366,31 +2381,11 @@ ${indent}}`
     // ビルトイン関数の場合は直接変換
     if (call.function.kind === "Identifier") {
       const identifier = call.function as Identifier
-      const args = call.arguments.map((arg) => this.generateExpression(arg))
+      const builtinFunc = this.builtinFunctions[identifier.name]
 
-      switch (identifier.name) {
-        case "print":
-          return `ssrgPrint(${args.join(", ")})`
-        case "putStrLn":
-          return `ssrgPutStrLn(${args.join(", ")})`
-        case "toString":
-          return `ssrgToString(${args.join(", ")})`
-        case "toInt":
-          return `ssrgToInt(${args.join(", ")})`
-        case "toFloat":
-          return `ssrgToFloat(${args.join(", ")})`
-        case "show":
-          return `ssrgShow(${args.join(", ")})`
-        case "head":
-          return `headList(${args.join(", ")})`
-        case "tail":
-          return `tailList(${args.join(", ")})`
-        case "resolve":
-          return `resolve(${args.join(", ")})`
-        case "run":
-          return `ssrgRun(${args.join(", ")})`
-        case "tryRun":
-          return `ssrgTryRun(${args.join(", ")})`
+      if (builtinFunc) {
+        const args = call.arguments.map((arg) => this.generateExpression(arg))
+        return `${builtinFunc}(${args.join(", ")})`
       }
     }
 
@@ -2598,41 +2593,29 @@ ${indent}}`
   generateBuiltinFunctionCall(call: BuiltinFunctionCall): string {
     const args = call.arguments.map((arg) => this.generateExpression(arg))
 
+    // 基本的なビルトイン関数のマッピング
+    const builtinFunc = this.builtinFunctions[call.functionName]
+    if (builtinFunc) {
+      // 引数チェックが必要な関数
+      const singleArgFunctions = [
+        "toString",
+        "toInt",
+        "toFloat",
+        "head",
+        "tail",
+        "show",
+      ]
+      if (singleArgFunctions.includes(call.functionName) && args.length !== 1) {
+        throw new Error(`${call.functionName} requires exactly one argument`)
+      }
+
+      return singleArgFunctions.includes(call.functionName)
+        ? `${builtinFunc}(${args[0]})`
+        : `${builtinFunc}(${args.join(", ")})`
+    }
+
+    // 特殊なビルトイン関数の処理
     switch (call.functionName) {
-      case "print":
-        return `ssrgPrint(${args.join(", ")})`
-      case "putStrLn":
-        return `ssrgPutStrLn(${args.join(", ")})`
-      case "toString":
-        if (args.length !== 1) {
-          throw new Error("toString requires exactly one argument")
-        }
-        return `ssrgToString(${args[0]})`
-      case "toInt":
-        if (args.length !== 1) {
-          throw new Error("toInt requires exactly one argument")
-        }
-        return `ssrgToInt(${args[0]})`
-      case "toFloat":
-        if (args.length !== 1) {
-          throw new Error("toFloat requires exactly one argument")
-        }
-        return `ssrgToFloat(${args[0]})`
-      case "head":
-        if (args.length !== 1) {
-          throw new Error("head requires exactly one argument")
-        }
-        return `headList(${args[0]})`
-      case "tail":
-        if (args.length !== 1) {
-          throw new Error("tail requires exactly one argument")
-        }
-        return `tailList(${args[0]})`
-      case "show":
-        if (args.length !== 1) {
-          throw new Error("show requires exactly one argument")
-        }
-        return `ssrgShow(${args[0]})`
       case "typeof":
         if (args.length !== 1) {
           throw new Error("typeof requires exactly one argument")
@@ -3360,96 +3343,123 @@ ${indent}}`
     return `reversePipe(${left}, ${right})`
   }
 
+  // ヘルパー: 型に応じた関数を適用
+  private applyTypeBasedFunction(
+    type: any,
+    typeCheckers: Array<
+      [(type: any) => boolean, string | ((...args: any[]) => string)]
+    >,
+    args: any[],
+    errorContext: string
+  ): string {
+    // 型変数の場合は型推論を利用できないのでスキップ
+    if (type?.kind === "TypeVariable") {
+      throw new Error(
+        `${errorContext}: Type variable not resolved - ${JSON.stringify(type)}`
+      )
+    }
+
+    for (const [checker, handler] of typeCheckers) {
+      if (type && checker(type)) {
+        return typeof handler === "string" ? handler : handler(...args)
+      }
+    }
+
+    throw new Error(`${errorContext}: ${JSON.stringify(type)}`)
+  }
+
   // ファンクターマップの生成
   generateFunctorMap(map: FunctorMap): string {
     const func = this.generateExpression(map.left)
     const value = this.generateExpression(map.right)
-
-    // コンパイル時に型推論結果から適切な関数を選択
     const valueType = this.getResolvedType(map.right)
 
-    if (this.isSignalType(valueType)) {
-      return `mapSignal(${value}, ${func})`
-    } else if (this.isTaskType(valueType)) {
-      return `mapTask(${func}, ${value})`
-    } else if (this.isArrayType(valueType)) {
-      return `mapArray(${value}, ${func})`
-    } else if (this.isListType(valueType)) {
-      return `mapList(${value}, ${func})`
-    } else if (this.isEitherType(valueType)) {
-      return `mapEither(${value}, ${func})`
-    } else if (this.isMaybeType(valueType)) {
-      return `mapMaybe(${value}, ${func})`
-    } else if (this.isTupleType(valueType)) {
-      // Tuple型の場合は要素をmapする
-      return `{ tag: 'Tuple', elements: mapArray((${value}).elements, ${func}) }`
-    } else {
-      // 型推論失敗時のフォールバック
-      throw new Error(
-        `Unknown type for functor map: ${JSON.stringify(valueType)}`
-      )
-    }
+    const typeMappers: Array<
+      [(type: any) => boolean, (f: string, v: string) => string]
+    > = [
+      [this.isSignalType.bind(this), (f, v) => `mapSignal(${v}, ${f})`],
+      [this.isTaskType.bind(this), (f, v) => `mapTask(${f}, ${v})`],
+      [this.isArrayType.bind(this), (f, v) => `mapArray(${v}, ${f})`],
+      [this.isListType.bind(this), (f, v) => `mapList(${v}, ${f})`],
+      [this.isEitherType.bind(this), (f, v) => `mapEither(${v}, ${f})`],
+      [this.isMaybeType.bind(this), (f, v) => `mapMaybe(${v}, ${f})`],
+      [
+        this.isTupleType.bind(this),
+        (f, v) => `{ tag: 'Tuple', elements: mapArray((${v}).elements, ${f}) }`,
+      ],
+    ]
+
+    return this.applyTypeBasedFunction(
+      valueType,
+      typeMappers,
+      [func, value],
+      "Unknown type for functor map"
+    )
   }
 
   // アプリカティブ適用の生成
   generateApplicativeApply(apply: ApplicativeApply): string {
     const funcContainer = this.generateExpression(apply.left)
     const valueContainer = this.generateExpression(apply.right)
-
-    // コンパイル時に型推論結果から適切な関数を選択
     const leftType = this.getResolvedType(apply.left)
     const rightType = this.getResolvedType(apply.right)
 
-    // 両方の型が同じモナド型である必要がある
-    if (this.isSignalType(leftType) && this.isSignalType(rightType)) {
-      return `applySignal(${funcContainer}, ${valueContainer})`
-    } else if (this.isTaskType(leftType) && this.isTaskType(rightType)) {
-      return `applyTask(${funcContainer}, ${valueContainer})`
-    } else if (this.isArrayType(leftType) && this.isArrayType(rightType)) {
-      return `applyArray(${funcContainer}, ${valueContainer})`
-    } else if (this.isListType(leftType) && this.isListType(rightType)) {
-      return `applyList(${funcContainer}, ${valueContainer})`
-    } else if (this.isEitherType(leftType) && this.isEitherType(rightType)) {
-      return `applyEither(${funcContainer}, ${valueContainer})`
-    } else if (this.isMaybeType(leftType) && this.isMaybeType(rightType)) {
-      return `applyMaybe(${funcContainer}, ${valueContainer})`
-    } else {
-      // 型推論失敗時のフォールバック
-      throw new Error(
-        `Unknown types for applicative apply: left=${JSON.stringify(leftType)}, right=${JSON.stringify(rightType)}`
-      )
+    const typeAppliers: Array<[(type: any) => boolean, string]> = [
+      [this.isSignalType.bind(this), "applySignal"],
+      [this.isTaskType.bind(this), "applyTask"],
+      [this.isArrayType.bind(this), "applyArray"],
+      [this.isListType.bind(this), "applyList"],
+      [this.isEitherType.bind(this), "applyEither"],
+      [this.isMaybeType.bind(this), "applyMaybe"],
+    ]
+
+    // 両方の型をチェック（片方が型変数でも対応）
+    const isTypeVariableLeft = leftType?.kind === "TypeVariable"
+    const isTypeVariableRight = rightType?.kind === "TypeVariable"
+
+    for (const [checker, applyFunc] of typeAppliers) {
+      if (
+        (leftType && rightType && checker(leftType) && checker(rightType)) ||
+        (isTypeVariableLeft && rightType && checker(rightType)) ||
+        (leftType && isTypeVariableRight && checker(leftType))
+      ) {
+        return `${applyFunc}(${funcContainer}, ${valueContainer})`
+      }
     }
+
+    throw new Error(
+      `Unknown types for applicative apply: left=${JSON.stringify(leftType)}, right=${JSON.stringify(rightType)}`
+    )
   }
 
   // モナドバインドの生成
   generateMonadBind(bind: MonadBind): string {
     const monadValue = this.generateExpression(bind.left)
     const bindFunc = this.generateExpression(bind.right)
-
-    // コンパイル時に型推論結果から適切な関数を選択
     const monadType = this.getResolvedType(bind.left)
 
-    if (this.isTaskType(monadType)) {
-      return `bindTask(${monadValue}, ${bindFunc})`
-    } else if (this.isArrayType(monadType)) {
-      return `bindArray(${monadValue}, ${bindFunc})`
-    } else if (this.isListType(monadType)) {
-      return `bindList(${monadValue}, ${bindFunc})`
-    } else if (this.isEitherType(monadType)) {
-      return `bindEither(${monadValue}, ${bindFunc})`
-    } else if (this.isMaybeType(monadType)) {
-      return `bindMaybe(${monadValue}, ${bindFunc})`
-    } else if (this.isSignalType(monadType)) {
-      return `bindSignal(${monadValue}, ${bindFunc})`
-    } else if (this.isTupleType(monadType)) {
-      // Tuple型の場合は要素をbindする
-      return `{ tag: 'Tuple', elements: bindArray((${monadValue}).elements, ${bindFunc}) }`
-    } else {
-      // 型推論失敗時のフォールバック
-      throw new Error(
-        `Unknown type for monad bind: ${JSON.stringify(monadType)}`
-      )
-    }
+    const typeBinders: Array<
+      [(type: any) => boolean, (m: string, f: string) => string]
+    > = [
+      [this.isTaskType.bind(this), (m, f) => `bindTask(${m}, ${f})`],
+      [this.isArrayType.bind(this), (m, f) => `bindArray(${m}, ${f})`],
+      [this.isListType.bind(this), (m, f) => `bindList(${m}, ${f})`],
+      [this.isEitherType.bind(this), (m, f) => `bindEither(${m}, ${f})`],
+      [this.isMaybeType.bind(this), (m, f) => `bindMaybe(${m}, ${f})`],
+      [this.isSignalType.bind(this), (m, f) => `bindSignal(${m}, ${f})`],
+      [
+        this.isTupleType.bind(this),
+        (m, f) =>
+          `{ tag: 'Tuple', elements: bindArray((${m}).elements, ${f}) }`,
+      ],
+    ]
+
+    return this.applyTypeBasedFunction(
+      monadType,
+      typeBinders,
+      [monadValue, bindFunc],
+      "Unknown type for monad bind"
+    )
   }
 
   // 畳み込みモノイドの生成
@@ -3469,23 +3479,20 @@ ${indent}}`
 
     // ビルトイン関数の特別処理
     if (app.left instanceof Identifier) {
-      const funcName = app.left.name
-      if (funcName === "print") {
-        return `ssrgPrint(${right})`
-      } else if (funcName === "putStrLn") {
-        return `ssrgPutStrLn(${right})`
-      } else if (funcName === "toString") {
-        return `ssrgToString(${right})`
-      } else if (funcName === "toInt") {
-        return `ssrgToInt(${right})`
-      } else if (funcName === "toFloat") {
-        return `ssrgToFloat(${right})`
-      } else if (funcName === "show") {
-        return `ssrgShow(${right})`
-      } else if (funcName === "head") {
-        return `headList(${right})`
-      } else if (funcName === "tail") {
-        return `tailList(${right})`
+      const builtinFunctions: Record<string, string> = {
+        print: "ssrgPrint",
+        putStrLn: "ssrgPutStrLn",
+        toString: "ssrgToString",
+        toInt: "ssrgToInt",
+        toFloat: "ssrgToFloat",
+        show: "ssrgShow",
+        head: "headList",
+        tail: "tailList",
+      }
+
+      const builtinFunc = builtinFunctions[app.left.name]
+      if (builtinFunc) {
+        return `${builtinFunc}(${right})`
       }
     }
 
@@ -3499,27 +3506,38 @@ ${indent}}`
     const name = expr.constructorName
     const args = expr.arguments.map((arg) => this.generateExpression(arg))
 
-    switch (name) {
-      case "Nothing":
-        return "Nothing"
-      case "Just":
-        return args.length > 0 ? `Just(${args[0]})` : "Just"
-      case "Left":
-        return args.length > 0 ? `Left(${args[0]})` : "Left"
-      case "Right":
-        return args.length > 0 ? `Right(${args[0]})` : "Right"
-      case "Empty":
-        return "Empty"
-      case "Cons":
-        return args.length === 2 ? `Cons(${args[0]}, ${args[1]})` : "Cons"
-      case "Task":
-        return args.length > 0 ? `Task(${args[0]})` : "Task"
-      case "Signal":
-        return args.length > 0 ? `createSignal(${args[0]})` : "createSignal"
-      default:
-        // 一般的なコンストラクタ
-        return args.length > 0 ? `${name}(${args.join(", ")})` : name
+    // 特殊なコンストラクタのマッピング
+    const constructorMap: Record<
+      string,
+      {
+        name?: string
+        generator?: (args: string[]) => string
+      }
+    > = {
+      Nothing: { generator: () => "Nothing" },
+      Just: { name: "Just" },
+      Left: { name: "Left" },
+      Right: { name: "Right" },
+      Empty: { generator: () => "Empty" },
+      Cons: {
+        generator: (args) =>
+          args.length === 2 ? `Cons(${args[0]}, ${args[1]})` : "Cons",
+      },
+      Task: { name: "Task" },
+      Signal: { name: "createSignal" },
     }
+
+    const constructorConfig = constructorMap[name]
+    if (constructorConfig) {
+      if (constructorConfig.generator) {
+        return constructorConfig.generator(args)
+      }
+      const funcName = constructorConfig.name || name
+      return args.length > 0 ? `${funcName}(${args[0]})` : funcName
+    }
+
+    // 一般的なコンストラクタ
+    return args.length > 0 ? `${name}(${args.join(", ")})` : name
   }
 
   // 型の生成
@@ -3527,24 +3545,17 @@ ${indent}}`
     if (!type) return "any"
 
     if (type instanceof PrimitiveType) {
-      switch (type.name) {
-        case "Int":
-          return "number"
-        case "Float":
-          return "number"
-        case "Bool":
-          return "boolean"
-        case "String":
-          return "string"
-        case "Char":
-          return "string"
-        case "Unit":
-          return "void"
-        case "_":
-          return "any" // Placeholder type for inference
-        default:
-          return type.name
+      const typeMap: Record<string, string> = {
+        Int: "number",
+        Float: "number",
+        Bool: "boolean",
+        String: "string",
+        Char: "string",
+        Unit: "void",
+        _: "any", // Placeholder type for inference
       }
+
+      return typeMap[type.name] || type.name
     } else if (type instanceof FunctionType) {
       const paramType = this.generateType(type.paramType)
       const returnType = this.generateType(type.returnType)

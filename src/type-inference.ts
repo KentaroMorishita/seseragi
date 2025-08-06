@@ -231,6 +231,81 @@ export class ArrayAccessConstraint {
   }
 }
 
+// FunctorMap用の特別な制約クラス
+export class FunctorMapConstraint {
+  constructor(
+    public containerType: AST.Type,
+    public inputType: AST.Type,
+    public outputType: AST.Type,
+    public resultType: AST.Type,
+    public line: number,
+    public column: number,
+    public context?: string
+  ) {}
+
+  toString(): string {
+    return `FunctorMap(${this.typeToString(this.containerType)}, ${this.typeToString(this.inputType)} -> ${this.typeToString(this.outputType)}) -> ${this.typeToString(this.resultType)}`
+  }
+
+  private typeToString(type: AST.Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "VoidType":
+        return "Void"
+      case "TypeVariable":
+        return (type as TypeVariable).name
+      case "GenericType": {
+        const gt = type as AST.GenericType
+        if (gt.typeArguments.length === 0) {
+          return gt.name
+        }
+        return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
+      }
+      default:
+        return `<${type.kind}>`
+    }
+  }
+}
+
+// ApplicativeApply用の特別な制約クラス
+export class ApplicativeApplyConstraint {
+  constructor(
+    public funcContainerType: AST.Type,
+    public valueContainerType: AST.Type,
+    public inputType: AST.Type,
+    public outputType: AST.Type,
+    public resultType: AST.Type,
+    public line: number,
+    public column: number,
+    public context?: string
+  ) {}
+
+  toString(): string {
+    return `ApplicativeApply(${this.typeToString(this.funcContainerType)}<${this.typeToString(this.inputType)} -> ${this.typeToString(this.outputType)}>, ${this.typeToString(this.valueContainerType)}<${this.typeToString(this.inputType)}>) -> ${this.typeToString(this.resultType)}`
+  }
+
+  private typeToString(type: AST.Type): string {
+    switch (type.kind) {
+      case "PrimitiveType":
+        return (type as AST.PrimitiveType).name
+      case "VoidType":
+        return "Void"
+      case "TypeVariable":
+        return (type as TypeVariable).name
+      case "GenericType": {
+        const gt = type as AST.GenericType
+        if (gt.typeArguments.length === 0) {
+          return gt.name
+        }
+        return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
+      }
+      default:
+        return `<${type.kind}>`
+    }
+  }
+}
+
 // 型置換を表現するクラス
 export class TypeSubstitution {
   private substitutions: Map<number, AST.Type> = new Map()
@@ -458,7 +533,12 @@ export interface TypeInferenceSystemResult {
 // 型推論システムのメインクラス
 export class TypeInferenceSystem {
   private nextVarId = 1000 // Start from 1000 to avoid conflicts with parser-generated type variables
-  private constraints: (TypeConstraint | ArrayAccessConstraint)[] = []
+  private constraints: (
+    | TypeConstraint
+    | ArrayAccessConstraint
+    | FunctorMapConstraint
+    | ApplicativeApplyConstraint
+  )[] = []
   private subtypeConstraints: SubtypeConstraint[] = []
   private errors: TypeInferenceError[] = []
   private nodeTypeMap: Map<AST.ASTNode, AST.Type> = new Map() // Track types for AST nodes
@@ -4331,39 +4411,34 @@ export class TypeInferenceSystem {
         )
       }
     } else if (containerType.kind === "TypeVariable") {
-      // Container is a type variable - we don't know the specific functor type yet
-      // Return a fresh type variable that will be resolved later
+      // Container is a type variable - we need to create constraints that will be resolved later
       const resultType = this.freshTypeVariable(
         functorMap.line,
         functorMap.column
       )
 
-      // Add constraint that this should be a functor application result
-      this.addConstraint(
-        new TypeConstraint(
-          resultType,
-          new AST.GenericType(
-            "Functor",
-            [outputType],
-            functorMap.line,
-            functorMap.column
-          ),
-          functorMap.line,
-          functorMap.column,
-          `FunctorMap result type for TypeVariable container`
-        )
+      // Create a special constraint for functor mapping with type variables
+      // This will be resolved during constraint solving when the containerType is unified
+      const functorMapConstraint = new FunctorMapConstraint(
+        containerType,
+        inputType,
+        outputType,
+        resultType,
+        functorMap.line,
+        functorMap.column,
+        "FunctorMap with type variable container"
       )
 
+      this.constraints.push(functorMapConstraint)
       return resultType
     }
 
-    // Fallback: assume container is a generic type and return a generic result
-    return new AST.GenericType(
-      "Functor",
-      [outputType],
+    // Fallback: create a type variable instead of forcing Functor type
+    const resultType = this.freshTypeVariable(
       functorMap.line,
       functorMap.column
     )
+    return resultType
   }
 
   private generateConstraintsForApplicativeApply(
@@ -4557,6 +4632,31 @@ export class TypeInferenceSystem {
         applicativeApply.line,
         applicativeApply.column
       )
+    }
+
+    // Handle case where funcContainerType is TypeVariable
+    if (funcContainerType.kind === "TypeVariable") {
+      // Create a fresh type variable for the result
+      const resultType = this.freshTypeVariable(
+        applicativeApply.line,
+        applicativeApply.column
+      )
+
+      // Create a special constraint for applicative apply with type variables
+      // This will be resolved during constraint solving when the container types are unified
+      const applicativeApplyConstraint = new ApplicativeApplyConstraint(
+        funcContainerType,
+        valueContainerType,
+        inputType,
+        outputType,
+        resultType,
+        applicativeApply.line,
+        applicativeApply.column,
+        "ApplicativeApply with type variable containers"
+      )
+
+      this.constraints.push(applicativeApplyConstraint)
+      return resultType
     }
 
     // Handle case where both are TypeVariables
@@ -5410,6 +5510,20 @@ export class TypeInferenceSystem {
             substitution
           )
           substitution = substitution.compose(constraintSub)
+        } else if (constraint instanceof FunctorMapConstraint) {
+          // FunctorMapConstraintの特別な処理
+          const constraintSub = this.solveFunctorMapConstraint(
+            constraint,
+            substitution
+          )
+          substitution = substitution.compose(constraintSub)
+        } else if (constraint instanceof ApplicativeApplyConstraint) {
+          // ApplicativeApplyConstraintの特別な処理
+          const constraintSub = this.solveApplicativeApplyConstraint(
+            constraint,
+            substitution
+          )
+          substitution = substitution.compose(constraintSub)
         } else {
           // 通常のTypeConstraint処理
           const constraintSub = this.unify(
@@ -5463,7 +5577,12 @@ export class TypeInferenceSystem {
 
   // 部分的制約解決：指定した制約のみを解決
   private solveConstraintsPartial(
-    constraintsToSolve: (TypeConstraint | ArrayAccessConstraint)[]
+    constraintsToSolve: (
+      | TypeConstraint
+      | ArrayAccessConstraint
+      | FunctorMapConstraint
+      | ApplicativeApplyConstraint
+    )[]
   ): TypeSubstitution {
     let substitution = new TypeSubstitution()
 
@@ -5472,6 +5591,20 @@ export class TypeInferenceSystem {
         if (constraint instanceof ArrayAccessConstraint) {
           // ArrayAccessConstraintの特別な処理
           const constraintSub = this.solveArrayAccessConstraint(
+            constraint,
+            substitution
+          )
+          substitution = substitution.compose(constraintSub)
+        } else if (constraint instanceof FunctorMapConstraint) {
+          // FunctorMapConstraintの特別な処理
+          const constraintSub = this.solveFunctorMapConstraint(
+            constraint,
+            substitution
+          )
+          substitution = substitution.compose(constraintSub)
+        } else if (constraint instanceof ApplicativeApplyConstraint) {
+          // ApplicativeApplyConstraintの特別な処理
+          const constraintSub = this.solveApplicativeApplyConstraint(
             constraint,
             substitution
           )
@@ -5549,13 +5682,300 @@ export class TypeInferenceSystem {
         constraint.column
       )
 
+      // 結果はMaybe<T>
+      const maybeType = new AST.GenericType(
+        "Maybe",
+        [elementType],
+        constraint.line,
+        constraint.column
+      )
+
       const sub1 = this.unify(arrayType, arrayGenericType)
-      const sub2 = this.unify(resultType, elementType)
+      const sub2 = this.unify(resultType, maybeType)
       return sub1.compose(sub2)
     }
 
     throw new Error(
       `Array access requires Array<T> or Tuple type, got ${this.typeToString(arrayType)}`
+    )
+  }
+
+  // FunctorMap制約の特別な解決
+  private solveFunctorMapConstraint(
+    constraint: FunctorMapConstraint,
+    currentSubstitution: TypeSubstitution
+  ): TypeSubstitution {
+    const containerType = currentSubstitution.apply(constraint.containerType)
+    const inputType = currentSubstitution.apply(constraint.inputType)
+    const outputType = currentSubstitution.apply(constraint.outputType)
+    const resultType = constraint.resultType
+
+    // 解決されたcontainerTypeに基づいてFunctorMapを適用
+    if (containerType.kind === "GenericType") {
+      const gt = containerType as AST.GenericType
+
+      if (gt.name === "Maybe" && gt.typeArguments.length === 1) {
+        // Maybe<a> case
+        const sub1 = this.unify(gt.typeArguments[0], inputType)
+        const maybeResultType = new AST.GenericType(
+          "Maybe",
+          [outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(resultType, maybeResultType)
+        return sub1.compose(sub2)
+      } else if (gt.name === "Either" && gt.typeArguments.length === 2) {
+        // Either<e, a> case
+        const errorType = gt.typeArguments[0]
+        const sub1 = this.unify(gt.typeArguments[1], inputType)
+        const eitherResultType = new AST.GenericType(
+          "Either",
+          [errorType, outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(resultType, eitherResultType)
+        return sub1.compose(sub2)
+      } else if (gt.name === "List" && gt.typeArguments.length === 1) {
+        // List<a> case
+        const sub1 = this.unify(gt.typeArguments[0], inputType)
+        const listResultType = new AST.GenericType(
+          "List",
+          [outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(resultType, listResultType)
+        return sub1.compose(sub2)
+      } else if (gt.name === "Task" && gt.typeArguments.length === 1) {
+        // Task<a> case
+        const sub1 = this.unify(gt.typeArguments[0], inputType)
+        const taskResultType = new AST.GenericType(
+          "Task",
+          [outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(resultType, taskResultType)
+        return sub1.compose(sub2)
+      } else if (gt.typeArguments.length > 0) {
+        // Generic functor case
+        const sub1 = this.unify(
+          gt.typeArguments[gt.typeArguments.length - 1],
+          inputType
+        )
+        const newArgs = [...gt.typeArguments]
+        newArgs[newArgs.length - 1] = outputType
+        const genericResultType = new AST.GenericType(
+          gt.name,
+          newArgs,
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(resultType, genericResultType)
+        return sub1.compose(sub2)
+      }
+    }
+
+    // まだ解決されていない型変数の場合、制約を残す
+    if (containerType.kind === "TypeVariable") {
+      // まだ解決されていないので、制約を再度キューに追加する仕組みが必要
+      // 今回は簡単にidentity substitutionを返す
+      return new TypeSubstitution()
+    }
+
+    throw new Error(
+      `FunctorMap requires a Functor type (Maybe, Either, List, Task, etc.), got ${this.typeToString(containerType)}`
+    )
+  }
+
+  private solveApplicativeApplyConstraint(
+    constraint: ApplicativeApplyConstraint,
+    currentSubstitution: TypeSubstitution
+  ): TypeSubstitution {
+    const funcContainerType = currentSubstitution.apply(
+      constraint.funcContainerType
+    )
+    const valueContainerType = currentSubstitution.apply(
+      constraint.valueContainerType
+    )
+    const inputType = currentSubstitution.apply(constraint.inputType)
+    const outputType = currentSubstitution.apply(constraint.outputType)
+    const resultType = constraint.resultType
+
+    // 解決されたfuncContainerTypeに基づいてApplicativeApplyを適用
+    if (funcContainerType.kind === "GenericType") {
+      const funcGt = funcContainerType as AST.GenericType
+
+      // valueContainerTypeも同じコンテナ型に統一する必要がある
+
+      if (funcGt.name === "Maybe" && funcGt.typeArguments.length === 1) {
+        // Maybe<(a -> b)> <*> Maybe<a> -> Maybe<b>
+        const funcType = new AST.FunctionType(
+          inputType,
+          outputType,
+          constraint.line,
+          constraint.column
+        )
+        const sub1 = this.unify(funcGt.typeArguments[0], funcType)
+
+        // valueContainerTypeをMaybe<inputType>に統一
+        const expectedValueType = new AST.GenericType(
+          "Maybe",
+          [inputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(valueContainerType, expectedValueType)
+
+        // 結果をMaybe<outputType>に統一
+        const maybeResultType = new AST.GenericType(
+          "Maybe",
+          [outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub3 = this.unify(resultType, maybeResultType)
+
+        return sub1.compose(sub2).compose(sub3)
+      } else if (
+        funcGt.name === "Either" &&
+        funcGt.typeArguments.length === 2
+      ) {
+        // Either<e, (a -> b)> <*> Either<e, a> -> Either<e, b>
+        const errorType = funcGt.typeArguments[0]
+        const funcType = new AST.FunctionType(
+          inputType,
+          outputType,
+          constraint.line,
+          constraint.column
+        )
+        const sub1 = this.unify(funcGt.typeArguments[1], funcType)
+
+        // valueContainerTypeをEither<errorType, inputType>に統一
+        const expectedValueType = new AST.GenericType(
+          "Either",
+          [errorType, inputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(valueContainerType, expectedValueType)
+
+        // 結果をEither<errorType, outputType>に統一
+        const eitherResultType = new AST.GenericType(
+          "Either",
+          [errorType, outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub3 = this.unify(resultType, eitherResultType)
+
+        return sub1.compose(sub2).compose(sub3)
+      } else if (funcGt.name === "List" && funcGt.typeArguments.length === 1) {
+        // List<(a -> b)> <*> List<a> -> List<b>
+        const funcType = new AST.FunctionType(
+          inputType,
+          outputType,
+          constraint.line,
+          constraint.column
+        )
+        const sub1 = this.unify(funcGt.typeArguments[0], funcType)
+
+        // valueContainerTypeをList<inputType>に統一
+        const expectedValueType = new AST.GenericType(
+          "List",
+          [inputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(valueContainerType, expectedValueType)
+
+        // 結果をList<outputType>に統一
+        const listResultType = new AST.GenericType(
+          "List",
+          [outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub3 = this.unify(resultType, listResultType)
+
+        return sub1.compose(sub2).compose(sub3)
+      } else if (funcGt.name === "Task" && funcGt.typeArguments.length === 1) {
+        // Task<(a -> b)> <*> Task<a> -> Task<b>
+        const funcType = new AST.FunctionType(
+          inputType,
+          outputType,
+          constraint.line,
+          constraint.column
+        )
+        const sub1 = this.unify(funcGt.typeArguments[0], funcType)
+
+        // valueContainerTypeをTask<inputType>に統一
+        const expectedValueType = new AST.GenericType(
+          "Task",
+          [inputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(valueContainerType, expectedValueType)
+
+        // 結果をTask<outputType>に統一
+        const taskResultType = new AST.GenericType(
+          "Task",
+          [outputType],
+          constraint.line,
+          constraint.column
+        )
+        const sub3 = this.unify(resultType, taskResultType)
+
+        return sub1.compose(sub2).compose(sub3)
+      } else if (funcGt.typeArguments.length > 0) {
+        // Generic applicative case
+        const funcArgIndex = funcGt.typeArguments.length - 1
+        const funcType = new AST.FunctionType(
+          inputType,
+          outputType,
+          constraint.line,
+          constraint.column
+        )
+        const sub1 = this.unify(funcGt.typeArguments[funcArgIndex], funcType)
+
+        // valueContainerTypeを同じコンテナ型に統一
+        const valueArgs = [...funcGt.typeArguments]
+        valueArgs[funcArgIndex] = inputType
+        const expectedValueType = new AST.GenericType(
+          funcGt.name,
+          valueArgs,
+          constraint.line,
+          constraint.column
+        )
+        const sub2 = this.unify(valueContainerType, expectedValueType)
+
+        // 結果を同じコンテナ型に統一
+        const resultArgs = [...funcGt.typeArguments]
+        resultArgs[funcArgIndex] = outputType
+        const genericResultType = new AST.GenericType(
+          funcGt.name,
+          resultArgs,
+          constraint.line,
+          constraint.column
+        )
+        const sub3 = this.unify(resultType, genericResultType)
+
+        return sub1.compose(sub2).compose(sub3)
+      }
+    }
+
+    // まだ解決されていない型変数の場合、制約を残す
+    if (funcContainerType.kind === "TypeVariable") {
+      // まだ解決されていないので、制約を再度キューに追加する仕組みが必要
+      // 今回は簡単にidentity substitutionを返す
+      return new TypeSubstitution()
+    }
+
+    throw new Error(
+      `ApplicativeApply requires an Applicative type (Maybe, Either, List, Task, etc.), got ${this.typeToString(funcContainerType)}`
     )
   }
 

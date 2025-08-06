@@ -78,6 +78,16 @@ for file in examples/advanced/*.ssrg; do
     test_file "$file"
 done
 
+# tmpテスト
+echo -e "${BLUE}🚀 Testing Tmp${NC}"
+echo "==================="
+for file in tmp/*.ssrg; do
+    test_file "$file"
+done
+for file in tmp/need/*.ssrg; do
+    test_file "$file"
+done
+
 # playgroundテスト
 echo -e "${BLUE}🎮 Testing Playground${NC}"
 echo "===================="
