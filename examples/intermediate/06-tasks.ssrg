@@ -1,0 +1,73 @@
+// 06-tasks.ssrg
+// 非同期計算: Task の基本
+
+print "=== Task の基本 ==="
+
+// =============================================================================
+// 1) Task の生成（resolve/reject）
+// =============================================================================
+
+// 値 100 を即時解決する Task
+let t1: Task<Int> = Task $ resolve 100
+
+// NOTE: run は Promise を返すが、ここでは副作用を Task 内で行って出力する
+
+// =============================================================================
+// 2) ファンクター (<$>) — 結果に関数を適用
+// =============================================================================
+
+// ログを出して値を返す関数（副作用→値）
+// printで副作用を起こしつつ元の値xを返す（Unitを受け取ってxを返す関数に適用）
+fn tapReturn x: Int -> Int = (\() -> x) $ (print `t1=${x}`)
+
+let t1Logged: Task<Int> = tapReturn <$> t1
+run t1Logged   // => "t1=100" (非同期なので即時には表示されません)
+
+// 値を2倍してログ
+fn double x: Int -> Int = x * 2
+fn log x: Int -> Int = (\() -> x) $ print `double=${x}`
+let t1DoubledLogged: Task<Int> = log <$> (double <$> t1)
+run t1DoubledLogged   // => "double=200"
+
+// =============================================================================
+// 3) アプリカティブ (<*>) — 複数 Task の合成
+// =============================================================================
+
+fn add x: Int -> y: Int -> Int = x + y
+
+let a: Task<Int> = Task $ resolve 3
+let b: Task<Int> = Task $ resolve 7
+
+let sumTask: Task<Int> = add <$> a <*> b
+let sumLogged: Task<Int> = (\s -> (\() -> s) $ print `sum=${s}`) <$> sumTask
+run sumLogged   // => "sum=10"
+
+// =============================================================================
+// 4) モナド (>>=) — 前の結果に基づく非同期の連結
+// =============================================================================
+
+// x を 5 倍して返す Task
+fn times5 x: Int -> Task<Int> = Task $ resolve (x * 5)
+
+let chained: Task<Int> = t1
+  >>= times5           // 100 -> 500
+  >>= times5           // 500 -> 2500
+
+let chainedLogged: Task<Int> = (\v -> (\() -> v) $ print `chained=${v}`) <$> chained
+run chainedLogged   // => "chained=2500"
+
+// =============================================================================
+// 5) 失敗の表現と tryRun（Optional）
+// =============================================================================
+
+// これは "失敗" を表現する Task（型は Task<Int>）
+let failed: Task<Int> = Task $ reject<Int> "boom"
+
+// tryRun は Promise<Either<String, Int>> を返す
+// この例では結果そのものは使わず、副作用は上記の例で示しています
+let ignored = tryRun failed
+
+// 実行方法:
+// seseragi run examples/intermediate/06-tasks.ssrg
+
+print "Taskデモ 終了"

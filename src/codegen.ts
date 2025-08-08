@@ -3474,8 +3474,13 @@ ${indent}}`
   generateFunctionApplicationOperator(
     app: FunctionApplicationOperator
   ): string {
-    const left = this.generateExpression(app.left)
+    let left = this.generateExpression(app.left)
     const right = this.generateExpression(app.right)
+
+    // 左辺がラムダ式の場合、適用のために括弧で包む
+    if (app.left instanceof LambdaExpression) {
+      left = `(${left})`
+    }
 
     // ビルトイン関数の特別処理
     if (app.left instanceof Identifier) {

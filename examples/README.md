@@ -25,6 +25,9 @@ seseragi run examples/intermediate/01-maybe-basics.ssrg
 seseragi run examples/intermediate/02-either-basics.ssrg
 seseragi run examples/intermediate/03-lists-and-arrays.ssrg
 seseragi run examples/intermediate/04-operators.ssrg
+seseragi run examples/intermediate/05-frp-signals.ssrg
+seseragi run examples/intermediate/06-tasks.ssrg
+seseragi run examples/intermediate/05-frp-signals.ssrg
 ```
 
 ### ⚡ 上級レベル（advanced/）
@@ -53,7 +56,9 @@ examples/
 │   ├── 01-maybe-basics.ssrg           # Maybe型の基本
 │   ├── 02-either-basics.ssrg          # Either型の基本
 │   ├── 03-lists-and-arrays.ssrg       # ListとArrayの基本
-│   └── 04-operators.ssrg              # モナド演算子の基本
+│   ├── 04-operators.ssrg              # モナド演算子の基本
+│   ├── 05-frp-signals.ssrg            # FRP: Signalの基本
+│   └── 06-tasks.ssrg                  # 非同期計算: Task の基本
 └── advanced/                           # 上級レベル
     ├── 01-pattern-matching.ssrg       # パターンマッチング
     ├── 02-structs-and-methods.ssrg    # 構造体とメソッド

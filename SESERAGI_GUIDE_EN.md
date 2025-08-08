@@ -119,6 +119,58 @@ Once a value is set, it cannot be changed.
 
 This is similar to always using `const` in TypeScript and avoiding reassignment with `let`.
 
+---
+
+## Appendix: Reactive Programming (Signals)
+
+Seseragi provides a lightweight FRP-like primitive called `Signal<T>`.
+
+- Create a signal: `let s: Signal<Int> = Signal(0)`
+- Push/update: `s := 1`
+- Snapshot current value: `let now = *s`
+- Subscribe/unsubscribe: `let key = subscribe s (\\v -> print \`v=${v}\`); unsubscribe key`
+- Resource cleanup: `detach s`
+- Functor/Applicative/Monad: `<$>`, `<*>`, `>>=` work with `Signal` as well
+
+Example:
+
+```rust
+let s: Signal<Int> = Signal(0)
+let doubled: Signal<Int> = (\\x -> x * 2) <$> s
+let add = \\x -> \\y -> x + y
+let sumSig: Signal<Int> = add <$> s <*> doubled
+let key = subscribe sumSig (\\v -> print \`sumSig=${v}\`)
+
+s := 1
+s := 2
+
+unsubscribe key
+detach s
+```
+
+See `examples/intermediate/05-frp-signals.ssrg` for a fuller walkthrough.
+
+---
+
+## Appendix: Asynchronous Tasks
+
+Tasks model asynchronous computations: `Task<T>` wraps a thunk `() -> Promise<T>`.
+
+- Create: `let t: Task<Int> = Task $ resolve 100`
+- Run: `run t  // returns Promise<Int>`
+- Map/Apply/Bind: `<$>`, `<*>`, `>>=` are available for `Task`
+- Error: `Task $ reject "boom"`, and `tryRun t` returns `Promise<Either<String, T>>`
+
+Tip: To show results without awaiting, do side effects inside the mapped function:
+
+```rust
+let t: Task<Int> = Task $ resolve 100
+let logged: Task<Int> = (\\x -> (\\() -> x) $ print \`x=${x}\`) <$> t
+run logged  // prints during task execution
+```
+
+See `examples/intermediate/06-tasks.ssrg` for more.
+
 In Seseragi, this safe practice is the language standard.
 
 Why is immutability important?

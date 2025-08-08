@@ -119,6 +119,58 @@ Seseragiでは、`let`で束縛された変数はすべて **不変（イミュ�
 
 これはTypeScriptで常に`const`を使い、`let`による再代入を避けるスタイルに似ています。
 
+---
+
+## 付録: リアクティブプログラミング（Signal）
+
+Seseragi には簡潔な FRP 風プリミティブ `Signal<T>` が用意されています。
+
+- 生成: `let s: Signal<Int> = Signal(0)`
+- 更新（プッシュ）: `s := 1`
+- 現在値の取得: `let now = *s`
+- 購読/解除: `let key = subscribe s (\\v -> print \`v=${v}\`); unsubscribe key`
+- 後始末: `detach s`
+- 合成: `<$>`（写像）、`<*>`（適用）、`>>=`（束縛）を `Signal` にも利用可能
+
+例:
+
+```rust
+let s: Signal<Int> = Signal(0)
+let doubled: Signal<Int> = (\\x -> x * 2) <$> s
+let add = \\x -> \\y -> x + y
+let sumSig: Signal<Int> = add <$> s <*> doubled
+let key = subscribe sumSig (\\v -> print \`sumSig=${v}\`)
+
+s := 1
+s := 2
+
+unsubscribe key
+detach s
+```
+
+より詳しい例は `examples/intermediate/05-frp-signals.ssrg` を参照してください。
+
+---
+
+## 付録: 非同期計算（Task）
+
+`Task<T>` は `() -> Promise<T>` を包む非同期計算です。
+
+- 生成: `let t: Task<Int> = Task $ resolve 100`
+- 実行: `run t  // Promise<Int> を返す`
+- 合成: `<$>`（写像）、`<*>`（適用）、`>>=`（束縛）を `Task` に利用可能
+- 失敗: `Task $ reject "boom"`、`tryRun t` は `Promise<Either<String, T>>` を返す
+
+await できない場面では、写像内で副作用を行うと出力を確認できます。
+
+```rust
+let t: Task<Int> = Task $ resolve 100
+let logged: Task<Int> = (\\x -> (\\() -> x) $ print \`x=${x}\`) <$> t
+run logged  // 実行時に出力
+```
+
+詳しくは `examples/intermediate/06-tasks.ssrg` を参照してください。
+
 Seseragiでは、この安全なプラクティスが言語レベルで標準となっています。
 
 なぜ不変性が重要なのでしょうか？
