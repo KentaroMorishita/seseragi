@@ -454,7 +454,6 @@ export class CodeGenerator {
           if (typeDecl && typeDecl.kind === "StructDeclaration") {
             const implBlock = resolvedModule.exports.impls.get(item.name)
             if (implBlock) {
-              console.log(`🔧 Preprocessing imported impl for: ${item.name}`)
               this.preProcessImplBlock(implBlock)
             }
           }
@@ -540,11 +539,7 @@ export class CodeGenerator {
   }
 
   private generateDispatchTableInit(lines: string[]): void {
-    console.log(
-      `🔧 generateDispatchTableInit called: structMethods.size=${this.structMethods.size}, structOperators.size=${this.structOperators.size}`
-    )
     if (this.structMethods.size > 0 || this.structOperators.size > 0) {
-      console.log(`🔧 Generating dispatch table initialization`)
       lines.push("// Initialize dispatch tables immediately")
       lines.push("(() => {")
       const initCode = this.generateDispatchTableInitialization()
@@ -554,9 +549,6 @@ export class CodeGenerator {
       lines.push("})();")
       lines.push("")
     } else {
-      console.log(
-        `🔧 No dispatch table initialization needed - no methods or operators`
-      )
     }
   }
 
@@ -1307,7 +1299,6 @@ ${indent}}`
     }
 
     // デバッグ用ログ
-    console.log(`🔧 isSignalType check: type.kind=${type.kind}, type=`, type)
 
     return false
   }
@@ -1408,9 +1399,6 @@ ${indent}}`
       const methodCode = this.generateMethodDeclaration(method)
       lines.push(methodCode)
       methodSet.add(method.name)
-      console.log(
-        `🔧 Added method to structMethods: ${implBlock.typeName}.${method.name}`
-      )
     }
 
     // 演算子の生成
@@ -1542,11 +1530,6 @@ ${indent}}`
     const lines: string[] = []
 
     // メソッドディスパッチテーブル初期化
-    console.log(`🔧 structMethods size: ${this.structMethods.size}`)
-    console.log(
-      `🔧 structMethods contents:`,
-      Array.from(this.structMethods.entries())
-    )
     if (this.structMethods.size > 0) {
       lines.push("// Initialize method dispatch table")
       lines.push("__structMethods = {")
@@ -1806,7 +1789,6 @@ ${indent}}`
       binOp.operator === ">>="
     ) {
       const leftType = this.getResolvedType(binOp.left)
-      console.log(`🔧 BinaryOperation ${binOp.operator}: leftType =`, leftType)
 
       // 右辺の型を取得（<$>の場合は関数）
       const _rightType = this.getResolvedType(binOp.right)
@@ -1923,32 +1905,21 @@ ${indent}}`
 
     // 左辺の型を取得して適切なランタイム関数を選択
     const leftType = this.getResolvedType(nullishCoalescing.left)
-    console.log(`[DEBUG] Nullish coalescing left type:`, leftType)
 
     // デバッグ: 左辺の型情報を出力
     if (nullishCoalescing.left.kind === "FunctionApplication") {
-      console.log("[DEBUG] FunctionApplication left type:", leftType)
-      console.log("[DEBUG] Left expr kind:", nullishCoalescing.left.kind)
-      console.log(
-        "[DEBUG] Left expr type from expr:",
-        nullishCoalescing.left.type
-      )
       if (this.typeInferenceResult?.nodeTypeMap) {
         const mappedType = this.typeInferenceResult.nodeTypeMap.get(
           nullishCoalescing.left
         )
-        console.log("[DEBUG] Type from nodeTypeMap:", mappedType)
 
         // 関数名を取得
         const funcApp = nullishCoalescing.left as FunctionApplication
         if (funcApp.function.kind === "Identifier") {
           const funcName = (funcApp.function as Identifier).name
-          console.log("[DEBUG] Function name:", funcName)
-          console.log("[DEBUG] Function expr type:", funcApp.function.type)
           const funcType = this.typeInferenceResult.nodeTypeMap.get(
             funcApp.function
           )
-          console.log("[DEBUG] Function type from nodeTypeMap:", funcType)
         }
       }
     }
@@ -2407,9 +2378,6 @@ ${indent}}`
         // Unit値をvoid引数に渡す場合は.valueを付与
         // シンプルなアプローチ: Unit値リテラルまたは変数を関数呼び出しで渡す場合は.value付与
         if (arg.kind === "Literal" && (arg as any).literalType === "unit") {
-          console.log(
-            `🔧 Applying .value conversion (Unit literal): ${argCode} -> ${argCode}.value`
-          )
           return `${argCode}.value`
         } else if (arg.kind === "Identifier") {
           // 変数がUnit型の場合も.value付与（簡易判定）
@@ -2419,9 +2387,6 @@ ${indent}}`
             argName.includes("unit") ||
             argName === "a_prime"
           ) {
-            console.log(
-              `🔧 Applying .value conversion (Unit variable): ${argCode} -> ${argCode}.value`
-            )
             return `${argCode}.value`
           }
         }
@@ -2447,10 +2412,6 @@ ${indent}}`
 
   // 関数適用の生成
   generateFunctionApplication(app: FunctionApplication): string {
-    console.log(
-      `🔧 generateFunctionApplication called: func=${app.function.kind}, arg=${app.argument.kind}`
-    )
-
     // ビルトイン関数の特別処理
     if (app.function.kind === "Identifier") {
       const identifier = app.function as Identifier
@@ -2471,9 +2432,6 @@ ${indent}}`
     if (this.typeInferenceResult?.nodeTypeMap) {
       const functionType = this.getResolvedType(app.function)
       const expectedType = this.getExpectedArgumentType(functionType, 0)
-      console.log(
-        `🔧 FunctionApplication type debug: functionType=${functionType?.kind}, expectedType=${expectedType?.kind}:${(expectedType as any)?.name}`
-      )
 
       // Unit値をvoid引数に渡す場合は.valueを付与
       // シンプルなアプローチ: Unit値リテラルまたは変数を関数適用で渡す場合は.value付与
@@ -3712,17 +3670,9 @@ ${indent}}`
   generateOriginalType(type: Type | undefined): string {
     if (!type) return "any"
 
-    console.log(
-      `DEBUG generateOriginalType: type = ${type.constructor.name}, instanceof checks:`
-    )
-    console.log(`  PrimitiveType: ${type instanceof PrimitiveType}`)
-    console.log(`  GenericType: ${type instanceof GenericType}`)
-    console.log(`  FunctionType: ${type instanceof FunctionType}`)
     if (type instanceof PrimitiveType) {
-      console.log(`  PrimitiveType.name: ${type.name}`)
     }
     if ((type as any).kind) {
-      console.log(`  type.kind: ${(type as any).kind}`)
     }
 
     if (type instanceof PrimitiveType) {
@@ -3743,7 +3693,6 @@ ${indent}}`
           return "any"
         default:
           // A, B等のジェネリック型パラメータもここに該当
-          console.log(`DEBUG: Returning PrimitiveType.name: ${type.name}`)
           return type.name
       }
     } else if (type instanceof FunctionType) {
@@ -3794,19 +3743,10 @@ ${indent}}`
       if (this.currentFunctionTypeParams) {
         const paramIndex = parseInt(typeVar.name.substring(1)) // "t0" -> 0, "t1" -> 1
         if (paramIndex < this.currentFunctionTypeParams.length) {
-          console.log(
-            `DEBUG: Mapping TypeVariable ${typeVar.name} -> ${this.currentFunctionTypeParams[paramIndex].name}`
-          )
           return this.currentFunctionTypeParams[paramIndex].name
         }
       }
       // フォールバック: anyじゃなくて適当な型名を返す
-      console.log(
-        `DEBUG: TypeVariable ${typeVar.name} (id: ${typeVar.id}) -> fallback to T${typeVar.id}`
-      )
-      console.log(
-        `DEBUG: currentFunctionTypeParams: ${this.currentFunctionTypeParams?.map((p) => p.name).join(", ") || "null"}`
-      )
       return `T${typeVar.id}`
     } else if ((type as any).kind === "PolymorphicTypeVariable") {
       // PolymorphicTypeVariable のケース: 型引数で指定された型変数
@@ -3814,7 +3754,6 @@ ${indent}}`
       return polyVar.name
     }
 
-    console.log(`DEBUG: Falling back to any for type: ${type.constructor.name}`)
     return "any"
   }
 
@@ -3836,41 +3775,25 @@ ${indent}}`
       if (this.typeInferenceResult) {
         const substitutedType =
           this.typeInferenceResult.substitution.apply(type)
-        console.log(
-          `DEBUG: TypeVariable ${typeVar.name} substituted to:`,
-          substitutedType
-        )
         if (
           substitutedType !== type &&
           substitutedType instanceof PrimitiveType
         ) {
           // 置換されてPrimitiveTypeになった場合、小文字を大文字の型パラメータにマッピング
           const substitutedName = substitutedType.name
-          console.log(`DEBUG: Substituted name: "${substitutedName}"`)
           if (this.currentFunctionTypeParams) {
-            console.log(
-              `DEBUG: Current function type params:`,
-              this.currentFunctionTypeParams.map((p) => p.name)
-            )
             // 小文字の型パラメータ名（a, b, c...）を大文字の型パラメータ（A, B, C...）にマッピング
             for (const param of this.currentFunctionTypeParams) {
               const lowerCase = param.name.toLowerCase()
               const withQuote = `'${lowerCase}`
-              console.log(
-                `DEBUG: Checking ${substitutedName} against ${lowerCase} and ${withQuote}`
-              )
               if (
                 substitutedName === lowerCase ||
                 substitutedName === withQuote
               ) {
-                console.log(`DEBUG: Match found! Returning ${param.name}`)
                 return param.name
               }
             }
           }
-          console.log(
-            `DEBUG: No match found, returning substituted name: ${substitutedName}`
-          )
           return substitutedName
         }
       }

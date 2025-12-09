@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
+import { typeToString } from "../src/inference"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
 
@@ -55,17 +56,15 @@ let stringResult = identity "hello"
     // intResult should be Int
     const intResultStmt = parseResult.statements![1] as AST.VariableDeclaration
     const intResultType = result.nodeTypeMap.get(intResultStmt)
-    expect(
-      typeInference.typeToString(result.substitution.apply(intResultType!))
-    ).toBe("Int")
+    expect(typeToString(result.substitution.apply(intResultType!))).toBe("Int")
 
     // stringResult should be String
     const stringResultStmt =
       parseResult.statements![2] as AST.VariableDeclaration
     const stringResultType = result.nodeTypeMap.get(stringResultStmt)
-    expect(
-      typeInference.typeToString(result.substitution.apply(stringResultType!))
-    ).toBe("String")
+    expect(typeToString(result.substitution.apply(stringResultType!))).toBe(
+      "String"
+    )
   })
 
   test("should generate correct TypeScript for generic functions", () => {
@@ -113,9 +112,7 @@ let result = const (identity 42) "ignored"
     // result should be Int
     const resultStmt = parseResult.statements![2] as AST.VariableDeclaration
     const resultType = result.nodeTypeMap.get(resultStmt)
-    expect(
-      typeInference.typeToString(result.substitution.apply(resultType!))
-    ).toBe("Int")
+    expect(typeToString(result.substitution.apply(resultType!))).toBe("Int")
   })
 
   test("should handle higher-order generic functions", () => {
@@ -138,9 +135,7 @@ let result = twice addOne 5
     // result should be Int
     const resultStmt = parseResult.statements![2] as AST.VariableDeclaration
     const resultType = result.nodeTypeMap.get(resultStmt)
-    expect(
-      typeInference.typeToString(result.substitution.apply(resultType!))
-    ).toBe("Int")
+    expect(typeToString(result.substitution.apply(resultType!))).toBe("Int")
   })
 
   test("should parse explicit type arguments in function calls", () => {

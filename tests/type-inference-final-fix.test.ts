@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
+import { typeToString } from "../src/inference"
 import { Parser } from "../src/parser"
 import { TypeInferenceSystem } from "../src/type-inference"
 
@@ -201,6 +202,6 @@ let successValue = Right 42
   const successValueType = result.nodeTypeMap.get(successValueDecl)
 
   // Test string formatting
-  expect(typeInference.typeToString(nothingValueType)).toBe("Maybe<'a>")
-  expect(typeInference.typeToString(successValueType)).toBe("Either<'a, Int>")
+  expect(typeToString(nothingValueType)).toBe("Maybe<'a>")
+  expect(typeToString(successValueType)).toBe("Either<'a, Int>")
 })

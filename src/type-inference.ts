@@ -5,6 +5,58 @@
  */
 
 import * as AST from "./ast"
+import {
+  ApplicativeApplyConstraint,
+  ArrayAccessConstraint,
+  FunctorMapConstraint,
+  SubtypeConstraint,
+  TypeConstraint,
+} from "./inference/constraints"
+import { createInitialEnvironment as createInitialEnvironmentUtil } from "./inference/environment"
+import { TypeInferenceError } from "./inference/errors"
+import { TypeSubstitution } from "./inference/substitution"
+import {
+  createFlattenedUnionType as createFlattenedUnionTypeUtil,
+  isRecordSubset as isRecordSubsetUtil,
+  isRecordSubtype as isRecordSubtypeUtil,
+  mergeRecordTypes as mergeRecordTypesUtil,
+  typesEqual as typesEqualUtil,
+} from "./inference/type-comparison"
+import {
+  formatType as formatTypeUtil,
+  typeToCanonicalString as typeToCanonicalStringUtil,
+  typeToString as typeToStringUtil,
+} from "./inference/type-formatter"
+import {
+  collectPolymorphicTypeVariables as collectPolymorphicTypeVariablesUtil,
+  getTypeName as getTypeNameUtil,
+  isEitherType as isEitherTypeUtil,
+  isMaybeType as isMaybeTypeUtil,
+  isPromiseType as isPromiseTypeUtil,
+  occursCheck as occursCheckUtil,
+} from "./inference/type-inspection"
+import {
+  collectTypeVariables as collectTypeVariablesUtil,
+  getFreeTypeVariables as getFreeTypeVariablesUtil,
+  substituteTypeVariables as substituteTypeVariablesUtil,
+} from "./inference/type-substitution-utils"
+import {
+  PolymorphicTypeVariable,
+  TypeVariable,
+} from "./inference/type-variables"
+
+// re-export for external consumers
+export { TypeVariable, PolymorphicTypeVariable }
+export {
+  SubtypeConstraint,
+  TypeConstraint,
+  ArrayAccessConstraint,
+  FunctorMapConstraint,
+  ApplicativeApplyConstraint,
+}
+export { TypeSubstitution }
+export { TypeInferenceError }
+export { formatTypeUtil as formatType, typeToStringUtil as typeToString }
 
 // ブラウザ環境でもエラーが出ないように条件分岐
 let ModuleResolver: any
@@ -21,495 +73,6 @@ if (
       return null
     }
     clearCache(): void {}
-  }
-}
-
-// 型変数を表現するクラス
-export class TypeVariable extends AST.Type {
-  kind = "TypeVariable"
-  name: string
-  id: number
-
-  constructor(id: number, line: number, column: number) {
-    super(line, column)
-    this.id = id
-    this.name = `t${id}`
-  }
-}
-
-// 部分型制約を表現するクラス
-export class SubtypeConstraint {
-  constructor(
-    public subType: AST.Type,
-    public superType: AST.Type,
-    public line: number,
-    public column: number,
-    public context?: string
-  ) {}
-
-  toString(): string {
-    return `${this.typeToString(this.subType)} <: ${this.typeToString(this.superType)}`
-  }
-
-  private typeToString(type: AST.Type): string {
-    if (!type) {
-      return "<undefined>"
-    }
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "VoidType":
-        return "Void"
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "PolymorphicTypeVariable":
-        return `'${(type as PolymorphicTypeVariable).name}`
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
-      }
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        const args = gt.typeArguments
-          .map((t) => this.typeToString(t))
-          .join(", ")
-        return `${gt.name}<${args}>`
-      }
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        const fields = rt.fields
-          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
-          .join(", ")
-        return `{${fields}}`
-      }
-      case "TupleType": {
-        const tupleType = type as AST.TupleType
-        const elements = tupleType.elementTypes
-          .map((elementType) => this.typeToString(elementType))
-          .join(", ")
-        return `(${elements})`
-      }
-      case "StructType": {
-        const st = type as AST.StructType
-        return st.name
-      }
-      case "UnionType": {
-        const ut = type as AST.UnionType
-        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
-        return `(${types})`
-      }
-      case "IntersectionType": {
-        const it = type as AST.IntersectionType
-        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
-        return `(${types})`
-      }
-      default:
-        return "Unknown"
-    }
-  }
-}
-
-// 多相型変数を表現するクラス (例: 'a, 'b)
-export class PolymorphicTypeVariable extends AST.Type {
-  kind = "PolymorphicTypeVariable"
-  name: string
-
-  constructor(name: string, line: number, column: number) {
-    super(line, column)
-    this.name = name
-  }
-}
-
-// 型制約を表現するクラス
-export class TypeConstraint {
-  constructor(
-    public type1: AST.Type,
-    public type2: AST.Type,
-    public line: number,
-    public column: number,
-    public context?: string
-  ) {}
-
-  toString(): string {
-    return `${this.typeToString(this.type1)} ~ ${this.typeToString(this.type2)}`
-  }
-
-  private typeToString(type: AST.Type): string {
-    if (!type) {
-      return "<undefined>"
-    }
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "VoidType":
-        return "Void"
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "PolymorphicTypeVariable":
-        return `'${(type as PolymorphicTypeVariable).name}`
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
-      }
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        const args = gt.typeArguments
-          .map((t) => this.typeToString(t))
-          .join(", ")
-        return `${gt.name}<${args}>`
-      }
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        const fields = rt.fields
-          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
-          .join(", ")
-        return `{${fields}}`
-      }
-      case "TupleType": {
-        const tupleType = type as AST.TupleType
-        const elements = tupleType.elementTypes
-          .map((elementType) => this.typeToString(elementType))
-          .join(", ")
-        return `(${elements})`
-      }
-      case "StructType": {
-        const st = type as AST.StructType
-        return st.name
-      }
-      case "UnionType": {
-        const ut = type as AST.UnionType
-        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
-        return `(${types})`
-      }
-      case "IntersectionType": {
-        const it = type as AST.IntersectionType
-        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
-        return `(${types})`
-      }
-      default:
-        return "Unknown"
-    }
-  }
-}
-
-// ArrayAccess用の特別な制約クラス
-export class ArrayAccessConstraint {
-  constructor(
-    public arrayType: AST.Type,
-    public resultType: AST.Type,
-    public line: number,
-    public column: number,
-    public context?: string
-  ) {}
-
-  toString(): string {
-    return `ArrayAccess(${this.typeToString(this.arrayType)}) -> ${this.typeToString(this.resultType)}`
-  }
-
-  private typeToString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "VoidType":
-        return "Void"
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        return `(${tt.elementTypes.map((t) => this.typeToString(t)).join(", ")})`
-      }
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        if (gt.typeArguments.length === 0) {
-          return gt.name
-        }
-        return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
-      }
-      default:
-        return "Unknown"
-    }
-  }
-}
-
-// FunctorMap用の特別な制約クラス
-export class FunctorMapConstraint {
-  constructor(
-    public containerType: AST.Type,
-    public inputType: AST.Type,
-    public outputType: AST.Type,
-    public resultType: AST.Type,
-    public line: number,
-    public column: number,
-    public context?: string
-  ) {}
-
-  toString(): string {
-    return `FunctorMap(${this.typeToString(this.containerType)}, ${this.typeToString(this.inputType)} -> ${this.typeToString(this.outputType)}) -> ${this.typeToString(this.resultType)}`
-  }
-
-  private typeToString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "VoidType":
-        return "Void"
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        if (gt.typeArguments.length === 0) {
-          return gt.name
-        }
-        return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
-      }
-      default:
-        return `<${type.kind}>`
-    }
-  }
-}
-
-// ApplicativeApply用の特別な制約クラス
-export class ApplicativeApplyConstraint {
-  constructor(
-    public funcContainerType: AST.Type,
-    public valueContainerType: AST.Type,
-    public inputType: AST.Type,
-    public outputType: AST.Type,
-    public resultType: AST.Type,
-    public line: number,
-    public column: number,
-    public context?: string
-  ) {}
-
-  toString(): string {
-    return `ApplicativeApply(${this.typeToString(this.funcContainerType)}<${this.typeToString(this.inputType)} -> ${this.typeToString(this.outputType)}>, ${this.typeToString(this.valueContainerType)}<${this.typeToString(this.inputType)}>) -> ${this.typeToString(this.resultType)}`
-  }
-
-  private typeToString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "VoidType":
-        return "Void"
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        if (gt.typeArguments.length === 0) {
-          return gt.name
-        }
-        return `${gt.name}<${gt.typeArguments.map((t) => this.typeToString(t)).join(", ")}>`
-      }
-      default:
-        return `<${type.kind}>`
-    }
-  }
-}
-
-// 型置換を表現するクラス
-export class TypeSubstitution {
-  private substitutions: Map<number, AST.Type> = new Map()
-
-  set(varId: number, type: AST.Type): void {
-    this.substitutions.set(varId, type)
-  }
-
-  get(varId: number): AST.Type | undefined {
-    return this.substitutions.get(varId)
-  }
-
-  // 型に置換を適用
-  apply(type: AST.Type): AST.Type {
-    switch (type.kind) {
-      case "TypeVariable": {
-        const tv = type as TypeVariable
-        const substituted = this.get(tv.id)
-        return substituted ? this.apply(substituted) : type
-      }
-
-      case "PolymorphicTypeVariable":
-        // 多相型変数も制約解決で具体化される場合がある
-        // 具体的な使用文脈では具体的な型に解決される
-        return type
-
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return new AST.FunctionType(
-          this.apply(ft.paramType),
-          this.apply(ft.returnType),
-          ft.line,
-          ft.column
-        )
-      }
-
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        return new AST.GenericType(
-          gt.name,
-          gt.typeArguments.map((arg) => this.apply(arg)),
-          gt.line,
-          gt.column
-        )
-      }
-
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        return new AST.RecordType(
-          rt.fields.map(
-            (field) =>
-              new AST.RecordField(
-                field.name,
-                this.apply(field.type),
-                field.line,
-                field.column
-              )
-          ),
-          rt.line,
-          rt.column
-        )
-      }
-
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        return new AST.TupleType(
-          tt.elementTypes.map((elementType) => this.apply(elementType)),
-          tt.line,
-          tt.column
-        )
-      }
-
-      case "StructType": {
-        const st = type as AST.StructType
-        return new AST.StructType(
-          st.name,
-          st.fields.map(
-            (field) =>
-              new AST.RecordField(
-                field.name,
-                this.apply(field.type),
-                field.line,
-                field.column
-              )
-          ),
-          st.line,
-          st.column
-        )
-      }
-
-      default:
-        return type
-    }
-  }
-
-  // 制約に置換を適用
-  applyToConstraint(constraint: TypeConstraint): TypeConstraint {
-    return new TypeConstraint(
-      this.apply(constraint.type1),
-      this.apply(constraint.type2),
-      constraint.line,
-      constraint.column,
-      constraint.context
-    )
-  }
-
-  // 置換を合成
-  compose(other: TypeSubstitution): TypeSubstitution {
-    const result = new TypeSubstitution()
-
-    // 現在の置換を適用
-    for (const [varId, type] of this.substitutions) {
-      result.set(varId, other.apply(type))
-    }
-
-    // 他の置換を追加
-    for (const [varId, type] of other.substitutions) {
-      if (!result.substitutions.has(varId)) {
-        result.set(varId, type)
-      }
-    }
-
-    return result
-  }
-
-  isEmpty(): boolean {
-    return this.substitutions.size === 0
-  }
-
-  toString(): string {
-    const entries = Array.from(this.substitutions.entries())
-      .map(([id, type]) => `t${id} := ${this.typeToString(type)}`)
-      .join(", ")
-    return `[${entries}]`
-  }
-
-  private typeToString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "VoidType":
-        return "Void"
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "PolymorphicTypeVariable":
-        return `'${(type as PolymorphicTypeVariable).name}`
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
-      }
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        const args = gt.typeArguments
-          .map((t) => this.typeToString(t))
-          .join(", ")
-        return `${gt.name}<${args}>`
-      }
-      case "StructType":
-        return (type as AST.StructType).name
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        const fields = rt.fields
-          .map((f) => `${f.name}: ${this.typeToString(f.type)}`)
-          .join(", ")
-        return `{ ${fields} }`
-      }
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        const elements = tt.elementTypes
-          .map((t) => this.typeToString(t))
-          .join(", ")
-        return `(${elements})`
-      }
-      case "UnionType": {
-        const ut = type as AST.UnionType
-        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
-        return `(${types})`
-      }
-      case "IntersectionType": {
-        const it = type as AST.IntersectionType
-        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
-        return `(${types})`
-      }
-      default:
-        return "Unknown"
-    }
-  }
-}
-
-// 型推論エラークラス
-export class TypeInferenceError {
-  constructor(
-    public message: string,
-    public line: number,
-    public column: number,
-    public context?: string
-  ) {}
-
-  toString(): string {
-    let result = `Type inference error at line ${this.line}, column ${this.column}: ${this.message}`
-    if (this.context) {
-      result += `\n  Context: ${this.context}`
-    }
-    return result
   }
 }
 
@@ -547,8 +110,6 @@ export class TypeInferenceSystem {
   private typeAliases: Map<string, AST.Type> = new Map() // 型エイリアス情報を保持
   private moduleResolver: any = new ModuleResolver()
   private currentFilePath: string = ""
-  private structMethods: Map<string, AST.MethodDeclaration[]> = new Map() // インポートされた構造体のメソッド
-  private structOperators: Map<string, AST.OperatorDeclaration[]> = new Map() // インポートされた構造体の演算子
 
   // 新しい型変数を生成
   freshTypeVariable(line: number, column: number): TypeVariable {
@@ -659,58 +220,9 @@ export class TypeInferenceSystem {
     }
   }
 
-  private formatType(
-    type: AST.Type | TypeVariable | PolymorphicTypeVariable | null | undefined
-  ): string {
-    if (!type) {
-      return "null"
-    }
-
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return `(${this.formatType(ft.paramType)} -> ${this.formatType(ft.returnType)})`
-      }
-      case "TypeVariable":
-        if (type instanceof TypeVariable) {
-          return type.name
-        } else {
-          return (type as TypeVariable).name
-        }
-      case "PolymorphicTypeVariable":
-        return (type as PolymorphicTypeVariable).name
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        if (gt.typeArguments.length > 0) {
-          return `${gt.name}<${gt.typeArguments.map((t) => this.formatType(t)).join(", ")}>`
-        }
-        return gt.name
-      }
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        return `(${tt.elementTypes.map((t) => this.formatType(t)).join(", ")})`
-      }
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        const fields = rt.fields
-          .map((f) => `${f.name}: ${this.formatType(f.type)}`)
-          .join(", ")
-        return `{ ${fields} }`
-      }
-      case "StructType": {
-        const st = type as AST.StructType
-        return st.name
-      }
-      default:
-        return `UnknownType(${type.kind})`
-    }
-  }
-
   // 型の一般化（generalization）- フリー型変数を多相型変数に変換
   generalize(type: AST.Type, env: Map<string, AST.Type>): AST.Type {
-    const freeVars = this.getFreeTypeVariables(type, env)
+    const freeVars = getFreeTypeVariablesUtil(type, env)
     if (freeVars.size === 0) {
       return type
     }
@@ -728,269 +240,7 @@ export class TypeInferenceSystem {
       polyVarIndex++
     }
 
-    return this.substituteTypeVariables(type, substitutionMap)
-  }
-
-  // フリー型変数を取得
-  private getFreeTypeVariables(
-    type: AST.Type,
-    env: Map<string, AST.Type>
-  ): Set<string> {
-    const freeVars = new Set<string>()
-
-    const collect = (t: AST.Type): void => {
-      switch (t.kind) {
-        case "TypeVariable": {
-          const tv = t as TypeVariable
-          // 環境に束縛されていない型変数のみを収集
-          if (!this.isTypeVariableBoundInEnv(tv.name, env)) {
-            freeVars.add(tv.name)
-          }
-          break
-        }
-        case "FunctionType": {
-          const ft = t as AST.FunctionType
-          collect(ft.paramType)
-          collect(ft.returnType)
-          break
-        }
-        case "TupleType": {
-          const tt = t as AST.TupleType
-          tt.elementTypes.forEach(collect)
-          break
-        }
-        case "GenericType": {
-          const gt = t as AST.GenericType
-          gt.typeArguments.forEach(collect)
-          break
-        }
-        case "RecordType": {
-          const rt = t as AST.RecordType
-          rt.fields.forEach((field) => collect(field.type))
-          break
-        }
-        case "StructType": {
-          const st = t as AST.StructType
-          st.fields.forEach((field) => collect(field.type))
-          break
-        }
-        // PolymorphicTypeVariable や PrimitiveType は処理不要
-      }
-    }
-
-    collect(type)
-    return freeVars
-  }
-
-  // 型変数が環境に束縛されているかチェック
-  private isTypeVariableBoundInEnv(
-    varName: string,
-    env: Map<string, AST.Type>
-  ): boolean {
-    for (const [_, envType] of env) {
-      if (this.typeContainsVariable(envType, varName)) {
-        return true
-      }
-    }
-    return false
-  }
-
-  // 型に特定の型変数が含まれているかチェック
-  private typeContainsVariable(type: AST.Type, varName: string): boolean {
-    switch (type.kind) {
-      case "TypeVariable":
-        return (type as TypeVariable).name === varName
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return (
-          this.typeContainsVariable(ft.paramType, varName) ||
-          this.typeContainsVariable(ft.returnType, varName)
-        )
-      }
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        return tt.elementTypes.some((t) =>
-          this.typeContainsVariable(t, varName)
-        )
-      }
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        return gt.typeArguments.some((t) =>
-          this.typeContainsVariable(t, varName)
-        )
-      }
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        return rt.fields.some((f) => this.typeContainsVariable(f.type, varName))
-      }
-      case "StructType": {
-        const st = type as AST.StructType
-        return st.fields.some((f) => this.typeContainsVariable(f.type, varName))
-      }
-      default:
-        return false
-    }
-  }
-
-  // 型変数の置換
-  private substituteTypeVariables(
-    type: AST.Type,
-    substitutionMap: Map<string, AST.Type>
-  ): AST.Type {
-    switch (type.kind) {
-      case "TypeVariable": {
-        const tv = type as TypeVariable
-        const substituted = substitutionMap.get(tv.name)
-        if (substituted) {
-          console.log(
-            "🔧 Substituting TypeVariable:",
-            tv.name,
-            "->",
-            this.typeToString(substituted)
-          )
-        }
-        return substituted || type
-      }
-      case "PolymorphicTypeVariable": {
-        const ptv = type as PolymorphicTypeVariable
-        return substitutionMap.get(ptv.name) || type
-      }
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return new AST.FunctionType(
-          this.substituteTypeVariables(ft.paramType, substitutionMap),
-          this.substituteTypeVariables(ft.returnType, substitutionMap),
-          ft.line,
-          ft.column
-        )
-      }
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        return new AST.TupleType(
-          tt.elementTypes.map((t) =>
-            this.substituteTypeVariables(t, substitutionMap)
-          ),
-          tt.line,
-          tt.column
-        )
-      }
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        return new AST.GenericType(
-          gt.name,
-          gt.typeArguments.map((t) =>
-            this.substituteTypeVariables(t, substitutionMap)
-          ),
-          gt.line,
-          gt.column
-        )
-      }
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        return new AST.RecordType(
-          rt.fields.map(
-            (f) =>
-              new AST.RecordField(
-                f.name,
-                this.substituteTypeVariables(f.type, substitutionMap),
-                f.line,
-                f.column
-              )
-          ),
-          rt.line,
-          rt.column
-        )
-      }
-      case "StructType": {
-        const st = type as AST.StructType
-        return new AST.StructType(
-          st.name,
-          st.fields.map(
-            (f) =>
-              new AST.RecordField(
-                f.name,
-                this.substituteTypeVariables(f.type, substitutionMap),
-                f.line,
-                f.column
-              )
-          ),
-          st.line,
-          st.column
-        )
-      }
-      case "PrimitiveType": {
-        // PrimitiveTypeが型パラメータの場合は置換
-        const pt = type as AST.PrimitiveType
-        const substituted = substitutionMap.get(pt.name)
-        if (substituted) {
-          console.log(
-            "🔧 Substituting PrimitiveType:",
-            pt.name,
-            "->",
-            this.typeToString(substituted)
-          )
-          return substituted
-        }
-        return type
-      }
-      default:
-        return type
-    }
-  }
-
-  // 型の中から型変数を収集する
-  private collectTypeVariables(
-    type: AST.Type,
-    typeVariables: Set<TypeVariable>
-  ): void {
-    switch (type.kind) {
-      case "TypeVariable":
-        typeVariables.add(type as TypeVariable)
-        break
-      case "TupleType": {
-        const tupleType = type as AST.TupleType
-        tupleType.elementTypes.forEach((t) =>
-          this.collectTypeVariables(t, typeVariables)
-        )
-        break
-      }
-      case "UnionType": {
-        const unionType = type as AST.UnionType
-        unionType.types.forEach((t) =>
-          this.collectTypeVariables(t, typeVariables)
-        )
-        break
-      }
-      case "IntersectionType": {
-        const intersectionType = type as AST.IntersectionType
-        intersectionType.types.forEach((t) =>
-          this.collectTypeVariables(t, typeVariables)
-        )
-        break
-      }
-      case "RecordType": {
-        const recordType = type as AST.RecordType
-        recordType.fields.forEach((field) =>
-          this.collectTypeVariables(field.type, typeVariables)
-        )
-        break
-      }
-      case "FunctionType": {
-        const functionType = type as AST.FunctionType
-        this.collectTypeVariables(functionType.paramType, typeVariables)
-        this.collectTypeVariables(functionType.returnType, typeVariables)
-        break
-      }
-      case "GenericType": {
-        const genericType = type as AST.GenericType
-        if (genericType.typeArguments) {
-          genericType.typeArguments.forEach((arg) =>
-            this.collectTypeVariables(arg, typeVariables)
-          )
-        }
-        break
-      }
-    }
+    return substituteTypeVariablesUtil(type, substitutionMap)
   }
 
   // ジェネリック型エイリアス専用の型変数置換
@@ -1011,7 +261,7 @@ export class TypeInferenceSystem {
 
     // 型エイリアスの定義内で見つかった型変数を、型パラメータの位置に基づいて置換
     const typeVariablesToReplace = new Set<TypeVariable>()
-    this.collectTypeVariables(type, typeVariablesToReplace)
+    collectTypeVariablesUtil(type, typeVariablesToReplace)
 
     // 型変数を位置ベースで置換するマップを作成
     const typeVariableArray = Array.from(typeVariablesToReplace).sort(
@@ -1030,23 +280,9 @@ export class TypeInferenceSystem {
       switch (t.kind) {
         case "TypeVariable": {
           const tv = t as TypeVariable
-          console.log(
-            "🔧 Checking TypeVariable:",
-            tv.name,
-            "ID:",
-            tv.id,
-            "Available substitutions:",
-            Array.from(positionMap.keys())
-          )
           // 型変数のIDを使って対応する型引数を取得
           const substituted = positionMap.get(tv.id)
           if (substituted) {
-            console.log(
-              "🔧 Substituting TypeVariable by ID:",
-              tv.id,
-              "->",
-              this.typeToString(substituted)
-            )
             return substituted
           }
           return t
@@ -1098,12 +334,6 @@ export class TypeInferenceSystem {
           // 型パラメータ名が一致する場合は置換
           const substituted = substitutionMap.get(pt.name)
           if (substituted) {
-            console.log(
-              "🔧 Substituting PrimitiveType by name:",
-              pt.name,
-              "->",
-              this.typeToString(substituted)
-            )
             return substituted
           }
           return t
@@ -1208,7 +438,7 @@ export class TypeInferenceSystem {
     column: number
   ): AST.Type {
     // 多相型変数を収集
-    const polymorphicVars = this.collectPolymorphicTypeVariables(type)
+    const polymorphicVars = collectPolymorphicTypeVariablesUtil(type)
 
     // 型引数の数が一致しない場合はエラー
     if (polymorphicVars.length !== typeArguments.length) {
@@ -1223,66 +453,15 @@ export class TypeInferenceSystem {
       substitutionMap.set(polymorphicVars[i], typeArguments[i])
     }
 
-    return this.substituteTypeVariables(type, substitutionMap)
-  }
-
-  // 型から多相型変数名を収集（出現順）
-  private collectPolymorphicTypeVariables(type: AST.Type): string[] {
-    const seen = new Set<string>()
-    const vars: string[] = []
-
-    const collect = (t: AST.Type): void => {
-      switch (t.kind) {
-        case "PolymorphicTypeVariable": {
-          const ptv = t as PolymorphicTypeVariable
-          if (!seen.has(ptv.name)) {
-            seen.add(ptv.name)
-            vars.push(ptv.name)
-          }
-          break
-        }
-        case "FunctionType": {
-          const ft = t as AST.FunctionType
-          collect(ft.paramType)
-          collect(ft.returnType)
-          break
-        }
-        case "TupleType": {
-          const tt = t as AST.TupleType
-          tt.elementTypes.forEach(collect)
-          break
-        }
-        case "GenericType": {
-          const gt = t as AST.GenericType
-          gt.typeArguments.forEach(collect)
-          break
-        }
-        case "RecordType": {
-          const rt = t as AST.RecordType
-          rt.fields.forEach((f) => collect(f.type))
-          break
-        }
-        case "StructType": {
-          const st = t as AST.StructType
-          st.fields.forEach((f) => collect(f.type))
-          break
-        }
-        // TypeVariable や PrimitiveType は処理不要
-      }
-    }
-
-    collect(type)
-    return vars
+    return substituteTypeVariablesUtil(type, substitutionMap)
   }
 
   // 制約を追加
   addConstraint(constraint: TypeConstraint): void {
-    // console.log(`➕ Adding constraint: ${constraint.toString()} at ${constraint.line}:${constraint.column}${constraint.context ? ` (${constraint.context})` : ''}`)
     this.constraints.push(constraint)
   }
 
   addSubtypeConstraint(constraint: SubtypeConstraint): void {
-    // console.log(`➕ Adding subtype constraint: ${constraint.toString()} at ${constraint.line}:${constraint.column}${constraint.context ? ` (${constraint.context})` : ''}`)
     this.subtypeConstraints.push(constraint)
   }
 
@@ -1300,19 +479,13 @@ export class TypeInferenceSystem {
     this.currentFilePath = filePath || ""
 
     // 型環境の初期化
-    const env = this.createInitialEnvironment()
+    const env = createInitialEnvironmentUtil()
 
-    console.log("🔧 PHASE 1: Starting constraint generation")
     // 制約生成
     this.generateConstraints(program, env)
-    console.log(
-      `🔧 PHASE 1 COMPLETE: Generated ${this.constraints.length} constraints`
-    )
 
-    console.log("🔧 PHASE 2: Starting constraint resolution")
     // 制約解決（単一化）
     const substitution = this.solveConstraints()
-    console.log("🔧 PHASE 2 COMPLETE: Constraint resolution finished")
 
     // Apply substitution to all tracked node types
     const resolvedNodeTypeMap = new Map<AST.ASTNode, AST.Type>()
@@ -1328,338 +501,6 @@ export class TypeInferenceSystem {
       currentFilePath: this.currentFilePath,
       environment: new Map(this.currentEnvironment),
     }
-  }
-
-  // 初期型環境を作成
-  private createInitialEnvironment(): Map<string, AST.Type> {
-    const env = new Map<string, AST.Type>()
-
-    // 組み込み関数のシグネチャを定義
-
-    // print: 'a -> Unit (多相関数)
-    const printType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("Unit", 0, 0),
-      0,
-      0
-    )
-    env.set("print", printType)
-
-    // putStrLn: 'a -> Unit (多相関数)
-    const putStrLnType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("Unit", 0, 0),
-      0,
-      0
-    )
-    env.set("putStrLn", putStrLnType)
-
-    // toString: 'a -> String (多相関数)
-    const toStringType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("String", 0, 0),
-      0,
-      0
-    )
-    env.set("toString", toStringType)
-
-    // toInt: 'a -> Int (多相関数)
-    const toIntType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("Int", 0, 0),
-      0,
-      0
-    )
-    env.set("toInt", toIntType)
-
-    // toFloat: 'a -> Float (多相関数)
-    const toFloatType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("Float", 0, 0),
-      0,
-      0
-    )
-    env.set("toFloat", toFloatType)
-
-    // show: 'a -> Unit (多相関数)
-    const showType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("Unit", 0, 0),
-      0,
-      0
-    )
-    env.set("show", showType)
-
-    // arrayToList: Array<'a> -> List<'a>
-    const aTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const arrayToListType = new AST.FunctionType(
-      new AST.GenericType("Array", [aTypeVar], 0, 0),
-      new AST.GenericType("List", [aTypeVar], 0, 0),
-      0,
-      0
-    )
-    env.set("arrayToList", arrayToListType)
-
-    // listToArray: List<'a> -> Array<'a>
-    const bTypeVar = new PolymorphicTypeVariable("b", 0, 0)
-    const listToArrayType = new AST.FunctionType(
-      new AST.GenericType("List", [bTypeVar], 0, 0),
-      new AST.GenericType("Array", [bTypeVar], 0, 0),
-      0,
-      0
-    )
-    env.set("listToArray", listToArrayType)
-
-    // head: List<'a> -> Maybe<'a>
-    const headTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const headType = new AST.FunctionType(
-      new AST.GenericType("List", [headTypeVar], 0, 0),
-      new AST.GenericType("Maybe", [headTypeVar], 0, 0),
-      0,
-      0
-    )
-    env.set("head", headType)
-
-    // tail: List<'a> -> List<'a>
-    const tailTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const tailType = new AST.FunctionType(
-      new AST.GenericType("List", [tailTypeVar], 0, 0),
-      new AST.GenericType("List", [tailTypeVar], 0, 0),
-      0,
-      0
-    )
-    env.set("tail", tailType)
-
-    // List constructors for pattern matching and expressions
-    // Empty : List<'a>
-    const emptyTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const emptyType = new AST.GenericType("List", [emptyTypeVar], 0, 0)
-    env.set("Empty", emptyType)
-
-    // Cons : 'a -> List<'a> -> List<'a>
-    const consTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const consListType = new AST.GenericType("List", [consTypeVar], 0, 0)
-    const consType = new AST.FunctionType(
-      consTypeVar,
-      new AST.FunctionType(consListType, consListType, 0, 0),
-      0,
-      0
-    )
-    env.set("Cons", consType)
-
-    // Maybe constructors for pattern matching and expressions
-    // Nothing : Maybe<'a>
-    const nothingTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const nothingType = new AST.GenericType("Maybe", [nothingTypeVar], 0, 0)
-    env.set("Nothing", nothingType)
-
-    // Just : 'a -> Maybe<'a>
-    const justTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const justMaybeType = new AST.GenericType("Maybe", [justTypeVar], 0, 0)
-    const justType = new AST.FunctionType(justTypeVar, justMaybeType, 0, 0)
-    env.set("Just", justType)
-
-    // Signal constructor for reactive programming
-    // Signal : 'a -> Signal<'a>
-    const signalTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const signalReturnType = new AST.GenericType(
-      "Signal",
-      [signalTypeVar],
-      0,
-      0
-    )
-    const signalConstructorType = new AST.FunctionType(
-      signalTypeVar,
-      signalReturnType,
-      0,
-      0
-    )
-    env.set("Signal", signalConstructorType)
-
-    // Either constructors for pattern matching and expressions
-    // Left : 'a -> Either<'a, 'b>
-    const leftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const leftRightTypeVar = new PolymorphicTypeVariable("b", 0, 0)
-    const leftEitherType = new AST.GenericType(
-      "Either",
-      [leftTypeVar, leftRightTypeVar],
-      0,
-      0
-    )
-    const leftType = new AST.FunctionType(leftTypeVar, leftEitherType, 0, 0)
-    env.set("Left", leftType)
-
-    // Right : 'b -> Either<'a, 'b>
-    const rightLeftTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const rightTypeVar = new PolymorphicTypeVariable("b", 0, 0)
-    const rightEitherType = new AST.GenericType(
-      "Either",
-      [rightLeftTypeVar, rightTypeVar],
-      0,
-      0
-    )
-    const rightType = new AST.FunctionType(rightTypeVar, rightEitherType, 0, 0)
-    env.set("Right", rightType)
-
-    // Task constructor for pattern matching and expressions
-    // Task : (() -> Promise<'a>) -> Task<'a>
-    const taskTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const promiseType = new AST.GenericType("Promise", [taskTypeVar], 0, 0)
-    const computationType = new AST.FunctionType(
-      new AST.PrimitiveType("Unit", 0, 0), // () ->
-      promiseType, // Promise<'a>
-      0,
-      0
-    )
-    const taskResultType = new AST.GenericType("Task", [taskTypeVar], 0, 0)
-    const taskType = new AST.FunctionType(computationType, taskResultType, 0, 0)
-    env.set("Task", taskType)
-
-    // resolve function: 'a -> (() -> Promise<'a>)
-    const resolveTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const resolvePromiseType = new AST.GenericType(
-      "Promise",
-      [resolveTypeVar],
-      0,
-      0
-    )
-    const resolveComputationType = new AST.FunctionType(
-      new AST.PrimitiveType("Unit", 0, 0),
-      resolvePromiseType,
-      0,
-      0
-    )
-    const resolveType = new AST.FunctionType(
-      resolveTypeVar,
-      resolveComputationType,
-      0,
-      0
-    )
-    env.set("resolve", resolveType)
-
-    // run function: Task<'a> -> Promise<'a>
-    const runTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const runTaskType = new AST.GenericType("Task", [runTypeVar], 0, 0)
-    const runPromiseType = new AST.GenericType("Promise", [runTypeVar], 0, 0)
-    const runType = new AST.FunctionType(runTaskType, runPromiseType, 0, 0)
-    env.set("run", runType)
-    env.set("ssrgRun", runType)
-
-    // ssrgTryRun function: Task<'a> -> Promise<Either<String, 'a>>
-    const tryRunTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const tryRunInputTaskType = new AST.GenericType(
-      "Task",
-      [tryRunTypeVar],
-      0,
-      0
-    )
-    const tryRunEitherType = new AST.GenericType(
-      "Either",
-      [new AST.PrimitiveType("String", 0, 0), tryRunTypeVar],
-      0,
-      0
-    )
-    const tryRunOutputPromiseType = new AST.GenericType(
-      "Promise",
-      [tryRunEitherType],
-      0,
-      0
-    )
-    const tryRunType = new AST.FunctionType(
-      tryRunInputTaskType,
-      tryRunOutputPromiseType,
-      0,
-      0
-    )
-    env.set("ssrgTryRun", tryRunType)
-    env.set("tryRun", tryRunType)
-
-    // reject function: 'a -> (() -> Promise<'b>)
-    const rejectTypeVar = new PolymorphicTypeVariable("a", 0, 0)
-    const rejectResultTypeVar = new PolymorphicTypeVariable("b", 0, 0)
-    const rejectPromiseType = new AST.GenericType(
-      "Promise",
-      [rejectResultTypeVar],
-      0,
-      0
-    )
-    const rejectComputationType = new AST.FunctionType(
-      new AST.PrimitiveType("Unit", 0, 0),
-      rejectPromiseType,
-      0,
-      0
-    )
-    const rejectType = new AST.FunctionType(
-      rejectTypeVar,
-      rejectComputationType,
-      0,
-      0
-    )
-    env.set("reject", rejectType)
-
-    // Task Functor operation: <$>
-    // (<$>) : ('a -> 'b) -> Task<'a> -> Task<'b>
-    const fmapA = new PolymorphicTypeVariable("a", 0, 0)
-    const fmapB = new PolymorphicTypeVariable("b", 0, 0)
-    const fmapFunc = new AST.FunctionType(fmapA, fmapB, 0, 0)
-    const fmapTaskA = new AST.GenericType("Task", [fmapA], 0, 0)
-    const fmapTaskB = new AST.GenericType("Task", [fmapB], 0, 0)
-    const fmapCurried = new AST.FunctionType(fmapTaskA, fmapTaskB, 0, 0)
-    const fmapTaskType = new AST.FunctionType(fmapFunc, fmapCurried, 0, 0)
-    env.set("mapTask", fmapTaskType)
-
-    // Task Applicative operation: <*>
-    // (<*>) : Task<'a -> 'b> -> Task<'a> -> Task<'b>
-    const applyA = new PolymorphicTypeVariable("a", 0, 0)
-    const applyB = new PolymorphicTypeVariable("b", 0, 0)
-    const applyFunc = new AST.FunctionType(applyA, applyB, 0, 0)
-    const applyTaskFunc = new AST.GenericType("Task", [applyFunc], 0, 0)
-    const applyTaskA = new AST.GenericType("Task", [applyA], 0, 0)
-    const applyTaskB = new AST.GenericType("Task", [applyB], 0, 0)
-    const applyCurried = new AST.FunctionType(applyTaskA, applyTaskB, 0, 0)
-    const applyTaskType = new AST.FunctionType(
-      applyTaskFunc,
-      applyCurried,
-      0,
-      0
-    )
-    env.set("applyTask", applyTaskType)
-
-    // Task Monad operation: >>=
-    // (>>=) : Task<'a> -> ('a -> Task<'b>) -> Task<'b>
-    const bindA = new PolymorphicTypeVariable("a", 0, 0)
-    const bindB = new PolymorphicTypeVariable("b", 0, 0)
-    const bindTaskA = new AST.GenericType("Task", [bindA], 0, 0)
-    const bindTaskB = new AST.GenericType("Task", [bindB], 0, 0)
-    const bindFunc = new AST.FunctionType(bindA, bindTaskB, 0, 0)
-    const bindResult = new AST.FunctionType(bindFunc, bindTaskB, 0, 0)
-    const bindTaskType = new AST.FunctionType(bindTaskA, bindResult, 0, 0)
-    env.set("bindTask", bindTaskType)
-
-    // Boolean constants
-    const boolType = new AST.PrimitiveType("Bool", 0, 0)
-    env.set("true", boolType)
-    env.set("false", boolType)
-
-    // typeof: 'a -> String (多相関数)
-    const typeofType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("String", 0, 0),
-      0,
-      0
-    )
-    env.set("typeof", typeofType)
-
-    // typeof': 'a -> String (エイリアス情報付き)
-    const typeofWithAliasesType = new AST.FunctionType(
-      new PolymorphicTypeVariable("a", 0, 0),
-      new AST.PrimitiveType("String", 0, 0),
-      0,
-      0
-    )
-    env.set("typeof'", typeofWithAliasesType)
-
-    return env
   }
 
   // 制約生成
@@ -1711,12 +552,8 @@ export class TypeInferenceSystem {
     statement: AST.Statement,
     env: Map<string, AST.Type>
   ): void {
-    console.log(`🔧 Processing statement kind: ${statement.kind}`)
     switch (statement.kind) {
       case "ImportDeclaration":
-        console.log(
-          `🔧 Processing ImportDeclaration: ${(statement as AST.ImportDeclaration).module}`
-        )
         this.generateConstraintsForImportDeclaration(
           statement as AST.ImportDeclaration,
           env
@@ -1811,7 +648,7 @@ export class TypeInferenceSystem {
       if (!type) {
         return this.freshTypeVariable(func.line, func.column)
       }
-      return this.substituteTypeVariables(type, typeParameterMap)
+      return substituteTypeVariablesUtil(type, typeParameterMap)
     }
 
     // 戻り値の型が指定されていない場合は型変数を作成
@@ -1856,7 +693,6 @@ export class TypeInferenceSystem {
 
     // 関数を環境に追加
     const generalizedType = this.generalize(funcType, env)
-    // console.log(`🔧 Function '${func.name}' generalized from ${this.typeToString(funcType)} to ${this.typeToString(generalizedType)}`)
     env.set(func.name, generalizedType)
 
     // 関数本体の型推論用の環境を作成
@@ -1895,10 +731,6 @@ export class TypeInferenceSystem {
     importDecl: AST.ImportDeclaration,
     env: Map<string, AST.Type>
   ): void {
-    console.log(
-      `🔧 Processing ImportDeclaration in TypeInferenceSystem: ${importDecl.module}`
-    )
-
     // キャッシュをクリアして最新の内容を読み込む
     this.moduleResolver.clearCache()
 
@@ -1917,21 +749,12 @@ export class TypeInferenceSystem {
       return
     }
 
-    console.log(`✅ Module resolved: ${resolvedModule.path}`)
-    console.log(
-      `📦 Available exports: functions=${Array.from(resolvedModule.exports.functions.keys()).join(", ")}, types=${Array.from(resolvedModule.exports.types.keys()).join(", ")}, impls=${Array.from(resolvedModule.exports.impls.keys()).join(", ")}`
-    )
-
     // インポートした項目を環境に追加（依存順序で処理：型 -> 関数 -> 構造体）
-    console.log(
-      `🔧 Processing ${importDecl.items.length} import items from ${importDecl.module}`
-    )
 
     // Phase 1: ADT types first (no dependencies)
     for (const item of importDecl.items) {
       const exportedType = resolvedModule.exports.types.get(item.name)
       if (exportedType && exportedType.kind === "TypeDeclaration") {
-        console.log(`🔧 Processing ADT import item: ${item.name}`)
         const importName = item.alias || item.name
         const typeDecl = exportedType as AST.TypeDeclaration
 
@@ -1959,31 +782,14 @@ export class TypeInferenceSystem {
             field.column || 0
           )
           env.set(field.name, constructorType)
-          console.log(
-            `✅ Imported ADT constructor: ${field.name} -> ${importName}`
-          )
-          console.log(
-            `🔍 Constructor added to env object: ${env === this.currentEnvironment ? "SAME" : "DIFFERENT"}`
-          )
-          console.log(
-            `🔍 Environment size after adding ${field.name}: ${env.size}`
-          )
         }
-
-        console.log(
-          `✅ Imported ADT: ${importName} with ${typeDecl.fields.length} constructors`
-        )
       }
     }
 
     // Phase 2: Other types and functions
     for (const item of importDecl.items) {
-      console.log(`🔧 Processing remaining import item: ${item.name}`)
       const exportedFunction = resolvedModule.exports.functions.get(item.name)
       const exportedType = resolvedModule.exports.types.get(item.name)
-      console.log(
-        `🔧 Found function: ${exportedFunction ? "YES" : "NO"}, Found type: ${exportedType ? "YES" : "NO"}`
-      )
 
       if (exportedFunction) {
         // 関数をインポート
@@ -1991,9 +797,6 @@ export class TypeInferenceSystem {
           this.createFunctionTypeFromDeclaration(exportedFunction)
         const importName = item.alias || item.name
         env.set(importName, funcType)
-        console.log(
-          `✅ Imported function: ${importName} with type ${this.typeToString(funcType)}`
-        )
       } else if (exportedType) {
         // 型をインポート
         const importName = item.alias || item.name
@@ -2002,12 +805,8 @@ export class TypeInferenceSystem {
         if (exportedType && exportedType.kind === "TypeAliasDeclaration") {
           const aliasDecl = exportedType as AST.TypeAliasDeclaration
           env.set(importName, aliasDecl.aliasedType)
-          console.log(
-            `✅ Imported type alias: ${importName} = ${this.typeToString(aliasDecl.aliasedType)}`
-          )
         } else if (exportedType.kind === "TypeDeclaration") {
           // ADTは既にPhase 1で処理済み
-          console.log(`✅ ADT ${importName} already processed in Phase 1`)
         } else if (exportedType.kind === "StructDeclaration") {
           // StructDeclarationの場合は、StructTypeに変換してインポート
           const structDecl = exportedType as AST.StructDeclaration
@@ -2038,14 +837,10 @@ export class TypeInferenceSystem {
                 structType
               )
             }
-            console.log(`✅ Imported impl methods for struct: ${importName}`)
           }
-
-          console.log(`✅ Imported struct as StructType: ${importName}`)
         } else {
           // その他の型はそのまま
           env.set(importName, exportedType as AST.Type)
-          console.log(`✅ Imported type: ${importName}`)
         }
       } else {
         // エクスポートされていないアイテム
@@ -2054,7 +849,6 @@ export class TypeInferenceSystem {
           importDecl.line,
           importDecl.column
         )
-        console.log(`❌ Export not found: ${item.name}`)
       }
     }
   }
@@ -2132,21 +926,11 @@ export class TypeInferenceSystem {
         finalType = generalizedType
       } else {
         // 値型の場合：段階的制約解決を試行
-        console.log(
-          `🔧 Attempting staged resolution for variable ${varDecl.name}`
-        )
         const newConstraints = this.constraints.slice(constraintsBeforeInit)
-        console.log(
-          `🔧 Variable ${varDecl.name} generated ${newConstraints.length} new constraints`
-        )
 
         // 新しい制約のみを解決してinitTypeを具体化を試行
         const partialSubstitution = this.solveConstraintsPartial(newConstraints)
         const resolvedInitType = partialSubstitution.apply(initType)
-
-        console.log(
-          `🔧 Variable ${varDecl.name}: ${this.typeToString(initType)} -> ${this.typeToString(resolvedInitType)}`
-        )
 
         // 解決された型を環境に設定
         env.set(varDecl.name, resolvedInitType)
@@ -2161,21 +945,6 @@ export class TypeInferenceSystem {
     this.nodeTypeMap.set(varDecl.initializer, initType)
 
     return finalType
-  }
-
-  // 型が関数型かどうかを判定するヘルパー関数
-  private isFunctionType(type: AST.Type): boolean {
-    switch (type.kind) {
-      case "FunctionType":
-        return true
-      case "TypeVariable":
-      case "PolymorphicTypeVariable":
-        // 型変数の場合は制約から判定するのは複雑なので、
-        // 保守的に関数型と見なす（一般化を適用）
-        return true
-      default:
-        return false
-    }
   }
 
   // 構造体の演算子定義を検索するヘルパー関数
@@ -2377,11 +1146,8 @@ export class TypeInferenceSystem {
     rejectExpr: AST.RejectExpression,
     env: Map<string, AST.Type>
   ): AST.Type {
-    // reject valueの型推論
-    const _valueType = this.generateConstraintsForExpression(
-      rejectExpr.value,
-      env
-    )
+    // reject valueの型推論（副作用としてnodeTypeMapへ登録）
+    this.generateConstraintsForExpression(rejectExpr.value, env)
 
     // reject式は関数型として扱う: () -> Promise<Void>
     // 型引数が指定されている場合はそれを使用、なければVoidタイプ
@@ -2433,7 +1199,8 @@ export class TypeInferenceSystem {
 
     // returnExpressionがある場合はその型を推論
     if (promiseBlock.returnExpression) {
-      const _returnType = this.generateConstraintsForExpression(
+      // 型推論を実行（副作用としてnodeTypeMapへ登録）
+      this.generateConstraintsForExpression(
         promiseBlock.returnExpression,
         promiseEnv
       )
@@ -2808,13 +1575,6 @@ export class TypeInferenceSystem {
   ): AST.Type {
     // Debug: Log environment contents when looking for Red
     if (identifier.name === "Red") {
-      console.log(
-        `🔍 Looking for "${identifier.name}" in environment at line ${identifier.line}`
-      )
-      console.log(`🔍 Environment has ${env.size} entries:`)
-      console.log(
-        `🔍 Environment object: ${env === this.currentEnvironment ? "SAME" : "DIFFERENT"}`
-      )
     }
 
     // Normal identifier lookup
@@ -2832,19 +1592,17 @@ export class TypeInferenceSystem {
 
     // Debug: Log the type we found
     if (identifier.name === "task1" || identifier.name === "taskFunc") {
-      console.log(`🔧 Found type for ${identifier.name}: ${type.kind}`)
       if (type.kind === "GenericType") {
         const gt = type as AST.GenericType
-        console.log(`🔧   GenericType name: ${gt.name}`)
       }
     }
 
     // Debug logging for makeTuple function type resolution
     // if (identifier.name === 'makeTuple') {
     //   console.log(`DEBUG: makeTuple type resolution at ${identifier.line}:${identifier.column}`)
-    //   console.log(`DEBUG: Original type from env:`, this.typeToString(type))
+    //   console.log(`DEBUG: Original type from env:`, typeToStringUtil(type))
     //   const instantiated = this.instantiatePolymorphicType(type, identifier.line, identifier.column)
-    //   console.log(`DEBUG: Instantiated type:`, this.typeToString(instantiated))
+    //   console.log(`DEBUG: Instantiated type:`, typeToStringUtil(instantiated))
     //   return instantiated
     // }
 
@@ -3010,7 +1768,7 @@ export class TypeInferenceSystem {
             expectedListType,
             binOp.right.line,
             binOp.right.column,
-            `CONS operator (:) right operand must be List<${this.typeToString(leftType)}>`
+            `CONS operator (:) right operand must be List<${typeToStringUtil(leftType)}>`
           )
         )
 
@@ -3033,7 +1791,7 @@ export class TypeInferenceSystem {
                 signalValueType,
                 binOp.right.line,
                 binOp.right.column,
-                `Signal assignment (:=) value must match Signal type ${this.typeToString(signalValueType)}`
+                `Signal assignment (:=) value must match Signal type ${typeToStringUtil(signalValueType)}`
               )
             )
 
@@ -3045,7 +1803,7 @@ export class TypeInferenceSystem {
         // 左オペランドがSignal型でない場合はエラー
         this.errors.push(
           new TypeInferenceError(
-            `Signal assignment (:=) can only be applied to Signal types, but got ${this.typeToString(leftType)}`,
+            `Signal assignment (:=) can only be applied to Signal types, but got ${typeToStringUtil(leftType)}`,
             binOp.left.line,
             binOp.left.column
           )
@@ -3125,7 +1883,7 @@ export class TypeInferenceSystem {
       }
 
       // 右辺もMaybe型の場合は特別な処理
-      if (this.isMaybeType(rightType)) {
+      if (isMaybeTypeUtil(rightType)) {
         const rightMaybeInnerType = (rightType as AST.GenericType)
           .typeArguments[0]
 
@@ -3204,11 +1962,11 @@ export class TypeInferenceSystem {
     }
 
     // Maybe型の場合: Maybe<T> ?? U => T | U (実際にはTが返される)
-    if (this.isMaybeType(leftType)) {
+    if (isMaybeTypeUtil(leftType)) {
       const maybeInnerType = (leftType as AST.GenericType).typeArguments[0]
 
       // 右辺もMaybe型の場合: Maybe<T> ?? Maybe<U> => T | U
-      if (this.isMaybeType(rightType)) {
+      if (isMaybeTypeUtil(rightType)) {
         const rightMaybeInnerType = (rightType as AST.GenericType)
           .typeArguments[0]
         // 両方の内部型の互換性をチェック
@@ -3238,7 +1996,7 @@ export class TypeInferenceSystem {
     }
 
     // Either型の場合: Either<L, R> ?? U => R | U (実際にはRが返される)
-    if (this.isEitherType(leftType)) {
+    if (isEitherTypeUtil(leftType)) {
       const rightTypeFromEither = (leftType as AST.GenericType).typeArguments[1]
 
       // 右辺もEither型の場合: Either<L1, R1> ?? Either<L2, R2> => R1 | R2
@@ -3355,7 +2113,7 @@ export class TypeInferenceSystem {
         // Signal型でない場合はエラー
         this.errors.push(
           new TypeInferenceError(
-            `getValue operator (*) can only be applied to Signal types, got ${this.typeToString(operandType)}`,
+            `getValue operator (*) can only be applied to Signal types, got ${typeToStringUtil(operandType)}`,
             unaryOp.operand.line,
             unaryOp.operand.column
           )
@@ -3379,10 +2137,8 @@ export class TypeInferenceSystem {
     call: AST.FunctionCall,
     env: Map<string, AST.Type>
   ): AST.Type {
-    console.log(`🔧 Processing function call at line ${call.line}`)
     if (call.function.kind === "Identifier") {
       const funcName = (call.function as AST.Identifier).name
-      console.log(`🔧 Function call: ${funcName}`)
     }
     // print/putStrLn/show関数の特別処理
     if (call.function.kind === "Identifier") {
@@ -3458,8 +2214,6 @@ export class TypeInferenceSystem {
         if (!rawFuncType) {
           throw new Error(`Undefined function: ${identifier.name}`)
         }
-        // console.log(`🔍 Raw function type: ${this.typeToString(rawFuncType)}, explicit type args: ${call.typeArguments.length}`)
-        // console.log(`🎯 Using explicit type arguments: ${call.typeArguments.map(t => this.typeToString(t)).join(', ')}`)
 
         resultType = this.instantiateWithExplicitTypeArguments(
           rawFuncType,
@@ -3485,9 +2239,6 @@ export class TypeInferenceSystem {
         const identifier = call.function as AST.Identifier
         const rawFuncType = env.get(identifier.name)
         if (rawFuncType) {
-          console.log(
-            `🔧 Found function type in env: ${this.typeToString(rawFuncType)}`
-          )
           // 多相型のインスタンス化を確実に実行
           resultType = this.instantiatePolymorphicType(
             rawFuncType,
@@ -3495,9 +2246,6 @@ export class TypeInferenceSystem {
             call.column
           )
           funcType = resultType
-          console.log(
-            `🔧 Instantiated function type: ${this.typeToString(resultType)} (kind: ${resultType.kind})`
-          )
         } else {
           funcType = this.generateConstraintsForExpression(call.function, env)
           resultType = this.instantiatePolymorphicType(
@@ -3571,24 +2319,11 @@ export class TypeInferenceSystem {
         call.column
       )
 
-      console.log(
-        `🔧 Function call result type: ${this.typeToString(resultType)} (kind: ${resultType.kind})`
-      )
-
       if (call.function.kind === "Identifier") {
         const funcName = (call.function as AST.Identifier).name
-        console.log(`🔧 Function name: ${funcName}`)
         const funcTypeFromEnv = env.get(funcName)
-        console.log(
-          `🔧 Function type from env: ${funcTypeFromEnv ? this.typeToString(funcTypeFromEnv) : "undefined"}`
-        )
         if (funcName === "p" || funcName === "div") {
-          console.log(`🔧 DEBUG: Special attention for ${funcName}`)
-          console.log(`🔧 DEBUG: resultType kind: ${resultType.kind}`)
           if (funcTypeFromEnv) {
-            console.log(
-              `🔧 DEBUG: funcTypeFromEnv kind: ${funcTypeFromEnv.kind}`
-            )
           }
         }
       }
@@ -3597,13 +2332,7 @@ export class TypeInferenceSystem {
       if (resultType.kind === "FunctionType") {
         const funcTypeInstance = resultType as AST.FunctionType
         expectedParamType = funcTypeInstance.paramType
-        console.log(
-          `🔧 Expected param type from function: ${this.typeToString(expectedParamType)}`
-        )
       } else {
-        console.log(
-          `🔧 Function type not FunctionType, kind: ${resultType.kind}, using fresh type variable`
-        )
       }
 
       const actualArgType = this.generateConstraintsForExpression(
@@ -3611,7 +2340,6 @@ export class TypeInferenceSystem {
         env,
         expectedParamType
       )
-      console.log(`🔧 Actual arg type: ${this.typeToString(actualArgType)}`)
       const newResultType = this.freshTypeVariable(call.line, call.column)
 
       // 現在の結果型は expectedParamType から newResultType へのFunction型でなければならない
@@ -3639,7 +2367,7 @@ export class TypeInferenceSystem {
           expectedParamType,
           call.line,
           call.column,
-          `Function parameter type: ${this.typeToString(actualArgType)} ~ ${this.typeToString(expectedParamType)}`
+          `Function parameter type: ${typeToStringUtil(actualArgType)} ~ ${typeToStringUtil(expectedParamType)}`
         )
       )
 
@@ -3900,10 +2628,8 @@ export class TypeInferenceSystem {
     app: AST.FunctionApplication,
     env: Map<string, AST.Type>
   ): AST.Type {
-    console.log(`🔧 Processing function application at line ${app.line}`)
     if (app.function.kind === "Identifier") {
       const funcName = (app.function as AST.Identifier).name
-      console.log(`🔧 Function application: ${funcName}`)
     }
 
     // 関数型を取得（環境から直接取得を優先）
@@ -3912,16 +2638,10 @@ export class TypeInferenceSystem {
       const identifier = app.function as AST.Identifier
       const rawFuncType = env.get(identifier.name)
       if (rawFuncType) {
-        console.log(
-          `🔧 Found function type in env for application: ${this.typeToString(rawFuncType)}`
-        )
         funcType = this.instantiatePolymorphicType(
           rawFuncType,
           app.line,
           app.column
-        )
-        console.log(
-          `🔧 Instantiated function type for application: ${this.typeToString(funcType)} (kind: ${funcType.kind})`
         )
       } else {
         funcType = this.generateConstraintsForExpression(app.function, env)
@@ -3935,14 +2655,8 @@ export class TypeInferenceSystem {
     if (funcType.kind === "FunctionType") {
       const funcTypeInstance = funcType as AST.FunctionType
       expectedParamType = funcTypeInstance.paramType
-      console.log(
-        `🔧 Expected param type from function application: ${this.typeToString(expectedParamType)}`
-      )
     } else {
       expectedParamType = this.freshTypeVariable(app.line, app.column)
-      console.log(
-        `🔧 Function type not FunctionType in application, kind: ${funcType.kind}, using fresh type variable`
-      )
     }
 
     const argType = this.generateConstraintsForExpression(
@@ -3992,7 +2706,7 @@ export class TypeInferenceSystem {
           expectedParamType,
           app.line,
           app.column,
-          `Function application parameter type: ${this.typeToString(argType)} ~ ${this.typeToString(expectedParamType)}`
+          `Function application parameter type: ${typeToStringUtil(argType)} ~ ${typeToStringUtil(expectedParamType)}`
         )
       )
 
@@ -4059,13 +2773,13 @@ export class TypeInferenceSystem {
     )
 
     // thenとelseの型が同じかチェック
-    if (this.typesEqual(thenType, elseType)) {
+    if (typesEqualUtil(thenType, elseType)) {
       // 同じ型の場合はそのまま返す
       return thenType
     }
 
     // 異なる型の場合は、ユニオン型として返す
-    return this.createFlattenedUnionType(
+    return createFlattenedUnionTypeUtil(
       [thenType, elseType],
       cond.line,
       cond.column
@@ -4076,7 +2790,7 @@ export class TypeInferenceSystem {
   private canUnifyWithoutUnion(type1: AST.Type, type2: AST.Type): boolean {
     try {
       // 型が完全に一致する場合
-      if (this.typesEqual(type1, type2)) {
+      if (typesEqualUtil(type1, type2)) {
         return true
       }
 
@@ -4176,7 +2890,7 @@ export class TypeInferenceSystem {
     )
 
     // trueとfalseの型が同じかチェック
-    if (this.typesEqual(trueType, falseType)) {
+    if (typesEqualUtil(trueType, falseType)) {
       // 同じ型の場合はそのまま返す
       return trueType
     }
@@ -4190,7 +2904,7 @@ export class TypeInferenceSystem {
       if (!this.canUnifyWithoutUnion(trueType, expectedType)) {
         this.errors.push(
           new TypeInferenceError(
-            `Ternary true branch type ${this.typeToString(trueType)} cannot be assigned to expected type ${this.typeToString(expectedType)}`,
+            `Ternary true branch type ${typeToStringUtil(trueType)} cannot be assigned to expected type ${typeToStringUtil(expectedType)}`,
             ternary.trueExpression.line,
             ternary.trueExpression.column
           )
@@ -4201,7 +2915,7 @@ export class TypeInferenceSystem {
       if (!this.canUnifyWithoutUnion(falseType, expectedType)) {
         this.errors.push(
           new TypeInferenceError(
-            `Ternary false branch type ${this.typeToString(falseType)} cannot be assigned to expected type ${this.typeToString(expectedType)}`,
+            `Ternary false branch type ${typeToStringUtil(falseType)} cannot be assigned to expected type ${typeToStringUtil(expectedType)}`,
             ternary.falseExpression.line,
             ternary.falseExpression.column
           )
@@ -4231,7 +2945,7 @@ export class TypeInferenceSystem {
     }
 
     // 期待される型が指定されていない場合は、ユニオン型として返す
-    return this.createFlattenedUnionType(
+    return createFlattenedUnionTypeUtil(
       [trueType, falseType],
       ternary.line,
       ternary.column
@@ -5553,7 +4267,7 @@ export class TypeInferenceSystem {
     //     if (!this.isSubtype(subType, superType)) {
     //       this.errors.push(
     //         new TypeInferenceError(
-    //           `Subtype constraint violated: ${this.typeToString(subType)} is not a subtype of ${this.typeToString(superType)}`,
+    //           `Subtype constraint violated: ${typeToStringUtil(subType)} is not a subtype of ${typeToStringUtil(superType)}`,
     //           subtypeConstraint.line,
     //           subtypeConstraint.column,
     //           subtypeConstraint.context
@@ -5619,9 +4333,6 @@ export class TypeInferenceSystem {
         }
       } catch (error) {
         // 部分解決では、エラーが起きても他の制約解決を続行
-        console.log(
-          `🔧 Partial constraint resolution failed (continuing): ${error}`
-        )
       }
     }
 
@@ -5696,7 +4407,7 @@ export class TypeInferenceSystem {
     }
 
     throw new Error(
-      `Array access requires Array<T> or Tuple type, got ${this.typeToString(arrayType)}`
+      `Array access requires Array<T> or Tuple type, got ${typeToStringUtil(arrayType)}`
     )
   }
 
@@ -5786,7 +4497,7 @@ export class TypeInferenceSystem {
     }
 
     throw new Error(
-      `FunctorMap requires a Functor type (Maybe, Either, List, Task, etc.), got ${this.typeToString(containerType)}`
+      `FunctorMap requires a Functor type (Maybe, Either, List, Task, etc.), got ${typeToStringUtil(containerType)}`
     )
   }
 
@@ -5975,14 +4686,12 @@ export class TypeInferenceSystem {
     }
 
     throw new Error(
-      `ApplicativeApply requires an Applicative type (Maybe, Either, List, Task, etc.), got ${this.typeToString(funcContainerType)}`
+      `ApplicativeApply requires an Applicative type (Maybe, Either, List, Task, etc.), got ${typeToStringUtil(funcContainerType)}`
     )
   }
 
   // 単一化アルゴリズム
   private unify(type1: AST.Type, type2: AST.Type): TypeSubstitution {
-    // console.log(`🔍 Unifying: ${this.typeToString(type1)} with ${this.typeToString(type2)}`)
-
     // null/undefined チェック
     if (!type1 || !type2) {
       throw new Error(
@@ -5993,30 +4702,9 @@ export class TypeInferenceSystem {
     const substitution = new TypeSubstitution()
 
     // 型エイリアスを解決
-    // console.log("🔧 Unifying types:", this.typeToString(type1), "with", this.typeToString(type2))
 
     const resolvedType1 = this.resolveTypeAlias(type1)
     const resolvedType2 = this.resolveTypeAlias(type2)
-
-    // デバッグ：型エイリアス解決の確認
-    if (
-      type1.kind === "PrimitiveType" &&
-      (type1 as AST.PrimitiveType).name === "Node"
-    ) {
-      console.log(
-        `🔧 Node type alias resolution: ${this.typeToString(type1)} -> ${this.typeToString(resolvedType1)}`
-      )
-    }
-    if (
-      type2.kind === "PrimitiveType" &&
-      (type2 as AST.PrimitiveType).name === "Node"
-    ) {
-      console.log(
-        `🔧 Node type alias resolution: ${this.typeToString(type2)} -> ${this.typeToString(resolvedType2)}`
-      )
-    }
-
-    // console.log("🔧 Resolved types:", this.typeToString(resolvedType1), "with", this.typeToString(resolvedType2))
 
     // 解決後の型のチェック
     if (!resolvedType1 || !resolvedType2) {
@@ -6026,7 +4714,7 @@ export class TypeInferenceSystem {
     }
 
     // 同じ型の場合（解決後の型で比較）
-    if (this.typesEqual(resolvedType1, resolvedType2)) {
+    if (typesEqualUtil(resolvedType1, resolvedType2)) {
       return substitution
     }
 
@@ -6042,9 +4730,9 @@ export class TypeInferenceSystem {
     // 型変数の場合（解決前の元の型で処理）
     if (type1.kind === "TypeVariable") {
       const tv1 = type1 as TypeVariable
-      if (this.occursCheck(tv1.id, resolvedType2)) {
+      if (occursCheckUtil(tv1.id, resolvedType2)) {
         throw new Error(
-          `Infinite type: ${tv1.name} occurs in ${this.typeToString(resolvedType2)}`
+          `Infinite type: ${tv1.name} occurs in ${typeToStringUtil(resolvedType2)}`
         )
       }
       substitution.set(tv1.id, resolvedType2)
@@ -6053,9 +4741,9 @@ export class TypeInferenceSystem {
 
     if (type2.kind === "TypeVariable") {
       const tv2 = type2 as TypeVariable
-      if (this.occursCheck(tv2.id, resolvedType1)) {
+      if (occursCheckUtil(tv2.id, resolvedType1)) {
         throw new Error(
-          `Infinite type: ${tv2.name} occurs in ${this.typeToString(resolvedType1)}`
+          `Infinite type: ${tv2.name} occurs in ${typeToStringUtil(resolvedType1)}`
         )
       }
       substitution.set(tv2.id, resolvedType1)
@@ -6083,7 +4771,7 @@ export class TypeInferenceSystem {
         return substitution
       }
       throw new Error(
-        `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+        `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
       )
     }
 
@@ -6117,7 +4805,7 @@ export class TypeInferenceSystem {
           gt1.typeArguments.length !== gt2.typeArguments.length)
       ) {
         throw new Error(
-          `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+          `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
         )
       }
 
@@ -6141,7 +4829,7 @@ export class TypeInferenceSystem {
       // 要素数が一致する必要がある
       if (tt1.elementTypes.length !== tt2.elementTypes.length) {
         throw new Error(
-          `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}: different tuple lengths`
+          `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}: different tuple lengths`
         )
       }
 
@@ -6203,7 +4891,7 @@ export class TypeInferenceSystem {
       // 長いレコードの方を基準にして、短いレコードがサブセットかチェック
       const [largerRecord, smallerRecord] =
         rt1.fields.length >= rt2.fields.length ? [rt1, rt2] : [rt2, rt1]
-      const isSubset = this.isRecordSubset(smallerRecord, largerRecord)
+      const isSubset = isRecordSubsetUtil(smallerRecord, largerRecord)
 
       if (isSubset) {
         // サブセット関係がある場合、共通フィールドを統一
@@ -6226,7 +4914,7 @@ export class TypeInferenceSystem {
       // サブセット関係がない場合、完全一致が必要
       if (rt1.fields.length !== rt2.fields.length) {
         throw new Error(
-          `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}: incompatible record structures`
+          `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}: incompatible record structures`
         )
       }
 
@@ -6242,7 +4930,7 @@ export class TypeInferenceSystem {
       for (let i = 0; i < fields1.length; i++) {
         if (fields1[i].name !== fields2[i].name) {
           throw new Error(
-            `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}: field names don't match`
+            `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}: field names don't match`
           )
         }
 
@@ -6289,7 +4977,7 @@ export class TypeInferenceSystem {
         structType.line,
         structType.column
       )
-      if (this.isRecordSubset(recordType, structAsRecord)) {
+      if (isRecordSubsetUtil(recordType, structAsRecord)) {
         // 共通フィールドの型を統一
         let result = substitution
         for (const recordField of recordType.fields) {
@@ -6308,7 +4996,7 @@ export class TypeInferenceSystem {
       }
 
       throw new Error(
-        `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+        `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
       )
     }
 
@@ -6324,9 +5012,9 @@ export class TypeInferenceSystem {
       if (otherType.kind === "TypeVariable") {
         // 型変数の場合は通常の統一を行う
         const tv = otherType as TypeVariable
-        if (this.occursCheck(tv.id, recordType)) {
+        if (occursCheckUtil(tv.id, recordType)) {
           throw new Error(
-            `Infinite type: ${tv.name} occurs in ${this.typeToString(recordType)}`
+            `Infinite type: ${tv.name} occurs in ${typeToStringUtil(recordType)}`
           )
         }
         substitution.set(tv.id, recordType)
@@ -6335,15 +5023,12 @@ export class TypeInferenceSystem {
 
       // その他の場合は統一不可能
       throw new Error(
-        `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+        `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
       )
     }
 
     // Union型の場合
     if (type1.kind === "UnionType" || type2.kind === "UnionType") {
-      console.log(
-        `🔧 Processing union types: ${this.typeToString(type1)} <-> ${this.typeToString(type2)}`
-      )
       return this.unifyUnionTypes(type1, type2)
     }
 
@@ -6352,12 +5037,11 @@ export class TypeInferenceSystem {
       type1.kind === "IntersectionType" ||
       type2.kind === "IntersectionType"
     ) {
-      // console.log("🔧 Unifying intersection types:", this.typeToString(type1), "with", this.typeToString(type2))
       return this.unifyIntersectionTypes(type1, type2)
     }
 
     throw new Error(
-      `Cannot unify ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+      `Cannot unify ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
     )
   }
 
@@ -6387,33 +5071,7 @@ export class TypeInferenceSystem {
   // 型の正規化（型エイリアスを解決し、一貫した形式に変換）
   private normalizeType(type: AST.Type): string {
     const resolved = this.resolveTypeAlias(type)
-    return this.typeToCanonicalString(resolved)
-  }
-
-  // 正規化された型の文字列表現を生成
-  private typeToCanonicalString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        const args = gt.typeArguments
-          .map((t) => this.typeToCanonicalString(t))
-          .join(", ")
-        return `${gt.name}<${args}>`
-      }
-      case "UnionType": {
-        const ut = type as AST.UnionType
-        const types = ut.types.map((t) => this.typeToCanonicalString(t)).sort()
-        return types.join(" | ")
-      }
-      case "ArrayType": {
-        const at = type as any // ArrayType might not be in AST yet
-        return `Array<${this.typeToCanonicalString(at.elementType)}>`
-      }
-      default:
-        return this.typeToString(type)
-    }
+    return typeToCanonicalStringUtil(resolved)
   }
 
   // 構造的等価性のチェック
@@ -6472,7 +5130,7 @@ export class TypeInferenceSystem {
           if (!found) {
             // 対応する型が見つからない場合は統合失敗
             throw new Error(
-              `Cannot match union type member ${this.typeToString(union1.types[i])}`
+              `Cannot match union type member ${typeToStringUtil(union1.types[i])}`
             )
           }
         }
@@ -6503,10 +5161,6 @@ export class TypeInferenceSystem {
       const union = resolvedType1 as AST.UnionType
       const primitive = resolvedType2 as AST.PrimitiveType
 
-      console.log(
-        `🔧 Attempting to unify Union ${this.typeToString(resolvedType1)} with Primitive ${primitive.name}`
-      )
-
       // PrimitiveTypeがUnion型の構成要素かチェック
       const isConstructor = union.types.some(
         (memberType) =>
@@ -6515,14 +5169,8 @@ export class TypeInferenceSystem {
       )
 
       if (isConstructor) {
-        console.log(
-          `✅ ADT constructor ${primitive.name} unified with Union type ${this.typeToString(resolvedType1)}`
-        )
         return substitution
       } else {
-        console.log(
-          `❌ ADT constructor ${primitive.name} not found in Union type ${this.typeToString(resolvedType1)}`
-        )
       }
     }
 
@@ -6533,10 +5181,6 @@ export class TypeInferenceSystem {
       const union = resolvedType2 as AST.UnionType
       const primitive = resolvedType1 as AST.PrimitiveType
 
-      console.log(
-        `🔧 Attempting to unify Primitive ${primitive.name} with Union ${this.typeToString(resolvedType2)}`
-      )
-
       // PrimitiveTypeがUnion型の構成要素かチェック
       const isConstructor = union.types.some(
         (memberType) =>
@@ -6545,14 +5189,8 @@ export class TypeInferenceSystem {
       )
 
       if (isConstructor) {
-        console.log(
-          `✅ ADT constructor ${primitive.name} unified with Union type ${this.typeToString(resolvedType2)}`
-        )
         return substitution
       } else {
-        console.log(
-          `❌ ADT constructor ${primitive.name} not found in Union type ${this.typeToString(resolvedType2)}`
-        )
       }
     }
 
@@ -6603,7 +5241,7 @@ export class TypeInferenceSystem {
         const union2 = resolvedType2 as AST.UnionType
         // union1のすべてのメンバーがunion2に含まれているかチェック
         const allMembersIncluded = union1.types.every((member1) =>
-          union2.types.some((member2) => this.typesEqual(member1, member2))
+          union2.types.some((member2) => typesEqualUtil(member1, member2))
         )
         if (allMembersIncluded) {
           return substitution
@@ -6626,41 +5264,31 @@ export class TypeInferenceSystem {
         }
       }
       throw new Error(
-        `Union type ${this.typeToString(resolvedType1)} cannot be assigned to ${this.typeToString(resolvedType2)}`
+        `Union type ${typeToStringUtil(resolvedType1)} cannot be assigned to ${typeToStringUtil(resolvedType2)}`
       )
     }
 
     if (resolvedType2.kind === "UnionType" && type1.kind !== "TypeVariable") {
       // 非Union型をUnion型に統合する場合は、非Union型がUnion型の構成要素である必要がある
       const union2 = resolvedType2 as AST.UnionType
-      console.log(
-        `🔧 Checking if ${this.typeToString(resolvedType1)} is member of union ${this.typeToString(resolvedType2)}`
-      )
       const isMember = union2.types.some((memberType) => {
         try {
-          console.log(
-            `🔧 Testing member: ${this.typeToString(resolvedType1)} vs ${this.typeToString(memberType)}`
-          )
           this.unify(resolvedType1, memberType)
-          console.log(`🔧 Member match succeeded!`)
           return true
         } catch (e) {
-          console.log(`🔧 Member match failed: ${e}`)
           return false
         }
       })
       if (isMember) {
-        console.log(`🔧 Union membership confirmed`)
         return substitution
       }
-      console.log(`🔧 Union membership failed`)
       throw new Error(
-        `Type ${this.typeToString(resolvedType1)} is not assignable to union type ${this.typeToString(resolvedType2)}`
+        `Type ${typeToStringUtil(resolvedType1)} is not assignable to union type ${typeToStringUtil(resolvedType2)}`
       )
     }
 
     throw new Error(
-      `Cannot unify union types ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+      `Cannot unify union types ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
     )
   }
 
@@ -6740,7 +5368,7 @@ export class TypeInferenceSystem {
     }
 
     throw new Error(
-      `Cannot unify intersection types ${this.typeToString(type1)} with ${this.typeToString(type2)}`
+      `Cannot unify intersection types ${typeToStringUtil(type1)} with ${typeToStringUtil(type2)}`
     )
   }
 
@@ -6750,18 +5378,12 @@ export class TypeInferenceSystem {
   ): AST.RecordType | null {
     const mergedFields: AST.RecordField[] = []
 
-    // console.log("🔧 Expanding intersection type:", this.typeToString(intersectionType))
-
     for (const memberType of intersectionType.types) {
-      // console.log("🔧 Processing member type:", this.typeToString(memberType))
-
       // 型エイリアスを解決
       const resolvedType = this.resolveTypeAlias(memberType)
-      // console.log("🔧 Resolved type:", this.typeToString(resolvedType))
 
       if (resolvedType.kind === "RecordType") {
         const recordType = resolvedType as AST.RecordType
-        // console.log("🔧 Record type fields:", recordType.fields.map(f => `${f.name}: ${this.typeToString(f.type)}`))
 
         // フィールドをマージ
         for (const field of recordType.fields) {
@@ -6769,8 +5391,8 @@ export class TypeInferenceSystem {
           const existingField = mergedFields.find((f) => f.name === field.name)
           if (existingField) {
             // 同じ名前のフィールドが異なる型を持つ場合はエラー
-            const existingTypeName = this.getTypeName(existingField.type)
-            const newTypeName = this.getTypeName(field.type)
+            const existingTypeName = getTypeNameUtil(existingField.type)
+            const newTypeName = getTypeNameUtil(field.type)
             if (existingTypeName !== newTypeName) {
               throw new Error(
                 `Field '${field.name}' has conflicting types in intersection: ${existingTypeName} and ${newTypeName}`
@@ -6782,12 +5404,9 @@ export class TypeInferenceSystem {
         }
       } else {
         // Record型でない場合はRecord型への変換失敗
-        // console.log("🔧 Not a record type, expansion failed")
         return null
       }
     }
-
-    // console.log("🔧 Merged fields:", mergedFields.map(f => `${f.name}: ${this.typeToString(f.type)}`))
 
     // マージされたフィールドでRecord型を作成
     return new AST.RecordType(
@@ -6795,34 +5414,6 @@ export class TypeInferenceSystem {
       intersectionType.line,
       intersectionType.column
     )
-  }
-
-  // 型の名前を取得するヘルパー関数
-  private getTypeName(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-      case "GenericType":
-        return (type as AST.GenericType).name
-      case "FunctionType":
-        return "Function"
-      case "RecordType":
-        return "Record"
-      case "TupleType":
-        return "Tuple"
-      case "UnionType":
-        return (type as AST.UnionType).name
-      case "IntersectionType":
-        return (type as AST.IntersectionType).name
-      case "StructType":
-        return (type as AST.StructType).name
-      case "TypeVariable":
-        return (type as TypeVariable).name
-      case "PolymorphicTypeVariable":
-        return (type as PolymorphicTypeVariable).name
-      default:
-        return "Unknown"
-    }
   }
 
   // 型エイリアスの解決（循環参照対応版）
@@ -6850,12 +5441,6 @@ export class TypeInferenceSystem {
     } else if (type.kind === "GenericType") {
       // ジェネリック型の場合（例: Box<Int>）
       const genericType = type as AST.GenericType
-      console.log(
-        "🔧 Resolving GenericType:",
-        genericType.name,
-        "with args:",
-        genericType.typeArguments.map((t) => this.typeToString(t))
-      )
 
       // 循環参照チェック
       if (visited.has(genericType.name)) {
@@ -6872,7 +5457,6 @@ export class TypeInferenceSystem {
         "Task",
       ]
       if (builtinTypes.includes(genericType.name)) {
-        console.log("🔧 Found builtin type:", genericType.name)
         // 組み込み型は型引数を解決して返す
         const resolvedTypeArgs = genericType.typeArguments.map((arg) =>
           this.resolveTypeAlias(arg, visited)
@@ -6887,7 +5471,6 @@ export class TypeInferenceSystem {
 
       // ジェネリック型エイリアスをチェック
       const typeAlias = this.typeAliases.get(genericType.name)
-      console.log("🔧 Found type alias:", typeAlias?.name)
       if (
         typeAlias?.kind === "TypeAliasDeclaration" &&
         (typeAlias as AST.TypeAliasDeclaration).typeParameters
@@ -6904,11 +5487,6 @@ export class TypeInferenceSystem {
           const param = genericAlias.typeParameters[i]
           const arg = genericType.typeArguments[i]
           typeParameterMap.set(param.name, arg)
-          console.log("🔧 Mapping:", param.name, "->", this.typeToString(arg))
-          console.log(
-            "🔧 Aliased type:",
-            this.typeToString(genericAlias.aliasedType)
-          )
         }
 
         // 型変数名で置換する（型変数名がパラメータ名と異なる場合のため）
@@ -6918,10 +5496,6 @@ export class TypeInferenceSystem {
           genericType.typeArguments
         )
 
-        console.log(
-          "🔧 Instantiated type:",
-          this.typeToString(instantiatedType)
-        )
         const newVisited = new Set(visited)
         newVisited.add(genericType.name)
         return this.resolveTypeAlias(instantiatedType, newVisited)
@@ -6935,7 +5509,7 @@ export class TypeInferenceSystem {
 
       // 全ての構成要素がRecord型の場合、Record型に統合
       if (resolvedTypes.every((t) => t.kind === "RecordType")) {
-        return this.mergeRecordTypes(resolvedTypes as AST.RecordType[])
+        return mergeRecordTypesUtil(resolvedTypes as AST.RecordType[])
       }
 
       // そうでない場合は、解決された型でIntersection型を再構築
@@ -6951,39 +5525,6 @@ export class TypeInferenceSystem {
     return type
   }
 
-  // Record型のマージ
-  private mergeRecordTypes(recordTypes: AST.RecordType[]): AST.RecordType {
-    const mergedFields: AST.RecordField[] = []
-
-    for (const recordType of recordTypes) {
-      for (const field of recordType.fields) {
-        // 同じ名前のフィールドが既に存在するかチェック
-        const existingField = mergedFields.find((f) => f.name === field.name)
-        if (existingField) {
-          // 同じ名前のフィールドが異なる型を持つ場合はエラー
-          if (
-            existingField.type.kind !== field.type.kind ||
-            existingField.type.name !== field.type.name
-          ) {
-            throw new Error(
-              `Field '${field.name}' has conflicting types in intersection: ${existingField.type.name} and ${field.type.name}`
-            )
-          }
-        } else {
-          mergedFields.push(field)
-        }
-      }
-    }
-
-    // 最初のRecord型の位置情報を使用
-    const firstRecord = recordTypes[0]
-    return new AST.RecordType(
-      mergedFields,
-      firstRecord.line,
-      firstRecord.column
-    )
-  }
-
   // 環境を保持するためのフィールド（既に存在する可能性）
   private currentEnvironment: Map<string, AST.Type> = new Map()
 
@@ -6991,46 +5532,13 @@ export class TypeInferenceSystem {
   private typeAliasParameterMappings: Map<string, Map<string, string>> =
     new Map()
 
-  // 構造的部分型：小さいレコードが大きいレコードのサブセットかどうかチェック
-  private isRecordSubset(
-    smallerRecord: AST.RecordType,
-    largerRecord: AST.RecordType
-  ): boolean {
-    // 小さいレコードのすべてのフィールドが大きいレコードに存在するかチェック
-    for (const smallerField of smallerRecord.fields) {
-      const largerField = largerRecord.fields.find(
-        (f) => f.name === smallerField.name
-      )
-      if (!largerField) {
-        return false // フィールドが見つからない
-      }
-      // フィールドが見つかった場合、型の互換性は後で unify でチェックされる
-    }
-    return true
-  }
-
-  /**
-   * 型がRecord型になりうるかを判定（型変数や型エイリアスなど）
-   */
-  private couldBeRecordType(type: AST.Type): boolean {
-    // PrimitiveTypeが型エイリアスでRecord型を指している可能性をチェック
-    if (type.kind === "PrimitiveType") {
-      const resolvedType = this.resolveTypeAlias(type)
-      return resolvedType.kind === "RecordType"
-    }
-
-    // 型変数や多相型変数は統一制約を使用する
-    // 明確にRecord型だとわかる場合のみ部分型制約を適用
-    return false
-  }
-
   /**
    * 部分型関係を判定: subType <: superType
    * subTypeがsuperTypeの部分型（サブタイプ）であるかを判定
    */
   private isSubtype(subType: AST.Type, superType: AST.Type): boolean {
     // 同じ型なら部分型関係成立
-    if (this.typesEqual(subType, superType)) {
+    if (typesEqualUtil(subType, superType)) {
       return true
     }
 
@@ -7039,7 +5547,7 @@ export class TypeInferenceSystem {
     const resolvedSuper = this.resolveTypeAlias(superType)
 
     // 解決後に同じ型なら部分型関係成立
-    if (this.typesEqual(resolvedSub, resolvedSuper)) {
+    if (typesEqualUtil(resolvedSub, resolvedSuper)) {
       return true
     }
 
@@ -7059,69 +5567,15 @@ export class TypeInferenceSystem {
   }
 
   /**
-   * Record型の構造的部分型関係を判定
-   * subRecord <: superRecord ⟺
-   * superRecordのすべてのフィールドがsubRecordに存在し、各フィールドが部分型関係にある
+   * Record型の構造的部分型関係を判定 (type-comparison.tsに委譲)
    */
   private isRecordSubtype(
     subRecord: AST.RecordType,
     superRecord: AST.RecordType
   ): boolean {
-    for (const superField of superRecord.fields) {
-      const subField = subRecord.fields.find((f) => f.name === superField.name)
-
-      // スーパータイプのフィールドがサブタイプに存在しない場合は部分型関係なし
-      if (!subField) {
-        return false
-      }
-
-      // フィールドの型も部分型関係にある必要がある（再帰的チェック）
-      if (!this.isSubtype(subField.type, superField.type)) {
-        return false
-      }
-    }
-    return true
-  }
-
-  // Occurs Check: 型変数が型の中に現れるかチェック
-  private occursCheck(varId: number, type: AST.Type): boolean {
-    switch (type.kind) {
-      case "TypeVariable":
-        return (type as TypeVariable).id === varId
-
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return (
-          this.occursCheck(varId, ft.paramType) ||
-          this.occursCheck(varId, ft.returnType)
-        )
-      }
-
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        return gt.typeArguments.some((arg) => this.occursCheck(varId, arg))
-      }
-
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        return rt.fields.some((field) => this.occursCheck(varId, field.type))
-      }
-
-      case "TupleType": {
-        const tt = type as AST.TupleType
-        return tt.elementTypes.some((elementType) =>
-          this.occursCheck(varId, elementType)
-        )
-      }
-
-      case "StructType": {
-        const st = type as AST.StructType
-        return st.fields.some((field) => this.occursCheck(varId, field.type))
-      }
-
-      default:
-        return false
-    }
+    return isRecordSubtypeUtil(subRecord, superRecord, (sub, sup) =>
+      this.isSubtype(sub, sup)
+    )
   }
 
   // メソッド呼び出しの型推論
@@ -7232,7 +5686,7 @@ export class TypeInferenceSystem {
           expectedMethodType,
           call.line,
           call.column,
-          `Method call ${call.methodName} on type ${this.formatType(receiverType)}`
+          `Method call ${call.methodName} on type ${formatTypeUtil(receiverType)}`
         )
       )
     }
@@ -7241,204 +5695,6 @@ export class TypeInferenceSystem {
     this.nodeTypeMap.set(call, methodReturnType)
 
     return methodReturnType
-  }
-
-  // 型の等価性チェック
-  private typesEqual(type1: AST.Type, type2: AST.Type): boolean {
-    if (type1.kind !== type2.kind) return false
-
-    switch (type1.kind) {
-      case "PrimitiveType":
-        return (
-          (type1 as AST.PrimitiveType).name ===
-          (type2 as AST.PrimitiveType).name
-        )
-
-      case "TypeVariable":
-        return (type1 as TypeVariable).id === (type2 as TypeVariable).id
-
-      case "PolymorphicTypeVariable":
-        return (
-          (type1 as PolymorphicTypeVariable).name ===
-          (type2 as PolymorphicTypeVariable).name
-        )
-
-      case "FunctionType": {
-        const ft1 = type1 as AST.FunctionType
-        const ft2 = type2 as AST.FunctionType
-        return (
-          this.typesEqual(ft1.paramType, ft2.paramType) &&
-          this.typesEqual(ft1.returnType, ft2.returnType)
-        )
-      }
-
-      case "GenericType": {
-        const gt1 = type1 as AST.GenericType
-        const gt2 = type2 as AST.GenericType
-        return (
-          gt1.name === gt2.name &&
-          gt1.typeArguments.length === gt2.typeArguments.length &&
-          gt1.typeArguments.every((arg, i) =>
-            this.typesEqual(arg, gt2.typeArguments[i])
-          )
-        )
-      }
-
-      case "RecordType": {
-        const rt1 = type1 as AST.RecordType
-        const rt2 = type2 as AST.RecordType
-
-        if (rt1.fields.length !== rt2.fields.length) {
-          return false
-        }
-
-        // フィールド名でソートして比較
-        const fields1 = [...rt1.fields].sort((a, b) =>
-          a.name.localeCompare(b.name)
-        )
-        const fields2 = [...rt2.fields].sort((a, b) =>
-          a.name.localeCompare(b.name)
-        )
-
-        return fields1.every((field1, i) => {
-          const field2 = fields2[i]
-          return (
-            field1.name === field2.name &&
-            this.typesEqual(field1.type, field2.type)
-          )
-        })
-      }
-
-      case "StructType": {
-        const st1 = type1 as AST.StructType
-        const st2 = type2 as AST.StructType
-        return st1.name === st2.name
-      }
-
-      case "TupleType": {
-        const tt1 = type1 as AST.TupleType
-        const tt2 = type2 as AST.TupleType
-
-        if (tt1.elementTypes.length !== tt2.elementTypes.length) {
-          return false
-        }
-
-        return tt1.elementTypes.every((elementType, i) =>
-          this.typesEqual(elementType, tt2.elementTypes[i])
-        )
-      }
-
-      default:
-        return false
-    }
-  }
-
-  // ユニオン型を平坦化して作成（重複排除と型の正規化を行う）
-  private createFlattenedUnionType(
-    types: AST.Type[],
-    line: number,
-    column: number
-  ): AST.Type {
-    const flattenedTypes: AST.Type[] = []
-
-    // 型を平坦化する（ネストしたユニオン型を展開）
-    const flattenType = (type: AST.Type) => {
-      if (type.kind === "UnionType") {
-        const unionType = type as AST.UnionType
-        for (const memberType of unionType.types) {
-          flattenType(memberType)
-        }
-      } else {
-        flattenedTypes.push(type)
-      }
-    }
-
-    // 全ての型を平坦化
-    for (const type of types) {
-      flattenType(type)
-    }
-
-    // 重複を排除（同じ型は一つにまとめる）
-    const uniqueTypes: AST.Type[] = []
-    for (const type of flattenedTypes) {
-      const isDuplicate = uniqueTypes.some((existingType) =>
-        this.typesEqual(type, existingType)
-      )
-      if (!isDuplicate) {
-        uniqueTypes.push(type)
-      }
-    }
-
-    // 1つの型しかない場合はユニオン型ではなくその型を返す
-    if (uniqueTypes.length === 1) {
-      return uniqueTypes[0]
-    }
-
-    // 複数の型がある場合はユニオン型を作成
-    return new AST.UnionType(uniqueTypes, line, column)
-  }
-
-  // 型を文字列に変換
-  public typeToString(type: AST.Type): string {
-    switch (type.kind) {
-      case "PrimitiveType":
-        return (type as AST.PrimitiveType).name
-
-      case "TypeVariable":
-        return (type as TypeVariable).name
-
-      case "PolymorphicTypeVariable":
-        return `'${(type as PolymorphicTypeVariable).name}`
-
-      case "FunctionType": {
-        const ft = type as AST.FunctionType
-        return `(${this.typeToString(ft.paramType)} -> ${this.typeToString(ft.returnType)})`
-      }
-
-      case "GenericType": {
-        const gt = type as AST.GenericType
-        const args = gt.typeArguments
-          .map((t) => this.typeToString(t))
-          .join(", ")
-        return `${gt.name}<${args}>`
-      }
-
-      case "RecordType": {
-        const rt = type as AST.RecordType
-        const fields = rt.fields
-          .map((field) => `${field.name}: ${this.typeToString(field.type)}`)
-          .join(", ")
-        return `{${fields}}`
-      }
-
-      case "TupleType": {
-        const tupleType = type as AST.TupleType
-        const elements = tupleType.elementTypes
-          .map((elementType) => this.typeToString(elementType))
-          .join(", ")
-        return `(${elements})`
-      }
-
-      case "StructType": {
-        const st = type as AST.StructType
-        return st.name
-      }
-
-      case "UnionType": {
-        const ut = type as AST.UnionType
-        const types = ut.types.map((t) => this.typeToString(t)).join(" | ")
-        return `(${types})`
-      }
-
-      case "IntersectionType": {
-        const it = type as AST.IntersectionType
-        const types = it.types.map((t) => this.typeToString(t)).join(" & ")
-        return `(${types})`
-      }
-
-      default:
-        return "Unknown"
-    }
   }
 
   private generateConstraintsForTupleExpression(
@@ -7470,10 +5726,6 @@ export class TypeInferenceSystem {
     )
 
     // Debug: Log struct registration
-    // console.log(`🔧 Registering struct ${structDecl.name}`)
-    // console.log(`🔧 StructType kind: ${structType.kind}`)
-    // console.log(`🔧 StructType name: ${structType.name}`)
-    // console.log(`🔧 StructType: ${this.typeToString(structType)}`)
 
     // 環境に構造体型を登録
     env.set(structDecl.name, structType)
@@ -7920,7 +6172,7 @@ export class TypeInferenceSystem {
 
       if (!providedData) {
         // Maybe型フィールドは省略可能
-        if (!this.isMaybeType(field.type)) {
+        if (!isMaybeTypeUtil(field.type)) {
           this.errors.push(
             new TypeInferenceError(
               `Missing field '${field.name}' in struct ${structExpr.structName}`,
@@ -8004,7 +6256,7 @@ export class TypeInferenceSystem {
     const resultType =
       caseResultTypes.length === 1
         ? caseResultTypes[0]
-        : this.createFlattenedUnionType(
+        : createFlattenedUnionTypeUtil(
             caseResultTypes,
             match.line,
             match.column
@@ -8490,18 +6742,12 @@ export class TypeInferenceSystem {
     }
 
     // Maybe型フィールドの自動補完
-    console.log(
-      `🔧 Maybe auto-completion check: expectedType = ${expectedType ? this.typeToString(expectedType) : "undefined"}`
-    )
     if (
       expectedType &&
       (expectedType.kind === "RecordType" ||
         expectedType.kind === "PrimitiveType" ||
         expectedType.kind === "IntersectionType")
     ) {
-      console.log(
-        `🔧 Maybe auto-completion: entering with expected type ${this.typeToString(expectedType)}`
-      )
       let expectedRecordType: AST.RecordType | null = null
 
       // 期待される型がRecord型の場合
@@ -8510,16 +6756,9 @@ export class TypeInferenceSystem {
       }
       // 期待される型がPrimitiveType（型エイリアス）の場合は解決を試みる
       else if (expectedType.kind === "PrimitiveType") {
-        console.log(`🔧 Type alias lookup for: ${expectedType.name}`)
         const aliasedType = this.resolveTypeAliasRecursively(expectedType.name)
-        console.log(
-          `🔧 Found aliased type: ${aliasedType ? this.typeToString(aliasedType) : "none"}`
-        )
         if (aliasedType && aliasedType.kind === "RecordType") {
           expectedRecordType = aliasedType as AST.RecordType
-          console.log(
-            `🔧 Using aliased record type with ${expectedRecordType.fields.length} fields`
-          )
         }
         // IntersectionTypeの場合も処理
         else if (aliasedType && aliasedType.kind === "IntersectionType") {
@@ -8527,9 +6766,6 @@ export class TypeInferenceSystem {
             aliasedType as AST.IntersectionType
           )
           if (expectedRecordType) {
-            console.log(
-              `🔧 Using record type from intersection with ${expectedRecordType.fields.length} fields`
-            )
           }
         }
       }
@@ -8539,28 +6775,16 @@ export class TypeInferenceSystem {
           expectedType as AST.IntersectionType
         )
         if (expectedRecordType) {
-          console.log(
-            `🔧 Using record type from direct intersection with ${expectedRecordType.fields.length} fields`
-          )
         }
       }
 
       // 期待されるRecord型が見つかった場合、省略されたMaybe型フィールドを自動補完
       if (expectedRecordType) {
-        console.log(
-          `🔧 Auto-completing Maybe fields for expected record type with ${expectedRecordType.fields.length} fields`
-        )
         for (const expectedField of expectedRecordType.fields) {
-          console.log(
-            `🔧 Checking field: ${expectedField.name}, type: ${this.typeToString(expectedField.type)}, has field: ${fieldMap.has(expectedField.name)}`
-          )
           // フィールドが省略されている場合
           if (!fieldMap.has(expectedField.name)) {
             // Maybe型かどうかをチェック
-            const isMaybe = this.isMaybeType(expectedField.type)
-            console.log(
-              `🔧 Field ${expectedField.name} is Maybe type: ${isMaybe}`
-            )
+            const isMaybe = isMaybeTypeUtil(expectedField.type)
             if (isMaybe) {
               // Nothing値を自動設定
               const nothingConstructor = new AST.ConstructorExpression(
@@ -8577,7 +6801,6 @@ export class TypeInferenceSystem {
               )
 
               // RecordExpressionのfieldsに追加
-              console.log(`🔧 Adding Nothing field: ${expectedField.name}`)
               record.fields.push(nothingField)
 
               // fieldMapにも追加（型推論用）
@@ -8605,23 +6828,6 @@ export class TypeInferenceSystem {
     // Mapから配列に変換
     const fields = Array.from(fieldMap.values())
     return new AST.RecordType(fields, record.line, record.column)
-  }
-
-  // Maybe型かどうかをチェックするヘルパーメソッド
-  private isMaybeType(type: AST.Type): boolean {
-    if (type.kind === "GenericType") {
-      const genericType = type as AST.GenericType
-      return genericType.name === "Maybe"
-    }
-    return false
-  }
-
-  private isEitherType(type: AST.Type): boolean {
-    if (type.kind === "GenericType") {
-      const genericType = type as AST.GenericType
-      return genericType.name === "Either"
-    }
-    return false
   }
 
   private generateConstraintsForRecordAccess(
@@ -9375,7 +7581,7 @@ function addResolvedTypeToMaps(
     }
 
     // Promise型かどうかチェック
-    const isPromiseType = this.isPromiseType(innerType)
+    const isPromiseType = isPromiseTypeUtil(innerType)
 
     if (isPromiseType) {
       // Promise関数型 (Unit -> Promise<T>) -> Unit -> Promise<Either<L, T>>
@@ -9449,23 +7655,5 @@ function addResolvedTypeToMaps(
       return resultType
     }
   }
-
-// Promise型判定メソッド
-;(TypeInferenceSystem.prototype as any).isPromiseType = function (
-  type: AST.Type
-): boolean {
-  if (type.kind === "GenericType") {
-    const genericType = type as AST.GenericType
-    return genericType.name === "Promise"
-  }
-
-  // 関数型の場合、戻り値型がPromiseかチェック
-  if (type.kind === "FunctionType") {
-    const funcType = type as AST.FunctionType
-    return this.isPromiseType(funcType.returnType)
-  }
-
-  return false
-}
 
 // MethodCall処理のためにTypeInferenceSystemクラスを拡張
