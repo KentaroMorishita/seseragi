@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Polymorphism Tests", () => {
   test("should handle polymorphic lambda with multiple different type applications", () => {
@@ -19,8 +19,7 @@ show fuga
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
@@ -38,8 +37,7 @@ let strId = identity "hello"
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
   })
@@ -59,8 +57,7 @@ let result = combined 5
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // 型推論エラーが発生しないことを確認
     expect(result.errors).toHaveLength(0)
@@ -81,8 +78,7 @@ let stringResult = func "a" "b"
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // この修正により、型推論エラーが発生しないはず
     expect(result.errors).toHaveLength(0)

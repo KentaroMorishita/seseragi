@@ -2,7 +2,7 @@ import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { typeToString } from "../src/inference"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 test("Function calls with no arguments", () => {
   const content = `
@@ -15,9 +15,8 @@ let number = getNumber()
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const messageDecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -48,9 +47,8 @@ let nothingValue = Nothing
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const someValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -90,9 +88,8 @@ let errorValue = Left "Error occurred"
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const successValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -147,9 +144,8 @@ let calculatedB = complexCalculation 5 6
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const calculatedADecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -183,9 +179,8 @@ let successValue = Right 42
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const nothingValueDecl = program.statements.find(
     (stmt: AST.Statement) =>

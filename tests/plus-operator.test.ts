@@ -1,11 +1,9 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Plus operator type inference", () => {
   test("String + String works correctly", () => {
-    const system = new TypeInferenceSystem()
-
     // "hello" + " world"
     const leftLiteral = new AST.Literal("hello", "string", 1, 1)
     const rightLiteral = new AST.Literal(" world", "string", 1, 11)
@@ -17,7 +15,7 @@ describe("Plus operator type inference", () => {
       1
     )
 
-    const result = system.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
     const exprType = result.nodeTypeMap.get(binOp)
@@ -26,8 +24,6 @@ describe("Plus operator type inference", () => {
   })
 
   test("Int + Int works correctly", () => {
-    const system = new TypeInferenceSystem()
-
     // 1 + 2
     const leftLiteral = new AST.Literal(1, "integer", 1, 1)
     const rightLiteral = new AST.Literal(2, "integer", 1, 5)
@@ -39,7 +35,7 @@ describe("Plus operator type inference", () => {
       1
     )
 
-    const result = system.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
     const exprType = result.nodeTypeMap.get(binOp)
@@ -48,8 +44,6 @@ describe("Plus operator type inference", () => {
   })
 
   test("String + Int fails with clear error", () => {
-    const system = new TypeInferenceSystem()
-
     // "hello" + 42
     const leftLiteral = new AST.Literal("hello", "string", 1, 1)
     const rightLiteral = new AST.Literal(42, "integer", 1, 11)
@@ -61,7 +55,7 @@ describe("Plus operator type inference", () => {
       1
     )
 
-    const result = system.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(1)
     expect(result.errors[0].message).toContain("Cannot unify")
@@ -73,8 +67,6 @@ describe("Plus operator type inference", () => {
   })
 
   test("Int + String fails with clear error", () => {
-    const system = new TypeInferenceSystem()
-
     // 42 + "hello"
     const leftLiteral = new AST.Literal(42, "integer", 1, 1)
     const rightLiteral = new AST.Literal("hello", "string", 1, 6)
@@ -86,7 +78,7 @@ describe("Plus operator type inference", () => {
       1
     )
 
-    const result = system.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(1)
     expect(result.errors[0].message).toContain("Cannot unify")

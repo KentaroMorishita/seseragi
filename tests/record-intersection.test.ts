@@ -6,7 +6,7 @@ import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 test("Record type intersection - basic case", () => {
   const source = `
@@ -21,8 +21,7 @@ let user: User = { name: "hoge", age: 1 }
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
   expect(result.nodeTypeMap.size).toBeGreaterThan(0)
@@ -77,8 +76,7 @@ let worker: Worker = { name: "John", id: 123, company: "Tech Corp", salary: 7500
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
 })
@@ -96,10 +94,9 @@ let c: C = { x: 42 }
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
 
   try {
-    const result = typeInference.infer(program)
+    const result = infer(program)
     console.log("Errors:", result.errors)
     // エラーがあるかチェック
     expect(result.errors.length).toBeGreaterThan(0)
@@ -148,8 +145,7 @@ let abc: ABC = { a: "hello", b: 42, c: True }
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
 })
@@ -173,8 +169,7 @@ let emp: Employee = {
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Nested records test errors:", result.errors)
   // This test is expected to fail for now due to nested record limitations

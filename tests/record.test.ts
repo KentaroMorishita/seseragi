@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Record Type Tests", () => {
   test("should parse record type definition", () => {
@@ -80,8 +80,7 @@ describe("Record Type Tests", () => {
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // Print errors for debugging
     if (result.errors.length > 0) {
@@ -129,8 +128,7 @@ describe("Record Type Tests", () => {
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeInference = new TypeInferenceSystem()
-    const _result = typeInference.infer(program)
+    const _result = infer(program)
 
     // Should have type inference errors for non-existent field
     // Note: This depends on how the constraint system handles record field constraints

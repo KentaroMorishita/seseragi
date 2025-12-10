@@ -4,19 +4,12 @@
 
 import { beforeEach, describe, expect, it } from "bun:test"
 import * as AST from "../src/ast"
-import {
-  TypeConstraint,
-  TypeInferenceSystem,
-  TypeSubstitution,
-  TypeVariable,
-} from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
+import { TypeConstraint } from "../src/inference/constraints"
+import { TypeSubstitution } from "../src/inference/substitution"
+import { TypeVariable } from "../src/inference/type-variables"
 
 describe("TypeInferenceSystem", () => {
-  let inference: TypeInferenceSystem
-
-  beforeEach(() => {
-    inference = new TypeInferenceSystem()
-  })
 
   describe("基本的なリテラル推論", () => {
     it("整数リテラルはInt型と推論される", () => {
@@ -24,7 +17,7 @@ describe("TypeInferenceSystem", () => {
         new AST.ExpressionStatement(new AST.Literal(42, "integer", 1, 1), 1, 1),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -37,7 +30,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -50,7 +43,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
   })
@@ -67,7 +60,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -82,7 +75,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -97,7 +90,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
     })
   })
@@ -118,7 +111,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -137,7 +130,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
     })
 
@@ -156,7 +149,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
     })
   })
@@ -181,7 +174,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -205,7 +198,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
     })
   })
@@ -242,7 +235,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -277,7 +270,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
     })
   })
@@ -298,7 +291,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -317,7 +310,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
       // 条件式の結果はユニオン型になる
     })
@@ -337,7 +330,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
     })
   })
@@ -374,7 +367,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors).toHaveLength(0)
     })
   })
@@ -389,7 +382,7 @@ describe("TypeInferenceSystem", () => {
         ),
       ])
 
-      const result = inference.infer(program)
+      const result = infer(program)
       expect(result.errors.length).toBeGreaterThan(0)
       expect(result.errors[0].message).toContain("Undefined variable")
     })

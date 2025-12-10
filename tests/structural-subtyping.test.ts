@@ -7,7 +7,7 @@ import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 test("Basic record subtyping - Dog <: Animal", () => {
   const source = `
@@ -24,8 +24,7 @@ let result = getName dog
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Basic subtyping test errors:", result.errors)
   expect(result.errors).toHaveLength(0)
@@ -83,8 +82,7 @@ let profile = getProfile admin
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Complex subtyping test errors:", result.errors)
   // This might fail initially - we'll focus on simple cases first
@@ -106,8 +104,7 @@ let result = process dog
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Invalid subtyping test errors:", result.errors)
   // Dog型 ({name: String}) は Animal型 ({name: String, age: Int}) の部分型ではないのでエラーが発生するべき
@@ -132,8 +129,7 @@ let d = distance p
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Same type test errors:", result.errors)
   expect(result.errors).toHaveLength(0)
@@ -183,8 +179,7 @@ let base = getBase extended
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Multiple field subtyping test errors:", result.errors)
   // This tests function argument subtyping which might need additional work
@@ -213,8 +208,7 @@ let person = getPersonInfo emp
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   console.log("Nested record subtyping test errors:", result.errors)
   // This tests nested structure compatibility

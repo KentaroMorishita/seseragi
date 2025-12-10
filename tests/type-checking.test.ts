@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Type Checking Features", () => {
   describe("ワイルドカード型", () => {
@@ -23,9 +23,8 @@ let check3 = nothing is Maybe<_>
       expect(parseResult.errors).toHaveLength(0)
 
       // 型推論をテスト
-      const typeInference = new TypeInferenceSystem()
       const program = new AST.Program(parseResult.statements || [])
-      const result = typeInference.infer(program)
+      const result = infer(program)
 
       expect(result.errors).toHaveLength(0)
 
@@ -59,9 +58,8 @@ let check2 = eitherInt is Either<_, Int>
       expect(parseResult.errors).toHaveLength(0)
 
       // 型推論をテスト
-      const typeInference = new TypeInferenceSystem()
       const program = new AST.Program(parseResult.statements || [])
-      const result = typeInference.infer(program)
+      const result = infer(program)
 
       expect(result.errors).toHaveLength(0)
 
@@ -88,9 +86,8 @@ let check = user is { name: String, age: _, active: _ }
       expect(parseResult.errors).toHaveLength(0)
 
       // 型推論をテスト
-      const typeInference = new TypeInferenceSystem()
       const program = new AST.Program(parseResult.statements || [])
-      const result = typeInference.infer(program)
+      const result = infer(program)
 
       expect(result.errors).toHaveLength(0)
 
@@ -159,8 +156,7 @@ let check = user is User
       const parseResult = parser.parse()
       const program = new AST.Program(parseResult.statements || [])
 
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
 
       expect(typeResult.errors).toHaveLength(0)
 
@@ -240,8 +236,7 @@ let typeStr = typeof(obj)
       const parseResult = parser.parse()
       const program = new AST.Program(parseResult.statements || [])
 
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
 
       expect(typeResult.errors).toHaveLength(0)
 
@@ -276,8 +271,7 @@ let check = obj is User
       const parseResult = parser.parse()
       const program = new AST.Program(parseResult.statements || [])
 
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
 
       expect(typeResult.errors).toHaveLength(0)
     })
@@ -293,8 +287,7 @@ let check = obj is User
       const parseResult = parser.parse()
       const program = new AST.Program(parseResult.statements || [])
 
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
 
       // 型推論エラーは発生しない（isは実行時チェック）
       expect(typeResult.errors).toHaveLength(0)

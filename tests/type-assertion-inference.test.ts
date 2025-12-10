@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Type Assertion Inference", () => {
   test("変数の型アサーション推論確認", () => {
@@ -16,8 +16,7 @@ let x = 42 as String
     expect(parseResult.statements).toHaveLength(1)
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
 
     expect(typeResult.errors).toHaveLength(0)
 
@@ -61,8 +60,7 @@ let y = "hello" as Int
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
 
     expect(typeResult.errors).toHaveLength(0)
 
@@ -90,8 +88,7 @@ let z = (42 as Float) as String
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
 
     expect(typeResult.errors).toHaveLength(0)
 

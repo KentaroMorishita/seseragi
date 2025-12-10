@@ -1,8 +1,9 @@
 import { describe, expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
-import { infer } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Simple Array↔List Conversion Test", () => {
   test("basic arrayToList and listToArray", () => {
@@ -28,7 +29,8 @@ let back = listToArray list
     expect(parseResult.statements).toBeDefined()
 
     // Type inference
-    const typeResult = infer(parseResult.statements!)
+    const program = new AST.Program(parseResult.statements!)
+    const typeResult = infer(program)
     console.log("Type errors:", typeResult.errors)
 
     expect(typeResult.errors).toEqual([])

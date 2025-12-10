@@ -3,7 +3,7 @@ import type * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Template Literal Tests", () => {
   test("should tokenize simple template literal", () => {
@@ -68,12 +68,9 @@ describe("Template Literal Tests", () => {
     const stmt = result.statements?.[0] as AST.ExpressionStatement
     const templateExpr = stmt.expression as AST.TemplateExpression
 
-    const system = new TypeInferenceSystem()
-    const env = new Map()
-    const resultType = system.generateConstraintsForExpression(
-      templateExpr,
-      env
-    )
+    // inferExpressionを使って式の型を推論
+    const { inferExpression } = require("../src/inference/engine/infer")
+    const { type: resultType } = inferExpression(templateExpr)
 
     expect(resultType.kind).toBe("PrimitiveType")
     expect((resultType as AST.PrimitiveType).name).toBe("String")

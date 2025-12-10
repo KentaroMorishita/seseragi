@@ -6,7 +6,7 @@ import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 test("Type alias declaration parsing", () => {
   const source = `
@@ -140,8 +140,7 @@ let userId: UserId = 42
   const parseResult = parser.parse()
 
   const program = new AST.Program(parseResult.statements!)
-  const typeInference = new TypeInferenceSystem()
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
   expect(result.nodeTypeMap.size).toBeGreaterThan(0)

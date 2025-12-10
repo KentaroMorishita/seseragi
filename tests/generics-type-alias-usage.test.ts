@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Generic Type Alias Usage", () => {
   test("should resolve simple generic type alias in variable declaration", () => {
@@ -14,8 +14,7 @@ let x: Box<Int> = 42
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // 修正後は成功するはず
     console.log("Errors:", result.errors)
@@ -35,8 +34,7 @@ let p: Pair<Int, String> = (42, "hello")
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // 修正後は成功するはず
     console.log("Pair errors:", result.errors)
@@ -53,8 +51,7 @@ let c: Container<Int> = { value: 42, metadata: "number" }
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
 
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // 修正後は成功するはず
     console.log("Pair errors:", result.errors)

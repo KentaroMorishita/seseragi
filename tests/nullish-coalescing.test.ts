@@ -5,7 +5,7 @@ import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { lex, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 import { compileSeseragi } from "./test-utils"
 
 describe("Nullish Coalescing Operator", () => {
@@ -46,8 +46,7 @@ describe("Nullish Coalescing Operator", () => {
     expect(parseResult.errors).toHaveLength(0)
 
     const program = new AST.Program(parseResult.statements!)
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
     expect(typeResult.errors).toHaveLength(0)
 
     // 型推論結果を渡す
@@ -68,8 +67,7 @@ describe("Nullish Coalescing Operator", () => {
     expect(parseResult.errors).toHaveLength(0)
 
     const program = new AST.Program(parseResult.statements!)
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
     expect(typeResult.errors).toHaveLength(0)
 
     // 型推論結果を渡す
@@ -91,8 +89,7 @@ describe("Nullish Coalescing Operator", () => {
     expect(parseResult.errors).toHaveLength(0)
 
     const program = new AST.Program(parseResult.statements!)
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
     expect(typeResult.errors).toHaveLength(0)
   })
 
@@ -108,8 +105,7 @@ describe("Nullish Coalescing Operator", () => {
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements!)
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
     expect(typeResult.errors).toHaveLength(0)
 
     // Force embedded runtime mode + 型推論結果を渡す

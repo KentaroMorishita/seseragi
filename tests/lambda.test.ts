@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 import { TypeChecker } from "../src/typechecker"
 
 describe("Lambda Expression Tests", () => {
@@ -62,8 +62,7 @@ describe("Lambda Expression Tests", () => {
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements!)
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
   })

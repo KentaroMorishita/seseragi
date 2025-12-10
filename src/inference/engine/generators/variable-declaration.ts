@@ -5,6 +5,11 @@
 import * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
 import {
+  getFreeTypeVariables,
+  substituteTypeVariables,
+} from "../../type-substitution-utils"
+import { PolymorphicTypeVariable } from "../../type-variables"
+import {
   addConstraint,
   freshTypeVariable,
   type InferenceContext,
@@ -13,16 +18,41 @@ import { generateConstraintsForExpression } from "./dispatcher"
 
 /**
  * 型を一般化する（自由型変数を多相型変数に変換）
- * TODO: 完全な実装は別途必要
+ *
+ * Let多相性の実装：
+ * - 型の中にあるフリー型変数（環境に束縛されていない型変数）を収集
+ * - それらを多相型変数（PolymorphicTypeVariable）に変換
+ * - これにより、変数を使用するたびにインスタンス化（具体化）できる
  */
 function generalize(
   _ctx: InferenceContext,
   type: AST.Type,
-  _env: Map<string, AST.Type>
+  env: Map<string, AST.Type>
 ): AST.Type {
-  // 簡略版：そのまま返す
-  // 完全な実装では、環境に束縛されていない型変数を多相型変数に変換
-  return type
+  // フリー型変数を取得
+  const freeVars = getFreeTypeVariables(type, env)
+
+  // フリー型変数がなければそのまま返す
+  if (freeVars.size === 0) {
+    return type
+  }
+
+  // フリー型変数を多相型変数に置換するマップを作成
+  const substitutionMap = new Map<string, AST.Type>()
+  let polyVarIndex = 0
+
+  for (const varName of freeVars) {
+    // 'a', 'b', 'c', ... の多相型変数名を生成
+    const polyVarName = String.fromCharCode(97 + polyVarIndex)
+    substitutionMap.set(
+      varName,
+      new PolymorphicTypeVariable(polyVarName, type.line, type.column)
+    )
+    polyVarIndex++
+  }
+
+  // 置換を適用して一般化された型を返す
+  return substituteTypeVariables(type, substitutionMap)
 }
 
 /**

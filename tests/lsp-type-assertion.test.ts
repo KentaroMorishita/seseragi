@@ -1,10 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
-import {
-  TypeInferenceSystem,
-  type TypeInferenceSystemResult,
-} from "../src/type-inference"
+import { infer, type InferResult } from "../src/inference/engine/infer"
 
 // LSPサーバーから同じ関数をコピーしてテスト用に使用
 interface SymbolInfo {
@@ -17,7 +14,7 @@ interface SymbolInfo {
 function findSymbolWithEnhancedInference(
   program: AST.Program,
   symbol: string,
-  inferenceResult: TypeInferenceSystemResult,
+  inferenceResult: InferResult,
   offset: number,
   _text: string
 ): SymbolInfo | null {
@@ -148,9 +145,8 @@ describe("LSP Type Assertion", () => {
     expect(parseResult.errors).toHaveLength(0)
     expect(parseResult.statements).toHaveLength(1)
 
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(parseResult.statements || [])
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 
@@ -179,9 +175,8 @@ describe("LSP Type Assertion", () => {
     const parser = new Parser(source)
     const parseResult = parser.parse()
 
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(parseResult.statements || [])
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 
@@ -212,9 +207,8 @@ let z = (42 as Float) as String
     const parser = new Parser(source)
     const parseResult = parser.parse()
 
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(parseResult.statements || [])
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 

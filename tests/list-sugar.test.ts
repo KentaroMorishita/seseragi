@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("List Syntax Sugar", () => {
   function parseAndGenerate(source: string): string {
@@ -10,9 +10,8 @@ describe("List Syntax Sugar", () => {
     const parseResult = parser.parse()
 
     // Type inference
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(parseResult.statements || [])
-    typeInference.infer(program)
+    infer(program)
 
     return generateTypeScript(parseResult.statements || [], {
       indent: "  ",

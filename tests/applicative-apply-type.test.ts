@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import type * as AST from "../src/ast"
 import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("ApplicativeApply type inference", () => {
   test("ApplicativeApply with explicit Maybe types", () => {
@@ -22,8 +22,7 @@ describe("ApplicativeApply type inference", () => {
       line: 0,
       column: 0,
     }
-    const typeInference = new TypeInferenceSystem()
-    const inferResult = typeInference.infer(program)
+    const inferResult = infer(program)
 
     expect(inferResult.errors).toHaveLength(0)
 
@@ -56,8 +55,7 @@ describe("ApplicativeApply type inference", () => {
       line: 0,
       column: 0,
     }
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 
@@ -102,8 +100,7 @@ describe("ApplicativeApply type inference", () => {
       line: 0,
       column: 0,
     }
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 
@@ -147,8 +144,7 @@ describe("ApplicativeApply type inference", () => {
       line: 0,
       column: 0,
     }
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 
@@ -185,8 +181,7 @@ describe("ApplicativeApply type inference", () => {
       line: 0,
       column: 0,
     }
-    const typeInference = new TypeInferenceSystem()
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     expect(result.errors).toHaveLength(0)
 

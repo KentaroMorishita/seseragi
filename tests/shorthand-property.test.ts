@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Shorthand Property Notation Tests", () => {
   test("should parse shorthand property in record expression", () => {
@@ -104,8 +104,7 @@ describe("Shorthand Property Notation Tests", () => {
     expect(parseResult.errors).toHaveLength(0)
 
     const program = new AST.Program(parseResult.statements!)
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(program)
+    const inferenceResult = infer(program)
 
     expect(inferenceResult.errors).toHaveLength(0)
   })
@@ -119,8 +118,7 @@ describe("Shorthand Property Notation Tests", () => {
     const parser = new Parser(code)
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(program)
+    const inferenceResult = infer(program)
 
     const generated = generateTypeScript(parseResult.statements!, {
       typeInferenceResult: inferenceResult,
@@ -139,8 +137,7 @@ describe("Shorthand Property Notation Tests", () => {
     const parser = new Parser(code)
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(program)
+    const inferenceResult = infer(program)
 
     const generated = generateTypeScript(parseResult.statements!, {
       typeInferenceResult: inferenceResult,
@@ -183,8 +180,7 @@ describe("Shorthand Property Notation Tests", () => {
     const parser = new Parser(code)
     const parseResult = parser.parse()
     const program = new AST.Program(parseResult.statements!)
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(program)
+    const inferenceResult = infer(program)
 
     // Should have type errors for undefined variables
     expect(inferenceResult.errors.length).toBeGreaterThan(0)

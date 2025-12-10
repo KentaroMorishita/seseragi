@@ -2,10 +2,11 @@ import { describe, expect, test } from "bun:test"
 import { execSync } from "node:child_process"
 import * as fs from "node:fs"
 import * as path from "node:path"
+import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
-import { infer } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Array↔List Conversion", () => {
   const testCases = [
@@ -94,7 +95,8 @@ print arr2
       expect(parseResult.statements).toBeDefined()
 
       // Type inference
-      const typeResult = infer(parseResult.statements!)
+      const program = new AST.Program(parseResult.statements!)
+      const typeResult = infer(program)
       expect(typeResult.errors).toEqual([])
 
       // Code generation
@@ -139,13 +141,14 @@ let backToStrArray = listToArray strList    // Array<String>
 
     const tokens = lex(code)
     const parseResult = parse(tokens)
-    const typeResult = infer(parseResult.statements!)
+    const program = new AST.Program(parseResult.statements!)
+    const typeResult = infer(program)
 
     expect(typeResult.errors).toEqual([])
-    expect(typeResult.inferredTypes).toBeDefined()
+    expect(typeResult.environment).toBeDefined()
 
     // 型推論結果の確認
-    const types = typeResult.inferredTypes!
+    const types = typeResult.environment
 
     // intListの型はList<Int>であるべき
     const intListType = types.get("intList")

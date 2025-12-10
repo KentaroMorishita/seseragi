@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Type Assertion", () => {
   test("基本的な型アサーション", () => {
@@ -57,8 +57,7 @@ let x = 42 as String
     const parseResult = parser.parse()
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeInference = new TypeInferenceSystem()
-    const typeResult = typeInference.infer(program)
+    const typeResult = infer(program)
 
     // 型アサーションにより型エラーが抑制されることを確認
     expect(typeResult.errors).toHaveLength(0)

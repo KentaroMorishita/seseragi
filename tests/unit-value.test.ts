@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { Program } from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Unit value () literal", () => {
   describe("Basic Unit value parsing", () => {
@@ -74,8 +74,7 @@ describe("Unit value () literal", () => {
       expect(parseResult.errors.length).toBe(0)
 
       const program = new Program(parseResult.statements || [])
-      const typeInference = new TypeInferenceSystem()
-      const result = typeInference.infer(program)
+      const result = infer(program)
 
       expect(result.errors.length).toBe(0)
 
@@ -91,8 +90,7 @@ describe("Unit value () literal", () => {
       expect(parseResult.errors.length).toBe(0)
 
       const program = new Program(parseResult.statements || [])
-      const typeInference = new TypeInferenceSystem()
-      const result = typeInference.infer(program)
+      const result = infer(program)
 
       expect(result.errors.length).toBe(0)
 
@@ -112,8 +110,7 @@ describe("Unit value () literal", () => {
       expect(parseResult.errors.length).toBe(0)
 
       const program = new Program(parseResult.statements || [])
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
       expect(typeResult.errors.length).toBe(0)
 
       const codegen = new CodeGenerator({ typeInferenceResult: typeResult })
@@ -129,8 +126,7 @@ describe("Unit value () literal", () => {
       expect(parseResult.errors.length).toBe(0)
 
       const program = new Program(parseResult.statements || [])
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
       expect(typeResult.errors.length).toBe(0)
 
       const codegen = new CodeGenerator({ typeInferenceResult: typeResult })
@@ -259,8 +255,7 @@ describe("Unit value () literal", () => {
       expect(parseResult.errors.length).toBe(0)
 
       const program = new Program(parseResult.statements || [])
-      const typeInference = new TypeInferenceSystem()
-      const typeResult = typeInference.infer(program)
+      const typeResult = infer(program)
       expect(typeResult.errors.length).toBe(0)
 
       const codegen = new CodeGenerator({ typeInferenceResult: typeResult })

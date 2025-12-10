@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 function transpileCode(code: string): string {
   const parser = new Parser(code)
@@ -17,8 +17,7 @@ function transpileCode(code: string): string {
   }
 
   const program = new AST.Program(parseResult.statements)
-  const typeInference = new TypeInferenceSystem()
-  typeInference.infer(program)
+  infer(program)
 
   return generateTypeScript(parseResult.statements, {
     generateComments: false,

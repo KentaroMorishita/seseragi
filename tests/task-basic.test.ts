@@ -1,7 +1,8 @@
 import { expect, test } from "bun:test"
+import * as AST from "../src/ast"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
-import { infer } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 // Task の基本的な型推論テスト
 test("Task type inference with resolve", () => {
@@ -9,7 +10,8 @@ test("Task type inference with resolve", () => {
   const tokens = lex(code)
   const ast = parse(tokens)
   if (!ast.statements) throw new Error("Parse failed")
-  const result = infer(ast.statements)
+  const program = new AST.Program(ast.statements)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
 })
@@ -19,7 +21,8 @@ test("Task type inference with reject", () => {
   const tokens = lex(code)
   const ast = parse(tokens)
   if (!ast.statements) throw new Error("Parse failed")
-  const result = infer(ast.statements)
+  const program = new AST.Program(ast.statements)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
 })
@@ -29,7 +32,8 @@ test("Task function type annotation", () => {
   const tokens = lex(code)
   const ast = parse(tokens)
   if (!ast.statements) throw new Error("Parse failed")
-  const result = infer(ast.statements)
+  const program = new AST.Program(ast.statements)
+  const result = infer(program)
 
   expect(result.errors).toHaveLength(0)
 })

@@ -6,7 +6,7 @@ import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Ternary Operator", () => {
   test("should parse simple ternary expression", () => {
@@ -79,8 +79,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(
+    const inferenceResult = infer(
       new AST.Program(result.statements!, 1, 1)
     )
 
@@ -142,8 +141,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(
+    const inferenceResult = infer(
       new AST.Program(result.statements!, 1, 1)
     )
 
@@ -158,8 +156,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(
+    const inferenceResult = infer(
       new AST.Program(result.statements!, 1, 1)
     )
 
@@ -175,8 +172,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inference = new TypeInferenceSystem()
-    const inferenceResult = inference.infer(
+    const inferenceResult = infer(
       new AST.Program(result.statements!, 1, 1)
     )
 

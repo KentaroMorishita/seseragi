@@ -56,6 +56,7 @@ import {
   generateConstraintsForRejectExpression,
 } from "./promise"
 import { generateConstraintsForTemplateExpression } from "./template-expression"
+import { generateConstraintsForTypeAssertion } from "./type-assertion"
 
 /**
  * 式に対する制約を生成し、その式の型を返す
@@ -255,6 +256,14 @@ export function generateConstraintsForExpression(
       resultType = generateConstraintsForIsExpression(
         ctx,
         expr as AST.IsExpression,
+        env
+      )
+      break
+
+    case "TypeAssertion":
+      resultType = generateConstraintsForTypeAssertion(
+        ctx,
+        expr as AST.TypeAssertion,
         env
       )
       break

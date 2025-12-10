@@ -3,7 +3,7 @@ import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Union and Intersection Types", () => {
   const parseAndGenerate = (code: string) => {
@@ -35,8 +35,7 @@ describe("Union and Intersection Types", () => {
     }
 
     const program = new AST.Program(parseResult.statements || [])
-    const typeSystem = new TypeInferenceSystem()
-    const result = typeSystem.infer(program)
+    const result = infer(program)
 
     return { parseResult, result }
   }

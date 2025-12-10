@@ -7,7 +7,7 @@ import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 describe("Tuple Feature Tests", () => {
   describe("Lexer - Wildcard Token", () => {
@@ -106,8 +106,7 @@ describe("Tuple Feature Tests", () => {
       expect(parseResult.errors).toHaveLength(0)
 
       const program = new AST.Program(parseResult.statements!)
-      const inferenceSystem = new TypeInferenceSystem()
-      const result = inferenceSystem.infer(program)
+      const result = infer(program)
 
       expect(result.errors).toHaveLength(0)
 
@@ -130,8 +129,7 @@ describe("Tuple Feature Tests", () => {
       expect(parseResult.errors).toHaveLength(0)
 
       const program = new AST.Program(parseResult.statements!)
-      const inferenceSystem = new TypeInferenceSystem()
-      const result = inferenceSystem.infer(program)
+      const result = infer(program)
 
       expect(result.errors).toHaveLength(0)
     })
@@ -221,8 +219,7 @@ describe("Tuple Feature Tests", () => {
       expect(parseResult.errors).toHaveLength(0)
 
       const program = new AST.Program(parseResult.statements!)
-      const inferenceSystem = new TypeInferenceSystem()
-      const _inferenceResult = inferenceSystem.infer(program)
+      const _inferenceResult = infer(program)
 
       // Allow inference errors for now since `show` function may not be defined
       // The main goal is to test tuple parsing and code generation

@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { Parser } from "../src/parser"
-import { TypeInferenceSystem } from "../src/type-inference"
+import { infer } from "../src/inference/engine/infer"
 
 test("Maybe type inference", () => {
   const content = `
@@ -11,9 +11,8 @@ let nothingValue = Nothing
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   // Find the variable types
   const someValueDecl = program.statements.find(
@@ -46,9 +45,8 @@ let errorValue = Left "Error occurred"
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const successValueDecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -84,9 +82,8 @@ let calculatedA = complexCalculation 3
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const calculatedADecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -115,9 +112,8 @@ let calculatedB = complexCalculation 5 6
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   const calculatedBDecl = program.statements.find(
     (stmt: AST.Statement) =>
@@ -145,9 +141,8 @@ let result3 = safeDivide 10 0
 
   const parser = new Parser(content)
   const parseResult = parser.parse()
-  const typeInference = new TypeInferenceSystem()
   const program = new AST.Program(parseResult.statements || [])
-  const result = typeInference.infer(program)
+  const result = infer(program)
 
   // Check addFive is a function Int -> Int
   const addFiveDecl = program.statements.find(
