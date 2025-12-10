@@ -240,6 +240,26 @@ function unifyInternal(
     return substitution
   }
 
+  // StructTypeとPrimitiveTypeの統一（型アノテーションでは構造体名がPrimitiveTypeとして解析される）
+  if (
+    (type1.kind === "StructType" && type2.kind === "PrimitiveType") ||
+    (type1.kind === "PrimitiveType" && type2.kind === "StructType")
+  ) {
+    const structType =
+      type1.kind === "StructType"
+        ? (type1 as AST.StructType)
+        : (type2 as AST.StructType)
+    const primitiveType =
+      type1.kind === "PrimitiveType"
+        ? (type1 as AST.PrimitiveType)
+        : (type2 as AST.PrimitiveType)
+
+    // 名前が一致していれば統一可能
+    if (structType.name === primitiveType.name) {
+      return substitution
+    }
+  }
+
   // Struct型とRecord型の統一
   if (
     (type1.kind === "StructType" && type2.kind === "RecordType") ||

@@ -82,7 +82,8 @@ import {
 } from "./ast"
 // @ts-ignore - ?rawインポートの型エラーを回避
 import runtimeSource from "./runtime/index.ts?raw"
-import type { TypeInferenceSystemResult, TypeVariable } from "./type-inference"
+import type { InferResult } from "./inference/engine/infer"
+import type { TypeVariable } from "./inference/type-variables"
 import { type UsageAnalysis, UsageAnalyzer } from "./usage-analyzer"
 
 /**
@@ -96,7 +97,7 @@ export interface CodeGenOptions {
   generateComments?: boolean
   runtimeMode?: "embedded" | "import"
   filePath?: string // ファイルパス（ハッシュ生成用）
-  typeInferenceResult?: TypeInferenceSystemResult // 型推論結果
+  typeInferenceResult?: InferResult // 型推論結果
 }
 
 const defaultOptions: CodeGenOptions = {
@@ -124,7 +125,7 @@ export class CodeGenerator {
   currentStructContext: string | null = null // 現在処理中の構造体名
   structMethods: Map<string, Set<string>> = new Map() // 構造体名 → メソッド名のセット
   structOperators: Map<string, Set<string>> = new Map() // 構造体名 → 演算子のセット
-  typeInferenceResult: TypeInferenceSystemResult | null = null // 型推論結果
+  typeInferenceResult: InferResult | null = null // 型推論結果
   currentFunctionTypeParams: any[] = [] // 現在処理中の関数のジェネリック型パラメータ
   typeAliases: Map<string, Type> = new Map() // 型エイリアス名 → 実際の型
   functionTypes: Map<string, Type> = new Map() // 関数名 → 関数型
@@ -151,7 +152,7 @@ export class CodeGenerator {
     this.options = options
     this.indentLevel = 0
     this.wildcardCounter = 1
-    this.typeInferenceResult = options.typeInferenceResult
+    this.typeInferenceResult = options.typeInferenceResult ?? null
     this.filePrefix = this.generateFilePrefix(options.filePath || "unknown")
   }
 

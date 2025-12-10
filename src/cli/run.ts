@@ -4,8 +4,8 @@ import * as os from "node:os"
 import * as path from "node:path"
 import * as AST from "../ast.js"
 import { generateTypeScript } from "../codegen.js"
+import { infer } from "../inference/engine/infer.js"
 import { Parser } from "../parser.js"
-import { TypeInferenceSystem } from "../type-inference.js"
 
 export interface RunOptions {
   input: string
@@ -98,12 +98,13 @@ async function compileToTemp(options: RunOptions): Promise<string> {
 
   // 型推論
   console.log("Running type inference...")
-  const inference = new TypeInferenceSystem()
   const program = new AST.Program(ast.statements!)
-  const inferenceResult = inference.infer(program, path.resolve(options.input))
+  const inferenceResult = infer(program)
 
-  if (inferenceResult.errors.length > 0) {
-    throw new Error(inferenceResult.errors.map((e) => e.message).join("\n"))
+  if (!inferenceResult.success) {
+    throw new Error(
+      inferenceResult.errors.map((e) => e.message).join("\n")
+    )
   }
 
   // 型チェック（main.tsと合わせるため一旦無効化）

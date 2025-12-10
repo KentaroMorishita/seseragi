@@ -24,7 +24,7 @@ import { TextDocument } from "vscode-languageserver-textdocument"
 import * as AST from "../ast"
 import { formatSeseragiCode } from "../formatter/index.js"
 import { Parser } from "../parser"
-import { TypeInferenceSystem } from "../type-inference"
+import { infer } from "../inference/engine/infer"
 import type { TypeChecker } from "../typechecker"
 
 // Create a connection for the server, using Node's IPC as a transport
@@ -164,8 +164,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const absolutePath = path.resolve(filePath)
     connection.console.log(`LSP DEBUG: Processing file: ${absolutePath}`)
 
-    // Create TypeInferenceSystem instance and set type aliases (same as CLI)
-    const typeInference = new TypeInferenceSystem()
+    // 型エイリアスを収集
     const typeAliases = new Map<string, any>()
     for (const stmt of parseResult.statements || []) {
       if (stmt.kind === "TypeAliasDeclaration") {
@@ -173,10 +172,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
         typeAliases.set(aliasDecl.name, aliasDecl.aliasedType)
       }
     }
-    typeInference.setTypeAliases(typeAliases)
 
+    // 新しい型推論エンジンを使用
     const ast = new AST.Program(parseResult.statements || [], 1, 1)
-    const inferenceResult = typeInference.infer(ast, absolutePath)
+    const inferenceResult = infer(ast, typeAliases)
 
     // Use only the new type inference system errors
     const allErrors = inferenceResult.errors
@@ -538,9 +537,8 @@ function getHoverInfo(
     // Cache AST for struct definition lookup
     cachedAST = ast
 
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(ast.statements || [])
-    const result = typeInference.infer(program, filePath)
+    const result = infer(program)
     connection.console.log(
       `[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`
     )
@@ -829,9 +827,8 @@ function handleFieldAccessHover(
 ): string | null {
   try {
     // Get type inference result
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(ast.statements || [])
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     // Find the object's type
     // Note: For field access, we use offset=0 as a temporary workaround
@@ -971,9 +968,8 @@ function handleMethodCallHover(
     )
 
     // Run type inference to get the object's type
-    const typeInference = new TypeInferenceSystem()
     const program = new AST.Program(ast.statements || [])
-    const result = typeInference.infer(program)
+    const result = infer(program)
 
     if (!result.environment?.get) {
       connection.console.log(

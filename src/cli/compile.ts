@@ -2,8 +2,8 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { Program, type TypeAliasDeclaration } from "../ast.js"
 import { generateTypeScript } from "../codegen.js"
+import { infer, type InferResult } from "../inference/engine/infer.js"
 import { Parser } from "../parser.js"
-import { TypeInferenceSystem } from "../type-inference.js"
 
 export interface CompileOptions {
   input: string
@@ -58,38 +58,28 @@ async function compile(options: CompileOptions): Promise<void> {
   const ast = { statements: parseResult.statements }
 
   // 型チェック
-  let inferenceResult: ReturnType<TypeInferenceSystem["infer"]> | null = null
+  let inferenceResult: InferResult | null = null
   if (!options.skipTypeCheck) {
     console.log("Type checking...")
 
-    // 新しい型推論システムを使用
-    const absolutePath = path.resolve(options.input)
-    const typeInference = new TypeInferenceSystem()
-
-    // 型エイリアス情報を収集して設定
+    // 型エイリアス情報を収集
     const typeAliases = new Map<string, any>()
     for (const stmt of ast.statements || []) {
       if (stmt.kind === "TypeAliasDeclaration") {
         const aliasDecl = stmt as TypeAliasDeclaration
-        console.log(
-          `🔧 Registering type alias: ${aliasDecl.name} = ${aliasDecl.aliasedType.kind}`
-        )
-        console.log(`🔧 Storing aliasedType:`, aliasDecl.aliasedType)
-        // 重要: aliasedTypeを格納し、宣言全体ではない
         typeAliases.set(aliasDecl.name, aliasDecl.aliasedType)
       }
     }
-    typeInference.setTypeAliases(typeAliases)
 
-    inferenceResult = typeInference.infer(
-      new Program(ast.statements!, 1, 1),
-      absolutePath
-    )
+    // 新しい型推論エンジンを使用
+    inferenceResult = infer(new Program(ast.statements!, 1, 1), typeAliases)
 
-    if (inferenceResult.errors.length > 0) {
+    if (!inferenceResult.success) {
       console.error("\n❌ Type checking failed:\n")
       for (const error of inferenceResult.errors) {
-        console.error(error.toString())
+        console.error(
+          `Type error at line ${error.line}, column ${error.column}: ${error.message}`
+        )
         console.error("") // Empty line for readability
       }
       throw new Error(

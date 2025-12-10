@@ -51,6 +51,26 @@ export function generateConstraintsForUnaryOperation(
       return boolType
     }
 
+    case "*": {
+      // Signal値取得: Signal<T> -> T
+      // operandTypeがSignal<T>の場合、Tを返す
+      if (operandType.kind === "GenericType") {
+        const genType = operandType as AST.GenericType
+        if (genType.name === "Signal" && genType.typeArguments.length === 1) {
+          return genType.typeArguments[0]! // Signal<T> -> T
+        }
+      }
+
+      // Signal型でない場合はエラー
+      addError(
+        ctx,
+        `Dereference operator (*) can only be applied to Signal types`,
+        expr.line,
+        expr.column
+      )
+      return operandType
+    }
+
     default:
       addError(
         ctx,

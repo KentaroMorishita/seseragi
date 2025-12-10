@@ -49,6 +49,13 @@ import {
   generateConstraintsForListComprehensionSugar,
 } from "./list-comprehension"
 import { generateConstraintsForSpreadExpression } from "./spread-expression"
+import {
+  generateConstraintsForPromiseBlock,
+  generateConstraintsForTryExpression,
+  generateConstraintsForResolveExpression,
+  generateConstraintsForRejectExpression,
+} from "./promise"
+import { generateConstraintsForTemplateExpression } from "./template-expression"
 
 /**
  * 式に対する制約を生成し、その式の型を返す
@@ -64,6 +71,14 @@ export function generateConstraintsForExpression(
   switch (expr.kind) {
     case "Literal":
       resultType = generateConstraintsForLiteral(ctx, expr as AST.Literal)
+      break
+
+    case "TemplateExpression":
+      resultType = generateConstraintsForTemplateExpression(
+        ctx,
+        expr as AST.TemplateExpression,
+        env
+      )
       break
 
     case "Identifier":
@@ -336,6 +351,38 @@ export function generateConstraintsForExpression(
       resultType = generateConstraintsForSpreadExpression(
         ctx,
         expr as AST.SpreadExpression,
+        env
+      )
+      break
+
+    case "PromiseBlock":
+      resultType = generateConstraintsForPromiseBlock(
+        ctx,
+        expr as AST.PromiseBlock,
+        env
+      )
+      break
+
+    case "TryExpression":
+      resultType = generateConstraintsForTryExpression(
+        ctx,
+        expr as AST.TryExpression,
+        env
+      )
+      break
+
+    case "ResolveExpression":
+      resultType = generateConstraintsForResolveExpression(
+        ctx,
+        expr as AST.ResolveExpression,
+        env
+      )
+      break
+
+    case "RejectExpression":
+      resultType = generateConstraintsForRejectExpression(
+        ctx,
+        expr as AST.RejectExpression,
         env
       )
       break

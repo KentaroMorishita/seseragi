@@ -6,6 +6,8 @@
 
 import * as AST from "../../ast"
 import type { Program } from "../../parser"
+import { createInitialEnvironment } from "../environment"
+import { TypeSubstitution } from "../substitution"
 import {
   addError,
   createEmptyContext,
@@ -35,14 +37,21 @@ export interface InferResult {
   environment: Map<string, AST.Type>
   /** 推論に使用したコンテキスト */
   context: InferenceContext
+  /** 型代入（codegen互換用） */
+  substitution: TypeSubstitution
+  /** モジュール解決器（codegen互換用、オプション） */
+  moduleResolver?: any
+  /** 現在のファイルパス（codegen互換用、オプション） */
+  currentFilePath?: string
 }
 
 /**
  * デフォルト環境を作成
- * 組み込み値（true, false など）を登録
+ * 組み込み関数・リテラルを登録
  */
 function createDefaultEnvironment(): Map<string, AST.Type> {
-  const env = new Map<string, AST.Type>()
+  // 組み込み関数の環境を取得
+  const env = createInitialEnvironment()
 
   // Bool literals
   env.set("true", new AST.PrimitiveType("Bool", 0, 0))
@@ -68,6 +77,9 @@ export function infer(
   // コンテキストを初期化
   const ctx = createEmptyContext()
 
+  // プログラムを設定（演算子オーバーロード検索に必要）
+  ctx.currentProgram = program
+
   // 型エイリアスを設定
   if (typeAliases) {
     setTypeAliases(ctx, typeAliases)
@@ -91,8 +103,9 @@ export function infer(
 
   // 制約を解決
   let success = true
+  let substitution = new TypeSubstitution()
   try {
-    const substitution = solveConstraints(ctx)
+    substitution = solveConstraints(ctx)
 
     // 解決結果を適用してnodeTypeMapを更新
     for (const [node, type] of ctx.nodeTypeMap) {
@@ -121,6 +134,7 @@ export function infer(
     nodeTypeMap: ctx.nodeTypeMap,
     environment: env,
     context: ctx,
+    substitution,
   }
 }
 

@@ -5,14 +5,7 @@
 import * as AST from "../../../ast"
 import type { InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
-
-// 前方宣言（循環依存を避けるため）
-// Statement generator は別途実装予定
-declare function generateConstraintsForStatement(
-  ctx: InferenceContext,
-  stmt: AST.Statement,
-  env: Map<string, AST.Type>
-): void
+import { generateConstraintsForStatement } from "./statement-dispatcher"
 
 /**
  * ブロック式の制約を生成
@@ -27,10 +20,9 @@ export function generateConstraintsForBlockExpression(
   const blockEnv = new Map(env)
 
   // ブロック内のステートメントを処理
-  // TODO: generateConstraintsForStatement の実装後に有効化
-  // for (const statement of block.statements) {
-  //   generateConstraintsForStatement(ctx, statement, blockEnv)
-  // }
+  for (const statement of block.statements) {
+    generateConstraintsForStatement(ctx, statement, blockEnv)
+  }
 
   // ブロックの型は戻り値式によって決まる
   if (block.returnExpression) {

@@ -63,6 +63,26 @@ export function generateConstraintsForRecordAccess(
     return freshTypeVariable(ctx, access.line, access.column)
   }
 
+  // PrimitiveType名が構造体として定義されている場合
+  if (recordType.kind === "PrimitiveType") {
+    const primType = recordType as AST.PrimitiveType
+    const structDef = ctx.structTypes.get(primType.name)
+    if (structDef) {
+      const field = structDef.fields.find((f) => f.name === access.fieldName)
+      if (field) {
+        return field.type
+      }
+      addError(
+        ctx,
+        `Field '${access.fieldName}' does not exist on struct '${primType.name}'`,
+        access.line,
+        access.column,
+        `Field access .${access.fieldName}`
+      )
+      return freshTypeVariable(ctx, access.line, access.column)
+    }
+  }
+
   // 型変数やその他の場合は制約ベースのアプローチ
   const fieldType = freshTypeVariable(ctx, access.line, access.column)
 

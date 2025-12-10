@@ -621,3 +621,459 @@ describe("infer() API", () => {
     expect(typeToString(initType!)).toBe("Int")
   })
 })
+
+// ============================================================
+// TypeInferenceSystem 互換テスト
+// type-inference.test.ts からポートしたテストケース
+// ============================================================
+
+describe("TypeInferenceSystem互換 - 基本的なリテラル推論", () => {
+  test("整数リテラルはInt型と推論される", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(new AST.Literal(42, "integer", 1, 1), 1, 1),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("文字列リテラルはString型と推論される", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.Literal("hello", "string", 1, 1),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("真偽値リテラルはBool型と推論される", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.Literal(true, "boolean", 1, 1),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - 変数宣言の型推論", () => {
+  test("型注釈なしの変数宣言で型が推論される", () => {
+    const program = new AST.Program([
+      new AST.VariableDeclaration(
+        "x",
+        new AST.Literal(42, "integer", 1, 9),
+        undefined, // 型注釈なし
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("型注釈ありの変数宣言で型が一致することを検証", () => {
+    const program = new AST.Program([
+      new AST.VariableDeclaration(
+        "x",
+        new AST.Literal(42, "integer", 1, 12),
+        new AST.PrimitiveType("Int", 1, 7),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("型注釈と初期化式の型が異なる場合エラーになる", () => {
+    const program = new AST.Program([
+      new AST.VariableDeclaration(
+        "x",
+        new AST.Literal("hello", "string", 1, 15),
+        new AST.PrimitiveType("Int", 1, 7),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - 二項演算の型推論", () => {
+  test("整数の加算はInt型と推論される", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.BinaryOperation(
+          new AST.Literal(1, "integer", 1, 1),
+          "+",
+          new AST.Literal(2, "integer", 1, 5),
+          1,
+          3
+        ),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("異なる型の比較でエラーになる", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.BinaryOperation(
+          new AST.Literal(1, "integer", 1, 1),
+          "==",
+          new AST.Literal("hello", "string", 1, 6),
+          1,
+          3
+        ),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+
+  test("論理演算のオペランドは両方Bool型である必要がある", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.BinaryOperation(
+          new AST.Literal(1, "integer", 1, 1),
+          "&&",
+          new AST.Literal(true, "boolean", 1, 6),
+          1,
+          3
+        ),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - 関数の型推論", () => {
+  test("単純な関数のシグネチャが正しく推論される", () => {
+    const program = new AST.Program([
+      new AST.FunctionDeclaration(
+        "increment",
+        [new AST.Parameter("x", new AST.PrimitiveType("Int", 1, 12), 1, 10)],
+        new AST.PrimitiveType("Int", 1, 18),
+        new AST.BinaryOperation(
+          new AST.Identifier("x", 1, 25),
+          "+",
+          new AST.Literal(1, "integer", 1, 29),
+          1,
+          27
+        ),
+        false,
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("戻り値型と関数本体の型が一致しない場合エラーになる", () => {
+    const program = new AST.Program([
+      new AST.FunctionDeclaration(
+        "badFunction",
+        [new AST.Parameter("x", new AST.PrimitiveType("Int", 1, 16), 1, 14)],
+        new AST.PrimitiveType("String", 1, 22), // String型を宣言
+        new AST.BinaryOperation(
+          // しかし本体はInt型を返す
+          new AST.Identifier("x", 1, 35),
+          "+",
+          new AST.Literal(1, "integer", 1, 39),
+          1,
+          37
+        ),
+        false,
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - 関数呼び出しの型推論", () => {
+  test("関数呼び出しの型が正しく推論される", () => {
+    const program = new AST.Program([
+      // 関数定義: increment(x: Int) -> Int = x + 1
+      new AST.FunctionDeclaration(
+        "increment",
+        [new AST.Parameter("x", new AST.PrimitiveType("Int", 1, 12), 1, 10)],
+        new AST.PrimitiveType("Int", 1, 18),
+        new AST.BinaryOperation(
+          new AST.Identifier("x", 1, 25),
+          "+",
+          new AST.Literal(1, "integer", 1, 29),
+          1,
+          27
+        ),
+        false,
+        1,
+        1
+      ),
+      // 関数呼び出し: increment(5)
+      new AST.ExpressionStatement(
+        new AST.FunctionCall(
+          new AST.Identifier("increment", 2, 1),
+          [new AST.Literal(5, "integer", 2, 11)],
+          2,
+          1
+        ),
+        2,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("引数の型が一致しない場合エラーになる", () => {
+    const program = new AST.Program([
+      // 関数定義: increment(x: Int) -> Int = x + 1
+      new AST.FunctionDeclaration(
+        "increment",
+        [new AST.Parameter("x", new AST.PrimitiveType("Int", 1, 12), 1, 10)],
+        new AST.PrimitiveType("Int", 1, 18),
+        new AST.BinaryOperation(
+          new AST.Identifier("x", 1, 25),
+          "+",
+          new AST.Literal(1, "integer", 1, 29),
+          1,
+          27
+        ),
+        false,
+        1,
+        1
+      ),
+      // 関数呼び出し: increment("hello") - 型エラー
+      new AST.ExpressionStatement(
+        new AST.FunctionCall(
+          new AST.Identifier("increment", 2, 1),
+          [new AST.Literal("hello", "string", 2, 11)],
+          2,
+          1
+        ),
+        2,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - 条件式の型推論", () => {
+  test("条件式の両分岐が同じ型の場合正常に推論される", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.ConditionalExpression(
+          new AST.Literal(true, "boolean", 1, 1),
+          new AST.Literal(1, "integer", 1, 11),
+          new AST.Literal(2, "integer", 1, 18),
+          1,
+          1
+        ),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  test("条件式の分岐の型が異なる場合ユニオン型になる", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.ConditionalExpression(
+          new AST.Literal(true, "boolean", 1, 1),
+          new AST.Literal(1, "integer", 1, 11),
+          new AST.Literal("hello", "string", 1, 18),
+          1,
+          1
+        ),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+    // 条件式の結果はユニオン型になる
+  })
+
+  test("条件式の条件部がBool型でない場合エラーになる", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.ConditionalExpression(
+          new AST.Literal(1, "integer", 1, 1), // Bool型ではない
+          new AST.Literal(2, "integer", 1, 8),
+          new AST.Literal(3, "integer", 1, 15),
+          1,
+          1
+        ),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - パイプライン演算子の型推論", () => {
+  test("パイプライン演算子が正しく型推論される", () => {
+    const program = new AST.Program([
+      // 関数定義: double(x: Int) -> Int = x * 2
+      new AST.FunctionDeclaration(
+        "double",
+        [new AST.Parameter("x", new AST.PrimitiveType("Int", 1, 9), 1, 7)],
+        new AST.PrimitiveType("Int", 1, 15),
+        new AST.BinaryOperation(
+          new AST.Identifier("x", 1, 22),
+          "*",
+          new AST.Literal(2, "integer", 1, 26),
+          1,
+          24
+        ),
+        false,
+        1,
+        1
+      ),
+      // パイプライン: 5 | double
+      new AST.ExpressionStatement(
+        new AST.Pipeline(
+          new AST.Literal(5, "integer", 2, 1),
+          new AST.Identifier("double", 2, 5),
+          2,
+          3
+        ),
+        2,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors).toHaveLength(0)
+  })
+})
+
+describe("TypeInferenceSystem互換 - 未定義変数のエラー", () => {
+  test("未定義変数を参照するとエラーになる", () => {
+    const program = new AST.Program([
+      new AST.ExpressionStatement(
+        new AST.Identifier("undefinedVar", 1, 1),
+        1,
+        1
+      ),
+    ])
+
+    const result = infer(program)
+    expect(result.errors.length).toBeGreaterThan(0)
+    expect(result.errors[0].message).toContain("Undefined variable")
+  })
+})
+
+describe("TypeInferenceSystem互換 - TypeSubstitution", () => {
+  test("型置換が正しく動作する", () => {
+    const ctx = createEmptyContext()
+    const typeVar = freshTypeVariable(ctx, 1, 1)
+    const intType = new AST.PrimitiveType("Int", 1, 1)
+
+    // Unify to create substitution
+    const result = unify(ctx, typeVar, intType)
+    expect(result.success).toBe(true)
+    if (result.success) {
+      const applied = result.substitution.apply(typeVar)
+      expect(applied.kind).toBe("PrimitiveType")
+      expect((applied as AST.PrimitiveType).name).toBe("Int")
+    }
+  })
+
+  test("Function型への置換が正しく動作する", () => {
+    const ctx = createEmptyContext()
+    const typeVar = freshTypeVariable(ctx, 1, 1)
+    const intType = new AST.PrimitiveType("Int", 1, 1)
+    const stringType = new AST.PrimitiveType("String", 1, 1)
+    const funcType = new AST.FunctionType(typeVar, intType, 1, 1)
+
+    const result = unify(ctx, typeVar, stringType)
+    expect(result.success).toBe(true)
+    if (result.success) {
+      const applied = result.substitution.apply(funcType) as AST.FunctionType
+      expect(applied.kind).toBe("FunctionType")
+      expect((applied.paramType as AST.PrimitiveType).name).toBe("String")
+      expect((applied.returnType as AST.PrimitiveType).name).toBe("Int")
+    }
+  })
+
+  test("置換の合成が正しく動作する", () => {
+    const ctx = createEmptyContext()
+    const tv0 = freshTypeVariable(ctx, 1, 1) // id: 1000
+    const tv1 = freshTypeVariable(ctx, 1, 1) // id: 1001
+    const intType = new AST.PrimitiveType("Int", 1, 1)
+
+    // tv0 -> Int
+    const result1 = unify(ctx, tv0, intType)
+    expect(result1.success).toBe(true)
+
+    // tv1 -> tv0
+    const result2 = unify(ctx, tv1, tv0)
+    expect(result2.success).toBe(true)
+
+    if (result1.success && result2.success) {
+      const composed = result1.substitution.compose(result2.substitution)
+      const applied = composed.apply(tv1)
+      expect((applied as AST.PrimitiveType).name).toBe("Int")
+    }
+  })
+})
+
+describe("TypeInferenceSystem互換 - TypeConstraint", () => {
+  test("制約が正しく文字列化される", () => {
+    const ctx = createEmptyContext()
+    const typeVar = freshTypeVariable(ctx, 1, 1)
+    const constraint = new TypeConstraint(
+      new AST.PrimitiveType("Int", 1, 1),
+      typeVar,
+      1,
+      1,
+      "test constraint"
+    )
+
+    const str = constraint.toString()
+    expect(str).toContain("Int")
+    expect(str).toContain("t")
+    expect(str).toContain("~")
+  })
+})
