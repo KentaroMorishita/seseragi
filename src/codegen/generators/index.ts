@@ -7,3 +7,6 @@ export { generateExpression } from "./dispatcher"
 
 // Expression generators (for direct import if needed)
 export * from "./expressions/index"
+
+// Statement generators
+export * from "./statements/index"
