@@ -18,6 +18,19 @@ export {
 // テンプレート式
 export { generateTemplateExpression } from "./template"
 
+// 配列
+export {
+  generateArrayLiteral,
+  generateArrayAccess,
+  generateRangeLiteral,
+} from "./array"
+
+// タプル
+export { generateTupleExpression } from "./tuple"
+
+// リスト
+export { generateListSugar, generateConsExpression } from "./list"
+
 // TODO: 以下のジェネレーターを追加予定
 // export { generateBinaryOperation } from "./binary-operation"
 // export { generateFunctionCall } from "./function-call"
@@ -29,9 +42,7 @@ export { generateTemplateExpression } from "./template"
 // export { generateLambdaExpression } from "./lambda"
 // export { generateBlockExpression } from "./block"
 // export { generateRecordExpression } from "./record"
-// export { generateArrayLiteral, generateArrayAccess } from "./array"
-// export { generateListSugar, generateConsExpression, generateListComprehension } from "./list"
-// export { generateTupleExpression } from "./tuple"
+// export { generateListComprehension, generateListComprehensionSugar } from "./list"
 // export { generateStructExpression } from "./struct"
 // export { generateFunctorMap, generateApplicativeApply, generateMonadBind } from "./monad-operations"
 // export { generatePromiseBlock, generateResolveExpression, generateRejectExpression } from "./promise"

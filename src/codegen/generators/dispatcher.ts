@@ -16,6 +16,13 @@ import {
 } from "./expressions/conditional"
 import { generateUnaryOperation } from "./expressions/unary-operation"
 import { generateTemplateExpression } from "./expressions/template"
+import {
+  generateArrayLiteral,
+  generateArrayAccess,
+  generateRangeLiteral,
+} from "./expressions/array"
+import { generateTupleExpression } from "./expressions/tuple"
+import { generateListSugar, generateConsExpression } from "./expressions/list"
 
 /**
  * 式をTypeScriptコードに変換
@@ -45,6 +52,25 @@ export function generateExpression(
     case "TernaryExpression":
       return generateTernaryExpression(ctx, expr as any)
 
+    // 配列・リスト・タプル
+    case "ArrayLiteral":
+      return generateArrayLiteral(ctx, expr as any)
+
+    case "ArrayAccess":
+      return generateArrayAccess(ctx, expr as any)
+
+    case "RangeLiteral":
+      return generateRangeLiteral(ctx, expr as any)
+
+    case "TupleExpression":
+      return generateTupleExpression(ctx, expr as any)
+
+    case "ListSugar":
+      return generateListSugar(ctx, expr as any)
+
+    case "ConsExpression":
+      return generateConsExpression(ctx, expr as any)
+
     // ===================================================================
     // TODO: 以下の式は段階的に移行する
     // 現在は旧CodeGeneratorクラスへフォールバック
@@ -69,14 +95,8 @@ export function generateExpression(
     case "LambdaExpression":
     case "RecordExpression":
     case "RecordAccess":
-    case "ArrayLiteral":
-    case "ArrayAccess":
-    case "ListSugar":
-    case "ConsExpression":
-    case "RangeLiteral":
     case "ListComprehension":
     case "ListComprehensionSugar":
-    case "TupleExpression":
     case "StructExpression":
     case "SpreadExpression":
     case "TypeAssertion":
