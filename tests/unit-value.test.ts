@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { Program } from "../src/ast"
-import { CodeGenerator } from "../src/codegen"
+import { generateTypeScript } from "../src/codegen"
 import { infer } from "../src/inference/engine/infer"
 import { Parser } from "../src/parser"
 
@@ -113,8 +113,9 @@ describe("Unit value () literal", () => {
       const typeResult = infer(program)
       expect(typeResult.errors.length).toBe(0)
 
-      const codegen = new CodeGenerator({ typeInferenceResult: typeResult })
-      const tsCode = codegen.generateProgram(program.statements)
+      const tsCode = generateTypeScript(program.statements, {
+        typeInferenceResult: typeResult,
+      })
 
       expect(tsCode).toContain("const unit = Unit")
     })
@@ -129,8 +130,9 @@ describe("Unit value () literal", () => {
       const typeResult = infer(program)
       expect(typeResult.errors.length).toBe(0)
 
-      const codegen = new CodeGenerator({ typeInferenceResult: typeResult })
-      const tsCode = codegen.generateProgram(program.statements)
+      const tsCode = generateTypeScript(program.statements, {
+        typeInferenceResult: typeResult,
+      })
 
       // Parameter-less lambda should generate function with Unit parameter
       expect(tsCode).toContain('const f = (_unit: void) => "hello"')
@@ -258,17 +260,14 @@ describe("Unit value () literal", () => {
       const typeResult = infer(program)
       expect(typeResult.errors.length).toBe(0)
 
-      const codegen = new CodeGenerator({ typeInferenceResult: typeResult })
-      const tsCode = codegen.generateProgram(program.statements)
+      const tsCode = generateTypeScript(program.statements, {
+        typeInferenceResult: typeResult,
+      })
 
-      // Should contain Unit type definition
-      expect(tsCode).toContain('type Unit = { tag: "Unit"; value: undefined }')
-      // Should contain Unit constant
-      expect(tsCode).toContain(
-        'const Unit: Unit = { tag: "Unit", value: undefined }'
-      )
-      // Should contain Unit display function
-      expect(tsCode).toContain('return "()"')
+      // Unit type is imported from runtime
+      expect(tsCode).toContain("Unit")
+      // Should contain Unit variable assignment
+      expect(tsCode).toContain("const unit = Unit")
     })
   })
 

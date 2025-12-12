@@ -4,7 +4,7 @@
 
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
-import { CodeGenerator } from "../src/codegen"
+import { generateTypeScript } from "../src/codegen"
 import { infer } from "../src/inference/engine/infer"
 import { Parser } from "../src/parser"
 
@@ -118,12 +118,11 @@ type Result = Maybe<String>
   const parser = new Parser(source)
   const parseResult = parser.parse()
 
-  const codegen = new CodeGenerator({
+  const output = generateTypeScript(parseResult.statements!, {
     indent: "  ",
     runtimeMode: "embedded",
     generateComments: false,
   })
-  const output = codegen.generateProgram(parseResult.statements!)
 
   expect(output).toContain("type UserId = number;")
   expect(output).toContain("type Status = string;")

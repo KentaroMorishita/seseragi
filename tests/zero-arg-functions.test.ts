@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast.js"
-import { generateTypeScript } from "../src/codegen.js"
+import { generateTypeScript } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer.js"
 import { Parser } from "../src/parser.js"
 

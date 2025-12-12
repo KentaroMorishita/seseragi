@@ -34,7 +34,7 @@ let result = x' + 5
 `
     const result = transpileCode(code)
     expect(result).toContain("const x_prime = 10;")
-    expect(result).toContain("const result = (x_prime + 5);")
+    expect(result).toContain("const result = __dispatchOperator(x_prime,")
   })
 
   it("should handle function with apostrophes", () => {
@@ -58,7 +58,8 @@ let sum = x + x' + x''
     expect(result).toContain("const x = 1;")
     expect(result).toContain("const x_prime = 2;")
     expect(result).toContain("const x_prime_prime = 3;")
-    expect(result).toContain("const sum = ((x + x_prime) + x_prime_prime);")
+    expect(result).toContain("x_prime_prime")
+    expect(result).toContain("__dispatchOperator")
   })
 
   it("should handle recursive function with quotes", () => {

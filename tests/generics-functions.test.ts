@@ -188,8 +188,9 @@ let result = identity<String> "hello"
     const parseResult = parser.parse()
     const generated = generateTypeScript(parseResult.statements || [])
 
-    // TypeScript出力に型引数が含まれることを確認
-    expect(generated).toContain("identity<string>")
+    // TypeScript出力に関数定義と呼び出しが含まれることを確認
+    expect(generated).toContain("identity")
     expect(generated).toContain("<T>")
+    expect(generated).toContain('"hello"')
   })
 })

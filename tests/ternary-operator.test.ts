@@ -4,7 +4,7 @@
 
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
-import { CodeGenerator } from "../src/codegen"
+import { generateTypeScript } from "../src/codegen"
 import { infer } from "../src/inference/engine/infer"
 import { Parser } from "../src/parser"
 
@@ -92,8 +92,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const codegen = new CodeGenerator({})
-    const code = codegen.generateProgram(result.statements!)
+    const code = generateTypeScript(result.statements!, {})
 
     expect(code).toContain(
       '(__dispatchOperator(x, ">", 0) ? "positive" : "negative")'
@@ -108,23 +107,21 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const codegen = new CodeGenerator({})
-    const code = codegen.generateProgram(result.statements!)
+    const code = generateTypeScript(result.statements!, {})
 
     expect(code).toContain('(__dispatchOperator(x, "<", 0) ? (-x) : x)')
   })
 
   test("should handle complex ternary expressions", () => {
     const parser = new Parser(`
-      fn classify x: Int -> String = 
+      fn classify x: Int -> String =
         x > 0 ? "positive" : x < 0 ? "negative" : "zero"
     `)
     const result = parser.parse()
 
     expect(result.errors).toHaveLength(0)
 
-    const codegen = new CodeGenerator({})
-    const code = codegen.generateProgram(result.statements!)
+    const code = generateTypeScript(result.statements!, {})
 
     expect(code).toContain(
       '(__dispatchOperator(x, ">", 0) ? "positive" : (__dispatchOperator(x, "<", 0) ? "negative" : "zero"))'

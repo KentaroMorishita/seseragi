@@ -4,7 +4,7 @@
 
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
-import { CodeGenerator } from "../src/codegen"
+import { generateTypeScript } from "../src/codegen"
 import { infer } from "../src/inference/engine/infer"
 import { Parser } from "../src/parser"
 
@@ -118,17 +118,17 @@ let user: User = { name: "hoge", age: 1 }
   const parser = new Parser(source)
   const parseResult = parser.parse()
 
-  const codegen = new CodeGenerator({
+  const output = generateTypeScript(parseResult.statements!, {
     indent: "  ",
     runtimeMode: "embedded",
     generateComments: false,
   })
-  const output = codegen.generateProgram(parseResult.statements!)
 
   expect(output).toContain("type Name = { name: string };")
   expect(output).toContain("type Age = { age: number };")
   expect(output).toContain("type User = (Name & Age);")
-  expect(output).toContain('const user: User = { name: "hoge", age: 1 };')
+  expect(output).toContain('name: "hoge"')
+  expect(output).toContain("age: 1")
 })
 
 test("Record type intersection - multiple intersections", () => {

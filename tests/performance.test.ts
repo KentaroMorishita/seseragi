@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { generateTypeScript } from "../src/codegen.js"
+import { generateTypeScript } from "../src/codegen"
 import { Parser } from "../src/parser.js"
 
 test("Performance test - Large factorial calculation", () => {
