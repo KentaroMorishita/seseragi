@@ -4,8 +4,8 @@
 
 import * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
-import { PolymorphicTypeVariable } from "../../type-variables"
 import { substituteTypeVariables } from "../../type-substitution-utils"
+import { PolymorphicTypeVariable } from "../../type-variables"
 import {
   addConstraint,
   freshTypeVariable,
@@ -71,12 +71,7 @@ export function generateConstraintsForFunctionDeclaration(
   if (func.parameters.length === 0) {
     // 引数なしの関数は Unit -> ReturnType
     const unitType = new AST.PrimitiveType("Unit", func.line, func.column)
-    funcType = new AST.FunctionType(
-      unitType,
-      funcType,
-      func.line,
-      func.column
-    )
+    funcType = new AST.FunctionType(unitType, funcType, func.line, func.column)
   } else {
     // 引数ありの関数は通常のカリー化（後ろから前に構築）
     for (let i = paramTypes.length - 1; i >= 0; i--) {

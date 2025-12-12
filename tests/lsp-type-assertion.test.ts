@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
+import { type InferResult, infer } from "../src/inference/engine/infer"
 import { Parser } from "../src/parser"
-import { infer, type InferResult } from "../src/inference/engine/infer"
 
 // LSPサーバーから同じ関数をコピーしてテスト用に使用
 interface SymbolInfo {

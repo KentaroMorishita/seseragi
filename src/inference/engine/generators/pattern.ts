@@ -37,16 +37,32 @@ export function generateConstraintsForPattern(
       if (litPattern.literalType) {
         switch (litPattern.literalType) {
           case "string":
-            literalType = new AST.PrimitiveType("String", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "String",
+              pattern.line,
+              pattern.column
+            )
             break
           case "integer":
-            literalType = new AST.PrimitiveType("Int", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "Int",
+              pattern.line,
+              pattern.column
+            )
             break
           case "float":
-            literalType = new AST.PrimitiveType("Float", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "Float",
+              pattern.line,
+              pattern.column
+            )
             break
           case "boolean":
-            literalType = new AST.PrimitiveType("Bool", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "Bool",
+              pattern.line,
+              pattern.column
+            )
             break
           default:
             literalType = freshTypeVariable(ctx, pattern.line, pattern.column)
@@ -54,13 +70,25 @@ export function generateConstraintsForPattern(
       } else {
         switch (typeof litPattern.value) {
           case "string":
-            literalType = new AST.PrimitiveType("String", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "String",
+              pattern.line,
+              pattern.column
+            )
             break
           case "number":
-            literalType = new AST.PrimitiveType("Int", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "Int",
+              pattern.line,
+              pattern.column
+            )
             break
           case "boolean":
-            literalType = new AST.PrimitiveType("Bool", pattern.line, pattern.column)
+            literalType = new AST.PrimitiveType(
+              "Bool",
+              pattern.line,
+              pattern.column
+            )
             break
           default:
             literalType = freshTypeVariable(ctx, pattern.line, pattern.column)
@@ -157,7 +185,9 @@ export function generateConstraintsForPattern(
 
       const expectedElementTypes: AST.Type[] = []
       for (let i = 0; i < tuplePattern.patterns.length; i++) {
-        expectedElementTypes.push(freshTypeVariable(ctx, pattern.line, pattern.column))
+        expectedElementTypes.push(
+          freshTypeVariable(ctx, pattern.line, pattern.column)
+        )
       }
 
       const tupleType = new AST.TupleType(
@@ -191,10 +221,23 @@ export function generateConstraintsForPattern(
       // ガードパターン: pattern when condition
       const guardPattern = pattern as AST.GuardPattern
 
-      generateConstraintsForPattern(ctx, guardPattern.pattern, expectedType, env)
+      generateConstraintsForPattern(
+        ctx,
+        guardPattern.pattern,
+        expectedType,
+        env
+      )
 
-      const guardType = generateConstraintsForExpression(ctx, guardPattern.guard, env)
-      const boolType = new AST.PrimitiveType("Bool", pattern.line, pattern.column)
+      const guardType = generateConstraintsForExpression(
+        ctx,
+        guardPattern.guard,
+        env
+      )
+      const boolType = new AST.PrimitiveType(
+        "Bool",
+        pattern.line,
+        pattern.column
+      )
 
       addConstraint(
         ctx,
@@ -213,7 +256,11 @@ export function generateConstraintsForPattern(
       // リスト糖衣構文パターン: [|x, y, ...rest|]
       const listSugarPattern = pattern as AST.ListSugarPattern
 
-      const elementTypeVar = freshTypeVariable(ctx, pattern.line, pattern.column)
+      const elementTypeVar = freshTypeVariable(
+        ctx,
+        pattern.line,
+        pattern.column
+      )
       const listType = new AST.GenericType(
         "List",
         [elementTypeVar],
@@ -237,7 +284,12 @@ export function generateConstraintsForPattern(
       }
 
       if (listSugarPattern.hasRest && listSugarPattern.restPattern) {
-        generateConstraintsForPattern(ctx, listSugarPattern.restPattern, expectedType, env)
+        generateConstraintsForPattern(
+          ctx,
+          listSugarPattern.restPattern,
+          expectedType,
+          env
+        )
       }
       break
     }
@@ -246,7 +298,11 @@ export function generateConstraintsForPattern(
       // 配列パターン: [x, y, ...rest]
       const arrayPattern = pattern as AST.ArrayPattern
 
-      const elementTypeVar = freshTypeVariable(ctx, pattern.line, pattern.column)
+      const elementTypeVar = freshTypeVariable(
+        ctx,
+        pattern.line,
+        pattern.column
+      )
       const arrayType = new AST.GenericType(
         "Array",
         [elementTypeVar],
@@ -270,7 +326,12 @@ export function generateConstraintsForPattern(
       }
 
       if (arrayPattern.hasRest && arrayPattern.restPattern) {
-        generateConstraintsForPattern(ctx, arrayPattern.restPattern, expectedType, env)
+        generateConstraintsForPattern(
+          ctx,
+          arrayPattern.restPattern,
+          expectedType,
+          env
+        )
       }
       break
     }

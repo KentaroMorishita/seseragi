@@ -96,7 +96,9 @@ export function generateConstraintsForFunctionCall(
       let errorType: AST.Type
       if (call.typeArguments && call.typeArguments.length > 0) {
         const firstTypeArg = call.typeArguments[0]
-        errorType = firstTypeArg || new AST.PrimitiveType("String", call.line, call.column)
+        errorType =
+          firstTypeArg ||
+          new AST.PrimitiveType("String", call.line, call.column)
       } else {
         errorType = new AST.PrimitiveType("String", call.line, call.column)
       }
@@ -109,7 +111,8 @@ export function generateConstraintsForFunctionCall(
       ) {
         const taskType = argType as AST.GenericType
         const firstTypeArg = taskType.typeArguments[0]
-        valueType = firstTypeArg || freshTypeVariable(ctx, call.line, call.column)
+        valueType =
+          firstTypeArg || freshTypeVariable(ctx, call.line, call.column)
       } else {
         valueType = freshTypeVariable(ctx, call.line, call.column)
       }
@@ -140,7 +143,12 @@ export function generateConstraintsForFunctionCall(
       const identifier = call.function as AST.Identifier
       const rawFuncType = env.get(identifier.name)
       if (!rawFuncType) {
-        addError(ctx, `Undefined function: ${identifier.name}`, call.line, call.column)
+        addError(
+          ctx,
+          `Undefined function: ${identifier.name}`,
+          call.line,
+          call.column
+        )
         return freshTypeVariable(ctx, call.line, call.column)
       }
 
@@ -169,15 +177,30 @@ export function generateConstraintsForFunctionCall(
       const identifier = call.function as AST.Identifier
       const rawFuncType = env.get(identifier.name)
       if (rawFuncType) {
-        resultType = instantiatePolymorphicType(ctx, rawFuncType, call.line, call.column)
+        resultType = instantiatePolymorphicType(
+          ctx,
+          rawFuncType,
+          call.line,
+          call.column
+        )
         funcType = resultType
       } else {
         funcType = generateConstraintsForExpression(ctx, call.function, env)
-        resultType = instantiatePolymorphicType(ctx, funcType, call.line, call.column)
+        resultType = instantiatePolymorphicType(
+          ctx,
+          funcType,
+          call.line,
+          call.column
+        )
       }
     } else {
       funcType = generateConstraintsForExpression(ctx, call.function, env)
-      resultType = instantiatePolymorphicType(ctx, funcType, call.line, call.column)
+      resultType = instantiatePolymorphicType(
+        ctx,
+        funcType,
+        call.line,
+        call.column
+      )
     }
 
     // 引数が0個の場合は、関数がユニット型を取る関数として扱う
@@ -231,7 +254,11 @@ export function generateConstraintsForFunctionCall(
 
   // 各引数に対して関数適用の制約を生成
   for (const arg of call.arguments) {
-    let expectedParamType: AST.Type = freshTypeVariable(ctx, call.line, call.column)
+    let expectedParamType: AST.Type = freshTypeVariable(
+      ctx,
+      call.line,
+      call.column
+    )
 
     // 関数型が既知の場合、パラメータ型を抽出
     if (resultType.kind === "FunctionType") {

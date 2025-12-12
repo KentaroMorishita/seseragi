@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
-import { Parser } from "../src/parser"
 import { infer } from "../src/inference/engine/infer"
+import { Parser } from "../src/parser"
 
 describe("Operator Overload Type Inference Tests", () => {
   test("should infer correct return type for struct operator overload", () => {

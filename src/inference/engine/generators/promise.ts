@@ -3,12 +3,8 @@
  */
 
 import * as AST from "../../../ast"
-import { TypeConstraint } from "../../constraints"
-import {
-  addConstraint,
-  freshTypeVariable,
-  type InferenceContext,
-} from "../context"
+import { freshTypeVariable, type InferenceContext } from "../context"
+import { resolveTypeAlias } from "../type-alias-resolver"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**
@@ -40,9 +36,14 @@ export function generateConstraintsForPromiseBlock(
   )
   promiseEnv.set("resolve", resolveFunc)
 
-  // reject関数の型: String -> Unit
+  // reject関数の型: E -> Unit（エラー型は型変数として扱い、try<E>で具体化）
+  const errorTypeVar = freshTypeVariable(
+    ctx,
+    promiseBlock.line,
+    promiseBlock.column
+  )
   const rejectFunc = new AST.FunctionType(
-    new AST.PrimitiveType("String", promiseBlock.line, promiseBlock.column),
+    errorTypeVar,
     new AST.PrimitiveType("Unit", promiseBlock.line, promiseBlock.column),
     promiseBlock.line,
     promiseBlock.column
@@ -56,7 +57,11 @@ export function generateConstraintsForPromiseBlock(
 
   // 戻り値式があれば推論
   if (promiseBlock.returnExpression) {
-    generateConstraintsForExpression(ctx, promiseBlock.returnExpression, promiseEnv)
+    generateConstraintsForExpression(
+      ctx,
+      promiseBlock.returnExpression,
+      promiseEnv
+    )
 
     // 型引数が省略されている場合、resolve式から型を推論
     if (
@@ -103,12 +108,17 @@ export function generateConstraintsForTryExpression(
   tryExpr: AST.TryExpression,
   env: Map<string, AST.Type>
 ): AST.Type {
-  const innerType = generateConstraintsForExpression(ctx, tryExpr.expression, env)
+  const innerType = generateConstraintsForExpression(
+    ctx,
+    tryExpr.expression,
+    env
+  )
 
-  // エラー型を決定
+  // エラー型を決定（型エイリアスを解決）
   let errorType: AST.Type
   if (tryExpr.errorType) {
-    errorType = tryExpr.errorType
+    // 型エイリアスを解決（例: TaskError -> { code: Int, message: String }）
+    errorType = resolveTypeAlias(ctx, tryExpr.errorType)
   } else {
     // デフォルトはString型
     errorType = new AST.PrimitiveType("String", tryExpr.line, tryExpr.column)
@@ -207,7 +217,11 @@ export function generateConstraintsForResolveExpression(
   resolveExpr: AST.ResolveExpression,
   env: Map<string, AST.Type>
 ): AST.Type {
-  const valueType = generateConstraintsForExpression(ctx, resolveExpr.value, env)
+  const valueType = generateConstraintsForExpression(
+    ctx,
+    resolveExpr.value,
+    env
+  )
 
   // resolve式はPromise<T>を返す関数を返す
   const unitType = new AST.PrimitiveType(
@@ -238,18 +252,14 @@ export function generateConstraintsForRejectExpression(
   rejectExpr: AST.RejectExpression,
   env: Map<string, AST.Type>
 ): AST.Type {
-  const valueType = generateConstraintsForExpression(ctx, rejectExpr.value, env)
-
-  // rejectの引数はStringであることを制約
-  addConstraint(
+  const _valueType = generateConstraintsForExpression(
     ctx,
-    new TypeConstraint(
-      valueType,
-      new AST.PrimitiveType("String", rejectExpr.line, rejectExpr.column),
-      rejectExpr.line,
-      rejectExpr.column
-    )
+    rejectExpr.value,
+    env
   )
+
+  // rejectの引数型は自由（try<E>で具体化されるか、デフォルトのString）
+  // 制約は設定しない
 
   // reject式はPromise<T>を返す関数を返す（Tは任意）
   const unitType = new AST.PrimitiveType(

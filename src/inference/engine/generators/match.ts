@@ -2,13 +2,9 @@
  * パターンマッチ式の制約生成
  */
 
-import * as AST from "../../../ast"
+import type * as AST from "../../../ast"
 import { createFlattenedUnionType } from "../../type-comparison"
-import {
-  addError,
-  freshTypeVariable,
-  type InferenceContext,
-} from "../context"
+import { addError, freshTypeVariable, type InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 import { generateConstraintsForPattern } from "./pattern"
 

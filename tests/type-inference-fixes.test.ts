@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
-import { Parser } from "../src/parser"
 import { infer } from "../src/inference/engine/infer"
+import { Parser } from "../src/parser"
 
 test("Maybe type inference", () => {
   const content = `

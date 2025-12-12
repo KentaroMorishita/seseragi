@@ -4,65 +4,62 @@
  * 式・文の種類ごとに制約を生成する関数群
  */
 
+export { generateConstraintsForApplicativeApply } from "./applicative-apply"
+export { generateConstraintsForArrayLiteral } from "./array"
+export { generateConstraintsForArrayAccess } from "./array-access"
+export { generateConstraintsForAssignmentExpression } from "./assignment-expression"
+export { generateConstraintsForBinaryOperation } from "./binary-operation"
+export { generateConstraintsForBlockExpression } from "./block"
+export { generateConstraintsForBuiltinFunctionCall } from "./builtin-function-call"
+export { generateConstraintsForConditional } from "./conditional"
+export { generateConstraintsForConsExpression } from "./cons-expression"
+export { generateConstraintsForConstructorExpression } from "./constructor-expression"
 // メインディスパッチャ
 export { generateConstraintsForExpression } from "./dispatcher"
-export { generateConstraintsForStatement } from "./statement-dispatcher"
-
-// 個別のgenerator
-export { generateConstraintsForLiteral } from "./literal"
-export { generateConstraintsForIdentifier } from "./identifier"
-export { generateConstraintsForBinaryOperation } from "./binary-operation"
-export { generateConstraintsForUnaryOperation } from "./unary-operation"
-export { generateConstraintsForConditional } from "./conditional"
-export { generateConstraintsForLambdaExpression } from "./lambda"
-export { generateConstraintsForTupleExpression } from "./tuple"
-export { generateConstraintsForArrayLiteral } from "./array"
-export { generateConstraintsForRecordAccess } from "./record-access"
-export { generateConstraintsForArrayAccess } from "./array-access"
-export { generateConstraintsForStructExpression } from "./struct-expression"
-export { generateConstraintsForListSugar } from "./list-sugar"
-export { generateConstraintsForPipeline } from "./pipeline"
-export { generateConstraintsForBlockExpression } from "./block"
 export { generateConstraintsForFunctionApplication } from "./function-application"
-export { generateConstraintsForFunctionCall } from "./function-call"
-export { generateConstraintsForMatchExpression } from "./match"
-export { generateConstraintsForPattern } from "./pattern"
-export { generateConstraintsForRecordExpression } from "./record-expression"
-export { generateConstraintsForMethodCall } from "./method-call"
-export { generateConstraintsForBuiltinFunctionCall } from "./builtin-function-call"
-export { generateConstraintsForTernaryExpression } from "./ternary"
-export { generateConstraintsForNullishCoalescing } from "./nullish-coalescing"
-export { generateConstraintsForIsExpression } from "./is-expression"
-export { generateConstraintsForFunctorMap } from "./functor-map"
-export { generateConstraintsForApplicativeApply } from "./applicative-apply"
-export { generateConstraintsForMonadBind } from "./monad-bind"
 export { generateConstraintsForFunctionApplicationOperator } from "./function-application-operator"
-export { generateConstraintsForConstructorExpression } from "./constructor-expression"
-export { generateConstraintsForSignalExpression } from "./signal-expression"
-export { generateConstraintsForAssignmentExpression } from "./assignment-expression"
-export { generateConstraintsForConsExpression } from "./cons-expression"
-export { generateConstraintsForRangeLiteral } from "./range-literal"
+export { generateConstraintsForFunctionCall } from "./function-call"
+export { generateConstraintsForFunctionDeclaration } from "./function-declaration"
+export { generateConstraintsForFunctorMap } from "./functor-map"
+// ヘルパー
+export { generalize, instantiatePolymorphicType } from "./helpers"
+export { generateConstraintsForIdentifier } from "./identifier"
+export { generateConstraintsForImportDeclaration } from "./import-declaration"
+export { generateConstraintsForIsExpression } from "./is-expression"
+export { generateConstraintsForLambdaExpression } from "./lambda"
 export {
   generateConstraintsForListComprehension,
   generateConstraintsForListComprehensionSugar,
 } from "./list-comprehension"
+export { generateConstraintsForListSugar } from "./list-sugar"
+// 個別のgenerator
+export { generateConstraintsForLiteral } from "./literal"
+export { generateConstraintsForMatchExpression } from "./match"
+export { generateConstraintsForMethodCall } from "./method-call"
+export { generateConstraintsForMonadBind } from "./monad-bind"
+export { generateConstraintsForNullishCoalescing } from "./nullish-coalescing"
+export { generateConstraintsForPattern } from "./pattern"
+export { generateConstraintsForPipeline } from "./pipeline"
+export { generateConstraintsForRangeLiteral } from "./range-literal"
+export { generateConstraintsForRecordAccess } from "./record-access"
+export { generateConstraintsForRecordDestructuring } from "./record-destructuring"
+export { generateConstraintsForRecordExpression } from "./record-expression"
+export { generateConstraintsForSignalExpression } from "./signal-expression"
 export { generateConstraintsForSpreadExpression } from "./spread-expression"
-
+export { generateConstraintsForStatement } from "./statement-dispatcher"
+export {
+  generateConstraintsForImplBlock,
+  generateConstraintsForStructDeclaration,
+} from "./struct-declaration"
+export { generateConstraintsForStructDestructuring } from "./struct-destructuring"
+export { generateConstraintsForStructExpression } from "./struct-expression"
+export { generateConstraintsForTernaryExpression } from "./ternary"
+export { generateConstraintsForTupleExpression } from "./tuple"
+export { generateConstraintsForTupleDestructuring } from "./tuple-destructuring"
+export {
+  generateConstraintsForTypeAliasDeclaration,
+  generateConstraintsForTypeDeclaration,
+} from "./type-declaration"
+export { generateConstraintsForUnaryOperation } from "./unary-operation"
 // Statement generators
 export { generateConstraintsForVariableDeclaration } from "./variable-declaration"
-export { generateConstraintsForFunctionDeclaration } from "./function-declaration"
-export {
-  generateConstraintsForTypeDeclaration,
-  generateConstraintsForTypeAliasDeclaration,
-} from "./type-declaration"
-export {
-  generateConstraintsForStructDeclaration,
-  generateConstraintsForImplBlock,
-} from "./struct-declaration"
-export { generateConstraintsForImportDeclaration } from "./import-declaration"
-export { generateConstraintsForTupleDestructuring } from "./tuple-destructuring"
-export { generateConstraintsForRecordDestructuring } from "./record-destructuring"
-export { generateConstraintsForStructDestructuring } from "./struct-destructuring"
-
-// ヘルパー
-export { instantiatePolymorphicType, generalize } from "./helpers"

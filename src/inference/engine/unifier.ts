@@ -292,8 +292,11 @@ function unifyInternal(
     )
   }
 
-  // Union型の場合
-  if (type1.kind === "UnionType" || type2.kind === "UnionType") {
+  // Union型の場合（解決後の型で判定）
+  if (
+    resolvedType1.kind === "UnionType" ||
+    resolvedType2.kind === "UnionType"
+  ) {
     return unifyUnionTypes(ctx, type1, type2, resolvedType1, resolvedType2)
   }
 
@@ -635,7 +638,9 @@ function unifyUnionTypes(
     const union2 = resolvedType2 as AST.UnionType
     const isMember = union2.types.some((memberType) => {
       try {
-        unifyInternal(ctx, resolvedType1, memberType)
+        // メンバー型も型エイリアス解決してから比較
+        const resolvedMemberType = resolveTypeAlias(ctx, memberType)
+        unifyInternal(ctx, resolvedType1, resolvedMemberType)
         return true
       } catch {
         return false

@@ -5,8 +5,8 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
-import { Parser } from "../src/parser"
 import { infer } from "../src/inference/engine/infer"
+import { Parser } from "../src/parser"
 
 describe("Ternary Operator", () => {
   test("should parse simple ternary expression", () => {
@@ -79,9 +79,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inferenceResult = infer(
-      new AST.Program(result.statements!, 1, 1)
-    )
+    const inferenceResult = infer(new AST.Program(result.statements!, 1, 1))
 
     expect(inferenceResult.errors).toHaveLength(0)
   })
@@ -141,9 +139,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inferenceResult = infer(
-      new AST.Program(result.statements!, 1, 1)
-    )
+    const inferenceResult = infer(new AST.Program(result.statements!, 1, 1))
 
     expect(inferenceResult.errors).toHaveLength(0)
   })
@@ -156,9 +152,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inferenceResult = infer(
-      new AST.Program(result.statements!, 1, 1)
-    )
+    const inferenceResult = infer(new AST.Program(result.statements!, 1, 1))
 
     // 型エラーが発生するはず（String vs Int）
     expect(inferenceResult.errors.length).toBeGreaterThan(0)
@@ -172,9 +166,7 @@ describe("Ternary Operator", () => {
 
     expect(result.errors).toHaveLength(0)
 
-    const inferenceResult = infer(
-      new AST.Program(result.statements!, 1, 1)
-    )
+    const inferenceResult = infer(new AST.Program(result.statements!, 1, 1))
 
     // 型エラーが発生するはず（Int条件 vs Bool要求）
     expect(inferenceResult.errors.length).toBeGreaterThan(0)

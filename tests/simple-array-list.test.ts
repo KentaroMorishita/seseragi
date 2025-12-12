@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
+import { infer } from "../src/inference/engine/infer"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 
 describe("Simple Array↔List Conversion Test", () => {
   test("basic arrayToList and listToArray", () => {

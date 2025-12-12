@@ -3,7 +3,7 @@
  */
 
 import * as AST from "../../../ast"
-import { TypeConstraint, FunctorMapConstraint } from "../../constraints"
+import { FunctorMapConstraint, TypeConstraint } from "../../constraints"
 import {
   addConstraint,
   freshTypeVariable,
@@ -21,7 +21,11 @@ export function generateConstraintsForFunctorMap(
   env: Map<string, AST.Type>
 ): AST.Type {
   const funcType = generateConstraintsForExpression(ctx, functorMap.left, env)
-  const containerType = generateConstraintsForExpression(ctx, functorMap.right, env)
+  const containerType = generateConstraintsForExpression(
+    ctx,
+    functorMap.right,
+    env
+  )
 
   const inputType = freshTypeVariable(ctx, functorMap.line, functorMap.column)
   const outputType = freshTypeVariable(ctx, functorMap.line, functorMap.column)
@@ -60,7 +64,12 @@ export function generateConstraintsForFunctorMap(
           "FunctorMap Maybe container input type"
         )
       )
-      return new AST.GenericType("Maybe", [outputType], functorMap.line, functorMap.column)
+      return new AST.GenericType(
+        "Maybe",
+        [outputType],
+        functorMap.line,
+        functorMap.column
+      )
     }
 
     if (gt.name === "Either" && gt.typeArguments.length === 2) {
@@ -75,7 +84,12 @@ export function generateConstraintsForFunctorMap(
           "FunctorMap Either container input type"
         )
       )
-      return new AST.GenericType("Either", [errorType, outputType], functorMap.line, functorMap.column)
+      return new AST.GenericType(
+        "Either",
+        [errorType, outputType],
+        functorMap.line,
+        functorMap.column
+      )
     }
 
     if (gt.name === "List" && gt.typeArguments.length === 1) {
@@ -89,7 +103,12 @@ export function generateConstraintsForFunctorMap(
           "FunctorMap List container input type"
         )
       )
-      return new AST.GenericType("List", [outputType], functorMap.line, functorMap.column)
+      return new AST.GenericType(
+        "List",
+        [outputType],
+        functorMap.line,
+        functorMap.column
+      )
     }
 
     if (gt.name === "Task" && gt.typeArguments.length === 1) {
@@ -103,7 +122,12 @@ export function generateConstraintsForFunctorMap(
           "FunctorMap Task container input type"
         )
       )
-      return new AST.GenericType("Task", [outputType], functorMap.line, functorMap.column)
+      return new AST.GenericType(
+        "Task",
+        [outputType],
+        functorMap.line,
+        functorMap.column
+      )
     }
 
     // 汎用ファンクター
@@ -122,13 +146,22 @@ export function generateConstraintsForFunctorMap(
       const newArgs = [...gt.typeArguments]
       newArgs[newArgs.length - 1] = outputType
 
-      return new AST.GenericType(gt.name, newArgs, functorMap.line, functorMap.column)
+      return new AST.GenericType(
+        gt.name,
+        newArgs,
+        functorMap.line,
+        functorMap.column
+      )
     }
   }
 
   // コンテナが型変数の場合
   if (containerType.kind === "TypeVariable") {
-    const resultType = freshTypeVariable(ctx, functorMap.line, functorMap.column)
+    const resultType = freshTypeVariable(
+      ctx,
+      functorMap.line,
+      functorMap.column
+    )
 
     const functorMapConstraint = new FunctorMapConstraint(
       containerType,

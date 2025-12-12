@@ -2,8 +2,8 @@
  * TypeAssertion（型アサーション）の制約生成
  */
 
-import * as AST from "../../../ast"
-import { setNodeType, type InferenceContext } from "../context"
+import type * as AST from "../../../ast"
+import { type InferenceContext, setNodeType } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**
@@ -18,7 +18,11 @@ export function generateConstraintsForTypeAssertion(
   env: Map<string, AST.Type>
 ): AST.Type {
   // 元の式の型を推論
-  const exprType = generateConstraintsForExpression(ctx, assertion.expression, env)
+  const exprType = generateConstraintsForExpression(
+    ctx,
+    assertion.expression,
+    env
+  )
 
   // 型アサーションの場合、制約を生成せずに直接ターゲット型を返す
   const targetType = assertion.targetType

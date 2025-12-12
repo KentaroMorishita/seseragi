@@ -12,51 +12,51 @@ import {
   freshTypeVariable,
   type InferenceContext,
 } from "../context"
-import { generateConstraintsForArrayAccess } from "./array-access"
+import { generateConstraintsForApplicativeApply } from "./applicative-apply"
 import { generateConstraintsForArrayLiteral } from "./array"
+import { generateConstraintsForArrayAccess } from "./array-access"
+import { generateConstraintsForAssignmentExpression } from "./assignment-expression"
 import { generateConstraintsForBinaryOperation } from "./binary-operation"
 import { generateConstraintsForBlockExpression } from "./block"
-import { generateConstraintsForConditional } from "./conditional"
-import { generateConstraintsForFunctionApplication } from "./function-application"
-import { generateConstraintsForFunctionCall } from "./function-call"
-import { generateConstraintsForIdentifier } from "./identifier"
-import { generateConstraintsForMatchExpression } from "./match"
-import { generateConstraintsForLambdaExpression } from "./lambda"
-import { generateConstraintsForRecordExpression } from "./record-expression"
-import { generateConstraintsForMethodCall } from "./method-call"
-import { generateConstraintsForListSugar } from "./list-sugar"
-import { generateConstraintsForLiteral } from "./literal"
-import { generateConstraintsForPipeline } from "./pipeline"
-import { generateConstraintsForRecordAccess } from "./record-access"
-import { generateConstraintsForStructExpression } from "./struct-expression"
-import { generateConstraintsForTupleExpression } from "./tuple"
-import { generateConstraintsForUnaryOperation } from "./unary-operation"
 import { generateConstraintsForBuiltinFunctionCall } from "./builtin-function-call"
-import { generateConstraintsForTernaryExpression } from "./ternary"
-import { generateConstraintsForNullishCoalescing } from "./nullish-coalescing"
-import { generateConstraintsForIsExpression } from "./is-expression"
-import { generateConstraintsForFunctorMap } from "./functor-map"
-import { generateConstraintsForApplicativeApply } from "./applicative-apply"
-import { generateConstraintsForMonadBind } from "./monad-bind"
-import { generateConstraintsForFunctionApplicationOperator } from "./function-application-operator"
-import { generateConstraintsForConstructorExpression } from "./constructor-expression"
-import { generateConstraintsForSignalExpression } from "./signal-expression"
-import { generateConstraintsForAssignmentExpression } from "./assignment-expression"
+import { generateConstraintsForConditional } from "./conditional"
 import { generateConstraintsForConsExpression } from "./cons-expression"
-import { generateConstraintsForRangeLiteral } from "./range-literal"
+import { generateConstraintsForConstructorExpression } from "./constructor-expression"
+import { generateConstraintsForFunctionApplication } from "./function-application"
+import { generateConstraintsForFunctionApplicationOperator } from "./function-application-operator"
+import { generateConstraintsForFunctionCall } from "./function-call"
+import { generateConstraintsForFunctorMap } from "./functor-map"
+import { generateConstraintsForIdentifier } from "./identifier"
+import { generateConstraintsForIsExpression } from "./is-expression"
+import { generateConstraintsForLambdaExpression } from "./lambda"
 import {
   generateConstraintsForListComprehension,
   generateConstraintsForListComprehensionSugar,
 } from "./list-comprehension"
-import { generateConstraintsForSpreadExpression } from "./spread-expression"
+import { generateConstraintsForListSugar } from "./list-sugar"
+import { generateConstraintsForLiteral } from "./literal"
+import { generateConstraintsForMatchExpression } from "./match"
+import { generateConstraintsForMethodCall } from "./method-call"
+import { generateConstraintsForMonadBind } from "./monad-bind"
+import { generateConstraintsForNullishCoalescing } from "./nullish-coalescing"
+import { generateConstraintsForPipeline } from "./pipeline"
 import {
   generateConstraintsForPromiseBlock,
-  generateConstraintsForTryExpression,
-  generateConstraintsForResolveExpression,
   generateConstraintsForRejectExpression,
+  generateConstraintsForResolveExpression,
+  generateConstraintsForTryExpression,
 } from "./promise"
+import { generateConstraintsForRangeLiteral } from "./range-literal"
+import { generateConstraintsForRecordAccess } from "./record-access"
+import { generateConstraintsForRecordExpression } from "./record-expression"
+import { generateConstraintsForSignalExpression } from "./signal-expression"
+import { generateConstraintsForSpreadExpression } from "./spread-expression"
+import { generateConstraintsForStructExpression } from "./struct-expression"
 import { generateConstraintsForTemplateExpression } from "./template-expression"
+import { generateConstraintsForTernaryExpression } from "./ternary"
+import { generateConstraintsForTupleExpression } from "./tuple"
 import { generateConstraintsForTypeAssertion } from "./type-assertion"
+import { generateConstraintsForUnaryOperation } from "./unary-operation"
 
 /**
  * 式に対する制約を生成し、その式の型を返す

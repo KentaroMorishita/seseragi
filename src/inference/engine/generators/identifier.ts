@@ -27,5 +27,10 @@ export function generateConstraintsForIdentifier(
   }
 
   // 多相型の場合はインスタンス化して返す
-  return instantiatePolymorphicType(ctx, type, identifier.line, identifier.column)
+  return instantiatePolymorphicType(
+    ctx,
+    type,
+    identifier.line,
+    identifier.column
+  )
 }

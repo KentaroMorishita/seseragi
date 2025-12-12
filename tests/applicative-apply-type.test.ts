@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test"
 import type * as AST from "../src/ast"
+import { infer } from "../src/inference/engine/infer"
 import { Lexer } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 
 describe("ApplicativeApply type inference", () => {
   test("ApplicativeApply with explicit Maybe types", () => {

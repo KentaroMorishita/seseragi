@@ -30,7 +30,12 @@ export function generateConstraintsForFunctionApplication(
     const rawFuncType = env.get(identifier.name)
     if (rawFuncType) {
       // 多相型のインスタンス化
-      funcType = instantiatePolymorphicType(ctx, rawFuncType, app.line, app.column)
+      funcType = instantiatePolymorphicType(
+        ctx,
+        rawFuncType,
+        app.line,
+        app.column
+      )
     } else {
       // 環境にない場合は式から推論
       funcType = generateConstraintsForExpression(ctx, app.function, env)

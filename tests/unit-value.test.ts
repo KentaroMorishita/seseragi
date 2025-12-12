@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test"
 import { Program } from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
-import { Parser } from "../src/parser"
 import { infer } from "../src/inference/engine/infer"
+import { Parser } from "../src/parser"
 
 describe("Unit value () literal", () => {
   describe("Basic Unit value parsing", () => {

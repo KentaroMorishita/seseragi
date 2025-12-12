@@ -2,15 +2,15 @@
  * 構造体式の制約生成
  */
 
-import * as AST from "../../../ast"
+import type * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
 import { isMaybeType } from "../../type-inspection"
 import {
   addConstraint,
   addError,
   freshTypeVariable,
-  lookupType,
   type InferenceContext,
+  lookupType,
 } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
@@ -24,7 +24,8 @@ export function generateConstraintsForStructExpression(
   env: Map<string, AST.Type>
 ): AST.Type {
   // 構造体型を環境から取得
-  const structType = lookupType(ctx, structExpr.structName) ?? env.get(structExpr.structName)
+  const structType =
+    lookupType(ctx, structExpr.structName) ?? env.get(structExpr.structName)
 
   if (!structType) {
     addError(
@@ -51,7 +52,13 @@ export function generateConstraintsForStructExpression(
   // フィールドの型チェック
   const providedFieldMap = new Map<
     string,
-    { field: AST.RecordInitField | AST.RecordSpreadField | AST.RecordShorthandField; type: AST.Type }
+    {
+      field:
+        | AST.RecordInitField
+        | AST.RecordSpreadField
+        | AST.RecordShorthandField
+      type: AST.Type
+    }
   >()
 
   // まずスプレッドフィールドを処理
@@ -88,7 +95,11 @@ export function generateConstraintsForStructExpression(
   for (const field of structExpr.fields) {
     if (field.kind === "RecordInitField") {
       const initField = field as AST.RecordInitField
-      const fieldType = generateConstraintsForExpression(ctx, initField.value, env)
+      const fieldType = generateConstraintsForExpression(
+        ctx,
+        initField.value,
+        env
+      )
       providedFieldMap.set(initField.name, {
         field: initField,
         type: fieldType,
@@ -103,7 +114,11 @@ export function generateConstraintsForStructExpression(
           shorthandField.line,
           shorthandField.column
         )
-        const fallbackType = freshTypeVariable(ctx, shorthandField.line, shorthandField.column)
+        const fallbackType = freshTypeVariable(
+          ctx,
+          shorthandField.line,
+          shorthandField.column
+        )
         providedFieldMap.set(shorthandField.name, {
           field: shorthandField,
           type: fallbackType,

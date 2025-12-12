@@ -3,8 +3,8 @@
  */
 
 import * as AST from "../../../ast"
-import { formatType } from "../../type-formatter"
 import { TypeConstraint } from "../../constraints"
+import { formatType } from "../../type-formatter"
 import {
   addConstraint,
   freshTypeVariable,

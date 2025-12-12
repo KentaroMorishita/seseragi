@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test"
 import * as AST from "../src/ast"
+import { infer } from "../src/inference/engine/infer"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 
 // Task の基本的な型推論テスト
 test("Task type inference with resolve", () => {

@@ -3,12 +3,12 @@
  */
 
 import * as AST from "../../../ast"
-import { freshTypeVariable, type InferenceContext } from "../context"
-import { PolymorphicTypeVariable } from "../../type-variables"
 import {
   getFreeTypeVariables,
   substituteTypeVariables as substituteTypeVariablesUtil,
 } from "../../type-substitution-utils"
+import { PolymorphicTypeVariable } from "../../type-variables"
+import { freshTypeVariable, type InferenceContext } from "../context"
 
 /**
  * 多相型変数を具体的な型変数にインスタンス化する
@@ -28,7 +28,10 @@ export function instantiatePolymorphicType(
       case "PolymorphicTypeVariable": {
         const polyVar = t as PolymorphicTypeVariable
         if (!substitutionMap.has(polyVar.name)) {
-          substitutionMap.set(polyVar.name, freshTypeVariable(ctx, line, column))
+          substitutionMap.set(
+            polyVar.name,
+            freshTypeVariable(ctx, line, column)
+          )
         }
         return substitutionMap.get(polyVar.name)!
       }

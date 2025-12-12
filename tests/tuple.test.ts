@@ -5,9 +5,9 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { CodeGenerator } from "../src/codegen"
+import { infer } from "../src/inference/engine/infer"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 
 describe("Tuple Feature Tests", () => {
   describe("Lexer - Wildcard Token", () => {

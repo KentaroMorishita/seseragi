@@ -2,8 +2,8 @@
  * SpreadExpression の制約生成
  */
 
-import * as AST from "../../../ast"
-import { type InferenceContext } from "../context"
+import type * as AST from "../../../ast"
+import type { InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**

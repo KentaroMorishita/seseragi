@@ -3,14 +3,16 @@
  */
 
 import * as AST from "../../../ast"
-import { TypeInferenceError } from "../../errors"
 import { addError, type InferenceContext } from "../context"
 
 /**
  * コンストラクタ型を作成
  * データコンストラクタの型を構築する
  */
-function createConstructorType(field: AST.TypeField, adtType: AST.Type): AST.Type {
+function createConstructorType(
+  field: AST.TypeField,
+  adtType: AST.Type
+): AST.Type {
   if (field.type instanceof AST.PrimitiveType && field.type.name === "Unit") {
     // データなしのコンストラクタ (Red, Green, Blue)
     return adtType

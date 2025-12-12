@@ -26,7 +26,11 @@ export function generateConstraintsForBlockExpression(
 
   // ブロックの型は戻り値式によって決まる
   if (block.returnExpression) {
-    return generateConstraintsForExpression(ctx, block.returnExpression, blockEnv)
+    return generateConstraintsForExpression(
+      ctx,
+      block.returnExpression,
+      blockEnv
+    )
   }
 
   // 明示的な戻り値式がない場合、最後のステートメントが式ステートメントならその型を返す
@@ -34,7 +38,11 @@ export function generateConstraintsForBlockExpression(
     const lastStatement = block.statements[block.statements.length - 1]
     if (lastStatement && lastStatement.kind === "ExpressionStatement") {
       const exprStmt = lastStatement as AST.ExpressionStatement
-      return generateConstraintsForExpression(ctx, exprStmt.expression, blockEnv)
+      return generateConstraintsForExpression(
+        ctx,
+        exprStmt.expression,
+        blockEnv
+      )
     }
   }
 

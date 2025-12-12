@@ -3,9 +3,9 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
+import { infer } from "../src/inference/engine/infer"
 import { lex, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 import { compileSeseragi } from "./test-utils"
 
 describe("Nullish Coalescing Operator", () => {

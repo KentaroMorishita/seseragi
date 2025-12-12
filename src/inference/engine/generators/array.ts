@@ -4,7 +4,11 @@
 
 import * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
-import { addConstraint, freshTypeVariable, type InferenceContext } from "../context"
+import {
+  addConstraint,
+  freshTypeVariable,
+  type InferenceContext,
+} from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**

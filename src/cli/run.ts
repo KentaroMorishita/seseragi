@@ -99,12 +99,12 @@ async function compileToTemp(options: RunOptions): Promise<string> {
   // 型推論
   console.log("Running type inference...")
   const program = new AST.Program(ast.statements!)
-  const inferenceResult = infer(program)
+  // 絶対パスを渡してモジュール解決を正しく動作させる
+  const absoluteFilePath = path.resolve(options.input)
+  const inferenceResult = infer(program, { currentFilePath: absoluteFilePath })
 
   if (!inferenceResult.success) {
-    throw new Error(
-      inferenceResult.errors.map((e) => e.message).join("\n")
-    )
+    throw new Error(inferenceResult.errors.map((e) => e.message).join("\n"))
   }
 
   // 型チェック（main.tsと合わせるため一旦無効化）

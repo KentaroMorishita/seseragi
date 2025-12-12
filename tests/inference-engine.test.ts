@@ -18,7 +18,6 @@ import {
   getTypeOfNode,
   getTypeOfVariable,
   infer,
-  type InferenceContext,
   isSubtype,
   lookupType,
   popScope,
@@ -545,7 +544,8 @@ describe("Engine Integration - Solver", () => {
 describe("infer() API", () => {
   test("infer simple program", () => {
     const parser = new Parser("let x = 42")
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [], 1, 1)
     const result = infer(program)
 
     expect(result.success).toBe(true)
@@ -556,7 +556,8 @@ describe("infer() API", () => {
 
   test("infer function declaration", () => {
     const parser = new Parser("fn double x: Int -> Int = x * 2")
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [], 1, 1)
     const result = infer(program)
 
     expect(result.success).toBe(true)
@@ -572,14 +573,17 @@ describe("infer() API", () => {
       let y = 20
       fn add a: Int -> b: Int -> Int = a + b
     `)
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [], 1, 1)
     const result = infer(program)
 
     expect(result.success).toBe(true)
     expect(result.errors).toHaveLength(0)
     expect(typeToString(getTypeOfVariable(result, "x")!)).toBe("Int")
     expect(typeToString(getTypeOfVariable(result, "y")!)).toBe("Int")
-    expect(typeToString(getTypeOfVariable(result, "add")!)).toBe("(Int -> (Int -> Int))")
+    expect(typeToString(getTypeOfVariable(result, "add")!)).toBe(
+      "(Int -> (Int -> Int))"
+    )
   })
 
   test("infer struct declaration", () => {
@@ -589,7 +593,8 @@ describe("infer() API", () => {
         y: Float
       }
     `)
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [], 1, 1)
     const result = infer(program)
 
     expect(result.success).toBe(true)
@@ -599,7 +604,8 @@ describe("infer() API", () => {
 
   test("infer ADT declaration", () => {
     const parser = new Parser("type Direction = | North | South | East | West")
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [], 1, 1)
     const result = infer(program)
 
     expect(result.success).toBe(true)
@@ -611,11 +617,12 @@ describe("infer() API", () => {
 
   test("getTypeOfNode returns type for AST node", () => {
     const parser = new Parser("let x = 42")
-    const program = parser.parse()
+    const parseResult = parser.parse()
+    const program = new AST.Program(parseResult.statements || [], 1, 1)
     const result = infer(program)
 
     // 変数宣言のイニシャライザのタイプを確認
-    const varDecl = program.statements[0] as AST.VariableDeclaration
+    const varDecl = parseResult.statements![0] as AST.VariableDeclaration
     const initType = getTypeOfNode(result, varDecl.initializer)
     expect(initType).toBeDefined()
     expect(typeToString(initType!)).toBe("Int")
@@ -652,11 +659,7 @@ describe("TypeInferenceSystem互換 - 基本的なリテラル推論", () => {
 
   test("真偽値リテラルはBool型と推論される", () => {
     const program = new AST.Program([
-      new AST.ExpressionStatement(
-        new AST.Literal(true, "boolean", 1, 1),
-        1,
-        1
-      ),
+      new AST.ExpressionStatement(new AST.Literal(true, "boolean", 1, 1), 1, 1),
     ])
 
     const result = infer(program)

@@ -4,7 +4,11 @@
 
 import * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
-import { addConstraint, freshTypeVariable, type InferenceContext } from "../context"
+import {
+  addConstraint,
+  freshTypeVariable,
+  type InferenceContext,
+} from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**
@@ -77,12 +81,7 @@ export function generateConstraintsForListComprehension(
   )
 
   // 結果はArray<expressionType>（配列内包表記なのでArrayを返す）
-  return new AST.GenericType(
-    "Array",
-    [expressionType],
-    comp.line,
-    comp.column
-  )
+  return new AST.GenericType("Array", [expressionType], comp.line, comp.column)
 }
 
 /**

@@ -5,22 +5,22 @@
  */
 
 import type * as AST from "../../../ast"
-import { type InferenceContext } from "../context"
+import type { InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 import { generateConstraintsForFunctionDeclaration } from "./function-declaration"
+import { generateConstraintsForImportDeclaration } from "./import-declaration"
+import { generateConstraintsForRecordDestructuring } from "./record-destructuring"
 import {
   generateConstraintsForImplBlock,
   generateConstraintsForStructDeclaration,
 } from "./struct-declaration"
+import { generateConstraintsForStructDestructuring } from "./struct-destructuring"
+import { generateConstraintsForTupleDestructuring } from "./tuple-destructuring"
 import {
   generateConstraintsForTypeAliasDeclaration,
   generateConstraintsForTypeDeclaration,
 } from "./type-declaration"
 import { generateConstraintsForVariableDeclaration } from "./variable-declaration"
-import { generateConstraintsForImportDeclaration } from "./import-declaration"
-import { generateConstraintsForTupleDestructuring } from "./tuple-destructuring"
-import { generateConstraintsForRecordDestructuring } from "./record-destructuring"
-import { generateConstraintsForStructDestructuring } from "./struct-destructuring"
 
 /**
  * 文に対する制約を生成
@@ -87,7 +87,8 @@ export function generateConstraintsForStatement(
       generateConstraintsForImportDeclaration(
         ctx,
         statement as AST.ImportDeclaration,
-        env
+        env,
+        ctx.currentFilePath
       )
       break
 

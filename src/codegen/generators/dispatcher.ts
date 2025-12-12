@@ -7,22 +7,66 @@
 import type { Expression, Identifier, Literal } from "../../ast"
 import type { CodeGenContext } from "../context"
 import { sanitizeIdentifier } from "../helpers"
-
-// Expression generators
-import { generateLiteral } from "./expressions/literal"
+import {
+  generateArrayAccess,
+  generateArrayLiteral,
+  generateRangeLiteral,
+} from "./expressions/array"
+import { generateBinaryOperation } from "./expressions/binary-operation"
+import { generateBlockExpression } from "./expressions/block"
+import { generateBuiltinFunctionCall } from "./expressions/builtin-function-call"
 import {
   generateConditionalExpression,
   generateTernaryExpression,
 } from "./expressions/conditional"
-import { generateUnaryOperation } from "./expressions/unary-operation"
-import { generateTemplateExpression } from "./expressions/template"
+import { generateConstructorExpression } from "./expressions/constructor"
+import { generateFunctionApplication } from "./expressions/function-application"
+import { generateFunctionCall } from "./expressions/function-call"
+import { generateLambdaExpression } from "./expressions/lambda"
+import { generateConsExpression, generateListSugar } from "./expressions/list"
 import {
-  generateArrayLiteral,
-  generateArrayAccess,
-  generateRangeLiteral,
-} from "./expressions/array"
+  generateListComprehension,
+  generateListComprehensionSugar,
+} from "./expressions/list-comprehension"
+// Expression generators
+import { generateLiteral } from "./expressions/literal"
+import { generateMatchExpression } from "./expressions/match"
+import { generateMethodCall } from "./expressions/method-call"
+import { generateNullishCoalescing } from "./expressions/nullish-coalescing"
+import {
+  generateApplicativeApply,
+  generateFoldMonoid,
+  generateFunctionApplicationOperator,
+  generateFunctorMap,
+  generateMonadBind,
+  generatePipeline,
+  generateReversePipe,
+} from "./expressions/pipeline"
+import {
+  generatePromiseBlock,
+  generateRejectExpression,
+  generateResolveExpression,
+  generateTryExpression,
+} from "./expressions/promise"
+import {
+  generateRecordAccess,
+  generateRecordExpression,
+} from "./expressions/record"
+import {
+  generateAssignmentExpression,
+  generateSignalExpression,
+} from "./expressions/signal"
+import {
+  generateSpreadExpression,
+  generateStructExpression,
+} from "./expressions/struct"
+import { generateTemplateExpression } from "./expressions/template"
 import { generateTupleExpression } from "./expressions/tuple"
-import { generateListSugar, generateConsExpression } from "./expressions/list"
+import {
+  generateIsExpression,
+  generateTypeAssertion,
+} from "./expressions/type-operations"
+import { generateUnaryOperation } from "./expressions/unary-operation"
 
 /**
  * 式をTypeScriptコードに変換
@@ -71,64 +115,111 @@ export function generateExpression(
     case "ConsExpression":
       return generateConsExpression(ctx, expr as any)
 
-    // ===================================================================
-    // TODO: 以下の式は段階的に移行する
-    // 現在は旧CodeGeneratorクラスへフォールバック
-    // ===================================================================
-
-    case "BinaryOperation":
-    case "NullishCoalescingExpression":
-    case "FunctionCall":
-    case "MethodCall":
-    case "FunctionApplication":
-    case "BuiltinFunctionCall":
-    case "MatchExpression":
-    case "Pipeline":
-    case "ReversePipe":
-    case "FunctorMap":
-    case "ApplicativeApply":
-    case "MonadBind":
-    case "FoldMonoid":
-    case "FunctionApplicationOperator":
-    case "ConstructorExpression":
-    case "BlockExpression":
-    case "LambdaExpression":
-    case "RecordExpression":
-    case "RecordAccess":
     case "ListComprehension":
+      return generateListComprehension(ctx, expr as any)
+
     case "ListComprehensionSugar":
+      return generateListComprehensionSugar(ctx, expr as any)
+
+    // 二項演算
+    case "BinaryOperation":
+      return generateBinaryOperation(ctx, expr as any)
+
+    case "NullishCoalescingExpression":
+      return generateNullishCoalescing(ctx, expr as any)
+
+    // 関数呼び出し
+    case "FunctionCall":
+      return generateFunctionCall(ctx, expr as any)
+
+    case "MethodCall":
+      return generateMethodCall(ctx, expr as any)
+
+    case "FunctionApplication":
+      return generateFunctionApplication(ctx, expr as any)
+
+    case "BuiltinFunctionCall":
+      return generateBuiltinFunctionCall(ctx, expr as any)
+
+    // パイプライン・モナド演算子
+    case "Pipeline":
+      return generatePipeline(ctx, expr as any)
+
+    case "ReversePipe":
+      return generateReversePipe(ctx, expr as any)
+
+    case "FunctorMap":
+      return generateFunctorMap(ctx, expr as any)
+
+    case "ApplicativeApply":
+      return generateApplicativeApply(ctx, expr as any)
+
+    case "MonadBind":
+      return generateMonadBind(ctx, expr as any)
+
+    case "FoldMonoid":
+      return generateFoldMonoid(ctx, expr as any)
+
+    case "FunctionApplicationOperator":
+      return generateFunctionApplicationOperator(ctx, expr as any)
+
+    // コンストラクタ
+    case "ConstructorExpression":
+      return generateConstructorExpression(ctx, expr as any)
+
+    // ブロック・ラムダ
+    case "BlockExpression":
+      return generateBlockExpression(ctx, expr as any)
+
+    case "LambdaExpression":
+      return generateLambdaExpression(ctx, expr as any)
+
+    // レコード
+    case "RecordExpression":
+      return generateRecordExpression(ctx, expr as any)
+
+    case "RecordAccess":
+      return generateRecordAccess(ctx, expr as any)
+
+    // 構造体・スプレッド
     case "StructExpression":
+      return generateStructExpression(ctx, expr as any)
+
     case "SpreadExpression":
-    case "TypeAssertion":
-    case "IsExpression":
-    case "PromiseBlock":
-    case "ResolveExpression":
-    case "RejectExpression":
-    case "TryExpression":
+      return generateSpreadExpression(ctx, expr as any)
+
+    // シグナル
     case "SignalExpression":
+      return generateSignalExpression(ctx, expr as any)
+
     case "AssignmentExpression":
-      // 旧実装へのフォールバック
-      // これらは段階的に新モジュールに移行する
-      return fallbackToLegacy(ctx, expr)
+      return generateAssignmentExpression(ctx, expr as any)
+
+    // 型操作
+    case "TypeAssertion":
+      return generateTypeAssertion(ctx, expr as any)
+
+    case "IsExpression":
+      return generateIsExpression(ctx, expr as any)
+
+    // Promise関連
+    case "PromiseBlock":
+      return generatePromiseBlock(ctx, expr as any)
+
+    case "ResolveExpression":
+      return generateResolveExpression(ctx, expr as any)
+
+    case "RejectExpression":
+      return generateRejectExpression(ctx, expr as any)
+
+    case "TryExpression":
+      return generateTryExpression(ctx, expr as any)
+
+    // パターンマッチ
+    case "MatchExpression":
+      return generateMatchExpression(ctx, expr as any)
 
     default:
       return `/* Unsupported expression: ${(expr as any).kind} */`
   }
-}
-
-/**
- * 旧CodeGeneratorクラスへのフォールバック
- *
- * 新モジュールに移行されていない式は旧実装を使用する
- * このフォールバックは段階的に削除される
- */
-function fallbackToLegacy(ctx: CodeGenContext, expr: Expression): string {
-  // 旧実装へのフォールバック
-  // CodeGeneratorインスタンスがctxに存在する場合はそれを使用
-  if ((ctx as any).legacyGenerator) {
-    return (ctx as any).legacyGenerator.generateExpression(expr)
-  }
-
-  // フォールバックが利用できない場合はエラーコメント
-  return `/* Expression requires legacy generator: ${(expr as any).kind} */`
 }

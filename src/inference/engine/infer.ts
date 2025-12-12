@@ -4,8 +4,8 @@
  * TypeInferenceSystemクラスを置き換える関数ベースのインターフェース
  */
 
+import type { Program } from "../../ast"
 import * as AST from "../../ast"
-import type { Program } from "../../parser"
 import { createInitialEnvironment } from "../environment"
 import { TypeSubstitution } from "../substitution"
 import {
@@ -64,21 +64,45 @@ function createDefaultEnvironment(): Map<string, AST.Type> {
 }
 
 /**
+ * 推論オプション
+ */
+export interface InferOptions {
+  /** 型エイリアス定義（オプション） */
+  typeAliases?: Map<string, AST.Type>
+  /** 現在のファイルパス（モジュール解決に使用） */
+  currentFilePath?: string
+}
+
+/**
  * プログラムの型を推論する
  *
  * @param program パース済みAST
- * @param typeAliases 型エイリアス定義（オプション）
+ * @param typeAliasesOrOptions 型エイリアス定義、またはオプションオブジェクト
  * @returns 推論結果
  */
 export function infer(
   program: Program,
-  typeAliases?: Map<string, AST.Type>
+  typeAliasesOrOptions?: Map<string, AST.Type> | InferOptions
 ): InferResult {
+  // オプションを正規化
+  let typeAliases: Map<string, AST.Type> | undefined
+  let currentFilePath = ""
+
+  if (typeAliasesOrOptions instanceof Map) {
+    typeAliases = typeAliasesOrOptions
+  } else if (typeAliasesOrOptions) {
+    typeAliases = typeAliasesOrOptions.typeAliases
+    currentFilePath = typeAliasesOrOptions.currentFilePath ?? ""
+  }
+
   // コンテキストを初期化
   const ctx = createEmptyContext()
 
   // プログラムを設定（演算子オーバーロード検索に必要）
   ctx.currentProgram = program
+
+  // 現在のファイルパスを設定（モジュール解決に必要）
+  ctx.currentFilePath = currentFilePath
 
   // 型エイリアスを設定
   if (typeAliases) {
@@ -135,6 +159,8 @@ export function infer(
     environment: env,
     context: ctx,
     substitution,
+    moduleResolver: ctx.moduleResolver || undefined,
+    currentFilePath: currentFilePath || undefined,
   }
 }
 
@@ -153,7 +179,9 @@ export function inferExpression(
   const environment = env ?? createDefaultEnvironment()
 
   // 式ラッパーを作成
-  const { generateConstraintsForExpression } = require("./generators/dispatcher")
+  const {
+    generateConstraintsForExpression,
+  } = require("./generators/dispatcher")
   const type = generateConstraintsForExpression(ctx, expr, environment)
 
   // 制約を解決

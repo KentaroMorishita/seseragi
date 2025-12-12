@@ -3,7 +3,7 @@
  */
 
 import * as AST from "../../../ast"
-import { type InferenceContext } from "../context"
+import type { InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**

@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
-import { Parser } from "../src/parser"
 import { infer } from "../src/inference/engine/infer"
+import { Parser } from "../src/parser"
 
 describe("Type Assertion", () => {
   test("基本的な型アサーション", () => {

@@ -3,7 +3,7 @@
  */
 
 import * as AST from "../../../ast"
-import { type InferenceContext } from "../context"
+import type { InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**
@@ -20,10 +20,5 @@ export function generateConstraintsForSignalExpression(
     signal.initialValue,
     env
   )
-  return new AST.GenericType(
-    "Signal",
-    [valueType],
-    signal.line,
-    signal.column
-  )
+  return new AST.GenericType("Signal", [valueType], signal.line, signal.column)
 }

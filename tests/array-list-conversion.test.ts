@@ -4,9 +4,9 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
+import { infer } from "../src/inference/engine/infer"
 import { lex } from "../src/lexer"
 import { parse } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 
 describe("Array↔List Conversion", () => {
   const testCases = [

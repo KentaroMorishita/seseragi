@@ -10,7 +10,7 @@ import { sanitizeIdentifier } from "../../helpers"
  * 識別子をTypeScriptコードに変換
  */
 export function generateIdentifier(
-  ctx: CodeGenContext,
+  _ctx: CodeGenContext,
   identifier: Identifier
 ): string {
   return sanitizeIdentifier(identifier.name)

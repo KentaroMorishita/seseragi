@@ -3,15 +3,15 @@
  * 型述語と型文字列生成
  */
 
-import {
-  type Type,
-  type GenericType,
-  type PrimitiveType,
-  type RecordType,
-  type TupleType,
-  type StructType,
-  type IntersectionType,
-  type Identifier,
+import type {
+  GenericType,
+  Identifier,
+  IntersectionType,
+  PrimitiveType,
+  RecordType,
+  StructType,
+  TupleType,
+  Type,
 } from "../ast"
 import type { CodeGenContext } from "./context"
 

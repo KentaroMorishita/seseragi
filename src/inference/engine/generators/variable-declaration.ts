@@ -2,18 +2,14 @@
  * 変数宣言の制約生成
  */
 
-import * as AST from "../../../ast"
+import type * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
 import {
   getFreeTypeVariables,
   substituteTypeVariables,
 } from "../../type-substitution-utils"
 import { PolymorphicTypeVariable } from "../../type-variables"
-import {
-  addConstraint,
-  freshTypeVariable,
-  type InferenceContext,
-} from "../context"
+import { addConstraint, type InferenceContext } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
 /**

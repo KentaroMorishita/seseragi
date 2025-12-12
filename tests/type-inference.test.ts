@@ -2,15 +2,14 @@
  * 型推論システムのテストケース
  */
 
-import { beforeEach, describe, expect, it } from "bun:test"
+import { describe, expect, it } from "bun:test"
 import * as AST from "../src/ast"
-import { infer } from "../src/inference/engine/infer"
 import { TypeConstraint } from "../src/inference/constraints"
+import { infer } from "../src/inference/engine/infer"
 import { TypeSubstitution } from "../src/inference/substitution"
 import { TypeVariable } from "../src/inference/type-variables"
 
 describe("TypeInferenceSystem", () => {
-
   describe("基本的なリテラル推論", () => {
     it("整数リテラルはInt型と推論される", () => {
       const program = new AST.Program([

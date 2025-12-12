@@ -28,11 +28,7 @@ export function generateConstraintsForAssignmentExpression(
     env
   )
   // value（代入する値）の型を推論
-  const valueType = generateConstraintsForExpression(
-    ctx,
-    assignment.value,
-    env
-  )
+  const valueType = generateConstraintsForExpression(ctx, assignment.value, env)
 
   // targetがSignal<T>型かチェック
   if (targetType.kind === "GenericType") {

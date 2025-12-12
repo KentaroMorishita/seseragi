@@ -1,7 +1,7 @@
 import * as AST from "@seseragi/core/ast"
 import { generateTypeScript } from "@seseragi/core/codegen"
-import { Parser } from "@seseragi/core/parser"
 import { infer } from "@seseragi/core/inference/engine/infer"
+import { Parser } from "@seseragi/core/parser"
 import * as ts from "typescript"
 
 export async function compileAndRun(seseragiCode: string): Promise<string> {

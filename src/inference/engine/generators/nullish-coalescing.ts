@@ -5,14 +5,13 @@
 import * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
 import {
-  isMaybeType as isMaybeTypeUtil,
   isEitherType as isEitherTypeUtil,
+  isMaybeType as isMaybeTypeUtil,
 } from "../../type-inspection"
 import {
   addConstraint,
   freshTypeVariable,
   type InferenceContext,
-  setNodeType,
 } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
@@ -81,7 +80,8 @@ export function generateConstraintsForNullishCoalescing(
 
     // 右辺がMaybe型の場合
     if (isMaybeTypeUtil(rightType)) {
-      const rightMaybeInnerType = (rightType as AST.GenericType).typeArguments[0]
+      const rightMaybeInnerType = (rightType as AST.GenericType)
+        .typeArguments[0]
       const innerTypeVar = freshTypeVariable(
         ctx,
         nullishCoalescing.line,
@@ -162,7 +162,8 @@ export function generateConstraintsForNullishCoalescing(
     const maybeInnerType = (leftType as AST.GenericType).typeArguments[0]
 
     if (isMaybeTypeUtil(rightType)) {
-      const rightMaybeInnerType = (rightType as AST.GenericType).typeArguments[0]
+      const rightMaybeInnerType = (rightType as AST.GenericType)
+        .typeArguments[0]
       addConstraint(
         ctx,
         new TypeConstraint(
@@ -193,8 +194,12 @@ export function generateConstraintsForNullishCoalescing(
   if (isEitherTypeUtil(leftType)) {
     const rightTypeFromEither = (leftType as AST.GenericType).typeArguments[1]
 
-    if (rightType.kind === "GenericType" && (rightType as AST.GenericType).name === "Either") {
-      const rightEitherRightType = (rightType as AST.GenericType).typeArguments[1]
+    if (
+      rightType.kind === "GenericType" &&
+      (rightType as AST.GenericType).name === "Either"
+    ) {
+      const rightEitherRightType = (rightType as AST.GenericType)
+        .typeArguments[1]
       addConstraint(
         ctx,
         new TypeConstraint(

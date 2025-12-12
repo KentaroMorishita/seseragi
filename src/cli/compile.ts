@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { Program, type TypeAliasDeclaration } from "../ast.js"
 import { generateTypeScript } from "../codegen.js"
-import { infer, type InferResult } from "../inference/engine/infer.js"
+import { type InferResult, infer } from "../inference/engine/infer.js"
 import { Parser } from "../parser.js"
 
 export interface CompileOptions {
@@ -72,7 +72,12 @@ async function compile(options: CompileOptions): Promise<void> {
     }
 
     // 新しい型推論エンジンを使用
-    inferenceResult = infer(new Program(ast.statements!, 1, 1), typeAliases)
+    // 絶対パスを渡してモジュール解決を正しく動作させる
+    const absoluteFilePath = path.resolve(options.input)
+    inferenceResult = infer(new Program(ast.statements!, 1, 1), {
+      typeAliases,
+      currentFilePath: absoluteFilePath,
+    })
 
     if (!inferenceResult.success) {
       console.error("\n❌ Type checking failed:\n")

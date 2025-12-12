@@ -4,12 +4,7 @@
 
 import * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
-import {
-  addConstraint,
-  addError,
-  freshTypeVariable,
-  type InferenceContext,
-} from "../context"
+import { addConstraint, addError, type InferenceContext } from "../context"
 import { resolveTypeAlias } from "../type-alias-resolver"
 import { generateConstraintsForExpression } from "./dispatcher"
 import { generalize } from "./helpers"
@@ -74,7 +69,12 @@ export function generateConstraintsForImplBlock(
 
   // モノイドの制約を生成
   if (implBlock.monoid) {
-    generateConstraintsForMonoidDeclaration(ctx, implBlock.monoid, env, implType)
+    generateConstraintsForMonoidDeclaration(
+      ctx,
+      implBlock.monoid,
+      env,
+      implType
+    )
   }
 }
 
@@ -101,7 +101,11 @@ export function generateConstraintsForMethodDeclaration(
   }))
 
   // 関数型を構築
-  const functionType = buildFunctionType(ctx, resolvedParameters, method.returnType)
+  const functionType = buildFunctionType(
+    ctx,
+    resolvedParameters,
+    method.returnType
+  )
 
   // 環境に追加
   env.set(`${method.name}`, functionType)
@@ -143,7 +147,11 @@ export function generateConstraintsForOperatorDeclaration(
   }))
 
   // 関数型を構築
-  const functionType = buildFunctionType(ctx, resolvedParameters, operator.returnType)
+  const functionType = buildFunctionType(
+    ctx,
+    resolvedParameters,
+    operator.returnType
+  )
 
   // 一般化して環境に追加
   const generalizedOperatorType = generalize(functionType, env)
@@ -152,10 +160,20 @@ export function generateConstraintsForOperatorDeclaration(
 
   // 演算子本体用の環境を作成
   const operatorEnv = createMethodEnvironment(env, implType)
-  addParametersToEnvironment(ctx, operator.parameters, operatorEnv, implType, env)
+  addParametersToEnvironment(
+    ctx,
+    operator.parameters,
+    operatorEnv,
+    implType,
+    env
+  )
 
   // 演算子本体の型を推論
-  const bodyType = generateConstraintsForExpression(ctx, operator.body, operatorEnv)
+  const bodyType = generateConstraintsForExpression(
+    ctx,
+    operator.body,
+    operatorEnv
+  )
 
   // 制約を追加
   addConstraint(
@@ -179,35 +197,33 @@ function generateConstraintsForMonoidDeclaration(
   env: Map<string, AST.Type>,
   implType: AST.Type
 ): void {
-  // empty（単位元）の型チェック
-  const emptyType = generateConstraintsForExpression(ctx, monoid.empty, env)
+  // identity（単位元）の型チェック
+  const identityType = generateConstraintsForExpression(
+    ctx,
+    monoid.identity,
+    env
+  )
   addConstraint(
     ctx,
     new TypeConstraint(
-      emptyType,
+      identityType,
       implType,
       monoid.line,
       monoid.column,
-      `Monoid empty must be of type ${implType.kind === "StructType" ? (implType as AST.StructType).name : "impl type"}`
+      `Monoid identity must be of type ${implType.kind === "StructType" ? (implType as AST.StructType).name : "impl type"}`
     )
   )
 
-  // combine（結合演算）の型チェック
-  const combineEnv = new Map(env)
-  combineEnv.set("self", implType)
-  combineEnv.set("other", implType)
-
-  const combineType = generateConstraintsForExpression(ctx, monoid.combine, combineEnv)
-  addConstraint(
-    ctx,
-    new TypeConstraint(
-      combineType,
-      implType,
-      monoid.line,
-      monoid.column,
-      "Monoid combine must return impl type"
+  // operator（結合演算）の型チェック
+  // OperatorDeclarationとして処理
+  if (monoid.operator) {
+    generateConstraintsForOperatorDeclaration(
+      ctx,
+      monoid.operator,
+      env,
+      implType
     )
-  )
+  }
 }
 
 // ============================================================
@@ -251,7 +267,7 @@ function resolveStructTypeFromEnvironment(
  * 関数型を構築（カリー化形式）
  */
 function buildFunctionType(
-  ctx: InferenceContext,
+  _ctx: InferenceContext,
   parameters: AST.Parameter[],
   returnType: AST.Type
 ): AST.Type {
@@ -259,8 +275,17 @@ function buildFunctionType(
 
   // 引数なしの場合は Unit -> ReturnType
   if (parameters.length === 0) {
-    const unitType = new AST.PrimitiveType("Unit", returnType.line, returnType.column)
-    return new AST.FunctionType(unitType, funcType, returnType.line, returnType.column)
+    const unitType = new AST.PrimitiveType(
+      "Unit",
+      returnType.line,
+      returnType.column
+    )
+    return new AST.FunctionType(
+      unitType,
+      funcType,
+      returnType.line,
+      returnType.column
+    )
   }
 
   // 後ろから前にカリー化関数型を構築

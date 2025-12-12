@@ -5,8 +5,8 @@
 import type { VariableDeclaration } from "../../../ast"
 import type { CodeGenContext } from "../../context"
 import { getIndent } from "../../context"
-import { generateExpression } from "../dispatcher"
 import { sanitizeIdentifier } from "../../helpers"
+import { generateExpression } from "../dispatcher"
 
 /**
  * 変数宣言をTypeScriptコードに変換

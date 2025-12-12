@@ -3,7 +3,6 @@ import type * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
 import { Lexer, TokenType } from "../src/lexer"
 import { Parser } from "../src/parser"
-import { infer } from "../src/inference/engine/infer"
 
 describe("Template Literal Tests", () => {
   test("should tokenize simple template literal", () => {

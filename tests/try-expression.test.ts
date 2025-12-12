@@ -104,8 +104,10 @@ describe("Try Expression System", () => {
       `
       const result = compileSeseragi(source)
       expect(result).toContain("async (): Promise<Either<string, any>> => {")
+      // ResolveExpressionは () => Promise.resolve(...) を生成し、
+      // try式内ではそれを呼び出す必要がある: (() => ...)()
       expect(result).toContain(
-        'const value = await () => Promise.resolve("direct");'
+        'const value = await (() => Promise.resolve("direct"))();'
       )
     })
 
@@ -115,8 +117,10 @@ describe("Try Expression System", () => {
       `
       const result = compileSeseragi(source)
       expect(result).toContain("async (): Promise<Either<string, any>> => {")
+      // RejectExpressionは () => Promise.reject(...) を生成し、
+      // try式内ではそれを呼び出す必要がある: (() => ...)()
       expect(result).toContain(
-        'const value = await () => Promise.reject("direct error");'
+        'const value = await (() => Promise.reject("direct error"))();'
       )
     })
   })

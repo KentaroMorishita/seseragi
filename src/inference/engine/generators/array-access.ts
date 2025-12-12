@@ -48,7 +48,11 @@ export function generateConstraintsForArrayAccess(
   )
 
   // 戻り値の型変数を作成
-  const resultType = freshTypeVariable(ctx, arrayAccess.line, arrayAccess.column)
+  const resultType = freshTypeVariable(
+    ctx,
+    arrayAccess.line,
+    arrayAccess.column
+  )
 
   // ArrayAccessConstraintを追加（配列またはタプルアクセス用）
   const constraint = new ArrayAccessConstraint(

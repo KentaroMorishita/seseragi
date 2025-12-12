@@ -9,12 +9,11 @@ import {
   ApplicativeApplyConstraint,
   ArrayAccessConstraint,
   FunctorMapConstraint,
-  TypeConstraint,
+  type TypeConstraint,
 } from "../constraints"
-import { TypeInferenceError } from "../errors"
+import type { TypeInferenceError } from "../errors"
 import { TypeSubstitution } from "../substitution"
 import { typeToString } from "../type-formatter"
-import { TypeVariable } from "../type-variables"
 import { addError, freshTypeVariable, type InferenceContext } from "./context"
 import { unifyOrThrow } from "./unifier"
 
@@ -176,14 +175,22 @@ function solveArrayAccessConstraint(
     const tt = arrayType as AST.TupleType
     if (tt.elementTypes.length > 0) {
       // タプルアクセスの場合、結果型を任意の型変数とする
-      const unionType = freshTypeVariable(ctx, constraint.line, constraint.column)
+      const unionType = freshTypeVariable(
+        ctx,
+        constraint.line,
+        constraint.column
+      )
       return unifyOrThrow(ctx, resultType, unionType)
     }
   }
 
   // 型変数の場合、Array<T>として推論
   if (arrayType.kind === "TypeVariable") {
-    const elementType = freshTypeVariable(ctx, constraint.line, constraint.column)
+    const elementType = freshTypeVariable(
+      ctx,
+      constraint.line,
+      constraint.column
+    )
 
     // Array<T>として推論
     const arrayGenericType = new AST.GenericType(
@@ -312,8 +319,12 @@ function solveApplicativeApplyConstraint(
   constraint: ApplicativeApplyConstraint,
   currentSubstitution: TypeSubstitution
 ): TypeSubstitution {
-  const funcContainerType = currentSubstitution.apply(constraint.funcContainerType)
-  const valueContainerType = currentSubstitution.apply(constraint.valueContainerType)
+  const funcContainerType = currentSubstitution.apply(
+    constraint.funcContainerType
+  )
+  const valueContainerType = currentSubstitution.apply(
+    constraint.valueContainerType
+  )
   const inputType = currentSubstitution.apply(constraint.inputType)
   const outputType = currentSubstitution.apply(constraint.outputType)
   const resultType = constraint.resultType

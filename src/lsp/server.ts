@@ -23,8 +23,8 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument"
 import * as AST from "../ast"
 import { formatSeseragiCode } from "../formatter/index.js"
-import { Parser } from "../parser"
 import { infer } from "../inference/engine/infer"
+import { Parser } from "../parser"
 import type { TypeChecker } from "../typechecker"
 
 // Create a connection for the server, using Node's IPC as a transport
@@ -173,9 +173,12 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
       }
     }
 
-    // 新しい型推論エンジンを使用
+    // 新しい型推論エンジンを使用（ファイルパスを渡してモジュール解決を有効に）
     const ast = new AST.Program(parseResult.statements || [], 1, 1)
-    const inferenceResult = infer(ast, typeAliases)
+    const inferenceResult = infer(ast, {
+      typeAliases,
+      currentFilePath: absolutePath,
+    })
 
     // Use only the new type inference system errors
     const allErrors = inferenceResult.errors
@@ -517,7 +520,7 @@ function getHoverInfo(
   // Check if this is a field access first
   const fieldAccessInfo = getFieldAccessInfo(text, offset)
   if (fieldAccessInfo) {
-    return handleFieldAccessHover(ast, fieldAccessInfo)
+    return handleFieldAccessHover(ast, fieldAccessInfo, filePath)
   }
 
   // Check if this is a method call (e.g., "user1 getName()")
@@ -538,7 +541,8 @@ function getHoverInfo(
     cachedAST = ast
 
     const program = new AST.Program(ast.statements || [])
-    const result = infer(program)
+    const absolutePath = filePath ? path.resolve(filePath) : ""
+    const result = infer(program, { currentFilePath: absolutePath })
     connection.console.log(
       `[SESERAGI LSP DEBUG] Type inference completed. Errors: ${result.errors.length}`
     )
@@ -823,12 +827,14 @@ function getFieldAccessInfo(
 // Handle hover for field access expressions
 function handleFieldAccessHover(
   ast: any,
-  fieldAccessInfo: { objectName: string; fieldName: string }
+  fieldAccessInfo: { objectName: string; fieldName: string },
+  filePath?: string
 ): string | null {
   try {
     // Get type inference result
     const program = new AST.Program(ast.statements || [])
-    const result = infer(program)
+    const absolutePath = filePath ? path.resolve(filePath) : ""
+    const result = infer(program, { currentFilePath: absolutePath })
 
     // Find the object's type
     // Note: For field access, we use offset=0 as a temporary workaround

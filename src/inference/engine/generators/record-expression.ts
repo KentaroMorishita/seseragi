@@ -4,29 +4,9 @@
 
 import * as AST from "../../../ast"
 import { isMaybeType } from "../../type-inspection"
-import {
-  addError,
-  freshTypeVariable,
-  type InferenceContext,
-} from "../context"
+import { addError, freshTypeVariable, type InferenceContext } from "../context"
+import { resolveTypeAlias } from "../type-alias-resolver"
 import { generateConstraintsForExpression } from "./dispatcher"
-
-/**
- * 型エイリアスを再帰的に解決（簡略版）
- * TODO: 完全な型エイリアス解決はtype-alias-resolver.tsと統合予定
- */
-function resolveTypeAlias(
-  ctx: InferenceContext,
-  type: AST.Type
-): AST.Type {
-  if (type.kind === "PrimitiveType") {
-    const aliasInfo = ctx.typeAliases.get((type as AST.PrimitiveType).name)
-    if (aliasInfo) {
-      return aliasInfo.type
-    }
-  }
-  return type
-}
 
 /**
  * IntersectionTypeからRecordTypeを抽出
@@ -41,7 +21,7 @@ function extractRecordFromIntersection(
       const recordType = memberType as AST.RecordType
       for (const field of recordType.fields) {
         // 重複フィールドは後のもので上書き
-        const existingIndex = allFields.findIndex(f => f.name === field.name)
+        const existingIndex = allFields.findIndex((f) => f.name === field.name)
         if (existingIndex >= 0) {
           allFields[existingIndex] = field
         } else {
@@ -52,11 +32,7 @@ function extractRecordFromIntersection(
   }
 
   if (allFields.length > 0) {
-    return new AST.RecordType(
-      allFields,
-      intersection.line,
-      intersection.column
-    )
+    return new AST.RecordType(allFields, intersection.line, intersection.column)
   }
   return null
 }
@@ -128,7 +104,11 @@ export function generateConstraintsForRecordExpression(
           shorthandField.line,
           shorthandField.column
         )
-        const fallbackType = freshTypeVariable(ctx, shorthandField.line, shorthandField.column)
+        const fallbackType = freshTypeVariable(
+          ctx,
+          shorthandField.line,
+          shorthandField.column
+        )
         fieldMap.set(
           shorthandField.name,
           new AST.RecordField(

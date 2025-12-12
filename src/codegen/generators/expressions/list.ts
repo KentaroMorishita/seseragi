@@ -2,7 +2,7 @@
  * リスト関連式の生成
  */
 
-import type { ListSugar, ConsExpression } from "../../../ast"
+import type { ConsExpression, ListSugar } from "../../../ast"
 import type { CodeGenContext } from "../../context"
 import { generateExpression } from "../dispatcher"
 
@@ -21,7 +21,9 @@ export function generateListSugar(
   // リストを右からConsで構築
   let result = "Empty"
   for (let i = listSugar.elements.length - 1; i >= 0; i--) {
-    const element = generateExpression(ctx, listSugar.elements[i])
+    const elem = listSugar.elements[i]
+    if (!elem) continue
+    const element = generateExpression(ctx, elem)
     result = `Cons(${element}, ${result})`
   }
 

@@ -39,10 +39,5 @@ export function generateConstraintsForConsExpression(
   )
 
   // 結果の型もList<T>
-  return new AST.GenericType(
-    "List",
-    [headType],
-    consExpr.line,
-    consExpr.column
-  )
+  return new AST.GenericType("List", [headType], consExpr.line, consExpr.column)
 }

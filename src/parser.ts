@@ -3,8 +3,8 @@
  */
 
 import * as AST from "./ast"
-import { Lexer, type Token, TokenType } from "./lexer"
 import { TypeVariable } from "./inference/type-variables"
+import { Lexer, type Token, TokenType } from "./lexer"
 
 export class ParseError extends Error {
   token: Token

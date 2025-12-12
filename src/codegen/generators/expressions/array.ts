@@ -2,7 +2,7 @@
  * 配列関連式の生成
  */
 
-import type { ArrayLiteral, ArrayAccess, RangeLiteral } from "../../../ast"
+import type { ArrayAccess, ArrayLiteral, RangeLiteral } from "../../../ast"
 import type { CodeGenContext } from "../../context"
 import { generateExpression } from "../dispatcher"
 

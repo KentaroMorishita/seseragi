@@ -1,7 +1,7 @@
 import * as AST from "../src/ast"
 import { generateTypeScript } from "../src/codegen"
-import { Parser } from "../src/parser"
 import { infer } from "../src/inference/engine/infer"
+import { Parser } from "../src/parser"
 
 export function compileSeseragi(source: string): string {
   const parser = new Parser(source)

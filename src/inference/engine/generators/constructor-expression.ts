@@ -35,7 +35,11 @@ export function generateConstraintsForConstructorExpression(
       } else if (!ctor.arguments || ctor.arguments.length === 0) {
         // Just without arguments - treat as a curried function
         // Just : 'a -> Maybe<'a>
-        const elemType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
+        const elemType = new PolymorphicTypeVariable(
+          "a",
+          ctor.line,
+          ctor.column
+        )
         const maybeType = new AST.GenericType(
           "Maybe",
           [elemType],
@@ -92,15 +96,28 @@ export function generateConstraintsForConstructorExpression(
       } else if (!ctor.arguments || ctor.arguments.length === 0) {
         // Right without arguments - treat as a curried function
         // Right : 'b -> Either<'a, 'b>
-        const leftType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
-        const rightType = new PolymorphicTypeVariable("b", ctor.line, ctor.column)
+        const leftType = new PolymorphicTypeVariable(
+          "a",
+          ctor.line,
+          ctor.column
+        )
+        const rightType = new PolymorphicTypeVariable(
+          "b",
+          ctor.line,
+          ctor.column
+        )
         const eitherType = new AST.GenericType(
           "Either",
           [leftType, rightType],
           ctor.line,
           ctor.column
         )
-        return new AST.FunctionType(rightType, eitherType, ctor.line, ctor.column)
+        return new AST.FunctionType(
+          rightType,
+          eitherType,
+          ctor.line,
+          ctor.column
+        )
       }
       addError(
         ctx,
@@ -135,15 +152,28 @@ export function generateConstraintsForConstructorExpression(
       } else if (!ctor.arguments || ctor.arguments.length === 0) {
         // Left without arguments - treat as a curried function
         // Left : 'a -> Either<'a, 'b>
-        const leftType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
-        const rightType = new PolymorphicTypeVariable("b", ctor.line, ctor.column)
+        const leftType = new PolymorphicTypeVariable(
+          "a",
+          ctor.line,
+          ctor.column
+        )
+        const rightType = new PolymorphicTypeVariable(
+          "b",
+          ctor.line,
+          ctor.column
+        )
         const eitherType = new AST.GenericType(
           "Either",
           [leftType, rightType],
           ctor.line,
           ctor.column
         )
-        return new AST.FunctionType(leftType, eitherType, ctor.line, ctor.column)
+        return new AST.FunctionType(
+          leftType,
+          eitherType,
+          ctor.line,
+          ctor.column
+        )
       }
       addError(
         ctx,
@@ -283,7 +313,11 @@ export function generateConstraintsForConstructorExpression(
       } else if (!ctor.arguments || ctor.arguments.length === 0) {
         // Cons without arguments - treat as a curried function
         // Cons : 'a -> List<'a> -> List<'a>
-        const elemType = new PolymorphicTypeVariable("a", ctor.line, ctor.column)
+        const elemType = new PolymorphicTypeVariable(
+          "a",
+          ctor.line,
+          ctor.column
+        )
         const listType = new AST.GenericType(
           "List",
           [elemType],
@@ -317,7 +351,12 @@ export function generateConstraintsForConstructorExpression(
         return applyConstructor(ctx, constructorType, ctor, env)
       }
 
-      addError(ctx, `Unknown constructor: ${constructorName}`, ctor.line, ctor.column)
+      addError(
+        ctx,
+        `Unknown constructor: ${constructorName}`,
+        ctor.line,
+        ctor.column
+      )
       return freshTypeVariable(ctx, ctor.line, ctor.column)
     }
   }
@@ -358,7 +397,11 @@ function applyConstructor(
 
   // Type check each argument
   for (let i = 0; i < ctor.arguments.length; i++) {
-    const argType = generateConstraintsForExpression(ctx, ctor.arguments[i], env)
+    const argType = generateConstraintsForExpression(
+      ctx,
+      ctor.arguments[i],
+      env
+    )
 
     // Add constraint that argument type matches expected parameter type
     addConstraint(

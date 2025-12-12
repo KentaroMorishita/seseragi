@@ -32,13 +32,64 @@ export {
   setNodeType,
   setTypeAliases,
 } from "./context"
+// Generators (Constraint Generation)
+export {
+  generalize,
+  generateConstraintsForApplicativeApply,
+  generateConstraintsForAssignmentExpression,
+  generateConstraintsForBinaryOperation,
+  generateConstraintsForConsExpression,
+  generateConstraintsForConstructorExpression,
+  // Dispatchers
+  generateConstraintsForExpression,
+  generateConstraintsForFunctionApplicationOperator,
+  // Statement generators
+  generateConstraintsForFunctionDeclaration,
+  generateConstraintsForFunctorMap,
+  generateConstraintsForIdentifier,
+  generateConstraintsForImplBlock,
+  generateConstraintsForImportDeclaration,
+  generateConstraintsForIsExpression,
+  generateConstraintsForListComprehension,
+  generateConstraintsForListComprehensionSugar,
+  // Expression generators
+  generateConstraintsForLiteral,
+  generateConstraintsForMonadBind,
+  generateConstraintsForNullishCoalescing,
+  generateConstraintsForRangeLiteral,
+  generateConstraintsForRecordDestructuring,
+  generateConstraintsForSignalExpression,
+  generateConstraintsForSpreadExpression,
+  generateConstraintsForStatement,
+  generateConstraintsForStructDeclaration,
+  generateConstraintsForStructDestructuring,
+  generateConstraintsForTupleDestructuring,
+  generateConstraintsForTypeAliasDeclaration,
+  generateConstraintsForTypeDeclaration,
+  generateConstraintsForVariableDeclaration,
+  // Helpers
+  instantiatePolymorphicType,
+} from "./generators"
+// Main API
+export {
+  getTypeOfNode,
+  getTypeOfVariable,
+  type InferResult,
+  infer,
+  inferExpression,
+} from "./infer"
 
+// Solver
+export {
+  type SolveResult,
+  solveConstraints,
+  solveConstraintsPartial,
+} from "./solver"
 // Type Alias Resolver
 export {
   resolveTypeAlias,
   resolveTypeAliasRecursively,
 } from "./type-alias-resolver"
-
 // Unifier
 export {
   isSubtype,
@@ -46,58 +97,3 @@ export {
   unify,
   unifyOrThrow,
 } from "./unifier"
-
-// Solver
-export {
-  solveConstraints,
-  solveConstraintsPartial,
-  type SolveResult,
-} from "./solver"
-
-// Generators (Constraint Generation)
-export {
-  // Dispatchers
-  generateConstraintsForExpression,
-  generateConstraintsForStatement,
-  // Expression generators
-  generateConstraintsForLiteral,
-  generateConstraintsForIdentifier,
-  generateConstraintsForBinaryOperation,
-  generateConstraintsForNullishCoalescing,
-  generateConstraintsForIsExpression,
-  generateConstraintsForFunctorMap,
-  generateConstraintsForApplicativeApply,
-  generateConstraintsForMonadBind,
-  generateConstraintsForFunctionApplicationOperator,
-  generateConstraintsForConstructorExpression,
-  generateConstraintsForSignalExpression,
-  generateConstraintsForAssignmentExpression,
-  generateConstraintsForConsExpression,
-  generateConstraintsForRangeLiteral,
-  generateConstraintsForListComprehension,
-  generateConstraintsForListComprehensionSugar,
-  generateConstraintsForSpreadExpression,
-  // Statement generators
-  generateConstraintsForFunctionDeclaration,
-  generateConstraintsForVariableDeclaration,
-  generateConstraintsForTypeDeclaration,
-  generateConstraintsForTypeAliasDeclaration,
-  generateConstraintsForStructDeclaration,
-  generateConstraintsForImplBlock,
-  generateConstraintsForImportDeclaration,
-  generateConstraintsForTupleDestructuring,
-  generateConstraintsForRecordDestructuring,
-  generateConstraintsForStructDestructuring,
-  // Helpers
-  instantiatePolymorphicType,
-  generalize,
-} from "./generators"
-
-// Main API
-export {
-  infer,
-  inferExpression,
-  getTypeOfNode,
-  getTypeOfVariable,
-  type InferResult,
-} from "./infer"

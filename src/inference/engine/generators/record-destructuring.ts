@@ -7,8 +7,8 @@ import { TypeConstraint } from "../../constraints"
 import {
   addConstraint,
   freshTypeVariable,
-  setNodeType,
   type InferenceContext,
+  setNodeType,
 } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 

@@ -4,20 +4,7 @@
  * 各文の種類に応じて適切なジェネレーターに振り分ける
  */
 
-import type {
-  Statement,
-  ExpressionStatement,
-  VariableDeclaration,
-  FunctionDeclaration,
-  TypeDeclaration,
-  TypeAliasDeclaration,
-  TupleDestructuring,
-  RecordDestructuring,
-  StructDestructuring,
-  StructDeclaration,
-  ImplBlock,
-  ImportDeclaration,
-} from "../../../ast"
+import type { Statement } from "../../../ast"
 import type { CodeGenContext } from "../../context"
 
 /**

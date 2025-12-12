@@ -80,10 +80,10 @@ import {
   UnionType,
   VariableDeclaration,
 } from "./ast"
-// @ts-ignore - ?rawインポートの型エラーを回避
-import runtimeSource from "./runtime/index.ts?raw"
 import type { InferResult } from "./inference/engine/infer"
 import type { TypeVariable } from "./inference/type-variables"
+// @ts-ignore - ?rawインポートの型エラーを回避
+import runtimeSource from "./runtime/index.ts?raw"
 import { type UsageAnalysis, UsageAnalyzer } from "./usage-analyzer"
 
 /**
@@ -1910,15 +1910,15 @@ ${indent}}`
     // デバッグ: 左辺の型情報を出力
     if (nullishCoalescing.left.kind === "FunctionApplication") {
       if (this.typeInferenceResult?.nodeTypeMap) {
-        const mappedType = this.typeInferenceResult.nodeTypeMap.get(
+        const _mappedType = this.typeInferenceResult.nodeTypeMap.get(
           nullishCoalescing.left
         )
 
         // 関数名を取得
         const funcApp = nullishCoalescing.left as FunctionApplication
         if (funcApp.function.kind === "Identifier") {
-          const funcName = (funcApp.function as Identifier).name
-          const funcType = this.typeInferenceResult.nodeTypeMap.get(
+          const _funcName = (funcApp.function as Identifier).name
+          const _funcType = this.typeInferenceResult.nodeTypeMap.get(
             funcApp.function
           )
         }
@@ -4560,7 +4560,12 @@ ${indent}}`
       return this.isPromiseExpression((expr as any).expression)
     }
 
-    // resolve/reject呼び出しの場合
+    // ResolveExpression / RejectExpression の場合
+    if (expr.kind === "ResolveExpression" || expr.kind === "RejectExpression") {
+      return true
+    }
+
+    // resolve/reject呼び出しの場合（FunctionCallとして解析される場合）
     if (expr.kind === "FunctionCall") {
       const funcCall = expr as FunctionCall
       if (
@@ -4669,7 +4674,12 @@ ${indent}}`
       return trueNeedsExecution && falseNeedsExecution
     }
 
-    // resolve/reject呼び出し（Unit -> Promise<T>として生成される）
+    // ResolveExpression / RejectExpression（Unit -> Promise<T>として生成される）
+    if (expr.kind === "ResolveExpression" || expr.kind === "RejectExpression") {
+      return true
+    }
+
+    // resolve/reject呼び出し（FunctionCallとして解析される場合）
     if (expr.kind === "FunctionCall") {
       const funcCall = expr as FunctionCall
       if (funcCall.function.kind === "Identifier") {

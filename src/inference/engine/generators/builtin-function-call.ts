@@ -72,7 +72,12 @@ export function generateConstraintsForBuiltinFunctionCall(
           call.column
         )
       }
-      addError(ctx, "head function requires exactly one argument", call.line, call.column)
+      addError(
+        ctx,
+        "head function requires exactly one argument",
+        call.line,
+        call.column
+      )
       return freshTypeVariable(ctx, call.line, call.column)
     }
 
@@ -102,7 +107,12 @@ export function generateConstraintsForBuiltinFunctionCall(
 
         return expectedListType
       }
-      addError(ctx, "tail function requires exactly one argument", call.line, call.column)
+      addError(
+        ctx,
+        "tail function requires exactly one argument",
+        call.line,
+        call.column
+      )
       return freshTypeVariable(ctx, call.line, call.column)
     }
 
@@ -113,7 +123,12 @@ export function generateConstraintsForBuiltinFunctionCall(
         generateConstraintsForExpression(ctx, firstArg, env)
         return new AST.PrimitiveType("Int", call.line, call.column)
       }
-      addError(ctx, "toInt function requires exactly one argument", call.line, call.column)
+      addError(
+        ctx,
+        "toInt function requires exactly one argument",
+        call.line,
+        call.column
+      )
       return freshTypeVariable(ctx, call.line, call.column)
     }
 
@@ -124,7 +139,12 @@ export function generateConstraintsForBuiltinFunctionCall(
         generateConstraintsForExpression(ctx, firstArg, env)
         return new AST.PrimitiveType("Float", call.line, call.column)
       }
-      addError(ctx, "toFloat function requires exactly one argument", call.line, call.column)
+      addError(
+        ctx,
+        "toFloat function requires exactly one argument",
+        call.line,
+        call.column
+      )
       return freshTypeVariable(ctx, call.line, call.column)
     }
 
@@ -135,7 +155,12 @@ export function generateConstraintsForBuiltinFunctionCall(
         generateConstraintsForExpression(ctx, firstArg, env)
         return new AST.PrimitiveType("String", call.line, call.column)
       }
-      addError(ctx, "typeof function requires exactly one argument", call.line, call.column)
+      addError(
+        ctx,
+        "typeof function requires exactly one argument",
+        call.line,
+        call.column
+      )
       return freshTypeVariable(ctx, call.line, call.column)
     }
 
@@ -145,7 +170,11 @@ export function generateConstraintsForBuiltinFunctionCall(
       const secondArg = call.arguments[1]
       if (call.arguments.length === 2 && firstArg && secondArg) {
         const signalType = generateConstraintsForExpression(ctx, firstArg, env)
-        const observerType = generateConstraintsForExpression(ctx, secondArg, env)
+        const observerType = generateConstraintsForExpression(
+          ctx,
+          secondArg,
+          env
+        )
 
         const valueType = freshTypeVariable(ctx, call.line, call.column)
         const expectedSignalType = new AST.GenericType(

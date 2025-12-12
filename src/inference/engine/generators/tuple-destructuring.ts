@@ -2,8 +2,8 @@
  * TupleDestructuring の制約生成
  */
 
-import * as AST from "../../../ast"
-import { setNodeType, type InferenceContext } from "../context"
+import type * as AST from "../../../ast"
+import { type InferenceContext, setNodeType } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 import { generateConstraintsForPattern } from "./pattern"
 

@@ -2,14 +2,14 @@
  * StructDestructuring の制約生成
  */
 
-import * as AST from "../../../ast"
+import type * as AST from "../../../ast"
 import { TypeConstraint } from "../../constraints"
 import {
   addConstraint,
   addError,
   freshTypeVariable,
-  setNodeType,
   type InferenceContext,
+  setNodeType,
 } from "../context"
 import { generateConstraintsForExpression } from "./dispatcher"
 
