@@ -3,7 +3,7 @@ import * as fs from "node:fs"
 import * as os from "node:os"
 import * as path from "node:path"
 import * as AST from "../ast.js"
-import { generateTypeScript } from "../codegen.js"
+import { generateTypeScript } from "../codegen/index.js"
 import { infer } from "../inference/engine/infer.js"
 import { Parser } from "../parser.js"
 

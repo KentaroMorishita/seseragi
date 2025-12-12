@@ -4,8 +4,34 @@
  * 各文の種類に応じて適切なジェネレーターに振り分ける
  */
 
-import type { Statement } from "../../../ast"
+import type {
+  ExpressionStatement,
+  FunctionDeclaration,
+  ImplBlock,
+  ImportDeclaration,
+  RecordDestructuring,
+  Statement,
+  StructDeclaration,
+  StructDestructuring,
+  TupleDestructuring,
+  TypeAliasDeclaration,
+  TypeDeclaration,
+  VariableDeclaration,
+} from "../../../ast"
 import type { CodeGenContext } from "../../context"
+import {
+  generateRecordDestructuring,
+  generateStructDestructuring,
+  generateTupleDestructuring,
+} from "./destructuring"
+import { generateExpressionStatement } from "./expression-statement"
+import { generateFunctionDeclaration } from "./function-declaration"
+import { generateImplBlock } from "./impl-block"
+import { generateImportDeclaration } from "./import-declaration"
+import { generateStructDeclaration } from "./struct-declaration"
+import { generateTypeAliasDeclaration } from "./type-alias-declaration"
+import { generateTypeDeclaration } from "./type-declaration"
+import { generateVariableDeclaration } from "./variable-declaration"
 
 /**
  * 文をTypeScriptコードに変換
@@ -18,43 +44,43 @@ export function generateStatement(
 ): string {
   switch (stmt.kind) {
     // ===================================================================
-    // TODO: 以下の文は段階的に移行する
-    // 現在は旧CodeGeneratorクラスへフォールバック
+    // 新モジュールに移行済み
     // ===================================================================
 
     case "ExpressionStatement":
+      return generateExpressionStatement(ctx, stmt as ExpressionStatement)
+
     case "VariableDeclaration":
+      return generateVariableDeclaration(ctx, stmt as VariableDeclaration)
+
     case "FunctionDeclaration":
-    case "TypeDeclaration":
-    case "TypeAliasDeclaration":
-    case "TupleDestructuring":
-    case "RecordDestructuring":
-    case "StructDestructuring":
-    case "StructDeclaration":
-    case "ImplBlock":
+      return generateFunctionDeclaration(ctx, stmt as FunctionDeclaration)
+
     case "ImportDeclaration":
-      // 旧実装へのフォールバック
-      // これらは段階的に新モジュールに移行する
-      return fallbackToLegacy(ctx, stmt)
+      return generateImportDeclaration(ctx, stmt as ImportDeclaration)
+
+    case "TypeDeclaration":
+      return generateTypeDeclaration(ctx, stmt as TypeDeclaration)
+
+    case "TypeAliasDeclaration":
+      return generateTypeAliasDeclaration(ctx, stmt as TypeAliasDeclaration)
+
+    case "StructDeclaration":
+      return generateStructDeclaration(ctx, stmt as StructDeclaration)
+
+    case "ImplBlock":
+      return generateImplBlock(ctx, stmt as ImplBlock)
+
+    case "TupleDestructuring":
+      return generateTupleDestructuring(ctx, stmt as TupleDestructuring)
+
+    case "RecordDestructuring":
+      return generateRecordDestructuring(ctx, stmt as RecordDestructuring)
+
+    case "StructDestructuring":
+      return generateStructDestructuring(ctx, stmt as StructDestructuring)
 
     default:
       return `/* Unsupported statement: ${(stmt as any).kind} */`
   }
-}
-
-/**
- * 旧CodeGeneratorクラスへのフォールバック
- *
- * 新モジュールに移行されていない文は旧実装を使用する
- * このフォールバックは段階的に削除される
- */
-function fallbackToLegacy(ctx: CodeGenContext, stmt: Statement): string {
-  // 旧実装へのフォールバック
-  // CodeGeneratorインスタンスがctxに存在する場合はそれを使用
-  if ((ctx as any).legacyGenerator) {
-    return (ctx as any).legacyGenerator.generateStatement(stmt)
-  }
-
-  // フォールバックが利用できない場合はエラーコメント
-  return `/* Statement requires legacy generator: ${(stmt as any).kind} */`
 }

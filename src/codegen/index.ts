@@ -4,7 +4,6 @@
  * SeseragiのASTをTypeScriptコードに変換する
  */
 
-// 公開API
 // コンテキスト
 export {
   builtinFunctions,
@@ -81,10 +80,19 @@ export {
   generatePatternBindings,
   generatePatternCondition,
 } from "./generators/patterns"
+// 公開API - メインエントリーポイント
+// 旧APIとの互換性のためのエイリアス
+export {
+  generateProgram,
+  generateProgram as generateTypeScript,
+} from "./generators/program"
 // Statement generators
 export {
   generateExpressionStatement,
+  generateRecordDestructuring,
   generateStatement,
+  generateStructDestructuring,
+  generateTupleDestructuring,
   generateVariableDeclaration,
 } from "./generators/statements"
 

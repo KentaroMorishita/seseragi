@@ -1,7 +1,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 import { Program, type TypeAliasDeclaration } from "../ast.js"
-import { generateTypeScript } from "../codegen.js"
+import { generateTypeScript } from "../codegen/index.js"
 import { type InferResult, infer } from "../inference/engine/infer.js"
 import { Parser } from "../parser.js"
 

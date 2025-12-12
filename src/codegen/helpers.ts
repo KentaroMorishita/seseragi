@@ -50,6 +50,7 @@ export function isBasicOperator(op: string): boolean {
     "*",
     "/",
     "%",
+    "**",
     "==",
     "!=",
     "<",
