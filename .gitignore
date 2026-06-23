@@ -46,6 +46,8 @@ coverage/
 # Temporary folders
 tmp/
 temp/
+_wip/
+tempCodeRunnerFile.*
 
 # Optional eslint cache
 .eslintcache
@@ -71,3 +73,4 @@ temp/
 
 # Local settings
 .claude/settings.local.json
+.serena/
