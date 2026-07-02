@@ -1593,6 +1593,24 @@ export class Parser {
     return expr
   }
 
+  private assignmentExpressionWithoutPipeline(): AST.Expression {
+    let expr = this.functionApplicationExpressionWithoutPipeline()
+
+    while (this.match(TokenType.SIGNAL_ASSIGN)) {
+      const operator = this.previous().value
+      const right = this.functionApplicationExpressionWithoutPipeline()
+      expr = new AST.BinaryOperation(
+        expr,
+        operator,
+        right,
+        this.previous().line,
+        this.previous().column
+      )
+    }
+
+    return expr
+  }
+
   // 関数適用演算子（最低優先順位）
   private functionApplicationExpression(): AST.Expression {
     let expr = this.conditionalExpression()
@@ -1602,6 +1620,28 @@ export class Parser {
       if (this.match(TokenType.FUNCTION_APPLICATION)) {
         this.skipNewlines()
         const right = this.functionApplicationExpression() // 右結合のため再帰
+        expr = new AST.FunctionApplicationOperator(
+          expr,
+          right,
+          this.previous().line,
+          this.previous().column
+        )
+      } else {
+        break
+      }
+    }
+
+    return expr
+  }
+
+  private functionApplicationExpressionWithoutPipeline(): AST.Expression {
+    let expr = this.conditionalExpressionWithoutPipeline()
+
+    while (true) {
+      this.skipNewlines()
+      if (this.match(TokenType.FUNCTION_APPLICATION)) {
+        this.skipNewlines()
+        const right = this.functionApplicationExpressionWithoutPipeline()
         expr = new AST.FunctionApplicationOperator(
           expr,
           right,
@@ -1644,7 +1684,7 @@ export class Parser {
     return this.tryExpressionOrNext()
   }
 
-  private topLevelExpressionWithoutPipeline(): AST.Expression {
+  private conditionalExpressionWithoutPipeline(): AST.Expression {
     if (this.match(TokenType.IF)) {
       const condition = this.binaryExpressionWithoutPipeline()
       this.skipNewlines()
@@ -1670,6 +1710,10 @@ export class Parser {
     }
 
     return this.binaryExpressionWithoutPipeline()
+  }
+
+  private topLevelExpressionWithoutPipeline(): AST.Expression {
+    return this.assignmentExpressionWithoutPipeline()
   }
 
   private matchExpression(): AST.MatchExpression {

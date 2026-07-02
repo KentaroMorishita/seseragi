@@ -190,4 +190,20 @@ describe("Parser", () => {
     expect((rightSide.left as AST.Literal).value).toBe(2)
     expect((rightSide.right as AST.Literal).value).toBe(3)
   })
+
+  it("should parse list comprehensions whose element uses $", () => {
+    const source = "[print $ fizzBuzz n | n <- 1..=100]"
+    const parser = new Parser(source)
+    const program = parser.parse()
+
+    expect(program.errors).toHaveLength(0)
+    expect(program.statements).toHaveLength(1)
+
+    const stmt = program.statements[0] as AST.ExpressionStatement
+    const expr = stmt.expression as AST.ListComprehension
+    expect(expr.kind).toBe("ListComprehension")
+
+    const element = expr.expression as AST.FunctionApplicationOperator
+    expect(element.kind).toBe("FunctionApplicationOperator")
+  })
 })
