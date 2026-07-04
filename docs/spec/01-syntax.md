@@ -224,7 +224,7 @@ struct内の `operator` 糖衣で行います。
 
 ```text
 as alias do effect else fails False fn for foreign from if impl import infix infixl infixr let
-match opaque operator pub rec struct then trait True type when where with
+match newtype opaque operator pub rec struct then trait True type when where with
 ```
 
 `constructor`、`method`、`property`、`value`、`pure`、`task` はforeign block内だけでkeywordに

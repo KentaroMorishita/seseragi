@@ -27,7 +27,7 @@ Seseragiが保証する意味を記述します。
 - `if` / `match` / block expression
 - lambda、pipeline、低優先順位application
 - Maybe専用の短絡fallback `??`
-- 固定operator、struct operator overload、userland custom infix operator
+- 固定operator、struct/newtype operator overload、userland custom infix operator
 - genericなdo notation
 - 正規Effect型へ展開される `effect fn`
 - Iterableを逐次実行するeffectful `for`
@@ -38,15 +38,15 @@ Seseragiが保証する意味を記述します。
 
 - rank-1 let-polymorphism
 - 明示型parameterとcall-site inference
-- user-defined generic ADT、struct、alias、method
+- user-defined generic ADT、struct、newtype、alias、method
 - kind checkingとhigher-kinded parameter `M<_>`
-- nominal ADT/struct、structural immutable record
+- nominal ADT/struct/newtype、structural immutable record
 - trait constraint、coherent instance、operator functional dependency
 - invariant generic型と、明記されたcapability coercion
 
 ### データと抽象化
 
-- ADT、record、struct、tuple、Array、List、両collectionのcomprehensionとpattern
+- ADT、record、struct、newtype、tuple、Array、List、両collectionのcomprehensionとpattern
 - 網羅的pattern match
 - Eq、Ord、Show、Debug、Hashの限定的なderiving
 - Showで検査される純粋なtemplate interpolation
@@ -102,7 +102,7 @@ Seseragiが保証する意味を記述します。
 3. showは純粋な文字列化で、print/logはservice requirementを持つEffectである。
 4. do notationは任意のMonadに使えるが、異なるMonadを暗黙liftしない。
 5. standard operator overloadはtrait instance、custom operatorは名前付き多相関数である。
-6. type aliasはinstance identityを作らず、nominal identityにはADTかstructを使う。
+6. type aliasはinstance identityを作らず、nominal identityにはADT、struct、newtypeを使う。
 7. foreign値は境界型を経由し、TypeScriptの型をSeseragi内部型として扱わない。
 8. `.d.ts` converterはbinding候補を生成し、Seseragi型システムをTypeScriptへ従属させない。
 9. module importだけではEffectを実行せず、I/Oを発生させない。

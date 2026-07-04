@@ -1,0 +1,19 @@
+newtype Score deriving Eq, Ord, Show = Int
+
+impl Score {
+  operator + self -> other: Score -> Score =
+    match (self, other) {
+      (Score left, Score right) -> Score (left + right)
+    }
+}
+
+fn addBonus score: Score -> Score =
+  score + Score 10
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ show $ addBonus (Score 32)
+
+// Expected stdout:
+// Score 42

@@ -179,7 +179,7 @@ law test helper を提供します。
 
 ## 4.9 deriving
 
-ADTとstructは、限定された標準traitのinstanceをcompilerに導出させられます。
+ADT、struct、newtypeは、限定された標準traitのinstanceをcompilerに導出させられます。
 
 ```seseragi
 pub struct User<A> deriving Eq, Show, Debug {
@@ -191,6 +191,8 @@ type Color deriving Eq, Ord, Show =
   | Red
   | Green
   | Blue
+
+newtype UserId deriving Eq, Ord, Hash, Show = Int
 ```
 
 `deriving` は型parameterの後、宣言本体の前に置きます。導出できるtraitは `Eq`、`Ord`、
@@ -204,14 +206,19 @@ type Color deriving Eq, Ord, Show =
 
 - structでは、すべてのfield型が対象traitのinstanceを持つ。
 - ADTでは、すべてのvariant payload型が対象traitのinstanceを持つ。
+- newtypeでは、内部表現型が対象traitのinstanceを持つ。
 - generic型では、必要なconstraintを生成instanceへ加える。
 - opaque型でも宣言module内では導出できる。instanceの利用から表現は公開されない。
 - `Hash` の導出には同じ型の `Eq` instanceも必要である。
 
 `Eq`と`Hash`は宣言されたfield順・variant順を使います。`Ord`はvariantの宣言順を第一キー、
-payloadを辞書式順序で比較します。`Show`はconstructor名と公開されているfield名を含む
+payloadを辞書式順序で比較します。newtypeのEq、Ord、Hashは内部値へ委譲します。
+`Show`はconstructor名と公開されているfield名を含む
 source-likeな表現を返します。`Debug`は同じ構造をdeveloper向けに詳細表示しますが、文字列の
 互換性を保証しません。
+
+newtypeのderived ShowとDebugはwrapperを透明化せず、`UserId 42` のようにconstructor名を
+含めます。型の意味を表示から失わないためです。
 
 derivingは構文木を受け取る汎用マクロではありません。生成可能な宣言、導出条件、名前解決は
 この節で閉じており、user codeを任意に生成・実行する能力を持ちません。

@@ -33,6 +33,7 @@ top-levelには次だけを書けます。
 - `fn`
 - `effect fn`
 - `type`
+- `newtype`
 - `alias`
 - `struct`
 - inherent `impl`
@@ -47,8 +48,8 @@ top-levelには次だけを書けます。
 
 ## 6.4 visibility
 
-宣言は既定でmodule-privateです。`pub` を付けた `let`、`fn`、`effect fn`、`type`、`alias`、`struct`、
-`trait`、custom `operator`、`foreign` blockだけを他moduleから参照できます。
+宣言は既定でmodule-privateです。`pub` を付けた `let`、`fn`、`effect fn`、`type`、`newtype`、
+`alias`、`struct`、`trait`、custom `operator`、`foreign` blockだけを他moduleから参照できます。
 
 ```seseragi
 pub fn findUser id: UserId -> Task<FindError, Maybe<User>> = ...
@@ -57,8 +58,8 @@ pub fn findUser id: UserId -> Task<FindError, Maybe<User>> = ...
 公開 `let` と公開関数は完全な型注釈を必要とします。公開型の署名からprivate型を参照
 できません。
 
-公開ADTのconstructorと公開structのfieldは、既定で型と一緒に公開されます。表現を
-隠したい場合は `opaque` を付けます。
+公開ADTと公開newtypeのconstructor、公開structのfieldは、既定で型と一緒に公開されます。
+表現を隠したい場合は `opaque` を付けます。
 
 ```seseragi
 pub opaque struct UserId {
@@ -67,10 +68,15 @@ pub opaque struct UserId {
 
 pub opaque type Token =
   | Token String
+
+pub opaque newtype Email = String
 ```
 
 opaque型は他moduleから型名だけを参照できます。constructor、field、destructuringは
 定義module内だけで使えます。公開された通常関数とmethodを通して操作します。
+
+非opaqueな公開newtypeの右辺型は公開APIに現れるため、private型を参照できません。opaque
+newtypeの右辺型はmodule外のsignatureへ現れないため、private型を使えます。
 
 inherent methodも既定でprivateです。他moduleから呼べるmethodには `pub fn` を付けます。
 trait instance自体へvisibility modifierは付けません。instanceを宣言したmoduleが現在moduleの
@@ -99,6 +105,11 @@ import formの意味は次のとおりです。
 - alias importはlocal名だけを変更する。
 - namespace importは `text.trim` のようなqualified accessだけを許可する。
 - wildcardで全名をunqualifiedに導入する構文はない。
+
+同じspellingが型namespaceと値namespaceの両方で公開されている場合、named import一つで両方を
+導入します。aliasも両方へ同じlocal spellingを与えます。この規則により、非opaqueなnewtypeは
+`import { UserId }` だけで型とconstructorを利用できます。参照位置のnamespaceで区別するため、
+曖昧にはなりません。
 
 ## 6.6 module specifierの解決
 
@@ -139,8 +150,8 @@ re-export graphも通常のimport graphに含まれます。
 - module alias
 - custom operator
 
-同じnamespace内で同じ名前を重複定義できません。ADT constructorは値namespaceに入り、
-型parameterは宣言scope内の型namespaceへ入ります。
+同じnamespace内で同じ名前を重複定義できません。ADTとnewtypeのconstructorは値namespaceに
+入り、型parameterは宣言scope内の型namespaceへ入ります。
 
 unqualified名はlocal binding、現在moduleの宣言、明示import、preludeの順に検索します。
 同じ段階に複数候補があれば曖昧エラーです。後から追加したimportが、既存の曖昧な参照を

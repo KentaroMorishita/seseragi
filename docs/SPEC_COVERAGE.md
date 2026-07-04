@@ -23,7 +23,7 @@
 - 式中心、strict evaluation、左から右の評価順序
 - 不変bindingと不変data
 - curry、部分適用、rank-1 let-polymorphism
-- generic function / ADT / struct / alias / impl
+- generic function / ADT / struct / newtype / alias / impl
 - Eq / Ord / Show / Debug / Hashの限定的なderiving
 - Showで型検査されるtemplate interpolation
 - Array / Listのliteral、pattern、comprehension、明示変換
@@ -31,6 +31,7 @@
 - kind、arity、型構築子parameter
 - nominal型とstructural record
 - ADT、網羅的match、pattern guard
+- 単一値のnominal wrapperを表すnewtypeとopaque境界
 
 ### 抽象化
 
@@ -93,7 +94,6 @@
 
 ### boilerplate削減
 
-- nominal wrapperを簡潔に書くnewtype相当の構文
 - record / struct decoderとencoderの導出
 
 ### packageとtooling contract
@@ -156,11 +156,10 @@
 
 ## 次に詰める順序
 
-1. newtypeを決め、日常的なdata modelingのboilerplateを確定する。
-2. package manifestと標準project layoutを決め、module仕様を閉じる。
-3. standard collection / Effect / Stream / Signalの公開signatureをmodule単位で固定する。
-4. runtime concurrency contractを固定する。
-5. diagnostic、formatter、document commentをtooling contractとして固定する。
-6. TypeScript binding generatorのnamingと設定schemaを固定する。
+1. package manifestと標準project layoutを決め、module仕様を閉じる。
+2. standard collection / Effect / Stream / Signalの公開signatureをmodule単位で固定する。
+3. runtime concurrency contractを固定する。
+4. diagnostic、formatter、document commentをtooling contractとして固定する。
+5. TypeScript binding generatorのnamingと設定schemaを固定する。
 
 この順序は実装順ではなく、仕様の依存順です。

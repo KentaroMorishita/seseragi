@@ -17,6 +17,7 @@ top-decl        = [ "pub" ], let-decl
                 | [ "pub" ], fn-decl
                 | [ "pub" ], effect-fn-decl
                 | [ "pub" ], [ "opaque" ], type-decl
+                | [ "pub" ], [ "opaque" ], newtype-decl
                 | [ "pub" ], alias-decl
                 | [ "pub" ], [ "opaque" ], struct-decl
                 | [ "pub" ], trait-decl
@@ -41,6 +42,8 @@ effect-failure  = "fails", type ;
 
 type-decl       = "type", upper-name, [ type-params ], [ deriving-clause ], "=",
                   variant, { variant }, terminator ;
+newtype-decl    = "newtype", upper-name, [ type-params ], [ deriving-clause ],
+                  "=", type, terminator ;
 alias-decl      = "alias", upper-name, [ type-params ], "=", type, terminator ;
 variant         = "|", upper-name, [ type ] ;
 struct-decl     = "struct", upper-name, [ type-params ], [ deriving-clause ],
@@ -157,6 +160,7 @@ terminator      = NEWLINE | ";" ;
 - parameterを省略した関数宣言は匿名Unit parameterを一つ持ちます。
 - `if` は必ず `else` を持ちます。
 - ADT variant は `|` で始めます。
+- newtypeは型名と同名の一引数constructorを導入します。
 - pipeline は `|>` です。
 - method は `value.method arg` です。
 - block は braces で囲み、インデントに意味はありません。

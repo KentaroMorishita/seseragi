@@ -57,7 +57,7 @@ partial functionは標準APIにしません。
 - `find: (A -> Bool) -> Array<A> -> Maybe<A>`
 
 Array/List間の変換は `Array.toList` と `List.toArray` です。変換順序を保ち、暗黙には
-呼び出されません。comprehension、literal、patternの意味は3.7と3.8に従います。
+呼び出されません。comprehension、literal、patternの意味は3.8と3.9に従います。
 
 tuple、record、Array、Listには、全要素がEqを満たす場合の構造的なEq instanceを提供します。
 nominalなstructとADTのEqは、型を定義したmoduleが明示的なimplまたはderivingでinstanceを
