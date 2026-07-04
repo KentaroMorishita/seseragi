@@ -34,6 +34,7 @@
 |     16 | structured concurrency       | Fiber, Deferred, `join`                  |
 |     17 | asynchronous sequence        | Stream, backpressure                     |
 |     18 | resource lifetime            | scope, acquire/release                   |
+|     19 | recursive generic data       | generic ADT, `rec`, record spread        |
 
 ApplicativeをMonad/doより先に置きます。前の結果へ依存しない処理を最初からbind列へしないためです。
 `do` はEffect専用構文ではなく、Lesson 10で `>>=` と対応づけてからadvanced lessonで使います。

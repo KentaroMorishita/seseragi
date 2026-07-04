@@ -1,0 +1,42 @@
+// Lesson 19: generic ADT・再帰関数・record spreadを学ぶ
+// 前提: Lessons 11-14
+
+// 再帰ADTでは、再帰する位置にも同じ型引数Aを明示します。
+type Tree<A> deriving Eq, Show =
+  | Leaf A
+  | Branch (Tree<A>, Tree<A>)
+
+// rec groupは、関数本体から自分自身を参照することを明示します。
+rec {
+  fn mapTree<A, B> f: (A -> B) -> tree: Tree<A> -> Tree<B> =
+    match tree {
+      Leaf value -> Leaf (f value)
+      Branch (left, right) ->
+        Branch (mapTree f left, mapTree f right)
+    }
+
+  fn sumTree tree: Tree<Int> -> Int =
+    match tree {
+      Leaf value -> value
+      Branch (left, right) -> sumTree left + sumTree right
+    }
+}
+
+let tree = Branch (
+  Branch (Leaf 1, Leaf 2),
+  Branch (Leaf 3, Leaf 4)
+)
+
+let doubled = mapTree (\value -> value * 2) tree
+let baseSummary = { label: "doubled tree", total: 0 }
+
+// record spreadは元recordを変更せず、後続fieldで必要な値だけを上書きします。
+let summary = { ...baseSummary, total: sumTree doubled }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `${summary.label}: ${summary.total}`
+
+// Expected stdout:
+// doubled tree: 20
