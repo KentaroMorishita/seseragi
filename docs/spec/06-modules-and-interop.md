@@ -37,6 +37,7 @@ top-levelには次だけを書けます。
 - inherent `impl`
 - trait `impl`
 - `trait`
+- custom `operator`
 - `foreign` declaration
 - `rec` group
 
@@ -86,6 +87,10 @@ import * as text from "std/text"
 
 importはmodule先頭に置きます。同じscopeへ同名を二度導入できません。未使用importは
 warningであり、意味には影響しません。
+
+operator importはsymbolだけでなくfixity、precedence、型schemeをmodule interfaceから取得します。
+language serverを含むconsumerはimport先のfunction bodyをparseまたは実行せず、公開interfaceだけで
+operator chainを解決できます。
 
 import formの意味は次のとおりです。
 

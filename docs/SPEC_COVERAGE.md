@@ -60,6 +60,15 @@
 - TypeScript向け公開ABI
 - `.d.ts` subset変換、unsupported診断、更新差分
 
+### parserとtooling
+
+- raw operator scanとheader scanの分離
+- module interfaceによるcustom operator fixity解決
+- lossless CSTとflat operator chain
+- incomplete source、unknown operator、missing tokenのrecovery contract
+- compiler / formatter / language server間の構文一致
+- fixity変更によるdependent documentのinvalidation
+
 ### 標準ライブラリ
 
 - preludeの境界
@@ -114,8 +123,6 @@
 - diagnostic codeとseverity
 - type inference traceの表示
 - non-exhaustive matchのfix suggestion
-- custom operator / generic angle bracket ambiguityのformatter rule
-- incomplete sourceを扱うrecovery grammar
 
 ## 意図的に採用しない
 

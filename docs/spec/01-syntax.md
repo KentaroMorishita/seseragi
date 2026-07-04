@@ -189,8 +189,7 @@ operator symbolはASCIIの次の文字を2文字以上組み合わせます。
 ```
 
 標準operator、`->`、`<-`、`..`、`...`、`//`、`??`、`:=` は予約済みで再定義できません。
-lexerは現在scopeで宣言されたoperatorを最長一致で読みます。prefixとpostfixのcustom
-operatorはありません。
+prefixとpostfixのcustom operatorはありません。
 
 `<<`、`>>`、`>>>` のように `<` と `>` だけからなるsymbolはgeneric delimiterと衝突するため、
 custom operatorとして宣言できません。
@@ -204,6 +203,10 @@ import { operator <+> } from "./semigroup"
 同じsymbolを二つscopeへ導入すると曖昧エラーです。同じ優先順位で異なるfixityのoperatorを
 一つの式に混ぜる場合は括弧が必要です。operator宣言はmodule interfaceのpre-scanで収集する
 ため、source内の宣言位置より前でも使えます。
+
+raw scannerは宣言済みoperatorを参照せず、operator文字列をlosslessに保持します。header scan、
+module interface解決、flat operator chain、fixity resolutionの共通手順は
+[Parser・formatter・language server契約](./11-tooling.md)に従います。
 
 標準operatorの型別overloadはcustom operator定義ではなく、standard trait instanceまたは
 struct内の `operator` 糖衣で行います。

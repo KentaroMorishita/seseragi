@@ -16,7 +16,8 @@ Seseragiが保証する意味を記述します。
 9. [`.d.ts` binding生成](./08-dts-conversion.md)
 10. [標準ライブラリ契約](./09-standard-library.md)
 11. [標準ライブラリsurface](./10-library-surface.md)
-12. [Appendix A: 文法要約](./grammar.md)
+12. [Parser・formatter・language server契約](./11-tooling.md)
+13. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 
@@ -82,6 +83,13 @@ Seseragiが保証する意味を記述します。
 - Console、Logger、filesystem、process、HTTP
 - testing、law testing、deterministic test service
 
+### tooling
+
+- compiler / formatter / language serverで共有するlossless CST
+- operator header scan、module interface、fixity resolution
+- incomplete sourceとunknown operatorのerror recovery
+- dependency fixity変更のincremental invalidation
+
 ## cross-cutting invariants
 
 1. 通常の値は不変で、外部状態を変える操作はEffectを返す。
@@ -95,6 +103,7 @@ Seseragiが保証する意味を記述します。
 9. module importだけではEffectを実行せず、I/Oを発生させない。
 10. 現行compilerの挙動や対応範囲は、言語仕様の意味を変更しない。
 11. derivingとtemplate展開は仕様で閉じ、汎用マクロとして任意のcode生成を許さない。
+12. compiler、formatter、language serverは同じtoken境界とoperator結合規則を使う。
 
 ## 明示的に採用しないもの
 
