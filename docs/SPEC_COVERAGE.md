@@ -54,6 +54,8 @@
 - Signal snapshot read `*signal` と更新 `:=`
 - transaction、glitch-free更新、subscription lifetime
 - SignalChangeによるmulti-signal transactionとswitchMap lifetime
+- cooperative schedulerのweak fairnessとstructured Fiber supervision
+- Queue / Ref / Deferred / Semaphoreの型・順序・cancellation semantics
 - Console / LoggerとShowの分離
 
 ### moduleと外部境界
@@ -112,8 +114,7 @@
 
 ### runtime contract
 
-- scheduler fairnessとFiber supervision
-- Queue / Ref / Deferred / Semaphoreの完全な型とcancellation semantics
+- Effect timeout / retry / repeat / resource combinatorの完全な公開signature
 - Streamのbackpressure、merge ordering、buffer overflow policy
 - SignalとStream間変換のloss policy
 - process signalとgraceful shutdown

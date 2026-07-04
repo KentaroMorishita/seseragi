@@ -536,17 +536,68 @@ random sourceを読みません。
 
 Effect moduleは9.8のoperationに加え、次を提供します。
 
-- `service`, `provide`, `provideSome`
-- `attempt`, `fromEither`, `fromMaybe`
-- `timeout`, `retry`, `repeat`
-- `race`, `parallel`, `forEach`, `forEachParallel`
-- `bracket`, `scoped`, `acquireRelease`
-- `fork`, `join`, `interrupt`
+- environment: `service`, `provideSome`
+- value/error変換: `attempt`, `fromEither`, `fromMaybe`
+- temporal control: `timeout`, `retry`, `repeat`
+- resource: `bracket`, `scoped`, `acquireRelease`
 
-並行処理用に `Fiber<E, A>`、`Queue<A>`、`Ref<A>`、`Semaphore`、`Deferred<E, A>` を提供します。
-これらの生成と操作はEffectです。
+この節ではconcurrencyとsynchronization primitiveのsignatureを固定します。上のoperationのretry policy、
+timeout result、resource exit caseはruntime resource契約と一緒に別節で固定します。
 
-Refはatomic stateで、subscriberを持ちません。Signalはreactive graph、Refは同期primitiveです。
+```seseragi
+type FiberExit<E, A> =
+  | FiberSucceeded A
+  | FiberFailed E
+  | FiberCancelled
+
+fn fork<R, E, A> effect: Effect<R, E, A>
+  -> Effect<R, Never, Fiber<E, A>>
+fn await<E, A> fiber: Fiber<E, A> -> Task<Never, FiberExit<E, A>>
+fn poll<E, A> fiber: Fiber<E, A> -> Task<Never, Maybe<FiberExit<E, A>>>
+fn join<E, A> fiber: Fiber<E, A> -> Task<E, A>
+fn interrupt<E, A> fiber: Fiber<E, A> -> Task<Never, Unit>
+fn yieldNow -> Task<Never, Unit>
+
+fn race<R, E, A>
+  left: Effect<R, E, A>
+  -> right: Effect<R, E, A>
+  -> Effect<R, E, A>
+
+fn scoped<R, E, A> effect: Effect<R, E, A> -> Effect<R, E, A>
+```
+
+`Fiber<E, A>` はstandard opaque typeです。`race` は最初に終了したsuccessまたはfailureを返し、loserへ
+cancellationを要求してfinalizer完了を待ちます。同じscheduler turnで両方が終了した場合はleftを
+選びます。`scoped` は内側scopeを作り、5.11のsupervision規則でresourceとchild Fiberを閉じます。
+
+bounded parallelismはvalidated valueで指定します。
+
+```seseragi
+type ParallelismError deriving Eq, Show =
+  | NonPositiveParallelism Int
+
+fn parallelism value: Int -> Either<ParallelismError, Parallelism>
+fn unboundedParallelism -> Parallelism
+
+fn forEachParallel<C, R, E, A>
+  parallelism: Parallelism
+  -> f: (A -> Effect<R, E, Unit>)
+  -> values: C
+  -> Effect<R, E, Unit>
+where Reducible<C, A>
+
+fn traverseParallel<C, R, E, A, B>
+  parallelism: Parallelism
+  -> f: (A -> Effect<R, E, B>)
+  -> values: C
+  -> Effect<R, E, Array<B>>
+where Reducible<C, A>
+```
+
+`parallelism` は正数だけを受理し、`unboundedParallelism ()` は有限入力の全要素を開始可能にします。
+parallel operationは入力をsource順にindex付けし、最大parallelism件だけ同時実行します。結果Arrayは
+完了順でなく入力順です。最初に観測したfailureで未開始要素を開始せず、実行中Fiberをcancelします。
+同じturnの複数failureは入力indexが小さいものを選びます。
 
 Iterableを逐次処理する基本signatureは次です。
 
@@ -560,6 +611,89 @@ where Iterable<C, A>
 
 `forEach` は `iterate values` の順に一件ずつEffectを実行し、最初のfailureで停止します。
 `forEachParallel` は同じ名前のoverloadではなく、並行数と結果順序を明示する別APIです。
+
+### `std/ref`
+
+```seseragi
+fn make<A> initial: A -> Task<Never, Ref<A>>
+fn get<A> reference: Ref<A> -> Task<Never, A>
+fn set<A> value: A -> reference: Ref<A> -> Task<Never, Unit>
+fn update<A> f: (A -> A) -> reference: Ref<A> -> Task<Never, Unit>
+fn modify<A, B>
+  f: (A -> (B, A)) -> reference: Ref<A> -> Task<Never, B>
+```
+
+Refはstandard opaque typeで、全operationはlinearizableです。update/modifyのpure callbackはatomic
+section内で一度だけ呼び、Effectを返せません。Refはsubscriberを持たない同期primitiveで、Signalとは
+別の型です。callbackがdefectで停止した場合は新しい値を保存しません。
+
+### `std/deferred`
+
+```seseragi
+fn make<E, A> -> Task<Never, Deferred<E, A>>
+fn await<E, A> deferred: Deferred<E, A> -> Task<E, A>
+fn poll<E, A> deferred: Deferred<E, A>
+  -> Task<Never, Maybe<Either<E, A>>>
+fn complete<E, A>
+  result: Either<E, A> -> deferred: Deferred<E, A> -> Task<Never, Bool>
+fn succeed<E, A> value: A -> deferred: Deferred<E, A> -> Task<Never, Bool>
+fn fail<E, A> error: E -> deferred: Deferred<E, A> -> Task<Never, Bool>
+```
+
+Deferredは一度だけ完了するstandard opaque typeです。最初のcompleteだけTrueを返して全waiterを登録順に
+runnableにし、以後はFalseです。awaitのcancellationはそのwaiterだけを除き、Deferredを完了させません。
+完了とcancellationが同じturnなら、先にschedulerへ登録されたeventを採用します。
+
+### `std/queue`
+
+```seseragi
+type QueueCreateError deriving Eq, Show =
+  | NonPositiveCapacity Int
+
+type QueueClosed deriving Eq, Show =
+  | QueueClosed
+
+fn bounded<A> capacity: Int -> Task<QueueCreateError, Queue<A>>
+fn unbounded<A> -> Task<Never, Queue<A>>
+fn offer<A> value: A -> queue: Queue<A> -> Task<QueueClosed, Unit>
+fn take<A> queue: Queue<A> -> Task<QueueClosed, A>
+fn tryOffer<A>
+  value: A -> queue: Queue<A> -> Task<Never, Either<QueueClosed, Bool>>
+fn tryTake<A>
+  queue: Queue<A> -> Task<Never, Either<QueueClosed, Maybe<A>>>
+fn size<A> queue: Queue<A> -> Task<Never, Int>
+fn close<A> queue: Queue<A> -> Task<Never, Unit>
+```
+
+QueueはFIFOのstandard opaque typeです。boundedは正capacityだけを受理します。offerは空きができるまで、
+takeは値が来るまでsuspendし、waiterもFIFOです。待機中offerのcancellationは値をenqueueせず、待機中
+takeのcancellationは値をconsumeしません。acceptとcancellationが同じturnなら登録順で決めます。
+
+closeはidempotentです。close後のofferと待機中offerはQueueClosedになります。buffer済みvalueとclose時点で
+成立できるtakeはFIFOでdrainし、その後のtakeはQueueClosedです。tryOfferは待たず、成功enqueueなら
+Right True、満杯ならRight False、closedならLeftです。tryTakeも待たず、value、empty、closedを
+それぞれRight (Just value)、Right Nothing、Leftで区別します。
+
+### `std/semaphore`
+
+```seseragi
+type SemaphoreCreateError deriving Eq, Show =
+  | NonPositivePermits Int
+
+fn make permits: Int -> Task<SemaphoreCreateError, Semaphore>
+fn acquire semaphore: Semaphore -> Task<Never, Permit>
+fn release permit: Permit -> Task<Never, Unit>
+fn withPermit<R, E, A>
+  semaphore: Semaphore
+  -> effect: Effect<R, E, A>
+  -> Effect<R, E, A>
+fn available semaphore: Semaphore -> Task<Never, Int>
+```
+
+SemaphoreとPermitはstandard opaque typeです。makeは正permit数だけを受理します。acquire waiterは
+FIFOで、待機中cancellationはpermitを消費しません。Permitは取得元Semaphoreに属し、releaseは
+idempotentです。withPermitはacquire後にeffectを一度実行し、success、failure、cancellationのすべてで
+releaseしてから終了します。
 
 ## 10.12 `std/stream`
 
