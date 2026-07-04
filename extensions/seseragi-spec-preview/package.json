@@ -27,6 +27,110 @@
     "configurationDefaults": {
       "files.associations": {
         "**/examples/spec/*.ssrg": "seseragi-spec-preview"
+      },
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "scope": "keyword.operator.pipeline.seseragi",
+            "settings": {
+              "foreground": "#E5C07B",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "keyword.operator.application.seseragi",
+            "settings": {
+              "foreground": "#E5C07B",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "keyword.operator.generator.seseragi",
+            "settings": {
+              "foreground": "#C678DD",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "keyword.operator.bind.seseragi",
+            "settings": {
+              "foreground": "#56B6C2",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": [
+              "keyword.operator.map.seseragi",
+              "keyword.operator.apply.seseragi"
+            ],
+            "settings": {
+              "foreground": "#56B6C2",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "keyword.operator.signal.seseragi",
+            "settings": {
+              "foreground": "#D19A66",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "keyword.operator.assignment.seseragi",
+            "settings": {
+              "foreground": "#D19A66"
+            }
+          },
+          {
+            "scope": "keyword.operator.arithmetic.seseragi",
+            "settings": {
+              "foreground": "#61AFEF"
+            }
+          },
+          {
+            "scope": "keyword.operator.comparison.seseragi",
+            "settings": {
+              "foreground": "#61AFEF"
+            }
+          },
+          {
+            "scope": [
+              "keyword.operator.logical.seseragi",
+              "keyword.operator.nullish-coalescing.seseragi"
+            ],
+            "settings": {
+              "foreground": "#C678DD"
+            }
+          },
+          {
+            "scope": [
+              "keyword.operator.range.seseragi",
+              "keyword.operator.spread.seseragi"
+            ],
+            "settings": {
+              "foreground": "#98C379"
+            }
+          },
+          {
+            "scope": "keyword.operator.cons.seseragi",
+            "settings": {
+              "foreground": "#56B6C2"
+            }
+          },
+          {
+            "scope": "keyword.operator.custom.seseragi",
+            "settings": {
+              "foreground": "#E06C75",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "keyword.operator.arrow.seseragi",
+            "settings": {
+              "foreground": "#ABB2BF"
+            }
+          }
+        ]
       }
     }
   }
