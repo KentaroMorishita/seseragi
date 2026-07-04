@@ -142,7 +142,46 @@ struct内の `operator` 宣言はこれら標準trait instanceの糖衣です。
 あります。law は型検査では証明しませんが、instance の契約です。標準ライブラリは
 law test helper を提供します。
 
-## 4.8 method と型クラスの違い
+## 4.8 deriving
+
+ADTとstructは、限定された標準traitのinstanceをcompilerに導出させられます。
+
+```seseragi
+pub struct User<A> deriving Eq, Show, Debug {
+  id: UserId,
+  value: A,
+}
+
+type Color deriving Eq, Ord, Show =
+  | Red
+  | Green
+  | Blue
+```
+
+`deriving` は型parameterの後、宣言本体の前に置きます。導出できるtraitは `Eq`、`Ord`、
+`Show`、`Debug`、`Hash` です。任意のuser-defined traitを導出することはできません。
+
+導出はcompiler builtinの特別なruntime dispatchではなく、通常のtrait instanceを生成する
+意味を持ちます。生成instanceもcoherenceとorphan ruleに従います。同じinstanceを明示的な
+`impl` と `deriving` の両方で定義すると重複instanceエラーです。
+
+導出条件は次のとおりです。
+
+- structでは、すべてのfield型が対象traitのinstanceを持つ。
+- ADTでは、すべてのvariant payload型が対象traitのinstanceを持つ。
+- generic型では、必要なconstraintを生成instanceへ加える。
+- opaque型でも宣言module内では導出できる。instanceの利用から表現は公開されない。
+- `Hash` の導出には同じ型の `Eq` instanceも必要である。
+
+`Eq`と`Hash`は宣言されたfield順・variant順を使います。`Ord`はvariantの宣言順を第一キー、
+payloadを辞書式順序で比較します。`Show`はconstructor名と公開されているfield名を含む
+source-likeな表現を返します。`Debug`は同じ構造をdeveloper向けに詳細表示しますが、文字列の
+互換性を保証しません。
+
+derivingは構文木を受け取る汎用マクロではありません。生成可能な宣言、導出条件、名前解決は
+この節で閉じており、user codeを任意に生成・実行する能力を持ちません。
+
+## 4.9 method と型クラスの違い
 
 - `impl User { ... }` は User 固有の名前空間に method を加える。
 - `impl Eq<User> { ... }` は既存の抽象操作に User の instance を与える。
@@ -151,7 +190,7 @@ law test helper を提供します。
 
 両者を同じ dispatch 規則にはしません。
 
-## 4.9 do notation
+## 4.10 do notation
 
 `do` は `Monad<M>` に対するbind列を読みやすく書く構文です。特定の `Effect` や `Task` に
 限定しません。
@@ -174,7 +213,7 @@ do blockには次をsource順に書けます。
 
 最後の式は必須です。`pure value` は現在の `Applicative<M>` の `pure` を使います。
 
-## 4.10 desugar
+## 4.11 desugar
 
 do blockは次の規則で右からdesugarします。
 
@@ -191,7 +230,7 @@ bind左辺はirrefutable patternでなければなりません。literal、ADT c
 など失敗しうるpatternは使えません。pattern失敗を暗黙の `MonadFail` に変換しません。
 必要ならbind後に網羅的な `match` を書きます。
 
-## 4.11 do blockの型
+## 4.12 do blockの型
 
 各monadic expressionは同じ型構築子 `M<_>` を持ち、`Monad<M>` instanceが一意に必要です。
 最初のbind、最後の式、または期待型から `M` を決定します。複数候補が残る場合は曖昧

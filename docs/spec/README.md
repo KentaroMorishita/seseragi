@@ -43,6 +43,8 @@ Seseragiが保証する意味を記述します。
 
 - ADT、record、struct、tuple、Array、List
 - 網羅的pattern match
+- Eq、Ord、Show、Debug、Hashの限定的なderiving
+- Showで検査される純粋なtemplate interpolation
 - Functor、Applicative、Monad、Semigroup、Monoid
 - do notationとmonad transformer
 
@@ -90,6 +92,7 @@ Seseragiが保証する意味を記述します。
 8. `.d.ts` converterはbinding候補を生成し、Seseragi型システムをTypeScriptへ従属させない。
 9. module importだけではEffectを実行せず、I/Oを発生させない。
 10. 現行compilerの挙動や対応範囲は、言語仕様の意味を変更しない。
+11. derivingとtemplate展開は仕様で閉じ、汎用マクロとして任意のcode生成を許さない。
 
 ## 明示的に採用しないもの
 
@@ -102,6 +105,7 @@ Seseragiが保証する意味を記述します。
 - overlapping / orphan trait instance
 - implicit monad transformer lift
 - `perform` / `handle` algebraic effect
+- user-definedな汎用構文マクロと手続きマクロ
 - user-defined prefix / postfix operator
 - TypeScript `any` の無警告受け入れ
 

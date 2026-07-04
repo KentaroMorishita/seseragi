@@ -11,6 +11,8 @@
 - 不変bindingと不変data
 - curry、部分適用、rank-1 let-polymorphism
 - generic function / ADT / struct / alias / impl
+- Eq / Ord / Show / Debug / Hashの限定的なderiving
+- Showで型検査されるtemplate interpolation
 - kind、arity、型構築子parameter
 - nominal型とstructural record
 - ADT、網羅的match、pattern guard
@@ -56,7 +58,6 @@
 
 ### boilerplate削減
 
-- Eq / Ord / Show / Debug / Hashのderiving syntaxと生成条件
 - nominal wrapperを簡潔に書くnewtype相当の構文
 - record / struct decoderとencoderの導出
 
@@ -110,12 +111,13 @@
 - overlapping / orphan instance
 - implicit transformer lift
 - algebraic `perform` / `handle`
+- user-definedな汎用構文マクロと手続きマクロ
 - user-defined prefix / postfix operator
 - TypeScript checkerへの型意味論の委譲
 
 ## 次に詰める順序
 
-1. derivingとnewtypeを決め、日常的なdata modelingのboilerplateを確定する。
+1. newtypeを決め、日常的なdata modelingのboilerplateを確定する。
 2. package manifestと標準project layoutを決め、module仕様を閉じる。
 3. standard collection / Effect / Stream / Signalの公開signatureをmodule単位で固定する。
 4. runtime concurrency contractを固定する。

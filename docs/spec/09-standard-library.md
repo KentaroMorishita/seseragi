@@ -245,6 +245,11 @@ trait Show<A> {
 `show` は純粋で、I/O、throw、global locale参照を行いません。localeやformat optionが必要な
 表示は引数を取る名前付きformatterとして定義します。
 
+backtick templateのinterpolationは `Show` を使います。たとえば
+`` `user: ${user}` `` は概念上 `"user: " <> show user` へ展開されます。templateは
+compilerが構文として検査しますが、`show`自体は通常のtrait methodであり、compiler builtinや
+マクロではありません。
+
 `Debug<A>` はdeveloper向け表現です。compiler/runtime version間で文字列互換性を保証せず、
 protocol、永続化、snapshot formatへ使ってはなりません。secretを含む型はDebugを実装しないか、
 明示的にredactします。

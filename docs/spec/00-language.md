@@ -75,7 +75,11 @@ pub fn main unit: Unit -> Task<AppError, Unit> =
 - 例外を通常のエラー処理に使う仕組み
 - 任意の union 型と intersection 型
 - `perform` / `handle` を持つalgebraic effect system
+- user-definedな汎用構文マクロと手続きマクロ
 - ユーザー定義のprefix / postfix演算子
 - `return` による関数途中からの脱出
 
 これらに似た外部値や外部挙動は、外部連携境界で明示的に扱います。
+
+`deriving` とtemplate Stringは、仕様で入力と展開意味を閉じた限定的なコンパイル時機能です。
+任意の構文木を受け取ってcodeを生成する汎用マクロ機構ではありません。

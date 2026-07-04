@@ -31,13 +31,14 @@ fn-params       = parameter, { "->", parameter } ;
 parameter       = lower-name, ":", type-atom ;
 fn-body         = "=", expr, terminator | block ;
 
-type-decl       = "type", upper-name, [ type-params ], "=",
+type-decl       = "type", upper-name, [ type-params ], [ deriving-clause ], "=",
                   variant, { variant }, terminator ;
 alias-decl      = "alias", upper-name, [ type-params ], "=", type, terminator ;
 variant         = "|", upper-name, [ type ] ;
-struct-decl     = "struct", upper-name, [ type-params ],
+struct-decl     = "struct", upper-name, [ type-params ], [ deriving-clause ],
                   "{", [ field, { ",", field }, [ "," ] ], "}" ;
 field           = lower-name, ":", type ;
+deriving-clause = "deriving", upper-name, { ",", upper-name } ;
 
 trait-decl      = "trait", upper-name, type-params, [ constraints ],
                   "{", { trait-method }, "}" ;
