@@ -1,0 +1,36 @@
+// Lesson 20: MaybeTでMaybeのshort-circuitをEffectへ重ねる
+// 前提: Lessons 10 and 18
+
+import { MaybeT } from "std/transformer/maybe"
+import * as maybeT from "std/transformer/maybe"
+
+struct User {
+  name: String,
+}
+
+// 型aliasでapplicationが使うtransformer stackへ短い名前を付けます。
+alias App<A> = MaybeT<Effect<{ console: Console }, ConsoleError, _>, A>
+
+fn findUser id: Int -> Maybe<User> =
+  if id == 1
+  then Just (User { name: "Aki" })
+  else Nothing
+
+fn greet userId: Int -> App<Unit> =
+  do {
+    // fromMaybeはNothingをMaybeTのshort-circuitとしてstackへ持ち上げます。
+    user <- maybeT.fromMaybe (findUser userId)
+
+    // liftはbase EffectをMaybeTへ埋め込みます。Effectをこの場で実行する操作ではありません。
+    maybeT.lift $ println $ `Hello, ${user.name}!`
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  // runはMaybeTを一層だけ外します。残ったMaybeはmapでUnitへ畳み、mainの戻り型を揃えます。
+  maybeT.run (greet 1)
+    |> map (\_ -> ())
+
+// Expected stdout:
+// Hello, Aki!

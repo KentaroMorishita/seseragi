@@ -306,9 +306,68 @@ struct WriterT<W, M<_>, A> {
 }
 ```
 
+transformer型と次のoperationは、それぞれ `std/transformer/maybe`、`either`、`reader`、`state`、
+`writer` moduleから公開します。同名の `run` と `lift` はmodule aliasで修飾します。
+
+```seseragi
+// std/transformer/maybe
+fn run<M<_>, A> value: MaybeT<M, A> -> M<Maybe<A>>
+fn fromMaybe<M<_>, A> value: Maybe<A> -> MaybeT<M, A>
+where Monad<M>
+fn lift<M<_>, A> value: M<A> -> MaybeT<M, A>
+where Monad<M>
+
+// std/transformer/either
+fn run<E, M<_>, A> value: EitherT<E, M, A> -> M<Either<E, A>>
+fn fromEither<E, M<_>, A> value: Either<E, A> -> EitherT<E, M, A>
+where Monad<M>
+fn lift<E, M<_>, A> value: M<A> -> EitherT<E, M, A>
+where Monad<M>
+
+// std/transformer/reader
+fn run<R, M<_>, A> environment: R -> value: ReaderT<R, M, A> -> M<A>
+fn ask<R, M<_>> -> ReaderT<R, M, R>
+where Monad<M>
+fn asks<R, M<_>, A> f: (R -> A) -> ReaderT<R, M, A>
+where Monad<M>
+fn local<R, M<_>, A>
+  f: (R -> R) -> value: ReaderT<R, M, A> -> ReaderT<R, M, A>
+where Monad<M>
+fn lift<R, M<_>, A> value: M<A> -> ReaderT<R, M, A>
+where Monad<M>
+
+// std/transformer/state
+fn run<S, M<_>, A> initial: S -> value: StateT<S, M, A> -> M<(A, S)>
+fn get<S, M<_>> -> StateT<S, M, S>
+where Monad<M>
+fn put<S, M<_>> value: S -> StateT<S, M, Unit>
+where Monad<M>
+fn modify<S, M<_>> f: (S -> S) -> StateT<S, M, Unit>
+where Monad<M>
+fn lift<S, M<_>, A> value: M<A> -> StateT<S, M, A>
+where Monad<M>
+
+// std/transformer/writer
+fn run<W, M<_>, A> value: WriterT<W, M, A> -> M<(A, W)>
+fn tell<W, M<_>> output: W -> WriterT<W, M, Unit>
+where Monad<M>, Monoid<W>
+fn listen<W, M<_>, A> value: WriterT<W, M, A> -> WriterT<W, M, (A, W)>
+where Monad<M>, Monoid<W>
+fn lift<W, M<_>, A> value: M<A> -> WriterT<W, M, A>
+where Monad<M>, Monoid<W>
+```
+
 各transformerは `Monad<M>` constraintのもとでFunctor、Applicative、Monad instanceを持ち、
 base monadを持ち上げる `lift` を自身のmoduleで提供します。WriterTはさらに `Monoid<W>` を
 要求します。
+
+MaybeTはNothing、EitherTはLeftを観測すると後続のtransformer計算を開始しません。それ以前にbase
+monadで実行済みのoperationは取り消しません。ReaderTは同じenvironmentを後続へ渡し、`local` の変更は
+指定したsubcomputationだけへ適用します。StateTは左から右にstateを渡します。WriterTはMonoidの
+`append` で左から右にoutputを蓄積します。
+
+`run` はtransformerを一層だけ外し、base monadを実行しません。`lift` もbase monadをその場で実行せず、
+stackへ埋め込むだけです。異なるtransformer間の暗黙liftや、自動的なstack順序の変更はありません。
 
 transformerの順序は意味を持ちます。StateTの外側にEitherを置くstackと、EitherTの外側に
 Stateを置くstackを自動変換しません。failure時にstateを保持するか捨てるかなどの違いを、

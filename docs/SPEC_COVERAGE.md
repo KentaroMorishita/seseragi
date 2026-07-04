@@ -43,7 +43,7 @@
 - standard operator overloadとfunctional dependency
 - userland custom infix operator
 - generic do notation
-- monad transformerの標準形
+- monad transformerの標準形とmodule-qualifiedなrun / lift API
 
 ### Effectと状態
 
