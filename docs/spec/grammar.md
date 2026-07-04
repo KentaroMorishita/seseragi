@@ -96,12 +96,18 @@ generic-name    = name, [ type-args ] ;
 operator-reference = "(", referencable-operator, ")" ;
 referencable-operator = arithmetic-operator | comparison-operator | ":"
                      | ">>=" | "<$>" | "<*>" | custom-operator ;
-operator        = standard-operator | custom-operator ;
 application     = postfix, { postfix } ;
 postfix         = primary, { ".", lower-name | "[", expr, "]" } ;
-assignment-expr = fallback-expr, [ ":=", assignment-expr ] ;
+assignment-expr = low-application-expr, [ ":=", assignment-expr ] ;
+low-application-expr = pipeline-expr, [ "$", application-rhs ] ;
+application-rhs = if-expr | match-expr | do-expr | lambda
+                | low-application-expr ;
+pipeline-expr   = fallback-expr,
+                  { ( ">>=" | "<$>" | "<*>" | "|>" ), fallback-expr } ;
 fallback-expr   = operator-expr, [ "??", fallback-expr ] ;
-operator-expr   = unary-expr, { operator, unary-expr } ;
+operator-expr   = unary-expr, { infix-operator, unary-expr } ;
+infix-operator  = arithmetic-operator | comparison-operator | ":"
+                | "&&" | "||" | custom-operator ;
 unary-expr      = ( "!" | "-" | "*" ), unary-expr | application ;
 
 pattern         = "_" | literal | lower-name | upper-name, [ pattern ]

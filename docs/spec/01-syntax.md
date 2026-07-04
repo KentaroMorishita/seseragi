@@ -92,9 +92,33 @@ show $ expensiveComputation input
 - `x |> f` は `f x`。
 - `f $ x` は `f x`。
 - `|>` は左結合。
-- `$` は右結合で、すべての二項演算子より優先順位が低い。
+- `$` は右結合で、Signal更新 `:=` を除くすべての二項演算子より優先順位が低い。
 
 `|` 単独は ADT variant と comprehension の区切りに使い、pipeline には使いません。
+
+`$` は通常の関数適用と同じ型付け・評価を持つ、括弧削減のための固定構文です。
+
+```seseragi
+show $ normalize $ load input
+render $ values |> map toView
+consume $ if ready then cached else build ()
+```
+
+それぞれ次と同じ意味です。
+
+```seseragi
+show (normalize (load input))
+render (map toView values)
+consume (if ready then cached else build ())
+```
+
+`f $ g $ x` は `f $ (g $ x)` と解析します。左辺を一度評価し、次に右辺を評価して、一引数の
+関数適用を一度行います。`$` 自体は評価を遅延せず、Effectを実行せず、関数を複数引数で
+呼び出す仕組みにもなりません。左辺が関数型でない場合は通常の関数適用と同じ型エラーです。
+
+`$` の直後では改行でき、右辺に `if`、`match`、`do`、lambdaを括弧なしで置けます。`$` は
+overload、再定義、`($)`による関数値化ができません。compilerは型検査前に通常applicationへ
+desugarしても、同じ制約を直接生成しても構いません。
 
 ## 1.7 演算子
 
