@@ -1,0 +1,16 @@
+import { forEach } from "std/effect"
+
+fn fizzBuzz number: Int -> String =
+  if number % 15 == 0 then "FizzBuzz"
+  else if number % 3 == 0 then "Fizz"
+  else if number % 5 == 0 then "Buzz"
+  else show number
+
+pub fn main unit: Unit
+  -> Effect<{ console: Console }, ConsoleError, Unit> =
+  [number | number <- 1..=100]
+    |> forEach (\number -> println (fizzBuzz number))
+
+// Expected stdout:
+// 1から100までを一行ずつ出力する。
+// 3の倍数はFizz、5の倍数はBuzz、15の倍数はFizzBuzz。

@@ -37,6 +37,7 @@ Effect<R, E, A>   environment Rを要求し、Eで失敗しうる遅延計算
 Task<E, A>        Effect<{}, E, A>のalias
 Array<A>          不変の連続列
 List<A>           不変の連結リスト
+Range<A>          Aの有限な順序付きrange。range literalはRange<Int>
 Signal<A>         読み取り専用の時間変化する値
 MutableSignal<A>  更新可能なsource Signal
 (A, B, ...)       tuple

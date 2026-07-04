@@ -68,6 +68,9 @@
 - incomplete source、unknown operator、missing tokenのrecovery contract
 - compiler / formatter / language server間の構文一致
 - fixity変更によるdependent documentのinvalidation
+- lexical / semantic syntax highlightのtoken契約
+- playgroundとCLIのfrontend・example source共有
+- example単位のcompiler / formatter / LSP / highlight / playground conformance
 
 ### 標準ライブラリ
 
@@ -76,6 +79,12 @@
 - Effect / Stream / Signal / concurrency
 - Console / Logger / filesystem / process / HTTP
 - test runtimeとlaw test
+
+### executable design example
+
+- `examples/spec/` を現行実装ではなく刷新仕様のtargetとして管理
+- 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
+- playground sampleへsourceを複製せず生成・直接読込する
 
 ## 追加定義が必要
 

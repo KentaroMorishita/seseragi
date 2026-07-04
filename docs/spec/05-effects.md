@@ -129,7 +129,8 @@ Effectを実行する操作は通常のSeseragi codeへ公開しません。host
 callback adapterなどの明示された境界でだけEffectを実行します。
 
 実行時にhostはenvironmentを一度組み立て、`R` の全serviceを満たすことを型検査済みwrapperで
-保証します。requirementが残ったEffectは実行できません。
+保証します。entry pointの `R` にあるserviceをhost targetが提供できない場合、packageの
+実行準備をコンパイルまたは起動前に拒否します。Effect実行中にservice lookupを失敗させません。
 
 ## 5.10 defect
 

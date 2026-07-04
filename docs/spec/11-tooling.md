@@ -130,3 +130,39 @@ compilerとlanguage serverは、少なくとも次を同じ結合結果として
 - nested genericの末尾 `>>`
 - unknown operatorを含む不完全なfileの後続宣言
 - dependency側のfixity変更後の再解決
+
+## 11.10 syntax highlight
+
+syntax highlighterはproject全体の型検査がなくても、comment、String、number、keyword、delimiter、
+固定operator、custom operator候補をlexical tokenから分類できなければなりません。importと
+module interfaceが得られる場合、language serverのsemantic tokenで型、constructor、関数、trait、
+operator declarationとoperator referenceを追加分類します。
+
+lexical highlightとsemantic highlightでtoken境界を変えてはなりません。unknown operatorも一つの
+operator tokenとして表示し、複数の既知tokenへ推測分割しません。不完全なStringやcommentの
+色付けが後続file全体へ漏れないrecovery caseをconformance testに含めます。
+
+## 11.11 playground
+
+playgroundは専用の簡易parserやruntime semanticsを持ちません。compiler frontend、formatter、
+diagnostic、実行hostを再利用し、CLIと同じsourceへ同じ結果を返します。browserなどhost targetの
+差はservice providerで表し、言語構文の分岐にしません。
+
+playground sampleは `examples/spec/` のsourceから生成または直接読み込みます。同じprogramを
+playground source内へ手作業で複製してはなりません。exampleの変更を取り込んだ生成物には
+source fileと内容hashを記録し、stale sampleを検出できなければなりません。
+
+## 11.12 languageとしての最低surface
+
+仕様example一つを「対応済み」とするには、少なくとも次が同じsourceに対して成立する必要が
+あります。
+
+- parseとtype check
+- format後の再parseで同じ意味を保つ
+- CLIまたは対応hostでの実行
+- language serverのdiagnostic、hover、definition、completion
+- lexicalおよびsemantic syntax highlight
+- playgroundでの読み込みと実行
+
+compilerだけが受理する構文、またはplaygroundだけが変換して受理する構文を言語機能の完成とは
+扱いません。

@@ -89,6 +89,9 @@ Seseragiが保証する意味を記述します。
 - operator header scan、module interface、fixity resolution
 - incomplete sourceとunknown operatorのerror recovery
 - dependency fixity変更のincremental invalidation
+- lexical / semantic syntax highlightのtoken一致
+- CLIと同じfrontendを使うplayground
+- `examples/spec/` を共有するconformance workflow
 
 ## cross-cutting invariants
 

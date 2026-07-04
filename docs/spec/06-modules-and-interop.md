@@ -168,8 +168,13 @@ top-level `let` は、それより前の `let` とすべての関数宣言だけ
 実行可能packageは、manifestで指定したmoduleから公開 `main` を一つ解決します。
 
 ```seseragi
-pub fn main unit: Unit -> Task<AppError, Unit> = ...
+pub fn main unit: Unit -> Effect<AppEnv, AppError, Unit> = ...
 ```
+
+`AppEnv` はclosedなstructural recordでなければなりません。manifestのhost targetはentry pointへ
+供給できるserviceを宣言し、`AppEnv` の各fieldを満たします。空recordなら `Task<AppError, Unit>`
+と書けます。hostが提供しないapplication固有serviceは、mainが返す前に `provide` しなければ
+なりません。
 
 library packageはentry pointを持たなくて構いません。importされたmoduleの `main` を暗黙実行
 しません。

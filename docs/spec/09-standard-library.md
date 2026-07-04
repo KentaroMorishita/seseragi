@@ -200,6 +200,11 @@ fn provide<R, E, A>
   environment: R -> effect: Effect<R, E, A> -> Task<E, A>
 fn parallel<R, E, A>
   effects: Array<Effect<R, E, A>> -> Effect<R, E, Array<A>>
+fn forEach<F<_>, R, E, A>
+  action: (A -> Effect<R, E, Unit>)
+  -> values: F<A>
+  -> Effect<R, E, Unit>
+where Iterable<F>
 ```
 
 異なるenvironment requirementを合成するときは、型検査器が5.5のrequirement wideningで
@@ -207,6 +212,10 @@ fn parallel<R, E, A>
 
 parallelの結果順は入力順です。最初に観測したfailureを返して残りをcancelします。同じ
 scheduler tickで複数failureを観測した場合は、入力indexが小さいものを返します。
+
+`forEach` は先頭から末尾へ逐次実行し、各actionが成功してから次へ進みます。空collectionは
+何もせず成功します。最初のfailureで停止し、後続actionを開始しません。結果を収集する操作は
+`traverse`、並列実行は `forEachParallel` と別名で提供します。
 
 Task moduleは `Effect<{}, E, A>` にspecializeした同名operationを提供します。
 `map`と`flatMap`はEffect固有の別関数ではなく、FunctorとMonadのtrait methodです。
