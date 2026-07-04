@@ -31,6 +31,7 @@ top-levelには次だけを書けます。
 - importとre-export
 - `let`
 - `fn`
+- `effect fn`
 - `type`
 - `alias`
 - `struct`
@@ -46,7 +47,7 @@ top-levelには次だけを書けます。
 
 ## 6.4 visibility
 
-宣言は既定でmodule-privateです。`pub` を付けた `let`、`fn`、`type`、`alias`、`struct`、
+宣言は既定でmodule-privateです。`pub` を付けた `let`、`fn`、`effect fn`、`type`、`alias`、`struct`、
 `trait`、custom `operator`、`foreign` blockだけを他moduleから参照できます。
 
 ```seseragi
@@ -168,13 +169,15 @@ top-level `let` は、それより前の `let` とすべての関数宣言だけ
 実行可能packageは、manifestで指定したmoduleから公開 `main` を一つ解決します。
 
 ```seseragi
-pub fn main unit: Unit -> Effect<AppEnv, AppError, Unit> = ...
+pub effect fn main -> Unit
+with AppEnv
+fails AppError = ...
 ```
 
-`AppEnv` はclosedなstructural recordでなければなりません。manifestのhost targetはentry pointへ
-供給できるserviceを宣言し、`AppEnv` の各fieldを満たします。空recordなら `Task<AppError, Unit>`
-と書けます。hostが提供しないapplication固有serviceは、mainが返す前に `provide` しなければ
-なりません。
+これは匿名Unit parameterを持つ `Unit -> Effect<AppEnv, AppError, Unit>` 型の関数です。
+manifestのhost targetはentry pointへ `()` を渡し、返されたEffectへenvironmentを供給して
+実行します。`AppEnv` はclosedなstructural recordでなければなりません。hostが提供しない
+application固有serviceは、mainが返すEffectを構成する時点で `provide` しなければなりません。
 
 library packageはentry pointを持たなくて構いません。importされたmoduleの `main` を暗黙実行
 しません。

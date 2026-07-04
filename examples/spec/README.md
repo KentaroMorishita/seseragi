@@ -18,5 +18,5 @@ exampleを追加するときは、一般的なcodeを書くために毎回自前
 
 ## 一覧
 
-- `01-fizzbuzz.ssrg`: tuple pattern match、range、comprehension、pipeline、Effectの逐次実行、
+- `01-fizzbuzz.ssrg`: tuple pattern match、template、range、`effect fn`、effectful `for`、`$`、
   Console出力。

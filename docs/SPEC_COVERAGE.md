@@ -45,6 +45,7 @@
 ### Effectと状態
 
 - Effectのenvironment / error / success channel
+- 正規Effect型へ展開される `effect fn` とeffectful `for`
 - Task alias
 - 順次・並列、resource、cancellation、defect
 - Signal / MutableSignal

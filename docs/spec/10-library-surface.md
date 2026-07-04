@@ -182,7 +182,7 @@ time moduleは少なくとも `Instant`、`Duration`、`LocalDate`、`LocalTime`
 現在時刻とsleepはClock serviceを要求します。
 
 ```seseragi
-fn now unit: Unit -> Effect<{ clock: Clock }, ClockError, Instant>
+fn now -> Effect<{ clock: Clock }, ClockError, Instant>
 fn sleep duration: Duration -> Effect<{ clock: Clock }, Never, Unit>
 ```
 

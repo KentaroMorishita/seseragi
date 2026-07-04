@@ -66,14 +66,15 @@ Seseragiの簡潔さは、記号を減らすことではなく、データの形
 実行可能プログラムは次の名前を公開しなければなりません。
 
 ```seseragi
-pub fn main unit: Unit -> Effect<AppEnv, AppError, Unit> =
+pub effect fn main -> Unit
+with AppEnv
+fails AppError =
   program
 ```
 
-`AppEnv` はclosedなstructural service recordです。空environmentなら戻り型を
-`Task<AppError, Unit>` と書けます。成功時に失敗しないプログラムはerror型を `Never` にできます。
-`main` の実行方法、environment provider、終了コードへの写像はhost target規約に従いますが、
-Effect自体の意味は言語仕様に従います。
+これは `main: Unit -> Effect<AppEnv, AppError, Unit>` を宣言する糖衣です。`AppEnv` はclosedな
+structural service recordです。`main` の実行方法、environment provider、終了コードへの写像は
+host target規約に従いますが、Effect自体の意味は言語仕様に従います。
 
 ## 0.4 この仕様に存在しないもの
 

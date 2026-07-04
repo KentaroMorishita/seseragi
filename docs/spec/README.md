@@ -29,6 +29,8 @@ Seseragiが保証する意味を記述します。
 - Maybe専用の短絡fallback `??`
 - 固定operator、struct operator overload、userland custom infix operator
 - genericなdo notation
+- 正規Effect型へ展開される `effect fn`
+- Iterableを逐次実行するeffectful `for`
 - Signal snapshot read `*signal`
 - Signal専用 `:=`
 

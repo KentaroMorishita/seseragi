@@ -66,6 +66,56 @@ alias App<A> = Effect<AppEnv, AppError, A>
 Effectはcoldです。作っただけでは実行しません。同じEffectを二度実行すると計算も二度
 実行します。
 
+### `effect fn`
+
+`effect fn` はEffectを返す関数を読みやすく宣言する糖衣です。
+
+```seseragi
+effect fn greet name: String -> Unit
+with Console
+fails ConsoleError =
+  println $ `hello ${name}`
+```
+
+これは次の正規型を持ちます。
+
+```seseragi
+fn greet name: String
+  -> Effect<{ console: Console }, ConsoleError, Unit> = ...
+```
+
+surfaceの戻り型 `Unit` はEffectのsuccess型です。`with`はenvironment requirement、`fails`は
+failure型を表します。`with`を省略すると `{}`、`fails`を省略すると `Never` です。body自体は
+対応するEffect型を持たなければならず、通常値を暗黙にEffectへ持ち上げません。
+
+parameterを書かない宣言にも1.4の匿名Unit parameter規則を適用します。
+
+```seseragi
+effect fn initialize -> Unit = succeed ()
+```
+
+この型は `Unit -> Task<Never, Unit>` であり、呼び出しは `initialize ()` です。
+
+`with Console` は標準serviceが宣言するcanonical requirement名を使う糖衣で、ここでは
+`{ console: Console }` へ展開します。標準serviceにcanonical名がない場合や、同じservice型を
+複数要求する場合は `with primary: Database, replica: Database` のようにfield名を明示します。
+`effect fn` は型表記だけの糖衣であり、Effectの評価・実行境界を変更しません。
+
+### effectful `for`
+
+`for pattern <- values { body }` は、有限なIterableを先頭から末尾へ逐次処理するEffect式です。
+
+```seseragi
+for user <- users {
+  println $ user.name
+}
+```
+
+patternはirrefutableでなければなりません。bodyは `Effect<R, E, Unit>`、式全体も
+`Effect<R, E, Unit>` です。これは `forEach (\pattern -> body) values` へdesugarします。
+空collectionは何もせず成功し、最初のfailureで停止します。`break`と`continue`はありません。
+parallel実行へ自動変換せず、必要な場合は `forEachParallel` を明示します。
+
 ## 5.5 environment requirement
 
 `R` は必要なservice fieldだけを持つrecord型です。Effectを合成すると、各計算が要求する

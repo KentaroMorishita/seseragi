@@ -113,6 +113,15 @@ fn add x: Int -> y: Int -> Int = x + y
 の型は `Int -> Int -> Int` で、`add 1` の型は `Int -> Int` です。
 parameter は左から右へ bind されます。
 
+parameterを一つも書かない宣言は、名前のないUnit parameterを一つ持ちます。
+
+```seseragi
+fn clock -> Instant = ...
+```
+
+この型は `Unit -> Instant` です。`Unit` は型、`()` はその唯一の値で、呼び出しは `clock ()`
+です。parameter名を使わないこと以外は通常の一引数関数と同じです。
+
 ## 2.8 型の同一性と coercion
 
 Seseragi に一般的な暗黙変換はありません。
@@ -224,7 +233,7 @@ let explicit = identity<String> "hello"
 なければ呼び出せません。
 
 ```seseragi
-fn empty<A> unit: Unit -> List<A> = `[]
+fn empty<A> -> List<A> = `[]
 
 let names: List<String> = empty ()
 let numbers = empty<Int> ()

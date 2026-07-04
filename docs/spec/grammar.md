@@ -15,6 +15,7 @@ import-item     = name, [ "as", name ]
 
 top-decl        = [ "pub" ], let-decl
                 | [ "pub" ], fn-decl
+                | [ "pub" ], effect-fn-decl
                 | [ "pub" ], [ "opaque" ], type-decl
                 | [ "pub" ], alias-decl
                 | [ "pub" ], [ "opaque" ], struct-decl
@@ -25,11 +26,18 @@ top-decl        = [ "pub" ], let-decl
                 | rec-group ;
 
 let-decl        = "let", pattern, [ ":", type ], "=", expr, terminator ;
-fn-decl         = "fn", lower-name, [ type-params ], fn-params,
+fn-decl         = "fn", lower-name, [ type-params ], [ fn-params ],
                   "->", type, [ constraints ], fn-body ;
 fn-params       = parameter, { "->", parameter } ;
 parameter       = lower-name, ":", type-atom ;
 fn-body         = "=", expr, terminator | block ;
+effect-fn-decl  = "effect", "fn", lower-name, [ type-params ],
+                  [ fn-params ], "->", type,
+                  [ effect-requirements ], [ effect-failure ],
+                  [ constraints ], fn-body ;
+effect-requirements = "with", capability, { ",", capability } ;
+capability      = upper-name | lower-name, ":", type ;
+effect-failure  = "fails", type ;
 
 type-decl       = "type", upper-name, [ type-params ], [ deriving-clause ], "=",
                   variant, { variant }, terminator ;
@@ -42,7 +50,7 @@ deriving-clause = "deriving", upper-name, { ",", upper-name } ;
 
 trait-decl      = "trait", upper-name, type-params, [ constraints ],
                   "{", { trait-method }, "}" ;
-trait-method    = "fn", lower-name, [ type-params ], fn-params,
+trait-method    = "fn", lower-name, [ type-params ], [ fn-params ],
                   "->", type, [ constraints ], terminator ;
 impl-decl       = "impl", [ type-params ], type, [ constraints ],
                   "{", { impl-member }, "}" ;
@@ -67,9 +75,11 @@ foreign-call    = ( "pure" | "task" ), [ foreign-call-kind ], "fn",
 foreign-call-kind = "constructor" | "method" | "property" ;
 foreign-params  = parameter, { "->", parameter }, [ "->", rest-parameter ] ;
 rest-parameter  = "...", lower-name, ":", type-atom ;
-rec-group       = "rec", "{", fn-decl, { fn-decl }, "}" ;
+rec-group       = "rec", "{", recursive-fn, { recursive-fn }, "}" ;
+recursive-fn    = fn-decl | effect-fn-decl ;
 
-expr            = if-expr | match-expr | do-expr | lambda | assignment-expr ;
+expr            = if-expr | match-expr | do-expr | for-expr
+                | lambda | assignment-expr ;
 if-expr         = "if", expr, "then", expr, "else", expr ;
 match-expr      = "match", expr, "{", { match-arm }, "}" ;
 match-arm       = pattern, [ "when", expr ], "->", expr, terminator ;
@@ -80,6 +90,7 @@ do-expr         = "do", "{", { do-item, terminator }, expr,
 do-item         = pattern, "<-", expr
                 | "let", pattern, "=", expr
                 | expr ;
+for-expr        = "for", pattern, "<-", expr, block ;
 
 primary         = literal | generic-name | operator-reference
                 | tuple | array | list | record
@@ -142,6 +153,7 @@ terminator      = NEWLINE | ";" ;
 
 - 通常の関数適用は空白適用だけです。
 - 関数 parameter は `->` でつなぎ、関数型も同じ構文です。
+- parameterを省略した関数宣言は匿名Unit parameterを一つ持ちます。
 - `if` は必ず `else` を持ちます。
 - ADT variant は `|` で始めます。
 - pipeline は `|>` です。

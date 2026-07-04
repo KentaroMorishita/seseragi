@@ -68,8 +68,15 @@ map toString values
 `identity < value` は比較です。custom infix operatorはoperandとの間に空白を必須とし、
 `left <+> right` のように書きます。operator関数値 `(<+>)` の内側には空白を入れません。
 
-引数のない特別な関数もありません。遅延計算を表す関数は `Unit -> A` とし、
-`clock ()` のように呼びます。
+情報を受け取らない関数は、名前のないUnit parameterを省略して宣言できます。
+
+```seseragi
+fn clock -> Instant = ...
+```
+
+意味上は名前のない `Unit` parameterを一つ持ち、関数の型は `Unit -> Instant`、呼び出しは
+`clock ()` です。`Unit` は型、`()` はその唯一の値です。formatterも名前のないUnit parameterを
+上の省略形で出力します。
 
 ## 1.5 method 呼び出し
 
@@ -216,8 +223,8 @@ struct内の `operator` 糖衣で行います。
 次は予約語です。
 
 ```text
-as alias do else False fn foreign from if impl import infix infixl infixr let
-match opaque operator pub rec struct then trait True type when where
+as alias do effect else fails False fn for foreign from if impl import infix infixl infixr let
+match opaque operator pub rec struct then trait True type when where with
 ```
 
 `constructor`、`method`、`property`、`value`、`pure`、`task` はforeign block内だけでkeywordに
