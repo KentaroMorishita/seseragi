@@ -1,0 +1,25 @@
+import * as maps from "std/map"
+import * as text from "std/text"
+
+fn wordCounts input: String -> Map<String, Int> =
+  input
+    |> text.words
+    |> map text.caseFold
+    |> reduce maps.empty (\counts word ->
+      counts
+        |> maps.upsert word (\current -> (current ?? 0) + 1)
+    )
+
+let sample = "Red blue RED green blue red"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  for (word, count) <- maps.entries (wordCounts sample) {
+    println $ `${word}: ${count}`
+  }
+
+// Expected stdout:
+// red: 3
+// blue: 2
+// green: 1

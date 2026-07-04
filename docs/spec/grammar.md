@@ -83,7 +83,8 @@ expr            = if-expr | match-expr | do-expr | for-expr
 if-expr         = "if", expr, "then", expr, "else", expr ;
 match-expr      = "match", expr, "{", { match-arm }, "}" ;
 match-arm       = pattern, [ "when", expr ], "->", expr, terminator ;
-lambda          = "\\", lower-name, [ ":", type ], "->", expr ;
+lambda          = "\\", lambda-param, { lambda-param }, "->", expr ;
+lambda-param    = lower-name, [ ":", type-atom ] ;
 block           = "{", { let-decl }, [ expr ], "}" ;
 do-expr         = "do", "{", { do-item, terminator }, expr,
                   [ terminator ], "}" ;

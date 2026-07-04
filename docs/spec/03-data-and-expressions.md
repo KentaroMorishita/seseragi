@@ -172,10 +172,17 @@ guard は `Bool` です。guard 付き arm は網羅性に寄与しません。a
 ```seseragi
 \x -> x + 1
 \x: Int -> x + 1
+\x y -> x + y
 ```
 
-parameter 型は文脈から推論できる場合に省略できます。複数 parameter は lambda を
-入れ子にします。
+parameter型は文脈から推論できる場合に省略できます。複数parameterは最後の `->` の前へ
+並べ、curried lambdaの入れ子へdesugarします。
+
+```text
+\x y -> body = \x -> \y -> body
+```
+
+parameterは左から右へscopeへ入り、後続parameterの型注釈とbodyから参照できます。
 
 ## 3.11 impl と method
 

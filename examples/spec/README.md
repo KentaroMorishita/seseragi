@@ -20,3 +20,5 @@ exampleを追加するときは、一般的なcodeを書くために毎回自前
 
 - `01-fizzbuzz.ssrg`: tuple pattern match、template、range、`effect fn`、effectful `for`、`$`、
   Console出力。
+- `02-word-count.ssrg`: multi-parameter lambda、text pipeline、generic map/reduce、Map upsert、
+  deterministic iteration。

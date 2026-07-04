@@ -93,6 +93,9 @@ trait Hash<A> {
 HashはMapとSetのkeyに使うhashを定義します。`Eq.eq x y` がTrueなら
 `Hash.hash x == Hash.hash y` でなければなりません。逆は要求しません。
 
+Int、Bool、Char、String、Unitには標準EqとHash instanceを提供します。StringのEqはUnicode
+scalar列の完全一致です。FloatにはcanonicalなEqとHash instanceを提供しません。
+
 ## 9.5 SemigroupとMonoid
 
 ```seseragi

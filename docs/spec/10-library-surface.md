@@ -85,6 +85,41 @@ chunksOf, windows
 `get`, `head`, `last`, `init`, `tail` はMaybeを返します。`sort` はOrd、`sortBy` は比較keyのOrdを
 要求します。範囲外、空collectionをdefectにしません。
 
+`std/map` は少なくとも次を提供します。
+
+`empty` の型schemeは次です。`forall` はsource syntaxではなく仕様上の表記です。
+
+```text
+empty : forall K V. Map<K, V>
+```
+
+ほかに少なくとも次の関数を提供します。
+
+```seseragi
+fn get<K, V> key: K -> values: Map<K, V> -> Maybe<V>
+where Eq<K>, Hash<K>
+
+fn insert<K, V> key: K -> value: V -> values: Map<K, V> -> Map<K, V>
+where Eq<K>, Hash<K>
+
+fn upsert<K, V>
+  key: K
+  -> update: (Maybe<V> -> V)
+  -> values: Map<K, V>
+  -> Map<K, V>
+where Eq<K>, Hash<K>
+
+fn remove<K, V> key: K -> values: Map<K, V> -> Map<K, V>
+where Eq<K>, Hash<K>
+
+fn entries<K, V> values: Map<K, V> -> Array<(K, V)>
+```
+
+`empty` は期待型または後続operationからKとVを推論するpolymorphicなexported `let` です。
+`upsert` は既存keyなら `Just current`、未登録なら `Nothing` をupdateへ一度渡し、返された値を
+保存します。
+既存keyの更新は挿入位置を保ち、新規keyは末尾へ追加します。`entries` は挿入順です。
+
 ## 10.6 collection trait
 
 標準traitとして次を提供します。
@@ -137,6 +172,14 @@ parseInt, parseFloat
 
 Unicode scalar、UTF-8 byte、grapheme clusterを混同しません。grapheme操作は
 `std/text/grapheme`、正規化は `std/text/unicode` で明示します。
+
+`words` はUnicode whitespaceで分割して空要素を除きます。punctuationは削除しません。
+`caseFold` はlocale非依存のUnicode default case foldingです。
+
+```text
+words    : String -> Array<String>
+caseFold : String -> String
+```
 
 Regexは `std/regex` に置き、compile failureをEitherで返します。literal Stringを暗黙にRegexへ
 変換しません。
