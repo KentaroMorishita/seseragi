@@ -32,3 +32,4 @@ exampleを追加するときは、一般的なcodeを書くために毎回自前
 - `05-signals.ssrg`: MutableSignal、derived Signal、multi-signal transaction、`*signal` snapshot read。
 - `06-concurrency.ssrg`: structured Fiber、Deferred completion、qualified generic call、join propagation。
 - `07-streams.ssrg`: cold Stream、pipeline変換、backpressure、terminal collection。
+- `08-resource-scope.ssrg`: acquireRelease、LIFO scope finalizer、Never failure widening。

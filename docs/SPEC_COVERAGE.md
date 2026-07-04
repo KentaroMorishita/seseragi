@@ -47,6 +47,7 @@
 ### Effectと状態
 
 - Effectのenvironment / error / success channel
+- Effect / Streamのrequirement wideningとNever failure widening
 - 正規Effect型へ展開される `effect fn` とeffectful `for`
 - Task alias
 - 順次・並列、resource、cancellation、defect
@@ -56,6 +57,7 @@
 - SignalChangeによるmulti-signal transactionとswitchMap lifetime
 - cooperative schedulerのweak fairnessとstructured Fiber supervision
 - Queue / Ref / Deferred / Semaphoreの型・順序・cancellation semantics
+- Effect timeout、Schedule retry / repeat、resource scopeとfinalizer semantics
 - Streamのdemand、merge ordering、buffer overflow、resource lifetime
 - Signal / Stream変換の初期値、backpressure、loss policy
 - Console / LoggerとShowの分離
@@ -116,7 +118,6 @@
 
 ### runtime contract
 
-- Effect timeout / retry / repeat / resource combinatorの完全な公開signature
 - process signalとgraceful shutdown
 
 ### 標準data
@@ -163,7 +164,7 @@
 
 ## 次に詰める順序
 
-1. Effectのtemporal / retry / resource operationとprocess shutdownを固定する。
+1. process signalとgraceful shutdownを固定する。
 2. Bytes / Decimal / Map serializationなど標準dataのruntime contractを固定する。
 3. diagnostic、formatter、document commentをtooling contractとして固定する。
 4. TypeScript binding generatorのnamingと設定schemaを固定する。

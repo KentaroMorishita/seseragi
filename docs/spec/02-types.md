@@ -401,9 +401,9 @@ backendは、constructor適用、pattern match、trait instance、module visibil
 この規則はrecordのwidth subtypingと独立です。`SmallRecord <: LargeRecord` が成立しても、
 `Array<SmallRecord> <: Array<LargeRecord>` は成立しません。必要な変換は `map` で明示します。
 
-言語組み込みのEffect requirement wideningと、`MutableSignal<A>` から `Signal<A>` への
-読み取り権限のforgetful coercionだけは、各章で定義する例外です。型引数 `A` 自体はどちらも
-invariantです。
+言語組み込みのEffect / Stream requirement widening、`Never` failure wideningと、
+`MutableSignal<A>` から `Signal<A>` への読み取り権限のforgetful coercionだけは、各章で定義する
+例外です。success型 `A` と、それ以外のerror型の組み合わせはinvariantです。
 
 ## 2.20 型消去と実行時表現
 

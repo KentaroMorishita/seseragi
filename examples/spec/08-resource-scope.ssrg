@@ -1,0 +1,23 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    released <- refs.make False
+
+    effects.scoped $ do {
+      effects.acquireRelease
+        (effects.succeed ())
+        (\_ -> refs.set True released)
+
+      effects.succeed ()
+    }
+
+    wasReleased <- refs.get released
+    println $ `released: ${wasReleased}`
+  }
+
+// Expected stdout:
+// released: True

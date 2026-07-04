@@ -541,8 +541,102 @@ Effect moduleは9.8のoperationに加え、次を提供します。
 - temporal control: `timeout`, `retry`, `repeat`
 - resource: `bracket`, `scoped`, `acquireRelease`
 
-この節ではconcurrencyとsynchronization primitiveのsignatureを固定します。上のoperationのretry policy、
-timeout result、resource exit caseはruntime resource契約と一緒に別節で固定します。
+### temporal control
+
+```seseragi
+fn timeout<R, E, A>
+  duration: Duration
+  -> effect: Effect<R, E, A>
+  -> Effect<R & { clock: Clock }, E, Maybe<A>>
+fn timeoutFail<R, E, A>
+  error: E
+  -> duration: Duration
+  -> effect: Effect<R, E, A>
+  -> Effect<R & { clock: Clock }, E, A>
+```
+
+`timeout` はeffectが時間内に成功すれば `Just value`、期限到達なら `Nothing` で成功し、sourceのtyped
+failureはそのままfailureにします。`timeoutFail` は期限到達を指定した `E` で失敗させます。期限到達時は
+sourceへcancellationを要求し、finalizer完了後に結果を返します。source終了とtimerが同じscheduler turnなら
+sourceのsuccessまたはfailureを選びます。zero Durationでもsourceを先に開始し、同じtie-breakを使います。
+
+retryとrepeatは同じschedule modelを使います。
+
+```seseragi
+type ScheduleDecision deriving Eq, Show =
+  | ScheduleStop
+  | ScheduleContinue Duration
+
+type ScheduleError deriving Eq, Show =
+  | NegativeRecurrences Int
+
+fn schedule<A>
+  decide: (Int -> A -> ScheduleDecision) -> Schedule<A>
+fn recurs<A> additionalRuns: Int -> Either<ScheduleError, Schedule<A>>
+fn spaced<A>
+  additionalRuns: Int
+  -> delay: Duration
+  -> Either<ScheduleError, Schedule<A>>
+fn whileInput<A> predicate: (A -> Bool) -> Schedule<A>
+
+fn retry<R, E, A>
+  policy: Schedule<E>
+  -> effect: Effect<R, E, A>
+  -> Effect<R & { clock: Clock }, E, A>
+fn repeat<R, E, A>
+  policy: Schedule<A>
+  -> effect: Effect<R, E, A>
+  -> Effect<R & { clock: Clock }, E, A>
+```
+
+`Schedule<A>` はstandard opaque typeです。decideのIntは観測したfailureまたはsuccessの回数で、1から
+始まります。`ScheduleStop` は現在のfailureを返す、または現在のsuccessを最終結果にします。
+`ScheduleContinue delay` はdelay後にEffectをもう一度最初から実行します。decideはpureで各観測につき
+一度だけ呼びます。
+
+`recurs n` はdelayなしで最大n回追加実行し、`spaced n delay` は各追加実行前にdelayします。nが負なら
+`Left (NegativeRecurrences n)` です。`whileInput predicate` はpredicateがTrueの間、zero Durationで
+追加実行します。zero Durationの待機もscheduler checkpointです。retryはsuccessで直ちに終了し、repeatは
+failureで直ちに終了します。delay中または再実行中のcancellationは以後の実行を開始しません。
+
+### resource scope
+
+```seseragi
+type EffectExit<E, A> =
+  | EffectSucceeded A
+  | EffectFailed E
+  | EffectCancelled
+
+fn bracket<R, E, A, B>
+  acquire: Effect<R, E, A>
+  -> use: (A -> Effect<R, E, B>)
+  -> release: (A -> EffectExit<E, B> -> Effect<R, Never, Unit>)
+  -> Effect<R, E, B>
+fn acquireRelease<R, E, A>
+  acquire: Effect<R, E, A>
+  -> release: (A -> Effect<R, Never, Unit>)
+  -> Effect<R, E, A>
+fn ensuring<R, E, A>
+  finalizer: Effect<R, Never, Unit>
+  -> effect: Effect<R, E, A>
+  -> Effect<R, E, A>
+fn onCancel<R, E, A>
+  finalizer: Effect<R, Never, Unit>
+  -> effect: Effect<R, E, A>
+  -> Effect<R, E, A>
+fn scoped<R, E, A> effect: Effect<R, E, A> -> Effect<R, E, A>
+```
+
+`bracket` はacquireが成功した場合だけreleaseを一度実行し、useの終了状態を `EffectExit` で渡します。
+release完了後にuseのsuccess、failure、cancellationを再現します。`acquireRelease` はacquireした値を現在の
+scopeへ登録して返し、そのscope終了時にreleaseします。`ensuring` はすべての終了状態でfinalizerを実行し、
+`onCancel` はcancellation時だけ実行します。
+
+`scoped` は内側scopeを作り、登録resourceとchild Fiberを5.11の規則で閉じます。同じscopeのfinalizerは
+登録と逆順です。inner scopeを閉じ終わるまでouter scopeの次のfinalizerへ進みません。finalizerのtyped
+failure禁止、cancellation mask、defect時の継続規則も5.11に従います。
+
+### concurrency
 
 ```seseragi
 type FiberExit<E, A> =
@@ -562,13 +656,11 @@ fn race<R, E, A>
   left: Effect<R, E, A>
   -> right: Effect<R, E, A>
   -> Effect<R, E, A>
-
-fn scoped<R, E, A> effect: Effect<R, E, A> -> Effect<R, E, A>
 ```
 
 `Fiber<E, A>` はstandard opaque typeです。`race` は最初に終了したsuccessまたはfailureを返し、loserへ
 cancellationを要求してfinalizer完了を待ちます。同じscheduler turnで両方が終了した場合はleftを
-選びます。`scoped` は内側scopeを作り、5.11のsupervision規則でresourceとchild Fiberを閉じます。
+選びます。
 
 bounded parallelismはvalidated valueで指定します。
 
@@ -701,6 +793,10 @@ releaseしてから終了します。
 opaque typeです。Stream valueはcoldで再利用可能なdescriptionです。terminal operationを実行するたびに
 独立したproducerとresource scopeを作り、同じStream valueを二度実行してもsubscriptionやiteratorを
 共有しません。
+
+Streamのenvironment requirementはEffectと同じ5.5のwideningを持ちます。また
+`Stream<R, Never, A>` は `Stream<R, E, A>` が必要な位置へfailure wideningできます。success型や
+Never以外のerror型にはvarianceを持たず、異なるerrorは `mapError` で明示的に揃えます。
 
 constructorと基本変換は次です。値を生成しないconstructorも周囲の型へ合わせられるよう `R` と `E` を
 量化します。
