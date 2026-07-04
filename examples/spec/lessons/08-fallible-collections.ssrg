@@ -1,5 +1,5 @@
-// Lesson 04: Array、Either、lambda、nested map
-// Prerequisite: Lessons 01-02
+// Lesson 08: Eitherを含むcollection pipelineを学ぶ
+// 前提: Lessons 04, 06, and 07
 
 import * as arrays from "std/array"
 import { SizeError } from "std/collection"
@@ -9,11 +9,13 @@ fn renderChunk values: Array<Int> -> String =
     |> map show
     |> join ", "
 
+// chunksOfはsizeが不正なら失敗するため、結果をEitherで型へ残します。
 fn chunkedOdds values: Array<Int> -> Either<SizeError, Array<String>> =
   values
     |> arrays.filter (\value -> value % 2 != 0)
     |> arrays.sort
     |> arrays.chunksOf 2
+    // 外側のmapはEitherのsuccess値、内側のmapはArrayの各要素を変換します。
     |> map (\chunks -> map renderChunk chunks)
 
 let numbers = [5, 3, 1, 7, 2]

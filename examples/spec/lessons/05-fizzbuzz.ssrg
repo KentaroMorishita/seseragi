@@ -1,0 +1,21 @@
+// Lesson 05: 基礎構文を組み合わせてFizzBuzzを書く
+// 前提: Lessons 01-04
+
+// matchは値をpatternで分類します。tupleにすると複数条件を一度に照合できます。
+fn fizzBuzz number: Int -> String =
+  match (number % 3, number % 5) {
+    (0, 0) -> "FizzBuzz"
+    (0, _) -> "Fizz"
+    (_, 0) -> "Buzz"
+    _ -> `${number}`
+  }
+
+// effect fnは副作用を型へ明示します。forはRangeを順番に処理し、各Effectを逐次実行します。
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  for number <- 1..=100 {
+    println $ fizzBuzz number
+  }
+
+// Expected stdout: ./05-fizzbuzz.stdout

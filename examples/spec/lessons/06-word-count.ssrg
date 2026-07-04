@@ -1,13 +1,15 @@
-// Lesson 02: pipeline、generic map/reduce、Map
-// Prerequisite: Lesson 01
+// Lesson 06: pipelineとgenericなmap・reduceを組み合わせる
+// 前提: Lessons 04-05
 
 import * as maps from "std/map"
 import * as text from "std/text"
 
+// |> は左の値を次の関数の最後の引数へ渡し、変換の流れを上から下へ読みやすくします。
 fn wordCounts input: String -> maps.Map<String, Int> =
   input
     |> text.words
     |> map text.caseFold
+    // reduceは初期値から順に畳み込みます。Mapの更新も新しいMapを返すpureな操作です。
     |> reduce maps.empty (\counts word ->
       counts
         |> maps.upsert word (\current -> (current ?? 0) + 1)

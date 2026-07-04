@@ -1,5 +1,5 @@
-// Lesson 09: cold Stream、backpressure、terminal operation
-// Prerequisite: Lessons 06 and 08
+// Lesson 17: cold Stream・backpressure・terminal operationを学ぶ
+// 前提: Lessons 10 and 16
 
 import * as effects from "std/effect"
 import * as streams from "std/stream"
@@ -14,16 +14,19 @@ pub effect fn main -> Unit
 with Console
 fails AppError =
   do {
+    // capacityをvalidated valueにすることで、実行中に不正なbuffer sizeを抱えません。
     capacity <-
       match streams.bufferCapacity 2 {
         Left error -> effects.fail $ InvalidBuffer error
         Right value -> effects.succeed value
       }
 
+    // Streamはcoldな処理記述です。runCollectを呼ぶまでsourceは実行されません。
     values <-
       streams.fromArray numbers
         |> streams.map (\value -> value * value)
         |> streams.filter (\value -> value % 2 == 0)
+        // bufferは満杯時にproducerを止めるlossless backpressureです。
         |> streams.buffer capacity
         |> streams.runCollect
 

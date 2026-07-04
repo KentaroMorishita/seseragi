@@ -1,0 +1,21 @@
+// Lesson 02: 値・型・curried functionを学ぶ
+// 前提: Lesson 01
+
+// parameterと戻り値へ型を書きます。複数parameterは->でつないだcurried functionです。
+fn add left: Int -> right: Int -> Int =
+  left + right
+
+// letは不変の値を束縛します。ここではIntを右辺から推論します。
+let base = 20
+
+// 通常の関数適用は空白で書き、add base 22は(add base) 22として左結合します。
+let answer = add base 22
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  // templateの${...}はShow instanceで値をString化します。$は低優先順位の関数適用です。
+  println $ `answer: ${answer}`
+
+// Expected stdout:
+// answer: 42

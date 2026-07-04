@@ -1,0 +1,23 @@
+// Lesson 04: Array・lambda・pipelineを学ぶ
+// 前提: Lessons 02-03
+
+import * as arrays from "std/array"
+
+let numbers = [1, 2, 3, 4, 5]
+
+// |> は左のdataを次の関数の最後の引数へ渡し、処理順を上から下へ見せます。
+let total =
+  numbers
+    // lambdaは\parameter -> expressionで書きます。generic mapはArrayの各要素を変換します。
+    |> map (\value -> value * value)
+    |> arrays.filter (\value -> value % 2 == 0)
+    // sumは数値collectionを加算し、空ならzero ()を使います。
+    |> sum
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `total: ${total}`
+
+// Expected stdout:
+// total: 20

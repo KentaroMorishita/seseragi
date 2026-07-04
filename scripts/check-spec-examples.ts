@@ -22,8 +22,25 @@ lessons.forEach((name, index) => {
   if (!lines[0]?.startsWith(`// Lesson ${actualNumber}:`)) {
     errors.push(`${name}: first line must declare its lesson number and goal`);
   }
-  if (!lines[1]?.startsWith("// Prerequisite:")) {
-    errors.push(`${name}: second line must declare prerequisites`);
+  if (!lines[1]?.startsWith("// 前提:")) {
+    errors.push(`${name}: second line must declare prerequisites in Japanese`);
+  }
+
+  const prerequisites = [...(lines[1]?.matchAll(/\b(\d{2})\b/g) ?? [])].map(
+    (match) => Number(match[1]),
+  );
+  if (!lines[1]?.includes("なし") && prerequisites.length === 0) {
+    errors.push(`${name}: prerequisites must name an earlier lesson or なし`);
+  }
+  if (prerequisites.some((lesson) => lesson >= Number(actualNumber))) {
+    errors.push(`${name}: prerequisites must refer only to earlier lessons`);
+  }
+
+  const hasJapaneseExplanation = lines
+    .slice(2)
+    .some((line) => /^\s*\/\/ .*[ぁ-んァ-ヶ一-龠]/.test(line));
+  if (!hasJapaneseExplanation) {
+    errors.push(`${name}: missing a Japanese learning comment`);
   }
 
   const marker = lines.findIndex((line) =>

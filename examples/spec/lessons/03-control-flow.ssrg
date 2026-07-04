@@ -1,0 +1,23 @@
+// Lesson 03: if・match・patternを学ぶ
+// 前提: Lesson 02
+
+fn describe number: Int -> String =
+  // ifは必ずthenとelseを持ち、両方のbranchが同じ結果型を返します。
+  if number == 0
+  then "zero"
+  else
+    // matchは上からpatternを試します。tupleを使うと複数の観点を一度に分類できます。
+    match (number > 0, number % 2) {
+      (True, 0) -> "positive even"
+      (True, _) -> "positive odd"
+      (False, 0) -> "negative even"
+      (False, _) -> "negative odd"
+    }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ describe (-3)
+
+// Expected stdout:
+// negative odd

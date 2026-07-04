@@ -1,0 +1,36 @@
+// Lesson 14: Semigroup・Monoid・nominal wrapperを学ぶ
+// 前提: Lessons 07, 08, and 13
+
+// Intは加算と乗算のどちらをMonoidにするか一意でないため、Sumで意味を選びます。
+newtype Sum deriving Eq, Show = Int
+
+impl Semigroup<Sum> {
+  fn append left: Sum -> right: Sum -> Sum =
+    match (left, right) {
+      (Sum leftValue, Sum rightValue) -> Sum (leftValue + rightValue)
+    }
+}
+
+// empty ()は加算の単位元です。combineは空Arrayならこの値を返します。
+impl Monoid<Sum> {
+  fn empty -> Sum = Sum 0
+}
+
+// generic combineはMonoid instanceを通して型ごとの集約規則を使います。
+fn total values: Array<Int> -> Sum =
+  values
+    |> map Sum
+    |> combine
+
+let totals = [total [1, 2, 3, 4], total []]
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  for result <- totals {
+    println $ show result
+  }
+
+// Expected stdout:
+// Sum 10
+// Sum 0

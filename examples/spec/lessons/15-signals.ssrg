@@ -1,5 +1,5 @@
-// Lesson 07: Signal、derived graph、transaction、snapshot read
-// Prerequisite: Lessons 05-06
+// Lesson 15: Signal・derived graph・transactionを学ぶ
+// 前提: Lessons 09-10
 
 import * as signals from "std/signal"
 
@@ -9,13 +9,16 @@ fails ConsoleError =
   do {
     width <- signals.make 3
     height <- signals.make 4
+    // combineは二つのSignalからglitch-freeなderived Signalを作ります。
     let area = signals.combine (*) width height
 
+    // transaction内の複数更新はatomicに公開され、途中のareaは観測されません。
     signals.transaction [
       signals.planSet 5 width,
       signals.planUpdate (\value -> value + 2) height,
     ]
 
+    // * は現在値をEffectとしてsnapshot readするprefix operatorです。
     current <- *area
     println $ `area: ${current}`
   }

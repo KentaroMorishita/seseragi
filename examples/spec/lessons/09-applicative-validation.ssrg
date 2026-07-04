@@ -1,5 +1,5 @@
-// Lesson 05: Applicative、pure、<*>、error accumulation
-// Prerequisite: Lessons 03-04
+// Lesson 09: Applicativeによる独立validationの合成を学ぶ
+// 前提: Lessons 07-08
 
 import { Invalid, Valid, Validation } from "std/validation"
 import * as validation from "std/validation"
@@ -17,6 +17,7 @@ struct User deriving Eq, Show {
 fn makeUser name: String -> age: Int -> User =
   User { name, age }
 
+// 各validatorは互いの結果へ依存せず、成功値または一件のerrorを返します。
 fn validateName name: String -> Validation<FormError, String> =
   if name |> text.trim |> text.isEmpty
   then validation.invalid NameRequired
@@ -27,6 +28,8 @@ fn validateAge age: Int -> Validation<FormError, Int> =
   then validation.valid age
   else validation.invalid AgeMustBePositive
 
+// pureで通常関数をValidationへ持ち上げ、<*>で独立した入力を与えます。
+// ValidationのApplicativeは途中で止まらず、両方のerrorを入力順に蓄積します。
 fn validateUser name: String -> age: Int -> Validation<FormError, User> =
   pure makeUser
     <*> validateName name

@@ -1,0 +1,44 @@
+// Lesson 07: struct・ADT・newtypeでdomain dataを表す
+// 前提: Lessons 03-05
+
+// ADTは取りうるcaseをconstructorとして列挙し、定義していない状態を作れなくします。
+type Rank deriving Eq, Show =
+  | Bronze
+  | Silver
+  | Gold
+
+// newtypeはIntと同じ表現を使えても、型検査上は別のdomain typeです。
+newtype Score deriving Eq, Ord, Show = Int
+
+// operator overloadはScore同士の加算だけを定義し、Intとの暗黙変換は起こしません。
+impl Score {
+  operator + self -> other: Score -> Score =
+    match (self, other) {
+      (Score left, Score right) -> Score (left + right)
+    }
+}
+
+fn addBonus score: Score -> Score =
+  score + Score 10
+
+// structは名前付きfieldを持つnominal dataです。fieldごとの型もdomain typeとして保持します。
+struct Player deriving Eq, Show {
+  name: String,
+  score: Score,
+  rank: Rank,
+}
+
+let player = Player {
+  name: "Aki",
+  score: Score 32,
+  rank: Gold,
+}
+
+// deriving Showにより、ScoreやRankのdomain名を失わず表示できます。
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `${player.name}: ${show player.rank}, ${show $ addBonus player.score}`
+
+// Expected stdout:
+// Aki: Gold, Score 42

@@ -1,0 +1,33 @@
+// Lesson 13: custom trait・constraint・custom operatorを学ぶ
+// 前提: Lessons 07 and 11
+
+// traitは継承用objectではなく、型ごとに一意な操作の辞書を定義します。
+trait Render<A> {
+  fn render value: A -> String
+}
+
+struct Badge {
+  label: String,
+}
+
+impl Render<Badge> {
+  fn render value: Badge -> String = value.label
+}
+
+// custom operatorはfixityとprecedenceを宣言し、通常関数と同じ型を持ちます。
+operator infixr 4 <+>
+  left: String -> right: String -> String =
+  append left right
+
+// constraintがあるgeneric関数は、Render<A> instanceを型検査時に選びます。
+fn framed<A> value: A -> String
+where Render<A> =
+  "[" <+> render value <+> "]"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ framed $ Badge { label: "ADMIN" }
+
+// Expected stdout:
+// [ADMIN]

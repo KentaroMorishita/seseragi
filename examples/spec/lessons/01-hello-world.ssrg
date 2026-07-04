@@ -1,0 +1,13 @@
+// Lesson 01: 最小のSeseragi programを動かす
+// 前提: なし
+
+// executable packageは公開mainを入口にします。引数を省略した関数はUnitを一つ受け取ります。
+// effect fnは必要なserviceと失敗型を隠さず、mainの型へ明示します。
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  // printlnはConsole serviceを使い、Stringの末尾へ改行を加えます。
+  println "Hello, Seseragi!"
+
+// Expected stdout:
+// Hello, Seseragi!

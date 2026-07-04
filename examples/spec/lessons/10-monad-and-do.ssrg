@@ -1,5 +1,5 @@
-// Lesson 06: Monad、>>=、map、do notation
-// Prerequisite: Lesson 05
+// Lesson 10: Monad・>>=・do notationの関係を学ぶ
+// 前提: Lesson 09
 
 struct Address deriving Eq, Show {
   city: String,
