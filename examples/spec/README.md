@@ -1,10 +1,13 @@
-# Seseragi executable design examples
+# Seseragi specification examples
 
-このdirectoryは刷新仕様に対する実行可能な設計exampleです。現行compilerとの互換exampleでは
-なく、新しいcompiler、formatter、language server、syntax highlighter、playgroundが共通して
-扱うconformance targetです。
+このdirectoryは刷新仕様に対する学習教材とconformance targetです。現行compilerとの互換exampleでは
+ありません。読みやすさと機械的網羅性を一fileへ同居させず、二層に分けます。
 
-各exampleは次を満たします。
+- [`lessons/`](./lessons/README.md): 人が順番に学ぶ実行可能program。
+- [`fixtures/`](./fixtures/README.md): compiler / formatter / LSP向けの最小caseと失敗case。
+- [`COVERAGE.md`](./COVERAGE.md): 仕様機能からlesson / fixtureへの対応表。
+
+各sourceは次を満たします。
 
 - `docs/spec/` の正本に定義された構文とAPIだけを使う。
 - host service requirementとfailure型をmainの型へ明示する。
@@ -12,7 +15,7 @@
 - parse、type check、format、実行、LSP、highlight、playgroundで同じsourceを使う。
 - playgroundへ載せる場合もsourceを複製せず、このfileから生成または直接読み込む。
 
-exampleを追加するときは、一般的なcodeを書くために毎回自前実装が必要になった処理を記録します。
+lessonを追加するときは、一般的なcodeを書くために毎回自前実装が必要になった処理を記録します。
 複数のexampleで繰り返す純粋操作、Effect operation、decoder、resource処理は標準ライブラリ候補です。
 一例だけに固有なdomain helperはstdlibへ昇格させません。
 
@@ -21,15 +24,5 @@ exampleを追加するときは、一般的なcodeを書くために毎回自前
 以降へ出力を書く短いexampleも、各comment行から先頭の `// ` だけを除いたUTF-8・LF文字列として
 同じように比較します。
 
-## 一覧
-
-- `01-fizzbuzz.ssrg`: tuple pattern match、template、range、`effect fn`、effectful `for`、`$`、
-  Console出力、exact stdout snapshot。
-- `02-word-count.ssrg`: multi-parameter lambda、text pipeline、generic map/reduce、Map upsert、
-  deterministic iteration。
-- `03-domain-types.ssrg`: newtype、constructor pattern、deriving、struct/newtype operator overload。
-- `04-collections.ssrg`: Array module、generic map、stable sort、typed chunks、effectful iteration。
-- `05-signals.ssrg`: MutableSignal、derived Signal、multi-signal transaction、`*signal` snapshot read。
-- `06-concurrency.ssrg`: structured Fiber、Deferred completion、qualified generic call、join propagation。
-- `07-streams.ssrg`: cold Stream、pipeline変換、backpressure、terminal collection。
-- `08-resource-scope.ssrg`: acquireRelease、LIFO scope finalizer、Never failure widening。
+学習順と各lessonの目的は [`lessons/README.md`](./lessons/README.md) を正本にします。番号は難易度順で、
+新しいlessonを途中へ挿入する場合は参照とcoverage表を同時に更新します。

@@ -1,3 +1,6 @@
+// Lesson 04: Array、Either、lambda、nested map
+// Prerequisite: Lessons 01-02
+
 import * as arrays from "std/array"
 import { SizeError } from "std/collection"
 

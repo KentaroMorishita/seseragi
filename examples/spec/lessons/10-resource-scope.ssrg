@@ -1,3 +1,6 @@
+// Lesson 10: acquireRelease、scope、finalizer
+// Prerequisite: Lessons 06 and 08
+
 import * as effects from "std/effect"
 import * as refs from "std/ref"
 

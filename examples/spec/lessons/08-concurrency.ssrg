@@ -1,3 +1,6 @@
+// Lesson 08: structured Fiber、Deferred、join
+// Prerequisite: Lesson 06
+
 import * as deferred from "std/deferred"
 import * as effects from "std/effect"
 

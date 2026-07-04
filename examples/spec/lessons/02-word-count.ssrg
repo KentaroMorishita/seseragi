@@ -1,3 +1,6 @@
+// Lesson 02: pipeline、generic map/reduce、Map
+// Prerequisite: Lesson 01
+
 import * as maps from "std/map"
 import * as text from "std/text"
 

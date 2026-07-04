@@ -8,12 +8,16 @@
   "engines": {
     "vscode": "^1.74.0"
   },
-  "categories": ["Programming Languages"],
+  "categories": [
+    "Programming Languages"
+  ],
   "contributes": {
     "languages": [
       {
         "id": "seseragi-spec-preview",
-        "aliases": ["Seseragi Spec Preview"],
+        "aliases": [
+          "Seseragi Spec Preview"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -26,7 +30,7 @@
     ],
     "configurationDefaults": {
       "files.associations": {
-        "**/examples/spec/*.ssrg": "seseragi-spec-preview"
+        "**/examples/spec/**/*.ssrg": "seseragi-spec-preview"
       },
       "editor.tokenColorCustomizations": {
         "textMateRules": [

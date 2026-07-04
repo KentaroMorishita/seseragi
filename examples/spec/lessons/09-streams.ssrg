@@ -1,3 +1,6 @@
+// Lesson 09: cold Stream、backpressure、terminal operation
+// Prerequisite: Lessons 06 and 08
+
 import * as effects from "std/effect"
 import * as streams from "std/stream"
 

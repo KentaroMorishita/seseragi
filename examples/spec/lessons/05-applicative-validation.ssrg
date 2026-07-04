@@ -1,0 +1,47 @@
+// Lesson 05: Applicative、pure、<*>、error accumulation
+// Prerequisite: Lessons 03-04
+
+import { Invalid, Valid, Validation } from "std/validation"
+import * as validation from "std/validation"
+import * as text from "std/text"
+
+type FormError deriving Eq, Show =
+  | NameRequired
+  | AgeMustBePositive
+
+struct User deriving Eq, Show {
+  name: String,
+  age: Int,
+}
+
+fn makeUser name: String -> age: Int -> User =
+  User { name, age }
+
+fn validateName name: String -> Validation<FormError, String> =
+  if name |> text.trim |> text.isEmpty
+  then validation.invalid NameRequired
+  else validation.valid name
+
+fn validateAge age: Int -> Validation<FormError, Int> =
+  if age > 0
+  then validation.valid age
+  else validation.invalid AgeMustBePositive
+
+fn validateUser name: String -> age: Int -> Validation<FormError, User> =
+  pure makeUser
+    <*> validateName name
+    <*> validateAge age
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  match validateUser "" 0 {
+    Valid user -> println $ show user
+    Invalid errors -> for error <- errors {
+      println $ show error
+    }
+  }
+
+// Expected stdout:
+// NameRequired
+// AgeMustBePositive

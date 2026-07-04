@@ -1,3 +1,6 @@
+// Lesson 03: newtype、deriving、operator overload
+// Prerequisite: Lesson 01
+
 newtype Score deriving Eq, Ord, Show = Int
 
 impl Score {

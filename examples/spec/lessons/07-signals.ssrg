@@ -1,3 +1,6 @@
+// Lesson 07: Signal、derived graph、transaction、snapshot read
+// Prerequisite: Lessons 05-06
+
 import * as signals from "std/signal"
 
 pub effect fn main -> Unit

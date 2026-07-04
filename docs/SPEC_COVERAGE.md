@@ -38,6 +38,7 @@
 
 - coherent type classとorphan rule
 - Functor / Applicative / Monad
+- collection / Effect / Stream instance semanticsとValidation error accumulation
 - Semigroup / Monoid
 - standard operator overloadとfunctional dependency
 - userland custom infix operator
@@ -99,7 +100,9 @@
 
 ### executable design example
 
-- `examples/spec/` を現行実装ではなく刷新仕様のtargetとして管理
+- `examples/spec/lessons/` を難易度順の学習教材として管理
+- `examples/spec/fixtures/` をpositive / diagnostic / multi-file conformance targetとして管理
+- `examples/spec/COVERAGE.md` で全仕様機能をlessonまたはfixtureへ対応づける
 - 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
 - playground sampleへsourceを複製せず生成・直接読込する
 

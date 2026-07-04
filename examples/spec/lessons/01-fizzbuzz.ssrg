@@ -1,3 +1,6 @@
+// Lesson 01: expression、match、range、effectful for
+// Prerequisite: なし
+
 fn fizzBuzz number: Int -> String =
   match (number % 3, number % 5) {
     (0, 0) -> "FizzBuzz"

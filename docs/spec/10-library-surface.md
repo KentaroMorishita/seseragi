@@ -39,17 +39,41 @@ preludeの目的は「最小programが書けること」であり、「標準ラ
 
 ## 10.4 `std/maybe`、`std/either`、`std/validation`
 
-型を保った `map`、`apply`、`flatMap` はpreludeのtrait methodを使います。各moduleは最低限、
-次の固有操作を追加します。
+型を保った `map`、`apply`、`flatMap` はpreludeのtrait methodを使います。MaybeとEitherの各moduleは
+最低限、次の固有操作を追加します。
 
 - `withDefault`, `orElse`
 - `fromNullable`, `toNullable` はinterop module側に置く
 - `mapLeft`, `bimap`, `fold`, `swap`
 - `sequence`, `traverse`
-- `Validation<E, A>` とerror蓄積Applicative
-- `NonEmptyList<E>` を使うvalidation helper
 
-Eitherはfail-fast、Validationはerror accumulationです。同じoperatorで意味を切り替えません。
+Eitherはfail-fastです。Validationは独立した入力のerror accumulationを次の型で表します。
+
+```seseragi
+type Validation<E, A> =
+  | Valid A
+  | Invalid (NonEmptyList<E>)
+
+fn valid<E, A> value: A -> Validation<E, A>
+fn invalid<E, A> error: E -> Validation<E, A>
+fn invalidMany<E, A> errors: NonEmptyList<E> -> Validation<E, A>
+fn fromEither<E, A> value: Either<E, A> -> Validation<E, A>
+fn toEither<E, A> value: Validation<E, A> -> Either<NonEmptyList<E>, A>
+```
+
+ValidationはFunctorとApplicative instanceを持ち、Monad instanceを持ちません。`pure` は `Valid`、
+`map` はValidの値だけを変換します。Applicative applyは次の規則です。
+
+```text
+Valid f       <*> Valid value       = Valid (f value)
+Invalid left  <*> Valid _           = Invalid left
+Valid _       <*> Invalid right     = Invalid right
+Invalid left  <*> Invalid right     = Invalid (left <> right)
+```
+
+両側Invalidではleftのerror列を先、rightを後にしてNonEmptyListを連結します。したがってcurried関数へ
+左から `<*>` で入力を与えると、入力順に全errorを蓄積します。後続処理が前のsuccess値へ依存する場合は
+Eitherやdomain固有ADTへ切り替え、Validationへfail-fastなflatMapを追加しません。
 
 ## 10.5 `std/collection`
 

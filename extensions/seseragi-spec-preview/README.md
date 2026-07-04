@@ -1,9 +1,9 @@
 # Seseragi Spec Preview
 
-刷新中の仕様と `examples/spec/*.ssrg` 専用のsyntax-only VS Code extensionです。
+刷新中の仕様と `examples/spec/**/*.ssrg` 専用のsyntax-only VS Code extensionです。
 現行compiler、LSP、既存のSeseragi拡張から独立しています。
 
-このworkspaceでは `.vscode/settings.json` により `examples/spec/*.ssrg` だけを
+拡張自身のconfiguration defaultにより `examples/spec/**/*.ssrg` だけを
 `seseragi-spec-preview` language idへ割り当てます。
 
 ## Local install
