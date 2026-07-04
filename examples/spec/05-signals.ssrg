@@ -1,0 +1,21 @@
+import * as signals from "std/signal"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    width <- signals.make 3
+    height <- signals.make 4
+    let area = signals.combine (*) width height
+
+    signals.transaction [
+      signals.planSet 5 width,
+      signals.planUpdate (\value -> value + 2) height,
+    ]
+
+    current <- *area
+    println $ `area: ${current}`
+  }
+
+// Expected stdout:
+// area: 30

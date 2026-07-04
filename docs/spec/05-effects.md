@@ -226,7 +226,23 @@ fn make<A> initial: A -> Task<Never, MutableSignal<A>>
 fn read<A> signal: Signal<A> -> Task<Never, A>
 fn set<A> value: A -> signal: MutableSignal<A> -> Task<Never, Unit>
 fn update<A> f: (A -> A) -> signal: MutableSignal<A> -> Task<Never, Unit>
+
+fn planSet<A> value: A -> signal: MutableSignal<A> -> SignalChange
+fn planUpdate<A> f: (A -> A) -> signal: MutableSignal<A> -> SignalChange
+fn transaction changes: Array<SignalChange> -> Task<Never, Unit>
 ```
+
+`SignalChange` は `std/signal` が公開するstandard opaque typeです。異なるvalue型のchangeを同じArrayへ
+安全に入れられますが、target signalやvalueを取り出すoperationは公開しません。
+
+`set` と `update` はそれぞれ一件のtransactionです。複数sourceをatomicに変える場合は
+`planSet` / `planUpdate` を適用したい順にArrayへ並べ、`transaction`へ渡します。同じsignalへのchangeは
+Array順に適用し、planUpdateの関数はそれ以前にstagingされた値を受け取ります。
+
+changeの関数評価中にdefectが起きた場合、またはcommit前にcancellationされた場合は、一件も公開せず
+元の値を保ちます。全changeの計算成功後に一度だけcommitし、derived graphの再計算とsubscriber通知が
+完了するまではcancellationを観測しません。transactionはI/Oや任意Effectを内包せず、Signal更新だけを
+atomicにします。
 
 ## 5.13 derived Signal
 
@@ -236,6 +252,11 @@ derived Signalはpure関数で構築します。
 fn map<A, B> f: (A -> B) -> source: Signal<A> -> Signal<B>
 fn combine<A, B, C>
   f: (A -> B -> C) -> left: Signal<A> -> right: Signal<B> -> Signal<C>
+fn constant<A> value: A -> Signal<A>
+fn distinct<A> source: Signal<A> -> Signal<A>
+where Eq<A>
+fn switchMap<A, B>
+  f: (A -> Signal<B>) -> source: Signal<A> -> Signal<B>
 ```
 
 dependencyはmap/combineなどのconstructorから明示的に決まります。関数実行中のreadを追跡する
@@ -245,8 +266,16 @@ dependencyはmap/combineなどのconstructorから明示的に決まります。
 orderで高々一度再計算し、graph全体が安定してからsubscriberを呼びます。subscriberが一時的に
 不整合な組み合わせを観測するglitchを許しません。
 
-同じ値をsetしても既定では更新として通知します。重複除去は `Signal.distinct` とEq instanceで
+同じ値をsetしても既定では更新として通知します。重複除去は `std/signal` の `distinct` とEq instanceで
 明示します。
+
+SignalはFunctorとApplicative instanceを持ちます。Functorのmapは上の `map`、Applicativeのpureは
+`constant`、applyはglitch-freeなcombineです。constantはsource dependencyを持たず、値を変更しません。
+
+`distinct` はsourceの現在値を初期値とし、Eqで直前の公開値と等しい更新を通知しません。
+`switchMap` はsource値ごとに `f` を一度評価し、選ばれたinner Signalだけをdependencyにします。
+source更新時は旧innerを解除して新innerへ切り替え、安定した新innerの現在値を一度公開します。
+この切替は同じtransaction内で行い、旧innerと新innerが混ざった値をsubscriberへ見せません。
 
 ## 5.14 `*` と `:=`
 
@@ -280,7 +309,7 @@ do {
 ## 5.15 subscribeとlifetime
 
 ```seseragi
-fn subscribe<R, E, A>
+fn subscribe<R, A>
   observer: (A -> Effect<R, Never, Unit>)
   -> signal: Signal<A>
   -> Effect<R, Never, Subscription>
@@ -297,11 +326,12 @@ observerはfailureを外へ残せません。fallibleな処理はobserver内でr
 変換してfailure channelを持つconsumerで処理します。defectが起きたobserverはruntimeの
 defect policyに従って停止し、他のsubscriberへ通常failureとして伝播しません。
 
-Subscriptionはidempotentにunsubscribeできます。Effectのresource scopeへ登録したsubscriptionは
+Subscriptionは `std/signal` が公開するstandard opaque typeで、idempotentにunsubscribeできます。
+Effectのresource scopeへ登録したsubscriptionは
 scope終了、failure、cancellationのいずれでも解除します。subscriberを持たないderived Signalは
 dependency購読を解放できなければなりません。
 
-SignalはFunctorとApplicative instanceを持てますが、Monad instanceは持ちません。動的な
+SignalはFunctorとApplicative instanceを持ちますが、Monad instanceは持ちません。動的な
 dependency切替はlifetime semanticsを伴うため、`switchMap` など名前付きresource operationで
 明示します。
 

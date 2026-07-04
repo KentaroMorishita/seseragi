@@ -24,3 +24,4 @@ exampleを追加するときは、一般的なcodeを書くために毎回自前
   deterministic iteration。
 - `03-domain-types.ssrg`: newtype、constructor pattern、deriving、struct/newtype operator overload。
 - `04-collections.ssrg`: Array module、generic map、stable sort、typed chunks、effectful iteration。
+- `05-signals.ssrg`: MutableSignal、derived Signal、multi-signal transaction、`*signal` snapshot read。

@@ -52,6 +52,7 @@
 - Signal / MutableSignal
 - Signal snapshot read `*signal` と更新 `:=`
 - transaction、glitch-free更新、subscription lifetime
+- SignalChangeによるmulti-signal transactionとswitchMap lifetime
 - Console / LoggerとShowの分離
 
 ### moduleと外部境界
