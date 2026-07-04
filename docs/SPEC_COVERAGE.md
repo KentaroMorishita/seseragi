@@ -80,6 +80,7 @@
 - preludeの境界
 - collection / text / number / JSON / time / random
 - persistent IteratorとIterable/Reducibleの要素型dependency
+- Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
 - Effect / Stream / Signal / concurrency
 - Console / Logger / filesystem / process / HTTP
 - test runtimeとlaw test

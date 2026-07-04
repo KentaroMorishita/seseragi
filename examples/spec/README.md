@@ -23,3 +23,4 @@ exampleを追加するときは、一般的なcodeを書くために毎回自前
 - `02-word-count.ssrg`: multi-parameter lambda、text pipeline、generic map/reduce、Map upsert、
   deterministic iteration。
 - `03-domain-types.ssrg`: newtype、constructor pattern、deriving、struct/newtype operator overload。
+- `04-collections.ssrg`: Array module、generic map、stable sort、typed chunks、effectful iteration。

@@ -1,0 +1,30 @@
+import * as arrays from "std/array"
+import { SizeError } from "std/collection"
+
+fn renderChunk values: Array<Int> -> String =
+  values
+    |> map show
+    |> join ", "
+
+fn chunkedOdds values: Array<Int> -> Either<SizeError, Array<String>> =
+  values
+    |> arrays.filter (\value -> value % 2 != 0)
+    |> arrays.sort
+    |> arrays.chunksOf 2
+    |> map (\chunks -> map renderChunk chunks)
+
+let numbers = [5, 3, 1, 7, 2]
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  match chunkedOdds numbers {
+    Left error -> println $ `error: ${error}`
+    Right lines -> for line <- lines {
+      println line
+    }
+  }
+
+// Expected stdout:
+// 1, 3
+// 5, 7
