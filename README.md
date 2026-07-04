@@ -2,6 +2,8 @@
 
 A programming language that compiles to TypeScript
 
+言語の意味と構文の正本は [Seseragi 言語仕様](./docs/README.md) を参照してください。
+
 ## 特徴
 
 - **静的型付け** - 型推論による型安全性
