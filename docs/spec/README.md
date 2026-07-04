@@ -25,6 +25,7 @@ Seseragiが保証する意味を記述します。
 - 空白によるcurried function application
 - `if` / `match` / block expression
 - lambda、pipeline、低優先順位application
+- Maybe専用の短絡fallback `??`
 - 固定operator、struct operator overload、userland custom infix operator
 - genericなdo notation
 - Signal snapshot read `*signal`
@@ -108,6 +109,12 @@ Seseragiが保証する意味を記述します。
 - `perform` / `handle` algebraic effect
 - user-definedな汎用構文マクロと手続きマクロ
 - user-defined prefix / postfix operator
+- Listのhead `^`、tail `>>`、連結記法
+- reverse pipeline `~`
+- 三項演算子
+- 空白だけによるmethod call
+- 特別なmonoid宣言とfold operator `>>>`
+- SignalのMonad instance
 - TypeScript `any` の無警告受け入れ
 
 ## 仕様変更の条件

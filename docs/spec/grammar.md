@@ -99,7 +99,8 @@ referencable-operator = arithmetic-operator | comparison-operator | ":"
 operator        = standard-operator | custom-operator ;
 application     = postfix, { postfix } ;
 postfix         = primary, { ".", lower-name | "[", expr, "]" } ;
-assignment-expr = operator-expr, [ ":=", assignment-expr ] ;
+assignment-expr = fallback-expr, [ ":=", assignment-expr ] ;
+fallback-expr   = operator-expr, [ "??", fallback-expr ] ;
 operator-expr   = unary-expr, { operator, unary-expr } ;
 unary-expr      = ( "!" | "-" | "*" ), unary-expr | application ;
 

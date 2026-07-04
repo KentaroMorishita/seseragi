@@ -30,6 +30,9 @@ fn mapLeft<E, F, A> f: (E -> F) -> value: Either<E, A> -> Either<F, A>
 fn mapRight<E, A, B> f: (A -> B) -> value: Either<E, A> -> Either<E, B>
 ```
 
+`maybeValue ?? fallback` は `withDefault fallback maybeValue` と同じ結果を持ちますが、fallbackを
+必要になるまで評価しない構文です。
+
 `Maybe` と `Either<E, _>` はFunctor、Applicative、Monad instanceを持ちます。Eitherは最初の
 `Left` を保ちます。validation errorの蓄積は別の `Validation` 型で提供し、Eitherの
 Applicativeの意味を変えません。

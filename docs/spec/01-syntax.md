@@ -111,13 +111,14 @@ show $ expensiveComputation input
 |   3 | `==`, `!=`, `<`, `<=`, `>`, `>=`             | 結合不可   |
 |   2 | `&&`                                         | 左         |
 |   1 | <code>&#124;&#124;</code>                    | 左         |
-|   0 | `>>=`, `<$>`, `<*>`, <code>&#124;&gt;</code> | 左         |
-|  -1 | `$`                                          | 右         |
-|  -2 | signal set `:=`                              | 右         |
+|   0 | Maybe fallback `??`                          | 右・短絡   |
+|  -1 | `>>=`, `<$>`, `<*>`, <code>&#124;&gt;</code> | 左         |
+|  -2 | `$`                                          | 右         |
+|  -3 | signal set `:=`                              | 右         |
 
 比較演算子を連鎖できません。`a < b < c` はエラーで、`a < b && b < c` と書きます。
-`&&` と `||` は短絡評価します。それ以外の二項演算子は左 operand、右 operand の順に
-評価します。
+`&&`、`||`、`??` は短絡評価します。それ以外の二項演算子は左operand、右operandの順に
+評価します。`??` の型とfallback規則は5.2に従います。
 
 二項の算術・比較・cons・型クラスoperatorは、括弧で囲むと通常のcurried function値として
 参照できます。
@@ -163,9 +164,12 @@ operator symbolはASCIIの次の文字を2文字以上組み合わせます。
 ! $ % & * + - . / : < = > ? @ ^ | ~
 ```
 
-標準operator、`->`、`<-`、`..`、`...`、`//`、`:=` は予約済みで再定義できません。
+標準operator、`->`、`<-`、`..`、`...`、`//`、`??`、`:=` は予約済みで再定義できません。
 lexerは現在scopeで宣言されたoperatorを最長一致で読みます。prefixとpostfixのcustom
 operatorはありません。
+
+`<<`、`>>`、`>>>` のように `<` と `>` だけからなるsymbolはgeneric delimiterと衝突するため、
+custom operatorとして宣言できません。
 
 custom operatorは値namespaceとは別のoperator namespaceに入り、明示importします。
 

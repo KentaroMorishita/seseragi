@@ -27,6 +27,7 @@
 - Eq / Ord / Show / Debug / Hashの限定的なderiving
 - Showで型検査されるtemplate interpolation
 - Array / Listのliteral、pattern、comprehension、明示変換
+- Maybe専用の短絡fallback `??`
 - kind、arity、型構築子parameter
 - nominal型とstructural record
 - ADT、網羅的match、pattern guard
@@ -116,19 +117,6 @@
 - custom operator / generic angle bracket ambiguityのformatter rule
 - incomplete sourceを扱うrecovery grammar
 
-### 現行surfaceから判断が必要
-
-次は現行compilerに存在しますが、Seseragiらしさと意味の明瞭さを確認してから正本へ
-採用・再設計・廃止のいずれかを記録します。
-
-- Listのhead `^`、tail `>>` と連結記法
-- Maybe / Either / TypeScript風の意味が混在する `??`
-- reverse pipeline `~`
-- 三項演算子
-- 空白によるmethod call
-- `monoid` 特別宣言とfold operator `>>>`
-- SignalのMonad instanceと動的dependency切替
-
 ## 意図的に採用しない
 
 - mutable variable / mutable field
@@ -141,6 +129,12 @@
 - algebraic `perform` / `handle`
 - user-definedな汎用構文マクロと手続きマクロ
 - user-defined prefix / postfix operator
+- Listのhead `^`、tail `>>` と連結記法
+- reverse pipeline `~`
+- 三項演算子
+- 空白だけによるmethod call
+- `monoid` 特別宣言とfold operator `>>>`
+- SignalのMonad instance。動的dependency切替は名前付き `switchMap` を使う
 - TypeScript checkerへの型意味論の委譲
 
 ## 次に詰める順序

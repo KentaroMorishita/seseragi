@@ -19,6 +19,19 @@ type Maybe<A> =
 `Maybe<A>` は、値が存在しないこと自体が正常な場合に使います。失敗理由が必要な場合は
 `Either<E, A>` を使います。
 
+`maybeValue ?? fallback` はMaybe専用のfallback構文です。
+
+```seseragi
+let displayName = cachedName ?? requestedName ?? "anonymous"
+```
+
+左operandは `Maybe<A>`、右operandは `A` で、結果は `A` です。右結合かつ短絡評価で、
+`Just value ?? fallback` はfallbackを評価せずvalueを返し、`Nothing ?? fallback` だけがfallbackを
+評価します。上の連鎖は `cachedName ?? (requestedName ?? "anonymous")` と解釈します。
+
+`??` をEither、nullableなforeign値、通常値へoverloadしません。Eitherは `withDefault`、
+foreign nullableは境界でMaybeへ変換してから扱います。
+
 ## 5.3 Either
 
 ```seseragi
