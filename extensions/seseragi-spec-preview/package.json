@@ -1,0 +1,33 @@
+{
+  "name": "seseragi-spec-preview",
+  "displayName": "Seseragi Spec Preview",
+  "description": "Syntax-only highlighting for the draft Seseragi language specification",
+  "version": "0.1.0",
+  "publisher": "seseragi-dev",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "seseragi-spec-preview",
+        "aliases": ["Seseragi Spec Preview"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "seseragi-spec-preview",
+        "scopeName": "source.seseragi-spec-preview",
+        "path": "./syntaxes/seseragi.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "files.associations": {
+        "**/examples/spec/*.ssrg": "seseragi-spec-preview"
+      }
+    }
+  }
+}
