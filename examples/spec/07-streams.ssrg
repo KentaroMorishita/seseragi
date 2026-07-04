@@ -1,0 +1,36 @@
+import * as effects from "std/effect"
+import * as streams from "std/stream"
+
+type AppError deriving Show =
+  | InvalidBuffer streams.BufferCapacityError
+  | ConsoleFailure ConsoleError
+
+let numbers = [1, 2, 3, 4, 5, 6]
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    capacity <-
+      match streams.bufferCapacity 2 {
+        Left error -> effects.fail $ InvalidBuffer error
+        Right value -> effects.succeed value
+      }
+
+    values <-
+      streams.fromArray numbers
+        |> streams.map (\value -> value * value)
+        |> streams.filter (\value -> value % 2 == 0)
+        |> streams.buffer capacity
+        |> streams.runCollect
+
+    for value <- values {
+      println (show value)
+        |> effects.mapError ConsoleFailure
+    }
+  }
+
+// Expected stdout:
+// 4
+// 16
+// 36

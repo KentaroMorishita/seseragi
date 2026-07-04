@@ -697,19 +697,202 @@ releaseしてから終了します。
 
 ## 10.12 `std/stream`
 
-`Stream<R, E, A>` はenvironment `R` を要求し、`E` で失敗しうる0個以上の非同期値です。
+`Stream<R, E, A>` はenvironment `R` を要求し、`E` で失敗しうる0個以上の非同期値を表すstandard
+opaque typeです。Stream valueはcoldで再利用可能なdescriptionです。terminal operationを実行するたびに
+独立したproducerとresource scopeを作り、同じStream valueを二度実行してもsubscriptionやiteratorを
+共有しません。
 
-```text
-fromArray, fromEffect, unfold
-map, filter, filterMap, flatMap
-take, drop, chunk
-merge, zip, concat
-debounce, throttle
-runCollect, runFold, runForEach
+constructorと基本変換は次です。値を生成しないconstructorも周囲の型へ合わせられるよう `R` と `E` を
+量化します。
+
+```seseragi
+fn empty<R, E, A> -> Stream<R, E, A>
+fn singleton<R, E, A> value: A -> Stream<R, E, A>
+fn fromArray<R, E, A> values: Array<A> -> Stream<R, E, A>
+fn fromIterable<C, R, E, A> values: C -> Stream<R, E, A>
+where Iterable<C, A>
+fn fromEffect<R, E, A> effect: Effect<R, E, A> -> Stream<R, E, A>
+fn unfold<S, R, E, A>
+  step: (S -> Maybe<(A, S)>) -> initial: S -> Stream<R, E, A>
+
+fn map<R, E, A, B>
+  f: (A -> B) -> stream: Stream<R, E, A> -> Stream<R, E, B>
+fn filter<R, E, A>
+  predicate: (A -> Bool) -> stream: Stream<R, E, A> -> Stream<R, E, A>
+fn filterMap<R, E, A, B>
+  f: (A -> Maybe<B>) -> stream: Stream<R, E, A> -> Stream<R, E, B>
+fn mapError<R, E, F, A>
+  f: (E -> F) -> stream: Stream<R, E, A> -> Stream<R, F, A>
+fn flatMap<R, E, A, B>
+  f: (A -> Stream<R, E, B>)
+  -> stream: Stream<R, E, A>
+  -> Stream<R, E, B>
+
+fn take<R, E, A> count: Int -> stream: Stream<R, E, A> -> Stream<R, E, A>
+fn drop<R, E, A> count: Int -> stream: Stream<R, E, A> -> Stream<R, E, A>
+fn chunk<R, E, A>
+  size: Int
+  -> stream: Stream<R, E, A>
+  -> Either<SizeError, Stream<R, E, Array<A>>>
 ```
 
-Streamはbackpressureとcancellationを伝播し、resource scope終了時にproducerを停止します。
-Signalとの変換は初期値・購読lifetime・loss policyを引数で明示します。
+`fromArray` はsnapshotしたArrayをsource順に出します。`fromIterable` はterminal operationごとに
+`iterate values` で新しいIteratorを作ります。`fromEffect` は実行ごとにeffectを一度だけ実行し、successを
+一件出すかfailureで終了します。`unfold` のstepはpureで、`Nothing` まで逐次評価します。
+
+`flatMap` はouter source順かつinnerを一つずつ最後まで実行するsequential concat-mapです。並行な
+flat-mapを暗黙に選びません。Streamは `Stream<R, E, _>` ごとにFunctorとMonad instanceを持ち、generic
+`map` と `flatMap` は上の意味を使います。`take` と `drop` のcount規則はArray/Listと同じです。
+`chunk` は隣接要素を最大size件のArrayにし、最後の短いchunkも残します。sizeが正でなければStreamを
+開始せず `Left (NonPositiveSize size)` を返します。
+
+複数sourceの合成は順序をAPIごとに固定します。
+
+```seseragi
+fn concat<R, E, A>
+  suffix: Stream<R, E, A>
+  -> prefix: Stream<R, E, A>
+  -> Stream<R, E, A>
+fn zip<R, E, A, B>
+  right: Stream<R, E, B>
+  -> left: Stream<R, E, A>
+  -> Stream<R, E, (A, B)>
+fn merge<R, E, A>
+  right: Stream<R, E, A>
+  -> left: Stream<R, E, A>
+  -> Stream<R, E, A>
+```
+
+`concat suffix prefix` はprefix完了後にsuffixを開始します。`zip` は両sourceから一件ずつ要求し、短い側が
+終了した時点で長い側をcancelします。`merge` は両sourceを同時に開始し、利用可能になった値から出します。
+同じscheduler turnならleftを先に出します。一方が通常終了しても他方を継続し、一方がfailureなら他方を
+cancelしてfinalizer完了後にそのfailureを返します。同じturnのfailureはleftを選びます。mergeは各sourceに
+高々一件だけ未完了のdemandを出し、sourceごとに高々一件の完成済みvalueを保持します。
+
+### demand、buffer、overflow
+
+既定のStreamはpull-basedです。downstreamが次の値を要求するまでupstreamへ新しいdemandを出しません。
+各operatorは受け取ったdemandを満たすために必要な分だけ上流へ要求します。`filter` は一件出せるまで、
+`chunk` はsize件またはupstream終了まで要求します。`merge`、time operator、明示bufferだけは並行producerを
+進められますが、未消費値を仕様で定めたcapacityより多く保持しません。`debounce` は最新一件だけを保持し、
+`throttleFirst` はwindow中の後続値を保持せず破棄します。
+
+```seseragi
+type BufferCapacityError deriving Eq, Show =
+  | NonPositiveBufferCapacity Int
+
+type DropStrategy deriving Eq, Show =
+  | DropOldest
+  | DropLatest
+
+type BufferOverflowError deriving Eq, Show =
+  | BufferOverflow Int
+
+fn bufferCapacity value: Int
+  -> Either<BufferCapacityError, BufferCapacity>
+
+fn buffer<R, E, A>
+  capacity: BufferCapacity
+  -> stream: Stream<R, E, A>
+  -> Stream<R, E, A>
+fn bufferDropping<R, E, A>
+  strategy: DropStrategy
+  -> capacity: BufferCapacity
+  -> stream: Stream<R, E, A>
+  -> Stream<R, E, A>
+fn bufferFailing<R, E, A>
+  capacity: BufferCapacity
+  -> stream: Stream<R, E, A>
+  -> Stream<R, Either<E, BufferOverflowError>, A>
+```
+
+`BufferCapacity` は正数だけを表すstandard opaque typeです。`buffer` は満杯ならproducerをsuspendする
+lossless backpressureです。`bufferDropping DropOldest` は満杯時に最古の未消費値を捨てて新値を入れ、
+`DropLatest` は到着した新値を捨てます。`bufferFailing` はsource failureを `Left error`、満杯時の
+overflowを `Right (BufferOverflow capacity)` として一度だけ失敗し、producerをcancelします。
+
+bufferのconsumerがcancelされた場合、待機中producerへcancellationを伝播して保持値を破棄します。
+producerの完了後は保持値をFIFOでdrainしてから完了します。producer failureは保持値より優先し、保持値を
+破棄してfailureを通知します。
+
+### time operator
+
+```seseragi
+fn debounce<R, E, A>
+  duration: Duration
+  -> stream: Stream<R, E, A>
+  -> Stream<R & { clock: Clock }, E, A>
+fn throttleFirst<R, E, A>
+  duration: Duration
+  -> stream: Stream<R, E, A>
+  -> Stream<R & { clock: Clock }, E, A>
+```
+
+`debounce` は値の後にdurationだけ新値が来なければ最新値を出し、sourceが通常終了した場合はpending値を
+直ちに出して終了します。`throttleFirst` はwindow先頭の値を出し、duration中の後続値を捨てます。
+durationがzeroならどちらも全値をsource順に出します。負Durationは構築できません。どちらもClock serviceを
+要求し、consumer cancellation時はtimerとupstreamをcancelします。
+
+### terminal operationとresource
+
+```seseragi
+fn runCollect<R, E, A> stream: Stream<R, E, A> -> Effect<R, E, Array<A>>
+fn runFold<R, E, A, B>
+  initial: B
+  -> step: (B -> A -> B)
+  -> stream: Stream<R, E, A>
+  -> Effect<R, E, B>
+fn runForEach<R, E, A>
+  action: (A -> Effect<R, E, Unit>)
+  -> stream: Stream<R, E, A>
+  -> Effect<R, E, Unit>
+```
+
+terminal operationは値をsource順に処理し、最初のfailureでproducerをcancelします。`runForEach` は前の
+actionが成功するまで次の値を要求しません。`runCollect` は有限Stream専用で、型から有限性は判定しません。
+無限Streamでは完了せず、値を保持し続けます。
+
+Stream実行はterminal operationのscopeに所属します。success、failure、cancellationのすべてでproducer、
+timer、subscriptionをcancelし、登録と逆順にfinalizerを完了してからterminal Effectを終了します。
+consumerのearly terminationである `take`、短い側で終わる `zip` も同じ規則で不要なupstreamを閉じます。
+
+### Signalとの変換
+
+```seseragi
+type SignalStart deriving Eq, Show =
+  | EmitCurrent
+  | ChangesOnly
+
+fn fromSignalBuffered<A>
+  start: SignalStart
+  -> capacity: BufferCapacity
+  -> signal: Signal<A>
+  -> Stream<{}, Never, A>
+fn fromSignalDropping<A>
+  start: SignalStart
+  -> strategy: DropStrategy
+  -> capacity: BufferCapacity
+  -> signal: Signal<A>
+  -> Stream<{}, Never, A>
+fn fromSignalLatest<A>
+  start: SignalStart -> signal: Signal<A> -> Stream<{}, Never, A>
+
+fn runIntoSignal<R, E, A>
+  target: MutableSignal<A>
+  -> stream: Stream<R, E, A>
+  -> Effect<R, E, Unit>
+```
+
+`EmitCurrent` はsubscription開始時のsnapshotを先頭値にし、`ChangesOnly` は開始後のtransactionだけを
+対象にします。snapshot取得とsubscription登録はatomicで、その間の更新を失いません。
+`fromSignalBuffered` は満杯ならSignal observerをsuspendするlossless変換です。
+`fromSignalDropping` は指定strategyで欠落させます。`fromSignalLatest` は未消費値を常に最新一件へ置き換える
+conflationで、transaction境界は保ちますが中間値の個数は保ちません。同じtransactionで同じSignalが複数回
+変更されても、glitch-free graphが公開する安定値だけを一件として扱います。
+
+`runIntoSignal` は各値を順に一件のSignal transactionとしてtargetへsetし、source完了まで戻りません。
+background化は `fork $ runIntoSignal target stream` と明示し、隠れたdaemon Fiberを作りません。source
+failureは呼び出し側へ返り、targetは最後に成功した値を保持します。
 
 ## 10.13 `std/signal`
 
