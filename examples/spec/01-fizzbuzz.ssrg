@@ -13,6 +13,4 @@ fails ConsoleError =
     println $ fizzBuzz number
   }
 
-// Expected stdout:
-// 1から100までを一行ずつ出力する。
-// 3の倍数はFizz、5の倍数はBuzz、15の倍数はFizzBuzz。
+// Expected stdout: ./01-fizzbuzz.stdout

@@ -30,6 +30,7 @@
 - Maybe専用の短絡fallback `??`
 - kind、arity、型構築子parameter
 - nominal型とstructural record
+- entry pointでfield集合を確定するclosed structural record
 - ADT、網羅的match、pattern guard
 - 単一値のnominal wrapperを表すnewtypeとopaque境界
 
@@ -68,6 +69,8 @@
 ### parserとtooling
 
 - raw operator scanとheader scanの分離
+- reserved wordとAppendix grammarの機械的整合
+- record/struct value・pattern・shorthand・spreadの完全なgrammar
 - module interfaceによるcustom operator fixity解決
 - lossless CSTとflat operator chain
 - incomplete source、unknown operator、missing tokenのrecovery contract
@@ -76,6 +79,7 @@
 - lexical / semantic syntax highlightのtoken契約
 - playgroundとCLIのfrontend・example source共有
 - example単位のcompiler / formatter / LSP / highlight / playground conformance
+- `.stdout` snapshotを含むbyte単位のexample出力検証
 
 ### 標準ライブラリ
 

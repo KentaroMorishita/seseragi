@@ -88,7 +88,8 @@ match-expr      = "match", expr, "{", { match-arm }, "}" ;
 match-arm       = pattern, [ "when", expr ], "->", expr, terminator ;
 lambda          = "\\", lambda-param, { lambda-param }, "->", expr ;
 lambda-param    = lower-name, [ ":", type-atom ] ;
-block           = "{", { let-decl }, [ expr ], "}" ;
+block           = "{", let-decl, { let-decl }, [ expr ], "}"
+                | "{", expr, "}" ;
 do-expr         = "do", "{", { do-item, terminator }, expr,
                   [ terminator ], "}" ;
 do-item         = pattern, "<-", expr
@@ -104,6 +105,16 @@ array           = "[", [ expr, { ",", expr } ], "]"
                 | "[", expr, "|", comprehension-clauses, "]" ;
 list            = "`[", [ expr, { ",", expr } ], "]"
                 | "`[", expr, "|", comprehension-clauses, "]" ;
+record          = "{", "}"
+                | "{", record-explicit-start,
+                  { ",", record-item }, [ "," ], "}"
+                | "{", lower-name, ",",
+                  [ record-item, { ",", record-item }, [ "," ] ], "}" ;
+record-explicit-start = lower-name, ":", expr | "...", expr ;
+record-item     = lower-name, [ ":", expr ] | "...", expr ;
+struct-value    = constructor-name, [ type-args ], "{",
+                  [ struct-item, { ",", struct-item }, [ "," ] ], "}" ;
+struct-item     = lower-name, [ ":", expr ] | "...", expr ;
 comprehension-clauses = comprehension-clause,
                         { ",", comprehension-clause } ;
 comprehension-clause = pattern, "<-", expr | expr ;
@@ -126,14 +137,21 @@ infix-operator  = arithmetic-operator | comparison-operator | ":"
                 | "&&" | "||" | custom-operator ;
 unary-expr      = ( "!" | "-" | "*" ), unary-expr | application ;
 
-pattern         = "_" | literal | lower-name | constructor-name, [ pattern ]
+pattern         = "_" | literal | lower-name | struct-pattern
+                | constructor-name, [ pattern ]
                 | "(", pattern, ",", pattern, { ",", pattern }, ")"
-                | "{", pattern-fields, "}"
+                | record-pattern
                 | array-pattern | list-pattern ;
+record-pattern  = "{", [ pattern-fields ], "}" ;
+struct-pattern  = constructor-name, "{", [ pattern-fields ], "}" ;
+pattern-fields  = pattern-field, { ",", pattern-field }, [ "," ] ;
+pattern-field   = lower-name, [ ":", pattern ] ;
 array-pattern   = "[", [ pattern-items ], "]" ;
 list-pattern    = "`[", [ pattern-items ], "]" ;
 pattern-items   = pattern, { ",", pattern }, [ ",", "...", lower-name ]
                 | "...", lower-name ;
+
+tuple           = "(", expr, ",", expr, { ",", expr }, ")" ;
 
 type            = function-type ;
 function-type   = type-atom, [ "->", function-type ] ;
@@ -155,8 +173,22 @@ type-name       = upper-name
 constructor-name = upper-name
                  | lower-name, { ".", lower-name }, ".", upper-name ;
 
+literal         = INTEGER | FLOAT | STRING | TEMPLATE_STRING
+                | "True" | "False" | "()" ;
+name            = lower-name | upper-name ;
+lower-name      = LOWER_IDENTIFIER ;
+upper-name      = UPPER_IDENTIFIER ;
+arithmetic-operator = "+" | "-" | "*" | "/" | "%" | "**" ;
+comparison-operator = "==" | "!=" | "<" | "<=" | ">" | ">=" ;
+standard-operator = "+" | "-" | "*" | "/" | "%" | "**" | "==" ;
+custom-operator = OPERATOR_TOKEN ;
+
 terminator      = NEWLINE | ";" ;
 ```
+
+`LOWER_IDENTIFIER` と `UPPER_IDENTIFIER` は1.1のUnicode identifier規則を先頭文字の大小で分けた
+tokenです。`OPERATOR_TOKEN` は1.8の文字集合・予約token除外規則に従います。INTEGER、FLOAT、
+STRING、TEMPLATE_STRINGのtoken境界は1.2に従い、負号は数値tokenではなくunary operatorです。
 
 ## 構文上の確定事項
 
@@ -169,3 +201,8 @@ terminator      = NEWLINE | ";" ;
 - pipeline は `|>` です。
 - method は `value.method arg` です。
 - block は braces で囲み、インデントに意味はありません。
+- `{}` はempty record、`{ expression }` はblockです。単一field shorthand recordは `{ x, }` と
+  trailing commaを付けます。
+- record/struct valueはfield shorthandとspreadを持ちます。struct spreadの個数・位置は3.5、
+  recordの上書き順は3.7に従います。
+- record/struct patternのfieldはshorthandを持ちますが、spreadは持ちません。

@@ -102,6 +102,23 @@ let name = nameOf user
 
 record field の型に対する暗黙の depth subtyping はありません。
 
+### closed structural record
+
+通常のrecord型はstructuralで、width subtypingにより余分なfieldを持つ値も利用できます。
+`closed structural record` はこのsubtypingを無効にする型ではなく、host境界でrequirementの全fieldを
+有限かつ静的に列挙できるrecord型を意味します。
+
+closedであるためには、alias展開後に次を満たさなければなりません。
+
+- 最上位がrecord型で、free type variableや未解決のrow remainderを持たない。
+- field名とfield型がすべて確定し、同名fieldがない。
+- 再帰aliasや未解決constraintを通してfield集合が変化しない。
+
+Seseragiはsource syntaxとしてrow variableを持ちませんが、generic aliasやinference途中の型を
+entry pointへ残さないことをclosed requirementとして明示します。hostが実際に渡すrecordは
+width subtypingにより余分なfieldを持って構いません。余分なfieldはmainのrequirementには含まれず、
+mainから参照もできません。
+
 ## 2.7 関数型と curry
 
 複数 parameter の関数宣言は、単一 parameter 関数の入れ子です。

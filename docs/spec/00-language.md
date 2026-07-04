@@ -72,9 +72,11 @@ fails AppError =
   program
 ```
 
-これは `main: Unit -> Effect<AppEnv, AppError, Unit>` を宣言する糖衣です。`AppEnv` はclosedな
-structural service recordです。`main` の実行方法、environment provider、終了コードへの写像は
-host target規約に従いますが、Effect自体の意味は言語仕様に従います。
+これは `main: Unit -> Effect<AppEnv, AppError, Unit>` を宣言する糖衣です。`AppEnv` は2.6で定める
+closedなstructural service recordです。つまり必要なservice field集合はentry pointの型検査時に
+完全に確定します。hostが追加fieldを持つenvironmentを渡すことはwidth subtypingにより許されます。
+`main` の実行方法、environment provider、終了コードへの写像はhost target規約に従いますが、
+Effect自体の意味は言語仕様に従います。
 
 ## 0.4 この仕様に存在しないもの
 

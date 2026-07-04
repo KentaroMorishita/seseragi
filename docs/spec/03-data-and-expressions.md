@@ -17,9 +17,10 @@ let result = {
 }
 ```
 
-ブロックは 0 個以上の `let` の後に最後の式を持ち、その式の値を返します。
-最後の式を省略したブロックは `Unit` を返します。`let` の scope は、その直後から
-ブロックまたは module の末尾までです。shadowing は許可します。
+ブロックは1個以上の `let` と省略可能な最後の式、または最後の式一つを持ちます。最後の式の値を
+返し、`let` だけのブロックは `Unit` を返します。完全に空の `{}` はempty record literalなので、
+何もしないUnit blockは `{ () }` と書きます。`let` の scope は、その直後からブロックまたは
+module の末尾までです。shadowing は許可します。
 
 destructuring let も pattern を使いますが、反駁可能な pattern は使えません。
 
@@ -81,6 +82,11 @@ let renamed = User { ...user, name: "Mio" }
 生成時は全 field が必要です。同名変数による field shorthand を使えます。spread は
 同じ struct 型の値を一つだけ先頭に置けます。後続 field が値を置き換えます。
 
+`User { id }` の `id` は `id: id` のshorthandです。spreadなしでは全fieldを一度ずつ指定し、
+spreadありでは指定しなかったfieldを元のstructから引き継ぎます。spread式を最初に一度評価した後、
+明示field式をsource順に一度ずつ評価します。直接書くfield名の重複、複数spread、先頭以外のspreadは
+compile errorです。
+
 通常の公開struct fieldは宣言moduleの外からも読み取れます。表現を隠す型は `opaque struct`
 と公開smart constructorを使います。
 
@@ -111,9 +117,18 @@ let point = { x: 1, y: 2 }
 let moved = { ...point, x: point.x + 1 }
 ```
 
-record field 名は一意でなければなりません。複数 spread を左から右に適用でき、後続の
-field が前の値を置き換えます。同じ field の型を変更する更新は、新しい record 型を
-作ります。
+直接指定するrecord field名は一意でなければなりません。複数spreadを左から右に適用でき、後続の
+fieldが前の値を置き換えます。同じfieldの型を変更する更新は、新しいrecord型を作ります。
+
+record itemはsource順に一度ずつ評価します。`{ x: value }` は明示field、`{ x, }` は
+`{ x: x }` のfield shorthand、`{ ...base, x: value }` はspreadと上書きです。直接書く同名fieldは
+重複できませんが、spread間の重複と後続の明示fieldは後勝ちです。spread operandはrecordでなければ
+なりません。
+
+braceの曖昧性を避けるため、`{}` は型 `{}` のempty recordでありUnitではありません。
+`{ expression }` はblockです。単一shorthandの
+recordだけはtrailing commaを必須とし、`{ x, }` と書きます。colon、top-level comma、spreadを持つ
+braceはrecordです。formatterは単一shorthandのtrailing commaを削除しません。
 
 ## 3.8 tuple、Array、List
 
@@ -184,6 +199,22 @@ match state {
 
 pattern は literal、binding、`_`、constructor、tuple、record、struct、Array、List を
 入れ子にできます。同じ pattern 内で同じ名前を二度 bind できません。
+
+```seseragi
+let { name, age: years } = userRecord
+let User { id, name: displayName } = user
+
+match response {
+  { status: "ok", value } -> Just value
+  { status: _, value: _ } -> Nothing
+}
+```
+
+pattern fieldの `name` は `name: name` のshorthandです。record patternは指定fieldを持つ任意の
+structural recordに一致し、指定しないfieldを無視します。struct patternはconstructor名でnominal型を
+確定し、指定しないfieldを無視します。field patternがすべてirrefutableなら、対象型が確定した
+record/struct patternもirrefutableです。pattern内にspreadは書けません。private/opaque fieldは
+通常のvisibility規則に従い、参照できないmoduleからpatternに書けません。
 
 guard は `Bool` です。guard 付き arm は網羅性に寄与しません。arm は上から評価し、
 最初に pattern と guard が一致した arm の式を評価します。すべての arm の結果型は

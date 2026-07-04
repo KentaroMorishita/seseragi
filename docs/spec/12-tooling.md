@@ -134,6 +134,9 @@ compilerとlanguage serverは、少なくとも次を同じ結合結果として
 - nested genericの末尾 `>>`
 - unknown operatorを含む不完全なfileの後続宣言
 - dependency側のfixity変更後の再解決
+- grammarで使うkeywordと1.9のreserved/contextual keyword分類の一致
+- `{}`、`{ value }`、`{ value, }`、`{ field: value }` のrecord/block判別
+- record/struct valueとpatternのfield shorthand、およびvalue側だけのspread
 
 ## 12.10 syntax highlight
 

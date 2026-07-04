@@ -210,6 +210,8 @@ fails AppError = ...
 manifestのhost targetはentry pointへ `()` を渡し、返されたEffectへenvironmentを供給して
 実行します。`AppEnv` はclosedなstructural recordでなければなりません。hostが提供しない
 application固有serviceは、mainが返すEffectを構成する時点で `provide` しなければなりません。
+closedの判定は2.6に従い、generic main、free type variable、field集合が未確定なrequirementを
+entry pointにできません。host environmentの追加fieldは許されます。
 
 library packageはentry pointを持たなくて構いません。importされたmoduleの `main` を暗黙実行
 しません。

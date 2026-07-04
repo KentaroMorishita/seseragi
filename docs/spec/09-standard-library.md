@@ -123,6 +123,11 @@ trait One<A> {
 Semigroupは結合律、Monoidは左単位元・右単位元を満たします。custom operatorの実装から
 これらを利用できますが、特定のoperator symbolをMonoidへ固定しません。
 
+parameterなし関数の規則はtrait methodにも適用します。したがって `empty` の型は `Unit -> A` で、
+呼び出しは `empty ()` です。Monoid lawの単位元はこの呼び出し結果を指します。
+`zero` と `one` も同様に `zero ()`、`one ()` と呼びます。trait value memberという別構文は
+導入しません。
+
 ZeroとOneは数値集約の単位元だけを表し、SemigroupやMonoid instanceを暗黙に作りません。
 Int、Float、BigInt、DecimalはZeroとOneを持ちます。Floatのzeroはpositive zero、oneはpositive
 oneです。IEEE 754演算は結合律やbit-levelの単位元lawを満たさないため、FloatへMonoidを導出しません。
@@ -147,7 +152,8 @@ fn join<C> separator: String -> values: C -> String
 where Reducible<C, String>
 ```
 
-`combine` はcollectionをその要素型のMonoidで結合します。変換してから結合する場合も、
+`combine` は `empty ()` をinitialにして、collectionをその要素型のMonoidでsource順に結合します。
+変換してから結合する場合も、
 専用の `foldMap` という名前へ圧縮せず、`map` と意味を表すreducerをpipelineで組み合わせます。
 `sum` はzeroから加算、`product` はoneから乗算をsource順に行います。`any` は最初のTrue、`all` は
 最初のFalseでshort-circuitします。空collectionではそれぞれFalseとTrueです。`join` は要素間だけに
