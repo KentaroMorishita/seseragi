@@ -85,18 +85,32 @@ primary         = literal | generic-name | operator-reference
                 | tuple | array | list | record
                 | struct-value
                 | block | "(", expr, ")" ;
+array           = "[", [ expr, { ",", expr } ], "]"
+                | "[", expr, "|", comprehension-clauses, "]" ;
+list            = "`[", [ expr, { ",", expr } ], "]"
+                | "`[", expr, "|", comprehension-clauses, "]" ;
+comprehension-clauses = comprehension-clause,
+                        { ",", comprehension-clause } ;
+comprehension-clause = pattern, "<-", expr | expr ;
 generic-name    = name, [ type-args ] ;
-operator-reference = "(", custom-operator, ")" ;
+operator-reference = "(", referencable-operator, ")" ;
+referencable-operator = arithmetic-operator | comparison-operator | ":"
+                     | ">>=" | "<$>" | "<*>" | custom-operator ;
 operator        = standard-operator | custom-operator ;
 application     = postfix, { postfix } ;
 postfix         = primary, { ".", lower-name | "[", expr, "]" } ;
 assignment-expr = operator-expr, [ ":=", assignment-expr ] ;
-operator-expr   = application, { operator, application } ;
+operator-expr   = unary-expr, { operator, unary-expr } ;
+unary-expr      = ( "!" | "-" | "*" ), unary-expr | application ;
 
 pattern         = "_" | literal | lower-name | upper-name, [ pattern ]
                 | "(", pattern, ",", pattern, { ",", pattern }, ")"
                 | "{", pattern-fields, "}"
-                | "[", [ pattern, { ",", pattern } ], "]" ;
+                | array-pattern | list-pattern ;
+array-pattern   = "[", [ pattern-items ], "]" ;
+list-pattern    = "`[", [ pattern-items ], "]" ;
+pattern-items   = pattern, { ",", pattern }, [ ",", "...", lower-name ]
+                | "...", lower-name ;
 
 type            = function-type ;
 function-type   = type-atom, [ "->", function-type ] ;

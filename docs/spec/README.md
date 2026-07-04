@@ -27,6 +27,7 @@ Seseragiが保証する意味を記述します。
 - lambda、pipeline、低優先順位application
 - 固定operator、struct operator overload、userland custom infix operator
 - genericなdo notation
+- Signal snapshot read `*signal`
 - Signal専用 `:=`
 
 ### 型
@@ -41,7 +42,7 @@ Seseragiが保証する意味を記述します。
 
 ### データと抽象化
 
-- ADT、record、struct、tuple、Array、List
+- ADT、record、struct、tuple、Array、List、両collectionのcomprehensionとpattern
 - 網羅的pattern match
 - Eq、Ord、Show、Debug、Hashの限定的なderiving
 - Showで検査される純粋なtemplate interpolation

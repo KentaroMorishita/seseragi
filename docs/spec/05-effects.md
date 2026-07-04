@@ -182,7 +182,21 @@ orderで高々一度再計算し、graph全体が安定してからsubscriberを
 同じ値をsetしても既定では更新として通知します。重複除去は `Signal.distinct` とEq instanceで
 明示します。
 
-## 5.14 `:=`
+## 5.14 `*` と `:=`
+
+`*source` はSignalの現在値をsnapshotとして読む固定prefix operatorです。
+
+```seseragi
+do {
+  current <- *count
+  Console.println `count: ${current}`
+}
+```
+
+`*source` は `Signal.read source` へdesugarし、`source: Signal<A>`または
+`MutableSignal<A>`に対して型 `Task<Never, A>` を持ちます。`A`を直接返すpureなdereferenceでは
+ありません。したがって、通常のpure式でSignalの現在値が暗黙に変化することはありません。
+二項の`*`は乗算のままで、prefix位置の`*`だけがSignal readです。
 
 `target := value` はMutableSignalだけに使える固定operatorです。
 

@@ -104,7 +104,7 @@ show $ expensiveComputation input
 | --: | -------------------------------------------- | ---------- |
 |   9 | field / method `.`, index `[]`               | 左         |
 |   8 | 関数適用                                     | 左         |
-|   7 | `!`, unary `-`                               | 右         |
+|   7 | `!`, unary `-`, signal read unary `*`        | 右         |
 |   6 | `**`                                         | 右         |
 |   5 | `*`, `/`, `%`                                | 左         |
 |   4 | `+`, `-`, list cons `:`                      | `:` のみ右 |
@@ -118,6 +118,18 @@ show $ expensiveComputation input
 比較演算子を連鎖できません。`a < b < c` はエラーで、`a < b && b < c` と書きます。
 `&&` と `||` は短絡評価します。それ以外の二項演算子は左 operand、右 operand の順に
 評価します。
+
+二項の算術・比較・cons・型クラスoperatorは、括弧で囲むと通常のcurried function値として
+参照できます。
+
+```seseragi
+let add = (+)
+let total = numbers |> reduce 0 (+)
+```
+
+overloadされたoperator referenceの型は期待型とtrait constraintから決めます。候補が一意に
+ならなければ型注釈が必要です。短絡評価する `(&&)` と `(||)`、pipeline、`$`、Signal用operator、
+prefix operatorは関数値として参照できません。
 
 ## 1.8 custom operator
 
@@ -138,7 +150,7 @@ where Semigroup<A> =
 - 型scheme `forall A. Semigroup<A> => A -> A -> A`
 - operator本体
 
-`left <+> right` は `(<+>) left right` へdesugarします。`(<+>)` は通常の関数値として
+`left <+> right` は `(<+>) left right` へdesugarします。`(<+>)` は通常のcurried function値として
 参照・部分適用できます。
 
 fixityは `infixl`、`infixr`、`infix` のいずれかです。`infix` は非結合で、同じoperatorを

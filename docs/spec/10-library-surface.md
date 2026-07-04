@@ -23,7 +23,7 @@ browser runtimeへ依存しません。I/Oはservice interfaceとEffectで抽象
 ```seseragi
 users
   |> Array.filter isActive
-  |> Array.map toSummary
+  |> map toSummary
   |> Array.sortBy (\user -> user.name)
 ```
 
@@ -37,9 +37,10 @@ preludeの目的は「最小programが書けること」であり、「標準ラ
 
 ## 10.4 `std/maybe`、`std/either`、`std/validation`
 
-最低限、次を提供します。
+型を保った `map`、`apply`、`flatMap` はpreludeのtrait methodを使います。各moduleは最低限、
+次の固有操作を追加します。
 
-- `map`, `flatMap`, `apply`, `withDefault`, `orElse`
+- `withDefault`, `orElse`
 - `fromNullable`, `toNullable` はinterop module側に置く
 - `mapLeft`, `bimap`, `fold`, `swap`
 - `sequence`, `traverse`
@@ -69,8 +70,8 @@ MapとSetは挿入順で反復します。既存keyのvalue更新では位置を
 
 ```text
 empty, singleton, fromIterable, toArray, toList
-map, filter, filterMap, flatMap
-foldLeft, foldRight, foldMap
+filter, filterMap, flatMap
+reduce, sum, product, combine
 find, findIndex, any, all
 take, drop, takeWhile, dropWhile
 zip, zipWith, unzip
@@ -90,12 +91,29 @@ chunksOf, windows
 
 ```seseragi
 trait Iterable<F<_>>
-trait Foldable<F<_>>
+trait Reducible<F<_>> {
+  fn reduce<A, B>
+    initial: B -> step: (B -> A -> B) -> values: F<A> -> B
+}
 trait Traversable<F<_>>
 ```
 
-Iterableは順序付き反復、Foldableは有限fold、TraversableはApplicative effectを保った走査を
-意味します。無限sequenceは別のStreamで扱い、Foldableへ入れません。
+Iterableは順序付き反復、Reducibleは有限collectionの集約、TraversableはApplicative effectを
+保った走査を意味します。`reduce`は先頭から末尾へ処理し、initialを必須とします。
+無限sequenceは別のStreamで扱い、Reducibleへ入れません。
+
+data argumentを最後に置くため、import後は次を標準的な書き方とします。
+
+```seseragi
+numbers |> reduce 0 (+)
+
+orders
+  |> map (\order -> order.total)
+  |> sum
+```
+
+前者は `reduce 0 (+) numbers` へ展開されます。後者は変換と集約を別の段として見せるため、
+初見でも処理の流れを追えます。compilerは意味を変えずにpipelineをfusionして構いません。
 
 ## 10.7 `std/text`
 

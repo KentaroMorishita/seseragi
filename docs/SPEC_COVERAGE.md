@@ -3,6 +3,19 @@
 この文書は仕様整理用の非規範チェックリストです。言語の意味は `docs/spec/` を正とします。
 実装計画や特定backendの移行計画は扱いません。
 
+## 現行機能を扱う基準
+
+現行compilerの挙動は設計資料であり、互換性の正本ではありません。独自記法を見つけた場合は、
+次のいずれかに分類してから正本へ反映します。
+
+- 維持: Seseragiの読み味を作り、型と評価規則も一貫している。
+- 再設計: 表面構文は有用だが、現行の型・失敗・副作用の意味に問題がある。
+- 廃止: 通常関数より理解しにくい、別概念を同じ記号へ混在させる、または安全性を隠す。
+- 保留: 言語全体との関係を決めるまで意味を確定できない。
+
+採用する機能は、少なくとも構文、型、評価順序、展開先、失敗条件、module境界を定義します。
+現行testが通ることやTypeScriptへ生成できることだけを、仕様採用の根拠にはしません。
+
 ## 定義済み
 
 ### 言語の核
@@ -13,6 +26,7 @@
 - generic function / ADT / struct / alias / impl
 - Eq / Ord / Show / Debug / Hashの限定的なderiving
 - Showで型検査されるtemplate interpolation
+- Array / Listのliteral、pattern、comprehension、明示変換
 - kind、arity、型構築子parameter
 - nominal型とstructural record
 - ADT、網羅的match、pattern guard
@@ -33,6 +47,7 @@
 - Task alias
 - 順次・並列、resource、cancellation、defect
 - Signal / MutableSignal
+- Signal snapshot read `*signal` と更新 `:=`
 - transaction、glitch-free更新、subscription lifetime
 - Console / LoggerとShowの分離
 
@@ -100,6 +115,19 @@
 - non-exhaustive matchのfix suggestion
 - custom operator / generic angle bracket ambiguityのformatter rule
 - incomplete sourceを扱うrecovery grammar
+
+### 現行surfaceから判断が必要
+
+次は現行compilerに存在しますが、Seseragiらしさと意味の明瞭さを確認してから正本へ
+採用・再設計・廃止のいずれかを記録します。
+
+- Listのhead `^`、tail `>>` と連結記法
+- Maybe / Either / TypeScript風の意味が混在する `??`
+- reverse pipeline `~`
+- 三項演算子
+- 空白によるmethod call
+- `monoid` 特別宣言とfold operator `>>>`
+- SignalのMonad instanceと動的dependency切替
 
 ## 意図的に採用しない
 
