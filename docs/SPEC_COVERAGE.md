@@ -79,6 +79,7 @@
 
 - preludeの境界
 - collection / text / number / JSON / time / random
+- persistent IteratorとIterable/Reducibleの要素型dependency
 - Effect / Stream / Signal / concurrency
 - Console / Logger / filesystem / process / HTTP
 - test runtimeとlaw test

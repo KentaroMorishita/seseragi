@@ -125,21 +125,71 @@ fn entries<K, V> values: Map<K, V> -> Array<(K, V)>
 標準traitとして次を提供します。
 
 ```seseragi
-trait Iterable<F<_>>
-trait Reducible<F<_>> {
-  fn reduce<A, B>
-    initial: B -> step: (B -> A -> B) -> values: F<A> -> B
+trait Iterable<C, A> {
+  fn iterate values: C -> Iterator<A>
 }
+
+trait Reducible<C, A>
+where Iterable<C, A> {
+  fn reduce<B>
+    initial: B -> step: (B -> A -> B) -> values: C -> B
+}
+
 trait Traversable<F<_>>
+where Functor<F> {
+  fn traverse<G<_>, A, B>
+    f: (A -> G<B>) -> values: F<A> -> G<F<B>>
+  where Applicative<G>
+}
+```
+
+methodの型schemeは次です。
+
+```text
+iterate : forall C A. Iterable<C, A> => C -> Iterator<A>
+reduce  : forall C A B. Reducible<C, A> => B -> (B -> A -> B) -> C -> B
+traverse: forall F G A B. Traversable<F>, Applicative<G>
+          => (A -> G<B>) -> F<A> -> G<F<B>>
 ```
 
 Iterableは順序付き反復、Reducibleは有限collectionの集約、TraversableはApplicative effectを
 保った走査を意味します。`reduce`は先頭から末尾へ処理し、initialを必須とします。
-無限sequenceは別のStreamで扱い、Reducibleへ入れません。
 
-ArrayとListはIterable、Reducible、Traversable instanceを持ちます。`Range<Int>` はIntを順番に
-生成する `Iterable<Range>` instanceを持ち、comprehensionと変換APIで利用できますが、値を
-保持するcollectionではありません。range literalが構築するのは `Range<Int>` だけです。
+IterableとReducibleは `C -> A` のfunctional dependencyを持ち、一つのconcrete collection型 `C` に
+要素型 `A` は一つだけです。同じ `C` に異なる `A` を与えるimplはcoherence errorです。この形により、
+`Array<A>` のような型構築子だけでなく、`Range<Int>` や `Map<K, V>` のentry反復も表せます。
+Reducible instanceは、すべての値について有限回の `next` で終了することを契約します。compilerは
+このlawを証明しませんが、標準instanceとlaw testは検査します。
+
+`Iterator<A>` はpureなpull iteratorです。`std/iterator` は少なくとも次を提供します。
+
+```seseragi
+fn unfold<S, A>
+  step: (S -> Maybe<(A, S)>) -> initial: S -> Iterator<A>
+
+fn next<A> iterator: Iterator<A> -> Maybe<(A, Iterator<A>)>
+```
+
+Iteratorはstandard opaque typeでありpersistentです。同じiteratorへ `next` を複数回適用すると
+同じ結果を返し、元のiteratorを消費・変更しません。`Just (value, rest)` は次の値と残り、
+`Nothing` は終了です。`unfold` はstepを即座に呼ばず、各 `next` 呼び出しがstepを一度呼びます。
+memoizeは保証しません。Iterator自体はpureで、I/O、throw、Promiseを隠せません。
+
+Iterable instanceの `iterate` はcollectionの規定順序を保たなければなりません。user-defined
+Iterableは `unfold` でIteratorを構築できます。Iteratorは有限性を型に持たないため、無限Iteratorを
+全件変換またはeffectful `for`へ渡した計算は終了しない場合があります。
+
+標準instanceは少なくとも次です。
+
+- `Iterable<Array<A>, A>`、`Reducible<Array<A>, A>`、`Traversable<Array>`
+- `Iterable<List<A>, A>`、`Reducible<List<A>, A>`、`Traversable<List>`
+- `Iterable<Range<Int>, Int>`、`Reducible<Range<Int>, Int>`
+- `Iterable<Iterator<A>, A>`。有限性を保証できないためReducibleにはしない
+- `Iterable<Map<K, V>, (K, V)>`、`Reducible<Map<K, V>, (K, V)>`
+- `Iterable<Set<A>, A>`、`Reducible<Set<A>, A>`
+
+RangeはIntを順番に生成し、MapとSetは挿入順を使います。range literalが構築するのは
+`Range<Int>` だけです。
 
 data argumentを最後に置くため、import後は次を標準的な書き方とします。
 
@@ -247,6 +297,19 @@ Effect moduleは9.8のoperationに加え、次を提供します。
 これらの生成と操作はEffectです。
 
 Refはatomic stateで、subscriberを持ちません。Signalはreactive graph、Refは同期primitiveです。
+
+Iterableを逐次処理する基本signatureは次です。
+
+```seseragi
+fn forEach<C, R, E, A>
+  f: (A -> Effect<R, E, Unit>)
+  -> values: C
+  -> Effect<R, E, Unit>
+where Iterable<C, A>
+```
+
+`forEach` は `iterate values` の順に一件ずつEffectを実行し、最初のfailureで停止します。
+`forEachParallel` は同じ名前のoverloadではなく、並行数と結果順序を明示する別APIです。
 
 ## 10.12 `std/stream`
 

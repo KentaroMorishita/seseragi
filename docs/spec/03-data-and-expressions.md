@@ -156,13 +156,18 @@ let listSquares = `[n * n | n <- 1..=10, n % 2 == 0]
 ```
 
 `[expression | ...]` はArray、`` `[expression | ...] `` はListを返します。generatorとguardを
-左から右へ処理し、複数generatorは左側を外側とする入れ子です。generator sourceとして
-`Array<A>`、`List<A>`、`Range<Int>` を受け取ります。sourceのcollection型と結果の
-collection型は独立しており、暗黙のArray/List変換を意味しません。
+左から右へ処理し、複数generatorは左側を外側とする入れ子です。generator sourceの型 `C` と
+要素型 `A` には `Iterable<C, A>` instanceが必要です。sourceのcollection型と結果のcollection型は
+独立しており、暗黙のArray/List変換を意味しません。
 
 generator clauseは `pattern <- source`、guard clauseはBool式です。patternが一致しない要素は
 そのgeneratorから除外されます。各source式は、それを囲む外側generatorの一要素につき一度、
-左から右に評価します。comprehension自体はpureで、Effectをgenerator sourceにできません。
+左から右に評価し、`iterate` が返す順序で走査します。comprehension自体はpureで、Effectを
+generator sourceにできません。
+
+各generatorはsourceを一度評価して `iterate` を一度呼び、`next` が `Nothing` を返すまで
+`Just (value, rest)` のvalueを順にpatternへ照合します。この展開規則により、user-defined
+IterableでもArray/List/Rangeと同じcomprehension semanticsになります。
 
 ## 3.10 match と pattern
 

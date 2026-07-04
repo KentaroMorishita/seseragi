@@ -103,7 +103,7 @@ effect fn initialize -> Unit = succeed ()
 
 ### effectful `for`
 
-`for pattern <- values { body }` は、有限なIterableを先頭から末尾へ逐次処理するEffect式です。
+`for pattern <- values { body }` は、Iterableを `iterate` の順に逐次処理するEffect式です。
 
 ```seseragi
 for user <- users {
@@ -115,6 +115,8 @@ patternはirrefutableでなければなりません。bodyは `Effect<R, E, Unit
 `Effect<R, E, Unit>` です。これは `forEach (\pattern -> body) values` へdesugarします。
 空collectionは何もせず成功し、最初のfailureで停止します。`break`と`continue`はありません。
 parallel実行へ自動変換せず、必要な場合は `forEachParallel` を明示します。
+無限Iterator由来のIterableでは終了しません。非同期・時間的な値の列にはIterableではなくStreamを
+使います。
 
 ## 5.5 environment requirement
 

@@ -131,6 +131,11 @@ tuple、recordなど名前を持たない組み込み構造へのstructural inst
 aliasはinstance identityを作りません。instance headのaliasは展開してcoherence判定するため、
 aliasと展開先へ別instanceを定義できません。
 
+一部の標準traitは、型引数から別の型引数を一意に決めるfunctional dependencyを持ちます。
+`Iterable<C, A>` と `Reducible<C, A>` は `C -> A`、算術traitは `(L, R) -> O` です。dependencyに
+反する二つのinstanceはhead全体が異なっていてもcoherence errorです。functional dependencyは
+標準traitの契約として固定し、user-defined trait用の宣言構文は現時点で提供しません。
+
 ## 4.7 標準演算子との関係
 
 次の演算子は標準 trait method の構文糖です。
