@@ -1,24 +1,27 @@
-# 文法要約
+# Appendix A. 文法要約
 
 この EBNF は構文の骨格です。優先順位、型付け、名前解決、網羅性は各章の規則が
 優先します。`NEWLINE` は declaration と block item の区切りとして `;` と同等です。
 
 ```ebnf
-module          = { import-decl }, { top-decl } ;
+module          = { [ "pub" ], import-decl }, { top-decl } ;
 
 import-decl     = "import", import-items, "from", STRING, terminator
                 | "import", "*", "as", lower-name, "from", STRING, terminator ;
 import-items    = "{", [ import-item, { ",", import-item } ], "}" ;
-import-item     = name, [ "as", name ] ;
+import-item     = name, [ "as", name ]
+                | "operator", custom-operator,
+                  [ "as", custom-operator ] ;
 
 top-decl        = [ "pub" ], let-decl
                 | [ "pub" ], fn-decl
-                | [ "pub" ], type-decl
+                | [ "pub" ], [ "opaque" ], type-decl
                 | [ "pub" ], alias-decl
-                | [ "pub" ], struct-decl
+                | [ "pub" ], [ "opaque" ], struct-decl
                 | [ "pub" ], trait-decl
+                | [ "pub" ], custom-operator-decl
                 | impl-decl
-                | foreign-decl
+                | [ "pub" ], foreign-decl
                 | rec-group ;
 
 let-decl        = "let", pattern, [ ":", type ], "=", expr, terminator ;
@@ -41,26 +44,52 @@ trait-decl      = "trait", upper-name, type-params, [ constraints ],
 trait-method    = "fn", lower-name, [ type-params ], fn-params,
                   "->", type, [ constraints ], terminator ;
 impl-decl       = "impl", [ type-params ], type, [ constraints ],
-                  "{", { fn-decl }, "}" ;
+                  "{", { impl-member }, "}" ;
+impl-member     = [ "pub" ], fn-decl | overload-decl ;
+overload-decl   = "operator", standard-operator, "self",
+                  "->", parameter, "->", type, fn-body ;
+custom-operator-decl = "operator", [ type-params ], fixity, INTEGER,
+                       custom-operator, fn-params, "->", type,
+                       [ constraints ], fn-body ;
+fixity          = "infixl" | "infixr" | "infix" ;
 constraints     = "where", constraint, { ",", constraint } ;
 constraint      = upper-name, "<", type-arg, { ",", type-arg }, ">" ;
 foreign-decl    = "foreign", STRING, "from", STRING,
-                  "{", { foreign-fn }, "}" ;
-foreign-fn      = [ "pure" ], "fn", lower-name, fn-params,
-                  "->", foreign-type, terminator ;
+                  "{", { foreign-member }, "}" ;
+foreign-member  = "opaque", "type", upper-name, [ type-params ], terminator
+                | foreign-call
+                | "pure", "value", lower-name, ":", foreign-type,
+                  [ "=", STRING ], terminator ;
+foreign-call    = ( "pure" | "task" ), [ foreign-call-kind ], "fn",
+                  lower-name, [ type-params ], foreign-params,
+                  "->", foreign-type, [ "=", STRING ], terminator ;
+foreign-call-kind = "constructor" | "method" | "property" ;
+foreign-params  = parameter, { "->", parameter }, [ "->", rest-parameter ] ;
+rest-parameter  = "...", lower-name, ":", type-atom ;
 rec-group       = "rec", "{", fn-decl, { fn-decl }, "}" ;
 
-expr            = if-expr | match-expr | lambda | operator-expr ;
+expr            = if-expr | match-expr | do-expr | lambda | assignment-expr ;
 if-expr         = "if", expr, "then", expr, "else", expr ;
 match-expr      = "match", expr, "{", { match-arm }, "}" ;
 match-arm       = pattern, [ "when", expr ], "->", expr, terminator ;
 lambda          = "\\", lower-name, [ ":", type ], "->", expr ;
 block           = "{", { let-decl }, [ expr ], "}" ;
+do-expr         = "do", "{", { do-item, terminator }, expr,
+                  [ terminator ], "}" ;
+do-item         = pattern, "<-", expr
+                | "let", pattern, "=", expr
+                | expr ;
 
-primary         = literal | name | tuple | array | list | record | struct-value
+primary         = literal | generic-name | operator-reference
+                | tuple | array | list | record
+                | struct-value
                 | block | "(", expr, ")" ;
+generic-name    = name, [ type-args ] ;
+operator-reference = "(", custom-operator, ")" ;
+operator        = standard-operator | custom-operator ;
 application     = postfix, { postfix } ;
 postfix         = primary, { ".", lower-name | "[", expr, "]" } ;
+assignment-expr = operator-expr, [ ":=", assignment-expr ] ;
 operator-expr   = application, { operator, application } ;
 
 pattern         = "_" | literal | lower-name | upper-name, [ pattern ]
@@ -75,6 +104,7 @@ type-atom       = upper-name, [ "<", type, { ",", type }, ">" ]
                 | "{", field, { ",", field }, "}"
                 | "(", type, ")" ;
 type-params     = "<", kind-param, { ",", kind-param }, ">" ;
+type-args       = "<", type, { ",", type }, ">" ;
 kind-param      = upper-name | upper-name, "<", "_", ">" ;
 type-arg        = type | type-constructor ;
 type-constructor = upper-name

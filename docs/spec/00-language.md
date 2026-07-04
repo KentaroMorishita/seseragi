@@ -41,7 +41,7 @@ fn add x: Int -> y: Int -> Int =
 
 ### 意味はバックエンドから独立する
 
-整数の除算、評価順序、record の同一性、Task の遅延性などは、生成先の言語に
+整数の除算、評価順序、recordの構造、Effectの遅延性などは、生成先の言語に
 よって変化しません。外部ランタイムの値は、外部連携境界を通して変換します。
 
 ### 診断できない魔法を作らない
@@ -74,8 +74,8 @@ pub fn main unit: Unit -> Task<AppError, Unit> =
 - 非網羅的なパターンマッチ
 - 例外を通常のエラー処理に使う仕組み
 - 任意の union 型と intersection 型
-- general-purpose effect system
-- 任意の演算子宣言とユーザー定義の優先順位
+- `perform` / `handle` を持つalgebraic effect system
+- ユーザー定義のprefix / postfix演算子
 - `return` による関数途中からの脱出
 
 これらに似た外部値や外部挙動は、外部連携境界で明示的に扱います。

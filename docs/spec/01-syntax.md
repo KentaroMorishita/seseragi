@@ -52,6 +52,10 @@ map toString values
 `add 1 2` は `(add 1) 2` です。`f(x, y)` という複数引数呼び出し構文はありません。
 括弧は式のグループ化、tuple、Unit にだけ使います。
 
+明示型引数はcallee名へ空白なしで続けます。`identity<String> value` は型適用、
+`identity < value` は比較です。custom infix operatorはoperandとの間に空白を必須とし、
+`left <+> right` のように書きます。operator関数値 `(<+>)` の内側には空白を入れません。
+
 引数のない特別な関数もありません。遅延計算を表す関数は `Unit -> A` とし、
 `clock ()` のように呼びます。
 
@@ -97,19 +101,73 @@ show $ expensiveComputation input
 |   1 | <code>&#124;&#124;</code>                    | 左         |
 |   0 | `>>=`, `<$>`, `<*>`, <code>&#124;&gt;</code> | 左         |
 |  -1 | `$`                                          | 右         |
+|  -2 | signal set `:=`                              | 右         |
 
 比較演算子を連鎖できません。`a < b < c` はエラーで、`a < b && b < c` と書きます。
 `&&` と `||` は短絡評価します。それ以外の二項演算子は左 operand、右 operand の順に
 評価します。
 
-## 1.8 予約語
+## 1.8 custom operator
+
+userlandは二項infix operatorをtop-levelで定義できます。
+
+```seseragi
+pub operator<A> infixr 5 <+>
+  left: A -> right: A -> A
+where Semigroup<A> =
+  append left right
+```
+
+この宣言は、次を同時に定義します。
+
+- symbol `<+>`
+- 右結合 `infixr`
+- 優先順位 `5`
+- 型scheme `forall A. Semigroup<A> => A -> A -> A`
+- operator本体
+
+`left <+> right` は `(<+>) left right` へdesugarします。`(<+>)` は通常の関数値として
+参照・部分適用できます。
+
+fixityは `infixl`、`infixr`、`infix` のいずれかです。`infix` は非結合で、同じoperatorを
+括弧なしに連鎖できません。優先順位は0から8の整数で、値が大きいほど強く結合します。
+関数適用とpostfix accessより強いcustom operatorは作れません。
+
+operator symbolはASCIIの次の文字を2文字以上組み合わせます。
+
+```text
+! $ % & * + - . / : < = > ? @ ^ | ~
+```
+
+標準operator、`->`、`<-`、`..`、`...`、`//`、`:=` は予約済みで再定義できません。
+lexerは現在scopeで宣言されたoperatorを最長一致で読みます。prefixとpostfixのcustom
+operatorはありません。
+
+custom operatorは値namespaceとは別のoperator namespaceに入り、明示importします。
+
+```seseragi
+import { operator <+> } from "./semigroup"
+```
+
+同じsymbolを二つscopeへ導入すると曖昧エラーです。同じ優先順位で異なるfixityのoperatorを
+一つの式に混ぜる場合は括弧が必要です。operator宣言はmodule interfaceのpre-scanで収集する
+ため、source内の宣言位置より前でも使えます。
+
+標準operatorの型別overloadはcustom operator定義ではなく、standard trait instanceまたは
+struct内の `operator` 糖衣で行います。
+
+## 1.9 予約語
 
 次は予約語です。
 
 ```text
-as alias else False fn foreign from if impl import let match pub pure rec
-struct then trait True type when where
+as alias do else False fn foreign from if impl import infix infixl infixr let
+match opaque operator pub rec struct then trait True type when where
 ```
+
+`constructor`、`method`、`property`、`value`、`pure`、`task` はforeign block内だけでkeywordに
+なるcontextual keywordです。`self` はimpl methodの第一parameter位置でだけ特別な意味を
+持ちます。
 
 型名、constructor、trait 名は大文字、値、関数、field、module alias は小文字から
 始めることを要求します。`_` は wildcard で、名前として参照できません。

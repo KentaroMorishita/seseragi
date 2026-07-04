@@ -14,9 +14,8 @@ pub trait Eq<A> {
 }
 ```
 
-trait method は型だけを宣言し、本体を持ちません。trait parameter は型または、
-`F<_>` のような一階の型構築子 parameter にできます。trait は `where` で supertrait を
-要求できます。
+trait methodは型だけを宣言し、本体を持ちません。trait parameterは型または、
+`F<_>` のような型構築子parameterにできます。traitは `where` でsupertraitを要求できます。
 
 ```seseragi
 pub trait Functor<F<_>> {
@@ -28,11 +27,17 @@ where Functor<F> {
   fn pure<A> value: A -> F<A>
   fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
 }
+
+pub trait Monad<M<_>>
+where Applicative<M> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
 ```
 
-高階型は trait parameter と constraint の中だけで使えます。一般の値の型として
-`F<_>` を使うことはできません。`Either<E, _>` と `Task<E, _>` のように、ちょうど
-一つの `_` を残した型構築子の部分適用は trait の文脈で使えます。
+`F<_>` は値の型ではなく型構築子parameterです。`Either<E, _>` と
+`Effect<R, E, _>` のような部分適用は、対応するkindの型構築子が要求される文脈で使えます。
+kind、arity、部分適用の基本規則は[型システム 2.10](./02-types.md#210-kindと型構築子)に
+従います。
 
 ## 4.3 instance
 
@@ -85,6 +90,12 @@ orphan rule と呼びます。
 instance の優先順位、overlap、局所 instance、孤児 instance はありません。この規則に
 より、import の増減だけで既存コードの意味が変わることを防ぎます。
 
+tuple、recordなど名前を持たない組み込み構造へのstructural instanceはcompilerが提供する
+標準instanceだけを許可します。userlandは匿名record型をinstance headにできません。
+
+aliasはinstance identityを作りません。instance headのaliasは展開してcoherence判定するため、
+aliasと展開先へ別instanceを定義できません。
+
 ## 4.6 標準演算子との関係
 
 次の演算子は標準 trait method の構文糖です。
@@ -93,18 +104,37 @@ instance の優先順位、overlap、局所 instance、孤児 instance はあり
 | -------------------- | ------------------- |
 | `==`, `!=`           | `Eq.eq`             |
 | `<`, `<=`, `>`, `>=` | `Ord.compare`       |
-| `+`                  | `Add.add`           |
-| `-`                  | `Sub.sub`           |
-| `*`                  | `Mul.mul`           |
-| `/`                  | `Div.div`           |
-| `%`                  | `Rem.rem`           |
-| `**`                 | `Pow.pow`           |
+| `+`                  | `Add<L, R, O>.add`  |
+| `-`                  | `Sub<L, R, O>.sub`  |
+| `*`                  | `Mul<L, R, O>.mul`  |
+| `/`                  | `Div<L, R, O>.div`  |
+| `%`                  | `Rem<L, R, O>.rem`  |
+| `**`                 | `Pow<L, R, O>.pow`  |
 | `<$>`                | `Functor.map`       |
 | `<*>`                | `Applicative.apply` |
 | `>>=`                | `Monad.flatMap`     |
 
-算術 trait は左右と結果が同じ型です。異なる型を混ぜる演算は名前付き関数で表します。
-これにより `Int + Float` のような暗黙変換は発生しません。
+算術traitは左operand `L`、右operand `R`、出力 `O` を明示します。同じ `(trait, L, R)` に
+複数の `O` を定義できません。これはoperator結果をoperand型だけから一意に決める
+functional dependencyです。
+
+算術traitは次の形を持ちます。Sub、Mul、Div、Rem、Powもmethod名以外は同じ形です。
+
+```seseragi
+trait Add<L, R, O> {
+  fn add left: L -> right: R -> O
+}
+```
+
+異なる型を組み合わせるinstanceは宣言できますが、暗黙変換は発生しません。
+`Mul<Vector, Float, Vector>` は `Vector * Float` を許可しますが、`Int + Float` は対応instanceが
+明示定義されていなければエラーです。
+
+struct内の `operator` 宣言はこれら標準trait instanceの糖衣です。coherenceとorphan ruleは
+通常のinstanceと同じです。
+
+`operator ==` は `Eq<A>.eq` の糖衣で、戻り型はBoolです。`!=` はEq.eqの結果を否定するため、
+個別instanceを持ちません。
 
 ## 4.7 laws
 
@@ -120,3 +150,53 @@ law test helper を提供します。
 - trait method は constraint または完全な型情報から辞書を選ぶ。
 
 両者を同じ dispatch 規則にはしません。
+
+## 4.9 do notation
+
+`do` は `Monad<M>` に対するbind列を読みやすく書く構文です。特定の `Effect` や `Task` に
+限定しません。
+
+```seseragi
+do {
+  user <- fetchUser id
+  posts <- fetchPosts user.id
+  let visible = filter isVisible posts
+  pure { user, posts: visible }
+}
+```
+
+do blockには次をsource順に書けます。
+
+- `pattern <- monadicExpression`: bindしてpatternへ値を渡す。
+- `let pattern = pureExpression`: monadを実行せずlocal値をbindする。
+- `monadicExpression`: 結果を捨てて次へ進む。
+- 最後のmonadic expression: block全体の結果。
+
+最後の式は必須です。`pure value` は現在の `Applicative<M>` の `pure` を使います。
+
+## 4.10 desugar
+
+do blockは次の規則で右からdesugarします。
+
+```text
+do { x <- mx; rest }  = mx >>= (\x -> do { rest })
+do { let x = v; rest } = [xをvへ束縛して] do { rest }
+do { mx; rest }       = mx >>= (\_ -> do { rest })
+do { last }           = last
+```
+
+これは意味の定義であり、backendは同じ評価順序とscopeを保つ別実装を選べます。
+
+bind左辺はirrefutable patternでなければなりません。literal、ADT constructor、固定長Array
+など失敗しうるpatternは使えません。pattern失敗を暗黙の `MonadFail` に変換しません。
+必要ならbind後に網羅的な `match` を書きます。
+
+## 4.11 do blockの型
+
+各monadic expressionは同じ型構築子 `M<_>` を持ち、`Monad<M>` instanceが一意に必要です。
+最初のbind、最後の式、または期待型から `M` を決定します。複数候補が残る場合は曖昧
+エラーです。
+
+異なるmonadをdo blockへ暗黙liftしません。transformerの `lift`、`Effect.fromEither` などを
+明示して同じ `M` に揃えます。これにより、どのfailure・state・environmentが使われるかを
+構文から追跡できます。

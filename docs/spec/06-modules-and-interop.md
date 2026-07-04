@@ -1,13 +1,34 @@
-# 6. モジュールと外部連携
+# 6. モジュール
 
-## 6.1 module
+## 6.1 moduleの単位とidentity
 
-一つの `.ssrg` ファイルが一つの module です。module 名は source root からの相対 path
-で決まります。ファイル内で module 名を宣言しません。
+一つの `.ssrg` fileが一つのmoduleです。module identityはpackage identityと、packageの
+source rootからfileまでの正規化された相対pathの組です。source内にmodule名を書きません。
 
-top-level には次だけを書けます。
+```text
+<package identity>::<relative module path>
+```
 
-- import
+path separatorは意味上 `/` に正規化し、拡張子 `.ssrg` はmodule pathに含めません。
+同じfileを異なる相対pathやsymlinkから二重に読み込んでも、一つのcanonical pathへ
+解決しなければなりません。
+
+## 6.2 package
+
+packageは、package identity、source root、直接dependency、公開entry pointをmanifestで
+宣言します。manifestの具体的なfile形式はtooling規約ですが、module resolverへ渡される
+意味はこの仕様に従います。
+
+- package identityはdependency graph内で一意。
+- source root外の相対importは禁止。
+- dependencyはmanifestに宣言した直接dependencyだけimportできる。
+- 同じpackage名の異なるversionは内部identityで区別する。
+
+## 6.3 top-level
+
+top-levelには次だけを書けます。
+
+- importとre-export
 - `let`
 - `fn`
 - `type`
@@ -19,91 +40,131 @@ top-level には次だけを書けます。
 - `foreign` declaration
 - `rec` group
 
-## 6.2 visibility
+任意の式statementはtop-levelに書けません。top-level `let` の右辺は純粋な式でなければ
+ならず、Effectを作ることはできますが実行できません。
 
-宣言は既定で module-private です。`pub` を付けた `let`、`fn`、`type`、`alias`、
-`struct`、`trait` だけを他 module から import できます。`impl` の visibility は対象の
-型または trait に従い、`pub impl` とは書きません。
+## 6.4 visibility
 
-公開関数と公開 let は完全な型注釈を必要とします。公開 ADT の constructor と公開
-struct の field は公開されます。
+宣言は既定でmodule-privateです。`pub` を付けた `let`、`fn`、`type`、`alias`、`struct`、
+`trait`、custom `operator`、`foreign` blockだけを他moduleから参照できます。
 
-## 6.3 import
+```seseragi
+pub fn findUser id: UserId -> Task<FindError, Maybe<User>> = ...
+```
+
+公開 `let` と公開関数は完全な型注釈を必要とします。公開型の署名からprivate型を参照
+できません。
+
+公開ADTのconstructorと公開structのfieldは、既定で型と一緒に公開されます。表現を
+隠したい場合は `opaque` を付けます。
+
+```seseragi
+pub opaque struct UserId {
+  value: Int,
+}
+
+pub opaque type Token =
+  | Token String
+```
+
+opaque型は他moduleから型名だけを参照できます。constructor、field、destructuringは
+定義module内だけで使えます。公開された通常関数とmethodを通して操作します。
+
+inherent methodも既定でprivateです。他moduleから呼べるmethodには `pub fn` を付けます。
+trait instance自体へvisibility modifierは付けません。instanceを宣言したmoduleが現在moduleの
+transitive import closureに含まれる場合、instance searchの対象になります。instanceだけを
+選択的にimport・非表示にはできません。
+
+## 6.5 import
 
 ```seseragi
 import { User, findUser } from "./user"
 import { parse as parseJson } from "json"
+import { operator <+> } from "./semigroup"
 import * as text from "std/text"
 ```
 
-import は module の先頭に置きます。同じ scope に同名を二度導入できません。import は
-値、型、trait の各 namespace を同時に参照し、曖昧な場合はエラーになります。
+importはmodule先頭に置きます。同じscopeへ同名を二度導入できません。未使用importは
+warningであり、意味には影響しません。
 
-相対 path は `./` または `../` で始めます。拡張子は省略し、`.ssrg` を補います。
-`std/` は標準ライブラリ、その他の bare specifier は package resolver に渡します。
+import formの意味は次のとおりです。
 
-循環 import はコンパイルエラーです。
+- named importは指定した公開名だけをlocal scopeへ導入する。
+- alias importはlocal名だけを変更する。
+- namespace importは `text.trim` のようなqualified accessだけを許可する。
+- wildcardで全名をunqualifiedに導入する構文はない。
 
-## 6.4 namespace
+## 6.6 module specifierの解決
 
-次の namespace は分かれています。
+specifierは次の順ではなく、先頭形式で分類します。
 
-- 型・trait
-- 値・関数・constructor
-- field・inherent method
+1. `./` または `../`: 現在moduleからの相対path。
+2. `std/`: 標準ライブラリmodule。
+3. その他のbare specifier: manifestに宣言されたpackageと、その公開subpath。
 
-同じ namespace 内で同じ名前を重複定義できません。ADT constructor は値 namespace に
-入ります。
+相対specifier `./user` は正確に `<current-dir>/user.ssrg` へ解決します。directory indexの
+暗黙探索、拡張子候補の総当たり、current working directoryへのfallbackはしません。
+specifierに `.ssrg` を書いた場合も同じcanonical moduleへ正規化します。
 
-## 6.5 外部連携の原則
+package specifier `acme/http/client` はdependency `acme/http` が公開したsubpath `client` へ
+解決します。package内部の非公開pathへ直接入れません。
 
-外部連携は Seseragi の型意味論を外部言語へ合わせる機能ではありません。外部値を
-安全な Seseragi 値へ変換する、型付きの境界です。
+解決候補が0件または複数件ならコンパイルエラーです。
 
-外部 declaration は backend 名を明示します。
+## 6.7 re-export
 
 ```seseragi
-foreign "js" from "user-api" {
-  fn fetchUser id: String -> Js.Promise<Js.Unknown>
-}
+pub import { User, findUser } from "./user"
+pub import * as validation from "./validation"
 ```
 
-`foreign` 内の型は backend 固有の境界型を使えます。外部関数の arity、calling
-convention、例外、Promise などは backend adapter が扱います。Seseragi 側からは宣言に
-書かれたカリー化関数として見えます。
+re-exportはimport先の公開名を現在moduleの公開APIへ加えます。named re-exportは元のidentityを
+保ち、別の宣言を複製しません。namespace re-exportは公開namespaceを一つ導入します。
 
-## 6.6 外部型
+re-export graphも通常のimport graphに含まれます。
 
-JavaScript backend は少なくとも次の opaque boundary type を持ちます。
+## 6.8 namespaceと名前解決
 
-```text
-Js.Unknown
-Js.Nullable<A>
-Js.Promise<A>
-Js.Error
+次のnamespaceは分かれています。
+
+- 型・trait・型parameter
+- 値・関数・constructor
+- field・inherent method
+- module alias
+- custom operator
+
+同じnamespace内で同じ名前を重複定義できません。ADT constructorは値namespaceに入り、
+型parameterは宣言scope内の型namespaceへ入ります。
+
+unqualified名はlocal binding、現在moduleの宣言、明示import、preludeの順に検索します。
+同じ段階に複数候補があれば曖昧エラーです。後から追加したimportが、既存の曖昧な参照を
+勝手に別候補へ変えることはありません。
+
+## 6.9 dependency graphと循環
+
+値、型、traitを問わず、module import graphの循環は禁止します。type-only cycleを特別扱い
+しません。compilerはcycleを構成するmodule pathをすべて診断へ出します。
+
+同一module内の相互再帰は `rec` groupで表します。module間相互再帰が必要な設計は、共有型を
+第三moduleへ分離します。
+
+## 6.10 初期化と評価
+
+moduleはdependencyのtopological orderで一度だけ初期化します。同一module内のtop-level
+`let` はsource順に評価します。関数、type、struct、traitは評価前から名前解決できます。
+
+top-level `let` は、それより前の `let` とすべての関数宣言だけを参照できます。後続の
+`let` は参照できません。effectはEffect内に閉じるため、module importだけでI/Oは発生しません。
+
+同じmoduleを複数箇所からimportしてもtop-level値は一度だけ作られます。
+
+## 6.11 entry point
+
+実行可能packageは、manifestで指定したmoduleから公開 `main` を一つ解決します。
+
+```seseragi
+pub fn main unit: Unit -> Task<AppError, Unit> = ...
 ```
 
-これらは通常の Seseragi 型へ暗黙変換できません。
-
-- `Js.Unknown` は decoder で検証して `Either<DecodeError, A>` にする。
-- `Js.Nullable<A>` は `Maybe<A>` へ明示変換する。
-- `Js.Promise<A>` は rejection と同期 throw を捕捉して `Task<Js.Error, A>` にする。
-- `Js.Error` は application error へ明示的に写像できる。
-
-`.d.ts` や外部型定義は foreign declaration の生成補助に使えますが、それ自体が
-Seseragi の型ではありません。外部の conditional type、mapped type、overload などを
-Seseragi の型システムへ持ち込みません。
-
-## 6.7 pure foreign
-
-foreign 関数は既定で effectful boundary value です。同期的な関数でも throw しうる場合は
-`Either<Js.Error, A>`、外部状態へ触れる場合は `Task<Js.Error, A>` の wrapper を通します。
-
-binding author は、決定的・非 throw・外部状態を観測しないことを保証できる関数だけを
-`foreign pure` と宣言できます。この保証違反は binding の defect です。
-
-## 6.8 export と外部からの呼び出し
-
-外部ランタイムから Seseragi の公開関数を呼ぶ adapter は、curried function、ADT、
-Task をそのまま外部 ABI と見なしません。backend ごとの安定した wrapper を生成し、
-境界変換を行います。ABI の表現は言語上観測できません。
+library packageはentry pointを持たなくて構いません。importされたmoduleの `main` を暗黙実行
+しません。
