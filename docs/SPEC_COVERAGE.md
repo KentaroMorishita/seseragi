@@ -58,6 +58,7 @@
 
 - Seseragi module identity、visibility、import、re-export
 - package dependency、循環禁止、初期化順序、entry point
+- `seseragi.toml`、export map、標準layout、generated root、lockfile
 - TypeScript foreign binding、call mode、class / callback / Promise
 - TypeScript向け公開ABI
 - `.d.ts` subset変換、unsupported診断、更新差分
@@ -98,9 +99,6 @@
 
 ### packageとtooling contract
 
-- package manifestの具体的schema
-- package export mapとversion compatibility
-- source root、test root、generated binding rootの標準layout
 - formatterのcanonical output
 - document commentとAPI document生成規則
 
@@ -156,10 +154,9 @@
 
 ## 次に詰める順序
 
-1. package manifestと標準project layoutを決め、module仕様を閉じる。
-2. standard collection / Effect / Stream / Signalの公開signatureをmodule単位で固定する。
-3. runtime concurrency contractを固定する。
-4. diagnostic、formatter、document commentをtooling contractとして固定する。
-5. TypeScript binding generatorのnamingと設定schemaを固定する。
+1. standard collection / Effect / Stream / Signalの公開signatureをmodule単位で固定する。
+2. runtime concurrency contractを固定する。
+3. diagnostic、formatter、document commentをtooling contractとして固定する。
+4. TypeScript binding generatorのnamingと設定schemaを固定する。
 
 この順序は実装順ではなく、仕様の依存順です。

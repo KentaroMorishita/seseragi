@@ -213,7 +213,7 @@ import { operator <+> } from "./semigroup"
 
 raw scannerは宣言済みoperatorを参照せず、operator文字列をlosslessに保持します。header scan、
 module interface解決、flat operator chain、fixity resolutionの共通手順は
-[Parser・formatter・language server契約](./11-tooling.md)に従います。
+[Parser・formatter・language server契約](./12-tooling.md)に従います。
 
 標準operatorの型別overloadはcustom operator定義ではなく、standard trait instanceまたは
 struct内の `operator` 糖衣で行います。

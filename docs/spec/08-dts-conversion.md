@@ -41,6 +41,9 @@ source module、signature順で安定sortします。
 生成fileを直接編集する運用は前提にしません。手書きadapterは別の `.ssrg` moduleに置き、
 生成bindingをimportします。
 
+生成先は `seseragi.toml` のgenerated rootです。手書きadapterは `gen/<module-path>` でbindingを
+importします。source rootへ生成fileを置かず、package export mapから直接公開しません。
+
 生成binding blockは `pub foreign` とし、raw boundary型を利用する手書きadapterからimport
 できるようにします。applicationの公開APIはraw bindingをre-exportせず、adapterを公開します。
 

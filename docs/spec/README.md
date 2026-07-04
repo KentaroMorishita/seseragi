@@ -16,8 +16,9 @@ Seseragiが保証する意味を記述します。
 9. [`.d.ts` binding生成](./08-dts-conversion.md)
 10. [標準ライブラリ契約](./09-standard-library.md)
 11. [標準ライブラリsurface](./10-library-surface.md)
-12. [Parser・formatter・language server契約](./11-tooling.md)
-13. [Appendix A: 文法要約](./grammar.md)
+12. [packageとproject layout](./11-packages-and-projects.md)
+13. [Parser・formatter・language server契約](./12-tooling.md)
+14. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 
@@ -65,6 +66,7 @@ Seseragiが保証する意味を記述します。
 
 - 1 file = 1 module
 - package identityとmanifest dependency
+- `seseragi.toml`、export map、標準project layout、lockfile
 - private-by-default、`pub`、opaque型
 - named / namespace import、re-export、custom operator import
 - canonical path解決、循環禁止、deterministic初期化

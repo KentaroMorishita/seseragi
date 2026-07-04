@@ -20,7 +20,8 @@
 - [`.d.ts` からのbinding生成](./spec/08-dts-conversion.md)
 - [標準ライブラリの契約](./spec/09-standard-library.md)
 - [標準ライブラリsurface](./spec/10-library-surface.md)
-- [Parser・formatter・language server契約](./spec/11-tooling.md)
+- [packageとproject layout](./spec/11-packages-and-projects.md)
+- [Parser・formatter・language server契約](./spec/12-tooling.md)
 - [Appendix A: 文法要約](./spec/grammar.md)
 
 ## 規範性
