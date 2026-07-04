@@ -1,7 +1,7 @@
 import * as maps from "std/map"
 import * as text from "std/text"
 
-fn wordCounts input: String -> Map<String, Int> =
+fn wordCounts input: String -> maps.Map<String, Int> =
   input
     |> text.words
     |> map text.caseFold

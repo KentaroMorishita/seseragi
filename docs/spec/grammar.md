@@ -65,7 +65,7 @@ custom-operator-decl = "operator", [ type-params ], fixity, INTEGER,
                        [ constraints ], fn-body ;
 fixity          = "infixl" | "infixr" | "infix" ;
 constraints     = "where", constraint, { ",", constraint } ;
-constraint      = upper-name, "<", type-arg, { ",", type-arg }, ">" ;
+constraint      = type-name, "<", type-arg, { ",", type-arg }, ">" ;
 foreign-decl    = "foreign", STRING, "from", STRING,
                   "{", { foreign-member }, "}" ;
 foreign-member  = "opaque", "type", upper-name, [ type-params ], terminator
@@ -112,7 +112,8 @@ operator-reference = "(", referencable-operator, ")" ;
 referencable-operator = arithmetic-operator | comparison-operator | ":"
                      | ">>=" | "<$>" | "<*>" | custom-operator ;
 application     = postfix, { postfix } ;
-postfix         = primary, { ".", lower-name | "[", expr, "]" } ;
+postfix         = primary,
+                  { ".", name, [ type-args ] | "[", expr, "]" } ;
 assignment-expr = low-application-expr, [ ":=", assignment-expr ] ;
 low-application-expr = pipeline-expr, [ "$", application-rhs ] ;
 application-rhs = if-expr | match-expr | do-expr | lambda
@@ -125,7 +126,7 @@ infix-operator  = arithmetic-operator | comparison-operator | ":"
                 | "&&" | "||" | custom-operator ;
 unary-expr      = ( "!" | "-" | "*" ), unary-expr | application ;
 
-pattern         = "_" | literal | lower-name | upper-name, [ pattern ]
+pattern         = "_" | literal | lower-name | constructor-name, [ pattern ]
                 | "(", pattern, ",", pattern, { ",", pattern }, ")"
                 | "{", pattern-fields, "}"
                 | array-pattern | list-pattern ;
@@ -136,7 +137,7 @@ pattern-items   = pattern, { ",", pattern }, [ ",", "...", lower-name ]
 
 type            = function-type ;
 function-type   = type-atom, [ "->", function-type ] ;
-type-atom       = upper-name, [ "<", type, { ",", type }, ">" ]
+type-atom       = type-name, [ "<", type, { ",", type }, ">" ]
                 | "(", type, ",", type, { ",", type }, ")"
                 | "{", field, { ",", field }, "}"
                 | "(", type, ")" ;
@@ -144,11 +145,15 @@ type-params     = "<", kind-param, { ",", kind-param }, ">" ;
 type-args       = "<", type, { ",", type }, ">" ;
 kind-param      = upper-name | upper-name, "<", "_", ">" ;
 type-arg        = type | type-constructor ;
-type-constructor = upper-name
-                 | upper-name, "<", constructor-arg,
+type-constructor = type-name
+                 | type-name, "<", constructor-arg,
                    { ",", constructor-arg }, ">" ;
 constructor-arg = type | "_" ;
 foreign-type    = type ;
+type-name       = upper-name
+                | lower-name, { ".", lower-name }, ".", upper-name ;
+constructor-name = upper-name
+                 | lower-name, { ".", lower-name }, ".", upper-name ;
 
 terminator      = NEWLINE | ";" ;
 ```

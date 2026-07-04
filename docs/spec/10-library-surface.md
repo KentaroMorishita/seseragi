@@ -231,18 +231,28 @@ fn reduce1<A>
 先頭をinitialとして残りをsource順に処理します。initialなしのgeneric `reduce` overloadは作らず、
 非空性が型にある場合だけ別名で提供します。
 
-`std/map` は少なくとも次を提供します。
+### `std/map`
 
-`empty` の型schemeは次です。`forall` はsource syntaxではなく仕様上の表記です。
+`std/map` は `Map<K, V>` 型を公開します。`empty` の型schemeは次です。`forall` はsource syntaxではなく
+仕様上の表記です。
 
 ```text
 empty : forall K V. Map<K, V>
 ```
 
-ほかに少なくとも次の関数を提供します。
+ほかに次の関数を提供します。
 
 ```seseragi
+fn singleton<K, V> key: K -> value: V -> Map<K, V>
+where Eq<K>, Hash<K>
+
+fn fromEntries<C, K, V> entries: C -> Map<K, V>
+where Iterable<C, (K, V)>, Eq<K>, Hash<K>
+
 fn get<K, V> key: K -> values: Map<K, V> -> Maybe<V>
+where Eq<K>, Hash<K>
+
+fn containsKey<K, V> key: K -> values: Map<K, V> -> Bool
 where Eq<K>, Hash<K>
 
 fn insert<K, V> key: K -> value: V -> values: Map<K, V> -> Map<K, V>
@@ -258,13 +268,106 @@ where Eq<K>, Hash<K>
 fn remove<K, V> key: K -> values: Map<K, V> -> Map<K, V>
 where Eq<K>, Hash<K>
 
+fn filter<K, V>
+  predicate: (K -> V -> Bool) -> values: Map<K, V> -> Map<K, V>
+
+fn mapValues<K, A, B> f: (A -> B) -> values: Map<K, A> -> Map<K, B>
+
+fn mapKeysWith<K1, K2, V>
+  resolve: (V -> V -> V)
+  -> key: (K1 -> K2)
+  -> values: Map<K1, V>
+  -> Map<K2, V>
+where Eq<K2>, Hash<K2>
+
+fn mergeWith<K, V>
+  resolve: (V -> V -> V)
+  -> right: Map<K, V>
+  -> left: Map<K, V>
+  -> Map<K, V>
+where Eq<K>, Hash<K>
+
+fn keys<K, V> values: Map<K, V> -> Array<K>
+fn values<K, V> source: Map<K, V> -> Array<V>
 fn entries<K, V> values: Map<K, V> -> Array<(K, V)>
+fn size<K, V> values: Map<K, V> -> Int
+fn isEmpty<K, V> values: Map<K, V> -> Bool
 ```
 
 `empty` は期待型または後続operationからKとVを推論するpolymorphicなexported `let` です。
 `upsert` は既存keyなら `Just current`、未登録なら `Nothing` をupdateへ一度渡し、返された値を
-保存します。
-既存keyの更新は挿入位置を保ち、新規keyは末尾へ追加します。`entries` は挿入順です。
+保存します。callbackは一度だけ呼びます。
+
+- `fromEntries` の重複keyは最後のvalueを採用するが、keyの位置は最初の出現位置を保つ。
+- 既存keyの `insert` / `upsert` は挿入位置を保ち、新規keyは末尾へ追加する。
+- `remove` 後に同じkeyをinsertすると末尾へ入る。存在しないkeyのremoveは元と同じmappingを返す。
+- `filter` と `mapValues` はkeyと挿入順を保つ。Mapは `Functor<Map<K, _>>` instanceを持ち、
+  generic `map` は `mapValues` と同じ意味を持つ。
+- `mapKeysWith` で複数keyが同じ出力keyになった場合、source順に
+  `resolve current incoming` を呼ぶ。出力keyの位置は最初の出現位置を保つ。
+- `mergeWith resolve right left` はleftの順序を保ち、rightだけにあるkeyをrightの順で末尾へ加える。
+  重複keyでは `resolve leftValue rightValue` を一度呼び、left側の位置へ結果を保存する。
+- `keys`、`values`、`entries` とIterable/Reducible instanceは挿入順。`size` と `isEmpty` はO(1)。
+
+MapのEqは挿入順を比較せず、同じkeyが同じvalueへ対応するかを比較します。標準instanceは
+`Eq<K>`、`Hash<K>`、`Eq<V>` を要求します。MapのShowは `Show<K>` と `Show<V>`、Debugは
+`Debug<K>` と `Debug<V>` を要求し、観測可能な挿入順でentryを表示します。
+
+### `std/set`
+
+`std/set` は `Set<A>` 型を公開します。`empty` は `forall A. Set<A>` のpolymorphic valueです。
+ほかに次の関数を提供します。
+
+```seseragi
+fn singleton<A> value: A -> Set<A>
+where Eq<A>, Hash<A>
+
+fn fromIterable<C, A> values: C -> Set<A>
+where Iterable<C, A>, Eq<A>, Hash<A>
+
+fn contains<A> value: A -> values: Set<A> -> Bool
+where Eq<A>, Hash<A>
+
+fn insert<A> value: A -> values: Set<A> -> Set<A>
+where Eq<A>, Hash<A>
+
+fn remove<A> value: A -> values: Set<A> -> Set<A>
+where Eq<A>, Hash<A>
+
+fn filter<A> predicate: (A -> Bool) -> values: Set<A> -> Set<A>
+
+fn map<A, B> f: (A -> B) -> values: Set<A> -> Set<B>
+where Eq<B>, Hash<B>
+
+fn union<A> right: Set<A> -> left: Set<A> -> Set<A>
+where Eq<A>, Hash<A>
+
+fn intersection<A> right: Set<A> -> left: Set<A> -> Set<A>
+where Eq<A>, Hash<A>
+
+fn difference<A> removed: Set<A> -> values: Set<A> -> Set<A>
+where Eq<A>, Hash<A>
+
+fn isSubsetOf<A> superset: Set<A> -> values: Set<A> -> Bool
+where Eq<A>, Hash<A>
+
+fn toArray<A> values: Set<A> -> Array<A>
+fn toList<A> values: Set<A> -> List<A>
+fn size<A> values: Set<A> -> Int
+fn isEmpty<A> values: Set<A> -> Bool
+```
+
+- `fromIterable` は最初の出現位置を保って重複を除く。
+- 既存要素のinsertは位置を変えず、remove後の再insertは末尾へ入る。
+- `filter`、`intersection`、`difference` はleftまたはvaluesの順序を保つ。
+- `map` で複数要素が同値になった場合は最初の出現位置を保って一つにする。Setは形を保つ
+  lawful Functorにできないため、generic `map` のinstanceを持たず、`sets.map` を明示して使う。
+- `union right left` はleftを保ち、rightだけにある要素をrightの順で末尾へ加える。
+- `toArray`、`toList` とIterable/Reducible instanceは挿入順。`size` と `isEmpty` はO(1)。
+
+SetのEqは挿入順を比較せず、同じ要素を持つかを比較します。標準instanceは `Eq<A>` と `Hash<A>` を
+要求します。SetのShowは `Show<A>`、Debugは `Debug<A>` を要求し、観測可能な挿入順で要素を
+表示します。
 
 ## 10.6 collection trait
 

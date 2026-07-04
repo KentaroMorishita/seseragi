@@ -57,6 +57,7 @@
 ### moduleと外部境界
 
 - Seseragi module identity、visibility、import、re-export
+- namespace aliasによる値・型・constructor・traitのqualified参照
 - package dependency、循環禁止、初期化順序、entry point
 - `seseragi.toml`、export map、標準layout、generated root、lockfile
 - TypeScript foreign binding、call mode、class / callback / Promise

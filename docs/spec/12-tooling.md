@@ -103,6 +103,10 @@ dependency interfaceが一時的に取得できない場合、language serverは
 language serverはsource fileを実行せず、module interface metadataとsourceから情報を得ます。
 operator symbolの定義移動、hover、completion、semantic tokenはoperator namespaceを使います。
 
+namespace aliasのmember completionはmodule interfaceの型・値・constructor・trait・公開namespaceを
+contextに応じて提示します。同じspellingが型namespaceと値namespaceにある場合もsymbol identityを
+混同せず、definition、rename、reference検索は参照位置のnamespaceに属するsymbolだけを更新します。
+
 local operator header、import一覧、dependency interfaceのいずれかが変わった場合、そのfileと
 依存するopen documentのfixity resolutionを更新します。変更のないfunction bodyだけを編集した
 場合、dependency全体のheader scanをやり直す必要はありません。

@@ -109,6 +109,20 @@ import formの意味は次のとおりです。
 - namespace importは `text.trim` のようなqualified accessだけを許可する。
 - wildcardで全名をunqualifiedに導入する構文はない。
 
+namespace aliasは値・関数だけでなく、型、trait、constructor、入れ子の公開namespaceを修飾できます。
+
+```seseragi
+import * as users from "acme/users"
+
+fn find id: users.UserId -> Maybe<users.User> = ...
+let guest = users.Guest
+```
+
+`users.User` は型位置、`users.Guest` は式またはpattern位置のconstructorとして解決します。
+custom operatorはqualified infix syntaxを持たないため、従来どおり `import { operator <+> }` で
+明示importします。任意の値に対するfield/method accessとnamespace accessは名前解決時に区別し、
+runtime objectを調べません。
+
 同じspellingが型namespaceと値namespaceの両方で公開されている場合、named import一つで両方を
 導入します。aliasも両方へ同じlocal spellingを与えます。この規則により、非opaqueなnewtypeは
 `import { UserId }` だけで型とconstructorを利用できます。参照位置のnamespaceで区別するため、
