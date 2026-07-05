@@ -220,6 +220,28 @@ codeは `SES-P####`（parse / fixity）、`SES-N####`（name / module）、`SES-
 原因へ再利用しません。messageの改善や翻訳は互換性対象ではなく、toolはcodeで判定します。codeの削除・分割は
 release noteへ記録し、同じlanguage major内では旧codeから新codeへのalias metadataを提供します。
 
+初期core registryは次です。より詳細な原因を追加するときも既存codeの意味を広げません。
+
+| code      | severity | 意味                                      |
+| --------- | -------- | ----------------------------------------- |
+| SES-P0001 | Error    | token / grammarを回復不能な位置で拒否     |
+| SES-P0101 | Error    | scopeに存在しないcustom operator          |
+| SES-P0102 | Error    | operator fixityが曖昧または両立しない     |
+| SES-N0001 | Error    | nameを解決できない                        |
+| SES-N0101 | Error    | import / re-exportが曖昧                  |
+| SES-T0001 | Error    | standard `todo` placeholderが残っている   |
+| SES-T0101 | Error    | expected typeとactual typeが一致しない    |
+| SES-T0201 | Error    | required trait instanceが存在しない       |
+| SES-T0202 | Error    | trait instanceがambiguous                 |
+| SES-T0301 | Error    | matchがnon-exhaustive                     |
+| SES-T0302 | Error    | 到達不能なmatch arm                       |
+| SES-T0401 | Error    | derivingとexplicit implが重複             |
+| SES-E0001 | Error    | Effect requirementまたはfailure型が不一致 |
+| SES-K0001 | Error    | manifest / lockfileが不正または不一致     |
+| SES-F0001 | Error    | foreign ABIへ安全に変換できない           |
+
+tableのcodeが十分具体的でない場合はlabels / notesで詳細を示し、message差だけのためにcodeを増やしません。
+
 source rangeは0-based・end-exclusive UTF-8 byte offsetです。CLIのline / column表示は1-based Unicode scalar、
 LSP境界ではclientがnegotiationしたUTF-8 / UTF-16 / UTF-32 position encodingへ変換します。変換不能なmid-scalar
 positionを受け取った場合は直前のscalar boundaryへ丸めずrequest errorにします。generated sourceのdiagnosticは

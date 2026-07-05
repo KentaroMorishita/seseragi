@@ -1,0 +1,5 @@
+struct Box<A> {
+  value: A,
+}
+
+fn unwrap<A> box: Box<A> -> A = box.value

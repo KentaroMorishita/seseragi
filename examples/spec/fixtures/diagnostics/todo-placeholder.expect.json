@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": ["9.1", "12.13"],
+  "diagnostics": [
+    {
+      "code": "SES-T0001",
+      "severity": "Error",
+      "primary": { "start": 17, "end": 21, "text": "todo" }
+    }
+  ]
+}

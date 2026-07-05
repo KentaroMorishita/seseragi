@@ -1,0 +1,8 @@
+type Choice =
+  | One
+  | Two
+
+fn choose value: Choice -> Int =
+  match value {
+    One -> 1
+  }

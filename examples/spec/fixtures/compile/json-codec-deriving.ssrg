@@ -1,0 +1,8 @@
+import { Json } from "std/json"
+
+struct User deriving JsonEncode, JsonDecode {
+  id: Int,
+  name: String,
+}
+
+fn encode user: User -> Json = encodeJson user

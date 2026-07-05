@@ -42,7 +42,7 @@
 | source map / cross-language stack           | interop guide           | defect / rejection stack snapshots        | planned |
 | manifest、dependency、lockfile              | package guide           | `fixtures/projects/package-*`             | planned |
 | parser recovery、formatter、LSP、highlight  | lessons全体             | tooling snapshots                         | partial |
-| diagnostic schema / inference explanation   | none                    | diagnostic JSON / explain snapshots       | planned |
+| diagnostic schema / inference explanation   | none                    | diagnostic JSON / explain snapshots       | partial |
 | document comments / doctest                 | none                    | doc HTML / JSON / doctest snapshots       | planned |
 | JsonEncode / JsonDecode deriving            | Lesson 26               | codec wire / strict field fixtures        | partial |
 

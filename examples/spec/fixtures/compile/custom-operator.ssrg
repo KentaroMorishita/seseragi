@@ -1,0 +1,3 @@
+operator infixl 4 <+> left: Int -> right: Int -> Int = left + right
+
+let value = 1 <+> 2 <+> 3
