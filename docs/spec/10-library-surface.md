@@ -1524,6 +1524,67 @@ read、単一更新、multi-signal transaction、derived graph、distinct、swit
 
 `std/console` と `std/log` は9.12、9.13のserviceを提供します。
 
+### `std/stdin`
+
+Stdinは現在processのstandard input cursorを表すhost serviceで、Console出力やchild processのstdinとは
+別のcapabilityです。canonical requirement名は`stdin`です。
+
+```seseragi
+type StdinConfigError deriving Eq, Show =
+  | NonPositiveReadSize Int
+  | ReadSizeTooLarge Int
+  | NonPositiveLineLimit Int
+  | LineLimitTooLarge Int
+
+opaque type ReadSize
+opaque type LineLimit
+
+fn readSize bytes: Int -> Either<StdinConfigError, ReadSize>
+fn lineLimit bytes: Int -> Either<StdinConfigError, LineLimit>
+fn defaultReadSize -> ReadSize
+fn defaultLineLimit -> LineLimit
+
+type StdinError deriving Eq, Show =
+  | StdinUnavailable
+  | StdinReadFailure
+  | ConcurrentStdinRead
+  | InvalidStdinUtf8 { offset: Int }
+  | StdinLineTooLong { limitBytes: Int }
+  | StdinPositionOverflow
+
+fn readChunk size: ReadSize
+  -> Effect<{ stdin: Stdin }, StdinError, Maybe<Bytes>>
+fn readLine
+  -> Effect<{ stdin: Stdin }, StdinError, Maybe<String>>
+fn readLineWith limit: LineLimit
+  -> Effect<{ stdin: Stdin }, StdinError, Maybe<String>>
+fn lines limit: LineLimit
+  -> Stream<{ stdin: Stdin }, StdinError, String>
+```
+
+ReadSizeは1 byteから1 MiB、LineLimitは1 byteから64 MiBです。defaultReadSizeは64 KiB、
+defaultLineLimitは1 MiBです。validated valueにより、read operation開始後にsize configurationで失敗しません。
+
+readChunkは現在cursorから1 byte以上size以下のBytesを返し、EOFならNothingです。空Bytesを返しません。
+readLineWithはLFまでを一行とし、LFと直前のoptionalなCRを除きます。bare CRは内容に残します。`\n`は
+`Just ""`、EOF前のterminatorなしnon-empty bytesも最後の一行、bufferが空のEOFはNothingです。
+readLineは`readLineWith (defaultLineLimit ())`です。
+
+lineはstrict UTF-8でdecodeします。invalid sequenceではStdin全体の先頭からの0-based byte offsetを
+InvalidStdinUtf8に入れ、そのlineをterminatorまたはEOFまで消費します。limitはterminatorを除くbyte数へ適用し、
+超えた場合は残りのlineを保持せずterminatorまたはEOFまでdiscardしてStdinLineTooLongを返します。したがって
+errorを処理して次のreadを行うと次のlineから再開します。cursor offsetがInt範囲を超える前に
+StdinPositionOverflowで失敗し、それ以後のreadも同じfailureです。
+
+一つのStdin serviceで同時にactiveにできるreadは一件です。別のreadChunk、readLine、lines terminal executionが
+activeなら、後から開始したoperationはbytesを消費せずConcurrentStdinReadで失敗します。read完了、failure、
+cancellationでleaseを解放します。host readがcancellationと競合してbytesを返した場合、そのbytesをservice内部へ
+戻し、次のreadから観測できるようにして欠落させません。cancellationやStream終了はprocess共有stdinをcloseしません。
+
+EOFはstickyです。linesはterminal execution時点のcursorからreadLineWithを逐次実行するcold Streamですが、
+外部stdinをreplayしません。同じStream値を再実行すると、その時点で残っているinputから続けます。各lineへdemandが
+来るまで次のlineを読みません。test hostはbyte列、read chunk境界、EOF、read failureを決定的に提供できます。
+
 `std/path` はpureなpath操作、`std/fs` はFileSystem serviceを要求するEffectを提供します。
 Pathはhost Stringのaliasではなく、`/` をseparatorに使うportableなlexical pathを表すstandard opaque
 typeです。POSIX root `/`、Windows drive root `C:/`、UNC root `//server/share/`、relative pathを区別します。

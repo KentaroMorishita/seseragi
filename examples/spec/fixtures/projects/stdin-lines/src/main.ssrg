@@ -1,0 +1,32 @@
+import * as effects from "std/effect"
+import * as stdin from "std/stdin"
+
+type AppError deriving Show =
+  | InputFailure StdinError
+  | OutputFailure ConsoleError
+
+fn printLine value: Maybe<String> -> Effect<{ console: Console }, AppError, Unit> =
+  match value {
+    Nothing -> println "EOF" |> effects.mapError OutputFailure
+    Just text ->
+      if text == ""
+      then println "EMPTY" |> effects.mapError OutputFailure
+      else println `line: ${text}` |> effects.mapError OutputFailure
+  }
+
+pub effect fn main -> Unit
+with Console, Stdin
+fails AppError =
+  do {
+    first <- stdin.readLine () |> effects.mapError InputFailure
+    printLine first
+
+    second <- stdin.readLine () |> effects.mapError InputFailure
+    printLine second
+
+    third <- stdin.readLine () |> effects.mapError InputFailure
+    printLine third
+
+    eof <- stdin.readLine () |> effects.mapError InputFailure
+    printLine eof
+  }

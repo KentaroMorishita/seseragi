@@ -151,12 +151,21 @@ failureとして扱います。`projects/test-discovery`はparallel jobsでもre
 nested genericはgrammar上すでに再帰的なtype argumentとして定義済みでした。現行実装で壊れやすかった連続する
 `>>` / `>>>`を型parserが複数のclose delimiterとして扱うことを`nested-generic-types` fixtureへ固定しました。
 
+### 2026-07-06: standard input
+
+出力用Consoleと分離したStdin serviceを追加し、readChunk、readLine、line Streamを定義しました。EOFと空行、
+strict UTF-8、line limit、absolute byte offset、concurrent read、cancellationとhost readの競合、sticky EOFを
+区別しています。正常なEOFはNothingで、input failureやinvalid UTF-8へ偽装しません。
+
+Stdinは共有cursorなのでStreamを再実行してもinputをreplayせず、その時点の残りから続けます。cancellationは
+stdinをcloseせず、競合して読み終えたbytesを内部bufferへ戻して欠落を防ぎます。`projects/stdin-lines`で空行と
+EOFを含むhost input / stdout traceを固定しました。
+
 ## 次のpass
 
-1. standard inputを実用program契約として閉じる。
-2. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
-3. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
-4. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
+1. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
+2. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
+3. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
 
 未完了passがあるため、この文書は仕様全体に矛盾がないことを証明しません。passごとに発見事項を本文へ
 反映し、解決をfixtureへ固定してから完了として追記します。

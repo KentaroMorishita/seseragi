@@ -30,6 +30,7 @@
 | monad transformer                             | Lesson 20               | transformer order fixtures                   | partial |
 | retry / repeat / timeout                      | planned advanced lesson | deterministic Clock fixtures                 | planned |
 | test declaration / discovery / runner         | test guide              | `projects/test-discovery`                    | partial |
+| standard input / EOF / line decoding          | stdin guide             | `projects/stdin-lines`                       | partial |
 | process signal / graceful shutdown            | process guide           | `fixtures/projects/process-shutdown-*`       | planned |
 | Byte / Bytes / UTF-8                          | Lesson 21               | byte range / invalid UTF-8 fixtures          | partial |
 | Decimal exact arithmetic / rounding           | Lesson 22               | parse / division / rounding fixtures         | partial |

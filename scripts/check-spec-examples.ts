@@ -119,6 +119,7 @@ type ProjectExpectation = {
   phase: string
   spec: string[]
   lock: string
+  stdin?: string
   stdout?: string
 }
 
@@ -361,6 +362,13 @@ for (const name of projects) {
       if (!stdout.endsWith("\n")) {
         errors.push(`projects/${name}: stdout snapshot needs final newline`)
       }
+    }
+  }
+
+  if (expectation.stdin !== undefined) {
+    const stdinPath = resolve(directory, expectation.stdin)
+    if (!existsSync(stdinPath)) {
+      errors.push(`projects/${name}: missing stdin ${expectation.stdin}`)
     }
   }
 }

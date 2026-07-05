@@ -16,6 +16,7 @@ preludeは自動importされ、次を提供します。
 - `identity`, `const`, `compose`, `flip`, `show`, `encodeJson`, `decodeJson`, `todo`
 - `sum`, `product`, `combine`, `any`, `all`, `join`
 - `Console`, `ConsoleError`, `print`, `println`, `printValue`
+- `Stdin`, `StdinError`, `readLine`
 
 preludeの名前は明示importでshadowingできません。local bindingではshadowingできます。
 
@@ -477,6 +478,18 @@ broken pipeなどhost由来の失敗はConsoleErrorです。test hostはConsole 
 
 `ConsoleError` はstandard opaque error型で、ShowとDebug instanceを持ちます。Showは利用者向けの
 失敗概要を返し、host固有error objectやstack traceを文字列へ埋め込みません。
+
+standard inputは出力用Consoleと別のStdin serviceです。canonical requirement名は`stdin`で、
+`with Stdin`は`with stdin: Stdin`へ展開します。preludeの`readLine`はstandard default limitを使います。
+
+```seseragi
+fn readLine
+  -> Effect<{ stdin: Stdin }, StdinError, Maybe<String>>
+```
+
+parameterなし関数なので呼び出しは`readLine ()`です。EOFはNothing、空行は`Just ""`であり、
+EOFやinput failureを空Stringへまとめません。binary read、明示limit、line Streamは10.14の`std/stdin`を
+使います。
 
 ## 9.13 structured logging
 

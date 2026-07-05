@@ -22,6 +22,7 @@
   lockfileを生成してから検証する。repository内へ生成物を書かない。`fixture`はproject内の`seseragi.lock`をそのまま
   使用し、更新しない。
 - `stdout`: run / test fixtureのexact UTF-8 / LF snapshot。末尾newlineを含む。
+- `stdin`: run fixtureへtest adapterがそのまま渡すinput file。text / binary semanticsは対象APIの仕様に従う。
 
 host moduleを使うfixtureは`host/`へ自己完結したsourceを置き、network、global package cache、user credentialへ
 依存してはなりません。fixture runnerはmanifestのtargetをdeterministic test adapterへ解決します。
