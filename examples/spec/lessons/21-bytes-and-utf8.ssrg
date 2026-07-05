@@ -1,0 +1,27 @@
+// Lesson 21: immutableなBytesとUTF-8境界を学ぶ
+// 前提: Lessons 08 and 19
+
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+let encoded = text.encodeUtf8 "せせらぎ"
+
+// sliceのindexは文字数ではなくbyte offsetで、endを含みません。
+// UTF-8の文字境界に合わせた0..6は、3 bytesの「せ」を二文字取り出します。
+let prefix = bytes.slice 0 6 encoded
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  match prefix {
+    Left error -> println $ `slice error: ${error}`
+    Right value ->
+      // decodeUtf8は不正byte列を隠さず、Eitherでoffsetを返します。
+      match text.decodeUtf8 value {
+        Left error -> println $ `UTF-8 error: ${error}`
+        Right decoded -> println $ `${decoded} (${bytes.length value} bytes)`
+      }
+  }
+
+// Expected stdout:
+// せせ (6 bytes)

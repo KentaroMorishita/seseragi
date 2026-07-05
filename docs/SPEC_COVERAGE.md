@@ -63,6 +63,7 @@
 - Streamのdemand、merge ordering、buffer overflow、resource lifetime
 - Signal / Stream変換の初期値、backpressure、loss policy
 - Console / LoggerとShowの分離
+- immutable Bytes、opaque Byte、slice sharing / copy、UTF-8変換
 
 ### moduleと外部境界
 
@@ -122,7 +123,6 @@
 
 ### 標準data
 
-- Bytesのrepresentationとslice ownership
 - Decimalのprecision / rounding context
 - Map / Setのhash seedとserialization contract
 - Regex flavorとUnicode version
@@ -170,7 +170,7 @@
 
 ## 次に詰める順序
 
-1. Bytes / Decimal / Map serializationなど標準dataのruntime contractを固定する。
+1. Decimal / Map serializationなど残る標準dataのruntime contractを固定する。
 2. BytesとStreamを使うfilesystem / child process / HTTP surfaceを固定する。
 3. diagnostic、formatter、document commentをtooling contractとして固定する。
 4. TypeScript binding generatorのnamingと設定schemaを固定する。

@@ -134,13 +134,16 @@ Js.Callback<Args, Result>
 | `Int`    | `bigint`       |
 | `Unit`   | `undefined`    |
 | `Never`  | `never`        |
+| `Bytes`  | `Uint8Array`   |
 
 `Int` は64 bit精度を失わないため `bigint` へ写像します。`number` をIntとして受け取るbindingは
 `Js.Number` として受け、有限・整数・範囲内であることをdecoderで検査します。
+BytesとUint8Arrayは10.8の規則により両方向でcopyし、mutable viewを共有しません。
 
 ## 7.7 collectionとrecord
 
 - `Array<A>` は境界で `ReadonlyArray<Ts(A)>` と相互変換する。
+- `Bytes` は境界で `Uint8Array` と相互変換し、必ずsnapshot copyする。
 - `List<A>` は自動変換しない。`Array` を経由する明示関数を使う。
 - tupleは同じ長さのreadonly tupleへ変換する。
 - recordはreadonly objectへfieldごとに変換する。
