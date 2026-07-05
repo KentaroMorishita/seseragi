@@ -98,6 +98,10 @@ import * as text from "std/text"
 importはmodule先頭に置きます。同じscopeへ同名を二度導入できません。未使用importは
 warningであり、意味には影響しません。
 
+importしたmoduleのinstanceが型検査で選択された場合、そのimportは使用済みです。namespace aliasやnamed valueが
+sourceに現れなくてもunused warningを出さず、organize-importsで削除してはなりません。instanceを一件も選択せず、
+名前・operator・re-exportにも寄与しないimportだけがunusedです。
+
 operator importはsymbolだけでなくfixity、precedence、型schemeをmodule interfaceから取得します。
 language serverを含むconsumerはimport先のfunction bodyをparseまたは実行せず、公開interfaceだけで
 operator chainを解決できます。
@@ -195,6 +199,11 @@ top-level `let` は、それより前の `let` とすべての関数宣言だけ
 `let` は参照できません。effectはEffect内に閉じるため、module importだけでI/Oは発生しません。
 
 同じmoduleを複数箇所からimportしてもtop-level値は一度だけ作られます。
+
+foreign moduleのruntime codeはparser、type checker、formatter、language server、document generatorが評価しては
+なりません。runtime buildでpure-loadと判定されたhost moduleだけは、7.2の保証に基づきSeseragi module初期化中に
+一度評価できます。task-load moduleはSeseragi moduleをimportしただけでは評価せず、最初のforeign Task実行まで
+遅延します。
 
 ## 6.11 entry point
 

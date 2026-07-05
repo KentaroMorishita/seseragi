@@ -1,0 +1,5 @@
+before
+host:load
+host:call:a
+host:call:b
+A,B

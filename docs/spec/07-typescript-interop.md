@@ -31,12 +31,30 @@ private foreign blockを手書きの `pub fn` / `pub alias` で包みます。
 
 `from` のspecifierはTypeScript host resolverへ渡します。relative specifierはbinding fileから、
 bare specifierは `seseragi.toml` の `[foreign.typescript]` とhost package resolverから解決します。
-同じspecifierを
-異なるforeign blockでbindしてもhost moduleは一度だけloadされます。
+load identityはspecifier文字列ではなくresolverが返すexact host module identityです。異なるrelative spellingや
+re-export pathが同じidentityへ解決される場合も、一runtime内で一moduleとして扱います。
 
-pure memberを持つforeign moduleは、module評価自体も同期的・非throw・外部状態を変更しない
-ことをbinding authorが保証します。side effectや失敗を伴うmodule初期化はtask modeのlazy
-loaderを使い、Effect実行時までloadしません。load failureは `Js.Error` です。
+resolved host moduleごとに、全foreign blockを合わせてload modeを決めます。
+
+- pure function / value / constructor / method / propertyが一件でもあれば**pure-load**。
+- opaque typeとtask memberだけなら**task-load**。
+
+pure-loadでは、対象moduleとそのtransitive host dependencyの評価が同期的・非throw・決定的で、外部状態を観測も
+変更もしないことをbinding authorが保証します。runtimeはSeseragi dependencyの初期化順でhost moduleを一度評価し、
+exportをbindしてから、そのmoduleを参照するtop-level pure expressionを評価します。保証違反はbinding defectです。
+
+task-loadでは、Seseragi moduleのimportと初期化だけでhost moduleを評価しません。最初のtask memberを実行した時点で
+lazy loaderを開始し、成功後に対象exportを呼びます。同じidentityへの並行した初回callは一つのloadを共有します。
+loadのsuccessまたはfailureはruntime中memoizeし、後続callでmodule initializerをretryしません。load failureは
+phaseをModuleLoadとして保持する`Js.Error`です。
+
+host module load自体にportableなcancellationはありません。待機中のforeign Taskがcancelされた場合、そのcallerは
+cancellationを観測しますが、共有loadは継続して結果をmemoizeできます。load成功後にtask memberを呼び始めている場合の
+cancellationは7.11と各bindingの明示contractに従い、推測でhost operationをcancelしません。
+
+別foreign blockのtask memberだけを見てlazy-loadと判断してはなりません。同じresolved identityにpure memberがあれば
+module全体がpure-loadです。module初期化にside effectや失敗がある場合、そのidentityへpure memberを宣言できず、
+すべてtask memberとしてbindしなければなりません。
 
 foreign blockのlocal名は通常のimportと同じmodule scopeへ入ります。export名が異なる場合は
 文字列で指定します。
@@ -78,6 +96,8 @@ fetchJson : String -> Task<Js.Error, Js.Unknown>
 
 adapterは関数呼び出し時の同期throwと、戻り値がPromiseLikeならrejectionを捕捉します。
 同期値なら即座に成功したTaskへ変換します。Taskをrunするまで対象関数は呼びません。
+task-load moduleでは同じTask error channelがmodule load failureも扱います。`Js.Error` metadataは
+ModuleLoad、SynchronousThrow、PromiseRejectionを区別し、diagnosticとcross-language stackでphaseを失いません。
 
 ## 7.4 arityとcurry
 

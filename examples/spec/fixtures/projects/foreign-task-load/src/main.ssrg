@@ -1,0 +1,28 @@
+import * as effects from "std/effect"
+
+foreign "typescript" from "../host/lazy-module.mjs" {
+  task fn call label: String -> String
+}
+
+type AppError deriving Show =
+  | ConsoleFailure ConsoleError
+  | ForeignFailure Js.Error
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    println "before"
+      |> effects.mapError ConsoleFailure
+
+    first <-
+      call "a"
+        |> effects.mapError ForeignFailure
+
+    second <-
+      call "b"
+        |> effects.mapError ForeignFailure
+
+    println $ `${first},${second}`
+      |> effects.mapError ConsoleFailure
+  }

@@ -70,14 +70,39 @@ module sectionごとの関数名重複はありませんでした。transform / 
 これによりfilesystem、buffer、child process、HTTPとtemporary resource APIでEitherの左右が異なる理由を
 operation phaseから説明でき、任意union errorを導入せずに済みます。
 
+### 2026-07-05: module、package、TypeScript load境界
+
+Seseragi module importはI/Oを起こさない一方、JavaScript moduleは評価時に任意のcodeを実行できます。以前は
+「side effectがある場合はlazy loader」とだけあり、同じhost moduleを複数foreign blockからpure / task混在で
+参照した場合のload時点、並行初回call、失敗後の扱いが未定義でした。
+
+resolved host module identity単位で次へ固定しました。
+
+- pure memberが一件でもあればpure-loadとし、transitive host評価全体のpure保証を要求する。
+- opaque typeとtask memberだけならtask-loadとし、最初のforeign Taskまで評価しない。
+- 並行した初回task callはsingle-flight loadを共有する。
+- loadのsuccess / failureをruntime中memoizeし、initializerを暗黙retryしない。
+- cancelされたwaiterはload自体をcancelせず、共有結果をcacheできる。
+- specifier spellingではなくlockfileへ記録したexact identityをcache keyにする。
+
+`.d.ts` converterの既定module evaluationはtaskです。symbolをpureへ承認するにはmodule評価もpureへ明示承認し、
+task-load moduleのvalue、enum member、getterをpure valueとして自動生成しません。generated metadataと現在設定の
+evaluation modeが違う場合はstale bindingとしてbuildを拒否します。
+
+instanceだけを到達可能にするimportはsemantic useとして扱い、unused warningやorganize-importsで削除しないことも
+module規則へ追加しました。
+
+project fixtureには`project.expect.json`を必須とし、`lock: "generate"`ならrunnerがtemporary copyへoffline lockfileを
+生成する規則を定めました。これによりtool-owned lockfileのwire formatをexampleから捏造せず検証できます。
+最初の`foreign-task-load` fixtureは、mainの最初のEffectより後にhost moduleを一度だけloadし、二回のtask callで
+initializerを繰り返さないstdout traceを固定します。現在のcheckerはproject schema、spec参照、snapshotだけを検査し、
+実runは新仕様runner実装後のconformance targetです。
+
 ## 次のpass
 
-1. 標準ライブラリsignatureをmodule別にcatalog化し、重複宣言、parameter順、empty value / function、
-   failure nestingを照合する。
-2. module、package、entry point、TypeScript ABI、`.d.ts`変換のvisibilityと初期化境界を照合する。
-3. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
-4. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
-5. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
+1. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
+2. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
+3. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
 
 未完了passがあるため、この文書は仕様全体に矛盾がないことを証明しません。passごとに発見事項を本文へ
 反映し、解決をfixtureへ固定してから完了として追記します。

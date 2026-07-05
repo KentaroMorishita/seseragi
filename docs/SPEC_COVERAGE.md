@@ -79,6 +79,7 @@
 - `.d.ts` subset変換、unsupported診断、更新差分
 - unconstrained generic TypeScript ABIと明示trait dictionary mapping
 - callback lifetime設定、stable generated naming、declaration merge / namespace変換
+- resolved host module単位のpure-load / task-load、single-flight、failure memoization
 - source map chainとcross-language machine-readable stack frame
 
 ### parserとtooling

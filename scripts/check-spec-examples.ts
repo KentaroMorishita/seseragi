@@ -113,6 +113,15 @@ type FixtureExpectation = {
   diagnostics?: ExpectedDiagnostic[]
 }
 
+type ProjectExpectation = {
+  schema: number
+  kind: string
+  phase: string
+  spec: string[]
+  lock: string
+  stdout?: string
+}
+
 let fixtureCount = 0
 for (const fixtureKind of ["compile", "diagnostics"] as const) {
   const directory = join(fixturesDir, fixtureKind)
@@ -279,11 +288,88 @@ for (const fixtureKind of ["compile", "diagnostics"] as const) {
   }
 }
 
+const projectsDir = join(fixturesDir, "projects")
+const projects = readdirSync(projectsDir, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort()
+
+for (const name of projects) {
+  const directory = join(projectsDir, name)
+  const manifestPath = join(directory, "seseragi.toml")
+  const expectationPath = join(directory, "project.expect.json")
+
+  if (!existsSync(manifestPath)) {
+    errors.push(`projects/${name}: missing seseragi.toml`)
+  }
+  if (!existsSync(expectationPath)) {
+    errors.push(`projects/${name}: missing project.expect.json`)
+    continue
+  }
+
+  let expectation: ProjectExpectation
+  try {
+    const parsed: unknown = JSON.parse(readFileSync(expectationPath, "utf8"))
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      errors.push(`projects/${name}: expectation root must be an object`)
+      continue
+    }
+    expectation = parsed as ProjectExpectation
+  } catch (error) {
+    errors.push(`projects/${name}: invalid project.expect.json: ${error}`)
+    continue
+  }
+
+  if (expectation.schema !== 1) {
+    errors.push(`projects/${name}: schema must be 1`)
+  }
+  if (expectation.kind !== "project") {
+    errors.push(`projects/${name}: kind must be project`)
+  }
+  if (
+    !["compile", "diagnostic", "run", "convert", "tooling"].includes(
+      expectation.phase
+    )
+  ) {
+    errors.push(`projects/${name}: invalid phase ${expectation.phase}`)
+  }
+  if (
+    !Array.isArray(expectation.spec) ||
+    expectation.spec.length === 0 ||
+    expectation.spec.some((section) => !specSections.has(section))
+  ) {
+    errors.push(`projects/${name}: spec must reference known sections`)
+  }
+  if (!["generate", "fixture"].includes(expectation.lock)) {
+    errors.push(`projects/${name}: lock must be generate or fixture`)
+  } else if (
+    expectation.lock === "fixture" &&
+    !existsSync(join(directory, "seseragi.lock"))
+  ) {
+    errors.push(`projects/${name}: fixture lock requires seseragi.lock`)
+  }
+
+  if (expectation.stdout !== undefined) {
+    const stdoutPath = resolve(directory, expectation.stdout)
+    if (!existsSync(stdoutPath)) {
+      errors.push(`projects/${name}: missing stdout ${expectation.stdout}`)
+    } else {
+      const stdout = readFileSync(stdoutPath, "utf8")
+      if (stdout.includes("\r")) {
+        errors.push(`projects/${name}: stdout snapshot must use LF`)
+      }
+      if (!stdout.endsWith("\n")) {
+        errors.push(`projects/${name}: stdout snapshot needs final newline`)
+      }
+    }
+  }
+}
+
 if (errors.length > 0) {
   console.error(errors.join("\n"))
   process.exit(1)
 }
 
 console.log(
-  `Spec lessons: ${lessons.length} checked; fixtures: ${fixtureCount} checked`
+  `Spec lessons: ${lessons.length} checked; fixtures: ${fixtureCount} checked; projects: ${projects.length} checked`
 )
