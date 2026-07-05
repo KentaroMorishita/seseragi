@@ -2139,7 +2139,7 @@ fn arguments -> Effect<{ process: Process }, ProcessError, Array<String>>
 fn environment name: String
   -> Effect<{ process: Process }, ProcessError, Maybe<String>>
 fn currentDirectory
-  -> Effect<{ process: Process }, ProcessError, String>
+  -> Effect<{ process: Process }, ProcessError, Path>
 fn signals watched: NonEmptyList<ProcessSignal>
   -> Stream<{ process: Process }, ProcessError, ProcessSignal>
 ```
@@ -2148,6 +2148,12 @@ fn signals watched: NonEmptyList<ProcessSignal>
 存在しないkeyを `Nothing`、存在する値を `Just value` にします。host byte列をUnicode Stringへ
 変換できない場合は位置またはkeyを持つProcessErrorです。environment全体をMapとしてsnapshotするAPIは
 coreへ置かず、必要なkeyだけを明示的に読みます。
+
+`currentDirectory ()` は呼び出し時点のworking directoryをabsoluteなportable Pathへ変換します。Windowsの
+host separatorは `/` へ変換し、drive / UNC rootは `std/path` の表現に従います。hostから取得できない、
+Unicode Stringへ変換できない、またはportable Pathとして表せない場合はCurrentDirectoryUnavailableです。
+lexical normalizeやsymlink解決は行いません。相対PathをFileSystemへ渡す場合のbaseは、このoperationで
+観測するworking directoryと同じです。
 
 `signals watched` はterminal operationごとにhandlerを登録するcold Streamで、scope終了時に解除します。
 targetが扱えないsignalはStream開始時に `UnsupportedProcessSignal` で失敗します。handler登録後のsignalは

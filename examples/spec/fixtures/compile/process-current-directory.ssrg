@@ -1,0 +1,7 @@
+import * as paths from "std/path"
+import * as process from "std/process"
+
+fn renderedWorkingDirectory
+  -> Effect<{ process: Process }, process.ProcessError, String> =
+  process.currentDirectory ()
+    |> map paths.render

@@ -113,6 +113,7 @@
 - linear-time Regex subset、UTF-8 span、toolchain共通のUnicode data version
 - timezoneの明示的なlocal resolution、IANA database version locking
 - portable Path、filesystem error、stream / atomic / temporary resource ownership
+- process current directoryとfilesystem相対Pathの共通portable Path基準
 - child processのcold event Stream、capture limit、termination / reap ownership
 - HTTPのcold exchange Stream、body backpressure、connection ownership
 - JsonEncode / JsonDecodeの限定deriving、strict field / tagged ADT wire contract
@@ -152,10 +153,6 @@
 
 ここは意図的な不採用ではなく、一般的なprogramを書くために必要だが、まだ正本の意味が閉じていない項目です。
 exampleや現行compilerの挙動から推測実装しません。
-
-### 優先度B: 一般applicationの標準ライブラリ
-
-- `Process.currentDirectory`がportable `Path`ではなくStringを返しており、filesystem surfaceと不整合。
 
 ### 優先度C: product運用
 
