@@ -96,6 +96,7 @@
 - collection / text / number / JSON / time / random
 - Decimalのcanonical value、exact arithmetic、明示的なprecision / rounding context
 - Map / Setのprocess-local hash seed、ordered / canonical serialization contract
+- linear-time Regex subset、UTF-8 span、toolchain共通のUnicode data version
 - persistent IteratorとIterable/Reducibleの要素型dependency
 - Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
 - Effect / Stream / Signal / concurrency
@@ -125,7 +126,6 @@
 
 ### 標準data
 
-- Regex flavorとUnicode version
 - timezone databaseのversioning
 
 ### I/O library surface

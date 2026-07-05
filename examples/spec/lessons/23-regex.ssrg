@@ -1,0 +1,24 @@
+// Lesson 23: Regexをcompileし、安全なtext置換に使う
+// 前提: Lessons 08, 10, and 22
+
+import { RegexCompileError } from "std/regex"
+import * as regex from "std/regex"
+
+// patternの誤りはexceptionではなくEitherで返るため、呼び出し側が型として扱えます。
+fn redactOrderNumber text: String -> Either<RegexCompileError, String> =
+  do {
+    number <- regex.compile "[0-9]+"
+    // replacementはliteralです。capture展開が必要ならreplaceAllWithを使います。
+    pure (regex.replaceAll number "<number>" text)
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  match redactOrderNumber "order 123 is ready" {
+    Left error -> println $ `regex error at byte ${error.offset}`
+    Right redacted -> println redacted
+  }
+
+// Expected stdout:
+// order <number> is ready

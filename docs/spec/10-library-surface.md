@@ -543,6 +543,96 @@ caseFold : String -> String
 Regexは `std/regex` に置き、compile failureをEitherで返します。literal Stringを暗黙にRegexへ
 変換しません。
 
+### `std/regex`
+
+Regexはhostの正規表現objectではなく、Seseragiが定義するimmutableなstandard opaque typeです。
+pattern compileはpureで、通常の不正patternをexceptionやdefectにしません。
+
+```seseragi
+type RegexCompileErrorKind deriving Eq, Show =
+  | UnexpectedRegexEnd
+  | UnexpectedRegexToken Char
+  | InvalidRegexEscape
+  | InvalidRegexRange
+  | InvalidRegexQuantifier
+  | DuplicateCaptureName String
+  | UnsupportedRegexFeature String
+
+struct RegexCompileError deriving Eq, Show {
+  kind: RegexCompileErrorKind,
+  offset: Int
+}
+
+struct RegexOptions deriving Eq, Show {
+  caseInsensitive: Bool,
+  multiline: Bool,
+  dotMatchesNewline: Bool
+}
+
+struct RegexSpan deriving Eq, Ord, Show {
+  start: Int,
+  end: Int
+}
+
+struct RegexCapture deriving Eq, Show {
+  span: RegexSpan,
+  text: String
+}
+
+struct RegexMatch deriving Eq, Show {
+  span: RegexSpan,
+  text: String,
+  captures: Array<Maybe<RegexCapture>>,
+  named: Map<String, Maybe<RegexCapture>>
+}
+
+fn defaultOptions -> RegexOptions
+fn compile pattern: String -> Either<RegexCompileError, Regex>
+fn compileWith options: RegexOptions
+  -> pattern: String
+  -> Either<RegexCompileError, Regex>
+
+fn isMatch pattern: Regex -> text: String -> Bool
+fn find pattern: Regex -> text: String -> Maybe<RegexMatch>
+fn findAll pattern: Regex -> text: String -> Array<RegexMatch>
+fn split pattern: Regex -> text: String -> Array<String>
+fn replaceAll pattern: Regex -> replacement: String -> text: String -> String
+fn replaceAllWith pattern: Regex
+  -> replacement: (RegexMatch -> String)
+  -> text: String
+  -> String
+fn escape text: String -> String
+```
+
+`compile` は `defaultOptions ()` を使います。defaultは三つのBoolがすべてFalseです。offsetとmatch spanは
+0-based・end-exclusiveのUTF-8 byte offsetです。RegexCapture.textとRegexMatch.textは対応spanのStringを
+返すため、利用側がbyte boundaryを再検証せず安全に内容を使えます。capturesは左括弧順のcapturing groupを
+並べ、group 0を含みません。namedは宣言順を保ち、matchしなかったgroupもkeyを残してNothingにします。
+
+必須pattern syntaxはliteral、escape、`.`、character classとnegation、concatenation、`|`、capturing group、
+`(?:...)`、`(?<name>...)`、`*`、`+`、`?`、`{m}`、`{m,}`、`{m,n}`、`^`、`$`、`\A`、`\z` です。
+quantifierはgreedyです。最も左で開始するmatchを選び、同じ開始位置ではpattern内で先に書かれたalternativeを
+優先し、その内部でgreedy quantifierを最大化します。backreference、look-around、atomic group、conditional、
+recursion、inline flag、lazy / possessive quantifierはUnsupportedRegexFeatureです。このsubsetは入力長に対して
+linear timeでmatchできなければならず、hostのbacktracking engineへ意味を委譲しません。
+
+patternと入力はUnicode scalar列としてmatchします。`.` はdefaultでline terminator以外のscalar一つ、
+dotMatchesNewlineでは任意のscalar一つです。`\d` はASCII `[0-9]`、`\s` はUnicode White_Space、`\w` は
+Unicode Alphabetic、Mark、Decimal_Number、Connector_Punctuationのいずれかです。`\p{Property}` と
+`\P{Property}` はruntimeが公開するUnicode property tableを使います。caseInsensitiveはlocale非依存の
+Unicode simple case foldingです。multiline=Falseの `^` / `$` は入力全体、Trueではline境界にもmatchし、
+`\A` / `\z` は常に入力全体だけを表します。
+
+findAllとsplitは左から右へnon-overlapping matchを使います。空matchの後は、入力末尾でなければUnicode scalar
+一つ進め、末尾ならそのmatchを含めて終了します。replaceAllのreplacementは `$` や `\` を展開しないliteral
+Stringです。captureを使う置換はreplaceAllWithで明示します。escapeは入力全体をliteralとしてmatchできる
+pattern fragmentを返します。
+
+compiler、runtime、formatter、LSPはlanguage release metadataに同じUnicode data versionを公開しなければ
+なりません。このversionはcaseFold、White_Space、regex property、identifier判定で共通です。generated artifact
+には要求versionを記録し、異なるUnicode versionのruntimeはcode実行前にABI mismatchとして拒否します。
+TypeScript backendでもJS RegExpへ意味を委譲せず、この契約に適合するruntime engineを呼びます。
+
 ## 10.8 `std/number` と `std/bytes`
 
 IntとFloatについて、checked arithmetic、parse、format、clamp、min/max、abs、sign、powerを
