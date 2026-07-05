@@ -59,6 +59,7 @@
 | pure Html props / children / SSR              | Lesson 27               | HTML escaping / props fixtures               | partial |
 | Signal-driven DOM / event resource lifetime   | planned advanced lesson | DOM reconciliation / hydration projects      | planned |
 | performance erasure / stack safety            | none                    | differential / IR shape / benchmark suite    | planned |
+| benchmark discovery / baseline regression     | none                    | `projects/benchmark-discovery`               | covered |
 
 ## 次に埋める順序
 

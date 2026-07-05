@@ -2585,7 +2585,45 @@ Fiber、resource scope、captured outputを共有しません。property testは
 Functor、Applicative、Monad、Semigroup、Monoidのlaw helperは通常のTest treeを返し、runnerだけの別実行経路を
 持ちません。test moduleも通常のSeseragi moduleであり、test export以外の特別な型検査規則を持ちません。
 
-## 10.17 optional adapter
+## 10.17 `std/benchmark`
+
+benchmarkは新しいdeclarationではなく、runnerが発見する通常のpureな値です。
+
+```seseragi
+alias BenchmarkEnvironment = {
+  random: Random,
+  console: Console,
+  logger: Logger
+}
+
+type BenchmarkFailure deriving Eq, Show =
+  | ExplicitBenchmarkFailure String
+
+opaque type Benchmark
+
+fn benchmark
+  name: String
+  -> body: Effect<BenchmarkEnvironment, BenchmarkFailure, Unit>
+  -> Benchmark
+fn suite name: String -> children: Array<Benchmark> -> Benchmark
+fn inputSize size: Int -> child: Benchmark -> Benchmark
+fn blackBox<A> value: A -> A
+fn fail message: String -> Effect<{}, BenchmarkFailure, Unit>
+```
+
+Benchmark treeのname規則、重複検査、source順はTestと同じです。inputSizeは正のproblem sizeをreport metadataへ
+付け、nested指定では最も内側を使います。runnerはwarmupとsampleごとにbodyを一度以上逐次実行します。
+一回のbody全体が測定対象で、resource setupを除外したい場合はBenchmark値の外でmutable stateを共有せず、
+body内で測りたいoperationだけを反復可能なpure inputから構築します。blackBoxは引数を一度評価して同じ値を返し、
+compilerが値をcompile-time constantとして消去することだけを防ぐoptimization barrierです。memory allocation、
+identity、Effect順序を追加で変更しません。
+
+exported Benchmarkへ未解決requirementを残せません。追加serviceはBenchmark構築前にtest doubleまたはlocal serviceを
+provideします。Randomはcase名とrunner seedから導く独立stream、ConsoleとLoggerはcase専用captureです。
+benchmark bodyのtyped failure、defect、resource leakは測定値にせずcase failureです。runnerのmonotonic measurement
+clockはBenchmarkEnvironmentへ公開せず、applicationのClock serviceで測定を偽装できません。
+
+## 10.18 optional adapter
 
 pureなHtml treeとSSRは `std/web/html`、browser DOM capabilityは `std/web/dom` として13章の標準contractを
 持ちます。Dom serviceの実装はtarget adapterですが、Htmlの意味、escape、event順、resource lifetimeをhostへ

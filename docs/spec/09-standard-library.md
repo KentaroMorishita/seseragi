@@ -263,6 +263,8 @@ lawは次のとおりです。Eqで観測できる範囲で成立しなければ
 ```seseragi
 fn succeed<R, E, A> value: A -> Effect<R, E, A>
 fn fail<R, E, A> error: E -> Effect<R, E, A>
+fn defer<R, E, A>
+  thunk: (Unit -> Effect<R, E, A>) -> Effect<R, E, A>
 fn mapError<R, E, F, A>
   f: (E -> F) -> effect: Effect<R, E, A> -> Effect<R, F, A>
 fn recover<R, E, F, A>
@@ -289,6 +291,9 @@ fn forEachUntil<C, R, E, A>
   -> Effect<R, E, Unit>
 where Iterable<C, A>
 ```
+
+`defer thunk` はEffectが実行されるたびにthunkを一度呼び、その時点で返されたEffectを同じscopeで実行します。
+Effect値の構築時にはthunkを呼びません。反復可能なEffectでstrictなpure計算も毎回作り直す場合に使います。
 
 異なるenvironment requirementを合成するときは、型検査器が5.5のrequirement wideningで
 共通のrecord型へ揃えてから、上のsame-`R` operationを適用します。

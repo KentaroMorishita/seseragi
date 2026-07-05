@@ -149,6 +149,7 @@
 - Effect、Signal、DOM、foreign境界で残るruntime cost
 - development / release profileの意味的一致
 - semantic differential、IR shape、benchmarkの三層検証
+- benchmark value discovery、measurement metadata、portable baseline / regression gate
 
 ## 未定義・要設計
 
@@ -157,7 +158,6 @@ exampleや現行compilerの挙動から推測実装しません。
 
 ### 優先度C: product運用
 
-- benchmark discovery、baseline metadata、regression thresholdのtool contract。
 - formatter / compiler optionの安定schemaと、target capabilityを問い合わせるbuild-time interface。
 
 ## 意図的に採用しない

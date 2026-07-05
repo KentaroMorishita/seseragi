@@ -1,0 +1,16 @@
+import * as benchmark from "std/benchmark"
+import * as effects from "std/effect"
+import { sum } from "fixture/benchmark-discovery"
+
+let values = [1, 2, 3, 4, 5]
+
+pub let benchmarks: benchmark.Benchmark =
+  benchmark.suite "array" [
+    benchmark.benchmark "sum" {
+      effects.defer (\_ -> {
+        let result = benchmark.blackBox (sum values)
+        effects.succeed ()
+      })
+    }
+      |> benchmark.inputSize 5
+  ]

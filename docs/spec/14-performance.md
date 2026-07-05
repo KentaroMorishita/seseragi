@@ -203,6 +203,30 @@ benchmarkの絶対値は言語conformanceではありません。baseline、tool
 - JSON encode / decode、SSR、keyed DOM update
 - BytesとTypeScript foreign境界の意図的copy
 
+`seseragi benchmark` はbenchmark rootの `.ssrg` をcanonical module path順に列挙し、全moduleをcompileしてから
+一件も実行せずdiscoveryします。正確に `pub let benchmarks: benchmark.Benchmark` を持つmoduleだけを対象にし、
+full nameは `module::suite::case` です。`--filter` / `--exact`、case 0件、cancellation、resource teardownは
+test runnerと同じ選択・ownership規則を使います。caseはcanonical discovery orderで実行し、同じprocess内で
+caseを並列実行しません。
+
+各caseはwarmup回をreportせず実行した後、calibrationで決めた反復回数を一sampleとしてmanifestのsamples回
+測ります。sample値はbody一回あたりのnanosecondsで、monotonic clockの開始・終了とrunner loop overheadを含みます。
+既定reportはmedian、median absolute deviation、minimum、maximum、sample count、iterations、input sizeを出します。
+case間でGCの実行を要求できず、runnerはGC availabilityをmetadataへ記録するだけで意味を補正しません。
+
+`--save-baseline PATH` はschema 1のJSONをatomic replaceで保存します。baselineは少なくともlanguage / compiler / runtime
+version、release profile、target adapter identityとversion、OS、architecture、CPU model、logical core count、
+timer resolution、manifest benchmark設定、case full name、input size、iterations、全sample値とsummaryを持ちます。
+source absolute path、timestamp、hostnameは比較identityへ含めません。同じcase名の重複や非finite値は保存しません。
+
+`--baseline PATH` は同じschemaを読み、toolchain major、release profile、target adapter、OS、architecture、CPU model、
+timer resolutionが一致しなければ比較を拒否します。caseの追加はnew、削除はmissingとしてreportし、既定では
+regression failureにしません。同名caseのinput sizeが違う場合は比較不能です。current medianがbaseline medianに
+`regression_threshold_percent` を加えた値を厳密に超えたcaseをregressionとします。thresholdはCLIでそのrunだけ
+上書きできます。少なくとも一件のregression、case failure、invalid / incompatible baselineはexit code 1、
+compile / discovery / option errorは2、成功は0です。machine-readable reportはbaselineと同じschema familyを使い、
+caseをcanonical discovery orderで並べます。
+
 最適化を要求するための`inline`、ownership、borrow、unsafeなどのsource annotationは現時点で追加しません。
 profileとbenchmarkで解決できない実測上の問題があり、意味論上の必要性を説明できた場合だけ、独立した言語機能として
 検討します。

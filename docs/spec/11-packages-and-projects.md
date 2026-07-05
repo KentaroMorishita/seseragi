@@ -39,12 +39,24 @@ jobs = 1
 timeout_ms = 30000
 cleanup_grace_ms = 5000
 seed = 0
+
+[benchmark]
+target = "node"
+warmup = 10
+samples = 50
+minimum_sample_ms = 100
+regression_threshold_percent = 5.0
 ```
 
 targetはCLI指定、`test.target`、`run.target`の順に選び、すべてなければtest開始前にtarget selection errorです。
 jobsとtimeout_msは正の整数、cleanup_grace_msは0以上の整数、seedはsigned 64-bit integerです。省略時は
 jobs 1、timeout_ms 30000、cleanup_grace_ms 5000、seed 0です。
 CLIの対応optionはmanifest値をそのrunだけ上書きし、manifestやlockfileを書き換えません。
+
+benchmarkのwarmupは0以上、samplesは3以上、minimum_sample_msは正の整数、
+regression_threshold_percentは0以上のfinite Floatです。省略時は順に10、50、100、5.0です。benchmark runnerは
+各sampleがminimum_sample_ms以上になる反復回数をcalibrateし、同じcaseの全sampleでその回数を使います。
+target selectionはCLI指定、`benchmark.target`、`run.target`の順で、すべてなければ開始前にerrorです。
 
 `signal_mode` は `cancel` または `forward` で、省略時は `cancel` です。`cancel` はtermination signalを
 root Effectのcancellationへ変換し、`forward` は `std/process.signals` へ渡します。
@@ -72,7 +84,8 @@ manifestはUTF-8のTOML 1.0です。未知のcore key、同じkeyの重複、型
 tool固有設定だけは `[tool.<tool-name>]` 以下に置けます。compilerは未知のtool tableを保持して
 構いませんが、言語semanticsへ影響させません。
 
-core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`run`、`test`、`tool`
+core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`run`、`test`、
+`benchmark`、`tool`
 です。`package.name`、`package.version`、`package.language` は必須で、それ以外は省略できます。
 
 ## 11.2 package identityとversion
@@ -115,6 +128,7 @@ layoutを省略した場合は次を使います。
 [layout]
 source = "src"
 tests = "tests"
+benchmarks = "benchmarks"
 generated = ".seseragi/generated"
 ```
 
@@ -123,18 +137,21 @@ seseragi.toml
 seseragi.lock
 src/
 tests/
+benchmarks/
 .seseragi/generated/
 ```
 
 各pathはpackage rootからの相対directoryです。absolute path、`..`、symlinkによるpackage root外への
-escapeを禁止します。3 rootは互いに重複できません。
+escapeを禁止します。4 rootは互いに重複できません。
 
 - source root: publish・build対象の通常module。
 - test root: test commandだけがrootとして読み込むmodule。package exportにはできない。
+- benchmark root: benchmark commandだけがrootとして読み込むmodule。package exportにはできない。
 - generated root: toolが再生成するforeign binding。手編集を前提にしない。
 
 source moduleのidentityは `package identity::path`、generated moduleは
-`package identity::@generated/path`、test moduleは `package identity::@test/path` です。
+`package identity::@generated/path`、test moduleは `package identity::@test/path`、benchmark moduleは
+`package identity::@benchmark/path` です。
 rootが違う同名fileを同一moduleとして扱いません。
 
 relative importは現在moduleと同じroot内だけを移動でき、別rootへ `..` で横断できません。
