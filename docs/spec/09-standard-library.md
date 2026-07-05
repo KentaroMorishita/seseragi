@@ -17,6 +17,7 @@ preludeは自動importされ、次を提供します。
 - `sum`, `product`, `combine`, `any`, `all`, `join`
 - `Console`, `ConsoleError`, `print`, `println`, `printValue`
 - `Stdin`, `StdinError`, `readLine`
+- `Random`, `Entropy`
 
 preludeの名前は明示importでshadowingできません。local bindingではshadowingできます。
 

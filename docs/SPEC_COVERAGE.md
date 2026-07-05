@@ -152,7 +152,6 @@ exampleや現行compilerの挙動から推測実装しません。
 
 ### 優先度B: 一般applicationの標準ライブラリ
 
-- `std/random`の公開signatureと分布規則。deterministic pseudo-random serviceとcryptographic entropyも未分離。
 - Int / Floatのparse、format、rounding、checked / saturating / wrapping operationの完全なsignature。
 - hex / Base64などBytesのportable text encoding。invalid input offsetとcanonical outputを含む。
 - `std/text/grapheme`と`std/text/unicode`。module名だけあり、grapheme segmentationとnormalization APIがない。

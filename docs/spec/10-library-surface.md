@@ -1039,8 +1039,103 @@ fn now -> Effect<{ clock: Clock }, ClockError, Instant>
 fn sleep duration: Duration -> Effect<{ clock: Clock }, Never, Unit>
 ```
 
-乱数はRandom serviceを要求し、testではseed済みserviceへ差し替えられます。pure関数がglobal
-random sourceを読みません。
+疑似乱数とcryptographic entropyは別serviceです。Randomは再現可能なsimulation、sampling、shuffle用で、
+秘密鍵、session token、nonce、saltへ使ってはなりません。Entropyだけが秘密用途のhost CSPRNGを表します。
+pure関数がglobal random sourceを読みません。
+
+```seseragi
+type RandomRangeError deriving Eq, Show =
+  | EmptyRandomIntRange { lower: Int, upperExclusive: Int }
+  | InvalidProbability Float
+
+type RandomConfigError deriving Eq, Show =
+  | NonPositiveRandomSize Int
+  | RandomSizeTooLarge Int
+
+opaque type RandomSize
+
+fn randomSize bytes: Int -> Either<RandomConfigError, RandomSize>
+
+fn algorithmId
+  -> Effect<{ random: Random }, Never, String>
+fn nextBool
+  -> Effect<{ random: Random }, Never, Bool>
+fn nextInt
+  -> Effect<{ random: Random }, Never, Int>
+fn intBetween lower: Int -> upperExclusive: Int
+  -> Effect<{ random: Random }, RandomRangeError, Int>
+fn unitFloat
+  -> Effect<{ random: Random }, Never, Float>
+fn chance probability: Float
+  -> Effect<{ random: Random }, RandomRangeError, Bool>
+fn randomBytes size: RandomSize
+  -> Effect<{ random: Random }, Never, Bytes>
+fn choose<A> values: NonEmptyList<A>
+  -> Effect<{ random: Random }, Never, A>
+fn shuffle<A> values: Array<A>
+  -> Effect<{ random: Random }, Never, Array<A>>
+```
+
+Randomのcanonical requirement名は`random`です。各operationは必要なoutput数だけservice stateをatomicに進めます。同じseed、
+algorithmId、同じ逐次call列はbackendによらず同じ結果です。共有Randomへ複数Fiberから同時callした場合は
+linearizableですが、どのFiberが先にstateを取るかはscheduler依存です。並列testでsequenceを固定したい場合は
+caseごとに独立serviceを提供し、一つのserviceをFiber間共有しません。
+
+standard algorithm IDは`seseragi-xoshiro256ss-v1`です。signed 64-bit seedをtwo's-complement unsigned値として
+SplitMix64へ入れ、連続4 outputをxoshiro256\*\*の`(s0, s1, s2, s3)`にします。すべての演算はunsigned 64-bit
+modulo arithmetic、`>>`はlogical shiftです。
+
+```text
+splitmix state += 0x9E3779B97F4A7C15
+z = state
+z = (z xor (z >> 30)) * 0xBF58476D1CE4E5B9
+z = (z xor (z >> 27)) * 0x94D049BB133111EB
+output = z xor (z >> 31)
+
+xoshiro output = rotl(s1 * 5, 7) * 9
+t = s1 << 17
+s2 xor= s0; s3 xor= s1; s1 xor= s2; s0 xor= s3
+s2 xor= t; s3 = rotl(s3, 45)
+```
+
+RandomSizeは1 byteから1 MiBです。nextIntはoutput bit patternをsigned two's-complement Intとして返します。
+nextBoolはoutputのleast-significant bit、unitFloatは`output >> 11`の53 bitを`2^53`で割った`[0, 1)`の
+binary64です。randomBytesはoutputをlittle-endianに並べ、
+要求sizeで切ります。intBetweenはlower inclusive / upperExclusiveで、空rangeを拒否し、64-bit rejection
+samplingによりmodulo biasを作りません。chanceはNaNまたは`[0, 1]`外を拒否し、0は常にFalse、1は常にTrueです。
+chooseはNonEmptyListなので空入力errorを持たず、shuffleはsourceを変更しないFisher-Yatesです。
+algorithmId、invalid range / probability、chance 0 / 1はstateを進めません。nextBool、nextInt、unitFloat、
+0と1以外のchanceは一output、randomBytesは`ceil(size / 8)` outputを使います。intBetweenとchooseは
+rejectionが完了するまで、shuffleは各swap indexのrejectionが完了するまで進めます。一operationの途中へ
+別FiberのRandom callを割り込ませません。
+
+secure entropyは次を提供します。
+
+```seseragi
+type EntropyConfigError deriving Eq, Show =
+  | NonPositiveEntropySize Int
+  | EntropySizeTooLarge Int
+
+type EntropyError deriving Eq, Show =
+  | EntropyUnavailable
+  | EntropyReadFailure
+
+opaque type EntropySize
+
+fn entropySize bytes: Int -> Either<EntropyConfigError, EntropySize>
+fn secureBytes size: EntropySize
+  -> Effect<{ entropy: Entropy }, EntropyError, Bytes>
+```
+
+Entropyのcanonical requirement名は`entropy`です。EntropySizeは1 byteから1 MiBです。secureBytesはhost OSまたは
+同等のcryptographically secure generatorから要求量すべてを返し、partial resultを公開しません。seed指定、
+sequence replay、algorithmId、Float / range helperを提供しません。cancellationとhost completionが競合した場合も
+返されなかったsecret bytesを後続callへ再利用しません。test runnerはEntropyを既定提供せず、必要なtestだけが
+明示的なfake serviceをprovideします。
+
+Map / Setのprocess-local hash seed、temporary file suffix、default Random seedがsecure entropyを必要とする場合も、
+Random serviceから取得しません。これらはtarget adapterがapplication開始前またはresource作成時にEntropyと同等の
+host sourceからdomain-separatedに取得します。
 
 ## 10.11 `std/effect`
 

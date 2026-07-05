@@ -1,0 +1,11 @@
+import * as bytes from "std/bytes"
+import * as entropy from "std/entropy"
+import * as random from "std/random"
+
+fn pseudoBytes size: random.RandomSize
+  -> Effect<{ random: Random }, Never, bytes.Bytes> =
+  random.randomBytes size
+
+fn secretBytes size: entropy.EntropySize
+  -> Effect<{ entropy: Entropy }, entropy.EntropyError, bytes.Bytes> =
+  entropy.secureBytes size

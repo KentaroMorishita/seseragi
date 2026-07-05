@@ -1,0 +1,11 @@
+import * as random from "std/random"
+
+pub effect fn main -> Unit
+with Console, Random
+fails ConsoleError =
+  do {
+    id <- random.algorithmId ()
+    first <- random.nextInt ()
+    second <- random.nextInt ()
+    println `${id}:${first},${second}`
+  }

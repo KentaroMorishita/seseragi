@@ -26,7 +26,8 @@ entry = "main"
 target = "node"
 signal_mode = "cancel"
 shutdown_grace_ms = 10000
-hash_seed = "random"
+hash_seed = "entropy"
+random_seed = "entropy"
 ```
 
 test commandの既定値はoptionalな`test` tableへ置きます。
@@ -53,7 +54,7 @@ root Effectのcancellationへ変換し、`forward` は `std/process.signals` へ
 grace periodはhostのmonotonic clockで測り、application environmentのClock serviceを要求・参照しません。
 test hostはsignal入力とmonotonic timeを決定的に制御できなければなりません。
 
-`hash_seed` は `"random"` またはsigned 64-bit integerで、省略時は `"random"` です。random modeは
+`hash_seed` は `"entropy"` またはsigned 64-bit integerで、省略時は `"entropy"` です。entropy modeは
 hostのsecure entropyを要求します。integerは同じHash implementationで内部bucket配置を再現するための
 test・benchmark用設定で、production packageでの使用はtool warningの対象です。seedはMap / Setの反復順や
 serialized dataを変えないため、通常testは固定seedへ依存してはなりません。
@@ -61,6 +62,11 @@ serialized dataを変えないため、通常testは固定seedへ依存しては
 signalを持たないtargetで `forward` を選ぶこと、またはsignal / graceful shutdown capabilityを持たない
 targetへこれらのkeyを明示することはmanifest errorです。target adapterは対応可否をbuild時に公開し、
 runtimeで黙って無視しません。
+
+`random_seed`は`"entropy"`またはsigned 64-bit integerで、省略時は`"entropy"`です。standard Random serviceを
+main environmentへ提供するときのseedで、Map / Setのhash_seedとは別です。entropy modeを選んだtargetにsecure
+entropyがなければapplication code開始前にtarget errorです。固定integerはsimulationの再現やdevelopment用で、
+security用途へ昇格しません。Entropy service自身の出力を固定する設定はありません。
 
 manifestはUTF-8のTOML 1.0です。未知のcore key、同じkeyの重複、型の違う値はerrorにします。
 tool固有設定だけは `[tool.<tool-name>]` 以下に置けます。compilerは未知のtool tableを保持して
