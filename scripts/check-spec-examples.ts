@@ -124,6 +124,7 @@ type ProjectExpectation = {
   diagnostics?: ProjectDiagnostic[]
   command?: string
   artifacts?: ProjectArtifact[]
+  services?: string
 }
 
 type ProjectDiagnostic = ExpectedDiagnostic & {
@@ -576,6 +577,33 @@ for (const name of projects) {
     const stdinPath = resolve(directory, expectation.stdin)
     if (!existsSync(stdinPath)) {
       errors.push(`projects/${name}: missing stdin ${expectation.stdin}`)
+    }
+  }
+
+  if (expectation.services !== undefined) {
+    const servicesPath = resolve(directory, expectation.services)
+    if (
+      expectation.services.startsWith("/") ||
+      expectation.services.includes("\\") ||
+      expectation.services.split("/").some((segment) => segment === "..") ||
+      !servicesPath.startsWith(`${directory}/`) ||
+      !existsSync(servicesPath)
+    ) {
+      errors.push(`projects/${name}: missing services ${expectation.services}`)
+    } else {
+      try {
+        const parsed: unknown = JSON.parse(readFileSync(servicesPath, "utf8"))
+        if (
+          !parsed ||
+          typeof parsed !== "object" ||
+          Array.isArray(parsed) ||
+          (parsed as { schema?: unknown }).schema !== 1
+        ) {
+          errors.push(`projects/${name}: services schema must be 1`)
+        }
+      } catch (error) {
+        errors.push(`projects/${name}: invalid services JSON: ${error}`)
+      }
     }
   }
 }

@@ -23,6 +23,9 @@
   使用し、更新しない。
 - `stdout`: run / test fixtureのexact UTF-8 / LF snapshot。末尾newlineを含む。
 - `stdin`: run fixtureへtest adapterがそのまま渡すinput file。text / binary semanticsは対象APIの仕様に従う。
+- `services`: deterministic test adapterへ渡すschema 1のJSON scenario。service operationを配列順に照合し、
+  requestが一致しなければfixture failure、余ったresponseがあれば未消費fixture failureにする。network、real clock、
+  machine filesystemへfallbackしない。
 - `diagnostics`: diagnostic phaseで必須。single-file fixtureのdiagnostic objectへ、project rootからの
   `/` 区切りrelative `file` を加える。code、severity、UTF-8 byte range、anchor textをcheckerが検証する。
 - `command`: diagnostic phaseの実行surface。省略時は`compile`、converterなら`convert`、tool protocolなら
