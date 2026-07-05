@@ -25,6 +25,7 @@
 | generic ADT、recursive type、record spread  | Lesson 19               | recursion / spread diagnostics            | partial |
 | monad transformer                           | Lesson 20               | transformer order fixtures                | partial |
 | retry / repeat / timeout                    | planned advanced lesson | deterministic Clock fixtures              | planned |
+| process signal / graceful shutdown          | process guide           | `fixtures/projects/process-shutdown-*`    | planned |
 | module、visibility、re-export、cycle        | module guide            | `fixtures/projects/modules-*`             | planned |
 | TypeScript foreign blockとABI               | interop guide           | `fixtures/projects/foreign-*`             | planned |
 | `.d.ts`変換                                 | converter guide         | input / generated snapshot projects       | planned |
@@ -33,6 +34,7 @@
 
 ## 次に埋める順序
 
-1. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
-2. module、interop、packageをmulti-file project fixtureで固定する。
-3. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。
+1. 未確定の標準data / diagnostic / interop契約を正本で先に固定する。
+2. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
+3. module、process、interop、packageをmulti-file project fixtureで固定する。
+4. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。

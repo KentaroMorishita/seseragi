@@ -1029,8 +1029,87 @@ read、単一更新、multi-signal transaction、derived graph、distinct、swit
 最低限、read/write、streaming、directory listing、metadata、atomic replace、temporary resourceを
 含めます。
 
-`std/process` はargumentとenvironmentの読み取り、child process、exit statusを扱います。
-process終了を通常関数から行わず、mainの戻り値をhostがexit codeへ変換します。
+`std/process` はhost processを表す `Process` serviceと、portableなsignal分類を提供します。
+canonical requirement名は `process` で、`effect fn` の `with Process` は
+`with process: Process` と同じです。
+
+```seseragi
+type ProcessSignal deriving Eq, Ord, Show =
+  | Interrupt
+  | Terminate
+  | Hangup
+  | Quit
+  | User1
+  | User2
+
+type ProcessError deriving Eq, Show =
+  | UnsupportedProcessSignal ProcessSignal
+  | ReservedProcessSignal ProcessSignal
+  | InvalidArgumentEncoding Int
+  | InvalidEnvironmentName String
+  | InvalidEnvironmentEncoding String
+  | CurrentDirectoryUnavailable
+
+fn arguments -> Effect<{ process: Process }, ProcessError, Array<String>>
+fn environment name: String
+  -> Effect<{ process: Process }, ProcessError, Maybe<String>>
+fn currentDirectory
+  -> Effect<{ process: Process }, ProcessError, String>
+fn signals watched: NonEmptyList<ProcessSignal>
+  -> Stream<{ process: Process }, ProcessError, ProcessSignal>
+```
+
+`arguments ()` はexecutable名を含めないapplication引数をsource順に返します。`environment name` は
+存在しないkeyを `Nothing`、存在する値を `Just value` にします。host byte列をUnicode Stringへ
+変換できない場合は位置またはkeyを持つProcessErrorです。environment全体をMapとしてsnapshotするAPIは
+coreへ置かず、必要なkeyだけを明示的に読みます。
+
+`signals watched` はterminal operationごとにhandlerを登録するcold Streamで、scope終了時に解除します。
+targetが扱えないsignalはStream開始時に `UnsupportedProcessSignal` で失敗します。handler登録後のsignalは
+hostの観測順に出します。同じ種類が未消費の間に繰り返された場合は一件へcoalesceし、異なる種類は最初に
+観測した順を保ちます。watched内の重複は最初の一件だけを使います。Stream開始が失敗した場合はhandlerを
+一つも残さず、正常に登録したhandlerもscope終了時に以前のhost設定へ戻します。OS signal handler内で
+user codeを直接実行しません。
+
+### termination signalとgraceful shutdown
+
+`run.signal_mode` が `cancel` の場合、InterruptとTerminateはhostが予約し、`signals` で要求すると
+`ReservedProcessSignal` になります。最初のInterruptまたはTerminateでhostはroot main scopeへ
+cooperative cancellationを要求し、child Fiberとfinalizerの完了を最大 `shutdown_grace_ms` 待ちます。
+時間内に完了すればgraceful shutdownです。
+
+grace period中の二回目のInterrupt / Terminate、またはgrace period超過はforced terminationです。
+forced terminationでは未完了finalizer、buffer flush、foreign callback完了を保証しません。hostは可能なら
+stderrへforced termination diagnosticを一度出します。
+
+`run.signal_mode` が `forward` の場合、hostは最初のtermination signalを `signals` subscriberへ渡し、
+rootを自動cancelしません。applicationはsignal Streamと長時間処理を `race` するなどしてmainを正常終了
+させます。二回目のInterrupt / Terminateだけはforced terminationです。subscriberがないsignalも一回目は
+無視されるため、forward modeの選択はapplicationの責任です。
+
+forward modeでsignalを受けたapplicationがmainをUnit successとして閉じた場合はcode 0です。signalを
+受け取った事実だけで130 / 143へ変えません。130 / 143はcancel modeでhostがrootをcancelした場合、または
+二回目のsignalでforced terminationした場合に使います。
+
+process-capable targetの終了codeは次で固定します。
+
+| root mainの終了理由             | exit code |
+| ------------------------------- | --------: |
+| Unit success                    |         0 |
+| 未処理typed failure             |         1 |
+| runtime defect                  |        70 |
+| host cancellation（signalなし） |       130 |
+| Interruptによる終了             |       130 |
+| Terminateによる終了             |       143 |
+
+typed failureではhostが `show error` の結果をstderrへ一件のmessageとして出してからcode 1で終了します。
+文字列末尾にnewlineがなければ一つ加え、内部newlineは保持します。defectはruntime diagnosticと
+stack traceを出し、Showを使いません。
+signalを持たないtargetは同じ分類をhost resultとして報告し、架空のprocess codeをapplicationへ公開
+しません。通常関数から現在processを即時終了するAPIは提供しません。
+
+child process APIは現在processのshutdown APIと分離し、childのexit statusを値として返します。
+child processの完全な公開signatureはfilesystem / Bytes contractと一緒に固定します。
 
 ## 10.15 `std/http`
 

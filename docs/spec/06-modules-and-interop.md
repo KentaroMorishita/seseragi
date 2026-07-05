@@ -213,5 +213,14 @@ application固有serviceは、mainが返すEffectを構成する時点で `provi
 closedの判定は2.6に従い、generic main、free type variable、field集合が未確定なrequirementを
 entry pointにできません。host environmentの追加fieldは許されます。
 
+mainのfailure型もconcreteでなければなりません。failure型が `Never` でない場合は、その型に対する
+coherentな `Show` instanceをentry moduleのtransitive import closureから一意に解決できなければ
+build errorです。hostはtyped failureだけを `show` で表示し、defectやcancellationをapplication errorへ
+偽装しません。
+
+mainのsuccess型はUnitだけです。application codeがprocessを直接終了する `exit` primitiveや、任意の
+exit codeを返すentry point overloadは提供しません。終了statusはmainの終了理由とprocess signalから
+10.14のhost規則で決めます。これによりfinalizerを飛ばす通常codeを作れないようにします。
+
 library packageはentry pointを持たなくて構いません。importされたmoduleの `main` を暗黙実行
 しません。

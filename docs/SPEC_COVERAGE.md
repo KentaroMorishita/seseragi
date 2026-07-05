@@ -59,6 +59,7 @@
 - cooperative schedulerのweak fairnessとstructured Fiber supervision
 - Queue / Ref / Deferred / Semaphoreの型・順序・cancellation semantics
 - Effect timeout、Schedule retry / repeat、resource scopeとfinalizer semantics
+- process signal mode、root cancellation、grace period、exit status
 - Streamのdemand、merge ordering、buffer overflow、resource lifetime
 - Signal / Stream変換の初期値、backpressure、loss policy
 - Console / LoggerとShowの分離
@@ -119,10 +120,6 @@
 - formatterのcanonical output
 - document commentとAPI document生成規則
 
-### runtime contract
-
-- process signalとgraceful shutdown
-
 ### 標準data
 
 - Bytesのrepresentationとslice ownership
@@ -130,6 +127,12 @@
 - Map / Setのhash seedとserialization contract
 - Regex flavorとUnicode version
 - timezone databaseのversioning
+
+### I/O library surface
+
+- filesystem / pathの完全な公開signatureとresource ownership
+- child processのstdin / stdout Stream、wait、termination semantics
+- HTTP body Streamとconnection resourceの完全な公開signature
 
 ### interop詳細
 
@@ -167,9 +170,10 @@
 
 ## 次に詰める順序
 
-1. process signalとgraceful shutdownを固定する。
-2. Bytes / Decimal / Map serializationなど標準dataのruntime contractを固定する。
+1. Bytes / Decimal / Map serializationなど標準dataのruntime contractを固定する。
+2. BytesとStreamを使うfilesystem / child process / HTTP surfaceを固定する。
 3. diagnostic、formatter、document commentをtooling contractとして固定する。
 4. TypeScript binding generatorのnamingと設定schemaを固定する。
+5. 確定した契約へpositive / diagnostic / project fixtureを追加する。
 
 この順序は実装順ではなく、仕様の依存順です。

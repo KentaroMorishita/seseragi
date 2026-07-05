@@ -241,6 +241,10 @@ cancellationもcheckpointで観測します。Effectを作らない長時間のp
 すべてのFiberはroot `main` scopeまたは最も内側の `scoped` resource scopeに所属します。`fork` は
 現在scopeのchildを作り、unscoped daemon Fiberを作りません。
 
+hostからprocess shutdownが要求された場合も、root `main` scopeへのcooperative cancellationとして
+開始します。通常のscope終了と同じくchildとfinalizerを待ちます。grace period超過または二回目の
+termination signalによるforced terminationだけはこの保証外で、10.14の規則に従います。
+
 scope終了時は未完了childすべてへcancellationを要求し、各childのfinalizer完了を待ってからscopeを
 閉じます。parentのsuccess、failure、cancellationのどの場合も同じです。childのtyped failureは
 Fiberに保存され、`join` しない限りparentのerror channelへ暗黙伝播しません。test runtimeは

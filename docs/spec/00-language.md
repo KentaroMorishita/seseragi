@@ -78,6 +78,10 @@ closedなstructural service recordです。つまり必要なservice field集合
 `main` の実行方法、environment provider、終了コードへの写像はhost target規約に従いますが、
 Effect自体の意味は言語仕様に従います。
 
+`AppError` が `Never` でない場合、entry pointには `Show<AppError>` instanceが必要です。hostは
+未処理のtyped failureをこのinstanceでstderrへ表示します。success、typed failure、defect、
+cancellationの終了statusとprocess signalの扱いは6.11および10.14に従います。
+
 ## 0.4 この仕様に存在しないもの
 
 次は Seseragi の中核機能ではありません。

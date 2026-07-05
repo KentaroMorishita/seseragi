@@ -24,7 +24,21 @@ language = ">=0.1.0 <0.2.0"
 [run]
 entry = "main"
 target = "node"
+signal_mode = "cancel"
+shutdown_grace_ms = 10000
 ```
+
+`signal_mode` は `cancel` または `forward` で、省略時は `cancel` です。`cancel` はtermination signalを
+root Effectのcancellationへ変換し、`forward` は `std/process.signals` へ渡します。
+`shutdown_grace_ms` は0以上の整数で、省略時は10000です。cancel modeでだけ指定でき、0はcancellationを
+要求した直後にforced terminationへ移る設定です。
+
+grace periodはhostのmonotonic clockで測り、application environmentのClock serviceを要求・参照しません。
+test hostはsignal入力とmonotonic timeを決定的に制御できなければなりません。
+
+signalを持たないtargetで `forward` を選ぶこと、またはsignal / graceful shutdown capabilityを持たない
+targetへこれらのkeyを明示することはmanifest errorです。target adapterは対応可否をbuild時に公開し、
+runtimeで黙って無視しません。
 
 manifestはUTF-8のTOML 1.0です。未知のcore key、同じkeyの重複、型の違う値はerrorにします。
 tool固有設定だけは `[tool.<tool-name>]` 以下に置けます。compilerは未知のtool tableを保持して

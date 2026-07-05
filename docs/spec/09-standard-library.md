@@ -447,6 +447,9 @@ fn flush
 broken pipeなどhost由来の失敗はConsoleErrorです。test hostはConsole serviceを差し替えて
 出力を値として検証できます。
 
+`ConsoleError` はstandard opaque error型で、ShowとDebug instanceを持ちます。Showは利用者向けの
+失敗概要を返し、host固有error objectやstack traceを文字列へ埋め込みません。
+
 ## 9.13 structured logging
 
 application logはConsole文字列出力と分け、Logger serviceを使います。
