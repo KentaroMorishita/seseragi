@@ -39,6 +39,8 @@
 | `.d.ts`変換                                 | converter guide         | input / generated snapshot projects       | planned |
 | manifest、dependency、lockfile              | package guide           | `fixtures/projects/package-*`             | planned |
 | parser recovery、formatter、LSP、highlight  | lessons全体             | tooling snapshots                         | partial |
+| diagnostic schema / inference explanation   | none                    | diagnostic JSON / explain snapshots       | planned |
+| document comments / doctest                 | none                    | doc HTML / JSON / doctest snapshots       | planned |
 
 ## 次に埋める順序
 

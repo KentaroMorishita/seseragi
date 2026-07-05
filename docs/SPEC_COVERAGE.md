@@ -89,6 +89,10 @@
 - playgroundとCLIのfrontend・example source共有
 - example単位のcompiler / formatter / LSP / highlight / playground conformance
 - `.stdout` snapshotを含むbyte単位のexample出力検証
+- stable diagnostic code / span / fix schemaとtype inference explanation
+- canonical idempotent formatterとrange-format recovery
+- `///` / `//!` document comment、deterministic API docs、doctest
+- non-exhaustive matchのconstructor-aware code action
 
 ### 標準ライブラリ
 
@@ -123,11 +127,6 @@
 
 - record / struct decoderとencoderの導出
 
-### packageとtooling contract
-
-- formatterのcanonical output
-- document commentとAPI document生成規則
-
 ### interop詳細
 
 - TypeScript generic関数を公開する `.d.ts` ABI
@@ -135,12 +134,6 @@
 - discriminated union converterのnaming rule
 - declaration mergeとnamespace exportの生成名衝突
 - source mapとstack traceのcross-language表示
-
-### 診断とlanguage service
-
-- diagnostic codeとseverity
-- type inference traceの表示
-- non-exhaustive matchのfix suggestion
 
 ## 意図的に採用しない
 
@@ -164,8 +157,8 @@
 
 ## 次に詰める順序
 
-1. diagnostic、formatter、document commentをtooling contractとして固定する。
-2. TypeScript binding generatorのnamingと設定schemaを固定する。
+1. TypeScript binding generatorのnamingと設定schemaを固定する。
+2. record / struct decoderとencoderの導出規則を固定する。
 3. 確定した契約へpositive / diagnostic / project fixtureを追加する。
 
 この順序は実装順ではなく、仕様の依存順です。

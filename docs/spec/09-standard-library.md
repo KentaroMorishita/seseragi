@@ -13,11 +13,22 @@ preludeは自動importされ、次を提供します。
 - `Functor`, `Applicative`, `Monad`, `Iterable`, `Reducible`, `Traversable`
 - 算術operator用trait
 - trait methodとしての `map`, `apply`, `pure`, `flatMap`, `iterate`, `reduce`, `traverse`
-- `identity`, `const`, `compose`, `flip`, `show`
+- `identity`, `const`, `compose`, `flip`, `show`, `todo`
 - `sum`, `product`, `combine`, `any`, `all`, `join`
 - `Console`, `ConsoleError`, `print`, `println`, `printValue`
 
 preludeの名前は明示importでshadowingできません。local bindingではshadowingできます。
+
+`todo` はtoolingが未実装branchのplaceholderへ使うstandard symbolです。
+
+```text
+todo : forall A. String -> A
+```
+
+型推論上は任意の期待型Aを満たしますが、standard todo symbolへの参照が一つでも残るmoduleは
+`SES-T0001` Errorでbuildできません。runtime panicへlowerせず、release artifactへ混入できません。local bindingが
+todoをshadowしている位置へcode actionを適用する場合、toolはcollision-freeなnamespace aliasで `std/prelude` を
+importし、そのqualified todoを使います。
 
 ## 9.2 MaybeとEither
 
