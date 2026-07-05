@@ -1,0 +1,9 @@
+foreign "typescript" from "../host/failure.mjs" {
+  task fn failNow -> Unit
+}
+
+pub effect fn main -> Unit
+fails Js.Error =
+  do {
+    failNow ()
+  }

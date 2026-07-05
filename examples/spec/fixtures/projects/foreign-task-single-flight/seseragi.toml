@@ -6,3 +6,8 @@ language = ">=0.1.0 <0.2.0"
 [run]
 entry = "main"
 target = "test-js"
+
+[foreign.typescript]
+resolver = "node"
+manifest = "host/package.json"
+lockfile = "host/bun.lock"

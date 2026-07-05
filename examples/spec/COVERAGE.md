@@ -44,12 +44,12 @@
 | child process streaming / termination         | process guide           | `projects/child-process-captured`              | partial |
 | HTTP streaming / connection lifetime          | HTTP guide              | `projects/http-*`                              | partial |
 | module、visibility、re-export、cycle          | module guide            | `fixtures/projects/modules-*`                  | covered |
-| TypeScript foreign blockとABI                 | interop guide           | `fixtures/projects/foreign-*`                  | planned |
+| TypeScript foreign blockとABI                 | interop guide           | `projects/foreign-*`, `typescript-abi-*`       | partial |
 | `.d.ts`変換                                   | converter guide         | `projects/dts-*`                               | partial |
 | generic TS ABI / callback lifetime            | interop guide           | `projects/{typescript-abi,dts-callback}-*`     | partial |
 | generated naming / declaration merge          | converter guide         | naming / namespace snapshot projects           | planned |
 | foreign module load mode / single-flight      | interop guide           | `projects/foreign-pure-load`, `foreign-task-*` | covered |
-| source map / cross-language stack             | interop guide           | defect / rejection stack snapshots             | planned |
+| source map / cross-language stack             | interop guide           | `projects/source-map-rejection`                | partial |
 | manifest、dependency、lockfile                | package guide           | `fixtures/projects/package-*`                  | covered |
 | parser recovery、formatter、LSP、highlight    | lessons全体             | tooling snapshots                              | partial |
 | stable tool options / target capabilities     | none                    | `projects/target-capabilities`                 | covered |

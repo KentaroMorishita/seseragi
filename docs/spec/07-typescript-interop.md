@@ -358,3 +358,30 @@ source mapが欠落・破損していても元errorを隠さず、unmapped frame
 含むsource URI、artifact外のsourcesContent読込、network source map取得は行いません。
 host stackにabsolute pathが含まれる場合、known package root内はpackage-relative URIへ変換し、それ以外はbasename
 だけを既定表示します。machine path全体をdiagnostic artifactへ保存するには明示debug optionを要求します。
+known package root内のhost source URIは `package://<package-name>/<relative-path>`、外部host packageは
+`package://<host-package-name>/<package-relative-path>` です。package外でidentityを解決できないframeはuriをnullにし、
+absolute pathやbasenameから偽のpackage identityを作りません。
+
+`--diagnostic-format json` はcompile diagnosticだけでなく、未処理typed failureとdefectもstderrへ一行の
+RuntimeDiagnostic JSONとして出します。schema 1はkeyを次の順で持ちます。
+
+```text
+schema: 1
+kind: TypedFailure | Defect | Cancellation
+phase: ModuleLoad | SynchronousThrow | PromiseRejection | null
+message: user-facing summary
+groups: causal orderのarray
+  role: Initiated | Thrown | Observed
+  frames: outermostからinnermostのarray
+    language: seseragi | typescript | interop
+    function: source上のnameまたはnull
+    uri: package-relative / seseragi URIまたはnull
+    range: { start, end } またはnull
+    generated: Bool
+```
+
+rangeは0-based・end-exclusive UTF-8 byteです。Initiatedはforeign Taskを作ったSeseragi call、Thrownはhostの
+throw / rejection origin、Observedはawait / bind後にfailureを受け取ったSeseragi位置です。同じ位置ならInitiatedと
+Observedを一groupへ畳んでObservedにします。通常表示で畳むinterop frameもJSONでは保持し、generated=Trueにします。
+host stackに位置がない場合はuri / rangeをnullにし、架空のsource位置を生成しません。object keyとframe順は上の順、
+末尾newline一つ、ANSIなしです。RuntimeDiagnostic自身のserialization failureで元failureを置き換えてはなりません。

@@ -127,6 +127,7 @@ type ProjectExpectation = {
   services?: string
   stderr?: string
   exitCode?: number
+  args?: string[]
 }
 
 type ProjectDiagnostic = ExpectedDiagnostic & {
@@ -597,6 +598,14 @@ for (const name of projects) {
       expectation.exitCode > 255)
   ) {
     errors.push(`projects/${name}: exitCode must be an integer from 0 to 255`)
+  }
+
+  if (
+    expectation.args !== undefined &&
+    (!Array.isArray(expectation.args) ||
+      expectation.args.some((argument) => typeof argument !== "string"))
+  ) {
+    errors.push(`projects/${name}: args must be an array of strings`)
   }
 
   if (expectation.stdin !== undefined) {

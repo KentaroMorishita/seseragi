@@ -25,6 +25,8 @@
 - `stderr`: diagnostic detailやhost messageのexact UTF-8 / LF snapshot。末尾newlineを含む。
 - `exitCode`: process-capable test targetのexpected code。省略時はsuccess phaseで0、diagnostic phaseでrunnerが
   command既定値を使う。
+- `args`: fixture commandへmanifest optionの後で渡すstable CLI argument。shellで再解釈せず、array要素を
+  一argumentとして渡す。
 - `stdin`: run fixtureへtest adapterがそのまま渡すinput file。text / binary semanticsは対象APIの仕様に従う。
 - `services`: deterministic test adapterへ渡すschema 1のJSON scenario。service operationを配列順に照合し、
   requestが一致しなければfixture failure、余ったresponseがあれば未消費fixture failureにする。network、real clock、

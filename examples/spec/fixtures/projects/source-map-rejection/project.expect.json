@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "run",
+  "spec": ["6.10", "7.2", "7.3", "7.15", "11.9", "12.13"],
+  "lock": "generate",
+  "args": ["--diagnostic-format", "json"],
+  "stderr": "expected.stderr",
+  "exitCode": 1
+}
