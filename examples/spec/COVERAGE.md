@@ -31,6 +31,7 @@
 | Decimal exact arithmetic / rounding         | Lesson 22               | parse / division / rounding fixtures      | partial |
 | Regex / Unicode / byte spans                | Lesson 23               | syntax / empty match / Unicode fixtures   | partial |
 | timezone / DST local resolution             | Lesson 24               | gap / overlap / tzdb mismatch fixtures    | partial |
+| Path / filesystem resource ownership        | Lesson 25               | atomic / stream / cleanup fixtures        | partial |
 | module、visibility、re-export、cycle        | module guide            | `fixtures/projects/modules-*`             | planned |
 | TypeScript foreign blockとABI               | interop guide           | `fixtures/projects/foreign-*`             | planned |
 | `.d.ts`変換                                 | converter guide         | input / generated snapshot projects       | planned |

@@ -98,6 +98,7 @@
 - Map / Setのprocess-local hash seed、ordered / canonical serialization contract
 - linear-time Regex subset、UTF-8 span、toolchain共通のUnicode data version
 - timezoneの明示的なlocal resolution、IANA database version locking
+- portable Path、filesystem error、stream / atomic / temporary resource ownership
 - persistent IteratorとIterable/Reducibleの要素型dependency
 - Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
 - Effect / Stream / Signal / concurrency
@@ -129,7 +130,6 @@
 
 ### I/O library surface
 
-- filesystem / pathの完全な公開signatureとresource ownership
 - child processのstdin / stdout Stream、wait、termination semantics
 - HTTP body Streamとconnection resourceの完全な公開signature
 

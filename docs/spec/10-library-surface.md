@@ -1388,8 +1388,195 @@ read、単一更新、multi-signal transaction、derived graph、distinct、swit
 `std/console` と `std/log` は9.12、9.13のserviceを提供します。
 
 `std/path` はpureなpath操作、`std/fs` はFileSystem serviceを要求するEffectを提供します。
-最低限、read/write、streaming、directory listing、metadata、atomic replace、temporary resourceを
-含めます。
+Pathはhost Stringのaliasではなく、`/` をseparatorに使うportableなlexical pathを表すstandard opaque
+typeです。POSIX root `/`、Windows drive root `C:/`、UNC root `//server/share/`、relative pathを区別します。
+backslashとNULを受理せず、case foldingやUnicode normalizationを行いません。
+
+```seseragi
+type PathError deriving Eq, Show =
+  | EmptyPath
+  | PathContainsNul { offset: Int }
+  | PathContainsBackslash { offset: Int }
+  | InvalidDriveRoot
+  | InvalidUncRoot
+  | InvalidPathSegment String
+  | AbsoluteChildPath
+
+fn parse text: String -> Either<PathError, Path>
+fn render value: Path -> String
+fn current -> Path
+fn isAbsolute value: Path -> Bool
+fn normalize value: Path -> Path
+fn join child: Path -> base: Path -> Either<PathError, Path>
+fn child name: String -> base: Path -> Either<PathError, Path>
+fn parent value: Path -> Maybe<Path>
+fn fileName value: Path -> Maybe<String>
+fn extension value: Path -> Maybe<String>
+```
+
+parseは`.` と `..` を含むsegmentを保持します。normalizeだけが空segmentと `.` を除き、通常segmentの直後に
+ある `..` を相殺します。absolute pathでrootより上へ出る `..` はrootに留め、relative path先頭の `..` は
+保持します。filesystemへ渡す前のnormalizeはsecurity boundaryではなく、symlinkを解決しません。
+
+`join child base` はrelative childだけをbase末尾へ加え、absolute childをAbsoluteChildPathとして拒否します。
+`child name base` はseparator、`.`、`..` を含まない単一segmentだけを加えます。currentはrelativeな `.` です。
+parentはrootとcurrentでNothing、fileNameはrootでNothingです。extensionは最後のnameについて、先頭以外の
+最後の`.`より後を返し、`.gitignore` と末尾`.`はNothingです。
+
+FileSystem serviceのcanonical requirement名は `fileSystem` で、`with FileSystem` は
+`with fileSystem: FileSystem` へ展開します。
+
+```seseragi
+type FileType deriving Eq, Ord, Show =
+  | RegularFile
+  | Directory
+  | SymbolicLink
+  | OtherFileType
+
+type FileSystemOperation deriving Eq, Ord, Show =
+  | ReadFile
+  | WriteFile
+  | OpenDirectory
+  | ReadMetadata
+  | CreateDirectory
+  | RemovePath
+  | MovePath
+  | CanonicalizePath
+  | CreateTemporary
+
+type FileSystemErrorKind deriving Eq, Show =
+  | FileNotFound
+  | FileAlreadyExists
+  | PermissionDenied
+  | NotADirectory
+  | IsADirectory
+  | DirectoryNotEmpty
+  | SymbolicLinkLoop
+  | CrossDeviceMove
+  | PathNotSupported
+  | FileSystemUnavailable
+  | OtherFileSystemError String
+
+struct FileSystemError deriving Eq, Show {
+  operation: FileSystemOperation,
+  path: Path,
+  otherPath: Maybe<Path>,
+  kind: FileSystemErrorKind
+}
+
+struct FileMetadata deriving Eq, Show {
+  fileType: FileType,
+  sizeBytes: Int,
+  modified: Maybe<Instant>,
+  created: Maybe<Instant>
+}
+
+struct DirectoryEntry deriving Eq, Show {
+  name: String,
+  path: Path,
+  fileType: Maybe<FileType>
+}
+
+type WriteMode deriving Eq, Show =
+  | Replace
+  | CreateNew
+  | Append
+
+type FileTextError deriving Eq, Show =
+  | FileAccessFailure FileSystemError
+  | FileUtf8Failure Utf8DecodeError
+
+fn exists path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Bool>
+fn metadata path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, FileMetadata>
+fn symlinkMetadata path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, FileMetadata>
+fn canonicalize path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Path>
+
+fn readBytes path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Bytes>
+fn readTextUtf8 path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileTextError, String>
+fn readChunks size: BufferCapacity -> path: Path
+  -> Stream<{ fileSystem: FileSystem }, FileSystemError, Bytes>
+
+fn writeBytes mode: WriteMode -> content: Bytes -> path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+fn writeTextUtf8 mode: WriteMode -> content: String -> path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+fn writeChunks<R, E>
+  mode: WriteMode
+  -> source: Stream<R, E, Bytes>
+  -> path: Path
+  -> Effect<R & { fileSystem: FileSystem }, Either<E, FileSystemError>, Unit>
+fn writeAtomic content: Bytes -> path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+
+fn list path: Path
+  -> Stream<{ fileSystem: FileSystem }, FileSystemError, DirectoryEntry>
+fn createDirectory path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+fn createDirectories path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+fn removeFile path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+fn removeDirectory path: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+fn move destination: Path -> source: Path
+  -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>
+
+fn withTemporaryDirectory<R, E, A>
+  prefix: String
+  -> use: (Path -> Effect<R, E, A>)
+  -> Effect<R & { fileSystem: FileSystem }, Either<FileSystemError, E>, A>
+fn withTemporaryFile<R, E, A>
+  prefix: String
+  -> use: (Path -> Effect<R, E, A>)
+  -> Effect<R & { fileSystem: FileSystem }, Either<FileSystemError, E>, A>
+```
+
+existsはNotFoundとdangling symlinkでFalse、存在確認できればTrue、それ以外はtyped failureを返します。
+permissionやI/O障害を「存在しない」に変換しません。metadataはsymlinkを辿り、symlinkMetadataはlink自身を
+返します。canonicalizeは存在するpathについて`.`、`..`、symlinkを解決したabsolute Pathを返しますが、
+sandbox脱出を許可する認可APIではありません。
+
+readBytes / readTextUtf8は内容全体をmemoryへ保持するsmall-file APIです。readTextUtf8はstrict UTF-8 decodeを
+行います。small-file APIはhandleを閉じ終えてから成功し、正常処理後のclose failureもtyped failureです。
+readChunksはterminal operation開始時にfileを開き、BufferCapacity以下のnon-empty Bytesを順に出し、EOFで
+終了します。consumer cancellation、failure、early terminationのすべてでhandleを閉じます。
+
+Replaceは既存fileをtruncateするか新規作成、CreateNewは既存pathならFileAlreadyExists、Appendは各writeを
+file末尾へ加えます。writeChunksはsource failureをLeft、filesystem failureをRightにします。sourceとwriteが
+同時に失敗した場合はsource failureを返し、write failureをdiagnosticへ添付します。
+Replace、Append、writeChunksはatomicityを保証せず、failureやcancellationまでに書けたprefixを残せます。
+
+writeAtomicはtargetと同じdirectoryへtemporary fileを作り、全Bytesを書いてflushし、targetへatomic replace
+します。成功後は新内容全体、失敗時は旧内容全体またはtarget不在のどちらかで、partial targetを残しません。
+target directory自体のdurability flushをhostが提供できない場合もatomic visibilityは必須ですが、power-loss
+durabilityは保証せずcapability diagnosticを出せます。temporary artifactは失敗時にbest effortで削除します。
+
+listの順序はfilesystem依存で、deterministic処理はnameを明示sortします。entry.fileTypeはdirectory scanで
+追加I/Oなしに判定できない場合Nothingです。Stream終了時にはdirectory handleを閉じ、正常終了時のclose失敗は
+FileSystemError、既存failureまたはcancellation後のclose失敗はdiagnosticへ添付します。
+
+createDirectoryはparentが存在する場合だけ一階層を作り、createDirectoriesは欠けたancestorも作ります。
+createDirectoriesは対象が既存directoryなら成功します。removeFileはregular fileまたはsymlinkだけ、
+removeDirectoryは空directoryだけを削除し、どちらもsymlinkを辿りません。moveはdestinationが存在すれば
+FileAlreadyExists、別filesystemならCrossDeviceMoveで、copy-and-deleteへ暗黙fallbackしません。同じfilesystemで
+成功するmoveは他processからatomicに観測できなければなりません。
+
+withTemporaryDirectory / withTemporaryFileはsecure randomなsuffixをprefixへ加え、exclusiveに作成してuseへ
+渡します。作成先はFileSystem serviceが構成したtemporary rootです。prefixはpath separator、NUL、`.`、`..` を
+含まない単一segmentでなければならず、不正ならCreateTemporary / PathNotSupportedです。withTemporaryFileは
+空のregular fileを作ります。useの終了状態にかかわらずcleanupし、acquire / cleanup failureはLeft、use failureは
+Rightです。
+use failureとcleanup failureが両方起きた場合はRightのuse failureを返してcleanup failureをdiagnosticへ添付します。
+temporary directoryはこのAPIが作成したtreeだけを再帰削除し、symlinkを辿りません。useが対象をすでに削除して
+いた場合のcleanupは成功です。activeなtemporary root自体をstandard FileSystem経由でmoveしようとすると
+PermissionDeniedです。cleanupは作成時のresource identityを追跡し、同じpathへ外部から置かれた別resourceを
+誤って削除してはなりません。
 
 `std/process` はhost processを表す `Process` serviceと、portableなsignal分類を提供します。
 canonical requirement名は `process` で、`effect fn` の `with Process` は

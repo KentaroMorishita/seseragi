@@ -1,0 +1,41 @@
+// Lesson 25: portable Pathとcleanupされるtemporary resourceを学ぶ
+// 前提: Lessons 18, 21, and 24
+
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type AppError deriving Show =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+  | ConsoleFailure ConsoleError
+
+effect fn useTemporary directory: paths.Path -> Unit
+with Console, FileSystem
+fails AppError =
+  do {
+    file <-
+      paths.child "message.txt" directory
+        |> effects.fromEither
+        |> effects.mapError PathFailure
+
+    fs.writeTextUtf8 fs.Replace "hello from Seseragi" file
+      |> effects.mapError FileFailure
+
+    content <-
+      fs.readTextUtf8 file
+        |> effects.mapError TextFailure
+
+    println content
+      |> effects.mapError ConsoleFailure
+  }
+
+pub effect fn main -> Unit
+with Console, FileSystem
+fails Either<fs.FileSystemError, AppError> =
+  // callbackのsuccess・failure・cancellationに関係なく、directory全体が後で削除されます。
+  fs.withTemporaryDirectory "seseragi-lesson-" useTemporary
+
+// Expected stdout:
+// hello from Seseragi
