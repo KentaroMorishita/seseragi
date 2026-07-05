@@ -1,0 +1,39 @@
+// Lesson 24: timezoneで曖昧・実在しないlocal timeを明示的に扱う
+// 前提: Lessons 10, 17, and 23
+
+import * as effects from "std/effect"
+import * as time from "std/time"
+
+type AppError deriving Show =
+  | InvalidLocalTime time.DateTimeError
+  | TimeZoneFailure time.TimeZoneError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main -> Unit
+with Console, TimeZones
+fails AppError =
+  do {
+    // Europe/Berlinでは、このlocal timeはDST開始で飛ばされる時間帯にあります。
+    local <-
+      time.parseLocalDateTime "2024-03-31T02:30:00"
+        |> effects.fromEither
+        |> effects.mapError InvalidLocalTime
+
+    berlin <-
+      time.loadTimeZone "Europe/Berlin"
+        |> effects.mapError TimeZoneFailure
+
+    // resolveLocalは勝手に03:30へ補正せず、Gapを値として返します。
+    let message =
+      match time.resolveLocal local berlin {
+        time.Unique _ -> "unique local time"
+        time.Ambiguous _ -> "ambiguous local time"
+        time.Gap _ -> "nonexistent local time"
+      }
+
+    println message
+      |> effects.mapError ConsoleFailure
+  }
+
+// Expected stdout:
+// nonexistent local time

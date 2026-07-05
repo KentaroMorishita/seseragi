@@ -39,6 +39,7 @@
 |     21 | immutable binary data        | `Byte`, `Bytes`, slice, UTF-8 decode      |
 |     22 | exact decimal arithmetic     | `Decimal`, explicit rounding              |
 |     23 | safe text pattern matching   | Regex compile, typed failure, replacement |
+|     24 | timezone and local ambiguity | IANA zone, DST gap / overlap              |
 
 ApplicativeをMonad/doより先に置きます。前の結果へ依存しない処理を最初からbind列へしないためです。
 `do` はEffect専用構文ではなく、Lesson 10で `>>=` と対応づけてからadvanced lessonで使います。

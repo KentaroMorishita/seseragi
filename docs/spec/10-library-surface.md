@@ -811,8 +811,102 @@ decoder errorはJSON path、期待型、実値の概要を保持します。
 
 ## 10.10 `std/time` と `std/random`
 
-time moduleは少なくとも `Instant`、`Duration`、`LocalDate`、`LocalTime`、`OffsetDateTime` を
-区別します。timezone変換失敗やparse失敗をEitherで返します。
+time moduleはtimeline上の時点、calendar上の壁時計、固定offset、timezone ruleを別の型にします。
+`Instant`、`Duration`、`LocalDate`、`LocalTime`、`LocalDateTime`、`UtcOffset`、`OffsetDateTime`、
+`TimeZone`、`ZonedDateTime` は相互に暗黙変換しないstandard opaque typeです。
+
+InstantはUnix epoch `1970-01-01T00:00:00Z` からの整数nanosecondによるPOSIX timelineです。UTC leap
+secondを独立した時点として表さず、LocalTimeのsecondは0から59です。calendarはastronomical year
+numberingを持つproleptic Gregorian calendarです。Durationは0以上の有限nanosecond数で、負値は構築
+できません。
+
+```seseragi
+type DateTimeError deriving Eq, Show =
+  | InvalidDate { year: Int, month: Int, day: Int }
+  | InvalidTime { hour: Int, minute: Int, second: Int, nanosecond: Int }
+  | InvalidUtcOffsetSeconds Int
+  | InvalidDateTimeText { offset: Int }
+
+type TimeZoneError deriving Eq, Show =
+  | UnknownTimeZone String
+  | TimeZoneDatabaseUnavailable String
+  | TimeZoneDatabaseVersionMismatch { required: String, actual: String }
+
+type LocalResolution deriving Eq, Show =
+  | Unique ZonedDateTime
+  | Ambiguous { earlier: ZonedDateTime, later: ZonedDateTime }
+  | Gap {
+      transition: Instant,
+      offsetBefore: UtcOffset,
+      offsetAfter: UtcOffset
+    }
+
+fn localDate year: Int -> month: Int -> day: Int
+  -> Either<DateTimeError, LocalDate>
+fn localTime hour: Int -> minute: Int -> second: Int -> nanosecond: Int
+  -> Either<DateTimeError, LocalTime>
+fn localDateTime date: LocalDate -> time: LocalTime -> LocalDateTime
+fn utcOffset seconds: Int -> Either<DateTimeError, UtcOffset>
+
+fn parseLocalDate text: String -> Either<DateTimeError, LocalDate>
+fn parseLocalTime text: String -> Either<DateTimeError, LocalTime>
+fn parseLocalDateTime text: String -> Either<DateTimeError, LocalDateTime>
+fn parseOffsetDateTime text: String -> Either<DateTimeError, OffsetDateTime>
+
+fn formatLocalDate value: LocalDate -> String
+fn formatLocalTime value: LocalTime -> String
+fn formatLocalDateTime value: LocalDateTime -> String
+fn formatOffsetDateTime value: OffsetDateTime -> String
+
+fn atOffset offset: UtcOffset -> instant: Instant -> OffsetDateTime
+fn offsetInstant value: OffsetDateTime -> Instant
+fn offsetLocalDateTime value: OffsetDateTime -> LocalDateTime
+
+fn databaseVersion
+  -> Effect<{ timeZones: TimeZones }, Never, String>
+fn loadTimeZone id: String
+  -> Effect<{ timeZones: TimeZones }, TimeZoneError, TimeZone>
+fn timeZoneId zone: TimeZone -> String
+fn timeZoneVersion zone: TimeZone -> String
+fn atTimeZone instant: Instant -> zone: TimeZone -> ZonedDateTime
+fn resolveLocal local: LocalDateTime -> zone: TimeZone -> LocalResolution
+fn zonedInstant value: ZonedDateTime -> Instant
+fn zonedLocalDateTime value: ZonedDateTime -> LocalDateTime
+fn zonedOffset value: ZonedDateTime -> UtcOffset
+fn zonedTimeZone value: ZonedDateTime -> TimeZone
+```
+
+date/time parserはASCIIのextended ISO 8601 subsetだけを受理します。LocalDateはyear、month、dayを
+`-` で区切ります。year 0から9999は4桁、それ以外は符号と6桁以上のexpanded yearです。
+LocalTimeは `HH:mm:ss` と省略可能な1〜9桁の小数second、LocalDateTimeはdateとtimeを `T` で連結した
+形式です。OffsetDateTimeは末尾に `Z` または `+HH:mm` / `-HH:mm` を要求します。空白、locale依存表記、
+timezone abbreviationを受理せず、error offsetはUTF-8 byte offsetです。formatは同じsyntaxのcanonical
+表記を返し、小数secondの末尾0を除き、zero offsetは `Z` にします。UtcOffsetは絶対値18時間以下で、
+18時間の場合minuteとsecondが0の値だけを許可します。
+
+TimeZone IDはIANA tz databaseのcase-sensitiveなcanonical zone nameです。abbreviationと現在のsystem
+timezoneから推測せず、link aliasを受理した場合も `timeZoneId` はdatabase内のcanonical targetを返します。
+TimeZone valueはload時のrule snapshotとdatabase versionを保持するため、後からserviceが更新されてもpureな
+`atTimeZone` と `resolveLocal` の結果は変わりません。
+
+tzdbの最初のtransitionより前は最初のnon-DST standard offset、最後のtransitionより後はdatabaseに含まれる
+POSIX continuation ruleを使います。continuation ruleがないzoneは最後のnon-DST standard offsetを使います。
+このextrapolationもtzdb versionの一部で、host APIの範囲や現在日時によって結果を変えません。
+
+resolveLocalはDSTなどによる壁時計の重複をAmbiguous、欠落をGapとして返し、暗黙にearlier / laterを選んだり
+gapを前後へshiftしたりしません。Ambiguousの二値はInstantの昇順です。Gap.transitionはoffset変更が発生する
+最初のInstantで、offsetBefore / offsetAfterはその前後のoffsetです。policyを持つapplication helperはこのADTを
+matchしてdomain固有の選択を明示します。
+
+TimeZones serviceはexactなIANA release IDを公開します。applicationとtestは `seseragi.lock` が固定したversionを
+要求し、default runtime serviceのversionが違えばapplication code開始前に
+TimeZoneDatabaseVersionMismatchです。testは小さなsynthetic rule setを持つserviceへ差し替えられます。
+Instant、fixed offsetだけを使う処理はTimeZonesを要求しません。
+`with TimeZones` はcanonical requirement `{ timeZones: TimeZones }` へ展開します。
+
+serialized ZonedDateTimeはInstant、canonical zone ID、tzdb versionを保持します。decode時に同じversionが
+なければ黙って現在ruleで再解釈しません。明示的なrebase adapterだけが別versionのTimeZoneへInstantを
+投影できます。LocalDateTimeだけのserializationにはtimezoneもoffsetも存在しないため、後から推測しません。
 
 現在時刻とsleepはClock serviceを要求します。
 

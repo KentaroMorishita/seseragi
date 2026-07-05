@@ -278,7 +278,8 @@ semanticsを変更できません。
 ## 11.11 lockfile
 
 package managerはpackage rootへ `seseragi.lock` を生成します。lockfileは少なくとも、全packageの
-exact identity、content digest、dependency edge、language version、標準ライブラリversionを固定します。
+exact identity、content digest、dependency edge、language version、標準ライブラリversion、runtimeが使う
+IANA timezone databaseのexact release IDを固定します。
 
 application buildとtestはlockfileを必須とし、manifestと不一致ならerrorにします。library publish時の
 依存契約はmanifestのrangeですが、library自身のtestにもlockfileを使います。lockfile更新は明示commandで
