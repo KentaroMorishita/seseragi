@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "command": "tooling",
+  "spec": ["4.4", "7.12", "7.14", "12.13"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "src/api.ssrg",
+      "code": "SES-F0104",
+      "severity": "Error",
+      "primary": { "start": 54, "end": 59, "text": "Eq<A>" }
+    }
+  ]
+}

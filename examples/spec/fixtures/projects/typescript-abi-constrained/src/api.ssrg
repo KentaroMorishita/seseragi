@@ -1,0 +1,3 @@
+pub fn equalPair<A> left: A -> right: A -> Bool
+where Eq<A> =
+  left == right

@@ -1,0 +1,5 @@
+pub fn firstOr<A> fallback: A -> values: Array<A> -> A =
+  match values {
+    [first, ...rest] -> first
+    [] -> fallback
+  }

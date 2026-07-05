@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "tooling",
+  "spec": ["3.9", "7.12", "7.13", "7.14"],
+  "lock": "generate",
+  "artifacts": [
+    {
+      "output": "dist/api.d.ts",
+      "snapshot": "expected/api.d.ts"
+    }
+  ]
+}
