@@ -465,8 +465,8 @@ services: canonical service name順のarray
 features: stable feature idからBoolまたはclosed Stringへのobject
 ```
 
-標準service nameは少なくとも `clock`、`console`、`entropy`、`fileSystem`、`httpClient`、`logger`、
-`process`、`random`、`stdin`、`webDom` です。detailsはserviceごとのJSON objectで、processならsignalsと
+標準service nameは少なくとも `childProcesses`、`clock`、`console`、`entropy`、`fileSystem`、`httpClient`、
+`logger`、`process`、`random`、`stdin`、`webDom` です。detailsはserviceごとのJSON objectで、processならsignalsと
 gracefulShutdown、fileSystemならatomicReplaceとsymlink、httpClientならstreaming、webDomならhydration、
 runtimeならthreadsを表せます。標準feature idは `foreign.pure-load`、`foreign.task-load`、
 `source-map.cross-language`、`runtime.threads`、`runtime.wasm` です。未知fieldは無視し、schema major不一致は

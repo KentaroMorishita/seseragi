@@ -1,0 +1,48 @@
+import * as children from "std/child-process"
+import * as effects from "std/effect"
+import * as text from "std/text"
+
+type AppError deriving Show =
+  | ConfigFailure children.ChildProcessConfigError
+  | ChildFailure children.ChildProcessError
+  | TextFailure text.Utf8DecodeError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main -> Unit
+with Console, ChildProcesses
+fails AppError =
+  do {
+    base <-
+      children.command (children.SearchPath "node")
+        |> effects.fromEither
+        |> effects.mapError ConfigFailure
+
+    command <-
+      children.addArgument "host/child.mjs" base
+        |> effects.fromEither
+        |> effects.mapError ConfigFailure
+
+    result <-
+      children.runCaptured
+        (children.defaultCaptureLimit ())
+        (text.encodeUtf8 "hello")
+        command
+        |> effects.mapError ChildFailure
+
+    stdout <-
+      text.decodeUtf8 result.stdout
+        |> effects.fromEither
+        |> effects.mapError TextFailure
+
+    stderr <-
+      text.decodeUtf8 result.stderr
+        |> effects.fromEither
+        |> effects.mapError TextFailure
+
+    match result.status {
+      children.ChildExited code ->
+        println `exit=${code} stdout=${stdout} stderr=${stderr}`
+          |> effects.mapError ConsoleFailure
+      _ -> println "unexpected child status" |> effects.mapError ConsoleFailure
+    }
+  }
