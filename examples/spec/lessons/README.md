@@ -44,6 +44,7 @@
 |     26 | derived JSON codecs          | `JsonEncode`, `JsonDecode`, strict fields  |
 |     27 | pure HTML components         | props record, children, event Msg, SSR     |
 |     28 | Unicode text boundary        | grapheme cluster, normalization            |
+|     29 | 時間を伴うEffectの制御       | retry, repeat, timeout, Schedule           |
 
 ApplicativeをMonad/doより先に置きます。前の結果へ依存しない処理を最初からbind列へしないためです。
 `do` はEffect専用構文ではなく、Lesson 10で `>>=` と対応づけてからadvanced lessonで使います。

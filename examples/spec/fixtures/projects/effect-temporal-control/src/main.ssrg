@@ -1,0 +1,48 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as time from "std/time"
+
+type AttemptError deriving Show =
+  | NotReady Int
+
+type AppError deriving Show =
+  | ScheduleFailure effects.ScheduleError
+  | AttemptFailure AttemptError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main -> Unit
+with Console, Clock
+fails AppError =
+  do {
+    retryCount <- refs.make 0
+    let flaky = effects.defer $ \_ -> do {
+      attempt <- refs.modify (\count -> (count + 1, count + 1)) retryCount
+      if attempt < 3
+        then effects.fail $ NotReady attempt
+        else effects.succeed attempt
+    }
+
+    retryPolicy <-
+      effects.spaced<AttemptError> 2 (time.zeroDuration ())
+        |> effects.fromEither
+        |> effects.mapError ScheduleFailure
+    retryResult <-
+      effects.retry retryPolicy flaky
+        |> effects.mapError AttemptFailure
+
+    repeatCount <- refs.make 0
+    repeatPolicy <-
+      effects.recurs<Int> 2
+        |> effects.fromEither
+        |> effects.mapError ScheduleFailure
+    repeatResult <-
+      refs.modify (\count -> (count + 1, count + 1)) repeatCount
+        |> effects.repeat repeatPolicy
+
+    timeoutResult <-
+      effects.succeed "ready"
+        |> effects.timeout (time.zeroDuration ())
+
+    println `${retryResult},${repeatResult},${show timeoutResult}`
+      |> effects.mapError ConsoleFailure
+  }

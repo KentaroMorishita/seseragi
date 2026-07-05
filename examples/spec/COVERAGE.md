@@ -28,7 +28,7 @@
 | Semigroup / Monoid                            | Lesson 14               | law fixtures                                   | partial |
 | generic ADT、local / mutual recursion、spread | Lesson 19               | local recursion / forward reference fixtures   | partial |
 | monad transformer                             | Lesson 20               | transformer order fixtures                     | partial |
-| retry / repeat / timeout                      | planned advanced lesson | deterministic Clock fixtures                   | planned |
+| retry / repeat / timeout                      | Lesson 29               | `projects/effect-temporal-control`              | covered |
 | test declaration / discovery / runner         | test guide              | `projects/test-discovery`                      | partial |
 | standard input / EOF / line decoding          | stdin guide             | `projects/stdin-lines`                         | partial |
 | deterministic Random / secure Entropy         | random guide            | compile fixture / `projects/random-seed`       | partial |
