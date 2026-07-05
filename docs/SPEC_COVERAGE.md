@@ -94,6 +94,7 @@
 
 - preludeの境界
 - collection / text / number / JSON / time / random
+- Decimalのcanonical value、exact arithmetic、明示的なprecision / rounding context
 - persistent IteratorとIterable/Reducibleの要素型dependency
 - Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
 - Effect / Stream / Signal / concurrency
@@ -123,7 +124,6 @@
 
 ### 標準data
 
-- Decimalのprecision / rounding context
 - Map / Setのhash seedとserialization contract
 - Regex flavorとUnicode version
 - timezone databaseのversioning
@@ -170,7 +170,7 @@
 
 ## 次に詰める順序
 
-1. Decimal / Map serializationなど残る標準dataのruntime contractを固定する。
+1. Map serializationなど残る標準dataのruntime contractを固定する。
 2. BytesとStreamを使うfilesystem / child process / HTTP surfaceを固定する。
 3. diagnostic、formatter、document commentをtooling contractとして固定する。
 4. TypeScript binding generatorのnamingと設定schemaを固定する。
