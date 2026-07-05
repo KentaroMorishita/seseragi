@@ -147,10 +147,15 @@ BytesとUint8Arrayは10.8の規則により両方向でcopyし、mutable viewを
 - `List<A>` は自動変換しない。`Array` を経由する明示関数を使う。
 - tupleは同じ長さのreadonly tupleへ変換する。
 - recordはreadonly objectへfieldごとに変換する。
+- optional record fieldはTypeScriptのreadonly optional propertyへ変換し、absentとpresentを保持する。
 - structとADTはforeign引数へ暗黙変換しない。明示adapterまたは生成ABIを使う。
 
 TypeScript objectは可変でありうるため、foreign objectをSeseragi recordとして参照共有
 しません。入力時にsnapshotを作り、出力時に新しいobjectを作ります。
+
+native optional record fieldのabsentはpropertyを生成しません。presentなfieldの値がMaybeや
+Js.UndefinedOrであってもpresenceを別に保持します。raw `.d.ts` optional propertyは8.5のとおり既定では
+Js.UndefinedOrへ変換し、missingとexplicit undefinedを推測でnative optional fieldへ統合しません。
 
 ## 7.8 optional、nullable、rest
 

@@ -233,3 +233,18 @@ let match newtype opaque operator pub rec struct then trait True type when where
 
 型名、constructor、trait 名は大文字、値、関数、field、module alias は小文字から
 始めることを要求します。`_` は wildcard で、名前として参照できません。
+
+## 1.10 optional record field marker
+
+record型のfield名直後に置く `?` は、そのfieldが値に存在しなくてもよいことを表すcontextual markerです。
+
+```seseragi
+alias Props = {
+  id?: String,
+  children: String
+}
+```
+
+`id? : String` や `id ? : String` とは書かず、formatterは `id?: String` に正規化します。`?` はこの位置と
+record patternのoptional query位置でだけ単独tokenになり、expressionでは単独operatorとして使えません。
+optional markerはstruct field、function parameter、ADT payloadへ直接付けられません。

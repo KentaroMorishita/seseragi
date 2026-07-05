@@ -9,6 +9,7 @@
 | ------------------------------------------- | ----------------------- | ----------------------------------------- | ------- |
 | program、entry point、Effect main           | Lessons 01-18           | entry signature diagnostics               | partial |
 | literal、application、`$`、pipeline         | Lessons 01-05           | precedence fixtures                       | partial |
+| optional record field / presence            | planned Lesson 27       | `compile/optional-record-field.ssrg`      | partial |
 | match、tuple、range、effectful for          | Lessons 03 and 05       | exhaustiveness diagnostics                | partial |
 | newtype、deriving、operator overload        | Lesson 07               | coherence diagnostics                     | partial |
 | Array/List、lambda、Either                  | Lessons 04 and 08       | collection boundary fixtures              | partial |

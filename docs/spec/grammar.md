@@ -47,8 +47,9 @@ newtype-decl    = "newtype", upper-name, [ type-params ], [ deriving-clause ],
 alias-decl      = "alias", upper-name, [ type-params ], "=", type, terminator ;
 variant         = "|", upper-name, [ type ] ;
 struct-decl     = "struct", upper-name, [ type-params ], [ deriving-clause ],
-                  "{", [ field, { ",", field }, [ "," ] ], "}" ;
-field           = lower-name, ":", type ;
+                  "{", [ struct-field, { ",", struct-field }, [ "," ] ], "}" ;
+struct-field    = lower-name, ":", type ;
+record-type-field = lower-name, [ "?" ], ":", type ;
 deriving-clause = "deriving", upper-name, { ",", upper-name } ;
 
 trait-decl      = "trait", upper-name, type-params, [ constraints ],
@@ -145,7 +146,7 @@ pattern         = "_" | literal | lower-name | struct-pattern
 record-pattern  = "{", [ pattern-fields ], "}" ;
 struct-pattern  = constructor-name, "{", [ pattern-fields ], "}" ;
 pattern-fields  = pattern-field, { ",", pattern-field }, [ "," ] ;
-pattern-field   = lower-name, [ ":", pattern ] ;
+pattern-field   = lower-name, [ "?" ], [ ":", pattern ] ;
 array-pattern   = "[", [ pattern-items ], "]" ;
 list-pattern    = "`[", [ pattern-items ], "]" ;
 pattern-items   = pattern, { ",", pattern }, [ ",", "...", lower-name ]
@@ -157,7 +158,7 @@ type            = function-type ;
 function-type   = type-atom, [ "->", function-type ] ;
 type-atom       = type-name, [ "<", type, { ",", type }, ">" ]
                 | "(", type, ",", type, { ",", type }, ")"
-                | "{", field, { ",", field }, "}"
+                | "{", [ record-type-field, { ",", record-type-field } ], "}"
                 | "(", type, ")" ;
 type-params     = "<", kind-param, { ",", kind-param }, ">" ;
 type-args       = "<", type, { ",", type }, ">" ;

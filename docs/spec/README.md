@@ -42,12 +42,13 @@ Seseragiが保証する意味を記述します。
 - user-defined generic ADT、struct、newtype、alias、method
 - kind checkingとhigher-kinded parameter `M<_>`
 - nominal ADT/struct/newtype、structural immutable record
+- presenceを保持するoptional structural record field `field?: A`
 - trait constraint、coherent instance、operator functional dependency
 - invariant generic型と、明記されたcapability coercion
 
 ### データと抽象化
 
-- ADT、record、struct、newtype、tuple、Array、List、両collectionのcomprehensionとpattern
+- ADT、required / optional record field、struct、newtype、tuple、Array、List、両collectionのcomprehensionとpattern
 - 網羅的pattern match
 - Eq、Ord、Show、Debug、Hashの限定的なderiving
 - Showで検査される純粋なtemplate interpolation

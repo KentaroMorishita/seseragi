@@ -107,7 +107,7 @@
             },
             {
               "name": "variable.other.field.seseragi",
-              "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*:)"
+              "match": "\\b[a-z][a-zA-Z0-9_]*(?=\\s*\\??\\s*:)"
             },
             {
               "include": "#types"
@@ -200,6 +200,10 @@
         {
           "name": "keyword.operator.nullish-coalescing.seseragi",
           "match": "\\?\\?"
+        },
+        {
+          "name": "punctuation.definition.optional-field.seseragi",
+          "match": "\\?(?=\\s*[:,}])"
         },
         {
           "name": "keyword.operator.custom.seseragi",

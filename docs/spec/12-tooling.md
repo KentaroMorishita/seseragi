@@ -136,6 +136,7 @@ canonical formatは次で固定します。projectごとのstyle optionで出力
   新しい行の先頭に置く。`$` は右辺がif / match / do / lambdaまたは長い式の場合だけ直後で改行できる。
 - import、declaration、match arm、record fieldのsource順を変更しない。unused importを削除しない。
 - top-level declaration間は空行一つ。連続したline commentとattached doc commentを対象から離さない。
+- optional record field / query markerはfield名へ空白なしで付け、`id?: String`、`{ id? }` と出力する。
 - String、number、custom operatorのspellingは、構文上必要なescape修復を除いて保持する。
 
 formatを二回適用したbytesは一回目と同じでなければなりません。format後に再parse・fixity resolutionしたtreeは、

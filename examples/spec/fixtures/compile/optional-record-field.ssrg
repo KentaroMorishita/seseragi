@@ -1,0 +1,9 @@
+alias Props = {
+  id?: String,
+  children: String
+}
+
+fn label props: Props -> String = props.id ?? "anonymous"
+
+let minimal: Props = { children: "hello" }
+let named: Props = { id: "app", children: "hello" }

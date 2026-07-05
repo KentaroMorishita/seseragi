@@ -125,6 +125,19 @@ record itemはsource順に一度ずつ評価します。`{ x: value }` は明示
 重複できませんが、spread間の重複と後続の明示fieldは後勝ちです。spread operandはrecordでなければ
 なりません。
 
+optional fieldのpresenceはrecord valueの一部です。spreadはpresenceも左から右へ引き継ぎ、後続の明示fieldは
+必ずpresentなrequired fieldとして上書きします。optional fieldを持つ期待型に対してfieldを省略しても式を評価せず、
+runtime fieldを追加しません。optional accessはpresentなら `Just value`、absentならNothingです。
+
+```seseragi
+alias Props = { id?: String, children: String }
+
+let minimal: Props = { children: "hello" }
+let named: Props = { id: "app", children: "hello" }
+let missing = minimal.id
+let present = named.id
+```
+
 braceの曖昧性を避けるため、`{}` は型 `{}` のempty recordでありUnitではありません。
 `{ expression }` はblockです。単一shorthandの
 recordだけはtrailing commaを必須とし、`{ x, }` と書きます。colon、top-level comma、spreadを持つ
@@ -215,6 +228,12 @@ structural recordに一致し、指定しないfieldを無視します。struct 
 確定し、指定しないfieldを無視します。field patternがすべてirrefutableなら、対象型が確定した
 record/struct patternもirrefutableです。pattern内にspreadは書けません。private/opaque fieldは
 通常のvisibility規則に従い、参照できないmoduleからpatternに書けません。
+
+optional query patternは `field?` または `field?: pattern` です。recordにfieldがあればJust、なければNothingを
+対象patternへ渡します。`{ id? }` は `id: Maybe<A>` をbindするirrefutable shorthand、
+`{ id?: Just value }` はpresentな場合だけ一致するrefutable patternです。required fieldにqueryを使うこともでき、
+その場合は常にJustです。通常の`{ id }`をoptional fieldへ使うことはできません。struct patternはoptional queryを
+持ちません。
 
 guard は `Bool` です。guard 付き arm は網羅性に寄与しません。arm は上から評価し、
 最初に pattern と guard が一致した arm の式を評価します。すべての arm の結果型は

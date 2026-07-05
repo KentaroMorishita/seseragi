@@ -102,6 +102,21 @@ let name = nameOf user
 
 record field の型に対する暗黙の depth subtyping はありません。
 
+record fieldはrequiredまたはoptionalです。`{ id?: String }` はidが存在すればStringであるrecord型で、field access
+`value.id` の型は `Maybe<String>` です。optional fieldは `{ id: Maybe<String> }` と同じ型ではありません。後者は
+field自体が必ず存在するため、値がNothingでもoptional accessなら `Just Nothing` と区別できます。
+
+record `R1` が `R2` のsubtypeである条件は次です。
+
+- R2のrequired fieldはR1にもrequiredとして存在し、型が同じ。
+- R2のoptional fieldはR1で不在、optional、requiredのいずれでもよく、存在する場合の型が同じ。
+- R1だけが持つ追加fieldは無視する。
+
+したがって `{ children: String }` と `{ id: String, children: String }` はどちらも
+`{ id?: String, children: String }` のsubtypeです。optionalからrequiredへのsubtyping、field型のdepth
+subtypingは行いません。record literalが持つfieldは通常requiredとして推論し、期待型にないoptional fieldを
+Nothingで挿入したことにはしません。
+
 ### closed structural record
 
 通常のrecord型はstructuralで、width subtypingにより余分なfieldを持つ値も利用できます。
@@ -112,6 +127,7 @@ closedであるためには、alias展開後に次を満たさなければなり
 
 - 最上位がrecord型で、free type variableや未解決のrow remainderを持たない。
 - field名とfield型がすべて確定し、同名fieldがない。
+- Effect / Streamのhost requirementとして使うrecordにはoptional fieldがない。
 - 再帰aliasや未解決constraintを通してfield集合が変化しない。
 
 Seseragiはsource syntaxとしてrow variableを持ちませんが、generic aliasやinference途中の型を

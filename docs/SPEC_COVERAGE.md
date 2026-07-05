@@ -30,6 +30,7 @@
 - Maybe専用の短絡fallback `??`
 - kind、arity、型構築子parameter
 - nominal型とstructural record
+- optional record fieldのpresence、width subtyping、query pattern、JSON / TypeScript境界
 - entry pointでfield集合を確定するclosed structural record
 - ADT、網羅的match、pattern guard
 - 単一値のnominal wrapperを表すnewtypeとopaque境界
