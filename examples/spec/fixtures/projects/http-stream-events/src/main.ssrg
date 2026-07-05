@@ -1,0 +1,58 @@
+import * as bytes from "std/bytes"
+import * as effects from "std/effect"
+import * as http from "std/http"
+import * as streams from "std/stream"
+import * as text from "std/text"
+
+type AppError deriving Show =
+  | BuildFailure http.HttpBuildError
+  | HttpFailure http.HttpError
+  | TextFailure text.Utf8DecodeError
+  | UnexpectedEvents
+  | ConsoleFailure ConsoleError
+
+fn mapHttpError error: Either<Never, http.HttpError> -> AppError =
+  match error {
+    Left impossible -> match impossible {}
+    Right failure -> HttpFailure failure
+  }
+
+pub effect fn main -> Unit
+with Console, HttpClient
+fails AppError =
+  do {
+    url <-
+      http.parseUrl "https://example.test/stream"
+        |> effects.fromEither
+        |> effects.mapError BuildFailure
+
+    events <-
+      http.request http.get url
+        |> http.exchange (http.emptyBody<{}, Never> ())
+        |> streams.runCollect
+        |> effects.mapError mapHttpError
+
+    match events {
+      [
+        http.ResponseStarted head,
+        http.ResponseBodyChunk first,
+        http.ResponseBodyChunk second,
+        http.ResponseTrailers trailers,
+      ] ->
+        do {
+          body <-
+            bytes.concat [first, second]
+              |> text.decodeUtf8
+              |> effects.fromEither
+              |> effects.mapError TextFailure
+
+          match http.headerValues "x-end" trailers {
+            [end] ->
+              println `${http.statusCode head.status}: ${body} (${end})`
+                |> effects.mapError ConsoleFailure
+            _ -> effects.fail UnexpectedEvents
+          }
+        }
+      _ -> effects.fail UnexpectedEvents
+    }
+  }

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "http": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "https://example.test/stream",
+        "headers": [],
+        "bodyChunksHex": []
+      },
+      "events": [
+        {
+          "kind": "ResponseStarted",
+          "version": "Http2",
+          "status": 200,
+          "headers": [["content-type", "text/plain; charset=utf-8"]]
+        },
+        { "kind": "ResponseBodyChunk", "bytesHex": "61" },
+        { "kind": "ResponseBodyChunk", "bytesHex": "6263" },
+        {
+          "kind": "ResponseTrailers",
+          "headers": [["x-end", "yes"]]
+        }
+      ]
+    }
+  ]
+}
