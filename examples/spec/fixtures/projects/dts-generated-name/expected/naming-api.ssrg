@@ -1,0 +1,3 @@
+pub foreign "typescript" from "naming-api" {
+  task fn type__ebff0175 -> String = "type"
+}

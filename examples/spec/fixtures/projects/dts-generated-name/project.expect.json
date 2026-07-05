@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "convert",
+  "spec": ["8.3", "8.7", "8.15", "8.17"],
+  "lock": "generate",
+  "artifacts": [
+    {
+      "output": ".seseragi/generated/naming-api.ssrg",
+      "snapshot": "expected/naming-api.ssrg"
+    }
+  ]
+}

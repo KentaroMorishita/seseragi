@@ -1,0 +1,7 @@
+schema = 1
+
+[entries.naming]
+declaration = "host/index.d.ts"
+specifier = "naming-api"
+output = "naming-api"
+evaluation = "task"

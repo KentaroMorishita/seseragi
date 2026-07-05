@@ -328,9 +328,12 @@ function / fieldをlowerCamelCaseへ変換します。ASCII以外を削除して
 spaceとlowercase-to-uppercase transitionだけを使います。
 
 変換結果が空、先頭規則違反、予約語、または同じSeseragi namespaceでcollisionする場合、generatorは
-`<readableStem>__<hash8>` を候補にします。stemが空ならtype系は `TsType`、value系は `tsValue` です。hash8は
-TypeScript symbol identity、export path、元spellingのUTF-8 bytesを
-SHA-256した先頭8 lowercase hexで、source順や隣接symbolに依存しません。自動fallback名はconversion Warningと
+`<readableStem>__<hash8>` を候補にします。stemが空ならtype系は `TsType`、value系は `tsValue` です。
+canonical symbol identityは
+`<resolved-host-module-identity>::<TypeScript-checker-qualified-original-name>::<type|value|namespace>` です。
+hash8は `utf8(symbol-identity) || 0x00 || utf8(public-export-path) || 0x00 || utf8(original-spelling)` を
+SHA-256した先頭8 lowercase hexで、source順や隣接symbolに依存しません。alias exportではsymbol identityにalias前の
+target、public-export-pathとoriginal-spellingにalias後の公開名を使います。自動fallback名はconversion Warningと
 metadata mappingを必ず残します。設定fileでlocal名を指定した場合はfallbackを使わず、不正名・collisionをErrorに
 します。
 
