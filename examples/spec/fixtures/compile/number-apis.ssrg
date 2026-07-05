@@ -1,0 +1,24 @@
+import * as floats from "std/float"
+import * as ints from "std/int"
+import * as numbers from "std/number"
+
+fn parsePort text: String -> Either<ints.IntParseError, Int> =
+  ints.parse text
+
+fn growSafely value: Int -> Maybe<Int> =
+  value
+    |> ints.checkedMultiply 2
+    |> flatMap (ints.checkedAdd 1)
+
+fn wrapSequence value: Int -> Int =
+  value
+    |> ints.wrappingAdd 1
+    |> ints.wrappingMultiply 3
+
+fn renderMeasurement value: Float -> String =
+  value
+    |> floats.roundIntegral numbers.HalfEven
+    |> floats.format
+
+fn compareMeasurements left: Float -> right: Float -> Ordering =
+  floats.totalCompare left right

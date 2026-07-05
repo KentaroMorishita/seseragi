@@ -105,6 +105,7 @@
 
 - preludeの境界
 - collection / text / number / JSON / time / random
+- Int / Floatのcanonical parse / format、丸め、checked / saturating / wrapping arithmetic
 - Decimalのcanonical value、exact arithmetic、明示的なprecision / rounding context
 - Map / Setのprocess-local hash seed、ordered / canonical serialization contract
 - linear-time Regex subset、UTF-8 span、toolchain共通のUnicode data version
@@ -152,7 +153,6 @@ exampleや現行compilerの挙動から推測実装しません。
 
 ### 優先度B: 一般applicationの標準ライブラリ
 
-- Int / Floatのparse、format、rounding、checked / saturating / wrapping operationの完全なsignature。
 - hex / Base64などBytesのportable text encoding。invalid input offsetとcanonical outputを含む。
 - `std/text/grapheme`と`std/text/unicode`。module名だけあり、grapheme segmentationとnormalization APIがない。
 - `Process.currentDirectory`がportable `Path`ではなくStringを返しており、filesystem surfaceと不整合。

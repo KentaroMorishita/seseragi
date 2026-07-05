@@ -92,8 +92,8 @@ where Eq<A> {
 ```
 
 `Eq.eq` は反射律・対称律・推移律を満たさなければなりません。Floatの標準EqはIEEE 754の
-NaNにより反射律を満たせないため提供しません。Floatの比較は `Float.ieeeEq`、
-`Float.totalCompare` など、意味を示す名前付き関数を使います。
+NaNにより反射律を満たせないため提供しません。Floatの比較は `std/float` の `ieeeEq`、
+`totalCompare` など、意味を示す名前付き関数を使います。
 
 Ordは全順序です。`compare` は `Less | Equal | Greater` を返し、Eqと整合しなければ
 なりません。
