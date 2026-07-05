@@ -41,12 +41,16 @@ kind、arity、部分適用の基本規則は[型システム 2.10](./02-types.m
 
 ## 4.3 instance
 
+型クラスのinstanceは`instance Trait<Type> { ... }`で宣言します。nominal型固有のmethodや
+operatorを置く`impl Type { ... }`とは、構文でも意味でも別です。`instance`はcoherenceとorphan ruleの
+対象になり、method namespaceやruntime object instanceを作りません。
+
 ```seseragi
-impl Eq<UserId> {
+instance Eq<UserId> {
   fn eq x: UserId -> y: UserId -> Bool = x.value == y.value
 }
 
-impl Functor<Maybe> {
+instance Functor<Maybe> {
   fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
     match value {
       Nothing -> Nothing
@@ -54,7 +58,7 @@ impl Functor<Maybe> {
     }
 }
 
-impl<E> Functor<Either<E, _>> {
+instance<E> Functor<Either<E, _>> {
   fn map<A, B> f: (A -> B) -> value: Either<E, A> -> Either<E, B> =
     match value {
       Left error -> Left error
@@ -206,7 +210,7 @@ newtype UserId deriving Eq, Ord, Hash, Show = Int
 
 導出はcompiler builtinの特別なruntime dispatchではなく、通常のtrait instanceを生成する
 意味を持ちます。生成instanceもcoherenceとorphan ruleに従います。同じinstanceを明示的な
-`impl` と `deriving` の両方で定義すると重複instanceエラーです。
+`instance` と `deriving` の両方で定義すると重複instanceエラーです。
 
 導出条件は次のとおりです。
 
@@ -233,7 +237,7 @@ derivingは構文木を受け取る汎用マクロではありません。生成
 ## 4.10 method と型クラスの違い
 
 - `impl User { ... }` は User 固有の名前空間に method を加える。
-- `impl Eq<User> { ... }` は既存の抽象操作に User の instance を与える。
+- `instance Eq<User> { ... }` は既存の抽象操作に User の instance を与える。
 - method は `user.displayName` と名前解決する。
 - trait method は constraint または完全な型情報から辞書を選ぶ。
 

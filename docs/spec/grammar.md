@@ -23,6 +23,7 @@ top-decl        = [ "pub" ], let-decl
                 | [ "pub" ], trait-decl
                 | [ "pub" ], custom-operator-decl
                 | impl-decl
+                | instance-decl
                 | [ "pub" ], foreign-decl
                 | rec-group ;
 
@@ -59,6 +60,8 @@ trait-method    = "fn", lower-name, [ type-params ], [ fn-params ],
 impl-decl       = "impl", [ type-params ], type, [ constraints ],
                   "{", { impl-member }, "}" ;
 impl-member     = [ "pub" ], fn-decl | overload-decl ;
+instance-decl   = "instance", [ type-params ], type, [ constraints ],
+                  "{", { fn-decl }, "}" ;
 overload-decl   = "operator", standard-operator, "self",
                   "->", parameter, "->", type, fn-body ;
 custom-operator-decl = "operator", [ type-params ], fixity, INTEGER,

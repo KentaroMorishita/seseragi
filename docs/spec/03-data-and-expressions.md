@@ -270,6 +270,9 @@ impl User {
 は `self: T` でなければなりません。同じ型に対する impl block は複数書けますが、
 method 名は重複できません。
 
+traitを満たす宣言は`impl Trait<T>`と書かず、4.3の`instance Trait<T>`を使います。
+前者は`SES-T0502`です。
+
 ## 3.13 struct/newtypeのoperator overload
 
 structとnewtypeは固定された標準operatorをoverloadできます。
@@ -320,7 +323,7 @@ where Add<A, A, A> {
 }
 ```
 
-同じtrait instanceを明示 `impl Add<...>` と `operator` 糖衣の両方で定義すると重複instance
+同じtrait instanceを明示 `instance Add<...>` と `operator` 糖衣の両方で定義すると重複instance
 エラーです。
 
 newtypeでも同じ規則を使います。内部表現のoperator instanceはnewtypeへ自動継承されません。

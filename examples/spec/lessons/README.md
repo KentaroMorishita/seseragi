@@ -28,7 +28,7 @@
 |     10 | 依存する計算とdoの位置づけ   | `>>=`, `map`, `do`                        |
 |     11 | parametric polymorphism      | generic struct / method / alias           |
 |     12 | 宣言的なcollection構築と分解 | comprehension, nested pattern             |
-|     13 | user-defined abstraction     | trait, constraint, custom infix operator  |
+|     13 | user-defined abstraction     | trait, `instance`, custom infix operator  |
 |     14 | 意味を持つ集約               | `Semigroup`, `Monoid`, nominal wrapper    |
 |     15 | reactive state               | `Signal`, `*`, transaction                |
 |     16 | structured concurrency       | Fiber, Deferred, `join`                   |

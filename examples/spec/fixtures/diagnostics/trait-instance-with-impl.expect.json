@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": ["3.12", "4.3", "12.13"],
+  "diagnostics": [
+    {
+      "code": "SES-T0502",
+      "severity": "Error",
+      "primary": { "start": 48, "end": 52, "text": "impl" }
+    }
+  ]
+}

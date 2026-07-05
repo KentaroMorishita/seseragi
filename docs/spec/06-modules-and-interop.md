@@ -40,7 +40,7 @@ top-levelには次だけを書けます。
 - `alias`
 - `struct`
 - inherent `impl`
-- trait `impl`
+- trait `instance`
 - `trait`
 - custom `operator`
 - `foreign` declaration

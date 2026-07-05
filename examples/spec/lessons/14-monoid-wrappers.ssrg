@@ -4,7 +4,7 @@
 // Intは加算と乗算のどちらをMonoidにするか一意でないため、Sumで意味を選びます。
 newtype Sum deriving Eq, Show = Int
 
-impl Semigroup<Sum> {
+instance Semigroup<Sum> {
   fn append left: Sum -> right: Sum -> Sum =
     match (left, right) {
       (Sum leftValue, Sum rightValue) -> Sum (leftValue + rightValue)
@@ -12,7 +12,7 @@ impl Semigroup<Sum> {
 }
 
 // empty ()は加算の単位元です。combineは空Arrayならこの値を返します。
-impl Monoid<Sum> {
+instance Monoid<Sum> {
   fn empty -> Sum = Sum 0
 }
 

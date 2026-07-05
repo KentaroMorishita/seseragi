@@ -33,6 +33,26 @@ requirement mergeの解決では、既存の公開APIを一般intersection型へ
 Effect / Streamのrequirement field集合をcompile時に正規化する型表現だけです。値のintersection、
 runtime merge、row remainderを導入しません。
 
+### 2026-07-05: inherent methodとtrait instance
+
+同じ`impl` keywordがnominal型固有methodと型クラスinstanceの二つを表し、headの形だけで意味を
+切り替えていました。両者は名前解決、visibility、coherence、orphan rule、backend loweringが異なるため、
+次のsurfaceへ分離しました。
+
+```seseragi
+impl User {
+  pub fn displayName self: User -> String = self.name
+}
+
+instance Show<User> {
+  fn show value: User -> String = value.displayName
+}
+```
+
+`impl`はinherent methodと標準operator糖衣、`instance`はtrait dictionaryだけに使います。旧形の
+`impl Trait<Type>`は`SES-T0502`とし、grammar、reserved word、syntax preview、lesson、positive / negative
+fixtureを同期しました。
+
 ## 次のpass
 
 1. 標準ライブラリsignatureをmodule別にcatalog化し、重複宣言、parameter順、empty value / function、

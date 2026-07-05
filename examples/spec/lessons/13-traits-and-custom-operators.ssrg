@@ -10,7 +10,7 @@ struct Badge {
   label: String,
 }
 
-impl Render<Badge> {
+instance Render<Badge> {
   fn render value: Badge -> String = value.label
 }
 

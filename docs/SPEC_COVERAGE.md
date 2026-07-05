@@ -39,6 +39,7 @@
 ### 抽象化
 
 - coherent type classとorphan rule
+- inherent `impl`とtrait `instance`の構文上の分離
 - Functor / Applicative / Monad
 - collection / Effect / Stream instance semanticsとValidation error accumulation
 - Semigroup / Monoid

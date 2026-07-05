@@ -54,7 +54,7 @@
       "patterns": [
         {
           "name": "keyword.control.seseragi",
-          "match": "\\b(as|alias|deriving|do|effect|else|fails|fn|for|foreign|from|if|impl|import|infix|infixl|infixr|let|match|newtype|opaque|operator|pub|rec|struct|then|trait|type|when|where|with)\\b"
+          "match": "\\b(as|alias|deriving|do|effect|else|fails|fn|for|foreign|from|if|impl|import|infix|infixl|infixr|instance|let|match|newtype|opaque|operator|pub|rec|struct|then|trait|type|when|where|with)\\b"
         }
       ]
     },

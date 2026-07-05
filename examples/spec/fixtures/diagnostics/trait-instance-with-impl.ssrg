@@ -1,0 +1,7 @@
+trait Marker<A> {
+  fn mark value: A -> Bool
+}
+
+impl Marker<Int> {
+  fn mark value: Int -> Bool = True
+}

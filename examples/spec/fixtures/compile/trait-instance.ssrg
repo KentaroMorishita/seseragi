@@ -1,0 +1,7 @@
+trait Default<A> {
+  fn default -> A
+}
+
+instance Default<Int> {
+  fn default -> Int = 0
+}
