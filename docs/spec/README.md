@@ -47,6 +47,7 @@ Seseragiが保証する意味を記述します。
 - presenceを保持するoptional structural record field `field?: A`
 - trait constraint、coherent instance、operator functional dependency
 - invariant generic型と、明記されたcapability coercion
+- Effect / Stream第一型引数だけのrestricted requirement merge
 
 ### データと抽象化
 
@@ -134,7 +135,7 @@ Seseragiが保証する意味を記述します。
 - implicit numeric conversionとtruthiness
 - non-exhaustive match
 - exceptionによる通常のerror handling
-- arbitrary union / intersection type
+- arbitrary union / intersection type。requirement mergeは一般intersectionではない
 - overlapping / orphan trait instance
 - implicit monad transformer lift
 - `perform` / `handle` algebraic effect

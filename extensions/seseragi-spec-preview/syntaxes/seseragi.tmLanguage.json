@@ -166,6 +166,10 @@
           "match": "(&&|\\|\\|)"
         },
         {
+          "name": "keyword.operator.requirement-merge.seseragi",
+          "match": "(?<!&)&(?!&)"
+        },
+        {
           "name": "keyword.operator.comparison.seseragi",
           "match": "(==|!=|<=|>=|<|>)"
         },

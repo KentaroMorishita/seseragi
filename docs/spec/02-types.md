@@ -135,6 +135,25 @@ entry pointへ残さないことをclosed requirementとして明示します。
 width subtypingにより余分なfieldを持って構いません。余分なfieldはmainのrequirementには含まれず、
 mainから参照もできません。
 
+### requirement merge
+
+Effect / Streamをgenericに合成し、元のrequirementへserviceを加えるため、第一型引数の中だけで
+`R & S` をrequirement mergeとして使えます。
+
+```seseragi
+alias Timed<R, E, A> =
+  Effect<R & { clock: Clock }, E, A>
+```
+
+operandはrequired fieldだけを持つstructural record型、またはこの位置からrecord requirementと分かる
+型parameterでなければなりません。optional field、nominal struct、通常値型はmergeできません。mergeは
+両operandのfield和へcompile時に正規化し、同名fieldの型が同じなら一fieldにまとめ、違えば
+`SES-E0001`です。`R & {}`はRと同じで、同じfield型に対して結合順序と括弧は結果を変えません。
+
+`&`は一般intersection型を作らず、値constructor、field access、runtime tagを持ちません。Effect / Streamの
+第一型引数以外で使うと`SES-T0501`です。genericなRはrow remainderではなく一個の完全なrecord型を表し、
+entry pointではmerge正規化後のfield集合がclosedでなければなりません。
+
 ## 2.7 関数型と curry
 
 複数 parameter の関数宣言は、単一 parameter 関数の入れ子です。

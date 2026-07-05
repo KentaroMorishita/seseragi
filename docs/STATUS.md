@@ -55,8 +55,9 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 
 - 規範仕様: `docs/spec/00-language.md` から `14-performance.md` とAppendix grammar
 - 学習教材: `examples/spec/lessons/` の27 lesson
-- conformance入力: positive 6件、diagnostic 3件
+- conformance入力: positive 7件、diagnostic 4件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
+- 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
@@ -68,11 +69,12 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 ### 1. 仕様の横断監査
 
 章ごとの初稿はありますが、同じ概念を複数章から参照する箇所について、型signature、failure、
-resource lifetime、grammar、exampleの最終突合が必要です。新機能を増やすより先に矛盾を減らします。
+resource lifetime、grammar、exampleの最終突合が必要です。最初の型構文・性能境界passは完了し、結果を
+`docs/SPEC_AUDIT.md`へ記録しています。新機能を増やすより先に残りの矛盾を減らします。
 
 ### 2. conformance fixtureの拡充
 
-現在は9件だけです。特に次が不足しています。
+現在は11件だけです。特に次が不足しています。
 
 - operator precedence、型推論、kind、coherenceのpositive / negative case
 - Effect cancellation、finalizer、Signal transaction、Stream backpressureのruntime trace

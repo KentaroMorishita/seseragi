@@ -32,6 +32,7 @@
 - nominal型とstructural record
 - optional record fieldのpresence、width subtyping、query pattern、JSON / TypeScript境界
 - entry pointでfield集合を確定するclosed structural record
+- Effect / Stream第一型引数だけのrestricted requirement merge
 - ADT、網羅的match、pattern guard
 - 単一値のnominal wrapperを表すnewtypeとopaque境界
 

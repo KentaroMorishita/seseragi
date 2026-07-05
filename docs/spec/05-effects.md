@@ -142,6 +142,10 @@ fn program id: UserId -> Effect<{ http: Http, clock: Clock }, AppError, Report> 
 environmentは `Effect.provide` で渡します。余分なfieldを持つrecordもrecord width subtypingで
 利用できます。service取得は `Effect.service` を使い、global singletonを暗黙参照しません。
 
+genericなEffect / Streamのrequirementへ別serviceを加える公開signatureは、2.6のrestricted
+requirement merge `R & { service: Service }` を使います。これはruntimeでrecordを結合するoperationではなく、
+必要field集合をcompile時に正規化する型表現です。
+
 ## 5.6 error channel
 
 `E` は回復可能な失敗です。Effectを同じdo blockで合成するにはerror型を揃えます。

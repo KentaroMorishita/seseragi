@@ -98,7 +98,7 @@ cancellationの終了statusとprocess signalの扱いは6.11および10.14に従
 - 暗黙の数値変換、truthy / falsy
 - 非網羅的なパターンマッチ
 - 例外を通常のエラー処理に使う仕組み
-- 任意の union 型と intersection 型
+- 任意の union 型と intersection 型。Effect / Streamのrequirementだけは2.6の閉じたmergeを持つ
 - `perform` / `handle` を持つalgebraic effect system
 - user-definedな汎用構文マクロと手続きマクロ
 - ユーザー定義のprefix / postfix演算子

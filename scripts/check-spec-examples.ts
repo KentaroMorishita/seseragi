@@ -7,6 +7,7 @@ const lessonsDir = join(root, "lessons")
 const fixturesDir = join(root, "fixtures")
 const errors: string[] = []
 const specSections = new Set<string>()
+const diagnosticRegistry = new Map<string, string>()
 
 for (const name of readdirSync(specDir).filter((name) =>
   name.endsWith(".md")
@@ -15,6 +16,17 @@ for (const name of readdirSync(specDir).filter((name) =>
   for (const match of source.matchAll(/^## (\d+\.\d+)\b/gm)) {
     specSections.add(match[1])
   }
+}
+
+const toolingSpec = readFileSync(join(specDir, "12-tooling.md"), "utf8")
+for (const match of toolingSpec.matchAll(
+  /^\|\s*(SES-[PNTIEKFL]\d{4})\s*\|\s*(Error|Warning|Information|Hint)\s*\|/gm
+)) {
+  diagnosticRegistry.set(match[1], match[2])
+}
+
+if (diagnosticRegistry.size === 0) {
+  errors.push("docs/spec/12-tooling.md: diagnostic registry is empty")
 }
 
 const lessons = readdirSync(lessonsDir)
@@ -204,6 +216,10 @@ for (const fixtureKind of ["compile", "diagnostics"] as const) {
         errors.push(
           `${fixtureKind}/${sidecarName}: invalid code ${diagnostic.code}`
         )
+      } else if (!diagnosticRegistry.has(diagnostic.code)) {
+        errors.push(
+          `${fixtureKind}/${sidecarName}: unregistered code ${diagnostic.code}`
+        )
       }
       if (
         !["Error", "Warning", "Information", "Hint"].includes(
@@ -212,6 +228,12 @@ for (const fixtureKind of ["compile", "diagnostics"] as const) {
       ) {
         errors.push(
           `${fixtureKind}/${sidecarName}: invalid severity ${diagnostic.severity}`
+        )
+      } else if (
+        diagnosticRegistry.get(diagnostic.code) !== diagnostic.severity
+      ) {
+        errors.push(
+          `${fixtureKind}/${sidecarName}: severity for ${diagnostic.code} must match registry ${diagnosticRegistry.get(diagnostic.code)}`
         )
       }
 

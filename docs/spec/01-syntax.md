@@ -198,6 +198,10 @@ operator symbolはASCIIの次の文字を2文字以上組み合わせます。
 標準operator、`->`、`<-`、`..`、`...`、`//`、`??`、`:=` は予約済みで再定義できません。
 prefixとpostfixのcustom operatorはありません。
 
+型内の単独`&`はEffect / Stream requirement mergeを表すcontextual tokenです。値のinfix operatorでも
+一般intersection型でもなく、2.6と5.5で許可する位置にだけ書けます。custom operatorは2文字以上なので、
+単独`&`と競合しません。
+
 `<<`、`>>`、`>>>` のように `<` と `>` だけからなるsymbolはgeneric delimiterと衝突するため、
 custom operatorとして宣言できません。
 

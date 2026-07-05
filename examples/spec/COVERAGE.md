@@ -17,6 +17,7 @@
 | ApplicativeとValidation accumulation        | Lesson 09               | Applicative law fixtures                  | partial |
 | Monad、`>>=`、do desugar                    | Lesson 10               | Monad law / invalid bind pattern fixtures | partial |
 | Signalとtransaction                         | Lesson 15               | glitch / subscription fixtures            | partial |
+| Effect / Stream requirement merge           | none                    | compile / invalid-position fixtures       | partial |
 | Fiber、Deferred、cancellation               | Lesson 16               | scheduler / cancellation fixtures         | partial |
 | Streamとbackpressure                        | Lesson 17               | merge / overflow fixtures                 | partial |
 | resource scopeとfinalizer                   | Lesson 18               | exit / defect ordering fixtures           | partial |
