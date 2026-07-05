@@ -1,0 +1,7 @@
+import { double } from "math"
+import { sum } from "math/stats"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `${double 21}, ${sum [1, 2, 3]}`

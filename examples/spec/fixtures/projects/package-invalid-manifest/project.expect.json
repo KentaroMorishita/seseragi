@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "spec": ["11.1", "12.13"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "seseragi.toml",
+      "code": "SES-K0101",
+      "severity": "Error",
+      "primary": { "start": 99, "end": 109, "text": "[compiler]" }
+    }
+  ]
+}

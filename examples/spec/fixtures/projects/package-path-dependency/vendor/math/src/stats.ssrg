@@ -1,0 +1,2 @@
+pub fn sum values: Array<Int> -> Int =
+  reduce 0 (+) values

@@ -76,6 +76,7 @@
 - namespace aliasによる値・型・constructor・traitのqualified参照
 - package dependency、循環禁止、初期化順序、entry point
 - `seseragi.toml`、export map、標準layout、generated root、lockfile
+- canonical TOML lockfile schema、content digest、dependency edge、stale detection
 - TypeScript foreign binding、call mode、class / callback / Promise
 - TypeScript向け公開ABI
 - `.d.ts` subset変換、unsupported診断、更新差分

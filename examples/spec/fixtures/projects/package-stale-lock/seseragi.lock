@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/package-stale-lock@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/package-stale-lock@0.0.0#workspace:."
+name = "fixture/package-stale-lock"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+content_digest = "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+dependencies = []

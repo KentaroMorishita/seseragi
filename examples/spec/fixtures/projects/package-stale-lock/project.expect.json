@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "spec": ["11.11", "12.13"],
+  "lock": "fixture",
+  "diagnostics": [
+    {
+      "file": "seseragi.lock",
+      "code": "SES-K0102",
+      "severity": "Error",
+      "primary": {
+        "start": 336,
+        "end": 407,
+        "text": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  ]
+}

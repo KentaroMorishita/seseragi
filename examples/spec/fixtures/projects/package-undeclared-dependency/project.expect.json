@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "spec": ["6.6", "11.6", "12.13"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "src/lib.ssrg",
+      "code": "SES-K0103",
+      "severity": "Error",
+      "primary": { "start": 24, "end": 35, "text": "\"acme/http\"" }
+    }
+  ]
+}
