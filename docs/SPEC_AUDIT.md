@@ -121,9 +121,18 @@ TypeScript ABIはscalar一個のstringとして境界検査し、`.d.ts`のstrin
 Appendix grammar、diagnostic registry、syntax previewを同期し、positive fixture一件とinvalid escape、invalid Char、
 invalid numericのnegative fixture三件を追加しました。formatterは有効なescapeとnumber spellingを保持します。
 
+### 2026-07-06: traversalの短絡
+
+`break` / `continue`を非局所control transferとして追加せず、pure側は`reduceUntil`と`Next / Done`、Effect側は
+`forEachUntil`と`Continue / Break`を標準化しました。通常のeffectful `for`は全件逐次走査の糖衣のままです。
+正常な短絡をtyped failure、defect、cancellationへ流用せず、callbackの通常の戻り値として区別します。
+
+Array / Listの`find`、`findIndex`、`takeWhile`、`dropWhile`は既に目的別に短絡します。genericな
+`reduceUntil`はIterableだけを要求するため、有限性を仮定せずDoneへ到達した時点で終了します。
+
 ## 次のpass
 
-1. local recursionとtraversal short-circuitの代替契約を閉じる。
+1. local named functionとlocal recursionの契約を閉じる。
 2. test declaration / discoveryとstandard inputを実用program契約として閉じる。
 3. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
 4. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。

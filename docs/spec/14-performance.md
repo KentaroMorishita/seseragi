@@ -51,7 +51,7 @@ acquire / release範囲を変えたりしてはなりません。速くなった
 | static evidence      | trait constraint、deriving、operator overload               | compile時に選択し、generic codeではdictionaryが残りうる  |
 | value representation | ADT、tuple、record、Array、List                             | 値、tag、要素、必要な構造を保持する                      |
 | closure              | lambda、partial application、高階関数                       | captureが必要ならclosureと保持期間を持ちうる             |
-| proportional work    | `map`、`filter`、`reduce`、Show、JSON、SSR                  | 入力または出力sizeに応じて処理する                       |
+| proportional work    | `map`、`filter`、`reduceUntil`、Show、JSON、SSR             | 入力、出力、または短絡位置に応じて処理する               |
 | runtime graph        | Effect、Stream、Signal、Fiber、DOM mount                    | scheduling、queue、subscription、cleanupの管理costを持つ |
 | boundary conversion  | foreign binding、Bytes変換、`.d.ts` adapter                 | safety contractに必要な検査やcopyを持ちうる              |
 
@@ -110,6 +110,7 @@ values
 fusionはcallbackを省略、複製、並列化してはなりません。中間collectionが名前へbindされる、複数回使われる、
 または各段の結果がEffectやforeign境界へ渡る場合は、その観測可能な使用を保ちます。Stream fusionはさらに
 demand、buffer、overflow、cancellation、finalizerの境界を保たなければなりません。
+`reduceUntil`をfusionする場合、`Done`を返した要素より後のsourceやcallbackを評価してはなりません。
 
 ## 14.8 recursionとstack safety
 
@@ -118,7 +119,8 @@ lowerします。tail positionは関数の最終式、`if`のtail branch、`matc
 含みます。finalizer登録や未完了の後処理を越える呼び出しはtail positionではありません。
 
 相互再帰と非tail recursionには一定stackを保証しません。stack exhaustionはdefectです。標準Effectの長いbind列、
-Streamの長時間consumer、Signal notification queueは、入力件数に比例してhost call stackを増やしてはなりません。
+`reduceUntil` / `forEachUntil`を含む標準の逐次走査、Streamの長時間consumer、Signal notification queueは、
+入力件数に比例してhost call stackを増やしてはなりません。
 
 ## 14.9 Effect、Stream、Signal
 

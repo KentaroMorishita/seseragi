@@ -34,6 +34,7 @@ Seseragiが保証する意味を記述します。
 - genericなdo notation
 - 正規Effect型へ展開される `effect fn`
 - Iterableを逐次実行するeffectful `for`
+- `reduceUntil` / `forEachUntil`による通常値としての短絡走査
 - Signal snapshot read `*signal`
 - Signal専用 `:=`
 

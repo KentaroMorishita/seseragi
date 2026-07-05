@@ -102,9 +102,11 @@ cancellationの終了statusとprocess signalの扱いは6.11および10.14に従
 - `perform` / `handle` を持つalgebraic effect system
 - user-definedな汎用構文マクロと手続きマクロ
 - ユーザー定義のprefix / postfix演算子
-- `return` による関数途中からの脱出
+- `return`、`break`、`continue`による非局所的なcontrol transfer
 
 これらに似た外部値や外部挙動は、外部連携境界で明示的に扱います。
+collectionの途中終了は10.6の`reduceUntil`、Effectfulな逐次走査の途中終了は10.11の
+`forEachUntil`で、通常の戻り値として明示します。
 
 `deriving` とtemplate Stringは、仕様で入力と展開意味を閉じた限定的なコンパイル時機能です。
 任意の構文木を受け取ってcodeを生成する汎用マクロ機構ではありません。

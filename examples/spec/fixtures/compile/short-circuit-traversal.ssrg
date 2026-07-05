@@ -1,0 +1,14 @@
+import * as collections from "std/collection"
+import * as effects from "std/effect"
+
+let totalBeforeNegative =
+  [1, 2, -1, 100]
+    |> collections.reduceUntil 0 (\total value ->
+         if value < 0
+         then collections.Done total
+         else collections.Next (total + value))
+
+fn stopAtThree value: Int -> Effect<{}, Never, effects.LoopControl> =
+  succeed $ if value == 3 then effects.Break else effects.Continue
+
+let stopped = effects.forEachUntil stopAtThree [1, 2, 3, 4]

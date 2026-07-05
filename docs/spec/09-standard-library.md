@@ -276,6 +276,16 @@ fn forEach<C, R, E, A>
   -> values: C
   -> Effect<R, E, Unit>
 where Iterable<C, A>
+
+type LoopControl =
+  | Continue
+  | Break
+
+fn forEachUntil<C, R, E, A>
+  action: (A -> Effect<R, E, LoopControl>)
+  -> values: C
+  -> Effect<R, E, Unit>
+where Iterable<C, A>
 ```
 
 異なるenvironment requirementを合成するときは、型検査器が5.5のrequirement wideningで
@@ -287,6 +297,10 @@ scheduler tickで複数failureを観測した場合は、入力indexが小さい
 `forEach` は先頭から末尾へ逐次実行し、各actionが成功してから次へ進みます。空collectionは
 何もせず成功します。最初のfailureで停止し、後続actionを開始しません。結果を収集する操作は
 `traverse`、並列実行は `forEachParallel` と別名で提供します。
+
+`forEachUntil`も逐次実行し、actionが`Continue`で成功すれば次へ、`Break`で成功すれば後続を
+開始せずUnitで成功します。failureはそのままfailure、cancellationは通常のEffect規則に従います。
+`LoopControl`をerror channelへ埋め込まず、user errorと正常な短絡を区別します。
 
 Task moduleは `Effect<{}, E, A>` にspecializeした同名operationを提供します。
 `map`と`flatMap`はEffect固有の別関数ではなく、FunctorとMonadのtrait methodです。

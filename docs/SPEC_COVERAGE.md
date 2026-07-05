@@ -155,8 +155,6 @@ exampleや現行compilerの挙動から推測実装しません。
 - local named functionとlocal recursion。lambdaは書けるが、現在の`rec` grammarはtop-levelだけである。
 - test caseの宣言、discovery、filter、parallelism、終了status。`std/test`のassertion surfaceだけではrunner contractに
   足りない。
-- `break` / `continue` keywordは意図的に持たないが、pure / Effectful traversalの短絡を表すstandard
-  combinatorが未定義で、実用上の代替契約が閉じていない。
 
 ### 優先度B: 一般applicationの標準ライブラリ
 
@@ -185,6 +183,7 @@ exampleや現行compilerの挙動から推測実装しません。
 - algebraic `perform` / `handle`
 - user-definedな汎用構文マクロと手続きマクロ
 - user-defined prefix / postfix operator
+- `return` / `break` / `continue`による非局所control transfer。短絡は目的別combinatorと通常値で表す
 - Listのhead `^`、tail `>>` と連結記法
 - reverse pipeline `~`
 - 三項演算子
