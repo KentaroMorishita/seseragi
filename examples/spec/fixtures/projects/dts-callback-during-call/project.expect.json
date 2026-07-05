@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "convert",
+  "spec": ["7.11", "8.7", "8.15", "8.16"],
+  "lock": "generate",
+  "artifacts": [
+    {
+      "output": ".seseragi/generated/callback-api.ssrg",
+      "snapshot": "expected/callback-api.ssrg"
+    }
+  ]
+}

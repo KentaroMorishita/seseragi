@@ -1,0 +1,12 @@
+schema = 1
+
+[entries.api]
+declaration = "host/index.d.ts"
+specifier = "callback-api"
+output = "callback-api"
+evaluation = "task"
+
+[entries.api.symbols."mapValues".callbacks."callback"]
+lifetime = "during-call"
+invocation = "sync"
+concurrency = "serialized"

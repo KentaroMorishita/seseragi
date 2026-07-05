@@ -1,0 +1,12 @@
+schema = 1
+
+[entries.api]
+declaration = "host/index.d.ts"
+specifier = "watch-api"
+output = "watch-api"
+evaluation = "task"
+
+[entries.api.symbols."watch".callbacks."listener"]
+lifetime = "retained"
+invocation = "sync"
+concurrency = "serialized"

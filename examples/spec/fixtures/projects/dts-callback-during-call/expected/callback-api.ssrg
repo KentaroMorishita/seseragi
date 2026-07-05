@@ -1,0 +1,4 @@
+pub foreign "typescript" from "callback-api" {
+  task fn mapValues callback: (String -> String) -> values: Array<String>
+    -> Array<String>
+}

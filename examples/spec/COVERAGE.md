@@ -46,7 +46,7 @@
 | module、visibility、re-export、cycle          | module guide            | `fixtures/projects/modules-*`                  | covered |
 | TypeScript foreign blockとABI                 | interop guide           | `fixtures/projects/foreign-*`                  | planned |
 | `.d.ts`変換                                   | converter guide         | `projects/dts-*`                               | partial |
-| generic TS ABI / callback lifetime            | interop guide           | `projects/typescript-abi-*`                    | partial |
+| generic TS ABI / callback lifetime            | interop guide           | `projects/{typescript-abi,dts-callback}-*`     | partial |
 | generated naming / declaration merge          | converter guide         | naming / namespace snapshot projects           | planned |
 | foreign module load mode / single-flight      | interop guide           | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide           | defect / rejection stack snapshots             | planned |

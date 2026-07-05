@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "command": "convert",
+  "spec": ["7.11", "8.7", "8.15", "8.16", "12.13"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "host/index.d.ts",
+      "code": "SES-F0102",
+      "severity": "Error",
+      "primary": { "start": 30, "end": 38, "text": "listener" }
+    }
+  ]
+}
