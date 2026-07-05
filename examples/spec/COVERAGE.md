@@ -52,6 +52,7 @@
 | source map / cross-language stack             | interop guide           | defect / rejection stack snapshots           | planned |
 | manifest、dependency、lockfile                | package guide           | `fixtures/projects/package-*`                | planned |
 | parser recovery、formatter、LSP、highlight    | lessons全体             | tooling snapshots                            | partial |
+| stable tool options / target capabilities     | none                    | `projects/target-capabilities`               | covered |
 | diagnostic schema / inference explanation     | none                    | diagnostic JSON / explain snapshots          | partial |
 | document comments / doctest                   | none                    | doc HTML / JSON / doctest snapshots          | planned |
 | closed deprecation metadata / tooling         | none                    | `compile/deprecation-metadata.ssrg`          | covered |

@@ -407,3 +407,63 @@ HTMLはsignature直前へdeprecation noticeを表示し、JSON search indexは `
 `.d.ts` converterはdeclarationへ直接付いたJSDoc `@deprecated` のtextをmessageとしてこのclauseへ変換できます。
 JSDocだけからsinceを推測せず、converter設定に明示mappingがない限り省略します。foreign hostのdeprecated metadataが
 取得できない場合に名前やversionから推測してはなりません。
+
+## 12.19 stable tool optionとtarget capability query
+
+CLI optionはcommandごとの文字列慣習だけでなく、machine-readableなschemaを持ちます。
+`seseragi options --json` はUTF-8 JSON一件をstdoutへ出し、少なくとも次を含みます。
+
+```text
+schema: option schema major
+toolVersion: compiler distribution version
+languageVersion: accepted language version
+unicodeVersion: shared Unicode data version
+commands: command name順のarray
+  name: stable command id
+  options: option id順のarray
+    id: stable kebab-case id
+    flags: accepted CLI spellings
+    value: Boolean | Integer | Float | String | Enum | Path
+    enumValues: Enumの場合のclosed values
+    repeatable: occurrenceを複数許すか
+    default: target / manifest選択前のdefaultまたはnull
+    manifestKey:対応するcore manifest keyまたはnull
+    stability: Stable | Experimental
+```
+
+schema 1でstableなcompiler共通optionは `target`、`profile` (`development | release`)、
+`diagnostic-format` (`text | json`)、`deny-warnings`、`locked` です。buildはさらに `emit`
+(`javascript | declarations | interface | none`) を持ちます。formatは `check`、`stdin-file`、
+`range-start-byte`、`range-end-byte`、`diagnostic-format` を持ちます。rangeは両端を同時に指定し、
+0-based end-exclusive UTF-8 byteです。formatterのindent、line width、quote、trailing commaを変更する
+style optionはなく、12.8のcanonical formatだけを生成します。
+
+Stable optionのid、値型、意味を同じlanguage major内で別用途へ再利用しません。flag spellingを置き換える場合は
+一つのmajorの間deprecated aliasとしてschemaへ残します。Experimental optionは先頭を `experimental-` とし、
+generated artifact metadataへ値を記録します。未知option、値型不一致、closed enum外はcommand開始前のexit code 2
+です。environment variableやtarget adapterが同名optionを暗黙注入してschemaから隠してはなりません。
+
+`seseragi target capabilities TARGET --json` はapplicationをcompile・実行せず、target adapterのbuild-time
+metadataを返します。schema 1は次を持ちます。
+
+```text
+schema: 1
+target: { id, adapterVersion, runtimeFamily, runtimeVersion }
+services: canonical service name順のarray
+  { name, availability: Required | Optional | Unavailable, details }
+features: stable feature idからBoolまたはclosed Stringへのobject
+```
+
+標準service nameは少なくとも `clock`、`console`、`entropy`、`fileSystem`、`httpClient`、`logger`、
+`process`、`random`、`stdin`、`webDom` です。detailsはserviceごとのJSON objectで、processならsignalsと
+gracefulShutdown、fileSystemならatomicReplaceとsymlink、httpClientならstreaming、webDomならhydration、
+runtimeならthreadsを表せます。標準feature idは `foreign.pure-load`、`foreign.task-load`、
+`source-map.cross-language`、`runtime.threads`、`runtime.wasm` です。未知fieldは無視し、schema major不一致は
+拒否します。array順とobject key順はUTF-8 byteの辞書順で、同じadapter metadataからbyte単位で同じJSONを返します。
+
+未知target、adapter load failure、schema不一致はdiagnostic JSONをstderrへ出してexit code 2、成功は0です。
+capability queryはhostの現在権限やnetwork到達性をprobeせず、「build artifactが要求可能なservice」を答えます。
+compilerはentry pointのclosed requirementをこのmetadataと照合し、Requiredはhostが必ず提供、Optionalは
+adapter configurationで提供可否を確定、Unavailableはbuild errorにします。source codeからcapability queryを
+呼んでtargetごとに型や意味を分岐するcompile-time reflectionは提供しません。差異はmanifest target、module境界、
+Effect service providerで明示します。

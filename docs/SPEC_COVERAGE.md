@@ -102,6 +102,7 @@
 - canonical idempotent formatterとrange-format recovery
 - `///` / `//!` document comment、deterministic API docs、doctest
 - closed deprecation metadata、LSP tag、API docs / generated binding伝播
+- stable CLI option schemaとbuild-time target capability query
 - non-exhaustive matchのconstructor-aware code action
 
 ### 標準ライブラリ
@@ -151,14 +152,10 @@
 - semantic differential、IR shape、benchmarkの三層検証
 - benchmark value discovery、measurement metadata、portable baseline / regression gate
 
-## 未定義・要設計
+## 今回の基礎監査で残した未定義項目
 
-ここは意図的な不採用ではなく、一般的なprogramを書くために必要だが、まだ正本の意味が閉じていない項目です。
-exampleや現行compilerの挙動から推測実装しません。
-
-### 優先度C: product運用
-
-- formatter / compiler optionの安定schemaと、target capabilityを問い合わせるbuild-time interface。
+一般application、product運用、toolingの基礎surfaceとして洗い出した項目は正本へ移し終えました。
+今後新しい未定義点が見つかった場合は、exampleや現行compilerから意味を推測せず、ここへ再登録してから設計します。
 
 ## 意図的に採用しない
 
