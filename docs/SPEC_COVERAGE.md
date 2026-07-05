@@ -100,6 +100,7 @@
 - timezoneの明示的なlocal resolution、IANA database version locking
 - portable Path、filesystem error、stream / atomic / temporary resource ownership
 - child processのcold event Stream、capture limit、termination / reap ownership
+- HTTPのcold exchange Stream、body backpressure、connection ownership
 - persistent IteratorとIterable/Reducibleの要素型dependency
 - Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
 - Effect / Stream / Signal / concurrency
@@ -126,10 +127,6 @@
 
 - formatterのcanonical output
 - document commentとAPI document生成規則
-
-### I/O library surface
-
-- HTTP body Streamとconnection resourceの完全な公開signature
 
 ### interop詳細
 
@@ -167,9 +164,8 @@
 
 ## 次に詰める順序
 
-1. BytesとStreamを使うHTTP surfaceを固定する。
-2. diagnostic、formatter、document commentをtooling contractとして固定する。
-3. TypeScript binding generatorのnamingと設定schemaを固定する。
-4. 確定した契約へpositive / diagnostic / project fixtureを追加する。
+1. diagnostic、formatter、document commentをtooling contractとして固定する。
+2. TypeScript binding generatorのnamingと設定schemaを固定する。
+3. 確定した契約へpositive / diagnostic / project fixtureを追加する。
 
 この順序は実装順ではなく、仕様の依存順です。
