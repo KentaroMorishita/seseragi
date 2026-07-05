@@ -22,13 +22,14 @@
 | Fiber、Deferred、cancellation                 | Lesson 16               | scheduler / cancellation fixtures            | partial |
 | Streamとbackpressure                          | Lesson 17               | merge / overflow fixtures                    | partial |
 | resource scopeとfinalizer                     | Lesson 18               | exit / defect ordering fixtures              | partial |
-| generic struct / alias / impl                 | Lesson 11               | kind / inference diagnostics                 | partial |
+| generic struct / alias / impl                 | Lesson 11               | nested generic / kind / inference fixtures   | partial |
 | comprehension、Array / record pattern         | Lesson 12               | parse / pattern diagnostics                  | partial |
 | custom trait / instance / custom operator     | Lesson 13               | instance syntax / orphan / fixity fixtures   | partial |
 | Semigroup / Monoid                            | Lesson 14               | law fixtures                                 | partial |
 | generic ADT、local / mutual recursion、spread | Lesson 19               | local recursion / forward reference fixtures | partial |
 | monad transformer                             | Lesson 20               | transformer order fixtures                   | partial |
 | retry / repeat / timeout                      | planned advanced lesson | deterministic Clock fixtures                 | planned |
+| test declaration / discovery / runner         | test guide              | `projects/test-discovery`                    | partial |
 | process signal / graceful shutdown            | process guide           | `fixtures/projects/process-shutdown-*`       | planned |
 | Byte / Bytes / UTF-8                          | Lesson 21               | byte range / invalid UTF-8 fixtures          | partial |
 | Decimal exact arithmetic / rounding           | Lesson 22               | parse / division / rounding fixtures         | partial |

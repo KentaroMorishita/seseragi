@@ -1,0 +1,9 @@
+import * as maps from "std/map"
+
+let nestedArrays: Array<Array<Int>> = [[1, 2], [3, 4]]
+let optionalValues: Array<Maybe<Int>> = [Just 1, Nothing]
+
+fn preserve
+  value: maps.Map<String, Array<Maybe<Int>>>
+  -> maps.Map<String, Array<Maybe<Int>>> =
+  value

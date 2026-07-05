@@ -327,7 +327,7 @@ for (const name of projects) {
     errors.push(`projects/${name}: kind must be project`)
   }
   if (
-    !["compile", "diagnostic", "run", "convert", "tooling"].includes(
+    !["compile", "diagnostic", "run", "test", "convert", "tooling"].includes(
       expectation.phase
     )
   ) {

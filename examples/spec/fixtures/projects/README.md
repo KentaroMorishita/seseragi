@@ -16,12 +16,12 @@
 }
 ```
 
-- `phase`: `compile`、`diagnostic`、`run`、`convert`、`tooling`のいずれか。
+- `phase`: `compile`、`diagnostic`、`run`、`test`、`convert`、`tooling`のいずれか。
 - `spec`: 根拠となる正本section。
 - `lock`: `generate`または`fixture`。`generate`はrunnerがprojectをtemporary directoryへcopyし、offline resolverで
   lockfileを生成してから検証する。repository内へ生成物を書かない。`fixture`はproject内の`seseragi.lock`をそのまま
   使用し、更新しない。
-- `stdout`: run fixtureのexact UTF-8 / LF snapshot。末尾newlineを含む。
+- `stdout`: run / test fixtureのexact UTF-8 / LF snapshot。末尾newlineを含む。
 
 host moduleを使うfixtureは`host/`へ自己完結したsourceを置き、network、global package cache、user credentialへ
 依存してはなりません。fixture runnerはmanifestのtargetをdeterministic test adapterへ解決します。

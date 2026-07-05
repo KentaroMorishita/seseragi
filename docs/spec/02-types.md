@@ -49,6 +49,11 @@ A -> B            関数
 型引数の区切りは `,` です。関数型は右結合なので `A -> B -> C` は
 `A -> (B -> C)` です。
 
+型引数は再帰的に任意の型を取れます。`Array<Array<Int>>`、`Array<Maybe<Int>>`、
+`Map<String, Array<Maybe<Int>>>`はいずれも一つの型です。末尾の`>>` / `>>>`は型構文内では
+複数の`>` delimiterであり、expressionのoperator tokenとして扱いません。各段階の型構築子kindと
+引数個数を独立に検査します。
+
 ## 2.4 型注釈と推論
 
 関数 parameter と公開宣言には型注釈が必要です。非公開 `let` の型は推論できます。

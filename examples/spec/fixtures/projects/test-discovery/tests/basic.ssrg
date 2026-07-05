@@ -1,0 +1,9 @@
+// Testは通常のpureな値で、bodyのEffectはrunnerが選択するまで実行されません。
+import * as test from "std/test"
+import { add } from "fixture/test-discovery"
+
+pub let tests: test.Test =
+  test.suite "arithmetic" [
+    test.test "addition" (test.equal 4 (add 2 2)),
+    test.test "character" (test.equal 'λ' '\u{03BB}')
+  ]

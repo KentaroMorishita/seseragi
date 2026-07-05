@@ -150,11 +150,6 @@
 ここは意図的な不採用ではなく、一般的なprogramを書くために必要だが、まだ正本の意味が閉じていない項目です。
 exampleや現行compilerの挙動から推測実装しません。
 
-### 優先度A: frontendとcore型より先に閉じる
-
-- test caseの宣言、discovery、filter、parallelism、終了status。`std/test`のassertion surfaceだけではrunner contractに
-  足りない。
-
 ### 優先度B: 一般applicationの標準ライブラリ
 
 - Console / standard input。text line、EOF、invalid UTF-8、concurrent read、cancellationの契約がない。

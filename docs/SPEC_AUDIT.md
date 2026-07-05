@@ -139,9 +139,21 @@ rec groupのmember名はgroup全体とgroup後でscopeに入ります。後続lo
 self recursion、local mutual recursion、forward-reference rejectionをcompile / diagnostic fixtureへ固定しました。
 local functionも直接self tail callの一定host stack保証を持ちます。
 
+### 2026-07-06: test discoveryとrunner
+
+testを新構文にせず、`std/test`のimmutableなTest treeと固定export `pub let tests: test.Test`で定義しました。
+test rootはmodule path順にcompile / discoveryし、suite treeのsource順を合わせたfull nameでcaseを識別します。
+filter、exact selection、jobs、timeout、seed、case isolation、report順、exit codeをtool contractとして固定しました。
+
+runnerはcaseごとにClock、Random、Console、Loggerとroot resource scopeを分離し、timeout、leak、defectをcase
+failureとして扱います。`projects/test-discovery`はparallel jobsでもreportをdiscovery順に固定します。
+
+nested genericはgrammar上すでに再帰的なtype argumentとして定義済みでした。現行実装で壊れやすかった連続する
+`>>` / `>>>`を型parserが複数のclose delimiterとして扱うことを`nested-generic-types` fixtureへ固定しました。
+
 ## 次のpass
 
-1. test declaration / discoveryとstandard inputを実用program契約として閉じる。
+1. standard inputを実用program契約として閉じる。
 2. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
 3. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
 4. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。

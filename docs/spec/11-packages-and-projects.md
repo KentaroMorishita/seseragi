@@ -29,6 +29,22 @@ shutdown_grace_ms = 10000
 hash_seed = "random"
 ```
 
+test commandの既定値はoptionalな`test` tableへ置きます。
+
+```toml
+[test]
+target = "node"
+jobs = 1
+timeout_ms = 30000
+cleanup_grace_ms = 5000
+seed = 0
+```
+
+targetはCLI指定、`test.target`、`run.target`の順に選び、すべてなければtest開始前にtarget selection errorです。
+jobsとtimeout_msは正の整数、cleanup_grace_msは0以上の整数、seedはsigned 64-bit integerです。省略時は
+jobs 1、timeout_ms 30000、cleanup_grace_ms 5000、seed 0です。
+CLIの対応optionはmanifest値をそのrunだけ上書きし、manifestやlockfileを書き換えません。
+
 `signal_mode` は `cancel` または `forward` で、省略時は `cancel` です。`cancel` はtermination signalを
 root Effectのcancellationへ変換し、`forward` は `std/process.signals` へ渡します。
 `shutdown_grace_ms` は0以上の整数で、省略時は10000です。cancel modeでだけ指定でき、0はcancellationを
@@ -50,7 +66,7 @@ manifestはUTF-8のTOML 1.0です。未知のcore key、同じkeyの重複、型
 tool固有設定だけは `[tool.<tool-name>]` 以下に置けます。compilerは未知のtool tableを保持して
 構いませんが、言語semanticsへ影響させません。
 
-core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`run`、`tool`
+core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`run`、`test`、`tool`
 です。`package.name`、`package.version`、`package.language` は必須で、それ以外は省略できます。
 
 ## 11.2 package identityとversion
@@ -225,6 +241,14 @@ test moduleはpackage名による公開self importと、`self/` によるprivate
 禁止します。
 
 testからdependency、standard library、generated bindingをimportする規則は通常sourceと同じです。
+
+test commandはtest rootの`.ssrg`をcanonical module path順に再帰列挙し、全moduleをcompileしてから一件も
+実行せずdiscoveryします。`pub let tests: test.Test`を持つmoduleだけがtest treeを
+公開し、持たないmoduleはhelperです。別名export、複数export、型が違うtestsはtestとして推測しません。
+
+caseのfull nameは`module::suite::case`で、nested suiteはsegmentを`::`で追加します。nameとskip reasonは
+空String、先頭・末尾のUnicode whitespace、`::`、C0 / DEL controlを含められません。同じfull nameが二件
+あればdiscovery errorです。module順と各Test treeのsource順を合わせた順序がcanonical discovery orderです。
 
 ## 11.8 generated binding
 
