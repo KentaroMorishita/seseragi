@@ -1,0 +1,25 @@
+import * as effects from "std/effect"
+
+foreign "typescript" from "../host/lazy.mjs" {
+  task fn loadCount -> Int
+}
+
+type AppError deriving Show =
+  | ConsoleFailure ConsoleError
+  | ForeignFailure Js.Error
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    counts <-
+      effects.parallel [loadCount (), loadCount ()]
+        |> effects.mapError ForeignFailure
+
+    match counts {
+      [first, second] ->
+        println `${first},${second}`
+          |> effects.mapError ConsoleFailure
+      _ -> effects.succeed ()
+    }
+  }

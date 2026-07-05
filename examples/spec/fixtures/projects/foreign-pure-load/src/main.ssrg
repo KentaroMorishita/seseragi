@@ -1,0 +1,11 @@
+foreign "typescript" from "../host/math.mjs" {
+  pure fn add left: Int -> right: Int -> Int
+  pure value version: String = "VERSION"
+}
+
+let answer = add 20 22
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `${version}: ${answer}`
