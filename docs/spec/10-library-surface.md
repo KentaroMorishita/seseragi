@@ -1658,7 +1658,152 @@ signalを持たないtargetは同じ分類をhost resultとして報告し、架
 しません。通常関数から現在processを即時終了するAPIは提供しません。
 
 child process APIは現在processのshutdown APIと分離し、childのexit statusを値として返します。
-child processの完全な公開signatureはfilesystem / Bytes contractと一緒に固定します。
+
+### child process
+
+child processは `ChildProcesses` serviceを要求します。canonical requirement名は `childProcesses` で、
+`with ChildProcesses` は `with childProcesses: ChildProcesses` へ展開します。現在processのProcess serviceとは
+capabilityを分離し、libraryがargumentsを読む権限だけでchildを起動できるようにはしません。
+
+```seseragi
+type Executable deriving Eq, Show =
+  | SearchPath String
+  | ExecutablePath Path
+
+type ChildProcessConfigError deriving Eq, Show =
+  | EmptyExecutableName
+  | ExecutableNameContainsSeparator String
+  | ArgumentContainsNul { index: Int, offset: Int }
+  | EnvironmentNameContainsNul String
+  | EnvironmentValueContainsNul String
+  | InvalidCaptureLimit Int
+
+type ChildOutputChannel deriving Eq, Ord, Show =
+  | ChildStdout
+  | ChildStderr
+
+type ChildProcessError deriving Eq, Show =
+  | ChildSpawnFailed { executable: Executable, detail: String }
+  | ChildInputAfterClose
+  | ChildOutputReadFailed { channel: ChildOutputChannel, detail: String }
+  | UnsupportedChildSignal ProcessSignal
+  | ChildInputFailed String
+  | ChildOutputLimitExceeded {
+      channel: ChildOutputChannel,
+      limitBytes: Int
+    }
+  | ChildWaitFailed String
+  | ChildTerminationFailed String
+
+type ChildExitStatus deriving Eq, Show =
+  | ChildExited Int
+  | ChildSignaled ProcessSignal
+  | ChildHostTerminated String
+
+type ChildInput deriving Eq, Show =
+  | WriteChildStdin Bytes
+  | CloseChildStdin
+  | SignalChild ProcessSignal
+  | KillChild
+
+type ChildEvent deriving Eq, Show =
+  | ChildStdoutChunk Bytes
+  | ChildStderrChunk Bytes
+  | ChildExitedWith ChildExitStatus
+
+struct CapturedProcess deriving Eq, Show {
+  status: ChildExitStatus,
+  stdout: Bytes,
+  stderr: Bytes
+}
+
+fn command executable: Executable
+  -> Either<ChildProcessConfigError, Command>
+fn addArgument value: String -> command: Command
+  -> Either<ChildProcessConfigError, Command>
+fn addArguments values: Array<String> -> command: Command
+  -> Either<ChildProcessConfigError, Command>
+fn inDirectory path: Path -> command: Command -> Command
+fn setEnvironment name: String -> value: String -> command: Command
+  -> Either<ChildProcessConfigError, Command>
+fn unsetEnvironment name: String -> command: Command
+  -> Either<ChildProcessConfigError, Command>
+fn clearEnvironment command: Command -> Command
+fn terminationGrace duration: Duration -> command: Command -> Command
+fn outputBuffer capacity: BufferCapacity -> command: Command -> Command
+
+fn captureLimit bytes: Int
+  -> Either<ChildProcessConfigError, CaptureLimit>
+fn defaultCaptureLimit -> CaptureLimit
+
+fn runStreaming<R, E>
+  input: Stream<R, E, ChildInput>
+  -> command: Command
+  -> Stream<
+      R & { childProcesses: ChildProcesses },
+      Either<E, ChildProcessError>,
+      ChildEvent
+    >
+fn runCaptured
+  limit: CaptureLimit
+  -> input: Bytes
+  -> command: Command
+  -> Effect<
+      { childProcesses: ChildProcesses },
+      ChildProcessError,
+      CapturedProcess
+    >
+fn runInherited command: Command
+  -> Effect<{ childProcesses: ChildProcesses }, ChildProcessError, ChildExitStatus>
+```
+
+SearchPath nameは空でなく、`/` と `\` を含まない単一nameです。最終的なCommand environmentのPATHを
+ChildProcesses serviceのtarget固有search ruleで解釈します。clearEnvironment後にPATHを設定していなければ
+SearchPathはChildSpawnFailedです。ExecutablePathはabsoluteならそのpath、relativeならCommandのcurrent
+directory、未指定ならChildProcesses serviceのconfigured working directoryを基準にします。
+
+commandはrun開始時にChildProcesses serviceのconfigured environmentを既定でsnapshotします。
+setEnvironmentはkeyを設定、unsetEnvironmentは一keyを除外、clearEnvironmentは空environmentを基準に
+切り替えます。同じkeyへの後の操作が前を上書きします。addArgumentとenvironment builderはNULを拒否し、
+host encodingへ変換できない場合はChildSpawnFailedです。Commandはimmutableで、builderは新しいCommandを
+返します。default termination graceは5秒、output bufferは各channel 16 chunksです。
+
+`runStreaming input command` はcold Streamです。terminal operationごとにchildを一つ新規spawnし、inputも
+その実行ごとに一度実行します。stdin、stdout、stderrはpipeへ接続します。WriteChildStdinはBytes全体を順に
+書き終えるまで次のinputを要求せず、CloseChildStdinとinput正常終了はstdinをflushして閉じます。closeは
+idempotentですが、close後のWriteChildStdinはChildInputAfterCloseです。
+
+SignalChildはchildへportable signalを要求し、unsupportedならStreamを失敗させてcleanupします。KillChildは
+hostのuncatchable forced terminationを要求しますが、exit観測までは待ちます。nonzero exitとsignal exitは
+通常のChildExitedWith eventで、Stream failureではありません。
+
+stdout / stderrはoutputBufferで指定したchunk数の内部lossless bufferを別々に持ち、満杯なら対応pipeのreadを
+止めてchildへOS backpressureをかけます。一chunkは最大64 KiBです。各channel内のBytes順序を保ち、channel間は
+hostがread completionを観測した順です。chunk境界は意味を持たず、空Bytesを出しません。input writeと二つの
+output readはconcurrentに進め、どれか一方向のpipeだけでchildをdeadlockさせません。両pipeのEOFとchild statusを
+すべて観測してからChildExitedWithを最後の一件として出し、その後Streamを正常終了します。
+
+input StreamがEで失敗した場合はstdinを閉じ、childをtermination手順で終了させてからLeft errorで失敗します。
+childへのwrite、spawn、wait、signalが失敗した場合はRight ChildProcessErrorです。consumer cancellationまたは
+surrounding scope終了ではstdinを閉じ、Terminateを試し、Commandのtermination graceだけhost monotonic timeで
+待ち、未終了ならKillChildを送ってreapします。このcleanupはapplicationのClock serviceを要求しません。
+Terminateを扱えないtargetまたはchildではgraceを待たずKillChildへ進みます。childがinputより先に終了した場合は
+input Streamをcancelし、pipeをdrainしてから最後のexit eventを出します。同時failureは最初に観測したfailureを
+返し、cleanup中に判明した後続failureをdiagnosticへ添付します。
+
+runCapturedはinput writeとstdout / stderr readをconcurrentに進め、stdinを閉じてからchild終了まで待ち、
+stdout / stderrをそれぞれCaptureLimitまで保持します。既定limitは
+各channel 8 MiBです。どちらかがlimitを超えた時点でchildをtermination手順に従って終了し、
+ChildOutputLimitExceededで失敗します。runInheritedはparent hostのstdin / stdout / stderrをそのまま継承し、
+終了statusだけを返します。どちらもcancellation時はrunStreamingと同じtermination / reapを保証します。
+
+ChildExitedのcodeはhostが報告したnon-negative integerを保持し、0だけをsuccessとみなします。signalによる終了を
+正確に観測できるtargetはChildSignaled、signal modelを持たないtargetやhost固有terminationは
+ChildHostTerminatedです。標準APIはhost codeをPOSIXの128+signal番号へ捏造しません。
+
+childのreap完了前にrun APIを終了してzombieを残してはなりません。通常termination failureはtyped failureです。
+すでに別failureまたはcancellationを処理中のtermination / reap failureはprimary resultを置き換えずdiagnosticへ
+添付します。forced host terminationだけはこの保証外です。
 
 ## 10.15 `std/http`
 
