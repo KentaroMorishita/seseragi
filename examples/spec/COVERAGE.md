@@ -48,9 +48,11 @@
 | JsonEncode / JsonDecode deriving            | Lesson 26               | codec wire / strict field fixtures        | partial |
 | pure Html props / children / SSR            | Lesson 27               | HTML escaping / props fixtures            | partial |
 | Signal-driven DOM / event resource lifetime | planned advanced lesson | DOM reconciliation / hydration projects   | planned |
+| performance erasure / stack safety          | none                    | differential / IR shape / benchmark suite | planned |
 
 ## 次に埋める順序
 
 1. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
 2. module、process、interop、packageをmulti-file project fixtureで固定する。
-3. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。
+3. erasure、tail call、specialization、fusionをIR shape fixtureで固定する。
+4. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。

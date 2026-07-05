@@ -172,6 +172,8 @@ subtypingだけです。EffectとSignalが持つcapability固有のcoercionは2.
 
 名前付き関数と type 宣言は再帰できます。再帰する関数は戻り型を必ず注釈します。
 通常の `let` は自身を参照できません。相互再帰関数は同じ `rec` group に置きます。
+直接のself tail callは14.8に従い一定のhost call stackで実行します。相互再帰とnon-tail callには
+同じ保証を適用しません。
 
 ```seseragi
 rec {

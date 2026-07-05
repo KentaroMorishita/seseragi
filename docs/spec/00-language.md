@@ -49,6 +49,13 @@ fn add x: Int -> y: Int -> Int =
 オーバーロード、型推論、暗黙の辞書選択は、コンパイラが一意に説明できる場合だけ
 成功します。候補が複数ある場合、適当に一つを選ばずコンパイルエラーにします。
 
+### 抽象化のコストを隠さない
+
+型だけの抽象とsurface sugarはruntime identityを要求せず、backendが消去できる形にします。
+collection走査、closure、dictionary、Effect scheduling、foreign copyなど本質的なcostは、存在しないように
+見せません。最適化は値、評価順、failure、cancellation、resource lifetimeを変えない範囲で行います。
+詳細な性能モデルは14章で定義します。
+
 ### 読める密度を保つ
 
 Seseragiの簡潔さは、記号を減らすことではなく、データの形と処理の流れを一目で読めることを

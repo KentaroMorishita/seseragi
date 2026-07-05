@@ -19,7 +19,8 @@ Seseragiが保証する意味を記述します。
 12. [packageとproject layout](./11-packages-and-projects.md)
 13. [Parser・formatter・language server契約](./12-tooling.md)
 14. [pure HTML treeとDOM renderer](./13-web-ui.md)
-15. [Appendix A: 文法要約](./grammar.md)
+15. [性能モデルと最適化境界](./14-performance.md)
+16. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 
@@ -100,6 +101,14 @@ Seseragiが保証する意味を記述します。
 - CLIと同じfrontendを使うplayground
 - `examples/spec/` を共有するconformance workflow
 
+### 性能
+
+- 抽象化のcost classと消去可能性
+- newtype、surface sugar、型引数のruntime erasure
+- curry / trait specializationとcollection fusionの境界
+- self tail callとEffect / Stream chainのstack safety
+- development / releaseの意味的一致と性能profile
+
 ## cross-cutting invariants
 
 1. 通常の値は不変で、外部状態を変える操作はEffectを返す。
@@ -115,6 +124,8 @@ Seseragiが保証する意味を記述します。
 11. derivingとtemplate展開は仕様で閉じ、汎用マクロとして任意のcode生成を許さない。
 12. compiler、formatter、language serverは同じtoken境界とoperator結合規則を使う。
 13. Web componentはprops recordを受ける純粋関数で、実DOM identityとlistenerはDom Effectへ閉じる。
+14. 最適化は値、評価順、Effect、failure、cancellation、resource lifetimeを変えず、消去可能な抽象を
+    runtime identityへ固定しない。
 
 ## 明示的に採用しないもの
 

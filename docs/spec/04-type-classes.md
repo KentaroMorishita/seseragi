@@ -274,6 +274,8 @@ do { last }           = last
 ```
 
 これは意味の定義であり、backendは同じ評価順序とscopeを保つ別実装を選べます。
+do block専用runtime objectは必要ありませんが、展開後のMonadが本質的に必要とする分岐、state、
+Effect schedulingまで消えることを意味しません。最適化境界は14.5と14.9に従います。
 
 bind左辺はirrefutable patternでなければなりません。literal、ADT constructor、固定長Array
 など失敗しうるpatternは使えません。pattern失敗を暗黙の `MonadFail` に変換しません。

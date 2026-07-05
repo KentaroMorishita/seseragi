@@ -24,6 +24,7 @@
 - [packageとproject layout](./spec/11-packages-and-projects.md)
 - [Parser・formatter・language server契約](./spec/12-tooling.md)
 - [pure HTML treeとDOM renderer](./spec/13-web-ui.md)
+- [性能モデルと最適化境界](./spec/14-performance.md)
 - [Appendix A: 文法要約](./spec/grammar.md)
 
 ## 規範性

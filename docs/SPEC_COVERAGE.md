@@ -132,6 +132,16 @@
 - DOM mount / listener / subscriptionのresource ownership
 - deterministic SSR、strict / replace hydration、raw HTML禁止
 
+### 性能モデル
+
+- 意味論上の性能保証、消去可能性、quality of implementationの分離
+- type alias、型引数、newtype、surface sugarのerasure contract
+- curry direct call、trait specialization、collection / Stream fusionの許可条件
+- direct self tail callとEffect / Stream chainのstack safety
+- Effect、Signal、DOM、foreign境界で残るruntime cost
+- development / release profileの意味的一致
+- semantic differential、IR shape、benchmarkの三層検証
+
 ## 意図的に採用しない
 
 - mutable variable / mutable field
@@ -154,7 +164,8 @@
 
 ## 次に詰める順序
 
-1. 確定した契約へpositive / diagnostic / project fixtureを追加する。
-2. fixture runnerをformatter、LSP、highlight、playgroundと共有する。
+1. 章をまたぐ意味論と性能境界を横断監査する。
+2. 確定した契約へpositive / diagnostic / project / IR shape fixtureを追加する。
+3. fixture runnerをformatter、LSP、highlight、playgroundと共有する。
 
 この順序は実装順ではなく、仕様の依存順です。
