@@ -40,7 +40,7 @@
 | Int / Float parse / format / safe arithmetic  | none                    | `compile/number-apis.ssrg`                     | covered |
 | Regex / Unicode / byte spans                  | Lesson 23               | syntax / empty match / Unicode fixtures        | partial |
 | timezone / DST local resolution               | Lesson 24               | gap / overlap / tzdb mismatch fixtures         | partial |
-| Path / filesystem resource ownership          | Lesson 25               | atomic / stream / cleanup fixtures             | partial |
+| Path / filesystem resource ownership          | Lesson 25               | `projects/filesystem-temporary-cleanup`        | partial |
 | child process streaming / termination         | process guide           | `projects/child-process-captured`              | partial |
 | HTTP streaming / connection lifetime          | HTTP guide              | `projects/http-*`                              | partial |
 | module、visibility、re-export、cycle          | module guide            | `fixtures/projects/modules-*`                  | covered |

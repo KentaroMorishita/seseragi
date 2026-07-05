@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "fileSystem": {
+    "temporaryRoot": "/tmp",
+    "allocations": [
+      {
+        "kind": "directory",
+        "prefix": "fixture-",
+        "path": "/tmp/fixture-0001"
+      }
+    ],
+    "expectedOperations": [
+      {
+        "operation": "write",
+        "path": "/tmp/fixture-0001/message.txt",
+        "mode": "replace",
+        "bytesHex": "68656c6c6f"
+      },
+      {
+        "operation": "read",
+        "path": "/tmp/fixture-0001/message.txt"
+      },
+      {
+        "operation": "cleanup-tree",
+        "path": "/tmp/fixture-0001"
+      }
+    ],
+    "assertNoOpenResources": true
+  }
+}

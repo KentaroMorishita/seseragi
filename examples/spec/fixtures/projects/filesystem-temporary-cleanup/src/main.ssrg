@@ -1,0 +1,34 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type AppError deriving Show =
+  | PathFailure paths.PathError
+  | FileFailure fs.FileSystemError
+  | TextFailure fs.FileTextError
+  | ConsoleFailure ConsoleError
+
+effect fn useTemporary directory: paths.Path -> Unit
+with Console, FileSystem
+fails AppError =
+  do {
+    file <-
+      paths.child "message.txt" directory
+        |> effects.fromEither
+        |> effects.mapError PathFailure
+
+    fs.writeTextUtf8 fs.Replace "hello" file
+      |> effects.mapError FileFailure
+
+    content <-
+      fs.readTextUtf8 file
+        |> effects.mapError TextFailure
+
+    println content
+      |> effects.mapError ConsoleFailure
+  }
+
+pub effect fn main -> Unit
+with Console, FileSystem
+fails Either<fs.FileSystemError, AppError> =
+  fs.withTemporaryDirectory "fixture-" useTemporary
