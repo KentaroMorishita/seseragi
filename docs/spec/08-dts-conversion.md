@@ -232,3 +232,98 @@ type Event =
 - unsupportedへ変化したsymbolは古いbindingを残さず、生成失敗として扱う。
 
 conversion reportは前回との差分を `added`、`changed`、`removed`、`unsupported` へ分類します。
+
+## 8.15 converter設定file
+
+`seseragi.toml` の `[foreign.typescript].bindings` はpackage root内のUTF-8 TOML fileを指します。設定fileは
+schema versionとentryごとの変換判断を持ちます。
+
+```toml
+schema = 1
+
+[symbols."watch".callbacks."listener"]
+lifetime = "retained"
+invocation = "sync"
+concurrency = "serialized"
+release = "return-disposer"
+
+[symbols."Event".union]
+discriminator = "type"
+
+[symbols."Event".union.variants]
+"user-created" = "UserCreated"
+"user-deleted" = "UserDeleted"
+```
+
+symbol keyはTypeScript checkerが解決したexport pathで、overloadはmetadataのstable signature IDを追加して指定します。
+未知key、未知enum value、存在しないsymbol / parameter、同じ判断の重複はconversion Errorです。globやsource順indexで
+symbolを指定せず、declaration追加で別symbolへ設定がずれないようにします。設定digestはgenerated metadataと
+lockfileへ記録します。
+
+## 8.16 callback lifetime設定
+
+callback parameterは設定なしではJs.Callbackのraw bindingだけを生成します。通常のSeseragi function型へ変換する
+にはlifetimeを次から選びます。
+
+- `during-call`: foreign functionがreturnする前だけ同期的に呼べる。
+- `until-settled`: taskが返すPromiseLikeのsettleまで保持できる。
+- `retained`: settle後も保持でき、明示release contractが必須。
+
+invocationは `sync` または `promise` で、sync callbackはpure result、promise callbackはTask resultをhost Promiseへ
+変換します。concurrencyは `serialized` または `parallel` です。serializedは前回callback Taskの完了まで次callを
+queueし、parallelは同じresource scopeのchild Fiberとして並行実行します。`reentrant = false` がdefaultで、callback
+実行中の同一registrationへの再入はhost側へCallbackReentrancyErrorを返します。
+
+retained callbackのreleaseは `return-disposer`、`method:<name>`、`function:<export>` のいずれかです。converterは
+symbol名に基づくopaque registration型、登録Task、idempotentなrelease Taskを生成し、手書きadapterが
+Effect.acquireReleaseへ登録できるsurfaceを出します。`return-disposer` は元functionの唯一の戻り値がdisposerである
+signatureだけに使えます。method / function releaseはregistration tokenを受け取れるsignatureでなければErrorです。
+release情報がないretained callbackを通常function型に変換しません。release後のsync invocationはhostへ
+CallbackReleasedErrorをthrowし、promise invocationは同errorでrejectします。Seseragi user codeを実行したり黙って
+無視したりしません。
+
+until-settledは元functionがPromiseLikeを返す場合だけ、invocation=promiseはcallback戻り型がPromiseLikeの場合だけ
+選べます。設定と`.d.ts` shapeが一致しなければunsafe castを生成せずconversion Errorです。
+
+during-call callbackがreturn後に呼ばれること、until-settled callbackがsettle後に呼ばれることはbinding contract
+violationです。runtimeは同じreleased errorとして遮断し、diagnosticへsymbolとparameterを添付します。cancellationは
+registrationをreleaseしてからforeign Taskを終了し、release failureは5.11のresource規則に従います。
+
+## 8.17 generated naming
+
+TypeScript export / property / discriminator valueが、生成先namespaceで要求されるcaseの有効なSeseragi identifierで
+予約語でもなければ、そのspellingを保ちます。それ以外はtype / class / ADT / variantをUpperCamelCase、value /
+function / fieldをlowerCamelCaseへ変換します。ASCII以外を削除して別名へ潰さず、word boundaryはASCII `-`、`_`、
+spaceとlowercase-to-uppercase transitionだけを使います。
+
+変換結果が空、先頭規則違反、予約語、または同じSeseragi namespaceでcollisionする場合、generatorは
+`<readableStem>__<hash8>` を候補にします。stemが空ならtype系は `TsType`、value系は `tsValue` です。hash8は
+TypeScript symbol identity、export path、元spellingのUTF-8 bytesを
+SHA-256した先頭8 lowercase hexで、source順や隣接symbolに依存しません。自動fallback名はconversion Warningと
+metadata mappingを必ず残します。設定fileでlocal名を指定した場合はfallbackを使わず、不正名・collisionをErrorに
+します。
+
+discriminated unionのvariant名はdiscriminator literalをUpperCamelCase化します。discriminator fieldはpayloadから
+除き、decoder / encoderが元literalを検査・復元します。同じvariant名になるliteral、空literal、number / boolean
+literalはfallback hash名または `[symbols.<path>.union.variants]` の明示名を使います。field名も同じ規則で、encoderは
+metadataに保存した元property keyへ戻します。renameしてもwire keyを変更しません。
+
+## 8.18 declaration mergeとnamespace export
+
+converterは個々のdeclaration nodeではなくTypeScript checkerのmerged symbolを単位にします。interface mergeは
+merge後のproperty / signature、function mergeは公開overload set、namespace augmentationは最終export tableを入力に
+します。merge元file順をgenerated identityに使いません。
+
+TypeScript namespaceはgenerated child moduleへ変換し、parent binding moduleからpublic namespaceとしてre-export
+します。class / function / enumと同名namespaceがmergeしている場合、Seseragiのtype、value、namespaceが分離して
+いることを利用して同じpublic spellingを保ちます。namespace childのmodule identityは元symbol identityから決め、
+directory名の偶然やdeclaration file配置へ依存させません。
+
+同じSeseragi namespace内で二つのmerged symbolが同名になる場合、片方を上書きしたり最後のdeclarationを採用したり
+しません。8.17のstable fallbackを生成してWarningにするか、設定された名前同士ならErrorです。type/valueの両方を
+持つ一つのTypeScript symbolは一つのmetadata identityを共有しますが、別symbolをTypeScriptの名前が同じという理由で
+mergeしません。
+
+namespace re-export、`export *`、alias chainは最終target identityを保持します。同じtargetを複数pathからexportする
+場合は各public pathのaliasを生成できますが、runtime binding本体は一つです。alias cycle、targetの異なる同名export、
+case-insensitive filesystemで衝突するgenerated module pathはconversion Errorです。

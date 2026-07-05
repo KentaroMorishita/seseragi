@@ -37,6 +37,9 @@
 | module、visibility、re-export、cycle        | module guide            | `fixtures/projects/modules-*`             | planned |
 | TypeScript foreign blockとABI               | interop guide           | `fixtures/projects/foreign-*`             | planned |
 | `.d.ts`変換                                 | converter guide         | input / generated snapshot projects       | planned |
+| generic TS ABI / callback lifetime          | interop guide           | wrapper / callback resource projects      | planned |
+| generated naming / declaration merge        | converter guide         | naming / namespace snapshot projects      | planned |
+| source map / cross-language stack           | interop guide           | defect / rejection stack snapshots        | planned |
 | manifest、dependency、lockfile              | package guide           | `fixtures/projects/package-*`             | planned |
 | parser recovery、formatter、LSP、highlight  | lessons全体             | tooling snapshots                         | partial |
 | diagnostic schema / inference explanation   | none                    | diagnostic JSON / explain snapshots       | planned |

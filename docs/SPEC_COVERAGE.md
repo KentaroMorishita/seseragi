@@ -74,6 +74,9 @@
 - TypeScript foreign binding、call mode、class / callback / Promise
 - TypeScript向け公開ABI
 - `.d.ts` subset変換、unsupported診断、更新差分
+- unconstrained generic TypeScript ABIと明示trait dictionary mapping
+- callback lifetime設定、stable generated naming、declaration merge / namespace変換
+- source map chainとcross-language machine-readable stack frame
 
 ### parserとtooling
 
@@ -127,14 +130,6 @@
 
 - record / struct decoderとencoderの導出
 
-### interop詳細
-
-- TypeScript generic関数を公開する `.d.ts` ABI
-- callback resourceの生成設定
-- discriminated union converterのnaming rule
-- declaration mergeとnamespace exportの生成名衝突
-- source mapとstack traceのcross-language表示
-
 ## 意図的に採用しない
 
 - mutable variable / mutable field
@@ -157,8 +152,7 @@
 
 ## 次に詰める順序
 
-1. TypeScript binding generatorのnamingと設定schemaを固定する。
-2. record / struct decoderとencoderの導出規則を固定する。
-3. 確定した契約へpositive / diagnostic / project fixtureを追加する。
+1. record / struct decoderとencoderの導出規則を固定する。
+2. 確定した契約へpositive / diagnostic / project fixtureを追加する。
 
 この順序は実装順ではなく、仕様の依存順です。
