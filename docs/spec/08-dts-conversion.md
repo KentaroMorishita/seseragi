@@ -246,24 +246,39 @@ schema versionとentryごとの変換判断を持ちます。
 ```toml
 schema = 1
 
-[module]
+[entries.watcher]
+declaration = "host/watcher.d.ts"
+specifier = "watcher"
+output = "watcher"
 evaluation = "task"
 
-[symbols."watch".callbacks."listener"]
+[entries.watcher.symbols."watch".callbacks."listener"]
 lifetime = "retained"
 invocation = "sync"
 concurrency = "serialized"
 release = "return-disposer"
 
-[symbols."Event".union]
+[entries.watcher.symbols."Event".union]
 discriminator = "type"
 
-[symbols."Event".union.variants]
+[entries.watcher.symbols."Event".union.variants]
 "user-created" = "UserCreated"
 "user-deleted" = "UserDeleted"
 ```
 
-`module.evaluation`は`task`または`pure`で、既定は`task`です。`pure`はentry moduleとtransitive host dependencyの
+entry keyは設定file内で一意なASCII lower kebab-case IDです。declarationはpackage root内のentry `.d.ts`、
+specifierは生成foreign blockからhost resolverへ渡すmodule specifier、outputはgenerated rootからのmodule pathです。
+declarationとoutputはabsolute path、`.` / `..` segment、backslashを許しません。同じdeclaration、specifier、outputを
+別entryへ重複させず、entryはIDのUTF-8 byte順で処理します。
+
+`seseragi dts convert` は全entry、`--entry ID` は指定entryだけを変換します。成功時はoutputに対応する
+`<output>.ssrg`、`<output>.binding.json`、`<output>.report.json` をgenerated rootへatomic replaceします。
+binding metadataはinput / setting digest、generator identity / version、host module exact identity、各generated symbolの
+source spanとruleを持ちます。reportはschema versionとadded / changed / removed / unsupported / warningをsymbol identity順に
+持ちます。Errorが一件でもあればそのentryの三fileを一つも更新せず、ほかのentryも既定では処理を続け、command全体は
+exit code 1です。設定・resolver・I/O errorは2、全entry成功は0です。
+
+`evaluation`は`task`または`pure`で、既定は`task`です。`pure`はentry moduleとtransitive host dependencyの
 評価が7.2のpure-load保証を満たすというbinding authorの承認です。symbolを`pure fn`へ承認するにはmoduleも`pure`で
 なければなりません。`.d.ts`だけからこの値を`pure`へ変更しません。
 
@@ -271,7 +286,7 @@ task-load moduleのexported value、enum member、getterは、module評価なし
 しません。明示的なtask getterとして安全にbindできるcalling conventionがない場合はhand adapter requiredとして
 reportします。opaque typeとtask function bindingは生成できます。
 
-symbol keyはTypeScript checkerが解決したexport pathで、overloadはmetadataのstable signature IDを追加して指定します。
+symbol keyは各entry内でTypeScript checkerが解決したexport pathで、overloadはmetadataのstable signature IDを追加して指定します。
 未知key、未知enum value、存在しないsymbol / parameter、同じ判断の重複はconversion Errorです。globやsource順indexで
 symbolを指定せず、declaration追加で別symbolへ設定がずれないようにします。設定digestはgenerated metadataと
 lockfileへ記録します。

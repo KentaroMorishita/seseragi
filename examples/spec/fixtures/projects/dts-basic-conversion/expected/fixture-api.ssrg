@@ -1,0 +1,7 @@
+pub foreign "typescript" from "fixture-api" {
+  opaque type Config
+
+  task fn fetchName id: Int -> String
+  task fn first<A> values: Array<A> -> Js.UndefinedOr<A>
+  task fn useConfig config: Config -> Unit
+}

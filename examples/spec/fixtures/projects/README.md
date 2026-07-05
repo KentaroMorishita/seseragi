@@ -25,6 +25,10 @@
 - `stdin`: run fixtureへtest adapterがそのまま渡すinput file。text / binary semanticsは対象APIの仕様に従う。
 - `diagnostics`: diagnostic phaseで必須。single-file fixtureのdiagnostic objectへ、project rootからの
   `/` 区切りrelative `file` を加える。code、severity、UTF-8 byte range、anchor textをcheckerが検証する。
+- `command`: diagnostic phaseの実行surface。省略時は`compile`、converterなら`convert`、tool protocolなら
+  `tooling`を指定する。
+- `artifacts`: convert / tooling phaseの生成物。`output`はtemporary project内の生成先、`snapshot`はrepository内の
+  exact expected textです。同じoutputを二度宣言できず、snapshotはUTF-8 / LF / final newlineを持つ。
 
 host moduleを使うfixtureは`host/`へ自己完結したsourceを置き、network、global package cache、user credentialへ
 依存してはなりません。fixture runnerはmanifestのtargetをdeterministic test adapterへ解決します。

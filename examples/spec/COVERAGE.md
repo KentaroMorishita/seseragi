@@ -45,7 +45,7 @@
 | HTTP streaming / connection lifetime          | HTTP guide              | `fixtures/projects/http-*`                     | planned |
 | module、visibility、re-export、cycle          | module guide            | `fixtures/projects/modules-*`                  | covered |
 | TypeScript foreign blockとABI                 | interop guide           | `fixtures/projects/foreign-*`                  | planned |
-| `.d.ts`変換                                   | converter guide         | input / generated snapshot projects            | planned |
+| `.d.ts`変換                                   | converter guide         | `projects/dts-*`                               | partial |
 | generic TS ABI / callback lifetime            | interop guide           | wrapper / callback resource projects           | planned |
 | generated naming / declaration merge          | converter guide         | naming / namespace snapshot projects           | planned |
 | foreign module load mode / single-flight      | interop guide           | `projects/foreign-pure-load`, `foreign-task-*` | covered |

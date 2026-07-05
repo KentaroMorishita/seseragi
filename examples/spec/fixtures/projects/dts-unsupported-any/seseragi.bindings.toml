@@ -1,0 +1,7 @@
+schema = 1
+
+[entries.api]
+declaration = "host/index.d.ts"
+specifier = "unsafe-api"
+output = "unsafe-api"
+evaluation = "task"

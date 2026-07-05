@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "convert",
+  "spec": ["8.2", "8.3", "8.4", "8.5", "8.7", "8.9", "8.15"],
+  "lock": "generate",
+  "artifacts": [
+    {
+      "output": ".seseragi/generated/fixture-api.ssrg",
+      "snapshot": "expected/fixture-api.ssrg"
+    }
+  ]
+}

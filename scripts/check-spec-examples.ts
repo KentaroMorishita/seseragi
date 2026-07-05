@@ -122,10 +122,17 @@ type ProjectExpectation = {
   stdin?: string
   stdout?: string
   diagnostics?: ProjectDiagnostic[]
+  command?: string
+  artifacts?: ProjectArtifact[]
 }
 
 type ProjectDiagnostic = ExpectedDiagnostic & {
   file: string
+}
+
+type ProjectArtifact = {
+  output: string
+  snapshot: string
 }
 
 let fixtureCount = 0
@@ -307,6 +314,40 @@ for (const name of projects) {
 
   if (!existsSync(manifestPath)) {
     errors.push(`projects/${name}: missing seseragi.toml`)
+  } else {
+    const manifest = readFileSync(manifestPath, "utf8")
+    let inForeignTypescript = false
+    for (const line of manifest.split("\n")) {
+      if (line === "[foreign.typescript]") {
+        inForeignTypescript = true
+        continue
+      }
+      if (line.startsWith("[")) {
+        inForeignTypescript = false
+      }
+      if (!inForeignTypescript) {
+        continue
+      }
+      const reference = line.match(
+        /^(manifest|lockfile|bindings)\s*=\s*"([^"]+)"\s*$/
+      )
+      if (!reference) {
+        continue
+      }
+      const relativePath = reference[2] ?? ""
+      const targetPath = resolve(directory, relativePath)
+      if (
+        relativePath.startsWith("/") ||
+        relativePath.includes("\\") ||
+        relativePath.split("/").some((segment) => segment === "..") ||
+        !targetPath.startsWith(`${directory}/`) ||
+        !existsSync(targetPath)
+      ) {
+        errors.push(
+          `projects/${name}: missing foreign.typescript ${reference[1]} ${relativePath}`
+        )
+      }
+    }
   }
   if (!existsSync(expectationPath)) {
     errors.push(`projects/${name}: missing project.expect.json`)
@@ -356,6 +397,12 @@ for (const name of projects) {
   }
 
   if (expectation.phase === "diagnostic") {
+    if (
+      expectation.command !== undefined &&
+      !["compile", "convert", "tooling"].includes(expectation.command)
+    ) {
+      errors.push(`projects/${name}: invalid diagnostic command`)
+    }
     if (
       !Array.isArray(expectation.diagnostics) ||
       expectation.diagnostics.length === 0
@@ -445,6 +492,69 @@ for (const name of projects) {
     }
   } else if (expectation.diagnostics !== undefined) {
     errors.push(`projects/${name}: only diagnostic phase accepts diagnostics`)
+  } else if (expectation.command !== undefined) {
+    errors.push(`projects/${name}: command is only valid for diagnostic phase`)
+  }
+
+  if (expectation.artifacts !== undefined) {
+    if (
+      !["convert", "tooling"].includes(expectation.phase) ||
+      !Array.isArray(expectation.artifacts) ||
+      expectation.artifacts.length === 0
+    ) {
+      errors.push(
+        `projects/${name}: artifacts require convert/tooling phase and a non-empty array`
+      )
+    } else {
+      const outputs = new Set<string>()
+      for (const artifact of expectation.artifacts) {
+        if (
+          !artifact ||
+          typeof artifact !== "object" ||
+          Array.isArray(artifact)
+        ) {
+          errors.push(`projects/${name}: artifact must be an object`)
+          continue
+        }
+        let validPaths = true
+        for (const field of [artifact.output, artifact.snapshot]) {
+          if (
+            typeof field !== "string" ||
+            field.length === 0 ||
+            field.startsWith("/") ||
+            field.includes("\\") ||
+            field.split("/").some((segment) => segment === "..")
+          ) {
+            errors.push(`projects/${name}: invalid artifact path`)
+            validPaths = false
+          }
+        }
+        if (!validPaths) {
+          continue
+        }
+        if (outputs.has(artifact.output)) {
+          errors.push(`projects/${name}: duplicate artifact output`)
+        }
+        outputs.add(artifact.output)
+
+        const snapshotPath = resolve(directory, artifact.snapshot)
+        if (
+          !snapshotPath.startsWith(`${directory}/`) ||
+          !existsSync(snapshotPath)
+        ) {
+          errors.push(
+            `projects/${name}: missing artifact snapshot ${artifact.snapshot}`
+          )
+          continue
+        }
+        const snapshot = readFileSync(snapshotPath, "utf8")
+        if (snapshot.includes("\r") || !snapshot.endsWith("\n")) {
+          errors.push(
+            `projects/${name}: artifact snapshot must use LF and final newline`
+          )
+        }
+      }
+    }
   }
 
   if (expectation.stdout !== undefined) {

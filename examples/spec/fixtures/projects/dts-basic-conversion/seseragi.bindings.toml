@@ -1,0 +1,7 @@
+schema = 1
+
+[entries.api]
+declaration = "host/index.d.ts"
+specifier = "fixture-api"
+output = "fixture-api"
+evaluation = "task"
