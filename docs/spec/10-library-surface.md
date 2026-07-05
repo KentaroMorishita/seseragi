@@ -802,10 +802,88 @@ type Json =
 
 alias Decoder<A> = Json -> Either<DecodeError, A>
 alias Encoder<A> = A -> Json
+
+type JsonPathSegment deriving Eq, Show =
+  | JsonField String
+  | JsonIndex Int
+
+type DecodeErrorKind deriving Eq, Show =
+  | ExpectedJsonType String
+  | MissingJsonField String
+  | UnknownJsonField String
+  | UnknownJsonTag String
+  | InvalidJsonValue String
+
+struct DecodeError deriving Eq, Show {
+  path: Array<JsonPathSegment>,
+  kind: DecodeErrorKind
+}
+
+type JsonParseError deriving Eq, Show =
+  | InvalidJsonSyntax { offset: Int, message: String }
+  | DuplicateJsonField { path: Array<JsonPathSegment>, field: String }
+
+type JsonReadError deriving Eq, Show =
+  | JsonSyntaxFailure JsonParseError
+  | JsonDecodeFailure DecodeError
+
+trait JsonEncode<A> {
+  fn encodeJson value: A -> Json
+}
+
+trait JsonDecode<A> {
+  fn decodeJson value: Json -> Either<DecodeError, A>
+}
+
+fn parse text: String -> Either<JsonParseError, Json>
+fn stringify value: Json -> String
+fn encodeString<A> value: A -> String
+where JsonEncode<A>
+fn decodeString<A> text: String -> Either<JsonReadError, A>
+where JsonDecode<A>
 ```
 
-parse、stringify、field、optionalField、index、array、record、oneOf、map、flatMapを提供します。
-decoder errorはJSON path、期待型、実値の概要を保持します。
+field、optionalField、index、array、record、oneOf、map、flatMap combinatorも提供します。decoder errorのpathは
+rootからfailure位置までのfield / index順です。combinatorはpathを外側から一件ずつ加え、最も内側の
+DecodeErrorKindを保持します。
+
+parseはRFC 8259のUTF-8 JSONを受理し、numberをexact Decimalとして読みます。NaN、infinity、comment、trailing
+commaを受理しません。objectの重複fieldは後勝ちにせずDuplicateJsonFieldです。offsetは0-based UTF-8 byteです。
+stringifyは空白なし、objectのMap挿入順、array順、canonical Decimal表記、必要最小限のJSON escapeで出力します。
+同じJson valueから同じbytesを生成しますが、MapのEqが順序を無視するためEqなobject同士のcanonical hashを
+保証するものではありません。
+
+Stringはquoteとbackslashをescapeし、U+0008 / 0009 / 000A / 000C / 000Dをそれぞれ `\b`、`\t`、`\n`、
+`\f`、`\r`、残りのU+0000..001Fをuppercase 4桁 `\u00XX` で出します。それ以外のUnicode scalarはUTF-8
+literalで出し、`/` やnon-ASCIIを任意にescapeしません。
+
+Bool、String、Int、Decimal、Unit、Json、Maybe、Either、Array、List、tuple、Map、Set、structural recordにstandard
+JsonEncode / JsonDecode instanceを提供します。UnitとNothingはJsonNull、Justは内容、Eitherは
+`{"tag":"Left","value":...}` / `{"tag":"Right","value":...}` です。FloatはNaN / infinityとdecimal
+round-trip policyが一意でないためstandard instanceを持たず、Decimalまたは明示converterを使います。
+
+Map<String, V>はobject、ほかのMap<K, V>はentryの2要素Array列、SetはArrayとして10.5の順序と重複規則を使います。
+structural recordのfieldはUnicode scalarの辞書順でencodeし、decodeでは全fieldを必須として未知fieldを拒否します。
+`optionalField` を使う手書きDecoderだけが欠落を許可します。Maybe fieldもdefault derivingでは必須で、Nothingは
+missingではなく明示JsonNullです。
+
+named structのderived codecはfield名をsource spellingのまま使い、declaration順でencodeします。decodeは全fieldを
+一度要求し、未知fieldを拒否してconstructorを呼びます。ADTは次の表現です。
+
+- payloadなし: `{"tag":"Idle"}`
+- payloadあり: `{"tag":"Loaded","value":...}`
+
+tagはconstructor名そのものでcase-sensitiveです。payloadがtupleまたはrecordでも常にvalue field一つの中へencode
+し、wrapper fieldとflattenしません。newtypeのderived codecは内部値へtransparentに委譲します。opaque宣言でも
+derivingを選んだmoduleがinstanceを公開すればcodec利用は表現を直接公開せず許可されます。
+
+generic derivingはfield / payloadから必要なJsonEncode<A> / JsonDecode<A> constraintを生成します。recursive ADTは
+constructorを一段decodeしてから再帰するguarded recursionだけを許可し、aliasだけを循環するnon-productive codecを
+拒否します。同じ型へexplicit implとderivingを両方定義できません。wire名のrename、default、unknown-field許可、
+version migrationが必要な型はderivingへannotationを足さず、通常のexplicit impl / Decoder combinatorで定義します。
+
+encodeStringはencodeJson後にstringify、decodeStringはparse後にdecodeJsonします。JsonReadErrorはsyntaxとdomain
+decodeを混同しません。
 
 `Js.Unknown` からapplication型へ直接castせず、JSONまたはdomain decoderを通します。
 

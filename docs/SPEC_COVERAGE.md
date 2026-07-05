@@ -108,6 +108,7 @@
 - portable Path、filesystem error、stream / atomic / temporary resource ownership
 - child processのcold event Stream、capture limit、termination / reap ownership
 - HTTPのcold exchange Stream、body backpressure、connection ownership
+- JsonEncode / JsonDecodeの限定deriving、strict field / tagged ADT wire contract
 - persistent IteratorとIterable/Reducibleの要素型dependency
 - Array / List / NonEmptyListの公開signature、境界値、反復順、計算量
 - Effect / Stream / Signal / concurrency
@@ -121,14 +122,6 @@
 - `examples/spec/COVERAGE.md` で全仕様機能をlessonまたはfixtureへ対応づける
 - 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
 - playground sampleへsourceを複製せず生成・直接読込する
-
-## 追加定義が必要
-
-以下は必要性を確認済みですが、正本で完全な契約まで定義していません。
-
-### boilerplate削減
-
-- record / struct decoderとencoderの導出
 
 ## 意図的に採用しない
 
@@ -152,7 +145,7 @@
 
 ## 次に詰める順序
 
-1. record / struct decoderとencoderの導出規則を固定する。
-2. 確定した契約へpositive / diagnostic / project fixtureを追加する。
+1. 確定した契約へpositive / diagnostic / project fixtureを追加する。
+2. fixture runnerをformatter、LSP、highlight、playgroundと共有する。
 
 この順序は実装順ではなく、仕様の依存順です。

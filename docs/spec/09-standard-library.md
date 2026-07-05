@@ -9,11 +9,11 @@ preludeは自動importされ、次を提供します。
 - `Unit`, `Never`, `Bool`, `Int`, `Float`, `String`
 - `Maybe`, `Either`, `Array`, `List`, `Iterator`, `Effect`, `Task`, `Signal`, `MutableSignal`
 - 公開constructorを持つ型について、そのconstructor
-- `Eq`, `Ord`, `Show`, `Debug`, `Zero`, `One`, `Semigroup`, `Monoid`
+- `Eq`, `Ord`, `Show`, `Debug`, `Zero`, `One`, `Semigroup`, `Monoid`, `JsonEncode`, `JsonDecode`
 - `Functor`, `Applicative`, `Monad`, `Iterable`, `Reducible`, `Traversable`
 - 算術operator用trait
 - trait methodとしての `map`, `apply`, `pure`, `flatMap`, `iterate`, `reduce`, `traverse`
-- `identity`, `const`, `compose`, `flip`, `show`, `todo`
+- `identity`, `const`, `compose`, `flip`, `show`, `encodeJson`, `decodeJson`, `todo`
 - `sum`, `product`, `combine`, `any`, `all`, `join`
 - `Console`, `ConsoleError`, `print`, `println`, `printValue`
 

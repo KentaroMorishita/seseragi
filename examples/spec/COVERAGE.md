@@ -44,10 +44,10 @@
 | parser recovery、formatter、LSP、highlight  | lessons全体             | tooling snapshots                         | partial |
 | diagnostic schema / inference explanation   | none                    | diagnostic JSON / explain snapshots       | planned |
 | document comments / doctest                 | none                    | doc HTML / JSON / doctest snapshots       | planned |
+| JsonEncode / JsonDecode deriving            | Lesson 26               | codec wire / strict field fixtures        | partial |
 
 ## 次に埋める順序
 
-1. 未確定の標準data / diagnostic / interop契約を正本で先に固定する。
-2. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
-3. module、process、interop、packageをmulti-file project fixtureで固定する。
-4. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。
+1. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
+2. module、process、interop、packageをmulti-file project fixtureで固定する。
+3. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。

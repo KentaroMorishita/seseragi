@@ -201,7 +201,8 @@ newtype UserId deriving Eq, Ord, Hash, Show = Int
 ```
 
 `deriving` は型parameterの後、宣言本体の前に置きます。導出できるtraitは `Eq`、`Ord`、
-`Show`、`Debug`、`Hash` です。任意のuser-defined traitを導出することはできません。
+`Show`、`Debug`、`Hash`、`JsonEncode`、`JsonDecode` です。任意のuser-defined traitを導出することは
+できません。JSON二traitの生成形とwire contractは10.9に従います。
 
 導出はcompiler builtinの特別なruntime dispatchではなく、通常のtrait instanceを生成する
 意味を持ちます。生成instanceもcoherenceとorphan ruleに従います。同じinstanceを明示的な
@@ -215,6 +216,7 @@ newtype UserId deriving Eq, Ord, Hash, Show = Int
 - generic型では、必要なconstraintを生成instanceへ加える。
 - opaque型でも宣言module内では導出できる。instanceの利用から表現は公開されない。
 - `Hash` の導出には同じ型の `Eq` instanceも必要である。
+- `JsonEncode` / `JsonDecode` は対応するすべてのfield / payload型に同traitを要求する。
 
 `Eq`と`Hash`は宣言されたfield順・variant順を使います。`Ord`はvariantの宣言順を第一キー、
 payloadを辞書式順序で比較します。newtypeのEq、Ord、Hashは内部値へ委譲します。
