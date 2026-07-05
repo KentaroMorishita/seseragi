@@ -92,8 +92,9 @@ match-expr      = "match", expr, "{", { match-arm }, "}" ;
 match-arm       = pattern, [ "when", expr ], "->", expr, terminator ;
 lambda          = "\\", lambda-param, { lambda-param }, "->", expr ;
 lambda-param    = lower-name, [ ":", type-atom ] ;
-block           = "{", let-decl, { let-decl }, [ expr ], "}"
+block           = "{", local-decl, { local-decl }, [ expr ], "}"
                 | "{", expr, "}" ;
+local-decl      = let-decl | fn-decl | effect-fn-decl | rec-group ;
 do-expr         = "do", "{", { do-item, terminator }, expr,
                   [ terminator ], "}" ;
 do-item         = pattern, "<-", expr

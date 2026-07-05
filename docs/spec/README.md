@@ -29,6 +29,7 @@ Seseragiが保証する意味を記述します。
 - 空白によるcurried function application
 - `if` / `match` / block expression
 - lambda、pipeline、低優先順位application
+- block内のnamed functionとlocal `rec` group
 - Maybe専用の短絡fallback `??`
 - 固定operator、struct/newtype operator overload、userland custom infix operator
 - genericなdo notation

@@ -1,0 +1,9 @@
+fn invalid value: Int -> Bool = {
+  fn even current: Int -> Bool =
+    if current == 0 then True else odd (current - 1)
+
+  fn odd current: Int -> Bool =
+    if current == 0 then False else even (current - 1)
+
+  even value
+}

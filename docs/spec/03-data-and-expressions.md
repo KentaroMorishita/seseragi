@@ -17,10 +17,30 @@ let result = {
 }
 ```
 
-ブロックは1個以上の `let` と省略可能な最後の式、または最後の式一つを持ちます。最後の式の値を
-返し、`let` だけのブロックは `Unit` を返します。完全に空の `{}` はempty record literalなので、
-何もしないUnit blockは `{ () }` と書きます。`let` の scope は、その直後からブロックまたは
-module の末尾までです。shadowing は許可します。
+ブロックは1個以上のlocal declarationと省略可能な最後の式、または最後の式一つを持ちます。local
+declarationは`let`、`fn`、`effect fn`、`rec` groupです。最後の式の値を返し、declarationだけの
+ブロックは`Unit`を返します。完全に空の`{}`はempty record literalなので、何もしないUnit blockは
+`{ () }`と書きます。`let`のscopeは、その直後からblockまたはmoduleの末尾までです。shadowingは
+許可します。
+
+local functionは宣言位置でclosureをbindingし、自身のbodyと後続block itemをscopeにします。bodyは
+parameter、宣言より前のlexical binding、自身の名前をcaptureでき、後続bindingをcaptureできません。
+local `rec` groupはgroup前のbindingと全member名を共有するclosure groupを一度構築します。function宣言
+自体はuser codeやEffectを実行しません。`pub`、type、alias、struct、trait、impl、instance、operator、
+foreign declarationはblock内へ置けません。
+
+```seseragi
+fn sumPositive values: List<Int> -> Int = {
+  fn loop total: Int -> rest: List<Int> -> Int =
+    match rest {
+      `[] -> total
+      `[head, ...tail] ->
+        if head < 0 then total else loop (total + head) tail
+    }
+
+  loop 0 values
+}
+```
 
 destructuring let も pattern を使いますが、反駁可能な pattern は使えません。
 

@@ -1,0 +1,18 @@
+fn isEvenLocal value: Int -> Bool = {
+  rec {
+    fn even current: Int -> Bool =
+      if current == 0 then True else odd (current - 1)
+
+    fn odd current: Int -> Bool =
+      if current == 0 then False else even (current - 1)
+  }
+
+  even value
+}
+
+fn countdown value: Int -> Int = {
+  fn loop current: Int -> Int =
+    if current <= 0 then 0 else loop (current - 1)
+
+  loop value
+}

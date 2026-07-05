@@ -106,6 +106,8 @@ operator symbolの定義移動、hover、completion、semantic tokenはoperator 
 namespace aliasのmember completionはmodule interfaceの型・値・constructor・trait・公開namespaceを
 contextに応じて提示します。同じspellingが型namespaceと値namespaceにある場合もsymbol identityを
 混同せず、definition、rename、reference検索は参照位置のnamespaceに属するsymbolだけを更新します。
+local functionは親functionのdocument symbolへnestし、definition、reference、renameは3.2のlexical scopeだけを
+対象にします。rec groupのmemberは互いのreferenceを解決し、group外の同名bindingと混同しません。
 
 local operator header、import一覧、dependency interfaceのいずれかが変わった場合、そのfileと
 依存するopen documentのfixity resolutionを更新します。変更のないfunction bodyだけを編集した
@@ -158,6 +160,7 @@ compilerとlanguage serverは、少なくとも次を同じ結合結果として
 - grammarで使うkeywordと1.9のreserved/contextual keyword分類の一致
 - `{}`、`{ value }`、`{ value, }`、`{ field: value }` のrecord/block判別
 - record/struct valueとpatternのfield shorthand、およびvalue側だけのspread
+- block内のlocal function、self recursion、local rec group、forward reference rejection
 - Effect / Stream requirement内の単独`&`と、値位置でのinvalidな単独`&`
 
 ## 12.10 syntax highlight

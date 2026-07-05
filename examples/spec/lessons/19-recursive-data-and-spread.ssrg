@@ -6,20 +6,23 @@ type Tree<A> deriving Eq, Show =
   | Leaf A
   | Branch (Tree<A>, Tree<A>)
 
-// rec groupは、関数本体から自分自身を参照することを明示します。
-rec {
-  fn mapTree<A, B> f: (A -> B) -> tree: Tree<A> -> Tree<B> =
-    match tree {
-      Leaf value -> Leaf (f value)
-      Branch (left, right) ->
-        Branch (mapTree f left, mapTree f right)
+// 名前付き関数は自分自身を参照できます。rec groupが必要なのは相互再帰するときです。
+fn mapTree<A, B> f: (A -> B) -> tree: Tree<A> -> Tree<B> =
+  match tree {
+    Leaf value -> Leaf (f value)
+    Branch (left, right) ->
+      Branch (mapTree f left, mapTree f right)
+  }
+
+fn sumTree tree: Tree<Int> -> Int = {
+  // local functionは前方の値をcaptureし、自身と後続のblock itemから参照できます。
+  fn loop current: Tree<Int> -> Int =
+    match current {
+      Leaf value -> value
+      Branch (left, right) -> loop left + loop right
     }
 
-  fn sumTree tree: Tree<Int> -> Int =
-    match tree {
-      Leaf value -> value
-      Branch (left, right) -> sumTree left + sumTree right
-    }
+  loop tree
 }
 
 let tree = Branch (

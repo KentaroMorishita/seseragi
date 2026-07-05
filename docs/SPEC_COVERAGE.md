@@ -152,7 +152,6 @@ exampleや現行compilerの挙動から推測実装しません。
 
 ### 優先度A: frontendとcore型より先に閉じる
 
-- local named functionとlocal recursion。lambdaは書けるが、現在の`rec` grammarはtop-levelだけである。
 - test caseの宣言、discovery、filter、parallelism、終了status。`std/test`のassertion surfaceだけではrunner contractに
   足りない。
 
