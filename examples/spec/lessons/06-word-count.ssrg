@@ -9,8 +9,9 @@ fn wordCounts input: String -> maps.Map<String, Int> =
   input
     |> text.words
     |> map text.caseFold
-    // reduceは初期値から順に畳み込みます。Mapの更新も新しいMapを返すpureな操作です。
-    |> reduce maps.empty (\counts word ->
+    // empty ()は空Mapを返すparameterなしgeneric関数です。reduceは初期値から順に畳み込みます。
+    // Mapの更新も新しいMapを返すpureな操作です。
+    |> reduce (maps.empty ()) (\counts word ->
       counts
         |> maps.upsert word (\current -> (current ?? 0) + 1)
     )

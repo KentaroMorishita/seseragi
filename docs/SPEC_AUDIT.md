@@ -53,6 +53,23 @@ instance Show<User> {
 `impl Trait<Type>`は`SES-T0502`とし、grammar、reserved word、syntax preview、lesson、positive / negative
 fixtureを同期しました。
 
+### 2026-07-05: 標準ライブラリsignature
+
+`std/array`、`std/list`、`std/map`、`std/set`だけが`empty`をpolymorphic valueとして公開し、Monoid、Bytes、
+Streamはparameterなし関数でした。userlandの公開`let`には明示的なpolymorphic scheme構文がなく、標準moduleだけの
+特権的な値になるため、すべて`fn empty<...> -> T`と`empty ()`へ統一しました。
+
+module sectionごとの関数名重複はありませんでした。transform / lookup / aggregateはdata-lastで一致しています。
+複数入力を持つhost APIは最後のpath、command、requestをprimary subjectと明記しました。
+
+合成failureは次の二形に固定しました。
+
+- upstreamを駆動するadapter: `Either<UpstreamError, LocalError>`
+- resourceをcallbackへ渡すbracket API: `Either<ResourceError, UseError>`
+
+これによりfilesystem、buffer、child process、HTTPとtemporary resource APIでEitherの左右が異なる理由を
+operation phaseから説明でき、任意union errorを導入せずに済みます。
+
 ## 次のpass
 
 1. 標準ライブラリsignatureをmodule別にcatalog化し、重複宣言、parameter順、empty value / function、

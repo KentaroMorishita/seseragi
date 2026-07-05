@@ -1,5 +1,5 @@
 {
   "schema": 1,
   "kind": "compile",
-  "spec": ["1.4"]
+  "spec": ["1.4", "2.12"]
 }
