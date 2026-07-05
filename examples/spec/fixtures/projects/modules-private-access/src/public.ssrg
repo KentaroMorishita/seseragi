@@ -1,0 +1,4 @@
+import { secret } from "./internal"
+
+pub fn expose value: Int -> Int =
+  secret value

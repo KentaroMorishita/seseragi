@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "spec": ["6.4", "6.5", "12.13"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "src/public.ssrg",
+      "code": "SES-N0102",
+      "severity": "Error",
+      "primary": { "start": 9, "end": 15, "text": "secret" }
+    }
+  ]
+}

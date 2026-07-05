@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "spec": ["6.7", "6.9", "12.13"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "src/b.ssrg",
+      "code": "SES-N0103",
+      "severity": "Error",
+      "primary": { "start": 23, "end": 28, "text": "\"./a\"" }
+    }
+  ]
+}

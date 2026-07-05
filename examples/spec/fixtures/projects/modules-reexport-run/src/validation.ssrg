@@ -1,0 +1,2 @@
+pub fn isPositive value: Int -> Bool =
+  value > 0

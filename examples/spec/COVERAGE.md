@@ -43,7 +43,7 @@
 | Path / filesystem resource ownership          | Lesson 25               | atomic / stream / cleanup fixtures           | partial |
 | child process streaming / termination         | process guide           | `fixtures/projects/child-process-*`          | planned |
 | HTTP streaming / connection lifetime          | HTTP guide              | `fixtures/projects/http-*`                   | planned |
-| module、visibility、re-export、cycle          | module guide            | `fixtures/projects/modules-*`                | planned |
+| module、visibility、re-export、cycle          | module guide            | `fixtures/projects/modules-*`                | covered |
 | TypeScript foreign blockとABI                 | interop guide           | `fixtures/projects/foreign-*`                | planned |
 | `.d.ts`変換                                   | converter guide         | input / generated snapshot projects          | planned |
 | generic TS ABI / callback lifetime            | interop guide           | wrapper / callback resource projects         | planned |

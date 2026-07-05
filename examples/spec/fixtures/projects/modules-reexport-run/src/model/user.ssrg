@@ -1,0 +1,9 @@
+pub opaque newtype UserId = Int
+
+pub fn userId value: Int -> UserId =
+  UserId value
+
+pub fn renderUserId id: UserId -> String =
+  match id {
+    UserId value -> `user-${value}`
+  }

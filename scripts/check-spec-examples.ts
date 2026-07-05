@@ -121,6 +121,11 @@ type ProjectExpectation = {
   lock: string
   stdin?: string
   stdout?: string
+  diagnostics?: ProjectDiagnostic[]
+}
+
+type ProjectDiagnostic = ExpectedDiagnostic & {
+  file: string
 }
 
 let fixtureCount = 0
@@ -348,6 +353,98 @@ for (const name of projects) {
     !existsSync(join(directory, "seseragi.lock"))
   ) {
     errors.push(`projects/${name}: fixture lock requires seseragi.lock`)
+  }
+
+  if (expectation.phase === "diagnostic") {
+    if (
+      !Array.isArray(expectation.diagnostics) ||
+      expectation.diagnostics.length === 0
+    ) {
+      errors.push(`projects/${name}: diagnostic phase needs diagnostics`)
+    } else {
+      for (const diagnostic of expectation.diagnostics) {
+        if (
+          !diagnostic ||
+          typeof diagnostic !== "object" ||
+          Array.isArray(diagnostic)
+        ) {
+          errors.push(`projects/${name}: diagnostic must be an object`)
+          continue
+        }
+        if (
+          typeof diagnostic.file !== "string" ||
+          diagnostic.file.length === 0 ||
+          diagnostic.file.startsWith("/") ||
+          diagnostic.file.includes("\\") ||
+          diagnostic.file.split("/").some((segment) => segment === "..")
+        ) {
+          errors.push(`projects/${name}: invalid diagnostic file`)
+          continue
+        }
+
+        const sourcePath = resolve(directory, diagnostic.file)
+        if (
+          !sourcePath.startsWith(`${directory}/`) ||
+          !existsSync(sourcePath)
+        ) {
+          errors.push(
+            `projects/${name}: missing diagnostic file ${diagnostic.file}`
+          )
+          continue
+        }
+        if (!/^SES-[PNTIEKFL]\d{4}$/.test(diagnostic.code)) {
+          errors.push(
+            `projects/${name}: invalid diagnostic code ${diagnostic.code}`
+          )
+        } else if (!diagnosticRegistry.has(diagnostic.code)) {
+          errors.push(
+            `projects/${name}: unregistered diagnostic code ${diagnostic.code}`
+          )
+        }
+        if (diagnosticRegistry.get(diagnostic.code) !== diagnostic.severity) {
+          errors.push(
+            `projects/${name}: severity for ${diagnostic.code} must match registry ${diagnosticRegistry.get(diagnostic.code)}`
+          )
+        }
+
+        const source = readFileSync(sourcePath)
+        const range = diagnostic.primary
+        if (
+          !range ||
+          typeof range !== "object" ||
+          typeof range.text !== "string" ||
+          !Number.isInteger(range.start) ||
+          !Number.isInteger(range.end) ||
+          range.start < 0 ||
+          range.end < range.start ||
+          range.end > source.length
+        ) {
+          errors.push(`projects/${name}: invalid diagnostic primary range`)
+          continue
+        }
+        const actual = source.subarray(range.start, range.end).toString("utf8")
+        if (actual !== range.text) {
+          errors.push(
+            `projects/${name}: primary text expected ${JSON.stringify(range.text)}, got ${JSON.stringify(actual)}`
+          )
+        }
+        const startsOnBoundary = Buffer.from(
+          source.subarray(0, range.start).toString("utf8"),
+          "utf8"
+        ).equals(source.subarray(0, range.start))
+        const endsOnBoundary = Buffer.from(
+          source.subarray(0, range.end).toString("utf8"),
+          "utf8"
+        ).equals(source.subarray(0, range.end))
+        if (!startsOnBoundary || !endsOnBoundary) {
+          errors.push(
+            `projects/${name}: diagnostic range is not on UTF-8 boundaries`
+          )
+        }
+      }
+    }
+  } else if (expectation.diagnostics !== undefined) {
+    errors.push(`projects/${name}: only diagnostic phase accepts diagnostics`)
   }
 
   if (expectation.stdout !== undefined) {

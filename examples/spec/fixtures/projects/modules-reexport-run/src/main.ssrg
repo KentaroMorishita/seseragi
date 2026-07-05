@@ -1,0 +1,8 @@
+import * as api from "fixture/modules-reexport-run"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError = {
+  let id = api.userId 42
+  println $ `${api.renderUserId id}: ${api.validation.isPositive 42}`
+}
