@@ -10,6 +10,9 @@
       "include": "#list-sugar"
     },
     {
+      "include": "#characters"
+    },
+    {
       "include": "#strings"
     },
     {
@@ -123,7 +126,7 @@
       "patterns": [
         {
           "name": "entity.name.type.primitive.seseragi",
-          "match": "\\b(Int|Float|Bool|String|Unit|Never)\\b"
+          "match": "\\b(Int|Float|Bool|Char|String|Unit|Never)\\b"
         },
         {
           "name": "entity.name.type.generic.seseragi",
@@ -243,6 +246,25 @@
         }
       ]
     },
+    "characters": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.seseragi",
+          "begin": "(?<![\\p{L}\\p{N}_'])'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.seseragi",
+              "match": "\\\\(?:[\\\\'nrt0]|u\\{[0-9A-Fa-f]{1,6}\\})"
+            },
+            {
+              "name": "invalid.illegal.escape.seseragi",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
     "strings": {
       "patterns": [
         {
@@ -252,6 +274,10 @@
           "patterns": [
             {
               "name": "constant.character.escape.seseragi",
+              "match": "\\\\(?:[\\\\\"nrt0]|u\\{[0-9A-Fa-f]{1,6}\\})"
+            },
+            {
+              "name": "invalid.illegal.escape.seseragi",
               "match": "\\\\."
             }
           ]
@@ -283,6 +309,10 @@
             },
             {
               "name": "constant.character.escape.seseragi",
+              "match": "\\\\(?:[\\\\`nrt0]|u\\{[0-9A-Fa-f]{1,6}\\}|\\$\\{)"
+            },
+            {
+              "name": "invalid.illegal.escape.seseragi",
               "match": "\\\\."
             }
           ]
@@ -293,11 +323,11 @@
       "patterns": [
         {
           "name": "constant.numeric.float.seseragi",
-          "match": "\\b\\d+\\.\\d+\\b"
+          "match": "(?<![A-Za-z0-9_])(?:0|[1-9][0-9]*(?:_[0-9]+)*)(?:\\.[0-9]+(?:_[0-9]+)*(?:[eE][+-]?[0-9]+(?:_[0-9]+)*)?|[eE][+-]?[0-9]+(?:_[0-9]+)*)(?![A-Za-z0-9_])"
         },
         {
           "name": "constant.numeric.integer.seseragi",
-          "match": "\\b\\d+\\b"
+          "match": "(?<![A-Za-z0-9_])(?:0[bB][01]+(?:_[01]+)*|0[oO][0-7]+(?:_[0-7]+)*|0[xX][0-9A-Fa-f]+(?:_[0-9A-Fa-f]+)*|0|[1-9][0-9]*(?:_[0-9]+)*)(?![A-Za-z0-9_])"
         }
       ]
     },

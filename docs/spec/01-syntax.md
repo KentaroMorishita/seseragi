@@ -19,14 +19,41 @@ let account' = update account
 - `42`, `-42`: `Int`
 - `3.14`, `-0.5`: `Float`
 - `True`, `False`: `Bool`
+- `'a'`, `'\u{03BB}'`: `Char`
 - `"text"`: `String`
 - `` `hello ${name}` ``: 型安全な `String` template
 - `` `[1, 2] ``: `List<Int>` のような List literal
 - `()`: `Unit`
 
-負号は数値リテラルの一部ではなく前置演算子です。整数は符号付き 64 bit、Float は
-IEEE 754 binary64 です。整数演算はラップせず、範囲外になった時点で runtime defect
-として停止します。
+負号は数値リテラルの一部ではなく前置演算子です。数値リテラルは型classでoverloadせず、
+integer literalは`Int`、decimal pointまたはexponentを持つliteralは`Float`です。
+
+Intは次の綴りを受理します。
+
+- decimal: `0`または0以外のdigitで始まる10進数。例: `42`, `1_000_000`
+- binary: `0b` / `0B`とbinary digit。例: `0b1010_0110`
+- octal: `0o` / `0O`とoctal digit。例: `0o755`
+- hexadecimal: `0x` / `0X`とhexadecimal digit。例: `0xFF_00`
+
+`_`は同じ基数のdigit二つの間にだけ一個置けます。先頭、末尾、prefix直後、連続する`_`は
+許可しません。decimalの先頭0は値0だけに許し、`00`や`01`は拒否します。base prefixを持つ
+literalには少なくとも一つdigitが必要です。suffixとhexadecimal Floatはありません。
+
+Floatはdecimalだけです。`1.25`、`6.022e23`、`1.0e-9`を受理し、小数点を持つ場合は
+両側にdigitを要求します。exponentは`e` / `E`、optionalな`+` / `-`、一つ以上のdecimal
+digitからなります。各digit列の`_`規則はIntと同じです。したがって`1.`、`.5`、`1e`は
+拒否します。`NaN`とinfinityはliteralではなく`std/number`の名前付き値です。
+
+Int literalの値は通常0から`2^63 - 1`までです。`2^63`だけは直接unary `-`のoperandに
+ある場合に限り受理し、`-9223372036854775808`をIntの最小値にします。括弧、application、
+他のoperatorを挟んだ`2^63`は先に範囲外として拒否します。Float literalは正確なdecimal値を
+IEEE 754 binary64へround-to-nearest, ties-to-evenで変換します。有限な綴りがinfinityへ
+overflowする場合は拒否し、zeroへunderflowする場合はその符号を保つzeroになります。
+`-0.0`はunary minusによってnegative zeroです。
+
+数値tokenは最長一致です。baseに存在しないdigit、壊れたseparator、未完のexponentを、短い
+有効tokenと後続tokenへ分割して受理しません。不正な綴りまたは範囲外は`SES-P0203`です。
+整数演算はラップせず、範囲外になった時点でruntime defectとして停止します。
 
 backtick の直後が `[` なら List literal、それ以外なら template String と字句解析します。
 
@@ -44,6 +71,41 @@ let message = `user: ${user}, score: ${score}`
 
 String は Unicode scalar value の列です。添字アクセスは提供せず、文字・grapheme・
 byte のどれを扱うかを標準ライブラリ関数で明示します。
+
+### 1.2.1 Char、String、templateのescape
+
+Char literalはsingle quoteで囲み、escapeを復号した結果がUnicode scalar value一個でなければ
+なりません。`'é'`は一個ですが、`'e\u{0301}'`は二個なので`SES-P0202`です。surrogate code pointは
+Unicode scalarではなく、CharにもStringにも入りません。
+
+identifierを走査中の`'`は1.1に従ってidentifier末尾の一部です。それ以外の位置の`'`がChar literalを
+開始します。したがって`account'`は一つのidentifierで、Charを引数へ渡す場合は`classify 'a'`のように
+通常の空白適用で分けます。lexerは`account'`のapostropheを後続のChar開始として再解釈しません。
+
+Char、double-quoted String、templateで共通して使えるescapeは次です。
+
+| escape     | 結果                       |
+| ---------- | -------------------------- |
+| `\\`       | backslash                  |
+| `\n`       | line feed U+000A           |
+| `\r`       | carriage return U+000D     |
+| `\t`       | horizontal tab U+0009      |
+| `\0`       | null U+0000                |
+| `\u{H...}` | 1〜6桁のhex Unicode scalar |
+
+delimiterのescapeはcontextごとに`\'`、`\"`、`` \` ``です。異なるdelimiterのescape、`\xNN`、
+octal escape、名前付きUnicode escapeは受理しません。`\u{}`、6桁を超える値、`0x10FFFF`を超える値、
+surrogateは`SES-P0201`です。
+
+double-quoted StringとCharにはraw line terminatorを置けません。delimiter、backslash、
+U+0000〜U+001F、U+007Fはraw textとして置かず、定義済みescapeを使います。templateはraw LFを
+含められ、sourceのCRLFは1.1に従ってLF一個と同じ値になります。templateのraw `` ` `` とbackslashは
+escapeし、raw `${`はinterpolationを開始します。二文字のliteral `${`は`\${`と書きます。
+`$`単独はescape不要です。
+
+未定義escapeは`SES-P0201`で、primary rangeはbackslashからescape末尾までです。閉じていないliteralは
+`SES-P0001`、Charの復号結果が一個でない場合はliteral全体を`SES-P0202`にします。formatterは意味を
+変えるescape変換を行わず、sourceに書かれた有効なescapeと数値spellingを保持します。
 
 ## 1.3 レイアウト
 

@@ -535,6 +535,21 @@ encodeUtf8, decodeUtf8
 parseInt, parseFloat
 ```
 
+`std/char`はCharとcode pointの明示変換を提供します。
+
+```seseragi
+fn codePoint value: Char -> Int
+fn fromCodePoint value: Int -> Maybe<Char>
+fn toString value: Char -> String
+```
+
+`fromCodePoint`は0から`0x10FFFF`の範囲外またはsurrogateならNothingです。`toString`はscalar一個を
+含むStringを返します。`std/text.scalarAt`はscalar indexを取り、範囲外ならNothingを返します。
+
+```seseragi
+fn scalarAt index: Int -> text: String -> Maybe<Char>
+```
+
 Unicode scalar、UTF-8 byte、grapheme clusterを混同しません。grapheme操作は
 `std/text/grapheme`、正規化は `std/text/unicode` で明示します。
 

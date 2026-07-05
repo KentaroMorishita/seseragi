@@ -145,6 +145,34 @@
 - development / release profileの意味的一致
 - semantic differential、IR shape、benchmarkの三層検証
 
+## 未定義・要設計
+
+ここは意図的な不採用ではなく、一般的なprogramを書くために必要だが、まだ正本の意味が閉じていない項目です。
+exampleや現行compilerの挙動から推測実装しません。
+
+### 優先度A: frontendとcore型より先に閉じる
+
+- local named functionとlocal recursion。lambdaは書けるが、現在の`rec` grammarはtop-levelだけである。
+- test caseの宣言、discovery、filter、parallelism、終了status。`std/test`のassertion surfaceだけではrunner contractに
+  足りない。
+- `break` / `continue` keywordは意図的に持たないが、pure / Effectful traversalの短絡を表すstandard
+  combinatorが未定義で、実用上の代替契約が閉じていない。
+
+### 優先度B: 一般applicationの標準ライブラリ
+
+- Console / standard input。text line、EOF、invalid UTF-8、concurrent read、cancellationの契約がない。
+- `std/random`の公開signatureと分布規則。deterministic pseudo-random serviceとcryptographic entropyも未分離。
+- Int / Floatのparse、format、rounding、checked / saturating / wrapping operationの完全なsignature。
+- hex / Base64などBytesのportable text encoding。invalid input offsetとcanonical outputを含む。
+- `std/text/grapheme`と`std/text/unicode`。module名だけあり、grapheme segmentationとnormalization APIがない。
+- `Process.currentDirectory`がportable `Path`ではなくStringを返しており、filesystem surfaceと不整合。
+
+### 優先度C: product運用
+
+- deprecation metadataとLSP / API docsでの表示。汎用annotation機構を導入せず閉じた形を検討する。
+- benchmark discovery、baseline metadata、regression thresholdのtool contract。
+- formatter / compiler optionの安定schemaと、target capabilityを問い合わせるbuild-time interface。
+
 ## 意図的に採用しない
 
 - mutable variable / mutable field

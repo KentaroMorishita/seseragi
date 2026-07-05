@@ -178,7 +178,7 @@ type-name       = upper-name
 constructor-name = upper-name
                  | lower-name, { ".", lower-name }, ".", upper-name ;
 
-literal         = INTEGER | FLOAT | STRING | TEMPLATE_STRING
+literal         = INTEGER | FLOAT | CHAR | STRING | TEMPLATE_STRING
                 | "True" | "False" | "()" ;
 name            = lower-name | upper-name ;
 lower-name      = LOWER_IDENTIFIER ;
@@ -192,8 +192,8 @@ terminator      = NEWLINE | ";" ;
 ```
 
 `LOWER_IDENTIFIER` と `UPPER_IDENTIFIER` は1.1のUnicode identifier規則を先頭文字の大小で分けた
-tokenです。`OPERATOR_TOKEN` は1.8の文字集合・予約token除外規則に従います。INTEGER、FLOAT、
-STRING、TEMPLATE_STRINGのtoken境界は1.2に従い、負号は数値tokenではなくunary operatorです。
+tokenです。`OPERATOR_TOKEN` は1.8の文字集合・予約token除外規則に従います。INTEGER、FLOAT、CHAR、
+STRING、TEMPLATE_STRINGのtoken境界とescapeは1.2に従い、負号は数値tokenではなくunary operatorです。
 
 ## 構文上の確定事項
 

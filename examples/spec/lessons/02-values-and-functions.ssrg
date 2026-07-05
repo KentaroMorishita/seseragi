@@ -11,11 +11,15 @@ let base = 20
 // 通常の関数適用は空白で書き、add base 22は(add base) 22として左結合します。
 let answer = add base 22
 
+// CharはUnicode scalar一個です。数値の_は読みやすさだけを変え、値には影響しません。
+let initial: Char = '瀬'
+let million: Int = 1_000_000
+
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
   // templateの${...}はShow instanceで値をString化します。$は低優先順位の関数適用です。
-  println $ `answer: ${answer}`
+  println $ `answer: ${answer}, initial: ${initial}, million: ${million}`
 
 // Expected stdout:
-// answer: 42
+// answer: 42, initial: 瀬, million: 1000000

@@ -17,7 +17,7 @@
 | Lesson | 学ぶこと                     | 主な記法                                  |
 | -----: | ---------------------------- | ----------------------------------------- |
 |     01 | 最小programと副作用の型      | `effect fn`, `with`, `fails`              |
-|     02 | 値・型・curried function     | `let`, `fn`, 空白適用, `$`                |
+|     02 | 値・型・literal・curried関数 | `let`, `fn`, Char, 数値, 空白適用, `$`    |
 |     03 | 条件分岐とpattern matching   | `if`, `match`, tuple pattern              |
 |     04 | Arrayとdata pipeline         | lambda, <code>&#124;&gt;</code>, `map`    |
 |     05 | 基礎構文の統合               | range, effectful `for`, FizzBuzz          |

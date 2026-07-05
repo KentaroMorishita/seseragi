@@ -149,6 +149,7 @@ Js.Callback<Args, Result>
 | Seseragi | TypeScript境界 |
 | -------- | -------------- |
 | `Bool`   | `boolean`      |
+| `Char`   | `string`       |
 | `String` | `string`       |
 | `Float`  | `number`       |
 | `Int`    | `bigint`       |
@@ -156,6 +157,8 @@ Js.Callback<Args, Result>
 | `Never`  | `never`        |
 | `Bytes`  | `Uint8Array`   |
 
+CharはUnicode scalar一個を表すJavaScript stringへ写像し、入力時にscalar数が一個であることと
+unpaired surrogateを含まないことを検査します。TypeScriptの`string`からCharを自動推論しません。
 `Int` は64 bit精度を失わないため `bigint` へ写像します。`number` をIntとして受け取るbindingは
 `Js.Number` として受け、有限・整数・範囲内であることをdecoderで検査します。
 BytesとUint8Arrayは10.8の規則により両方向でcopyし、mutable viewを共有しません。

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "kind": "diagnostic",
+  "spec": ["1.2", "12.13"],
+  "diagnostics": [
+    {
+      "code": "SES-P0203",
+      "severity": "Error",
+      "primary": { "start": 13, "end": 17, "text": "1__0" }
+    }
+  ]
+}
