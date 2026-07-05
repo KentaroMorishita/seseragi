@@ -1,0 +1,26 @@
+import * as effects from "std/effect"
+import * as nonEmpty from "std/non-empty-list"
+import * as processes from "std/process"
+import * as streams from "std/stream"
+
+type AppError deriving Show =
+  | ProcessFailure processes.ProcessError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main -> Unit
+with Console, Process
+fails AppError =
+  do {
+    received <-
+      processes.signals (nonEmpty.singleton processes.Interrupt)
+        |> streams.take 1
+        |> streams.runCollect
+        |> effects.mapError ProcessFailure
+
+    match received {
+      [processes.Interrupt] ->
+        println "forwarded interrupt"
+          |> effects.mapError ConsoleFailure
+      _ -> println "unexpected signal" |> effects.mapError ConsoleFailure
+    }
+  }

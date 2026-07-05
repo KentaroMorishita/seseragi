@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "process": {
+    "signals": [
+      {
+        "after": "subscription",
+        "signal": "Interrupt"
+      }
+    ]
+  }
+}
