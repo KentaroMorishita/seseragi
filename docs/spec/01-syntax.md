@@ -289,13 +289,13 @@ struct内の `operator` 糖衣で行います。
 次は予約語です。
 
 ```text
-as alias deriving do effect else fails False fn for foreign from if impl import infix infixl infixr instance
+as alias deprecated deriving do effect else fails False fn for foreign from if impl import infix infixl infixr instance
 let match newtype opaque operator pub rec struct then trait True type when where with
 ```
 
 `constructor`、`method`、`property`、`value`、`pure`、`task` はforeign block内だけでkeywordに
-なるcontextual keywordです。`self` はimpl methodの第一parameter位置でだけ特別な意味を
-持ちます。
+なるcontextual keywordです。`since` はdeprecated clause内だけのcontextual keyword、`self` はimpl methodの
+第一parameter位置でだけ特別な意味を持ちます。
 
 型名、constructor、trait 名は大文字、値、関数、field、module alias は小文字から
 始めることを要求します。`_` は wildcard で、名前として参照できません。

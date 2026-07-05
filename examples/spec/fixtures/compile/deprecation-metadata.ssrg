@@ -1,0 +1,6 @@
+pub deprecated "Use parsePort instead" since "0.3.0"
+fn parseLegacy text: String -> Int =
+  0
+
+pub fn parsePort text: String -> Either<String, Int> =
+  Right 0

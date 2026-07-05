@@ -101,6 +101,7 @@
 - stable diagnostic code / span / fix schemaとtype inference explanation
 - canonical idempotent formatterとrange-format recovery
 - `///` / `//!` document comment、deterministic API docs、doctest
+- closed deprecation metadata、LSP tag、API docs / generated binding伝播
 - non-exhaustive matchのconstructor-aware code action
 
 ### 標準ライブラリ
@@ -156,7 +157,6 @@ exampleや現行compilerの挙動から推測実装しません。
 
 ### 優先度C: product運用
 
-- deprecation metadataとLSP / API docsでの表示。汎用annotation機構を導入せず閉じた形を検討する。
 - benchmark discovery、baseline metadata、regression thresholdのtool contract。
 - formatter / compiler optionの安定schemaと、target capabilityを問い合わせるbuild-time interface。
 

@@ -13,19 +13,21 @@ import-item     = name, [ "as", name ]
                 | "operator", custom-operator,
                   [ "as", custom-operator ] ;
 
-top-decl        = [ "pub" ], let-decl
-                | [ "pub" ], fn-decl
-                | [ "pub" ], effect-fn-decl
-                | [ "pub" ], [ "opaque" ], type-decl
-                | [ "pub" ], [ "opaque" ], newtype-decl
-                | [ "pub" ], alias-decl
-                | [ "pub" ], [ "opaque" ], struct-decl
-                | [ "pub" ], trait-decl
-                | [ "pub" ], custom-operator-decl
+top-decl        = decl-modifiers, let-decl
+                | decl-modifiers, fn-decl
+                | decl-modifiers, effect-fn-decl
+                | decl-modifiers, [ "opaque" ], type-decl
+                | decl-modifiers, [ "opaque" ], newtype-decl
+                | decl-modifiers, alias-decl
+                | decl-modifiers, [ "opaque" ], struct-decl
+                | decl-modifiers, trait-decl
+                | decl-modifiers, custom-operator-decl
                 | impl-decl
                 | instance-decl
-                | [ "pub" ], foreign-decl
+                | decl-modifiers, foreign-decl
                 | rec-group ;
+decl-modifiers  = [ "pub" ], [ deprecation-clause ] ;
+deprecation-clause = "deprecated", STRING, [ "since", STRING ] ;
 
 let-decl        = "let", pattern, [ ":", type ], "=", expr, terminator ;
 fn-decl         = "fn", lower-name, [ type-params ], [ fn-params ],
@@ -55,11 +57,13 @@ deriving-clause = "deriving", upper-name, { ",", upper-name } ;
 
 trait-decl      = "trait", upper-name, type-params, [ constraints ],
                   "{", { trait-method }, "}" ;
-trait-method    = "fn", lower-name, [ type-params ], [ fn-params ],
+trait-method    = [ deprecation-clause ], "fn", lower-name,
+                  [ type-params ], [ fn-params ],
                   "->", type, [ constraints ], terminator ;
 impl-decl       = "impl", [ type-params ], type, [ constraints ],
                   "{", { impl-member }, "}" ;
-impl-member     = [ "pub" ], fn-decl | overload-decl ;
+impl-member     = [ "pub" ], [ deprecation-clause ],
+                  ( fn-decl | overload-decl ) ;
 instance-decl   = "instance", [ type-params ], type, [ constraints ],
                   "{", { fn-decl }, "}" ;
 overload-decl   = "operator", standard-operator, "self",
@@ -72,7 +76,9 @@ constraints     = "where", constraint, { ",", constraint } ;
 constraint      = type-name, "<", type-arg, { ",", type-arg }, ">" ;
 foreign-decl    = "foreign", STRING, "from", STRING,
                   "{", { foreign-member }, "}" ;
-foreign-member  = "opaque", "type", upper-name, [ type-params ], terminator
+foreign-member  = [ deprecation-clause ], foreign-member-body ;
+foreign-member-body = "opaque", "type", upper-name,
+                  [ type-params ], terminator
                 | foreign-call
                 | "pure", "value", lower-name, ":", foreign-type,
                   [ "=", STRING ], terminator ;
