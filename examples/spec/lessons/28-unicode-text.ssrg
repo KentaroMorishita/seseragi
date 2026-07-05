@@ -1,0 +1,23 @@
+// Lesson 28: Unicodeの見た目上の文字境界と正規化を学ぶ
+// 前提: Lessons 21 and 23
+
+import * as graphemes from "std/text/grapheme"
+import * as unicode from "std/text/unicode"
+
+// Stringのscalar数と、人が一文字として扱うgrapheme cluster数は一致しないことがあります。
+// 肌色modifierと結合文字を含んでいても、このtextは三つのclusterに分割されます。
+let source = "A👍🏽e\u{0301}"
+
+// NFCは見た目を変えず、分解されたe + accentを合成済みのéへ正規化します。
+let normalized = unicode.normalize unicode.NFC source
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError = {
+  println $ `clusters: ${graphemes.length source}`
+  println $ normalized
+}
+
+// Expected stdout:
+// clusters: 3
+// A👍🏽é

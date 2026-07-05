@@ -43,6 +43,7 @@
 |     25 | safe filesystem access       | Path, temporary resource, typed I/O error  |
 |     26 | derived JSON codecs          | `JsonEncode`, `JsonDecode`, strict fields  |
 |     27 | pure HTML components         | props record, children, event Msg, SSR     |
+|     28 | Unicode text boundary        | grapheme cluster, normalization            |
 
 ApplicativeをMonad/doより先に置きます。前の結果へ依存しない処理を最初からbind列へしないためです。
 `do` はEffect専用構文ではなく、Lesson 10で `>>=` と対応づけてからadvanced lessonで使います。

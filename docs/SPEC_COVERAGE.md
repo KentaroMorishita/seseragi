@@ -67,6 +67,8 @@
 - Signal / Stream変換の初期値、backpressure、loss policy
 - Console / LoggerとShowの分離
 - immutable Bytes、opaque Byte、slice sharing / copy、UTF-8変換
+- canonical hex / Base64 / Base64url codecとtyped decode offset
+- Unicode normalization / property APIとextended grapheme cluster境界
 
 ### moduleと外部境界
 
@@ -153,8 +155,6 @@ exampleや現行compilerの挙動から推測実装しません。
 
 ### 優先度B: 一般applicationの標準ライブラリ
 
-- hex / Base64などBytesのportable text encoding。invalid input offsetとcanonical outputを含む。
-- `std/text/grapheme`と`std/text/unicode`。module名だけあり、grapheme segmentationとnormalization APIがない。
 - `Process.currentDirectory`がportable `Path`ではなくStringを返しており、filesystem surfaceと不整合。
 
 ### 優先度C: product運用
