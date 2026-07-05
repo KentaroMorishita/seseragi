@@ -203,7 +203,7 @@ Monoid契約でlogを結合します。旧来の特別な `monoid` 宣言や `>>
 
 Intの `+`, `-`, `*`, `**` は結果が64 bit範囲外ならdefectになります。Intの `/` は0方向へ
 丸め、`%` は被除数と同じ符号の余りを返します。0による `/` と `%`、負の指数によるIntの
-`**` はdefectです。回復可能に扱うcodeは `Int.checkedDiv` などのchecked APIを使います。
+`**` はdefectです。回復可能に扱うcodeは `std/int.checkedDivide` などのchecked APIを使います。
 
 Floatの演算はIEEE 754に従います。NaNとinfinityは有効なFloat値です。Floatは標準のEqと
 Ord instanceを持ちません。
