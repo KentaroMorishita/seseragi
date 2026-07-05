@@ -1,0 +1,10 @@
+[package]
+name = "fixture/process-shutdown-cancel"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "test-js"
+signal_mode = "cancel"
+shutdown_grace_ms = 100

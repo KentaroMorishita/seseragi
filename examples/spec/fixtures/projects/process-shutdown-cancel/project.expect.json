@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "run",
+  "spec": ["5.11", "6.11", "10.10", "10.14", "11.1"],
+  "lock": "generate",
+  "services": "services.json",
+  "exitCode": 130
+}

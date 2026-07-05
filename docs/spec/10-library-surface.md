@@ -1184,8 +1184,8 @@ time moduleはtimeline上の時点、calendar上の壁時計、固定offset、ti
 
 InstantはUnix epoch `1970-01-01T00:00:00Z` からの整数nanosecondによるPOSIX timelineです。UTC leap
 secondを独立した時点として表さず、LocalTimeのsecondは0から59です。calendarはastronomical year
-numberingを持つproleptic Gregorian calendarです。Durationは0以上の有限nanosecond数で、負値は構築
-できません。
+numberingを持つproleptic Gregorian calendarです。Durationは0以上 `2^63 - 1` 以下の整数nanosecond数で、
+負値と範囲外値は構築できません。
 
 ```seseragi
 type DateTimeError deriving Eq, Show =
@@ -1193,6 +1193,10 @@ type DateTimeError deriving Eq, Show =
   | InvalidTime { hour: Int, minute: Int, second: Int, nanosecond: Int }
   | InvalidUtcOffsetSeconds Int
   | InvalidDateTimeText { offset: Int }
+
+type DurationError deriving Eq, Show =
+  | NegativeDuration Int
+  | DurationOutsideRange
 
 type TimeZoneError deriving Eq, Show =
   | UnknownTimeZone String
@@ -1207,6 +1211,16 @@ type LocalResolution deriving Eq, Show =
       offsetBefore: UtcOffset,
       offsetAfter: UtcOffset
     }
+
+fn zeroDuration -> Duration
+fn nanoseconds value: Int -> Either<DurationError, Duration>
+fn milliseconds value: Int -> Either<DurationError, Duration>
+fn seconds value: Int -> Either<DurationError, Duration>
+fn minutes value: Int -> Either<DurationError, Duration>
+fn hours value: Int -> Either<DurationError, Duration>
+fn toNanoseconds value: Duration -> Int
+fn addDuration right: Duration -> left: Duration
+  -> Either<DurationError, Duration>
 
 fn localDate year: Int -> month: Int -> day: Int
   -> Either<DateTimeError, LocalDate>
@@ -1242,6 +1256,10 @@ fn zonedLocalDateTime value: ZonedDateTime -> LocalDateTime
 fn zonedOffset value: ZonedDateTime -> UtcOffset
 fn zonedTimeZone value: ZonedDateTime -> TimeZone
 ```
+
+duration constructorは単位をnanosecondへexactに変換します。負入力は元の値をNegativeDurationへ、単位変換または
+加算が `2^63 - 1` nanosecondsを超える場合はDurationOutsideRangeを返します。zeroDurationは0 nanosecondsです。
+Durationは値に基づくEq、Ord、Hashを持ち、implicitなInt変換やFloat second constructorを持ちません。
 
 date/time parserはASCIIのextended ISO 8601 subsetだけを受理します。LocalDateはyear、month、dayを
 `-` で区切ります。year 0から9999は4桁、それ以外は符号と6桁以上のexpanded yearです。

@@ -125,6 +125,8 @@ type ProjectExpectation = {
   command?: string
   artifacts?: ProjectArtifact[]
   services?: string
+  stderr?: string
+  exitCode?: number
 }
 
 type ProjectDiagnostic = ExpectedDiagnostic & {
@@ -571,6 +573,30 @@ for (const name of projects) {
         errors.push(`projects/${name}: stdout snapshot needs final newline`)
       }
     }
+  }
+
+  if (expectation.stderr !== undefined) {
+    const stderrPath = resolve(directory, expectation.stderr)
+    if (!existsSync(stderrPath)) {
+      errors.push(`projects/${name}: missing stderr ${expectation.stderr}`)
+    } else {
+      const stderr = readFileSync(stderrPath, "utf8")
+      if (stderr.includes("\r")) {
+        errors.push(`projects/${name}: stderr snapshot must use LF`)
+      }
+      if (!stderr.endsWith("\n")) {
+        errors.push(`projects/${name}: stderr snapshot needs final newline`)
+      }
+    }
+  }
+
+  if (
+    expectation.exitCode !== undefined &&
+    (!Number.isInteger(expectation.exitCode) ||
+      expectation.exitCode < 0 ||
+      expectation.exitCode > 255)
+  ) {
+    errors.push(`projects/${name}: exitCode must be an integer from 0 to 255`)
   }
 
   if (expectation.stdin !== undefined) {

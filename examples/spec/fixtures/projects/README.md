@@ -22,6 +22,9 @@
   lockfileを生成してから検証する。repository内へ生成物を書かない。`fixture`はproject内の`seseragi.lock`をそのまま
   使用し、更新しない。
 - `stdout`: run / test fixtureのexact UTF-8 / LF snapshot。末尾newlineを含む。
+- `stderr`: diagnostic detailやhost messageのexact UTF-8 / LF snapshot。末尾newlineを含む。
+- `exitCode`: process-capable test targetのexpected code。省略時はsuccess phaseで0、diagnostic phaseでrunnerが
+  command既定値を使う。
 - `stdin`: run fixtureへtest adapterがそのまま渡すinput file。text / binary semanticsは対象APIの仕様に従う。
 - `services`: deterministic test adapterへ渡すschema 1のJSON scenario。service operationを配列順に照合し、
   requestが一致しなければfixture failure、余ったresponseがあれば未消費fixture failureにする。network、real clock、

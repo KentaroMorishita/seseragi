@@ -1,0 +1,17 @@
+import * as effects from "std/effect"
+import * as time from "std/time"
+
+type AppError deriving Show =
+  | DurationFailure time.DurationError
+
+pub effect fn main -> Unit
+with Clock
+fails AppError =
+  do {
+    duration <-
+      time.hours 1
+        |> effects.fromEither
+        |> effects.mapError DurationFailure
+
+    time.sleep duration
+  }
