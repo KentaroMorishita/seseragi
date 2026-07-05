@@ -1,0 +1,31 @@
+// Lesson 27: props recordからpureなHtml treeを作りSSRする
+// 前提: Lessons 07, 15, and 26
+
+import * as html from "std/web/html"
+
+type Msg =
+  | Confirm
+
+// componentはprops recordを受ける通常の純粋関数です。
+// idやclassNameを使わないtagではoptional fieldをそのまま省略できます。
+fn page -> html.Html<Msg> =
+  html.div {
+    id: "app",
+    className: "container",
+    children: [
+      html.p { children: "Hello <Seseragi>" },
+      html.button {
+        onClick: Confirm,
+        children: "OK"
+      }
+    ]
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  // SSRはDom serviceを要求せず、textを一度だけHTML escapeします。
+  println $ html.renderToString (page ())
+
+// Expected stdout:
+// <div id="app" class="container"><p>Hello &lt;Seseragi&gt;</p><button type="button">OK</button></div>

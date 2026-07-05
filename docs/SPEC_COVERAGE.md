@@ -124,6 +124,14 @@
 - 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
 - playground sampleへsourceを複製せず生成・直接読込する
 
+### Web UI
+
+- optional props recordとIntoChildrenによるpure Html tree
+- Msgを生成するevent snapshotとbounded sequential dispatch
+- Signal transaction単位のkeyed DOM reconciliation
+- DOM mount / listener / subscriptionのresource ownership
+- deterministic SSR、strict / replace hydration、raw HTML禁止
+
 ## 意図的に採用しない
 
 - mutable variable / mutable field

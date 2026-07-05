@@ -9,7 +9,7 @@
 | ------------------------------------------- | ----------------------- | ----------------------------------------- | ------- |
 | program、entry point、Effect main           | Lessons 01-18           | entry signature diagnostics               | partial |
 | literal、application、`$`、pipeline         | Lessons 01-05           | precedence fixtures                       | partial |
-| optional record field / presence            | planned Lesson 27       | `compile/optional-record-field.ssrg`      | partial |
+| optional record field / presence            | Lesson 27               | `compile/optional-record-field.ssrg`      | partial |
 | match、tuple、range、effectful for          | Lessons 03 and 05       | exhaustiveness diagnostics                | partial |
 | newtype、deriving、operator overload        | Lesson 07               | coherence diagnostics                     | partial |
 | Array/List、lambda、Either                  | Lessons 04 and 08       | collection boundary fixtures              | partial |
@@ -46,6 +46,8 @@
 | diagnostic schema / inference explanation   | none                    | diagnostic JSON / explain snapshots       | partial |
 | document comments / doctest                 | none                    | doc HTML / JSON / doctest snapshots       | planned |
 | JsonEncode / JsonDecode deriving            | Lesson 26               | codec wire / strict field fixtures        | partial |
+| pure Html props / children / SSR            | Lesson 27               | HTML escaping / props fixtures            | partial |
+| Signal-driven DOM / event resource lifetime | planned advanced lesson | DOM reconciliation / hydration projects   | planned |
 
 ## 次に埋める順序
 

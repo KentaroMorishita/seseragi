@@ -18,7 +18,8 @@ Seseragiが保証する意味を記述します。
 11. [標準ライブラリsurface](./10-library-surface.md)
 12. [packageとproject layout](./11-packages-and-projects.md)
 13. [Parser・formatter・language server契約](./12-tooling.md)
-14. [Appendix A: 文法要約](./grammar.md)
+14. [pure HTML treeとDOM renderer](./13-web-ui.md)
+15. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 
@@ -86,6 +87,7 @@ Seseragiが保証する意味を記述します。
 - collection、text、number、JSON、time、random
 - Effect、Stream、Signal、concurrency、resource
 - Console、Logger、filesystem、process、HTTP
+- props recordによるpure Html tree、SSR、Signal駆動DOM renderer
 - testing、law testing、deterministic test service
 
 ### tooling
@@ -112,6 +114,7 @@ Seseragiが保証する意味を記述します。
 10. 現行compilerの挙動や対応範囲は、言語仕様の意味を変更しない。
 11. derivingとtemplate展開は仕様で閉じ、汎用マクロとして任意のcode生成を許さない。
 12. compiler、formatter、language serverは同じtoken境界とoperator結合規則を使う。
+13. Web componentはprops recordを受ける純粋関数で、実DOM identityとlistenerはDom Effectへ閉じる。
 
 ## 明示的に採用しないもの
 

@@ -127,7 +127,7 @@
         },
         {
           "name": "entity.name.type.generic.seseragi",
-          "match": "\\b(Maybe|Either|List|Array|Iterator|Effect|Task|Signal|MutableSignal|Stream|Fiber|Ref|Deferred|Queue|Semaphore)\\b"
+          "match": "\\b(Maybe|Either|List|Array|Iterator|Effect|Task|Signal|MutableSignal|Stream|Fiber|Ref|Deferred|Queue|Semaphore|Html|Attribute|Style|WebUrl|DomTarget|DomMount)\\b"
         },
         {
           "name": "entity.name.type.user.seseragi",

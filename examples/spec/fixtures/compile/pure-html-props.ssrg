@@ -1,0 +1,13 @@
+import * as html from "std/web/html"
+
+type Msg =
+  | Clicked
+
+fn view -> html.Html<Msg> =
+  html.div {
+    id: "app",
+    children: html.button {
+      onClick: Clicked,
+      children: "click"
+    }
+  }

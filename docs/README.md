@@ -22,6 +22,7 @@
 - [標準ライブラリsurface](./spec/10-library-surface.md)
 - [packageとproject layout](./spec/11-packages-and-projects.md)
 - [Parser・formatter・language server契約](./spec/12-tooling.md)
+- [pure HTML treeとDOM renderer](./spec/13-web-ui.md)
 - [Appendix A: 文法要約](./spec/grammar.md)
 
 ## 規範性
