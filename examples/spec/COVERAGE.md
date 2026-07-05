@@ -47,7 +47,7 @@
 | TypeScript foreign blockとABI                 | interop guide           | `projects/foreign-*`, `typescript-abi-*`       | partial |
 | `.d.ts`変換                                   | converter guide         | `projects/dts-*`                               | partial |
 | generic TS ABI / callback lifetime            | interop guide           | `projects/{typescript-abi,dts-callback}-*`     | partial |
-| generated naming / declaration merge          | converter guide         | `projects/dts-generated-name`                  | partial |
+| generated naming / declaration merge          | converter guide         | `projects/dts-{generated-name,*-merge}`        | partial |
 | foreign module load mode / single-flight      | interop guide           | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide           | `projects/source-map-rejection`                | partial |
 | manifest、dependency、lockfile                | package guide           | `fixtures/projects/package-*`                  | covered |

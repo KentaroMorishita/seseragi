@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "convert",
+  "spec": ["8.2", "8.3", "8.6", "8.7", "8.15", "8.18"],
+  "lock": "generate",
+  "artifacts": [
+    {
+      "output": ".seseragi/generated/merge-api.ssrg",
+      "snapshot": "expected/merge-api.ssrg"
+    }
+  ]
+}

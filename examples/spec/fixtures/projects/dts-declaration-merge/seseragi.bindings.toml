@@ -1,0 +1,7 @@
+schema = 1
+
+[entries.merge]
+declaration = "host/index.d.ts"
+specifier = "merge-api"
+output = "merge-api"
+evaluation = "task"

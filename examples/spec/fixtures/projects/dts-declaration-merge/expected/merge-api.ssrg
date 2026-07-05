@@ -1,0 +1,5 @@
+pub foreign "typescript" from "merge-api" {
+  opaque type User
+
+  task fn display user: User -> String
+}
