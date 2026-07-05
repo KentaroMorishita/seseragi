@@ -12,6 +12,7 @@
 | match、tuple、range、effectful for          | Lessons 03 and 05       | exhaustiveness diagnostics                | partial |
 | newtype、deriving、operator overload        | Lesson 07               | coherence diagnostics                     | partial |
 | Array/List、lambda、Either                  | Lessons 04 and 08       | collection boundary fixtures              | partial |
+| Map / Set ordering and serialization        | Lesson 06               | seed / duplicate / canonical fixtures     | partial |
 | ApplicativeとValidation accumulation        | Lesson 09               | Applicative law fixtures                  | partial |
 | Monad、`>>=`、do desugar                    | Lesson 10               | Monad law / invalid bind pattern fixtures | partial |
 | Signalとtransaction                         | Lesson 15               | glitch / subscription fixtures            | partial |

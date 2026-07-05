@@ -393,6 +393,41 @@ SetのEqは挿入順を比較せず、同じ要素を持つかを比較します
 要求します。SetのShowは `Show<A>`、Debugは `Debug<A>` を要求し、観測可能な挿入順で要素を
 表示します。
 
+### Map / Setのhash seedとserialization
+
+`Hash.hash` が返すIntはpureなuser-level hashです。runtimeはその結果をprocess-localなhash seedで
+mixしてからMap / Setの内部indexへ使います。seedはMap / Setの値、Eq、Show、Debug、反復順、生成code、
+serialized dataの一部ではありません。同じ内容を異なるseedで保持したcollectionは観測上同じ値です。
+
+default seedはprocess開始時にhostのcryptographically secureなentropyから一度生成します。pureな
+collection operationがRandom serviceやglobal random valueを読むわけではありません。seedによって
+変化できるのはbucket配置とperformanceだけで、callback回数・評価順・出力順を含む言語semanticsは
+変化しません。persistent operationは入力collectionのseedを引き継ぎ、二つのMap / Setを結合する
+operationはdata-last側、つまり結果の順序の基準になるleft / values側のseedへ再indexします。
+
+`Hash.hash` の具体的な数値とstandard instanceのalgorithmはlanguage ABIではなく、version間の安定性を
+保証しません。hash値、bucket配置、seedをfile、network、cache keyへ保存してはなりません。hostにsecure
+entropyがなく、manifestで固定seedも指定されていないtargetは、application codeを開始する前にruntime
+startup errorで停止しなければなりません。
+
+Map / Setをsequenceとしてserializeする標準contractは次です。
+
+- Mapは挿入順のkey-value pair列、Setは挿入順のvalue列としてencodeする。
+- decodeは `fromEntries` / `fromIterable` と同じ重複規則を使う。Mapは最後のvalueと最初の位置、Setは
+  最初の位置を保つ。
+- hash seedとbucket配置はencodeせず、decode先runtimeのseedで新しくindexする。
+- formatがstring keyだけを持つ場合、任意のMapをobjectへ暗黙変換しない。Map<String, V>用の明示的な
+  object adapterか、pair列adapterを選ぶ。
+- insertion orderは値として観測できますがMap / SetのEqには含まれません。したがって通常encodeは
+  deterministicでも、Eqな二値から同じbytesを作るcanonical encodingとは限りません。
+- signing、content hash、reproducible artifact用のcanonical encoderはOrdを要求し、Mapはkey、Setはvalueの
+  昇順にencodeする。同じOrdでEqualな値はEqでも同値でなければならず、同順位を入力順で補わない。
+
+JSONではMapを既定でentryの2要素Array列、SetをvalueのArrayとして表します。JSON objectとの変換は
+Map<String, V>専用の名前付きadapterです。canonical JSONはJSON自身のnumber / string escaping規則に加え、
+上記のOrd順を使います。encoder / decoder導出のsurface syntaxは別途定義しますが、このdata表現と重複規則を
+変更してはなりません。
+
 ## 10.6 collection trait
 
 標準traitとして次を提供します。

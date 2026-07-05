@@ -26,6 +26,7 @@ entry = "main"
 target = "node"
 signal_mode = "cancel"
 shutdown_grace_ms = 10000
+hash_seed = "random"
 ```
 
 `signal_mode` は `cancel` または `forward` で、省略時は `cancel` です。`cancel` はtermination signalを
@@ -35,6 +36,11 @@ root Effectのcancellationへ変換し、`forward` は `std/process.signals` へ
 
 grace periodはhostのmonotonic clockで測り、application environmentのClock serviceを要求・参照しません。
 test hostはsignal入力とmonotonic timeを決定的に制御できなければなりません。
+
+`hash_seed` は `"random"` またはsigned 64-bit integerで、省略時は `"random"` です。random modeは
+hostのsecure entropyを要求します。integerは同じHash implementationで内部bucket配置を再現するための
+test・benchmark用設定で、production packageでの使用はtool warningの対象です。seedはMap / Setの反復順や
+serialized dataを変えないため、通常testは固定seedへ依存してはなりません。
 
 signalを持たないtargetで `forward` を選ぶこと、またはsignal / graceful shutdown capabilityを持たない
 targetへこれらのkeyを明示することはmanifest errorです。target adapterは対応可否をbuild時に公開し、

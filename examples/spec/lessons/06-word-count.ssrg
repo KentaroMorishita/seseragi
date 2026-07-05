@@ -20,6 +20,8 @@ let sample = "Red blue RED green blue red"
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
+  // Mapはhash bucket順ではなく、keyを最初に追加した順で反復します。
+  // runtimeのhash seedが変わっても、この出力順と値の意味は変わりません。
   for (word, count) <- maps.entries (wordCounts sample) {
     println $ `${word}: ${count}`
   }
