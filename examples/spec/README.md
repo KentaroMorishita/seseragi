@@ -3,6 +3,8 @@
 このdirectoryは刷新仕様に対する学習教材とconformance targetです。現行compilerとの互換exampleでは
 ありません。読みやすさと機械的網羅性を一fileへ同居させず、二層に分けます。
 
+仕様、fixture、実装の現在の境界は [`docs/STATUS.md`](../../docs/STATUS.md) を参照してください。
+
 - [`lessons/`](./lessons/README.md): 人が順番に学ぶ実行可能program。
 - [`fixtures/`](./fixtures/README.md): compiler / formatter / LSP向けの最小caseと失敗case。
 - [`COVERAGE.md`](./COVERAGE.md): 仕様機能からlesson / fixtureへの対応表。

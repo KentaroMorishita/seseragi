@@ -7,6 +7,7 @@
 
 ## 仕様の読み方
 
+- [現在地――仕様、検証、実装を分けた進捗表](./STATUS.md)
 - [仕様索引・feature map・cross-cutting invariants](./spec/README.md)
 - [仕様カバレッジと未定義項目](./SPEC_COVERAGE.md)
 - [言語の定義と設計原則](./spec/00-language.md)
