@@ -12,6 +12,10 @@
 - 同じ処理を複数の抽象で書く場合、意味の違いまたは等価性をcommentで説明する。
 - 実行可能で、exact stdoutを持つ。
 
+通常のlessonはrunnerの既定test targetで実行します。特定capabilityとdeterministic scenarioが必要なlessonは、
+冒頭commentに`// Test target: target-id`と`// Test services: ./file.services.json`を置きます。services fileは
+project fixtureと同じschema 1で、real browser、network、filesystemへfallbackしません。
+
 ## 順序
 
 | Lesson | 学ぶこと                     | 主な記法                                   |
@@ -45,6 +49,7 @@
 |     27 | pure HTML components         | props record, children, event Msg, SSR     |
 |     28 | Unicode text boundary        | grapheme cluster, normalization            |
 |     29 | 時間を伴うEffectの制御       | retry, repeat, timeout, Schedule           |
+|     30 | Signalからinteractive DOMへ  | mount, event dispatch, reconcile, cleanup  |
 
 ApplicativeをMonad/doより先に置きます。前の結果へ依存しない処理を最初からbind列へしないためです。
 `do` はEffect専用構文ではなく、Lesson 10で `>>=` と対応づけてからadvanced lessonで使います。

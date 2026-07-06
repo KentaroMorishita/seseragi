@@ -1,0 +1,67 @@
+// Lesson 30: Signalからinteractive DOMを安全に動かす
+// 前提: Lessons 15, 18, and 27
+// Test target: test-web
+// Test services: ./30-interactive-dom.services.json
+
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Msg =
+  | Increment
+  | Stop
+
+type DispatchError =
+  | StopRequested
+
+type AppError deriving Show =
+  | DomFailure dom.DomError
+  | ConsoleFailure ConsoleError
+
+// viewは現在値からHtmlを作るだけのpure関数です。DOM nodeやlistenerを保持しません。
+fn view count: Int -> html.Html<Msg> =
+  html.div {
+    children: [
+      html.span { id: "count", children: show count },
+      html.button { id: "increment", onClick: Increment, children: "+" },
+      html.button { id: "stop", onClick: Stop, children: "stop" },
+    ]
+  }
+
+// eventはMsgとしてFIFOで渡されます。IncrementはSignalを更新し、Stopはmountを終了させます。
+fn dispatch count: MutableSignal<Int> -> message: Msg
+  -> Task<DispatchError, Unit> =
+  match message {
+    Increment -> signals.update (\value -> value + 1) count
+    Stop -> effects.fail StopRequested
+  }
+
+pub effect fn main -> Unit
+with Console, Dom
+fails AppError =
+  do {
+    count <- signals.make 0
+    let content = signals.map view count
+
+    target <-
+      dom.query "#app"
+        |> effects.mapError DomFailure
+
+    // runはmount・待機・unmountを一つのscopeにします。
+    // Stopのdispatch failureだけを正常終了として回収し、listenerとsubscriptionのcleanupを待ちます。
+    dom.run (dom.defaultOptions ()) target (dispatch count) content
+      |> effects.recover (\failure ->
+        match failure {
+          dom.DispatchFailure StopRequested -> effects.succeed ()
+          dom.DomFailure error -> effects.fail $ DomFailure error
+        }
+      )
+
+    finalCount <- *count
+    println `count: ${finalCount}`
+      |> effects.mapError ConsoleFailure
+  }
+
+// Expected stdout:
+// count: 1

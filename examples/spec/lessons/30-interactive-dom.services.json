@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "dom": {
+    "document": "<div id=\"app\"></div>",
+    "events": [
+      {
+        "selector": "#increment",
+        "type": "click",
+        "afterHtml": "<div id=\"app\"><div><span id=\"count\">1</span><button id=\"increment\" type=\"button\">+</button><button id=\"stop\" type=\"button\">stop</button></div></div>"
+      },
+      {
+        "selector": "#stop",
+        "type": "click"
+      }
+    ],
+    "expected": {
+      "mountHtml": "<div id=\"app\"><div><span id=\"count\">0</span><button id=\"increment\" type=\"button\">+</button><button id=\"stop\" type=\"button\">stop</button></div></div>",
+      "finalHtml": "<div id=\"app\"></div>",
+      "reconciliations": 1,
+      "activeListeners": 0,
+      "activeSubscriptions": 0
+    }
+  }
+}

@@ -67,6 +67,48 @@ lessons.forEach((name, index) => {
     errors.push(`${name}: missing a Japanese learning comment`)
   }
 
+  const targetMarker = lines.find((line) => line.startsWith("// Test target:"))
+  const servicesMarker = lines.find((line) =>
+    line.startsWith("// Test services:")
+  )
+  if (servicesMarker && !targetMarker) {
+    errors.push(`${name}: Test services requires Test target`)
+  }
+  if (
+    targetMarker &&
+    targetMarker.slice("// Test target:".length).trim() === ""
+  ) {
+    errors.push(`${name}: Test target must not be empty`)
+  }
+  if (servicesMarker) {
+    const relativePath = servicesMarker.slice("// Test services:".length).trim()
+    const servicesPath = resolve(dirname(path), relativePath)
+    if (
+      relativePath === "" ||
+      relativePath.startsWith("/") ||
+      relativePath.includes("\\") ||
+      relativePath.split("/").some((segment) => segment === "..") ||
+      !servicesPath.startsWith(`${lessonsDir}/`) ||
+      !existsSync(servicesPath)
+    ) {
+      errors.push(`${name}: missing Test services ${relativePath}`)
+    } else {
+      try {
+        const parsed: unknown = JSON.parse(readFileSync(servicesPath, "utf8"))
+        if (
+          !parsed ||
+          typeof parsed !== "object" ||
+          Array.isArray(parsed) ||
+          (parsed as { schema?: unknown }).schema !== 1
+        ) {
+          errors.push(`${name}: Test services schema must be 1`)
+        }
+      } catch (error) {
+        errors.push(`${name}: invalid Test services JSON: ${error}`)
+      }
+    }
+  }
+
   const marker = lines.findIndex((line) =>
     line.startsWith("// Expected stdout:")
   )
