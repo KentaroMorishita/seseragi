@@ -336,6 +336,230 @@ if (!ebnfBlock) {
   }
 }
 
+type ArtifactToken = {
+  kind: string
+  start: number
+  end: number
+  raw: string
+}
+type TokenArtifact = {
+  schema: number
+  source: string
+  positionEncoding: string
+  tokens: ArtifactToken[]
+}
+type CstNodeArtifact = {
+  kind: string
+  startToken: number
+  endToken: number
+  children: CstNodeArtifact[]
+}
+type CstArtifact = {
+  schema: number
+  source: string
+  tokens: string
+  root: CstNodeArtifact
+  missing: unknown[]
+  errors: unknown[]
+}
+type DiagnosticArtifact = {
+  schema: number
+  source: string
+  positionEncoding: string
+  diagnostics: unknown[]
+}
+type InterfaceExportArtifact = {
+  symbol: string
+  namespace: string
+  name: string
+  visibility: string
+  declaration: { start: number; end: number }
+  scheme: unknown
+}
+type InterfaceArtifact = {
+  schema: number
+  module: string
+  source: string
+  dependencies: unknown[]
+  exports: InterfaceExportArtifact[]
+  operators: unknown[]
+  instances: unknown[]
+}
+
+const artifactsDir = join(root, "artifacts", "schema-1")
+for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue
+  const directory = join(artifactsDir, entry.name)
+  const prefix = `artifacts/schema-1/${entry.name}`
+  const readArtifact = <T>(name: string): T | undefined => {
+    const path = join(directory, name)
+    try {
+      return JSON.parse(readFileSync(path, "utf8")) as T
+    } catch (error) {
+      errors.push(`${prefix}/${name}: invalid JSON: ${error}`)
+      return undefined
+    }
+  }
+
+  const tokens = readArtifact<TokenArtifact>("tokens.json")
+  if (!tokens) continue
+  const sourcePath = resolve(directory, tokens.source)
+  if (
+    tokens.schema !== 1 ||
+    tokens.positionEncoding !== "utf-8" ||
+    tokens.source.startsWith("/") ||
+    tokens.source.includes("\\") ||
+    tokens.source.split("/").some((segment) => segment === "..") ||
+    !sourcePath.startsWith(`${directory}/`) ||
+    !existsSync(sourcePath) ||
+    !Array.isArray(tokens.tokens) ||
+    tokens.tokens.length === 0
+  ) {
+    errors.push(`${prefix}/tokens.json: invalid token artifact envelope`)
+    continue
+  }
+
+  const sourceBytes = readFileSync(sourcePath)
+  let previousEnd = 0
+  let reconstructed = ""
+  for (const [index, token] of tokens.tokens.entries()) {
+    if (
+      !token ||
+      typeof token.kind !== "string" ||
+      !/^[a-z][a-z0-9.-]*$/.test(token.kind) ||
+      typeof token.raw !== "string" ||
+      !Number.isInteger(token.start) ||
+      !Number.isInteger(token.end) ||
+      token.start !== previousEnd ||
+      token.end < token.start ||
+      token.end > sourceBytes.length
+    ) {
+      errors.push(`${prefix}/tokens.json: invalid token ${index}`)
+      continue
+    }
+    const actual = sourceBytes.subarray(token.start, token.end).toString("utf8")
+    if (actual !== token.raw) {
+      errors.push(`${prefix}/tokens.json: raw mismatch at token ${index}`)
+    }
+    const startsOnBoundary = Buffer.from(
+      sourceBytes.subarray(0, token.start).toString("utf8"),
+      "utf8"
+    ).equals(sourceBytes.subarray(0, token.start))
+    const endsOnBoundary = Buffer.from(
+      sourceBytes.subarray(0, token.end).toString("utf8"),
+      "utf8"
+    ).equals(sourceBytes.subarray(0, token.end))
+    if (!startsOnBoundary || !endsOnBoundary) {
+      errors.push(`${prefix}/tokens.json: token ${index} splits UTF-8`)
+    }
+    if (token.kind !== "eof") reconstructed += token.raw
+    previousEnd = token.end
+  }
+  const lastToken = tokens.tokens.at(-1)
+  if (
+    !lastToken ||
+    lastToken.kind !== "eof" ||
+    lastToken.start !== sourceBytes.length ||
+    lastToken.end !== sourceBytes.length ||
+    lastToken.raw !== "" ||
+    reconstructed !== sourceBytes.toString("utf8")
+  ) {
+    errors.push(`${prefix}/tokens.json: token stream is not lossless with EOF`)
+  }
+
+  const cst = readArtifact<CstArtifact>("cst.json")
+  if (cst) {
+    const nonEofTokenCount = tokens.tokens.length - 1
+    const validateNode = (
+      node: CstNodeArtifact,
+      parentStart: number,
+      parentEnd: number
+    ): void => {
+      if (
+        !node ||
+        typeof node.kind !== "string" ||
+        !/^[a-z][a-z0-9-]*$/.test(node.kind) ||
+        !Number.isInteger(node.startToken) ||
+        !Number.isInteger(node.endToken) ||
+        node.startToken < parentStart ||
+        node.endToken > parentEnd ||
+        node.endToken < node.startToken ||
+        !Array.isArray(node.children)
+      ) {
+        errors.push(`${prefix}/cst.json: invalid CST node`)
+        return
+      }
+      for (const child of node.children) {
+        validateNode(child, node.startToken, node.endToken)
+      }
+    }
+    if (
+      cst.schema !== 1 ||
+      cst.source !== tokens.source ||
+      cst.tokens !== "tokens.json" ||
+      !Array.isArray(cst.missing) ||
+      !Array.isArray(cst.errors) ||
+      cst.root?.kind !== "module" ||
+      cst.root?.startToken !== 0 ||
+      cst.root?.endToken !== nonEofTokenCount
+    ) {
+      errors.push(`${prefix}/cst.json: invalid CST artifact envelope`)
+    } else {
+      validateNode(cst.root, 0, nonEofTokenCount)
+    }
+  }
+
+  const diagnostics = readArtifact<DiagnosticArtifact>("diagnostics.json")
+  if (
+    diagnostics &&
+    (diagnostics.schema !== 1 ||
+      diagnostics.source !== tokens.source ||
+      diagnostics.positionEncoding !== "utf-8" ||
+      !Array.isArray(diagnostics.diagnostics))
+  ) {
+    errors.push(`${prefix}/diagnostics.json: invalid diagnostic envelope`)
+  }
+
+  const moduleInterface = readArtifact<InterfaceArtifact>("interface.json")
+  if (moduleInterface) {
+    if (
+      moduleInterface.schema !== 1 ||
+      !/^[a-z][a-z0-9-]*(\/[a-z][a-z0-9-]*)*$/.test(moduleInterface.module) ||
+      moduleInterface.source !== tokens.source ||
+      !Array.isArray(moduleInterface.dependencies) ||
+      !Array.isArray(moduleInterface.exports) ||
+      !Array.isArray(moduleInterface.operators) ||
+      !Array.isArray(moduleInterface.instances)
+    ) {
+      errors.push(`${prefix}/interface.json: invalid interface envelope`)
+    } else {
+      const symbols = new Set<string>()
+      for (const exported of moduleInterface.exports) {
+        const range = exported.declaration
+        if (
+          !exported ||
+          typeof exported.symbol !== "string" ||
+          symbols.has(exported.symbol) ||
+          !["value", "type", "operator"].includes(exported.namespace) ||
+          typeof exported.name !== "string" ||
+          exported.visibility !== "public" ||
+          !range ||
+          !Number.isInteger(range.start) ||
+          !Number.isInteger(range.end) ||
+          range.start < 0 ||
+          range.end < range.start ||
+          range.end > sourceBytes.length ||
+          !exported.scheme ||
+          typeof exported.scheme !== "object"
+        ) {
+          errors.push(`${prefix}/interface.json: invalid export`)
+        }
+        symbols.add(exported.symbol)
+      }
+    }
+  }
+}
+
 const lessons = readdirSync(lessonsDir)
   .filter((name) => /^\d{2}-.*\.ssrg$/.test(name))
   .sort()

@@ -9,6 +9,7 @@
 - [`fixtures/`](./fixtures/README.md): compiler / formatter / LSP向けの最小caseと失敗case。
 - [`COVERAGE.md`](./COVERAGE.md): 仕様機能からlesson / fixtureへの対応表。
 - [`grammar-coverage.json`](./grammar-coverage.json): Appendix productionから代表sourceへの機械検査可能な対応。
+- [`artifacts/`](./artifacts/README.md): token / CST / diagnostic / module interfaceのversioned contract fixture。
 
 `grammar-coverage.json`のtargetはconformance入力の所在を宣言するもので、現行compilerがparseまたはformat
 できるという主張ではありません。各productionは一groupだけに属し、parse targetを最低一件持ちます。

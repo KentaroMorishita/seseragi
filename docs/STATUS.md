@@ -59,6 +59,7 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 - multi-file conformance入力: project 41件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
 - grammar対応表: `examples/spec/grammar-coverage.json`
+- stage artifact契約: `examples/spec/artifacts/schema-1/`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`

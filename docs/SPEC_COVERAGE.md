@@ -133,6 +133,7 @@
 - `examples/spec/COVERAGE.md` で全仕様機能をlessonまたはfixtureへ対応づける
 - 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
 - playground sampleへsourceを複製せず生成・直接読込する
+- token / lossless CST / diagnostic / module interfaceのversioned artifact contract
 
 ### Web UI
 

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "artifact/basic",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/basic::answer",
+      "namespace": "value",
+      "name": "answer",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 24 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

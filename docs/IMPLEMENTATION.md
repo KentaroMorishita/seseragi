@@ -196,3 +196,7 @@ match guard
 
 このgateは全仕様の実装完了を待つものではありません。共有境界が未定義なまま人数だけ増やして、後から一つの
 巨大ASTとbackendへmergeする事態を防ぐための開始条件です。
+
+最初の二項は`examples/spec/grammar-coverage.json`と`examples/spec/artifacts/schema-1/basic/`で最小contractを
+満たしました。次はmissing / error CST、diagnostic一件、dependencyとoperatorを持つmodule interfaceを追加し、
+happy pathだけにschemaを最適化しないことを確認します。
