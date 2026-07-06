@@ -41,7 +41,7 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
-| pure HTML、SSR、DOM、hydration             | 初稿あり      | pure HTML lessonとcompile fixtureあり      | 未着手             |
+| pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR lesson、DOM / hydration fixtureあり    | 未着手             |
 | 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |
 | diagnostics、formatter、LSP                | 契約初稿あり  | diagnostic fixtureは一部                   | 未着手             |
 | syntax highlight                           | token契約あり | spec preview拡張あり                       | 仮実装あり         |
@@ -54,9 +54,9 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 ## いま存在する成果物
 
 - 規範仕様: `docs/spec/00-language.md` から `14-performance.md` とAppendix grammar
-- 学習教材: `examples/spec/lessons/` の29 lesson
-- conformance入力: positive 17件、diagnostic 9件
-- multi-file conformance入力: project 35件
+- 学習教材: `examples/spec/lessons/` の30 lesson
+- conformance入力: positive 19件、diagnostic 9件
+- multi-file conformance入力: project 39件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`

@@ -771,6 +771,21 @@ for (const name of projects) {
   }
 }
 
+const statusSource = readFileSync(
+  resolve(import.meta.dir, "../docs/STATUS.md"),
+  "utf8"
+)
+const statusCounts = [
+  `の${lessons.length} lesson`,
+  `positive ${readdirSync(join(fixturesDir, "compile")).filter((name) => name.endsWith(".ssrg")).length}件、diagnostic ${readdirSync(join(fixturesDir, "diagnostics")).filter((name) => name.endsWith(".ssrg")).length}件`,
+  `project ${projects.length}件`,
+]
+for (const expected of statusCounts) {
+  if (!statusSource.includes(expected)) {
+    errors.push(`docs/STATUS.md: stale artifact count, expected ${expected}`)
+  }
+}
+
 if (errors.length > 0) {
   console.error(errors.join("\n"))
   process.exit(1)
