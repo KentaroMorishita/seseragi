@@ -300,6 +300,8 @@ Effect値の構築時にはthunkを呼びません。反復可能なEffectでstr
 
 parallelの結果順は入力順です。最初に観測したfailureを返して残りをcancelします。同じ
 scheduler tickで複数failureを観測した場合は、入力indexが小さいものを返します。
+failureを選んだ後も全childへcancellationを要求し、各childのfinalizer完了を待ってからfailureを返します。同じtickで
+既にfailureしたchildもcleanupを省略しません。sibling finalizer間の外部操作順は5.11のとおり保証しません。
 
 `forEach` は先頭から末尾へ逐次実行し、各actionが成功してから次へ進みます。空collectionは
 何もせず成功します。最初のfailureで停止し、後続actionを開始しません。結果を収集する操作は

@@ -56,7 +56,7 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 - 規範仕様: `docs/spec/00-language.md` から `14-performance.md` とAppendix grammar
 - 学習教材: `examples/spec/lessons/` の30 lesson
 - conformance入力: positive 20件、diagnostic 9件
-- multi-file conformance入力: project 40件
+- multi-file conformance入力: project 41件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`

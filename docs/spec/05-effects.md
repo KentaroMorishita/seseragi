@@ -247,6 +247,10 @@ cancellationもcheckpointで観測します。Effectを作らない長時間のp
 追加します。runtimeのthread数が違っても、仕様で定めたresult順、failure選択、resource解放順を
 変えてはなりません。
 
+resource解放順の保証は一つのscope内のLIFOと、APIが明示した親子順に適用します。独立したsibling Fiberの
+finalizer同士にglobal orderはなく、並行に進められます。resultを返す前に全sibling cleanupを待つAPIでも、各finalizerの
+外部操作順をinput index順へ直列化したことにしません。programはsibling finalizer間の順序へ依存してはなりません。
+
 ### Fiber supervision
 
 すべてのFiberはroot `main` scopeまたは最も内側の `scoped` resource scopeに所属します。`fork` は

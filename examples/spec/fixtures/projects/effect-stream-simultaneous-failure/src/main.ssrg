@@ -1,0 +1,46 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as streams from "std/stream"
+
+fn failing label: String -> released: Ref<Bool>
+  -> Task<String, Int> =
+  effects.fail label
+    |> effects.ensuring (refs.set True released)
+
+fn failureLabel<A> result: Either<String, A> -> String =
+  match result {
+    Left label -> label
+    Right _ -> "unexpected success"
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    effectLeftReleased <- refs.make False
+    effectRightReleased <- refs.make False
+
+    effectResult <- effects.attempt $ effects.parallel [
+      failing "left" effectLeftReleased,
+      failing "right" effectRightReleased,
+    ]
+
+    effectLeftDone <- refs.get effectLeftReleased
+    effectRightDone <- refs.get effectRightReleased
+    println `effect:${failureLabel effectResult},${effectLeftDone},${effectRightDone}`
+
+    streamLeftReleased <- refs.make False
+    streamRightReleased <- refs.make False
+    let left = streams.fromEffect $ failing "left" streamLeftReleased
+    let right = streams.fromEffect $ failing "right" streamRightReleased
+
+    streamResult <-
+      left
+        |> streams.merge right
+        |> streams.runCollect
+        |> effects.attempt
+
+    streamLeftDone <- refs.get streamLeftReleased
+    streamRightDone <- refs.get streamRightReleased
+    println `stream:${failureLabel streamResult},${streamLeftDone},${streamRightDone}`
+  }
