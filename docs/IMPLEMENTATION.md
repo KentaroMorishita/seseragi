@@ -48,24 +48,24 @@ Rust風にするためではなく、parser・型検査・IRのdata ownership、
 TypeScript runtimeとして残します。
 
 ```text
-compiler/
-  crates/
-    source          SourceSnapshot、line index、span
-    syntax          token、lossless CST、lexer
-    parser          SurfaceAst、recovery、operator fixity
-    diagnostics     code、range、fix、rendering-independent data
-    project         manifest、module graph、interface cache
-    semantics       names、types、kinds、traits、exhaustiveness
-    hir             TypedHirとdesugar
-    core-ir         評価順を固定したCoreIr
-    backend-ts      TypeScriptIr、emitter、source map
-    formatter       CST formatter
-    driver          incremental queryとpublic compiler API
-    cli             native command surface
-    lsp             native language server adapter
-    wasm            playground向けdriver adapter
+crates/
+  seseragi-source          SourceSnapshot、line index、span
+  seseragi-syntax          token、lossless CST、lexer
+  seseragi-parser          SurfaceAst、recovery、operator fixity
+  seseragi-diagnostics     code、range、fix、rendering-independent data
+  seseragi-project         manifest、module graph、interface cache
+  seseragi-semantics       names、types、kinds、traits、exhaustiveness
+  seseragi-hir             TypedHirとdesugar
+  seseragi-core-ir         評価順を固定したCoreIr
+  seseragi-backend-ts      TypeScriptIr、emitter、source map
+  seseragi-formatter       CST formatter
+  seseragi-driver          incremental queryとpublic compiler API
+  seseragi-cli             native command surface
+  seseragi-lsp             native language server adapter
+  seseragi-wasm            playground向けdriver adapter
+  seseragi-conformance     artifact / fixture runner
 runtime/
-  typescript/       Effect、collection、interop、service、DOM runtime
+  typescript/              Effect、collection、interop、service、DOM runtime
 ```
 
 実際のdirectory作成はWave 0開始時に行い、現行`src/`を途中で新coreへ混在させません。移行中は現行compilerと
