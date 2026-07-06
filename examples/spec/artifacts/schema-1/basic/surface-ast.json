@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "stage": "surface-ast",
+  "source": "main.ssrg",
+  "root": {
+    "kind": "module",
+    "origin": { "start": 0, "end": 25 },
+    "declarations": [
+      {
+        "kind": "let",
+        "visibility": "public",
+        "origin": { "start": 0, "end": 24 },
+        "pattern": {
+          "kind": "binding",
+          "name": "answer",
+          "origin": { "start": 8, "end": 14 }
+        },
+        "annotation": {
+          "kind": "named",
+          "name": "Int",
+          "origin": { "start": 16, "end": 19 }
+        },
+        "value": {
+          "kind": "integer",
+          "raw": "42",
+          "origin": { "start": 22, "end": 24 }
+        }
+      }
+    ]
+  }
+}

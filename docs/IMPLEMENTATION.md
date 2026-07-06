@@ -200,5 +200,9 @@ match guard
 最初の二項は`examples/spec/grammar-coverage.json`と`examples/spec/artifacts/schema-1/`で最小contractを
 満たしました。basicに加えてmissing / error CSTとzero-width diagnosticを持つrecovery sourceを固定しています。
 `examples/spec/artifacts/interface-schema-1/rich/`はdependency edge、public type / operator、instance headを
-bodyから分離して固定し、module graph laneの入力も閉じました。次は最小end-to-end milestoneのstage snapshotと
-runtime ABI metadataを定義します。
+bodyから分離して固定し、module graph laneの入力も閉じました。
+
+milestone 1の`pub let answer: Int = 42`はSurfaceAst、ResolvedAst、TypedHir、CoreIr、TypeScriptIr、generated
+TypeScriptまで接続済みです。`runtime-schema-1/core/abi.json`は`core.int64`をTypeScript `bigint`表現として登録し、
+generated moduleがABI majorとfeature requirementを宣言します。source mapはまだ`null`なので、origin mappingの
+開始gateは未完了です。

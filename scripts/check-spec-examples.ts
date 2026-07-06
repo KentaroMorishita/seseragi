@@ -520,6 +520,65 @@ const validateInterfaceArtifact = (
   }
 }
 
+type RuntimeFeature = {
+  id: string
+  kind: string
+  typescript: string
+  boundary: string
+  import: string | null
+}
+type RuntimeAbiArtifact = {
+  schema: number
+  identity: string
+  abiMajor: number
+  targetFamily: string
+  features: RuntimeFeature[]
+}
+
+const runtimeAbiPath = join(
+  root,
+  "artifacts",
+  "runtime-schema-1",
+  "core",
+  "abi.json"
+)
+let runtimeAbi: RuntimeAbiArtifact | undefined
+try {
+  runtimeAbi = JSON.parse(
+    readFileSync(runtimeAbiPath, "utf8")
+  ) as RuntimeAbiArtifact
+} catch (error) {
+  errors.push(
+    `artifacts/runtime-schema-1/core/abi.json: invalid JSON: ${error}`
+  )
+}
+const runtimeFeatures = new Set<string>()
+if (
+  runtimeAbi &&
+  (runtimeAbi.schema !== 1 ||
+    runtimeAbi.identity !== "@seseragi/runtime" ||
+    runtimeAbi.abiMajor !== 1 ||
+    runtimeAbi.targetFamily !== "typescript" ||
+    !Array.isArray(runtimeAbi.features))
+) {
+  errors.push("artifacts/runtime-schema-1/core/abi.json: invalid ABI envelope")
+} else if (runtimeAbi) {
+  for (const feature of runtimeAbi.features) {
+    if (
+      !feature ||
+      !/^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$/.test(feature.id) ||
+      runtimeFeatures.has(feature.id) ||
+      !["value-representation", "runtime-helper"].includes(feature.kind) ||
+      typeof feature.typescript !== "string" ||
+      typeof feature.boundary !== "string" ||
+      (feature.import !== null && typeof feature.import !== "string")
+    ) {
+      errors.push("artifacts/runtime-schema-1/core/abi.json: invalid feature")
+    }
+    runtimeFeatures.add(feature.id)
+  }
+}
+
 const artifactsDir = join(root, "artifacts", "schema-1")
 for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue
@@ -714,6 +773,140 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       sourceBytes,
       prefix
     )
+  }
+
+  const stageNames = [
+    "surface-ast",
+    "resolved-ast",
+    "typed-hir",
+    "core-ir",
+    "typescript-ir",
+  ] as const
+  const hasStageArtifacts = stageNames.some((stage) =>
+    existsSync(join(directory, `${stage}.json`))
+  )
+  if (hasStageArtifacts) {
+    const stages = new Map<string, Record<string, unknown>>()
+    for (const stage of stageNames) {
+      const artifact = readArtifact<Record<string, unknown>>(`${stage}.json`)
+      if (!artifact) continue
+      if (artifact.schema !== 1 || artifact.stage !== stage) {
+        errors.push(`${prefix}/${stage}.json: invalid stage envelope`)
+      }
+      stages.set(stage, artifact)
+    }
+    const surface = stages.get("surface-ast") as
+      | {
+          source?: unknown
+          root?: { declarations?: Array<Record<string, unknown>> }
+        }
+      | undefined
+    const resolved = stages.get("resolved-ast") as
+      | {
+          source?: unknown
+          module?: unknown
+          declarations?: Array<Record<string, unknown>>
+        }
+      | undefined
+    const typed = stages.get("typed-hir") as
+      | {
+          source?: unknown
+          module?: unknown
+          declarations?: Array<Record<string, unknown>>
+        }
+      | undefined
+    const core = stages.get("core-ir") as
+      | { module?: unknown; bindings?: Array<Record<string, unknown>> }
+      | undefined
+    const typescript = stages.get("typescript-ir") as
+      | {
+          module?: unknown
+          runtimeRequirements?: unknown
+          bindings?: Array<Record<string, unknown>>
+        }
+      | undefined
+    const surfaceDecl = surface?.root?.declarations?.[0]
+    const resolvedDecl = resolved?.declarations?.[0]
+    const typedDecl = typed?.declarations?.[0]
+    const coreBinding = core?.bindings?.[0]
+    const typescriptBinding = typescript?.bindings?.[0]
+    const moduleName = moduleInterface?.module
+    const symbol = moduleInterface?.exports[0]?.symbol
+    const coreValue = coreBinding?.value as
+      | { kind?: unknown; value?: unknown }
+      | undefined
+    const typescriptInitializer = typescriptBinding?.initializer as
+      | { kind?: unknown; value?: unknown }
+      | undefined
+    if (
+      surface?.source !== tokens.source ||
+      surfaceDecl?.kind !== "let" ||
+      resolved?.source !== tokens.source ||
+      resolved?.module !== moduleName ||
+      resolvedDecl?.symbol !== symbol ||
+      typed?.source !== tokens.source ||
+      typed?.module !== moduleName ||
+      typedDecl?.symbol !== symbol ||
+      core?.module !== moduleName ||
+      coreBinding?.symbol !== symbol ||
+      coreValue?.kind !== "int64" ||
+      typescript?.module !== moduleName ||
+      typescriptBinding?.kind !== "const" ||
+      typescriptBinding?.name !== moduleInterface?.exports[0]?.name ||
+      typescriptInitializer?.kind !== "bigint" ||
+      typescriptInitializer?.value !== coreValue.value
+    ) {
+      errors.push(`${prefix}: inconsistent stage artifact chain`)
+    }
+    const requirements = typescript?.runtimeRequirements
+    if (
+      !Array.isArray(requirements) ||
+      new Set(requirements).size !== requirements.length ||
+      requirements.some(
+        (requirement) =>
+          typeof requirement !== "string" || !runtimeFeatures.has(requirement)
+      )
+    ) {
+      errors.push(`${prefix}/typescript-ir.json: invalid runtime requirements`)
+    }
+
+    const generated = readArtifact<{
+      schema: number
+      module: string
+      target: string
+      runtime: {
+        identity: string
+        abiMajor: number
+        requirements: string[]
+      }
+      outputs: { typescript: string; sourceMap: string | null }
+    }>("generated-module.json")
+    if (
+      generated &&
+      (generated.schema !== 1 ||
+        generated.module !== moduleName ||
+        generated.target !== "typescript-es2022" ||
+        generated.runtime?.identity !== runtimeAbi?.identity ||
+        generated.runtime?.abiMajor !== runtimeAbi?.abiMajor ||
+        JSON.stringify(generated.runtime?.requirements) !==
+          JSON.stringify(requirements) ||
+        generated.outputs?.sourceMap !== null ||
+        generated.outputs?.typescript !== "main.ts")
+    ) {
+      errors.push(`${prefix}/generated-module.json: invalid generated metadata`)
+    }
+    if (generated && typescriptBinding && typescriptInitializer) {
+      const emitted = `${typescriptBinding.exported ? "export " : ""}const ${typescriptBinding.name}: bigint = ${typescriptInitializer.value}n;\n`
+      const outputPath = join(directory, generated.outputs.typescript)
+      if (
+        !existsSync(outputPath) ||
+        readFileSync(outputPath, "utf8") !== emitted
+      ) {
+        errors.push(
+          `${prefix}/${generated.outputs.typescript}: emitter snapshot mismatch`
+        )
+      }
+    }
   }
 }
 

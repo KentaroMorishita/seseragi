@@ -300,6 +300,14 @@ public newtype、custom operatorのsymbol / fixity / precedence / scheme、coher
 checkerはsource range、UTF-8 boundary、symbol namespace、dependency source、operator規則を検査します。module graph
 consumerはCSTやfunction bodyへ依存せず、このinterfaceだけをcache入力にできます。
 
+最小のstage chainとしてpublic Int定数をSurfaceAst、ResolvedAst、TypedHir、CoreIr、TypeScriptIrへ順に写し、
+`export const answer: bigint = 42n;`まで固定しました。checkerはmodule / symbol / valueのstage間一致、runtime
+feature参照、generated metadata、最小emitter結果を検査します。
+
+runtime ABI schema 1はpackage identityとABI major、feature IDを持ち、`core.int64`をsigned 64-bit境界付きの
+TypeScript bigint表現として登録します。Int表現にhelper importが不要でもfeature negotiationへ含めます。
+source mapはまだ未定義のためgenerated metadataで`null`を明示し、完成扱いにはしていません。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

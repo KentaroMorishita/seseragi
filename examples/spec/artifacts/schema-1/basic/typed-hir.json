@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/basic",
+  "declarations": [
+    {
+      "kind": "let",
+      "symbol": "artifact/basic::answer",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 24 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      },
+      "value": {
+        "kind": "integer",
+        "value": "42",
+        "type": { "kind": "named", "name": "Int", "arguments": [] },
+        "origin": { "start": 22, "end": 24 }
+      }
+    }
+  ]
+}

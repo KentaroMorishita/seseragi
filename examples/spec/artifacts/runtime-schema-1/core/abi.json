@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "identity": "@seseragi/runtime",
+  "abiMajor": 1,
+  "targetFamily": "typescript",
+  "features": [
+    {
+      "id": "core.int64",
+      "kind": "value-representation",
+      "typescript": "bigint",
+      "boundary": "signed-64",
+      "import": null
+    },
+    {
+      "id": "core.unit",
+      "kind": "value-representation",
+      "typescript": "undefined",
+      "boundary": "unit",
+      "import": null
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/basic",
+  "declarations": [
+    {
+      "kind": "let",
+      "symbol": "artifact/basic::answer",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 24 },
+      "annotation": {
+        "kind": "named",
+        "symbol": "std/prelude::Int",
+        "arguments": [],
+        "origin": { "start": 16, "end": 19 }
+      },
+      "value": {
+        "kind": "integer",
+        "raw": "42",
+        "origin": { "start": 22, "end": 24 }
+      }
+    }
+  ]
+}
