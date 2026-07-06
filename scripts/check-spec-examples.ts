@@ -83,6 +83,76 @@ const ebnfBlock = appendixGrammar.match(/```ebnf\n([\s\S]*?)```/)
 if (!ebnfBlock) {
   errors.push("docs/spec/grammar.md: Appendix EBNF block is missing")
 } else {
+  const productionBodies = new Map<string, string>()
+  let currentProduction: { name: string; body: string } | undefined
+  for (const line of ebnfBlock[1]?.split("\n") ?? []) {
+    const start = line.match(/^([a-z][a-z-]*)\s*=\s*(.*)$/)
+    if (start) {
+      if (currentProduction) {
+        errors.push(
+          `docs/spec/grammar.md: production ${currentProduction.name} is missing its terminator`
+        )
+      }
+      currentProduction = { name: start[1] ?? "", body: start[2] ?? "" }
+    } else if (currentProduction) {
+      currentProduction.body += `\n${line}`
+    }
+    if (currentProduction && /;\s*$/.test(line)) {
+      if (productionBodies.has(currentProduction.name)) {
+        errors.push(
+          `docs/spec/grammar.md: duplicate production ${currentProduction.name}`
+        )
+      }
+      productionBodies.set(currentProduction.name, currentProduction.body)
+      currentProduction = undefined
+    }
+  }
+  if (currentProduction) {
+    errors.push(
+      `docs/spec/grammar.md: production ${currentProduction.name} is missing its terminator`
+    )
+  }
+  if (!productionBodies.has("module")) {
+    errors.push("docs/spec/grammar.md: start production module is missing")
+  }
+
+  const productionEdges = new Map<string, Set<string>>()
+  for (const [name, body] of productionBodies) {
+    const withoutTerminals = body.replace(/"(?:\\.|[^"\\])*"/g, "")
+    const references = new Set(
+      [...withoutTerminals.matchAll(/\b([a-z][a-z-]*)\b/g)].map(
+        (match) => match[1] ?? ""
+      )
+    )
+    productionEdges.set(name, references)
+    for (const reference of references) {
+      if (!productionBodies.has(reference)) {
+        errors.push(
+          `docs/spec/grammar.md: production ${name} references undefined ${reference}`
+        )
+      }
+    }
+  }
+
+  const reachableProductions = new Set<string>()
+  const pendingProductions = ["module"]
+  while (pendingProductions.length > 0) {
+    const name = pendingProductions.pop()
+    if (!name || reachableProductions.has(name)) continue
+    reachableProductions.add(name)
+    for (const reference of productionEdges.get(name) ?? []) {
+      if (!reachableProductions.has(reference))
+        pendingProductions.push(reference)
+    }
+  }
+  for (const name of productionBodies.keys()) {
+    if (!reachableProductions.has(name)) {
+      errors.push(
+        `docs/spec/grammar.md: production ${name} is unreachable from module`
+      )
+    }
+  }
+
   const terminals = new Set(
     [...(ebnfBlock[1]?.matchAll(/"(?:\\.|[^"\\])*"/g) ?? [])].map(
       (match) => JSON.parse(match[0]) as string

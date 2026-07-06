@@ -252,6 +252,16 @@ TypeScriptではIntと同じhost `bigint`へ写像しますが、`.d.ts` convert
 BigIntは明示overrideだけで選びます。bit lengthとdigit数に基づくstorage / cost上限、Lesson 31、positive fixtureを
 追加し、P1登録を解消しました。
 
+### 2026-07-06: Appendix grammar production graph
+
+terminalの出現検査に加え、構造checkerがAppendix EBNFをproduction単位で読み取るようにしました。重複定義、
+終端`;`の欠落、未定義production参照、start production `module`から到達不能なproductionを拒否します。
+現在の109 productionはすべて定義済みかつ到達可能です。
+
+この検査はgrammar自体の閉包を保証しますが、各productionをparserが受理することやformatter round-tripは
+まだ保証しません。次のpassではproductionとconformance source / diagnostic / formatter snapshotの対応を
+明示metadataへ移します。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
