@@ -314,11 +314,21 @@ ConsoleError failure、Unit success、`console.println` operationを各段で固
 opaqueな文字列ではなくmodule / exportのstructured pairです。checkerはTypeScriptIrのfeature参照からimportを解決し、
 生成TypeScriptとsource mapまで照合します。Promise化やthrow化はこの内部module境界では行いません。
 
+### 2026-07-07: Effect entry execution
+
+`execution-schema-1/effect-main`で、generated moduleが返すEffect valueをhost runnerが実行する境界を固定しました。
+runnerは`main ()`を一度呼んでcold Effectを得て、root resource scopeとConsole serviceを提供します。
+required environmentはclosed structural recordとして照合しますが、actual host environmentに追加serviceが
+存在しても構いません。成功時はUnit、exit code 0、Console trace、stdout / stderr snapshotを比較します。
+
+このfixtureにより、TypeScript backendがEffectをPromise / throw / direct console writeへ潰さないことと、
+process的な観測結果をrunner側の契約として扱うことを分離しました。
+
 ## 次のpass
 
-1. Effect valueをhost resourceへ渡して実行するentry runner contractを固定する。
-2. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
-3. cost / retention契約をbenchmarkとinstrumented runtime profileへ対応づける。
+1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
+2. cost / retention契約をbenchmarkとinstrumented runtime profileへ対応づける。
+3. Wave 0のconformance runner skeletonを実装計画へ落とす。
 
 未完了passがあるため、この文書は仕様全体に矛盾がないことを証明しません。passごとに発見事項を本文へ
 反映し、解決をfixtureへ固定してから完了として追記します。

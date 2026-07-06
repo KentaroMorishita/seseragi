@@ -39,3 +39,8 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。
+
+`execution-schema-1/effect-main/`は、generated moduleが返すEffect valueをhost adapterがどう実行するかを
+固定します。entry runnerは`main ()`を一度呼び、root resource scopeでEffectを実行し、required environmentへ
+Console serviceを提供します。required environmentはclosedですが、actual host environmentは追加serviceを持てます。
+成功時はUnit valueとexit code 0、Console traceとstdout snapshotを比較します。

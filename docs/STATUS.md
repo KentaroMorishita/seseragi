@@ -59,7 +59,8 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 - multi-file conformance入力: project 41件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
 - grammar対応表: `examples/spec/grammar-coverage.json`
-- stage artifact契約: `examples/spec/artifacts/schema-1/`
+- stage / execution artifact契約: `examples/spec/artifacts/schema-1/`、
+  `stage-schema-1/`、`execution-schema-1/`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
@@ -107,9 +108,8 @@ semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移し
 当面は仕様機能を横へ増やさず、次の順で進めます。
 
 1. grammar productionへ不足するdiagnostic / formatter targetを追加する。
-2. Effect valueとhost resourceを接続するentry runner / execution artifactをfixture化する。
-3. `IMPLEMENTATION.md`のWave 0としてconformance runnerとfrontend contractを実装する。
-4. parserから段階的に実装し、formatter、LSP、highlight、playgroundへ同じfrontendを接続する。
+2. `IMPLEMENTATION.md`のWave 0としてconformance runnerとfrontend contractを実装する。
+3. parserから段階的に実装し、formatter、LSP、highlight、playgroundへ同じfrontendを接続する。
 
 ## 完了と呼ぶ条件
 

@@ -1240,6 +1240,145 @@ for (const entry of readdirSync(effectArtifactsDir, { withFileTypes: true })) {
   }
 }
 
+const executionArtifactsDir = join(root, "artifacts", "execution-schema-1")
+for (const entry of readdirSync(executionArtifactsDir, {
+  withFileTypes: true,
+})) {
+  if (!entry.isDirectory()) continue
+  const directory = join(executionArtifactsDir, entry.name)
+  const prefix = `artifacts/execution-schema-1/${entry.name}`
+  let run: {
+    schema?: unknown
+    case?: unknown
+    target?: unknown
+    entry?: {
+      module?: unknown
+      export?: unknown
+      compiledModule?: unknown
+    }
+    invocation?: {
+      argument?: unknown
+      effect?: { cold?: unknown; rootScope?: unknown }
+    }
+    requiredEnvironment?: {
+      kind?: unknown
+      closed?: unknown
+      fields?: Array<{ name?: unknown; type?: unknown }>
+    }
+    hostEnvironment?: {
+      closed?: unknown
+      services?: Array<{
+        field?: unknown
+        type?: unknown
+        adapter?: unknown
+      }>
+    }
+    expected?: {
+      exit?: { kind?: unknown; value?: unknown }
+      process?: { exitCode?: unknown }
+      stdout?: unknown
+      stderr?: unknown
+      trace?: Array<{
+        service?: unknown
+        operation?: unknown
+        arguments?: unknown[]
+        stdout?: unknown
+      }>
+    }
+  }
+  try {
+    run = JSON.parse(readFileSync(join(directory, "run.json"), "utf8"))
+  } catch (error) {
+    errors.push(`${prefix}/run.json: invalid JSON: ${error}`)
+    continue
+  }
+
+  const compiledModuleReference = run.entry?.compiledModule
+  const compiledModulePath =
+    typeof compiledModuleReference === "string"
+      ? resolve(directory, compiledModuleReference)
+      : ""
+  if (
+    run.schema !== 1 ||
+    run.case !== entry.name ||
+    run.target !== "node-process" ||
+    run.entry?.module !== "artifact/effect-main" ||
+    run.entry?.export !== "main" ||
+    typeof compiledModuleReference !== "string" ||
+    compiledModuleReference.startsWith("/") ||
+    compiledModuleReference.includes("\\") ||
+    !compiledModulePath.startsWith(`${join(root, "artifacts")}/`) ||
+    !existsSync(compiledModulePath) ||
+    run.invocation?.argument !== "Unit" ||
+    run.invocation?.effect?.cold !== true ||
+    run.invocation?.effect?.rootScope !== true ||
+    run.requiredEnvironment?.kind !== "record" ||
+    run.requiredEnvironment.closed !== true ||
+    JSON.stringify(run.requiredEnvironment.fields) !==
+      JSON.stringify([{ name: "console", type: "Console" }]) ||
+    run.hostEnvironment?.closed !== false ||
+    JSON.stringify(run.hostEnvironment.services) !==
+      JSON.stringify([
+        {
+          field: "console",
+          type: "Console",
+          adapter: "capture-console",
+        },
+      ]) ||
+    run.expected?.exit?.kind !== "success" ||
+    run.expected.exit.value !== "Unit" ||
+    run.expected.process?.exitCode !== 0 ||
+    run.expected.stdout !== "stdout.txt" ||
+    run.expected.stderr !== "stderr.txt" ||
+    JSON.stringify(run.expected.trace) !==
+      JSON.stringify([
+        {
+          service: "console",
+          operation: "println",
+          arguments: ["hello"],
+          stdout: "hello\n",
+        },
+      ])
+  ) {
+    errors.push(`${prefix}/run.json: invalid execution contract`)
+    continue
+  }
+
+  const stdoutPath = join(directory, run.expected.stdout)
+  const stderrPath = join(directory, run.expected.stderr)
+  if (
+    !existsSync(stdoutPath) ||
+    readFileSync(stdoutPath, "utf8") !== "hello\n"
+  ) {
+    errors.push(`${prefix}/${run.expected.stdout}: stdout mismatch`)
+  }
+  if (!existsSync(stderrPath) || readFileSync(stderrPath, "utf8") !== "") {
+    errors.push(`${prefix}/${run.expected.stderr}: stderr mismatch`)
+  }
+
+  try {
+    const generated = JSON.parse(readFileSync(compiledModulePath, "utf8")) as {
+      schema?: unknown
+      module?: unknown
+      target?: unknown
+      runtime?: { requirements?: unknown }
+      outputs?: { typescript?: unknown }
+    }
+    if (
+      generated.schema !== 1 ||
+      generated.module !== run.entry.module ||
+      generated.target !== "typescript-es2022" ||
+      JSON.stringify(generated.runtime?.requirements) !==
+        JSON.stringify(["core.unit", "effect.console.println"]) ||
+      generated.outputs?.typescript !== "main.ts"
+    ) {
+      errors.push(`${prefix}/run.json: compiled module reference mismatch`)
+    }
+  } catch (error) {
+    errors.push(`${prefix}/run.json: invalid compiled module JSON: ${error}`)
+  }
+}
+
 const lessons = readdirSync(lessonsDir)
   .filter((name) => /^\d{2}-.*\.ssrg$/.test(name))
   .sort()

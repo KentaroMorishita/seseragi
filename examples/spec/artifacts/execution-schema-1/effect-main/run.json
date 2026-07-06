@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "case": "effect-main",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effect-main",
+    "export": "main",
+    "compiledModule": "../../stage-schema-1/effect-main/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["hello"],
+        "stdout": "hello\n"
+      }
+    ]
+  }
+}
