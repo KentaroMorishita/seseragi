@@ -23,8 +23,9 @@
 | 実装済み            | compiler、runtimeまたはtoolingが新仕様どおりに動く    |
 
 `bun run check:spec-examples` が現在保証するのは、lessonの番号・前提・日本語説明・期待stdoutと、
-fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Seseragi sourceのparse、型検査、実行は
-まだ保証しません。
+fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。`bun run conformance:artifacts` は
+artifact bundleの発見、必須file、JSON envelope、参照snapshotの整合だけを検査します。Seseragi sourceの
+parse、型検査、実行はまだ保証しません。
 
 ## 領域別の現在地
 
@@ -63,6 +64,7 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
   `stage-schema-1/`、`execution-schema-1/`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
+- artifact runner skeleton: `scripts/conformance-artifacts.ts`
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが

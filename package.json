@@ -10,6 +10,7 @@
     "dev": "bun run --watch src/cli.ts",
     "build": "./scripts/build.sh",
     "check": "./scripts/check.sh",
+    "conformance:artifacts": "bun run scripts/conformance-artifacts.ts",
     "check:spec-examples": "bun run scripts/check-spec-examples.ts",
     "format": "./scripts/format.sh",
     "vscode": "./scripts/vscode.sh",

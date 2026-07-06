@@ -24,6 +24,21 @@ artifactのJSONは人が手で実装する入力ではありません。新compi
 schema fieldを変更するときはproducerとconsumerを同じ巨大changeへ混ぜず、schema fixture、producer、consumerの
 順に移行します。schema majorが異なるartifactを黙って読み替えません。
 
+初期runner skeletonは次でartifact bundleを発見し、必須file、JSON envelope、参照snapshotを検査します。
+
+```sh
+bun run conformance:artifacts
+```
+
+machine-readableなreportだけが必要な場合は、Bunのcommand echoを抑えて次を使います。
+
+```sh
+bun run --silent conformance:artifacts --json
+```
+
+このrunnerはまだcompiler producerを起動しません。手書きcontractを読むconsumerを先に固定し、後からlexer、
+parser、backend、host runnerのproducerを一つずつ接続します。
+
 `interface.json`はsource bodyやbackend layoutを含めず、公開symbol、type scheme、operator、instance、dependencyだけを
 持ちます。private bodyを必要とする最適化は同一compiler runのTypedHir / CoreIrを使い、interface cacheへ漏らしません。
 
