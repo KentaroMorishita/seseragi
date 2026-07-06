@@ -199,11 +199,24 @@ TypeScript namespace変換には、foreign target stringがexact top-level expor
 task lookup failureはBindingLookup phaseです。module aliasのlower-name規則を保ち、runtime namespace `.d.ts` snapshotと
 hand-written compile fixtureへ固定しました。
 
+### 2026-07-06: simultaneous failureとsibling cleanup
+
+parallel Effect、Stream merge、DOM event queueを同じscheduler turnのfailure選択とcleanup境界で照合しました。
+
+- Effect.parallelは同じturnなら入力index最小のfailureを選ぶ。
+- Stream.mergeは同じturnならleft failureを選ぶ。
+- どちらもloserをcancelし、winner / loser双方のscope finalizer完了後に結果を公開する。
+- 一つのscope内はLIFOだが、独立sibling scopeのfinalizer外部操作順は保証せず、並行実行を許す。
+- DOM dispatchはbounded FIFOを一件ずつ完了させるため、複数dispatch failureのsame-turn winner自体が存在しない。
+  最初のdispatch failureで受付を止め、queueを破棄してlistener / subscription / dispatch Fiberをcleanupする。
+
+EffectとStreamが同時にleft / rightで失敗し、両finalizer flagがTrueになってからleft failureを観測するproject fixtureを
+追加しました。これによりthread数を変えてもwinnerは固定しつつ、sibling finalizerを不必要に直列化しません。
+
 ## 次のpass
 
-1. parallel Effect / merged Stream / DOM dispatchのsimultaneous failureとfinalizer優先順位をtrace表で照合する。
-2. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
-3. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
+1. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
+2. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
 
 未完了passがあるため、この文書は仕様全体に矛盾がないことを証明しません。passごとに発見事項を本文へ
 反映し、解決をfixtureへ固定してから完了として追記します。
