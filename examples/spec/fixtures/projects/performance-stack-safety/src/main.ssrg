@@ -1,0 +1,21 @@
+import * as effects from "std/effect"
+
+fn countdown current: Int -> total: Int -> Int =
+  if current <= 0
+    then total
+    else countdown (current - 1) (total + current)
+
+let longEffect =
+  1..=100000
+    |> reduce (effects.succeed 0) (\current _ ->
+      current >>= (\count -> effects.succeed (count + 1))
+    )
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    effectCount <- longEffect
+    let tailTotal = countdown 100000 0
+    println `${effectCount},${tailTotal}`
+  }
