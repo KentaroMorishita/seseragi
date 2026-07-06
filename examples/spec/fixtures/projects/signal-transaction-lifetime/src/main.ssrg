@@ -1,0 +1,24 @@
+import * as effects from "std/effect"
+import * as signals from "std/signal"
+
+fn observe value: Int -> Effect<{ console: Console }, Never, Unit> =
+  println (show value)
+    |> effects.recover (\_ -> effects.succeed ())
+
+pub effect fn main -> Unit
+with Console =
+  do {
+    width <- signals.make 1
+    height <- signals.make 2
+    let area = signals.combine (*) width height
+
+    subscription <- signals.subscribe observe area
+
+    signals.transaction [
+      signals.planSet 3 width,
+      signals.planSet 4 height,
+    ]
+
+    signals.unsubscribe subscription
+    width := 5
+  }

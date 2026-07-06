@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "run",
+  "spec": ["5.12", "5.13", "5.14", "5.15", "14.12"],
+  "lock": "generate",
+  "stdout": "expected.stdout",
+  "differentialProfiles": ["development", "release"]
+}

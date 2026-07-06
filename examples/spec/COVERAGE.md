@@ -17,7 +17,7 @@
 | Map / Set ordering and serialization          | Lesson 06               | seed / duplicate / canonical fixtures          | partial |
 | ApplicativeとValidation accumulation          | Lesson 09               | Applicative law fixtures                       | partial |
 | Monad、`>>=`、do desugar                      | Lesson 10               | Monad law / invalid bind pattern fixtures      | partial |
-| Signalとtransaction                           | Lesson 15               | glitch / subscription fixtures                 | partial |
+| Signalとtransaction                           | Lesson 15               | `projects/signal-transaction-lifetime`         | covered |
 | Effect / Stream requirement merge             | none                    | compile / invalid-position fixtures            | partial |
 | Fiber、Deferred、cancellation                 | Lesson 16               | scheduler / cancellation fixtures              | partial |
 | Streamとbackpressure                          | Lesson 17               | merge / overflow fixtures                      | partial |
