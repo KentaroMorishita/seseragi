@@ -171,9 +171,35 @@ Entropyはhost CSPRNGからBytesだけを返し、seed、replay、Float、range 
 Entropyを提供せず、fakeを使うtestだけが明示provideします。Random bytesをtokenやnonceへ使わない境界を
 compile fixtureへ固定しました。Map / Set hash seedのmanifest spellingも`"entropy"`へ明確化しました。
 
+### 2026-07-06: release性能、tooling、runtime lifecycle fixture
+
+性能検証を内部IR textの固定ではなく、意味付きshape predicate、development / release differential、runtime
+stack safetyへ分離しました。`newtype-erased`、`surface-sugar-erased`、`self-tail-loop`はrelease outputの性質を
+検査し、pass名やIR node名を公開ABIにしません。100,000段のEffect bindと直接self tail callを両profileで実行する
+projectも追加し、「最適化した記録」ではなく結果とstack safetyを合格条件にしました。
+
+toolingでは`seseragi doc --test`のblock ID、実行順、report、exit code、atomic outputを固定し、check / run /
+compile_failを一つのdocument commentで検証するprojectを追加しました。HTML / JSON document artifactのwire snapshotは
+引き続き未作成なので、coverageはpartialです。
+
+runtime lifecycleは次をproject fixtureへ固定しました。
+
+- Signal: subscribe時のcurrent値、multi-source transactionのglitch-freeな一回通知、unsubscribe後の無通知。
+- Stream: terminalごとのcold再実行、bufferのFIFO、terminal scope終了時のresource release。
+- DOM: synthetic eventの逐次dispatch、Signal transaction後の一回reconcile、dispatch failure後のlistener /
+  subscription cleanup、HydrateStrict mismatch時の既存DOM不変更。
+
+この作業中、`std/effect`が名前だけ列挙していた`attempt`、`fromEither`、`fromMaybe`、`service`、`provideSome`の
+signature欠落を発見しました。typed failureだけをEitherへ移す境界と、同型serviceを曖昧lookupしないenvironment
+selectorを定義し、compile fixtureへ固定しました。
+
+TypeScript namespace変換には、foreign target stringがexact top-level export keyなのにnested runtime memberを
+自動生成できると読める矛盾がありました。type-only namespaceだけを確定範囲に縮め、runtime namespace selectorは
+`SPEC_COVERAGE.md`へ未定義項目として戻しました。`.`入りkeyをproperty pathへ暗黙解釈しません。
+
 ## 次のpass
 
-1. Effect / Stream / Signal / DOMのcancellation、simultaneous failure、finalizer優先順位をtrace表で照合する。
+1. parallel Effect / merged Stream / DOM dispatchのsimultaneous failureとfinalizer優先順位をtrace表で照合する。
 2. grammarの全productionをlesson / fixture tokenへ対応づけ、formatter・highlightとのtoken差を調べる。
 3. standard APIの計算量、allocation、storage retention記述を14章のcost classと照合する。
 
