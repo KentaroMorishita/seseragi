@@ -348,10 +348,15 @@ converterは個々のdeclaration nodeではなくTypeScript checkerのmerged sym
 merge後のproperty / signature、function mergeは公開overload set、namespace augmentationは最終export tableを入力に
 します。merge元file順をgenerated identityに使いません。
 
-TypeScript namespaceはgenerated child moduleへ変換し、parent binding moduleからpublic namespaceとしてre-export
-します。class / function / enumと同名namespaceがmergeしている場合、Seseragiのtype、value、namespaceが分離して
-いることを利用して同じpublic spellingを保ちます。namespace childのmodule identityは元symbol identityから決め、
-directory名の偶然やdeclaration file配置へ依存させません。
+TypeScript namespaceの最終export tableがtypeだけを持つ場合はgenerated child moduleへ変換し、parent binding moduleから
+public namespaceとしてre-exportできます。namespace childのmodule identityは元symbol identityから決め、directory名の
+偶然やdeclaration file配置へ依存させません。
+
+namespace内にruntime value、function、class、enum memberがある場合、7.2のtop-level export selectorだけではhost namespace
+object内部を安全に指定できません。`.`入りexport名をproperty pathへ読み替えず、現在のconverterは該当memberを
+hand adapter requiredとしてreportします。class / function / enumと同名namespaceがmergeしている場合も、type側だけを
+同じpublic spellingで生成でき、runtime augmentationは自動生成しません。nested runtime selectorのsurfaceとABIを
+独立して確定するまで、生成できると扱わないでください。
 
 同じSeseragi namespace内で二つのmerged symbolが同名になる場合、片方を上書きしたり最後のdeclarationを採用したり
 しません。8.17のstable fallbackを生成してWarningにするか、設定された名前同士ならErrorです。type/valueの両方を

@@ -81,7 +81,7 @@
 - TypeScript向け公開ABI
 - `.d.ts` subset変換、unsupported診断、更新差分
 - unconstrained generic TypeScript ABIと明示trait dictionary mapping
-- callback lifetime設定、stable generated naming、declaration merge / namespace変換
+- callback lifetime設定、stable generated naming、declaration merge / type-only namespace変換
 - resolved host module単位のpure-load / task-load、single-flight、failure memoization
 - source map chainとcross-language machine-readable stack frame
 
@@ -157,6 +157,9 @@
 
 一般application、product運用、toolingの基礎surfaceとして洗い出した項目は正本へ移し終えました。
 今後新しい未定義点が見つかった場合は、exampleや現行compilerから意味を推測せず、ここへ再登録してから設計します。
+
+- TypeScript namespace object内のruntime memberを指すforeign selectorのsurfaceとABI。`.`入り文字列をpathへ
+  流用せず、property keyの配列、nested foreign block、生成adapterなどを構文・load mode・source mapと一緒に決める。
 
 ## 意図的に採用しない
 

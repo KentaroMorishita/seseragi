@@ -66,6 +66,11 @@ foreign "typescript" from "legacy-lib" {
 }
 ```
 
+`= STRING` はresolved module namespaceにある一つのexactなexport property keyです。`.`、`[`、`#`などを
+path separatorとして解釈せず、`"metrics.count"`はその文字列全体をkeyとするexportだけを指します。prototype chain、
+default export内部、namespace object内部を文字列から暗黙探索しません。nested host valueは専用selector contractが
+正本に定義されるまで、top-level adapter functionへ公開し直す手書きbindingを使います。
+
 ## 7.3 foreign call mode
 
 foreign関数は `pure` または `task` のどちらかを必ず指定します。
