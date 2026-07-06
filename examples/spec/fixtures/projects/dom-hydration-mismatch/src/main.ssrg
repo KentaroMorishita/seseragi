@@ -1,0 +1,52 @@
+import {
+  DomOptions,
+  HydrateStrict,
+  PreserveRenderedDom,
+} from "std/web/dom"
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+fn strictOptions -> DomOptions = {
+  let defaults = dom.defaultOptions ()
+  DomOptions {
+    eventCapacity: defaults.eventCapacity,
+    hydration: HydrateStrict,
+    cleanup: PreserveRenderedDom,
+  }
+}
+
+fn ignore<Msg> message: Msg -> Task<Never, Unit> =
+  effects.succeed ()
+
+fn report result: Either<dom.DomError, dom.DomMount<Never>>
+  -> Task<ConsoleError, Unit> =
+  match result {
+    Left (dom.HydrationMismatch _) -> println "mismatch"
+    Left _ -> println "unexpected dom error"
+    Right mount -> do {
+      dom.unmount mount
+      println "unexpected hydration success"
+    }
+  }
+
+pub effect fn main -> Unit
+with Console, Dom
+fails ConsoleError =
+  do {
+    targetResult <- effects.attempt $ dom.query "#app"
+    match targetResult {
+      Left _ -> println "target missing"
+      Right target -> do {
+        let content = signals.constant $ html.p { children: "client" }
+        mountResult <- effects.attempt $
+          dom.mount
+            (strictOptions ())
+            target
+            ignore
+            content
+        report mountResult
+      }
+    }
+  }

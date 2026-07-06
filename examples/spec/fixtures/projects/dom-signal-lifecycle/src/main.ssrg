@@ -1,0 +1,55 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Msg =
+  | Increment
+  | Stop
+
+type DispatchError =
+  | StopRequested
+
+type AppError deriving Show =
+  | DomOperationFailure dom.DomError
+  | ConsoleFailure ConsoleError
+
+fn view count: Int -> html.Html<Msg> =
+  html.div {
+    children: [
+      html.span { id: "count", children: show count },
+      html.button { id: "increment", onClick: Increment, children: "+" },
+      html.button { id: "stop", onClick: Stop, children: "stop" },
+    ]
+  }
+
+fn dispatch count: MutableSignal<Int> -> message: Msg
+  -> Task<DispatchError, Unit> =
+  match message {
+    Increment -> signals.update (\value -> value + 1) count
+    Stop -> effects.fail StopRequested
+  }
+
+pub effect fn main -> Unit
+with Console, Dom
+fails AppError =
+  do {
+    count <- signals.make 0
+    let content = signals.map view count
+
+    target <-
+      dom.query "#app"
+        |> effects.mapError DomOperationFailure
+
+    dom.run (dom.defaultOptions ()) target (dispatch count) content
+      |> effects.recover (\failure ->
+        match failure {
+          dom.DispatchFailure StopRequested -> effects.succeed ()
+          dom.DomFailure error -> effects.fail $ DomOperationFailure error
+        }
+      )
+
+    finalCount <- *count
+    println `count: ${finalCount}`
+      |> effects.mapError ConsoleFailure
+  }

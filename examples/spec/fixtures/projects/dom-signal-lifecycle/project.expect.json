@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "run",
+  "spec": ["13.4", "13.8", "13.9", "13.10", "13.12"],
+  "lock": "generate",
+  "services": "services.json",
+  "stdout": "expected.stdout",
+  "differentialProfiles": ["development", "release"]
+}

@@ -419,3 +419,25 @@ test adapterはin-memory DOM、synthetic event、focus、listener leak、Signal 
 conformanceは少なくともChromium系一つだけに意味を委譲せず、HTML parsing / event順が標準contractと一致する複数engine
 fixtureを持ちます。SVG、MathML、custom rendererは同じpure tree原則を使う別moduleで、HTML tagへnamespaceを暗黙混在
 させません。
+
+project fixtureのschema 1 DOM scenarioは、target adapterへ次を渡します。
+
+```text
+dom.document: test開始前のUTF-8 HTML document
+dom.events: mount安定後に順番に送るsynthetic event
+  selector: target document内の一意なCSS selector
+  type: click | input | change | keydown | mousedown | mouseup
+  value: input / change時のtarget String value、その他は省略
+  keyboard / mouse: 対応snapshot field、対象eventだけで指定
+  afterHtml: dispatchと対応reconcileが安定した後のdocument HTML
+dom.expected.mountHtml: initial mount / hydration成功後のdocument HTML。成功を期待するscenarioだけ指定
+dom.expected.finalHtml: root Effect終了と全cleanup完了後のdocument HTML
+dom.expected.reconciliations: initial renderを除くreconcile回数
+dom.expected.activeListeners: cleanup後のlistener数
+dom.expected.activeSubscriptions: cleanup後のSignal subscription数
+```
+
+eventsは一件のdispatch Effectと、それが起こした全Signal transaction / reconcileが安定してから次へ進みます。
+selectorが0件または複数件、event fieldの型違い、afterHtml不一致、program終了前の未送信event、expected resource数の
+不一致はfixture failureです。programがevent処理中に終了した場合はそのeventを完了させてcleanupを待ち、後続eventを
+送信しません。real browser、network、wall clockへfallbackせず、scenario外のhost mutationを生成しません。

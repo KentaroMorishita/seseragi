@@ -58,7 +58,7 @@
 | closed deprecation metadata / tooling         | none                    | `compile/deprecation-metadata.ssrg`            | covered |
 | JsonEncode / JsonDecode deriving              | Lesson 26               | codec wire / strict field fixtures             | partial |
 | pure Html props / children / SSR              | Lesson 27               | HTML escaping / props fixtures                 | partial |
-| Signal-driven DOM / event resource lifetime   | planned advanced lesson | DOM reconciliation / hydration projects        | planned |
+| Signal-driven DOM / event resource lifetime   | planned advanced lesson | `projects/dom-*`                               | partial |
 | performance erasure / stack safety            | none                    | `projects/performance-*`                       | partial |
 | benchmark discovery / baseline regression     | none                    | `projects/benchmark-discovery`                 | covered |
 
