@@ -19,7 +19,9 @@
       "diagnosticTargets": [
         "fixtures/projects/modules-private-access/src/public.ssrg"
       ],
-      "formatterTargets": []
+      "formatterTargets": [
+        "fixtures/projects/modules-reexport-run/src/main.ssrg"
+      ]
     },
     {
       "id": "bindings-and-functions",
@@ -39,7 +41,7 @@
         "fixtures/compile/effect-environment.ssrg"
       ],
       "diagnosticTargets": [],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/01-hello-world.ssrg"]
     },
     {
       "id": "data-declarations",
@@ -59,7 +61,7 @@
         "fixtures/compile/optional-record-field.ssrg"
       ],
       "diagnosticTargets": [],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/07-domain-types.ssrg"]
     },
     {
       "id": "traits-impls-and-operators",
@@ -84,7 +86,7 @@
         "fixtures/diagnostics/trait-instance-with-impl.ssrg",
         "fixtures/diagnostics/unknown-operator.ssrg"
       ],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/13-traits-and-custom-operators.ssrg"]
     },
     {
       "id": "foreign-bindings",
@@ -104,7 +106,7 @@
         "fixtures/projects/dts-callback-during-call/expected/callback-api.ssrg"
       ],
       "diagnosticTargets": [],
-      "formatterTargets": []
+      "formatterTargets": ["fixtures/compile/foreign-namespace.ssrg"]
     },
     {
       "id": "local-recursion",
@@ -113,7 +115,7 @@
       "diagnosticTargets": [
         "fixtures/diagnostics/local-forward-reference.ssrg"
       ],
-      "formatterTargets": []
+      "formatterTargets": ["fixtures/compile/local-recursion.ssrg"]
     },
     {
       "id": "control-flow",
@@ -135,7 +137,7 @@
         "lessons/10-monad-and-do.ssrg"
       ],
       "diagnosticTargets": ["fixtures/diagnostics/non-exhaustive-match.ssrg"],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/03-control-flow.ssrg"]
     },
     {
       "id": "values-and-collections",
@@ -158,7 +160,7 @@
         "fixtures/compile/grammar-terminal-coverage.ssrg"
       ],
       "diagnosticTargets": [],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/12-comprehensions-and-patterns.ssrg"]
     },
     {
       "id": "application-and-operators",
@@ -183,7 +185,7 @@
         "fixtures/compile/grammar-terminal-coverage.ssrg"
       ],
       "diagnosticTargets": ["fixtures/diagnostics/unknown-operator.ssrg"],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/04-collections-and-pipelines.ssrg"]
     },
     {
       "id": "patterns",
@@ -202,7 +204,7 @@
         "lessons/19-recursive-data-and-spread.ssrg"
       ],
       "diagnosticTargets": ["fixtures/diagnostics/non-exhaustive-match.ssrg"],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/12-comprehensions-and-patterns.ssrg"]
     },
     {
       "id": "types-and-kinds",
@@ -228,7 +230,7 @@
       "diagnosticTargets": [
         "fixtures/diagnostics/invalid-requirement-merge.ssrg"
       ],
-      "formatterTargets": []
+      "formatterTargets": ["lessons/11-generics.ssrg"]
     },
     {
       "id": "lexical-leaves",
@@ -252,7 +254,7 @@
         "fixtures/diagnostics/invalid-escape.ssrg",
         "fixtures/diagnostics/invalid-numeric-literal.ssrg"
       ],
-      "formatterTargets": []
+      "formatterTargets": ["fixtures/compile/literals.ssrg"]
     }
   ]
 }

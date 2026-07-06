@@ -263,7 +263,8 @@ if (!ebnfBlock) {
           !Array.isArray(group.parseTargets) ||
           group.parseTargets.length === 0 ||
           !Array.isArray(group.diagnosticTargets) ||
-          !Array.isArray(group.formatterTargets)
+          !Array.isArray(group.formatterTargets) ||
+          group.formatterTargets.length === 0
         ) {
           errors.push(
             `examples/spec/grammar-coverage.json: invalid group ${group.id}`

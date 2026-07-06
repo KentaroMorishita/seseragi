@@ -275,7 +275,12 @@ comprehensionの`|`、field accessの`.`、terminatorの`;`を追加しました
 
 109 productionを12の責務groupへ分け、各groupを最低一件のpositive sourceへ対応づけた
 `examples/spec/grammar-coverage.json`を追加しました。checkerはAppendix productionの過不足・重複、group ID、
-target pathを検査します。diagnostic / formatter targetは空を許し、未検証をcoveredと偽装しません。
+target pathを検査します。当初はdiagnostic / formatter targetの空を許し、未検証をcoveredと偽装しない
+方針にしました。
+
+2026-07-07にformatter targetを全groupで必須化しました。これは新formatterが存在するという意味ではなく、
+各production groupに将来のround-trip入力を最低一件割り当てる契約です。diagnostic targetは、意味的な
+negative caseをまだ決めていないgroupでは空を許します。
 
 実装を並列化する前提も`docs/IMPLEMENTATION.md`へ分離しました。共有frontendをartifact pipelineとして定義し、
 初期のhorizontal laneからcontract安定後のvertical feature sliceへ移る条件、ownership、merge順、最小end-to-end

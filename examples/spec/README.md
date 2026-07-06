@@ -12,8 +12,8 @@
 - [`artifacts/`](./artifacts/README.md): token / CST / diagnostic / module interfaceのversioned contract fixture。
 
 `grammar-coverage.json`のtargetはconformance入力の所在を宣言するもので、現行compilerがparseまたはformat
-できるという主張ではありません。各productionは一groupだけに属し、parse targetを最低一件持ちます。
-diagnostic / formatter targetは契約を追加した時点で埋め、空配列は未検証を明示します。
+できるという主張ではありません。各productionは一groupだけに属し、parse targetとformatter targetを
+最低一件持ちます。diagnostic targetは契約を追加した時点で埋め、空配列は未検証を明示します。
 
 各sourceは次を満たします。
 
