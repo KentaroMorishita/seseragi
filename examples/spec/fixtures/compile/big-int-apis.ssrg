@@ -1,0 +1,18 @@
+import { BigInt } from "std/big-int"
+import * as bigints from "std/big-int"
+
+fn parseCounter text: String -> Either<bigints.BigIntParseError, BigInt> =
+  bigints.parse text
+
+fn grow base: BigInt -> Either<bigints.BigIntPowerError, BigInt> =
+  bigints.checkedPower 128 base
+
+fn divideSafely divisor: BigInt -> dividend: BigInt
+  -> Either<bigints.BigIntDivisionError, BigInt> =
+  bigints.checkedDivide divisor dividend
+
+fn render value: BigInt -> String =
+  bigints.format value
+
+let exact = bigints.fromInt 42
+let combined = exact * bigints.fromInt 3 + bigints.fromInt 1

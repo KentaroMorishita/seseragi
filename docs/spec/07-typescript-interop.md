@@ -188,6 +188,7 @@ Js.Callback<Args, Result>
 | `String` | `string`       |
 | `Float`  | `number`       |
 | `Int`    | `bigint`       |
+| `BigInt` | `bigint`       |
 | `Unit`   | `undefined`    |
 | `Never`  | `never`        |
 | `Bytes`  | `Uint8Array`   |
@@ -196,6 +197,9 @@ CharはUnicode scalar一個を表すJavaScript stringへ写像し、入力時に
 unpaired surrogateを含まないことを検査します。TypeScriptの`string`からCharを自動推論しません。
 `Int` は64 bit精度を失わないため `bigint` へ写像します。`number` をIntとして受け取るbindingは
 `Js.Number` として受け、有限・整数・範囲内であることをdecoderで検査します。
+`BigInt` は`std/big-int`の任意精度整数で、host `bigint` と値を保って相互変換します。同じhost型から
+IntとBigIntを推論で選べないため、`.d.ts` converterは8.4のとおり既定でIntを生成し、BigIntにはsymbol
+overrideまたは手書きbindingを要求します。
 BytesとUint8Arrayは10.8の規則により両方向でcopyし、mutable viewを共有しません。
 
 ## 7.7 collectionとrecord

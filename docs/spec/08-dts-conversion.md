@@ -67,6 +67,8 @@ warningを残します。
 
 TypeScriptの`string`は長さ制約を表せないため、converterは`Char`を自動生成しません。Charを要求するAPIは
 手書きadapterまたはsymbol overrideでCharを指定し、7.6のUnicode scalar一個の境界検査を生成します。
+TypeScriptの`bigint`は既定でIntへ変換してsigned 64-bit範囲を検査します。任意精度のBigIntが必要なsymbolは
+overrideで`std/big-int`からimportする`BigInt`を指定し、範囲検査なしのhost bigint adapterを生成します。
 
 ## 8.5 nullabilityとoptional
 

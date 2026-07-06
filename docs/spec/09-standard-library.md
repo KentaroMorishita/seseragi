@@ -107,7 +107,7 @@ trait Hash<A> {
 HashはMapとSetのkeyに使うhashを定義します。`Eq.eq x y` がTrueなら
 `Hash.hash x == Hash.hash y` でなければなりません。逆は要求しません。
 
-Int、Bool、Char、String、Unitには標準Eq、Ord、Hash instanceを提供します。Boolは
+Int、BigInt、Decimal、Bool、Char、String、Unitには標準Eq、Ord、Hash instanceを提供します。Boolは
 `False < True`、Charはcode point順、StringはUnicode scalar列の辞書式順序、Unitは唯一の値をEqualとします。
 StringのEqはUnicode scalar列の完全一致です。FloatにはcanonicalなEq、Ord、Hash instanceを
 提供しません。
@@ -204,6 +204,10 @@ Monoid契約でlogを結合します。旧来の特別な `monoid` 宣言や `>>
 Intの `+`, `-`, `*`, `**` は結果が64 bit範囲外ならdefectになります。Intの `/` は0方向へ
 丸め、`%` は被除数と同じ符号の余りを返します。0による `/` と `%`、負の指数によるIntの
 `**` はdefectです。回復可能に扱うcodeは `std/int.checkedDivide` などのchecked APIを使います。
+
+BigIntの `+`, `-`, `*` は任意精度でoverflowしません。`/` は0方向へ丸め、`%` は被除数と同じ符号の
+余りを返します。0による `/` と `%`、負のInt指数によるBigIntの `**` はdefectです。回復可能に扱う
+codeは`std/big-int`のchecked APIを使います。IntとBigIntの暗黙変換やmixed arithmetic instanceはありません。
 
 Floatの演算はIEEE 754に従います。NaNとinfinityは有効なFloat値です。Floatは標準のEqと
 Ord instanceを持ちません。

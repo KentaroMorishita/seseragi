@@ -157,10 +157,8 @@
 
 一般application、product運用、toolingの基礎surfaceとして洗い出した項目は正本へ移し終えました。
 今後新しい未定義点が見つかった場合は、exampleや現行compilerから意味を推測せず、ここへ再登録してから
-設計します。現在は次を登録しています。
-
-- **P1: BigInt surface** — 9.4と10.8は`BigInt`とZero / One instanceを約束しているが、module API、
-  arithmetic instance、division / power failure、parse / format、Int変換が未定義。
+設計します。現在登録中の未定義項目はありません。standard API監査で再登録したBigInt surfaceは、
+`std/big-int`のAPI、算術、failure、変換、cost contractとして正本へ移しました。
 
 ## 意図的に採用しない
 

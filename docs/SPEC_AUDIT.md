@@ -242,11 +242,20 @@ allocation個数やhost object shapeは観測保証にせず、live resultの漸
 surfaceと算術意味が存在しないことも発見しました。性能規則からAPIを推測せず、P1未定義項目として
 `SPEC_COVERAGE.md`へ戻しました。
 
+### 2026-07-06: BigInt surface
+
+再登録したBigIntを`std/big-int`のstandard opaque typeとして閉じました。専用literalやIntとのimplicit
+conversionは追加せず、parse / format、明示Int変換、checked division / remainder / powerを提供します。
+operatorは任意精度のexact加減乗算、0方向の除算、被除数と同符号の余り、非負Int指数として定義しました。
+
+TypeScriptではIntと同じhost `bigint`へ写像しますが、`.d.ts` converterの既定は引き続き64-bit検査付きIntです。
+BigIntは明示overrideだけで選びます。bit lengthとdigit数に基づくstorage / cost上限、Lesson 31、positive fixtureを
+追加し、P1登録を解消しました。
+
 ## 次のpass
 
-1. BigIntの公開surfaceと算術意味を正本化し、positive / boundary fixtureへ固定する。
-2. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
-3. cost / retention契約をbenchmarkとinstrumented runtime profileへ対応づける。
+1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
+2. cost / retention契約をbenchmarkとinstrumented runtime profileへ対応づける。
 
 未完了passがあるため、この文書は仕様全体に矛盾がないことを証明しません。passごとに発見事項を本文へ
 反映し、解決をfixtureへ固定してから完了として追記します。
