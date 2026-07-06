@@ -346,6 +346,28 @@ private nameへの参照は拒否します。各blockは独立し、前blockのb
 filesystem、real clock、global randomを既定で持たず、必要serviceをfixtureで明示提供します。doc test failureは
 元comment rangeをprimaryとするdiagnosticになり、generated wrapper pathをuserへ要求しません。
 
+`seseragi doc` はpackageの公開API documentを生成し、既定ではpackage rootの`dist/doc`へHTMLとJSON search indexを
+directory単位でatomic replaceします。`--include-private`は同じpackage内のprivate APIも別scopeで含めます。
+`--test`は全testable fenced blockを生成前に実行し、一件でも失敗すれば既存outputを更新しません。
+run blockのtargetはCLIの`--target`、`test.target`、`run.target`の順で選び、run blockが存在するのにすべて
+省略されていれば実行前にtarget selection errorです。checkとcompile_fail blockだけならtargetを要求しません。
+
+test block IDは`<canonical-module-path>::<declaration-name>#<ordinal>`です。module commentはdeclaration名を
+`<module>`とし、ordinalは同じdocument内の`no_test`を除くtestable blockを上から1始まりで数えます。reportは
+canonical module path、source declaration順、ordinal順で、次のstable lineをstdoutへ出します。run blockのcaptured
+stdoutは期待値比較にだけ使い、成功reportへ混ぜません。
+
+```text
+PASS math::add#1 check
+PASS math::add#2 run
+PASS math::add#3 compile_fail SES-T0101
+3 passed; 0 failed
+```
+
+failure lineは`FAIL <id> <mode>`で、対応diagnosticをstderrへ続けます。exit codeは全block成功が0、test failureが1、
+package / option / document生成前compile errorが2、compiler invariant違反が70、host cancellationが130です。testable
+blockが0件でもdocument生成は成功し、`0 passed; 0 failed`を出します。`--test`なしの成功はstdoutへreportを出しません。
+
 ## 12.17 test runner
 
 `seseragi test`は11.7のtest treeを実行します。filterは正規表現ではなくfull nameに対するcase-sensitiveな
@@ -448,6 +470,9 @@ schema 1でstableなcompiler共通optionは `target`、`profile` (`development |
 `range-start-byte`、`range-end-byte`、`diagnostic-format` を持ちます。rangeは両端を同時に指定し、
 0-based end-exclusive UTF-8 byteです。formatterのindent、line width、quote、trailing commaを変更する
 style optionはなく、12.8のcanonical formatだけを生成します。
+
+docは`test`、`include-private`、`output`を持ちます。outputはpackage root内のdirectory pathで、absolute pathと
+`..` segmentを拒否し、既定値は`dist/doc`です。
 
 Stable optionのid、値型、意味を同じlanguage major内で別用途へ再利用しません。flag spellingを置き換える場合は
 一つのmajorの間deprecated aliasとしてschemaへ残します。Experimental optionは先頭を `experimental-` とし、

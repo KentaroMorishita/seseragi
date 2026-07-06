@@ -1,0 +1,4 @@
+PASS math::add#1 check
+PASS math::add#2 run
+PASS math::add#3 compile_fail SES-T0101
+3 passed; 0 failed

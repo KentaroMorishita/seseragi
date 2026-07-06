@@ -509,8 +509,11 @@ for (const name of projects) {
     }
   } else if (expectation.diagnostics !== undefined) {
     errors.push(`projects/${name}: only diagnostic phase accepts diagnostics`)
-  } else if (expectation.command !== undefined) {
-    errors.push(`projects/${name}: command is only valid for diagnostic phase`)
+  } else if (
+    expectation.command !== undefined &&
+    !(expectation.phase === "tooling" && ["doc"].includes(expectation.command))
+  ) {
+    errors.push(`projects/${name}: invalid command for ${expectation.phase}`)
   }
 
   if (expectation.artifacts !== undefined) {

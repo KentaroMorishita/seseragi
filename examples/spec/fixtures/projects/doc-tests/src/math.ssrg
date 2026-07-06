@@ -1,0 +1,25 @@
+//! # Math API
+//!
+//! 小さな例をcompile・実行し、失敗例のdiagnostic codeも検証します。
+
+/// 二つの整数を加算します。
+///
+/// ```seseragi
+/// let answer: Int = add 1 2
+/// ```
+///
+/// ```seseragi run
+/// pub effect fn main -> Unit
+/// with Console
+/// fails ConsoleError =
+///   println $ show $ add 1 2
+///
+/// // Expected stdout:
+/// // 3
+/// ```
+///
+/// ```seseragi compile_fail SES-T0101
+/// let wrong: Int = "not an integer"
+/// ```
+pub fn add left: Int -> right: Int -> Int =
+  left + right

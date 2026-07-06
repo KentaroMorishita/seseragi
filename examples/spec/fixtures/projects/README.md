@@ -33,8 +33,8 @@
   machine filesystemへfallbackしない。
 - `diagnostics`: diagnostic phaseで必須。single-file fixtureのdiagnostic objectへ、project rootからの
   `/` 区切りrelative `file` を加える。code、severity、UTF-8 byte range、anchor textをcheckerが検証する。
-- `command`: diagnostic phaseの実行surface。省略時は`compile`、converterなら`convert`、tool protocolなら
-  `tooling`を指定する。
+- `command`: 実行surface。diagnostic phaseでは省略時`compile`、converterなら`convert`、tool protocolなら
+  `tooling`を指定します。tooling phaseでは正本が定義したcommandだけを明示でき、schema 1では`doc`を許します。
 - `artifacts`: convert / tooling phaseの生成物。`output`はtemporary project内の生成先、`snapshot`はrepository内の
   exact expected textです。同じoutputを二度宣言できず、snapshotはUTF-8 / LF / final newlineを持つ。
 - `shapes`: release compileの内部shape assertion。`symbol`は`module/path::declaration`、`require`は14.12で

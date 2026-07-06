@@ -54,7 +54,7 @@
 | parser recovery、formatter、LSP、highlight    | lessons全体             | tooling snapshots                              | partial |
 | stable tool options / target capabilities     | none                    | `projects/target-capabilities`                 | covered |
 | diagnostic schema / inference explanation     | none                    | diagnostic JSON / explain snapshots            | partial |
-| document comments / doctest                   | none                    | doc HTML / JSON / doctest snapshots            | planned |
+| document comments / doctest                   | none                    | `projects/doc-tests`                           | partial |
 | closed deprecation metadata / tooling         | none                    | `compile/deprecation-metadata.ssrg`            | covered |
 | JsonEncode / JsonDecode deriving              | Lesson 26               | codec wire / strict field fixtures             | partial |
 | pure Html props / children / SSR              | Lesson 27               | HTML escaping / props fixtures                 | partial |
