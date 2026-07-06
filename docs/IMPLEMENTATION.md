@@ -109,6 +109,35 @@ compiler内部のclass名やmemory addressをsnapshotへ出しません。
 Wave 0ではASTや型推論を並列実装しません。後続全laneが依存するartifactを小さく合意し、fixture runnerが
 stub producerも検査できる状態を作ります。
 
+#### Wave 0の最初のissue分割
+
+Wave 0は「compilerを作る」ではなく、「compilerを複数laneで作れる境界を固定する」ための
+短い作業列です。最初は次のissueへ分けます。
+
+| issue | lane | 主な変更directory                                                    | 完了条件                                                     |
+| ----- | ---- | -------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 0-A1  | A    | `crates/seseragi-syntax/`、`examples/spec/artifacts/schema-1/`       | sourceをbyte単位で復元できるTokenStream skeleton             |
+| 0-A2  | A/D  | `crates/seseragi-syntax/`、`crates/seseragi-diagnostics/`            | missing token / error node / UTF range変換test               |
+| 0-B1  | B    | `crates/seseragi-conformance/`、`examples/spec/artifacts/`           | artifact schemaをdiscoverし、stub resultを比較するrunner     |
+| 0-B2  | B    | `crates/seseragi-conformance/`、`examples/spec/fixtures/`            | lesson / fixture / project discoveryを同じcase modelへ正規化 |
+| 0-C1  | C    | `runtime/typescript/`、`examples/spec/artifacts/runtime-schema-1/`   | runtime ABI registryを読み、feature requirementを検査        |
+| 0-C2  | C/B  | `runtime/typescript/`、`examples/spec/artifacts/execution-schema-1/` | Effect runner contractをstdout / stderr / traceで比較        |
+| 0-D1  | D    | `crates/seseragi-diagnostics/`、`crates/seseragi-source-map/`        | diagnostic JSONとsource map v3をpath非依存で比較             |
+
+同じissueでproducerとconsumerを両方完成させようとしません。まず手書きfixtureを読むconsumerを作り、
+次にproducerを小さく置き換えます。たとえば0-B1は現compilerへ接続せず、`examples/spec/artifacts/`の
+JSONだけを読めれば完了です。
+
+Wave 0中のdirectory所有は衝突回避のため次を初期値にします。
+
+- syntax lane: `crates/seseragi-syntax/` とtoken / CST schemaだけを編集する。
+- conformance lane: `crates/seseragi-conformance/` とfixture discoveryだけを編集する。
+- runtime lane: `runtime/typescript/` とruntime ABI / execution schemaだけを編集する。
+- diagnostic lane: `crates/seseragi-diagnostics/`、`crates/seseragi-source-map/`、LSP wire schemaだけを編集する。
+
+shared schemaを変える場合は、owner laneのcontract commitを先に作り、他laneはそのcommitへ追随します。
+これにより、AST型やdiagnostic文字列を全員が直接編集する状態を避けます。
+
 ### Wave 1: frontendとmodule graph
 
 | lane | 主な所有範囲                           | 依存                    |
@@ -212,3 +241,7 @@ implicit `Unit` parameterを持ち、closedな`Console` requirement、`ConsoleEr
 ResolvedAst、TypedHir、CoreIrへ保持します。TypeScriptIrは`effect.console.println` featureだけを参照し、
 backendはruntime ABI registryのstructured importからmoduleとexportを解決します。したがってhelper pathは
 parser、型検査、CoreIrへ漏れません。このfixtureも手書きの期待contractであり、compiler実装完了を意味しません。
+
+Effect実行境界は`examples/spec/artifacts/execution-schema-1/effect-main/`で固定しました。generated moduleは
+Effect valueを返すだけで、entry runnerが`main ()`を一度呼び、root resource scopeとConsole serviceを提供し、
+stdout / stderr / trace / exit分類を比較します。これによりbackend、runtime、host runnerを別laneで進められます。
