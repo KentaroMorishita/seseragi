@@ -45,6 +45,23 @@ const previewGrammarPath = resolve(
   "../extensions/seseragi-spec-preview/syntaxes/seseragi.tmLanguage.json"
 )
 const previewGrammar = readFileSync(previewGrammarPath, "utf8")
+type TextMateRule = {
+  name?: string
+  match?: string
+  begin?: string
+  patterns?: TextMateRule[]
+}
+type TextMateGrammar = {
+  repository?: Record<string, TextMateRule>
+}
+const previewGrammarObject = JSON.parse(previewGrammar) as TextMateGrammar
+const flattenTextMateRules = (rule: TextMateRule): TextMateRule[] => [
+  rule,
+  ...(rule.patterns?.flatMap(flattenTextMateRules) ?? []),
+]
+const previewRules = Object.values(
+  previewGrammarObject.repository ?? {}
+).flatMap(flattenTextMateRules)
 const reservedBlock = syntaxSpec.match(
   /## 1\.9 予約語[\s\S]*?```text\n([^`]+)```/
 )
@@ -75,6 +92,48 @@ for (const word of [
     errors.push(
       `extensions/seseragi-spec-preview: contextual word ${word} is missing`
     )
+  }
+}
+
+const requiredTokenScopes = new Map<string, string[]>([
+  ["keyword.operator.map.seseragi", ["<$>"]],
+  ["keyword.operator.apply.seseragi", ["<*>"]],
+  ["keyword.operator.spread.seseragi", ["..."]],
+  ["keyword.operator.range.seseragi", ["..", "..="]],
+  ["keyword.operator.generator.seseragi", ["<-"]],
+  ["keyword.operator.arrow.seseragi", ["->"]],
+  ["keyword.operator.logical.seseragi", ["&&", "||"]],
+  ["keyword.operator.requirement-merge.seseragi", ["&"]],
+  ["keyword.operator.comparison.seseragi", ["==", "!=", "<", "<=", ">", ">="]],
+  ["keyword.operator.bind.seseragi", [">>="]],
+  ["keyword.operator.pipeline.seseragi", ["|>"]],
+  ["keyword.operator.application.seseragi", ["$"]],
+  ["keyword.operator.signal.seseragi", [":="]],
+  ["keyword.operator.arithmetic.seseragi", ["+", "-", "*", "/", "%", "**"]],
+  ["keyword.operator.cons.seseragi", [":"]],
+  ["keyword.operator.nullish-coalescing.seseragi", ["??"]],
+  ["keyword.operator.lambda.seseragi", ["\\"]],
+  ["punctuation.separator.variant.seseragi", ["|"]],
+  ["punctuation.accessor.seseragi", ["."]],
+  ["punctuation.terminator.seseragi", [";"]],
+  ["keyword.operator.custom.seseragi", ["<+>"]],
+])
+for (const [scope, tokens] of requiredTokenScopes) {
+  const rule = previewRules.find((candidate) => candidate.name === scope)
+  if (!rule?.match) {
+    errors.push(
+      `extensions/seseragi-spec-preview: missing token scope ${scope}`
+    )
+    continue
+  }
+  const regex = new RegExp(rule.match)
+  for (const token of tokens) {
+    const match = regex.exec(token)
+    if (!match || match.index !== 0 || match[0] !== token) {
+      errors.push(
+        `extensions/seseragi-spec-preview: scope ${scope} does not exactly match ${JSON.stringify(token)}`
+      )
+    }
   }
 }
 

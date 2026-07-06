@@ -262,6 +262,15 @@ terminalの出現検査に加え、構造checkerがAppendix EBNFをproduction単
 まだ保証しません。次のpassではproductionとconformance source / diagnostic / formatter snapshotの対応を
 明示metadataへ移します。
 
+### 2026-07-06: fixed token highlight parity
+
+Appendixの固定operator / separatorをsyntax previewと照合し、専用scopeがなかったlambda `\\`、ADT variantと
+comprehensionの`|`、field accessの`.`、terminatorの`;`を追加しました。custom operator文字集合へ誤って
+入っていたbackslashも1.8に合わせて除外しました。
+
+構造checkerは主要な固定operator、separator、custom operator sampleが対応するTextMate scopeへexact matchする
+ことを検査します。genericなcustom operator ruleが`<`だけを拾って固定tokenの欠落を隠すことは許しません。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

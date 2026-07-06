@@ -221,12 +221,24 @@
           "match": "\\?\\?"
         },
         {
+          "name": "keyword.operator.lambda.seseragi",
+          "match": "\\\\"
+        },
+        {
+          "name": "punctuation.separator.variant.seseragi",
+          "match": "\\|"
+        },
+        {
+          "name": "punctuation.accessor.seseragi",
+          "match": "\\."
+        },
+        {
           "name": "punctuation.definition.optional-field.seseragi",
           "match": "\\?(?=\\s*[:,}])"
         },
         {
           "name": "keyword.operator.custom.seseragi",
-          "match": "[!$%&*+\\-./:<=>?@\\\\^|~]{2,}"
+          "match": "[!$%&*+\\-./:<=>?@^|~]{2,}"
         }
       ]
     },
@@ -396,6 +408,10 @@
         {
           "name": "punctuation.separator.colon.seseragi",
           "match": ":"
+        },
+        {
+          "name": "punctuation.terminator.seseragi",
+          "match": ";"
         },
         {
           "name": "punctuation.backtick.seseragi",
