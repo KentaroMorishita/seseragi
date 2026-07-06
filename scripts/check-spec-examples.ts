@@ -57,6 +57,7 @@ for (const word of [
   "value",
   "pure",
   "task",
+  "namespace",
   "since",
   "self",
 ]) {

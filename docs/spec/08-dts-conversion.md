@@ -324,7 +324,7 @@ registrationをreleaseしてからforeign Taskを終了し、release failureは5
 
 TypeScript export / property / discriminator valueが、生成先namespaceで要求されるcaseの有効なSeseragi identifierで
 予約語でもなければ、そのspellingを保ちます。それ以外はtype / class / ADT / variantをUpperCamelCase、value /
-function / fieldをlowerCamelCaseへ変換します。ASCII以外を削除して別名へ潰さず、word boundaryはASCII `-`、`_`、
+function / field / namespace aliasをlowerCamelCaseへ変換します。ASCII以外を削除して別名へ潰さず、word boundaryはASCII `-`、`_`、
 spaceとlowercase-to-uppercase transitionだけを使います。
 
 変換結果が空、先頭規則違反、予約語、または同じSeseragi namespaceでcollisionする場合、generatorは
@@ -348,15 +348,13 @@ converterは個々のdeclaration nodeではなくTypeScript checkerのmerged sym
 merge後のproperty / signature、function mergeは公開overload set、namespace augmentationは最終export tableを入力に
 します。merge元file順をgenerated identityに使いません。
 
-TypeScript namespaceの最終export tableがtypeだけを持つ場合はgenerated child moduleへ変換し、parent binding moduleから
-public namespaceとしてre-exportできます。namespace childのmodule identityは元symbol identityから決め、directory名の
-偶然やdeclaration file配置へ依存させません。
+TypeScript namespaceは7.2のnested foreign `namespace` blockへ変換します。host keyは元export spellingをexact stringで
+残し、local aliasは8.17のlowerCamelCase規則を使います。namespaceの最終export tableを再帰的に変換し、type-only memberと
+runtime memberを同じblock内へ置けます。source file配置やdirectory名からSeseragi module pathを捏造しません。
 
-namespace内にruntime value、function、class、enum memberがある場合、7.2のtop-level export selectorだけではhost namespace
-object内部を安全に指定できません。`.`入りexport名をproperty pathへ読み替えず、現在のconverterは該当memberを
-hand adapter requiredとしてreportします。class / function / enumと同名namespaceがmergeしている場合も、type側だけを
-同じpublic spellingで生成でき、runtime augmentationは自動生成しません。nested runtime selectorのsurfaceとABIを
-独立して確定するまで、生成できると扱わないでください。
+class / function / enumと同名namespaceがmergeしている場合、type / value側はUpperCamelCase / lowerCamelCaseの通常名、
+namespace aliasはlowerCamelCaseを使います。同じTypeScript merged symbol identityをmetadataで共有しますが、Seseragiの
+型・値・module alias namespaceへ別々に登録します。host上では同じroot own property keyを参照できます。
 
 同じSeseragi namespace内で二つのmerged symbolが同名になる場合、片方を上書きしたり最後のdeclarationを採用したり
 しません。8.17のstable fallbackを生成してWarningにするか、設定された名前同士ならErrorです。type/valueの両方を

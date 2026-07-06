@@ -293,7 +293,7 @@ as alias deprecated deriving do effect else fails False fn for foreign from if i
 let match newtype opaque operator pub rec struct then trait True type when where with
 ```
 
-`constructor`、`method`、`property`、`value`、`pure`、`task` はforeign block内だけでkeywordに
+`constructor`、`method`、`property`、`value`、`pure`、`task`、`namespace` はforeign block内だけでkeywordに
 なるcontextual keywordです。`since` はdeprecated clause内だけのcontextual keyword、`self` はimpl methodの
 第一parameter位置でだけ特別な意味を持ちます。
 

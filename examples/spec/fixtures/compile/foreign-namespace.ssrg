@@ -1,0 +1,15 @@
+pub foreign "typescript" from "analytics" {
+  namespace metrics = "Metrics" {
+    task fn count values: Array<Float> -> Float
+
+    namespace format = "Format" {
+      task fn label value: Float -> String
+    }
+  }
+}
+
+fn count values: Array<Float> -> Task<Js.Error, Float> =
+  metrics.count values
+
+fn label value: Float -> Task<Js.Error, String> =
+  metrics.format.label value

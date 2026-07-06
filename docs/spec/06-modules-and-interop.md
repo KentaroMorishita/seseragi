@@ -114,6 +114,8 @@ import formの意味は次のとおりです。
 - wildcardで全名をunqualifiedに導入する構文はない。
 
 namespace aliasは値・関数だけでなく、型、trait、constructor、入れ子の公開namespaceを修飾できます。
+foreign block内の`namespace`も同じmodule alias namespaceへ入り、outsideからは通常のnamespace importと同じ
+`metrics.count`形式で参照します。host objectのfield accessではなく、7.2で検証されたforeign namespaceです。
 
 ```seseragi
 import * as users from "acme/users"

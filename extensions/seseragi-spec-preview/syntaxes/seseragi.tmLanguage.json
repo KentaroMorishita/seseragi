@@ -61,7 +61,7 @@
         },
         {
           "name": "storage.modifier.foreign.seseragi",
-          "match": "\\b(pure|task)(?=\\s+(?:(?:constructor|method|property)\\s+)?fn\\b)|\\b(constructor|method|property)(?=\\s+fn\\b)|\\bvalue(?=\\s+[a-z][a-zA-Z0-9_]*\\s*:)"
+          "match": "\\b(pure|task)(?=\\s+(?:(?:constructor|method|property)\\s+)?fn\\b)|\\b(constructor|method|property)(?=\\s+fn\\b)|\\bvalue(?=\\s+[a-z][a-zA-Z0-9_]*\\s*:)|\\bnamespace(?=\\s+[a-z][a-zA-Z0-9_]*)"
         },
         {
           "name": "storage.modifier.deprecated.seseragi",

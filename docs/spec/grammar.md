@@ -81,9 +81,12 @@ foreign-member-body = "opaque", "type", upper-name,
                   [ type-params ], terminator
                 | foreign-call
                 | "pure", "value", lower-name, ":", foreign-type,
-                  [ "=", STRING ], terminator ;
+                  [ "=", STRING ], terminator
+                | foreign-namespace ;
+foreign-namespace = "namespace", lower-name, [ "=", STRING ],
+                  "{", { foreign-member }, "}" ;
 foreign-call    = ( "pure" | "task" ), [ foreign-call-kind ], "fn",
-                  lower-name, [ type-params ], foreign-params,
+                  lower-name, [ type-params ], [ foreign-params ],
                   "->", foreign-type, [ "=", STRING ], terminator ;
 foreign-call-kind = "constructor" | "method" | "property" ;
 foreign-params  = parameter, { "->", parameter }, [ "->", rest-parameter ] ;

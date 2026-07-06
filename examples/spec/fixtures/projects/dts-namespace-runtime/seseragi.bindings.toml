@@ -1,0 +1,7 @@
+schema = 1
+
+[entries.analytics]
+declaration = "host/index.d.ts"
+specifier = "analytics"
+output = "analytics"
+evaluation = "task"
