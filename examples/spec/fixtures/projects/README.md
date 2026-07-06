@@ -40,6 +40,8 @@
 - `shapes`: release compileの内部shape assertion。`symbol`は`module/path::declaration`、`require`は14.12で
   定義したpredicateの重複しないarrayです。`args`に`--profile`, `release`が必要で、IRのserialization自体は
   fixture contractにしません。
+- `differentialProfiles`: run / test fixtureを指定profileごとに独立runtimeで実行し、14.12の観測結果を比較する
+  canonical arrayです。schema 1では`["development", "release"]`だけを許し、`--profile`と併用しません。
 
 host moduleを使うfixtureは`host/`へ自己完結したsourceを置き、network、global package cache、user credentialへ
 依存してはなりません。fixture runnerはmanifestのtargetをdeterministic test adapterへ解決します。

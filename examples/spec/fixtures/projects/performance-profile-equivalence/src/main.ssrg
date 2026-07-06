@@ -1,0 +1,26 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+newtype Score deriving Show = Int
+
+fn increment value: Score -> Score =
+  match value {
+    Score raw -> Score (raw + 1)
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    calls <- refs.make 0
+    recovered <-
+      effects.defer (\_ -> do {
+        refs.update (\count -> count + 1) calls
+        effects.fail "expected"
+      })
+        |> effects.recover (\_ -> effects.succeed $ Score 41)
+
+    let result = recovered |> increment
+    callCount <- refs.get calls
+    println `${show result}, calls: ${callCount}`
+  }

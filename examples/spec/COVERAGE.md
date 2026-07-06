@@ -59,7 +59,7 @@
 | JsonEncode / JsonDecode deriving              | Lesson 26               | codec wire / strict field fixtures             | partial |
 | pure Html props / children / SSR              | Lesson 27               | HTML escaping / props fixtures                 | partial |
 | Signal-driven DOM / event resource lifetime   | planned advanced lesson | DOM reconciliation / hydration projects        | planned |
-| performance erasure / stack safety            | none                    | `projects/performance-release-shapes`          | partial |
+| performance erasure / stack safety            | none                    | `projects/performance-*`                       | partial |
 | benchmark discovery / baseline regression     | none                    | `projects/benchmark-discovery`                 | covered |
 
 ## 次に埋める順序

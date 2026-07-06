@@ -129,6 +129,7 @@ type ProjectExpectation = {
   exitCode?: number
   args?: string[]
   shapes?: ProjectShape[]
+  differentialProfiles?: string[]
 }
 
 type ProjectDiagnostic = ExpectedDiagnostic & {
@@ -668,6 +669,25 @@ for (const name of projects) {
           )
         }
       }
+    }
+  }
+
+  if (expectation.differentialProfiles !== undefined) {
+    if (
+      !["run", "test"].includes(expectation.phase) ||
+      !Array.isArray(expectation.differentialProfiles) ||
+      expectation.differentialProfiles.length !== 2 ||
+      expectation.differentialProfiles[0] !== "development" ||
+      expectation.differentialProfiles[1] !== "release"
+    ) {
+      errors.push(
+        `projects/${name}: differentialProfiles must be development, release for run/test phase`
+      )
+    }
+    if (expectation.args?.includes("--profile")) {
+      errors.push(
+        `projects/${name}: differentialProfiles cannot combine with --profile`
+      )
     }
   }
 

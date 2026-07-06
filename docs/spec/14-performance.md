@@ -207,6 +207,13 @@ predicateは「最適化を試みた」というcompiler eventではなく、rel
 照合せず、dead code eliminationでsymbol全体が消えた場合も、fixture runnerは検査用rootとしてsymbolを保持してから
 判定します。新predicateは意味とfalse positive条件を本節へ追加してからfixture schemaへ加えます。
 
+semantic differential fixtureは同じlockfile、target、service scenario、inputを使い、developmentとreleaseを
+それぞれ新しいruntimeで一回ずつ実行します。success / typed failure / defect / cancellationの分類とpayload、stdout、
+stderr、exit code、target service operationの名前・引数・return・発生順を比較します。duration、generated address、
+host stack frame、profile名など12章で非決定的と定義されたdiagnostic fieldは比較前に除きます。片方だけがtimeout、
+resource leak、未消費service operationになる場合も不一致です。二つのprofileを同じruntimeで順番に動かしてglobal
+cacheやmodule instanceを共有してはなりません。
+
 benchmarkの絶対値は言語conformanceではありません。baseline、toolchain、warmup、input sizeを固定し、統計的な
 退行をrelease quality gateとして扱います。最低benchmark suiteは次を含みます。
 
