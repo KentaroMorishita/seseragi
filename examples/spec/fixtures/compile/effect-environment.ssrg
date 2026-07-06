@@ -1,0 +1,15 @@
+import * as effects from "std/effect"
+
+struct Settings {
+  label: String,
+}
+
+fn settings -> Effect<{ settings: Settings }, Never, Settings> =
+  effects.service (\environment -> environment.settings)
+
+fn usePrimary<A>
+  effect: Effect<{ console: Console }, ConsoleError, A>
+  -> Effect<{ primary: Console, replica: Console }, ConsoleError, A> =
+  effects.provideSome
+    (\environment -> { console: environment.primary })
+    effect

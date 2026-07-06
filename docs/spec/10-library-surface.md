@@ -1408,6 +1408,13 @@ Effect moduleは9.8のoperationに加え、次を提供します。
 - resource: `bracket`, `scoped`, `acquireRelease`
 
 ```seseragi
+fn service<R, S>
+  select: (R -> S)
+  -> Effect<R, Never, S>
+fn provideSome<R0, R, E, A>
+  project: (R0 -> R)
+  -> effect: Effect<R, E, A>
+  -> Effect<R0, E, A>
 fn attempt<R, E, A>
   effect: Effect<R, E, A>
   -> Effect<R, Never, Either<E, A>>
@@ -1419,6 +1426,12 @@ fn fromMaybe<R, E, A>
   -> value: Maybe<A>
   -> Effect<R, E, A>
 ```
+
+`service select`はEffect実行時のenvironmentをselectへ一度渡し、その結果を返します。service型だけでfieldを
+探索しないため、同じ型の`primary`と`replica`もselectorで区別できます。selectはpureで、Effectを返せません。
+`provideSome project effect`は外側のR0から内側のRを実行ごとに一度構築し、そのenvironmentでeffectを実行します。
+project前後でservice objectをcopyすることは要求せず、inner effectのscope、failure、cancellationを変えません。
+R0とRは5.5のwell-formedなclosed structural requirement recordでなければなりません。
 
 `attempt`はtyped failureを`Left`、successを`Right`としてsuccess channelへ移します。defectとcancellationを捕捉せず、
 environment requirementと評価時点を変えません。`fromEither`は`Left`をtyped failure、`Right`をsuccessにし、
