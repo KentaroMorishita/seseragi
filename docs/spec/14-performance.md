@@ -56,7 +56,8 @@ acquire / release範囲を変えたりしてはなりません。速くなった
 | boundary conversion  | foreign binding、Bytes変換、`.d.ts` adapter                 | safety contractに必要な検査やcopyを持ちうる              |
 
 classは個々のoperationの正確な計算量を置き換えません。標準ライブラリは、非自明なoperationについて
-worst-caseまたはamortized計算量、allocation、storage sharing、入力保持を公開API文書へ記載します。
+worst-case、expected、amortizedの別、allocation、storage sharing、入力保持を公開API文書へ記載します。
+共通の記号、callback cost、strict result、到達不能なuser valueの保持規則は10.2に従います。
 
 ## 14.5 消去されるsurface abstraction
 
