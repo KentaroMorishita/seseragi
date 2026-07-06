@@ -1407,6 +1407,24 @@ Effect moduleは9.8のoperationに加え、次を提供します。
 - temporal control: `timeout`, `retry`, `repeat`
 - resource: `bracket`, `scoped`, `acquireRelease`
 
+```seseragi
+fn attempt<R, E, A>
+  effect: Effect<R, E, A>
+  -> Effect<R, Never, Either<E, A>>
+fn fromEither<R, E, A>
+  value: Either<E, A>
+  -> Effect<R, E, A>
+fn fromMaybe<R, E, A>
+  error: E
+  -> value: Maybe<A>
+  -> Effect<R, E, A>
+```
+
+`attempt`はtyped failureを`Left`、successを`Right`としてsuccess channelへ移します。defectとcancellationを捕捉せず、
+environment requirementと評価時点を変えません。`fromEither`は`Left`をtyped failure、`Right`をsuccessにし、
+`fromMaybe error`は`Nothing`を指定errorのtyped failure、`Just`をsuccessにします。どちらも入力値をEffect構築時に
+再評価せず、返したEffectを実行した時に保存済みcaseを一度公開します。
+
 ### temporal control
 
 ```seseragi

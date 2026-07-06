@@ -1,0 +1,16 @@
+import * as effects from "std/effect"
+
+type MissingError =
+  | MissingValue
+
+fn fromResult value: Either<MissingError, Int>
+  -> Task<MissingError, Int> =
+  effects.fromEither value
+
+fn requireValue value: Maybe<Int>
+  -> Task<MissingError, Int> =
+  effects.fromMaybe MissingValue value
+
+fn capture effect: Task<MissingError, Int>
+  -> Task<Never, Either<MissingError, Int>> =
+  effects.attempt effect
