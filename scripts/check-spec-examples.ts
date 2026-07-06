@@ -9,6 +9,16 @@ const errors: string[] = []
 const specSections = new Set<string>()
 const diagnosticRegistry = new Map<string, string>()
 
+const collectFiles = (directory: string, suffix: string): string[] =>
+  readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name)
+    return entry.isDirectory()
+      ? collectFiles(path, suffix)
+      : entry.name.endsWith(suffix)
+        ? [path]
+        : []
+  })
+
 for (const name of readdirSync(specDir).filter((name) =>
   name.endsWith(".md")
 )) {
@@ -65,6 +75,31 @@ for (const word of [
     errors.push(
       `extensions/seseragi-spec-preview: contextual word ${word} is missing`
     )
+  }
+}
+
+const appendixGrammar = readFileSync(join(specDir, "grammar.md"), "utf8")
+const ebnfBlock = appendixGrammar.match(/```ebnf\n([\s\S]*?)```/)
+if (!ebnfBlock) {
+  errors.push("docs/spec/grammar.md: Appendix EBNF block is missing")
+} else {
+  const terminals = new Set(
+    [...(ebnfBlock[1]?.matchAll(/"(?:\\.|[^"\\])*"/g) ?? [])].map(
+      (match) => JSON.parse(match[0]) as string
+    )
+  )
+  const corpus = collectFiles(root, ".ssrg")
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n")
+  for (const terminal of [...terminals].sort()) {
+    const present = /^[A-Za-z]+$/.test(terminal)
+      ? new RegExp(`\\b${terminal}\\b`).test(corpus)
+      : corpus.includes(terminal)
+    if (!present) {
+      errors.push(
+        `docs/spec/grammar.md: terminal ${JSON.stringify(terminal)} has no examples/spec source coverage`
+      )
+    }
   }
 }
 

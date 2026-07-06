@@ -1,0 +1,21 @@
+foreign "typescript" from "user-session" {
+  opaque type Session
+  pure property fn sessionName self: Session -> String = "name"
+}
+
+type Reading =
+  | Sample Int
+
+operator infix 4 <=> left: Int -> right: Int -> Bool = left == right
+
+fn describe reading: Reading -> String =
+  match reading {
+    Sample value when value > 0 -> "positive"
+    Sample _ -> "non-positive"
+  }
+
+let logical = True && False || True
+let power = 2 ** 8
+let same = 1 <=> 1
+let incremented = (\value -> value + 1) <$> Just 1
+let history = `[1, 2, 3]
