@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": { "start": 21, "end": 21 },
+      "related": [],
+      "fixes": []
+    }
+  ]
+}

@@ -10,6 +10,10 @@
 - `diagnostics.json`: frontend共通diagnostic envelope
 - `interface.json`: module consumerが読む公開interface
 
+`schema-1/recovery/`は式が欠けた編集中sourceを固定します。token列は入力を失わず、CSTはzero-widthの
+`error-expr`とmissing expressionを持ち、diagnosticのprimaryも挿入位置のzero-width rangeです。Errorを持つ
+moduleは公開interfaceへ不完全なsymbolを出しません。
+
 rangeはすべて0-based、end-exclusiveのUTF-8 byteです。tokenの`raw`をEOF以外すべて連結するとsourceと
 byte単位で一致しなければなりません。CSTの`startToken` / `endToken`はtoken indexのhalf-open rangeです。
 

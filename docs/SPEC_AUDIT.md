@@ -291,6 +291,10 @@ checkerはUTF-8 byte range、tokenの連続性とlossless再構築、EOF、CST c
 interface symbolとsource rangeを検査します。これはhand-written expected artifactのcontract検証であり、
 新compilerが生成できるという主張ではありません。次にrecoveryと非empty diagnosticを別fixtureで固定します。
 
+recovery fixtureでは式が欠けた公開letを、lossless token列、zero-width `error-expr`、missing expression、
+`SES-P0001`へ写しました。diagnostic ID、registry code / severity、message key、UTF-8 primary rangeもcheckerで
+検査します。compile errorを持つmodule interfaceは不完全なexportを公開しません。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

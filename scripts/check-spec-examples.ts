@@ -359,14 +359,23 @@ type CstArtifact = {
   source: string
   tokens: string
   root: CstNodeArtifact
-  missing: unknown[]
-  errors: unknown[]
+  missing: Array<{ expected: string; atToken: number; atByte: number }>
+  errors: Array<{ code: string; startToken: number; endToken: number }>
+}
+type WireDiagnostic = {
+  id: string
+  code: string
+  severity: string
+  messageKey: string
+  primary: { start: number; end: number }
+  related: unknown[]
+  fixes: unknown[]
 }
 type DiagnosticArtifact = {
   schema: number
   source: string
   positionEncoding: string
-  diagnostics: unknown[]
+  diagnostics: WireDiagnostic[]
 }
 type InterfaceExportArtifact = {
   symbol: string
@@ -506,6 +515,34 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       errors.push(`${prefix}/cst.json: invalid CST artifact envelope`)
     } else {
       validateNode(cst.root, 0, nonEofTokenCount)
+      for (const missing of cst.missing) {
+        if (
+          !missing ||
+          typeof missing.expected !== "string" ||
+          missing.expected.length === 0 ||
+          !Number.isInteger(missing.atToken) ||
+          missing.atToken < 0 ||
+          missing.atToken > nonEofTokenCount ||
+          !Number.isInteger(missing.atByte) ||
+          missing.atByte !==
+            (tokens.tokens[missing.atToken]?.start ?? sourceBytes.length)
+        ) {
+          errors.push(`${prefix}/cst.json: invalid missing token`)
+        }
+      }
+      for (const error of cst.errors) {
+        if (
+          !error ||
+          !diagnosticRegistry.has(error.code) ||
+          !Number.isInteger(error.startToken) ||
+          !Number.isInteger(error.endToken) ||
+          error.startToken < 0 ||
+          error.endToken < error.startToken ||
+          error.endToken > nonEofTokenCount
+        ) {
+          errors.push(`${prefix}/cst.json: invalid error range`)
+        }
+      }
     }
   }
 
@@ -518,6 +555,30 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       !Array.isArray(diagnostics.diagnostics))
   ) {
     errors.push(`${prefix}/diagnostics.json: invalid diagnostic envelope`)
+  } else if (diagnostics) {
+    const ids = new Set<string>()
+    for (const diagnostic of diagnostics.diagnostics) {
+      const range = diagnostic.primary
+      if (
+        !diagnostic ||
+        !/^d[1-9][0-9]*$/.test(diagnostic.id) ||
+        ids.has(diagnostic.id) ||
+        !diagnosticRegistry.has(diagnostic.code) ||
+        diagnosticRegistry.get(diagnostic.code) !== diagnostic.severity ||
+        !/^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$/.test(diagnostic.messageKey) ||
+        !range ||
+        !Number.isInteger(range.start) ||
+        !Number.isInteger(range.end) ||
+        range.start < 0 ||
+        range.end < range.start ||
+        range.end > sourceBytes.length ||
+        !Array.isArray(diagnostic.related) ||
+        !Array.isArray(diagnostic.fixes)
+      ) {
+        errors.push(`${prefix}/diagnostics.json: invalid diagnostic`)
+      }
+      ids.add(diagnostic.id)
+    }
   }
 
   const moduleInterface = readArtifact<InterfaceArtifact>("interface.json")
