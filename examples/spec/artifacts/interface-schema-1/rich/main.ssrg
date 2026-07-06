@@ -1,0 +1,11 @@
+import { identity } from "./dep"
+
+pub newtype Score = Int
+
+pub operator infixl 4 <+>
+  left: Score -> right: Score -> Score =
+  identity left
+
+instance Show<Score> {
+  fn show value: Score -> String = "Score"
+}

@@ -389,10 +389,135 @@ type InterfaceArtifact = {
   schema: number
   module: string
   source: string
-  dependencies: unknown[]
+  dependencies: Array<{
+    specifier: string
+    module: string
+    origin: { start: number; end: number }
+    imports: Array<{ namespace: string; name: string; symbol: string }>
+  }>
   exports: InterfaceExportArtifact[]
-  operators: unknown[]
-  instances: unknown[]
+  operators: Array<{
+    symbol: string
+    spelling: string
+    fixity: string
+    precedence: number
+    origin: { start: number; end: number }
+  }>
+  instances: Array<{
+    trait: string
+    head: unknown
+    constraints: unknown[]
+    origin: { start: number; end: number }
+  }>
+}
+
+const validByteRange = (
+  range: { start: number; end: number } | undefined,
+  sourceBytes: Buffer
+): boolean =>
+  !!range &&
+  Number.isInteger(range.start) &&
+  Number.isInteger(range.end) &&
+  range.start >= 0 &&
+  range.end >= range.start &&
+  range.end <= sourceBytes.length &&
+  Buffer.from(
+    sourceBytes.subarray(0, range.start).toString("utf8"),
+    "utf8"
+  ).equals(sourceBytes.subarray(0, range.start)) &&
+  Buffer.from(
+    sourceBytes.subarray(0, range.end).toString("utf8"),
+    "utf8"
+  ).equals(sourceBytes.subarray(0, range.end))
+
+const validateInterfaceArtifact = (
+  moduleInterface: InterfaceArtifact,
+  sourceName: string,
+  sourceBytes: Buffer,
+  prefix: string
+): void => {
+  if (
+    moduleInterface.schema !== 1 ||
+    !/^[a-z][a-z0-9-]*(\/[a-z][a-z0-9-]*)*$/.test(moduleInterface.module) ||
+    moduleInterface.source !== sourceName ||
+    !Array.isArray(moduleInterface.dependencies) ||
+    !Array.isArray(moduleInterface.exports) ||
+    !Array.isArray(moduleInterface.operators) ||
+    !Array.isArray(moduleInterface.instances)
+  ) {
+    errors.push(`${prefix}/interface.json: invalid interface envelope`)
+    return
+  }
+
+  const symbols = new Set<string>()
+  for (const exported of moduleInterface.exports) {
+    if (
+      !exported ||
+      typeof exported.symbol !== "string" ||
+      !exported.symbol.startsWith(`${moduleInterface.module}::`) ||
+      symbols.has(exported.symbol) ||
+      !["value", "type", "operator"].includes(exported.namespace) ||
+      typeof exported.name !== "string" ||
+      exported.name.length === 0 ||
+      exported.visibility !== "public" ||
+      !validByteRange(exported.declaration, sourceBytes) ||
+      !exported.scheme ||
+      typeof exported.scheme !== "object"
+    ) {
+      errors.push(`${prefix}/interface.json: invalid export`)
+    }
+    symbols.add(exported.symbol)
+  }
+
+  for (const dependency of moduleInterface.dependencies) {
+    if (
+      !dependency ||
+      typeof dependency.specifier !== "string" ||
+      dependency.specifier.length === 0 ||
+      !/^[a-z][a-z0-9-]*(\/[a-z][a-z0-9-]*)*$/.test(dependency.module) ||
+      !validByteRange(dependency.origin, sourceBytes) ||
+      !Array.isArray(dependency.imports) ||
+      dependency.imports.some(
+        (imported) =>
+          !imported ||
+          !["value", "type", "operator"].includes(imported.namespace) ||
+          typeof imported.name !== "string" ||
+          imported.name.length === 0 ||
+          typeof imported.symbol !== "string" ||
+          !imported.symbol.startsWith(`${dependency.module}::`)
+      )
+    ) {
+      errors.push(`${prefix}/interface.json: invalid dependency`)
+    }
+  }
+
+  for (const operator of moduleInterface.operators) {
+    if (
+      !operator ||
+      !symbols.has(operator.symbol) ||
+      !/^[!$%&*+\-./:<=>?@^|~]{2,}$/.test(operator.spelling) ||
+      !["infixl", "infixr", "infix"].includes(operator.fixity) ||
+      !Number.isInteger(operator.precedence) ||
+      operator.precedence < 0 ||
+      operator.precedence > 8 ||
+      !validByteRange(operator.origin, sourceBytes)
+    ) {
+      errors.push(`${prefix}/interface.json: invalid operator`)
+    }
+  }
+
+  for (const instance of moduleInterface.instances) {
+    if (
+      !instance ||
+      !/^[A-Z][A-Za-z0-9']*$/.test(instance.trait) ||
+      !instance.head ||
+      typeof instance.head !== "object" ||
+      !Array.isArray(instance.constraints) ||
+      !validByteRange(instance.origin, sourceBytes)
+    ) {
+      errors.push(`${prefix}/interface.json: invalid instance`)
+    }
+  }
 }
 
 const artifactsDir = join(root, "artifacts", "schema-1")
@@ -583,39 +708,61 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
 
   const moduleInterface = readArtifact<InterfaceArtifact>("interface.json")
   if (moduleInterface) {
-    if (
-      moduleInterface.schema !== 1 ||
-      !/^[a-z][a-z0-9-]*(\/[a-z][a-z0-9-]*)*$/.test(moduleInterface.module) ||
-      moduleInterface.source !== tokens.source ||
-      !Array.isArray(moduleInterface.dependencies) ||
-      !Array.isArray(moduleInterface.exports) ||
-      !Array.isArray(moduleInterface.operators) ||
-      !Array.isArray(moduleInterface.instances)
-    ) {
-      errors.push(`${prefix}/interface.json: invalid interface envelope`)
-    } else {
-      const symbols = new Set<string>()
-      for (const exported of moduleInterface.exports) {
-        const range = exported.declaration
-        if (
-          !exported ||
-          typeof exported.symbol !== "string" ||
-          symbols.has(exported.symbol) ||
-          !["value", "type", "operator"].includes(exported.namespace) ||
-          typeof exported.name !== "string" ||
-          exported.visibility !== "public" ||
-          !range ||
-          !Number.isInteger(range.start) ||
-          !Number.isInteger(range.end) ||
-          range.start < 0 ||
-          range.end < range.start ||
-          range.end > sourceBytes.length ||
-          !exported.scheme ||
-          typeof exported.scheme !== "object"
-        ) {
-          errors.push(`${prefix}/interface.json: invalid export`)
-        }
-        symbols.add(exported.symbol)
+    validateInterfaceArtifact(
+      moduleInterface,
+      tokens.source,
+      sourceBytes,
+      prefix
+    )
+  }
+}
+
+const interfaceArtifactsDir = join(root, "artifacts", "interface-schema-1")
+for (const entry of readdirSync(interfaceArtifactsDir, {
+  withFileTypes: true,
+})) {
+  if (!entry.isDirectory()) continue
+  const directory = join(interfaceArtifactsDir, entry.name)
+  const prefix = `artifacts/interface-schema-1/${entry.name}`
+  let moduleInterface: InterfaceArtifact
+  try {
+    moduleInterface = JSON.parse(
+      readFileSync(join(directory, "interface.json"), "utf8")
+    ) as InterfaceArtifact
+  } catch (error) {
+    errors.push(`${prefix}/interface.json: invalid JSON: ${error}`)
+    continue
+  }
+  const sourcePath = resolve(directory, moduleInterface.source)
+  if (
+    moduleInterface.source.startsWith("/") ||
+    moduleInterface.source.includes("\\") ||
+    moduleInterface.source.split("/").some((segment) => segment === "..") ||
+    !sourcePath.startsWith(`${directory}/`) ||
+    !existsSync(sourcePath)
+  ) {
+    errors.push(`${prefix}/interface.json: missing source`)
+    continue
+  }
+  validateInterfaceArtifact(
+    moduleInterface,
+    moduleInterface.source,
+    readFileSync(sourcePath),
+    prefix
+  )
+  for (const dependency of moduleInterface.dependencies ?? []) {
+    if (dependency.specifier.startsWith("./")) {
+      const dependencyPath = resolve(
+        directory,
+        `${dependency.specifier.slice(2)}.ssrg`
+      )
+      if (
+        !dependencyPath.startsWith(`${directory}/`) ||
+        !existsSync(dependencyPath)
+      ) {
+        errors.push(
+          `${prefix}/interface.json: missing dependency source ${dependency.specifier}`
+        )
       }
     }
   }

@@ -199,4 +199,6 @@ match guard
 
 最初の二項は`examples/spec/grammar-coverage.json`と`examples/spec/artifacts/schema-1/`で最小contractを
 満たしました。basicに加えてmissing / error CSTとzero-width diagnosticを持つrecovery sourceを固定しています。
-次はdependencyとoperatorを持つmodule interfaceを追加し、module graph laneの入力を閉じます。
+`examples/spec/artifacts/interface-schema-1/rich/`はdependency edge、public type / operator、instance headを
+bodyから分離して固定し、module graph laneの入力も閉じました。次は最小end-to-end milestoneのstage snapshotと
+runtime ABI metadataを定義します。

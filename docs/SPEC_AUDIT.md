@@ -295,6 +295,11 @@ recovery fixtureでは式が欠けた公開letを、lossless token列、zero-wid
 `SES-P0001`へ写しました。diagnostic ID、registry code / severity、message key、UTF-8 primary rangeもcheckerで
 検査します。compile errorを持つmodule interfaceは不完全なexportを公開しません。
 
+module interfaceはfrontend artifactと別bundleにし、relative dependencyのcanonical module / imported symbol、
+public newtype、custom operatorのsymbol / fixity / precedence / scheme、coherenceに必要なinstance headを固定しました。
+checkerはsource range、UTF-8 boundary、symbol namespace、dependency source、operator規則を検査します。module graph
+consumerはCSTやfunction bodyへ依存せず、このinterfaceだけをcache入力にできます。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

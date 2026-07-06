@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "module": "artifact/rich",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./dep",
+      "module": "artifact/rich/dep",
+      "origin": { "start": 0, "end": 32 },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "identity",
+          "symbol": "artifact/rich/dep::identity"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/rich::Score",
+      "namespace": "type",
+      "name": "Score",
+      "visibility": "public",
+      "declarationKind": "newtype",
+      "declaration": { "start": 34, "end": 57 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Score",
+          "arity": 0
+        }
+      },
+      "representation": { "kind": "named", "name": "Int", "arguments": [] }
+    },
+    {
+      "symbol": "artifact/rich::operator(<+>)",
+      "namespace": "operator",
+      "name": "<+>",
+      "visibility": "public",
+      "declarationKind": "custom-operator",
+      "declaration": { "start": 59, "end": 141 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": { "kind": "named", "name": "Score", "arguments": [] },
+          "result": {
+            "kind": "function",
+            "parameter": { "kind": "named", "name": "Score", "arguments": [] },
+            "result": { "kind": "named", "name": "Score", "arguments": [] }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [
+    {
+      "symbol": "artifact/rich::operator(<+>)",
+      "spelling": "<+>",
+      "fixity": "infixl",
+      "precedence": 4,
+      "origin": { "start": 59, "end": 141 }
+    }
+  ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [{ "kind": "named", "name": "Score", "arguments": [] }]
+      },
+      "constraints": [],
+      "origin": { "start": 143, "end": 210 }
+    }
+  ]
+}
