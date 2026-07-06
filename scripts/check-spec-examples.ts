@@ -128,6 +128,7 @@ type ProjectExpectation = {
   stderr?: string
   exitCode?: number
   args?: string[]
+  shapes?: ProjectShape[]
 }
 
 type ProjectDiagnostic = ExpectedDiagnostic & {
@@ -138,6 +139,17 @@ type ProjectArtifact = {
   output: string
   snapshot: string
 }
+
+type ProjectShape = {
+  symbol: string
+  require: string[]
+}
+
+const shapePredicates = new Set([
+  "newtype-erased",
+  "surface-sugar-erased",
+  "self-tail-loop",
+])
 
 let fixtureCount = 0
 for (const fixtureKind of ["compile", "diagnostics"] as const) {
@@ -606,6 +618,57 @@ for (const name of projects) {
       expectation.args.some((argument) => typeof argument !== "string"))
   ) {
     errors.push(`projects/${name}: args must be an array of strings`)
+  }
+
+  if (expectation.shapes !== undefined) {
+    if (
+      expectation.phase !== "compile" ||
+      !Array.isArray(expectation.shapes) ||
+      expectation.shapes.length === 0
+    ) {
+      errors.push(
+        `projects/${name}: shapes require compile phase and a non-empty array`
+      )
+    } else {
+      const symbols = new Set<string>()
+      const profileIndex = expectation.args?.indexOf("--profile") ?? -1
+      if (expectation.args?.[profileIndex + 1] !== "release") {
+        errors.push(`projects/${name}: shapes require --profile release`)
+      }
+      for (const shape of expectation.shapes) {
+        if (
+          !shape ||
+          typeof shape !== "object" ||
+          Array.isArray(shape) ||
+          typeof shape.symbol !== "string" ||
+          !/^[a-z][A-Za-z0-9_-]*(\/[a-z][A-Za-z0-9_-]*)*::[a-z][A-Za-z0-9']*$/.test(
+            shape.symbol
+          )
+        ) {
+          errors.push(`projects/${name}: invalid shape symbol`)
+          continue
+        }
+        if (symbols.has(shape.symbol)) {
+          errors.push(
+            `projects/${name}: duplicate shape symbol ${shape.symbol}`
+          )
+        }
+        symbols.add(shape.symbol)
+        if (
+          !Array.isArray(shape.require) ||
+          shape.require.length === 0 ||
+          new Set(shape.require).size !== shape.require.length ||
+          shape.require.some(
+            (predicate) =>
+              typeof predicate !== "string" || !shapePredicates.has(predicate)
+          )
+        ) {
+          errors.push(
+            `projects/${name}: invalid shape predicates for ${shape.symbol}`
+          )
+        }
+      }
+    }
   }
 
   if (expectation.stdin !== undefined) {

@@ -28,7 +28,7 @@
 | Semigroup / Monoid                            | Lesson 14               | law fixtures                                   | partial |
 | generic ADT、local / mutual recursion、spread | Lesson 19               | local recursion / forward reference fixtures   | partial |
 | monad transformer                             | Lesson 20               | transformer order fixtures                     | partial |
-| retry / repeat / timeout                      | Lesson 29               | `projects/effect-temporal-control`              | covered |
+| retry / repeat / timeout                      | Lesson 29               | `projects/effect-temporal-control`             | covered |
 | test declaration / discovery / runner         | test guide              | `projects/test-discovery`                      | partial |
 | standard input / EOF / line decoding          | stdin guide             | `projects/stdin-lines`                         | partial |
 | deterministic Random / secure Entropy         | random guide            | compile fixture / `projects/random-seed`       | partial |
@@ -59,7 +59,7 @@
 | JsonEncode / JsonDecode deriving              | Lesson 26               | codec wire / strict field fixtures             | partial |
 | pure Html props / children / SSR              | Lesson 27               | HTML escaping / props fixtures                 | partial |
 | Signal-driven DOM / event resource lifetime   | planned advanced lesson | DOM reconciliation / hydration projects        | planned |
-| performance erasure / stack safety            | none                    | differential / IR shape / benchmark suite      | planned |
+| performance erasure / stack safety            | none                    | `projects/performance-release-shapes`          | partial |
 | benchmark discovery / baseline regression     | none                    | `projects/benchmark-discovery`                 | covered |
 
 ## 次に埋める順序

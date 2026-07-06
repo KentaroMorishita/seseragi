@@ -37,6 +37,9 @@
   `tooling`を指定する。
 - `artifacts`: convert / tooling phaseの生成物。`output`はtemporary project内の生成先、`snapshot`はrepository内の
   exact expected textです。同じoutputを二度宣言できず、snapshotはUTF-8 / LF / final newlineを持つ。
+- `shapes`: release compileの内部shape assertion。`symbol`は`module/path::declaration`、`require`は14.12で
+  定義したpredicateの重複しないarrayです。`args`に`--profile`, `release`が必要で、IRのserialization自体は
+  fixture contractにしません。
 
 host moduleを使うfixtureは`host/`へ自己完結したsourceを置き、network、global package cache、user credentialへ
 依存してはなりません。fixture runnerはmanifestのtargetをdeterministic test adapterへ解決します。

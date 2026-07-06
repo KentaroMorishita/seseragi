@@ -1,0 +1,22 @@
+newtype Count = Int
+
+fn increment value: Count -> Count =
+  match value {
+    Count raw -> Count (raw + 1)
+  }
+
+fn normalize value: Int -> Int =
+  value
+    |> Count
+    |> increment
+    |> (\count -> match count { Count raw -> raw })
+
+fn countdown current: Int -> total: Int -> Int =
+  if current <= 0
+    then total
+    else countdown (current - 1) (total + current)
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ show $ countdown 100000 (normalize 0)

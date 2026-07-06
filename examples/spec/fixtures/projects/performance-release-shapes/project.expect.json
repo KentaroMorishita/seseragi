@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "compile",
+  "spec": ["14.5", "14.8", "14.11", "14.12"],
+  "lock": "generate",
+  "args": ["--profile", "release"],
+  "shapes": [
+    {
+      "symbol": "main::increment",
+      "require": ["newtype-erased"]
+    },
+    {
+      "symbol": "main::normalize",
+      "require": ["newtype-erased", "surface-sugar-erased"]
+    },
+    {
+      "symbol": "main::countdown",
+      "require": ["self-tail-loop"]
+    },
+    {
+      "symbol": "main::main",
+      "require": ["surface-sugar-erased"]
+    }
+  ]
+}
