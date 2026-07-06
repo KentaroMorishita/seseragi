@@ -1,0 +1,47 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as streams from "std/stream"
+
+type AppError deriving Show =
+  | InvalidBuffer streams.BufferCapacityError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    runs <- refs.make 0
+    let cold = streams.fromEffect $ effects.defer (\_ ->
+      refs.modify (\count -> (count + 1, count + 1)) runs
+    )
+
+    first <- streams.runCollect cold
+    second <- streams.runCollect cold
+
+    released <- refs.make False
+    effects.scoped $ do {
+      streams.fromEffect (
+        effects.acquireRelease
+          (effects.succeed ())
+          (\_ -> refs.set True released)
+          >>= (\_ -> effects.succeed 0)
+      )
+        |> streams.runCollect
+    }
+    wasReleased <- refs.get released
+
+    capacity <-
+      streams.bufferCapacity 1
+        |> effects.fromEither
+        |> effects.mapError InvalidBuffer
+
+    streams.fromArray [1, 2, 3]
+      |> streams.buffer capacity
+      |> streams.runForEach (\value ->
+        println (show value)
+          |> effects.mapError ConsoleFailure
+      )
+
+    println `${show first},${show second},released:${wasReleased}`
+      |> effects.mapError ConsoleFailure
+  }

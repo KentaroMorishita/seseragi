@@ -20,7 +20,7 @@
 | Signalとtransaction                           | Lesson 15               | `projects/signal-transaction-lifetime`         | covered |
 | Effect / Stream requirement merge             | none                    | compile / invalid-position fixtures            | partial |
 | Fiber、Deferred、cancellation                 | Lesson 16               | scheduler / cancellation fixtures              | partial |
-| Streamとbackpressure                          | Lesson 17               | merge / overflow fixtures                      | partial |
+| Streamとbackpressure                          | Lesson 17               | `projects/stream-cold-resource`                | partial |
 | resource scopeとfinalizer                     | Lesson 18               | exit / defect ordering fixtures                | partial |
 | generic struct / alias / impl                 | Lesson 11               | nested generic / kind / inference fixtures     | partial |
 | comprehension、Array / record pattern         | Lesson 12               | parse / pattern diagnostics                    | partial |
