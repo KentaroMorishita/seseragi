@@ -57,7 +57,19 @@
       "patterns": [
         {
           "name": "keyword.control.seseragi",
-          "match": "\\b(as|alias|deprecated|deriving|do|effect|else|fails|fn|for|foreign|from|if|impl|import|infix|infixl|infixr|instance|let|match|newtype|opaque|operator|pub|rec|since|struct|then|trait|type|when|where|with)\\b"
+          "match": "\\b(as|alias|deprecated|deriving|do|effect|else|fails|fn|for|foreign|from|if|impl|import|infix|infixl|infixr|instance|let|match|newtype|opaque|operator|pub|rec|struct|then|trait|type|when|where|with)\\b"
+        },
+        {
+          "name": "storage.modifier.foreign.seseragi",
+          "match": "\\b(pure|task)(?=\\s+(?:(?:constructor|method|property)\\s+)?fn\\b)|\\b(constructor|method|property)(?=\\s+fn\\b)|\\bvalue(?=\\s+[a-z][a-zA-Z0-9_]*\\s*:)"
+        },
+        {
+          "name": "storage.modifier.deprecated.seseragi",
+          "match": "\\bsince(?=\\s+\")"
+        },
+        {
+          "name": "variable.language.self.seseragi",
+          "match": "\\bself(?=\\s*(?::|->))"
         }
       ]
     },

@@ -29,6 +29,44 @@ if (diagnosticRegistry.size === 0) {
   errors.push("docs/spec/12-tooling.md: diagnostic registry is empty")
 }
 
+const syntaxSpec = readFileSync(join(specDir, "01-syntax.md"), "utf8")
+const previewGrammarPath = resolve(
+  import.meta.dir,
+  "../extensions/seseragi-spec-preview/syntaxes/seseragi.tmLanguage.json"
+)
+const previewGrammar = readFileSync(previewGrammarPath, "utf8")
+const reservedBlock = syntaxSpec.match(
+  /## 1\.9 予約語[\s\S]*?```text\n([^`]+)```/
+)
+if (!reservedBlock) {
+  errors.push("docs/spec/01-syntax.md: reserved word block is missing")
+} else {
+  const reservedWords = reservedBlock[1]?.trim().split(/\s+/) ?? []
+  for (const word of reservedWords) {
+    if (!previewGrammar.includes(word)) {
+      errors.push(
+        `extensions/seseragi-spec-preview: reserved word ${word} is missing`
+      )
+    }
+  }
+}
+for (const word of [
+  "constructor",
+  "method",
+  "property",
+  "value",
+  "pure",
+  "task",
+  "since",
+  "self",
+]) {
+  if (!previewGrammar.includes(word)) {
+    errors.push(
+      `extensions/seseragi-spec-preview: contextual word ${word} is missing`
+    )
+  }
+}
+
 const lessons = readdirSync(lessonsDir)
   .filter((name) => /^\d{2}-.*\.ssrg$/.test(name))
   .sort()
