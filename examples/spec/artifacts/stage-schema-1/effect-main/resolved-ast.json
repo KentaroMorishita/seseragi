@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/effect-main",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-main::main",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 78 },
+      "implicitUnitParameter": true,
+      "returnType": "std/prelude::Unit",
+      "requirements": [{ "field": "console", "type": "std/prelude::Console" }],
+      "failure": "std/prelude::ConsoleError",
+      "body": {
+        "kind": "application",
+        "function": "std/prelude::println",
+        "argument": {
+          "kind": "string",
+          "value": "hello",
+          "origin": { "start": 71, "end": 78 }
+        },
+        "origin": { "start": 63, "end": 78 }
+      }
+    }
+  ]
+}

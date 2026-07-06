@@ -33,4 +33,9 @@ frontend artifactと同じbundleへ押し込まず、module resolverがTokenStre
 
 `runtime-schema-1/core/abi.json`はTypeScript runtimeのfeature registryです。generated moduleは必要feature IDと
 ABI majorだけを記録し、compiler内部のruntime helper pathを推測しません。import不要なInt表現もfeatureとして
-登録し、将来のEffectやADT helperと同じ互換性検査へ載せます。
+登録し、EffectやADT helperと同じ互換性検査へ載せます。helper featureのimportはmodule / exportのstructured pairで、
+TypeScriptIrはfeature IDとlocal bindingだけを保持します。
+
+`stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
+closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
+解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。

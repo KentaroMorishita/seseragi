@@ -107,7 +107,7 @@ semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移し
 当面は仕様機能を横へ増やさず、次の順で進めます。
 
 1. grammar productionへ不足するdiagnostic / formatter targetを追加する。
-2. source map、runtime helper、Effect executionのartifact schemaをfixture化する。
+2. Effect valueとhost resourceを接続するentry runner / execution artifactをfixture化する。
 3. `IMPLEMENTATION.md`のWave 0としてconformance runnerとfrontend contractを実装する。
 4. parserから段階的に実装し、formatter、LSP、highlight、playgroundへ同じfrontendを接続する。
 

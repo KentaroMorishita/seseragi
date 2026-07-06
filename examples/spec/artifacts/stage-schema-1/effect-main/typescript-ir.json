@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-main",
+  "runtimeRequirements": ["core.unit", "effect.console.println"],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        { "name": "_unit", "type": "undefined", "implicit": true }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "_ssrg_console_println",
+        "arguments": [{ "kind": "string", "value": "hello" }]
+      },
+      "origin": { "source": "main.ssrg", "start": 0, "end": 78 }
+    }
+  ]
+}

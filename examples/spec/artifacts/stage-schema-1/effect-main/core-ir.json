@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-main",
+  "functions": [
+    {
+      "symbol": "artifact/effect-main::main",
+      "visibility": "public",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 78 },
+      "parameters": [{ "id": "unit", "kind": "implicit", "type": "Unit" }],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": ["console"],
+        "failure": "ConsoleError",
+        "success": "Unit",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "hello",
+            "origin": { "source": "main.ssrg", "start": 71, "end": 78 }
+          }
+        ],
+        "origin": { "source": "main.ssrg", "start": 63, "end": 78 }
+      }
+    }
+  ]
+}

@@ -525,7 +525,7 @@ type RuntimeFeature = {
   kind: string
   typescript: string
   boundary: string
-  import: string | null
+  import: { module: string; export: string } | null
 }
 type RuntimeAbiArtifact = {
   schema: number
@@ -571,7 +571,13 @@ if (
       !["value-representation", "runtime-helper"].includes(feature.kind) ||
       typeof feature.typescript !== "string" ||
       typeof feature.boundary !== "string" ||
-      (feature.import !== null && typeof feature.import !== "string")
+      (feature.kind === "value-representation" && feature.import !== null) ||
+      (feature.kind === "runtime-helper" &&
+        (!feature.import ||
+          !/^@seseragi\/runtime(?:\/[a-z][a-z0-9-]*)+$/.test(
+            feature.import.module
+          ) ||
+          !/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(feature.import.export)))
     ) {
       errors.push("artifacts/runtime-schema-1/core/abi.json: invalid feature")
     }
@@ -987,6 +993,248 @@ for (const entry of readdirSync(interfaceArtifactsDir, {
         errors.push(
           `${prefix}/interface.json: missing dependency source ${dependency.specifier}`
         )
+      }
+    }
+  }
+}
+
+const effectArtifactsDir = join(root, "artifacts", "stage-schema-1")
+for (const entry of readdirSync(effectArtifactsDir, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue
+  const directory = join(effectArtifactsDir, entry.name)
+  const prefix = `artifacts/stage-schema-1/${entry.name}`
+  const readArtifact = <T>(name: string): T | undefined => {
+    try {
+      return JSON.parse(readFileSync(join(directory, name), "utf8")) as T
+    } catch (error) {
+      errors.push(`${prefix}/${name}: invalid JSON: ${error}`)
+      return undefined
+    }
+  }
+
+  const moduleInterface = readArtifact<InterfaceArtifact>("interface.json")
+  if (!moduleInterface) continue
+  const sourcePath = resolve(directory, moduleInterface.source)
+  if (
+    moduleInterface.source.startsWith("/") ||
+    moduleInterface.source.includes("\\") ||
+    moduleInterface.source.split("/").some((segment) => segment === "..") ||
+    !sourcePath.startsWith(`${directory}/`) ||
+    !existsSync(sourcePath)
+  ) {
+    errors.push(`${prefix}/interface.json: missing source`)
+    continue
+  }
+  const sourceBytes = readFileSync(sourcePath)
+  validateInterfaceArtifact(
+    moduleInterface,
+    moduleInterface.source,
+    sourceBytes,
+    prefix
+  )
+
+  type StageArtifact = {
+    schema: number
+    stage: string
+    source?: string
+    module?: string
+    root?: { declarations?: Array<Record<string, unknown>> }
+    declarations?: Array<Record<string, unknown>>
+    functions?: Array<Record<string, unknown>>
+    runtimeRequirements?: string[]
+    imports?: Array<{ feature: string; local: string }>
+  }
+  const stages = new Map<string, StageArtifact>()
+  for (const stage of [
+    "surface-ast",
+    "resolved-ast",
+    "typed-hir",
+    "core-ir",
+    "typescript-ir",
+  ]) {
+    const artifact = readArtifact<StageArtifact>(`${stage}.json`)
+    if (!artifact) continue
+    if (artifact.schema !== 1 || artifact.stage !== stage) {
+      errors.push(`${prefix}/${stage}.json: invalid stage envelope`)
+    }
+    stages.set(stage, artifact)
+  }
+
+  const surface = stages.get("surface-ast")
+  const resolved = stages.get("resolved-ast")
+  const typed = stages.get("typed-hir")
+  const core = stages.get("core-ir")
+  const typescript = stages.get("typescript-ir")
+  const surfaceFn = surface?.root?.declarations?.[0]
+  const resolvedFn = resolved?.declarations?.[0]
+  const typedFn = typed?.declarations?.[0]
+  const coreFn = core?.functions?.[0]
+  const typescriptFn = typescript?.functions?.[0]
+  const exported = moduleInterface.exports[0]
+  const typedParameters = typedFn?.parameters as
+    | Array<Record<string, unknown>>
+    | undefined
+  const typedEffect = typedFn?.effect as
+    | {
+        environment?: {
+          kind?: unknown
+          closed?: unknown
+          fields?: Array<{ name?: unknown }>
+        }
+        failure?: { name?: unknown }
+        success?: { name?: unknown }
+      }
+    | undefined
+  const coreParameters = coreFn?.parameters as
+    | Array<Record<string, unknown>>
+    | undefined
+  const coreBody = coreFn?.body as
+    | {
+        kind?: unknown
+        operation?: unknown
+        requirements?: unknown
+        failure?: unknown
+        success?: unknown
+      }
+    | undefined
+  const tsParameters = typescriptFn?.parameters as
+    | Array<Record<string, unknown>>
+    | undefined
+  const tsBody = typescriptFn?.body as
+    | { kind?: unknown; callee?: unknown; arguments?: unknown[] }
+    | undefined
+  if (
+    surface?.source !== moduleInterface.source ||
+    surfaceFn?.kind !== "effect-fn" ||
+    surfaceFn?.name !== exported?.name ||
+    resolved?.source !== moduleInterface.source ||
+    resolved?.module !== moduleInterface.module ||
+    resolvedFn?.kind !== "effect-fn" ||
+    resolvedFn?.symbol !== exported?.symbol ||
+    resolvedFn?.implicitUnitParameter !== true ||
+    typed?.source !== moduleInterface.source ||
+    typed?.module !== moduleInterface.module ||
+    typedFn?.symbol !== exported?.symbol ||
+    typedParameters?.length !== 1 ||
+    typedParameters[0]?.kind !== "implicit-unit" ||
+    typedEffect?.environment?.kind !== "record" ||
+    typedEffect.environment.closed !== true ||
+    typedEffect.environment.fields?.length !== 1 ||
+    typedEffect.environment.fields[0]?.name !== "console" ||
+    typedEffect.failure?.name !== "ConsoleError" ||
+    typedEffect.success?.name !== "Unit" ||
+    core?.module !== moduleInterface.module ||
+    coreFn?.symbol !== exported?.symbol ||
+    coreParameters?.length !== 1 ||
+    coreParameters[0]?.type !== "Unit" ||
+    coreBody?.kind !== "effect-operation" ||
+    coreBody.operation !== "console.println" ||
+    JSON.stringify(coreBody.requirements) !== JSON.stringify(["console"]) ||
+    coreBody.failure !== "ConsoleError" ||
+    coreBody.success !== "Unit" ||
+    typescript?.module !== moduleInterface.module ||
+    typescriptFn?.kind !== "const-function" ||
+    typescriptFn?.name !== exported?.name ||
+    tsParameters?.length !== 1 ||
+    tsParameters[0]?.implicit !== true ||
+    tsParameters[0]?.type !== "undefined" ||
+    tsBody?.kind !== "call" ||
+    tsBody.arguments?.length !== 1
+  ) {
+    errors.push(`${prefix}: inconsistent Effect stage artifact chain`)
+  }
+
+  const requirements = typescript?.runtimeRequirements
+  if (
+    JSON.stringify(requirements) !==
+    JSON.stringify(["core.unit", "effect.console.println"])
+  ) {
+    errors.push(`${prefix}/typescript-ir.json: invalid runtime requirements`)
+  }
+  const imports = typescript?.imports
+  const imported = imports?.[0]
+  const importedFeature = runtimeAbi?.features.find(
+    (feature) => feature.id === imported?.feature
+  )
+  if (
+    imports?.length !== 1 ||
+    imported?.feature !== "effect.console.println" ||
+    !/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(imported?.local ?? "") ||
+    !importedFeature ||
+    importedFeature.kind !== "runtime-helper" ||
+    !importedFeature.import ||
+    tsBody?.callee !== imported.local
+  ) {
+    errors.push(`${prefix}/typescript-ir.json: invalid runtime import`)
+  }
+
+  const generated = readArtifact<{
+    schema: number
+    module: string
+    target: string
+    runtime: { identity: string; abiMajor: number; requirements: string[] }
+    outputs: { typescript: string; sourceMap: string | null }
+  }>("generated-module.json")
+  if (
+    generated &&
+    (generated.schema !== 1 ||
+      generated.module !== moduleInterface.module ||
+      generated.target !== "typescript-es2022" ||
+      generated.runtime?.identity !== runtimeAbi?.identity ||
+      generated.runtime?.abiMajor !== runtimeAbi?.abiMajor ||
+      JSON.stringify(generated.runtime?.requirements) !==
+        JSON.stringify(requirements) ||
+      generated.outputs?.typescript !== "main.ts" ||
+      generated.outputs?.sourceMap !== "main.ts.map")
+  ) {
+    errors.push(`${prefix}/generated-module.json: invalid generated metadata`)
+  }
+
+  if (generated && imported && importedFeature?.import && tsBody) {
+    const argument = tsBody.arguments?.[0] as
+      | { kind?: unknown; value?: unknown }
+      | undefined
+    const emitted =
+      `import { ${importedFeature.import.export} as ${imported.local} } from ` +
+      `"${importedFeature.import.module}"\n\n` +
+      `export const main = (_unit: undefined) => ${imported.local}(` +
+      `${JSON.stringify(argument?.value)})\n`
+    const outputPath = join(directory, generated.outputs.typescript)
+    if (
+      !existsSync(outputPath) ||
+      readFileSync(outputPath, "utf8") !== emitted
+    ) {
+      errors.push(
+        `${prefix}/${generated.outputs.typescript}: emitter snapshot mismatch`
+      )
+    }
+    const sourceMapName = generated.outputs.sourceMap
+    if (!sourceMapName) {
+      errors.push(`${prefix}/generated-module.json: source map is required`)
+    } else {
+      const sourceMap = readArtifact<{
+        version?: unknown
+        file?: unknown
+        sourceRoot?: unknown
+        sources?: unknown
+        sourcesContent?: unknown
+        names?: unknown
+        mappings?: unknown
+      }>(sourceMapName)
+      if (
+        sourceMap &&
+        (sourceMap.version !== 3 ||
+          sourceMap.file !== generated.outputs.typescript ||
+          sourceMap.sourceRoot !== "" ||
+          JSON.stringify(sourceMap.sources) !==
+            JSON.stringify([`seseragi://${moduleInterface.module}`]) ||
+          JSON.stringify(sourceMap.sourcesContent) !==
+            JSON.stringify([sourceBytes.toString("utf8")]) ||
+          JSON.stringify(sourceMap.names) !==
+            JSON.stringify(["main", "println"]) ||
+          sourceMap.mappings !== ";;aAAcA,6BAGZC,sBAAQ")
+      ) {
+        errors.push(`${prefix}/${sourceMapName}: invalid source map`)
       }
     }
   }

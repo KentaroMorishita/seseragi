@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "stage": "surface-ast",
+  "source": "main.ssrg",
+  "root": {
+    "kind": "module",
+    "origin": { "start": 0, "end": 79 },
+    "declarations": [
+      {
+        "kind": "effect-fn",
+        "visibility": "public",
+        "name": "main",
+        "origin": { "start": 0, "end": 78 },
+        "parameters": [],
+        "returnType": {
+          "kind": "named",
+          "name": "Unit",
+          "origin": { "start": 22, "end": 26 }
+        },
+        "requirements": [
+          {
+            "kind": "shorthand",
+            "name": "Console",
+            "origin": { "start": 32, "end": 39 }
+          }
+        ],
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "origin": { "start": 46, "end": 58 }
+        },
+        "body": {
+          "kind": "application",
+          "origin": { "start": 63, "end": 78 },
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "origin": { "start": 63, "end": 70 }
+          },
+          "argument": {
+            "kind": "string",
+            "value": "hello",
+            "origin": { "start": 71, "end": 78 }
+          }
+        }
+      }
+    ]
+  }
+}

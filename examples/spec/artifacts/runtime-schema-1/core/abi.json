@@ -17,6 +17,16 @@
       "typescript": "undefined",
       "boundary": "unit",
       "import": null
+    },
+    {
+      "id": "effect.console.println",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Effect<{ console: Console }, ConsoleError, Unit>",
+      "import": {
+        "module": "@seseragi/runtime/console",
+        "export": "println"
+      }
     }
   ]
 }
