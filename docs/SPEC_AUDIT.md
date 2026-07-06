@@ -306,7 +306,8 @@ feature参照、generated metadata、最小emitter結果を検査します。
 
 runtime ABI schema 1はpackage identityとABI major、feature IDを持ち、`core.int64`をsigned 64-bit境界付きの
 TypeScript bigint表現として登録します。Int表現にhelper importが不要でもfeature negotiationへ含めます。
-source mapはまだ未定義のためgenerated metadataで`null`を明示し、完成扱いにはしていません。
+source mapはECMAScript v3、portable Seseragi URI、sourcesContent、answer symbolとliteralのmappingを固定しました。
+absolute pathを含めず、generated metadataからmap artifactを参照します。
 
 ## 次のpass
 

@@ -9,6 +9,6 @@
   },
   "outputs": {
     "typescript": "main.ts",
-    "sourceMap": null
+    "sourceMap": "main.ts.map"
   }
 }

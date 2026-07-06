@@ -11,6 +11,7 @@
 - `interface.json`: module consumerが読む公開interface
 - `surface-ast.json`から`typescript-ir.json`: stage間の最小end-to-end snapshot
 - `generated-module.json`と`main.ts`: runtime requirementを含むemitter結果
+- `main.ts.map`: portable Seseragi URIとsourcesContentを持つsource map v3
 
 `schema-1/recovery/`は式が欠けた編集中sourceを固定します。token列は入力を失わず、CSTはzero-widthの
 `error-expr`とmissing expressionを持ち、diagnosticのprimaryも挿入位置のzero-width rangeです。Errorを持つ

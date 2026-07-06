@@ -890,7 +890,7 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
         generated.runtime?.abiMajor !== runtimeAbi?.abiMajor ||
         JSON.stringify(generated.runtime?.requirements) !==
           JSON.stringify(requirements) ||
-        generated.outputs?.sourceMap !== null ||
+        generated.outputs?.sourceMap !== "main.ts.map" ||
         generated.outputs?.typescript !== "main.ts")
     ) {
       errors.push(`${prefix}/generated-module.json: invalid generated metadata`)
@@ -904,6 +904,37 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       ) {
         errors.push(
           `${prefix}/${generated.outputs.typescript}: emitter snapshot mismatch`
+        )
+      }
+      const sourceMapPath = join(directory, generated.outputs.sourceMap ?? "")
+      try {
+        const sourceMap = JSON.parse(readFileSync(sourceMapPath, "utf8")) as {
+          version?: unknown
+          file?: unknown
+          sourceRoot?: unknown
+          sources?: unknown
+          sourcesContent?: unknown
+          names?: unknown
+          mappings?: unknown
+        }
+        if (
+          sourceMap.version !== 3 ||
+          sourceMap.file !== generated.outputs.typescript ||
+          sourceMap.sourceRoot !== "" ||
+          JSON.stringify(sourceMap.sources) !==
+            JSON.stringify([`seseragi://${moduleName}`]) ||
+          JSON.stringify(sourceMap.sourcesContent) !==
+            JSON.stringify([sourceBytes.toString("utf8")]) ||
+          JSON.stringify(sourceMap.names) !== JSON.stringify(["answer"]) ||
+          sourceMap.mappings !== "AAAA,aAAQA,iBAAc"
+        ) {
+          errors.push(
+            `${prefix}/${generated.outputs.sourceMap}: invalid source map`
+          )
+        }
+      } catch (error) {
+        errors.push(
+          `${prefix}/${generated.outputs.sourceMap}: invalid source map JSON: ${error}`
         )
       }
     }
