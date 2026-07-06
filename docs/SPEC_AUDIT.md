@@ -271,6 +271,16 @@ comprehensionの`|`、field accessの`.`、terminatorの`;`を追加しました
 構造checkerは主要な固定operator、separator、custom operator sampleが対応するTextMate scopeへexact matchする
 ことを検査します。genericなcustom operator ruleが`<`だけを拾って固定tokenの欠落を隠すことは許しません。
 
+### 2026-07-06: grammar production target map
+
+109 productionを12の責務groupへ分け、各groupを最低一件のpositive sourceへ対応づけた
+`examples/spec/grammar-coverage.json`を追加しました。checkerはAppendix productionの過不足・重複、group ID、
+target pathを検査します。diagnostic / formatter targetは空を許し、未検証をcoveredと偽装しません。
+
+実装を並列化する前提も`docs/IMPLEMENTATION.md`へ分離しました。共有frontendをartifact pipelineとして定義し、
+初期のhorizontal laneからcontract安定後のvertical feature sliceへ移る条件、ownership、merge順、最小end-to-end
+milestoneを固定しています。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

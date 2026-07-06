@@ -11,6 +11,7 @@
 - [仕様横断監査――章をまたぐ矛盾の確認記録](./SPEC_AUDIT.md)
 - [仕様索引・feature map・cross-cutting invariants](./spec/README.md)
 - [仕様カバレッジと未定義項目](./SPEC_COVERAGE.md)
+- [実装計画――artifact境界と並列開発lane](./IMPLEMENTATION.md)
 - [言語の定義と設計原則](./spec/00-language.md)
 - [字句・構文・演算子](./spec/01-syntax.md)
 - [型システム](./spec/02-types.md)

@@ -58,6 +58,7 @@ fixture sidecarの形式・仕様節参照・diagnostic spanの整合です。Se
 - conformance入力: positive 22件、diagnostic 9件
 - multi-file conformance入力: project 41件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
+- grammar対応表: `examples/spec/grammar-coverage.json`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
@@ -104,12 +105,10 @@ semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移し
 
 当面は仕様機能を横へ増やさず、次の順で進めます。
 
-1. 仕様、grammar、lesson、公開API signatureの横断監査を行う。
-2. 各lessonへ最低1件のcompile fixtureを対応づける。
-3. Signal / Stream / DOMのruntime trace fixtureを追加する。
-4. formatter、LSP、semantic token、playgroundの共有snapshot形式を決める。
-5. fixtureを通す最小compiler frontendとconformance runnerの実装計画を確定する。
-6. parserから段階的に実装し、formatter、LSP、highlight、playgroundへ同じfrontendを接続する。
+1. grammar productionへ不足するdiagnostic / formatter targetを追加する。
+2. token、CST、diagnostic、module interfaceのartifact schemaをfixture化する。
+3. `IMPLEMENTATION.md`のWave 0としてconformance runnerとfrontend contractを実装する。
+4. parserから段階的に実装し、formatter、LSP、highlight、playgroundへ同じfrontendを接続する。
 
 ## 完了と呼ぶ条件
 

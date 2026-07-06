@@ -212,6 +212,110 @@ if (!ebnfBlock) {
     }
   }
 
+  type GrammarCoverageGroup = {
+    id: string
+    productions: string[]
+    parseTargets: string[]
+    diagnosticTargets: string[]
+    formatterTargets: string[]
+  }
+  type GrammarCoverage = {
+    schema: number
+    groups: GrammarCoverageGroup[]
+  }
+  const grammarCoveragePath = join(root, "grammar-coverage.json")
+  let grammarCoverage: GrammarCoverage | undefined
+  try {
+    grammarCoverage = JSON.parse(
+      readFileSync(grammarCoveragePath, "utf8")
+    ) as GrammarCoverage
+  } catch (error) {
+    errors.push(`examples/spec/grammar-coverage.json: invalid JSON: ${error}`)
+  }
+  if (grammarCoverage) {
+    if (
+      grammarCoverage.schema !== 1 ||
+      !Array.isArray(grammarCoverage.groups)
+    ) {
+      errors.push(
+        "examples/spec/grammar-coverage.json: schema must be 1 with groups"
+      )
+    } else {
+      const coveredProductions = new Map<string, string>()
+      const groupIds = new Set<string>()
+      for (const group of grammarCoverage.groups) {
+        if (
+          !group ||
+          typeof group !== "object" ||
+          typeof group.id !== "string" ||
+          !/^[a-z][a-z0-9-]*$/.test(group.id) ||
+          groupIds.has(group.id)
+        ) {
+          errors.push(
+            "examples/spec/grammar-coverage.json: group ids must be unique kebab-case"
+          )
+          continue
+        }
+        groupIds.add(group.id)
+        if (
+          !Array.isArray(group.productions) ||
+          group.productions.length === 0 ||
+          !Array.isArray(group.parseTargets) ||
+          group.parseTargets.length === 0 ||
+          !Array.isArray(group.diagnosticTargets) ||
+          !Array.isArray(group.formatterTargets)
+        ) {
+          errors.push(
+            `examples/spec/grammar-coverage.json: invalid group ${group.id}`
+          )
+          continue
+        }
+        for (const production of group.productions) {
+          if (!productionBodies.has(production)) {
+            errors.push(
+              `examples/spec/grammar-coverage.json: unknown production ${production}`
+            )
+          } else if (coveredProductions.has(production)) {
+            errors.push(
+              `examples/spec/grammar-coverage.json: production ${production} appears in both ${coveredProductions.get(production)} and ${group.id}`
+            )
+          } else {
+            coveredProductions.set(production, group.id)
+          }
+        }
+        for (const [kind, targets] of [
+          ["parse", group.parseTargets],
+          ["diagnostic", group.diagnosticTargets],
+          ["formatter", group.formatterTargets],
+        ] as const) {
+          for (const target of targets) {
+            const targetPath = resolve(root, target)
+            if (
+              typeof target !== "string" ||
+              target.startsWith("/") ||
+              target.includes("\\") ||
+              target.split("/").some((segment) => segment === "..") ||
+              !target.endsWith(".ssrg") ||
+              !targetPath.startsWith(`${root}/`) ||
+              !existsSync(targetPath)
+            ) {
+              errors.push(
+                `examples/spec/grammar-coverage.json: missing ${kind} target ${target}`
+              )
+            }
+          }
+        }
+      }
+      for (const production of productionBodies.keys()) {
+        if (!coveredProductions.has(production)) {
+          errors.push(
+            `examples/spec/grammar-coverage.json: unmapped production ${production}`
+          )
+        }
+      }
+    }
+  }
+
   const terminals = new Set(
     [...(ebnfBlock[1]?.matchAll(/"(?:\\.|[^"\\])*"/g) ?? [])].map(
       (match) => JSON.parse(match[0]) as string

@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "groups": [
+    {
+      "id": "module-and-imports",
+      "productions": [
+        "module",
+        "import-decl",
+        "import-items",
+        "import-item",
+        "top-decl",
+        "decl-modifiers",
+        "deprecation-clause"
+      ],
+      "parseTargets": [
+        "fixtures/projects/modules-reexport-run/src/main.ssrg",
+        "fixtures/compile/deprecation-metadata.ssrg"
+      ],
+      "diagnosticTargets": [
+        "fixtures/projects/modules-private-access/src/public.ssrg"
+      ],
+      "formatterTargets": []
+    },
+    {
+      "id": "bindings-and-functions",
+      "productions": [
+        "let-decl",
+        "fn-decl",
+        "fn-params",
+        "parameter",
+        "fn-body",
+        "effect-fn-decl",
+        "effect-requirements",
+        "capability",
+        "effect-failure"
+      ],
+      "parseTargets": [
+        "lessons/01-hello-world.ssrg",
+        "fixtures/compile/effect-environment.ssrg"
+      ],
+      "diagnosticTargets": [],
+      "formatterTargets": []
+    },
+    {
+      "id": "data-declarations",
+      "productions": [
+        "type-decl",
+        "newtype-decl",
+        "alias-decl",
+        "variant",
+        "struct-decl",
+        "struct-field",
+        "record-type-field",
+        "deriving-clause"
+      ],
+      "parseTargets": [
+        "lessons/07-domain-types.ssrg",
+        "lessons/19-recursive-data-and-spread.ssrg",
+        "fixtures/compile/optional-record-field.ssrg"
+      ],
+      "diagnosticTargets": [],
+      "formatterTargets": []
+    },
+    {
+      "id": "traits-impls-and-operators",
+      "productions": [
+        "trait-decl",
+        "trait-method",
+        "impl-decl",
+        "impl-member",
+        "instance-decl",
+        "overload-decl",
+        "custom-operator-decl",
+        "fixity",
+        "constraints",
+        "constraint"
+      ],
+      "parseTargets": [
+        "lessons/13-traits-and-custom-operators.ssrg",
+        "fixtures/compile/trait-instance.ssrg",
+        "fixtures/compile/custom-operator.ssrg"
+      ],
+      "diagnosticTargets": [
+        "fixtures/diagnostics/trait-instance-with-impl.ssrg",
+        "fixtures/diagnostics/unknown-operator.ssrg"
+      ],
+      "formatterTargets": []
+    },
+    {
+      "id": "foreign-bindings",
+      "productions": [
+        "foreign-decl",
+        "foreign-member",
+        "foreign-member-body",
+        "foreign-namespace",
+        "foreign-call",
+        "foreign-call-kind",
+        "foreign-params",
+        "rest-parameter",
+        "foreign-type"
+      ],
+      "parseTargets": [
+        "fixtures/compile/foreign-namespace.ssrg",
+        "fixtures/projects/dts-callback-during-call/expected/callback-api.ssrg"
+      ],
+      "diagnosticTargets": [],
+      "formatterTargets": []
+    },
+    {
+      "id": "local-recursion",
+      "productions": ["rec-group", "recursive-fn", "local-decl"],
+      "parseTargets": ["fixtures/compile/local-recursion.ssrg"],
+      "diagnosticTargets": [
+        "fixtures/diagnostics/local-forward-reference.ssrg"
+      ],
+      "formatterTargets": []
+    },
+    {
+      "id": "control-flow",
+      "productions": [
+        "expr",
+        "if-expr",
+        "match-expr",
+        "match-arm",
+        "lambda",
+        "lambda-param",
+        "block",
+        "do-expr",
+        "do-item",
+        "for-expr"
+      ],
+      "parseTargets": [
+        "lessons/03-control-flow.ssrg",
+        "lessons/05-fizzbuzz.ssrg",
+        "lessons/10-monad-and-do.ssrg"
+      ],
+      "diagnosticTargets": ["fixtures/diagnostics/non-exhaustive-match.ssrg"],
+      "formatterTargets": []
+    },
+    {
+      "id": "values-and-collections",
+      "productions": [
+        "primary",
+        "array",
+        "list",
+        "record",
+        "record-explicit-start",
+        "record-item",
+        "struct-value",
+        "struct-item",
+        "comprehension-clauses",
+        "comprehension-clause",
+        "tuple"
+      ],
+      "parseTargets": [
+        "lessons/12-comprehensions-and-patterns.ssrg",
+        "lessons/19-recursive-data-and-spread.ssrg",
+        "fixtures/compile/grammar-terminal-coverage.ssrg"
+      ],
+      "diagnosticTargets": [],
+      "formatterTargets": []
+    },
+    {
+      "id": "application-and-operators",
+      "productions": [
+        "generic-name",
+        "operator-reference",
+        "referencable-operator",
+        "application",
+        "postfix",
+        "assignment-expr",
+        "low-application-expr",
+        "application-rhs",
+        "pipeline-expr",
+        "fallback-expr",
+        "operator-expr",
+        "infix-operator",
+        "unary-expr"
+      ],
+      "parseTargets": [
+        "lessons/04-collections-and-pipelines.ssrg",
+        "lessons/15-signals.ssrg",
+        "fixtures/compile/grammar-terminal-coverage.ssrg"
+      ],
+      "diagnosticTargets": ["fixtures/diagnostics/unknown-operator.ssrg"],
+      "formatterTargets": []
+    },
+    {
+      "id": "patterns",
+      "productions": [
+        "pattern",
+        "record-pattern",
+        "struct-pattern",
+        "pattern-fields",
+        "pattern-field",
+        "array-pattern",
+        "list-pattern",
+        "pattern-items"
+      ],
+      "parseTargets": [
+        "lessons/12-comprehensions-and-patterns.ssrg",
+        "lessons/19-recursive-data-and-spread.ssrg"
+      ],
+      "diagnosticTargets": ["fixtures/diagnostics/non-exhaustive-match.ssrg"],
+      "formatterTargets": []
+    },
+    {
+      "id": "types-and-kinds",
+      "productions": [
+        "type",
+        "function-type",
+        "requirement-merge-type",
+        "type-atom",
+        "type-params",
+        "type-args",
+        "kind-param",
+        "type-arg",
+        "type-constructor",
+        "constructor-arg",
+        "type-name",
+        "constructor-name"
+      ],
+      "parseTargets": [
+        "lessons/11-generics.ssrg",
+        "fixtures/compile/nested-generic-types.ssrg",
+        "fixtures/compile/requirement-merge.ssrg"
+      ],
+      "diagnosticTargets": [
+        "fixtures/diagnostics/invalid-requirement-merge.ssrg"
+      ],
+      "formatterTargets": []
+    },
+    {
+      "id": "lexical-leaves",
+      "productions": [
+        "literal",
+        "name",
+        "lower-name",
+        "upper-name",
+        "arithmetic-operator",
+        "comparison-operator",
+        "standard-operator",
+        "custom-operator",
+        "terminator"
+      ],
+      "parseTargets": [
+        "fixtures/compile/literals.ssrg",
+        "fixtures/compile/grammar-terminal-coverage.ssrg"
+      ],
+      "diagnosticTargets": [
+        "fixtures/diagnostics/invalid-char-literal.ssrg",
+        "fixtures/diagnostics/invalid-escape.ssrg",
+        "fixtures/diagnostics/invalid-numeric-literal.ssrg"
+      ],
+      "formatterTargets": []
+    }
+  ]
+}
