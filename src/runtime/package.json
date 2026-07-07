@@ -4,6 +4,16 @@
   "description": "Seseragi language runtime library",
   "main": "index.ts",
   "types": "index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./console": {
+      "types": "./console.ts",
+      "default": "./console.ts"
+    }
+  },
   "keywords": [
     "seseragi",
     "runtime",
