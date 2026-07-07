@@ -6,19 +6,10 @@ fn main() {
         .nth(1)
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("."));
-    let frontend_cases = [
-        root.join("examples/spec/artifacts/schema-1/basic"),
-        root.join("examples/spec/artifacts/schema-1/effect-do"),
-        root.join("examples/spec/artifacts/schema-1/recovery"),
-    ];
-    let token_cases = [
-        frontend_cases[0].clone(),
-        frontend_cases[1].clone(),
-        root.join("examples/spec/artifacts/token-schema-1/effect-do-block"),
-        root.join("examples/spec/artifacts/token-schema-1/lexical-operators"),
-        root.join("examples/spec/artifacts/token-schema-1/literals-and-nested-types"),
-        root.join("examples/spec/artifacts/token-schema-1/ranges-and-members"),
-    ];
+    let artifacts = root.join("examples/spec/artifacts");
+    let frontend_cases = discover_cases(&artifacts.join("schema-1"));
+    let mut token_cases = frontend_cases.clone();
+    token_cases.extend(discover_cases(&artifacts.join("token-schema-1")));
     let token_total = token_cases.len();
     let cst_total = frontend_cases.len();
 
@@ -41,6 +32,19 @@ fn main() {
     }
     println!("TokenStream fixtures: {token_total} passed");
     println!("LosslessCst fixtures: {cst_total} passed");
+}
+
+fn discover_cases(directory: &Path) -> Vec<PathBuf> {
+    let Ok(entries) = fs::read_dir(directory) else {
+        return Vec::new();
+    };
+    let mut cases = entries
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.is_dir())
+        .collect::<Vec<_>>();
+    cases.sort();
+    cases
 }
 
 fn check_tokens(case: &Path) -> Result<(), String> {
