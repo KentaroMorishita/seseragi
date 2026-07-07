@@ -93,6 +93,8 @@ impl CstParser<'_> {
 
         if self.kind_at(decl_start) == Some(TokenKind::KeywordLet) {
             children.push(self.parse_let_decl(decl_start, end));
+        } else if self.kind_at(decl_start) == Some(TokenKind::KeywordEffect) {
+            children.push(self.parse_effect_fn_decl(decl_start, end));
         }
 
         CstNode::new("top-decl", start, end, children)
@@ -127,6 +129,40 @@ impl CstParser<'_> {
         CstNode::new("let-decl", start, end, children)
     }
 
+    fn parse_effect_fn_decl(&mut self, start: usize, end: usize) -> CstNode {
+        let mut children = Vec::new();
+        let header_end = self
+            .find_significant_token(start, end, |kind| kind == TokenKind::KeywordWith)
+            .unwrap_or(end);
+        if header_end > start {
+            children.push(CstNode::new("effect-signature", start, header_end, vec![]));
+        }
+
+        let requirements_start = self.find_significant_token(start, end, |kind| {
+            kind == TokenKind::KeywordWith || kind == TokenKind::KeywordFails
+        });
+        let do_start = self.find_significant_token(start, end, |kind| kind == TokenKind::KeywordDo);
+        if let (Some(requirements_start), Some(do_start)) = (requirements_start, do_start) {
+            children.push(CstNode::new(
+                "effect-requirements",
+                requirements_start,
+                do_start,
+                vec![],
+            ));
+        }
+
+        if let Some(do_start) = do_start {
+            let do_end = self
+                .find_last_significant_token(do_start, end, |kind| {
+                    kind == TokenKind::PunctuationBraceRight
+                })
+                .map_or(end, |index| index + 1);
+            children.push(CstNode::new("do-block", do_start, do_end, vec![]));
+        }
+
+        CstNode::new("effect-fn-decl", start, end, children)
+    }
+
     fn find_significant_token(
         &self,
         start: usize,
@@ -134,6 +170,17 @@ impl CstParser<'_> {
         predicate: impl Fn(TokenKind) -> bool,
     ) -> Option<usize> {
         (start..end).find(|index| self.kind_at(*index).is_some_and(&predicate))
+    }
+
+    fn find_last_significant_token(
+        &self,
+        start: usize,
+        end: usize,
+        predicate: impl Fn(TokenKind) -> bool,
+    ) -> Option<usize> {
+        (start..end)
+            .rev()
+            .find(|index| self.kind_at(*index).is_some_and(&predicate))
     }
 
     fn next_significant_token(&self, start: usize, end: usize) -> Option<usize> {
@@ -200,5 +247,40 @@ mod tests {
         assert_eq!(cst.missing[0].at_token, 10);
         assert_eq!(cst.missing[0].at_byte, 21);
         assert_eq!(cst.errors[0].code, "SES-P0001");
+    }
+
+    #[test]
+    fn parses_effect_function_cst_skeleton() {
+        let cst = parse_cst(
+            "main.ssrg",
+            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    value <- console.readLine ()\n    println $ value\n  }\n",
+        );
+
+        assert_eq!(cst.root.end_token, 49);
+        assert!(cst.missing.is_empty());
+        assert!(cst.errors.is_empty());
+
+        let top_decl = &cst.root.children[0];
+        assert_eq!(top_decl.kind, "top-decl");
+        assert_eq!(top_decl.start_token, 0);
+        assert_eq!(top_decl.end_token, 49);
+        assert_eq!(top_decl.children[0].kind, "decl-modifiers");
+
+        let effect_decl = &top_decl.children[1];
+        assert_eq!(effect_decl.kind, "effect-fn-decl");
+        assert_eq!(effect_decl.start_token, 2);
+        assert_eq!(effect_decl.end_token, 49);
+
+        assert_eq!(effect_decl.children[0].kind, "effect-signature");
+        assert_eq!(effect_decl.children[0].start_token, 2);
+        assert_eq!(effect_decl.children[0].end_token, 12);
+
+        assert_eq!(effect_decl.children[1].kind, "effect-requirements");
+        assert_eq!(effect_decl.children[1].start_token, 12);
+        assert_eq!(effect_decl.children[1].end_token, 23);
+
+        assert_eq!(effect_decl.children[2].kind, "do-block");
+        assert_eq!(effect_decl.children[2].start_token, 23);
+        assert_eq!(effect_decl.children[2].end_token, 48);
     }
 }
