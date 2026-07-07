@@ -74,10 +74,45 @@ struct CstParser<'tokens> {
 impl CstParser<'_> {
     fn parse_module(&mut self) -> CstNode {
         let mut children = Vec::new();
-        if self.non_eof_token_count > 0 {
-            children.push(self.parse_top_decl(0, self.non_eof_token_count));
+        let declaration_starts = self.top_level_declaration_starts();
+        for (position, start) in declaration_starts.iter().enumerate() {
+            let end = declaration_starts
+                .get(position + 1)
+                .copied()
+                .unwrap_or(self.non_eof_token_count);
+            children.push(self.parse_top_decl(*start, end));
         }
         CstNode::new("module", 0, self.non_eof_token_count, children)
+    }
+
+    fn top_level_declaration_starts(&self) -> Vec<usize> {
+        let mut starts = Vec::new();
+        let mut brace_depth = 0usize;
+        for index in 0..self.non_eof_token_count {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => brace_depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    brace_depth = brace_depth.saturating_sub(1);
+                }
+                Some(TokenKind::KeywordPub | TokenKind::KeywordLet | TokenKind::KeywordEffect)
+                    if brace_depth == 0 && self.is_declaration_boundary(index) =>
+                {
+                    starts.push(index);
+                }
+                _ => {}
+            }
+        }
+        starts
+    }
+
+    fn is_declaration_boundary(&self, index: usize) -> bool {
+        let Some(previous) = self.previous_significant_token(index) else {
+            return true;
+        };
+        (previous + 1..index).any(|candidate| {
+            self.kind_at(candidate)
+                .is_some_and(|kind| kind == TokenKind::TriviaNewline)
+        })
     }
 
     fn parse_top_decl(&mut self, start: usize, end: usize) -> CstNode {
@@ -194,6 +229,17 @@ impl CstParser<'_> {
         })
     }
 
+    fn previous_significant_token(&self, before: usize) -> Option<usize> {
+        (0..before).rev().find(|index| {
+            self.kind_at(*index).is_some_and(|kind| {
+                !matches!(
+                    kind,
+                    TokenKind::TriviaComment | TokenKind::TriviaNewline | TokenKind::TriviaSpace
+                )
+            })
+        })
+    }
+
     fn kind_at(&self, index: usize) -> Option<TokenKind> {
         self.tokens.get(index).map(|token| token.kind)
     }
@@ -282,5 +328,22 @@ mod tests {
         assert_eq!(effect_decl.children[2].kind, "do-block");
         assert_eq!(effect_decl.children[2].start_token, 23);
         assert_eq!(effect_decl.children[2].end_token, 48);
+    }
+
+    #[test]
+    fn parses_multiple_top_level_declarations() {
+        let cst = parse_cst("main.ssrg", "let first = 1\npub let second: Int = 2\n");
+
+        assert_eq!(cst.root.children.len(), 2);
+        assert_eq!(cst.root.children[0].kind, "top-decl");
+        assert_eq!(cst.root.children[0].start_token, 0);
+        assert_eq!(cst.root.children[0].end_token, 8);
+        assert_eq!(cst.root.children[0].children[0].kind, "let-decl");
+
+        assert_eq!(cst.root.children[1].kind, "top-decl");
+        assert_eq!(cst.root.children[1].start_token, 8);
+        assert_eq!(cst.root.children[1].end_token, 21);
+        assert_eq!(cst.root.children[1].children[0].kind, "decl-modifiers");
+        assert_eq!(cst.root.children[1].children[1].kind, "let-decl");
     }
 }
