@@ -21,6 +21,8 @@ fn main() {
         .iter()
         .filter(|case| case.join("surface-ast.json").is_file())
         .count();
+    let interface_cases = discover_interface_cases(&artifacts.join("schema-1"));
+    let interface_total = interface_cases.len();
 
     if list {
         println!("TokenStream fixtures:");
@@ -36,6 +38,10 @@ fn main() {
             if case.join("surface-ast.json").is_file() {
                 println!("{}", case.display());
             }
+        }
+        println!("ModuleInterface fixtures:");
+        for case in &interface_cases {
+            println!("{}", case.display());
         }
         return;
     }
@@ -57,6 +63,12 @@ fn main() {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &interface_cases {
+        if let Err(error) = check_interface_json(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
 
     if failed > 0 {
         std::process::exit(1);
@@ -64,6 +76,7 @@ fn main() {
     println!("TokenStream fixtures: {token_total} passed");
     println!("LosslessCst fixtures: {cst_total} passed");
     println!("SurfaceAst fixtures: {surface_ast_total} passed");
+    println!("ModuleInterface fixtures: {interface_total} passed");
 }
 
 fn discover_cases(directory: &Path) -> Vec<PathBuf> {
@@ -77,6 +90,30 @@ fn discover_cases(directory: &Path) -> Vec<PathBuf> {
         .collect::<Vec<_>>();
     cases.sort();
     cases
+}
+
+fn discover_interface_cases(schema_directory: &Path) -> Vec<PathBuf> {
+    let mut cases = discover_cases(schema_directory)
+        .into_iter()
+        .filter(|case| case.join("interface.json").is_file())
+        .filter(|case| diagnostics_are_empty(case))
+        .collect::<Vec<_>>();
+    cases.sort();
+    cases
+}
+
+fn diagnostics_are_empty(case: &Path) -> bool {
+    let diagnostics_path = case.join("diagnostics.json");
+    let Ok(raw) = fs::read_to_string(diagnostics_path) else {
+        return true;
+    };
+    let Ok(value) = serde_json::from_str::<serde_json::Value>(&raw) else {
+        return false;
+    };
+    value
+        .get("diagnostics")
+        .and_then(|diagnostics| diagnostics.as_array())
+        .is_some_and(|diagnostics| diagnostics.is_empty())
 }
 
 fn check_tokens(case: &Path) -> Result<(), String> {
@@ -99,6 +136,40 @@ fn check_tokens(case: &Path) -> Result<(), String> {
         return Err("token raw text does not reconstruct source".to_owned());
     }
     Ok(())
+}
+
+fn check_interface_json(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("interface.json");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected ModuleInterface: {error}"))?;
+    let actual_value = parse_module_interface_json(interface_source_name(case)?, &source)?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected ModuleInterface: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("ModuleInterface artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
+fn interface_source_name(case: &Path) -> Result<String, String> {
+    let name = case
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| "interface case has no directory name".to_owned())?;
+    Ok(format!("artifact/{name}/main.ssrg"))
+}
+
+fn parse_module_interface_json(
+    source_name: impl Into<String>,
+    source: &str,
+) -> Result<serde_json::Value, String> {
+    let interface = seseragi_syntax::parse_module_interface(source_name, source);
+    serde_json::to_value(&interface)
+        .map_err(|error| format!("failed to encode ModuleInterface: {error}"))
 }
 
 fn check_cst(case: &Path) -> Result<(), String> {

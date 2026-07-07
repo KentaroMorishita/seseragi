@@ -9,7 +9,7 @@
       "namespace": "value",
       "name": "main",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 69 },
+      "declaration": { "start": 0, "end": 68 },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
