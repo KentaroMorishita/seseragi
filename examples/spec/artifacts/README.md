@@ -17,6 +17,9 @@
 `error-expr`とmissing expressionを持ち、diagnosticのprimaryも挿入位置のzero-width rangeです。Errorを持つ
 moduleは公開interfaceへ不完全なsymbolを出しません。
 
+`schema-1/effect-do/`は最小の`effect fn main`と空の`do {}` blockをfrontend artifactとして固定します。
+TokenStreamとLosslessCstのproducer比較対象ですが、型検査やdo desugaringはまだ要求しません。
+
 `token-schema-1/`はlexer lane専用のTokenStream fixtureです。CST、diagnostic、module interfaceを要求せず、
 fixed operator、comment、literal、nested type argument表面構文、trivia、UTF-8 byte range、EOF、
 effect / do表面構文、range operator、member access、lossless reconstructionだけを先に固定します。`>>`のような

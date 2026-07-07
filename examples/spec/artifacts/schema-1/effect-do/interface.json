@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "artifact/effect-do",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/effect-do::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 69 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Unit", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

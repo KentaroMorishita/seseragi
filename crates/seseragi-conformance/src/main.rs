@@ -8,6 +8,7 @@ fn main() {
         .unwrap_or_else(|| PathBuf::from("."));
     let frontend_cases = [
         root.join("examples/spec/artifacts/schema-1/basic"),
+        root.join("examples/spec/artifacts/schema-1/effect-do"),
         root.join("examples/spec/artifacts/schema-1/recovery"),
     ];
     let token_cases = [
