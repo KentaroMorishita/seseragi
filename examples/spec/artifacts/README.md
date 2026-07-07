@@ -9,7 +9,8 @@
 - `cst.json`: token rangeを参照するlossless CST骨格
 - `diagnostics.json`: frontend共通diagnostic envelope
 - `interface.json`: module consumerが読む公開interface
-- `surface-ast.json`から`typescript-ir.json`: stage間の最小end-to-end snapshot
+- `surface-ast.json`: surface declaration skeleton。後続stageがある場合はstage chainの入口
+- `resolved-ast.json`から`typescript-ir.json`: stage間の最小end-to-end snapshot
 - `generated-module.json`と`main.ts`: runtime requirementを含むemitter結果
 - `main.ts.map`: portable Seseragi URIとsourcesContentを持つsource map v3
 
