@@ -149,9 +149,11 @@ fn export_from_surface_decl(
 
 fn interface_type_from_type_ref(type_ref: &TypeRef) -> InterfaceType {
     match type_ref {
-        TypeRef::Named { name, .. } => InterfaceType::Named {
+        TypeRef::Named {
+            name, arguments, ..
+        } => InterfaceType::Named {
             name: name.clone(),
-            arguments: Vec::new(),
+            arguments: arguments.iter().map(interface_type_from_type_ref).collect(),
         },
     }
 }
@@ -253,6 +255,36 @@ mod tests {
                 "kind": "named",
                 "name": "Unit",
                 "arguments": [],
+            })
+        );
+    }
+
+    #[test]
+    fn parses_nested_type_arguments_in_interface() {
+        let interface = parse_module_interface(
+            "artifact/nested-types/main.ssrg",
+            "pub let values: Array<Maybe<Int>> = []\n",
+        );
+        let json = serde_json::to_value(&interface).expect("interface serializes");
+
+        assert_eq!(
+            json["exports"][0]["scheme"]["type"],
+            serde_json::json!({
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                    {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                            {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": [],
+                            },
+                        ],
+                    },
+                ],
             })
         );
     }
