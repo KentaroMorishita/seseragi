@@ -25,6 +25,8 @@ fn main() {
     let interface_total = interface_cases.len();
     let resolved_ast_cases = discover_resolved_ast_cases(&artifacts.join("schema-1"));
     let resolved_ast_total = resolved_ast_cases.len();
+    let typed_hir_cases = discover_artifact_cases(&artifacts, "typed-hir.json");
+    let typed_hir_total = typed_hir_cases.len();
 
     if list {
         println!("TokenStream fixtures:");
@@ -47,6 +49,10 @@ fn main() {
         }
         println!("ResolvedAst fixtures: {resolved_ast_total}");
         for case in &resolved_ast_cases {
+            println!("{}", case.display());
+        }
+        println!("TypedHir fixtures: {typed_hir_total}");
+        for case in &typed_hir_cases {
             println!("{}", case.display());
         }
         return;
@@ -81,6 +87,12 @@ fn main() {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &typed_hir_cases {
+        if let Err(error) = check_typed_hir_json(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
 
     if failed > 0 {
         std::process::exit(1);
@@ -90,6 +102,7 @@ fn main() {
     println!("SurfaceAst fixtures: {surface_ast_total} passed");
     println!("ModuleInterface fixtures: {interface_total} passed");
     println!("ResolvedAst fixtures: {resolved_ast_total} passed");
+    println!("TypedHir fixtures: {typed_hir_total} passed");
 }
 
 fn discover_cases(directory: &Path) -> Vec<PathBuf> {
@@ -123,6 +136,30 @@ fn discover_resolved_ast_cases(schema_directory: &Path) -> Vec<PathBuf> {
         .collect::<Vec<_>>();
     cases.sort();
     cases
+}
+
+fn discover_artifact_cases(root: &Path, artifact_name: &str) -> Vec<PathBuf> {
+    let mut cases = Vec::new();
+    collect_artifact_cases(root, artifact_name, &mut cases);
+    cases.sort();
+    cases
+}
+
+fn collect_artifact_cases(directory: &Path, artifact_name: &str, cases: &mut Vec<PathBuf>) {
+    let Ok(entries) = fs::read_dir(directory) else {
+        return;
+    };
+    let mut entries = entries.filter_map(Result::ok).collect::<Vec<_>>();
+    entries.sort_by_key(|entry| entry.path());
+    for entry in entries {
+        let path = entry.path();
+        if path.is_dir() {
+            if path.join(artifact_name).is_file() {
+                cases.push(path.clone());
+            }
+            collect_artifact_cases(&path, artifact_name, cases);
+        }
+    }
 }
 
 fn diagnostics_are_empty(case: &Path) -> bool {
@@ -195,6 +232,23 @@ fn check_resolved_ast_json(case: &Path) -> Result<(), String> {
     Ok(())
 }
 
+fn check_typed_hir_json(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("typed-hir.json");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected TypedHir: {error}"))?;
+    let actual_value = parse_typed_hir_json(interface_source_name(case)?, &source)?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected TypedHir: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("TypedHir artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
 fn interface_source_name(case: &Path) -> Result<String, String> {
     let name = case
         .file_name()
@@ -220,6 +274,14 @@ fn parse_resolved_ast_json(
     let resolved_ast = seseragi_semantics::resolve_module_interface(interface);
     serde_json::to_value(&resolved_ast)
         .map_err(|error| format!("failed to encode ResolvedAst: {error}"))
+}
+
+fn parse_typed_hir_json(
+    source_name: impl Into<String>,
+    source: &str,
+) -> Result<serde_json::Value, String> {
+    let typed_hir = seseragi_semantics::type_module(source_name, source);
+    serde_json::to_value(&typed_hir).map_err(|error| format!("failed to encode TypedHir: {error}"))
 }
 
 fn check_cst(case: &Path) -> Result<(), String> {
