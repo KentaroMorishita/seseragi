@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "crates/seseragi-conformance",
+  "crates/seseragi-source",
   "crates/seseragi-syntax",
 ]
 resolver = "2"
