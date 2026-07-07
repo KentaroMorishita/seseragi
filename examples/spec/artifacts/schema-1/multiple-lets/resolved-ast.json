@@ -2,14 +2,14 @@
   "schema": 1,
   "stage": "resolved-ast",
   "source": "main.ssrg",
-  "module": "artifact/basic",
+  "module": "artifact/multiple-lets",
   "declarations": [
     {
       "kind": "value",
       "symbol": 0,
-      "name": "answer",
+      "name": "second",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 24 }
+      "declaration": { "start": 14, "end": 37 }
     }
   ]
 }

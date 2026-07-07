@@ -815,10 +815,9 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
     "core-ir",
     "typescript-ir",
   ] as const
-  const hasLoweringStageArtifacts = stageNames
-    .filter((stage) => stage !== "surface-ast")
-    .some((stage) => existsSync(join(directory, `${stage}.json`))
-  )
+  const hasFullLoweringStageArtifacts = stageNames
+    .filter((stage) => stage !== "surface-ast" && stage !== "resolved-ast")
+    .some((stage) => existsSync(join(directory, `${stage}.json`)))
   const surfaceOnly = existsSync(join(directory, "surface-ast.json"))
     ? readArtifact<{
         schema?: unknown
@@ -835,7 +834,26 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       errors.push(`${prefix}/surface-ast.json: invalid surface AST artifact`)
     }
   }
-  if (hasLoweringStageArtifacts) {
+  if (existsSync(join(directory, "resolved-ast.json"))) {
+    const resolvedOnly = readArtifact<{
+      schema?: unknown
+      stage?: unknown
+      source?: unknown
+      module?: unknown
+      declarations?: unknown
+    }>("resolved-ast.json")
+    if (
+      resolvedOnly &&
+      (resolvedOnly.schema !== 1 ||
+        resolvedOnly.stage !== "resolved-ast" ||
+        resolvedOnly.source !== tokens.source ||
+        resolvedOnly.module !== moduleInterface?.module ||
+        !Array.isArray(resolvedOnly.declarations))
+    ) {
+      errors.push(`${prefix}/resolved-ast.json: invalid resolved AST artifact`)
+    }
+  }
+  if (hasFullLoweringStageArtifacts) {
     const stages = new Map<string, Record<string, unknown>>()
     for (const stage of stageNames) {
       const artifact = readArtifact<Record<string, unknown>>(`${stage}.json`)
@@ -881,7 +899,8 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
           bindings?: Array<Record<string, unknown>>
         }
       | undefined
-    const surfaceDecl = (surface?.declarations ?? surface?.root?.declarations)?.[0]
+    const surfaceDecl = (surface?.declarations ??
+      surface?.root?.declarations)?.[0]
     const resolvedDecl = resolved?.declarations?.[0]
     const typedDecl = typed?.declarations?.[0]
     const coreBinding = core?.bindings?.[0]
@@ -899,7 +918,11 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       surfaceDecl?.kind !== "let" ||
       resolved?.source !== tokens.source ||
       resolved?.module !== moduleName ||
-      resolvedDecl?.symbol !== symbol ||
+      !(
+        resolvedDecl?.symbol === symbol ||
+        (typeof resolvedDecl?.symbol === "number" &&
+          resolvedDecl.name === moduleInterface?.exports[0]?.name)
+      ) ||
       typed?.source !== tokens.source ||
       typed?.module !== moduleName ||
       typedDecl?.symbol !== symbol ||
