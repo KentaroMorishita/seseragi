@@ -56,6 +56,7 @@ pub struct ByteSpan {
 pub enum TypeRef {
     Named {
         name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
         arguments: Vec<TypeRef>,
         span: ByteSpan,
     },

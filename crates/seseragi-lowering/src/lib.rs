@@ -49,6 +49,9 @@ pub struct CoreParameter {
     rename_all_fields = "camelCase"
 )]
 pub enum CoreExpr {
+    Unit {
+        origin: SourceSpan,
+    },
     Int64 {
         value: String,
         origin: SourceSpan,
@@ -149,6 +152,9 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
 
 fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
     match expr {
+        TypedExpr::Unit { origin, .. } => CoreExpr::Unit {
+            origin: source_span(source, origin),
+        },
         TypedExpr::Integer { value, origin, .. } => CoreExpr::Int64 {
             value,
             origin: source_span(source, origin),
@@ -172,6 +178,7 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
                 .collect(),
             origin: source_span(source, origin),
         },
+        TypedExpr::DoBlock { result, .. } => lower_expr(source, *result),
     }
 }
 
