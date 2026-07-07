@@ -17,6 +17,10 @@ fn main() {
     token_cases.extend(discover_cases(&artifacts.join("token-schema-1")));
     let token_total = token_cases.len();
     let cst_total = frontend_cases.len();
+    let surface_ast_total = frontend_cases
+        .iter()
+        .filter(|case| case.join("surface-ast.json").is_file())
+        .count();
 
     if list {
         println!("TokenStream fixtures:");
@@ -26,6 +30,12 @@ fn main() {
         println!("LosslessCst fixtures:");
         for case in &frontend_cases {
             println!("{}", case.display());
+        }
+        println!("SurfaceAst fixtures:");
+        for case in &frontend_cases {
+            if case.join("surface-ast.json").is_file() {
+                println!("{}", case.display());
+            }
         }
         return;
     }
@@ -42,6 +52,10 @@ fn main() {
             failed += 1;
             eprintln!("{}: {error}", case.display());
         }
+        if let Err(error) = check_surface_ast(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
     }
 
     if failed > 0 {
@@ -49,6 +63,7 @@ fn main() {
     }
     println!("TokenStream fixtures: {token_total} passed");
     println!("LosslessCst fixtures: {cst_total} passed");
+    println!("SurfaceAst fixtures: {surface_ast_total} passed");
 }
 
 fn discover_cases(directory: &Path) -> Vec<PathBuf> {
@@ -101,6 +116,29 @@ fn check_cst(case: &Path) -> Result<(), String> {
 
     if actual_value != expected_value {
         return Err("CST artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
+fn check_surface_ast(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("surface-ast.json");
+    if !expected_path.is_file() {
+        return Ok(());
+    }
+
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected SurfaceAst: {error}"))?;
+    let surface_ast = seseragi_syntax::parse_surface_ast("main.ssrg", &source);
+    let actual_value = serde_json::to_value(&surface_ast)
+        .map_err(|error| format!("failed to encode SurfaceAst: {error}"))?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected SurfaceAst: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("SurfaceAst artifact mismatch".to_owned());
     }
     Ok(())
 }
