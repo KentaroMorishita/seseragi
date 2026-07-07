@@ -81,6 +81,23 @@ mod tests {
     }
 
     #[test]
+    fn lowers_unit_result_to_typescript_undefined_expression() {
+        let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
+        let typed = type_module("artifact/effect-do/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        assert_eq!(typescript.runtime_requirements, vec!["core.unit"]);
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                body: TypeScriptExpr::Undefined,
+                ..
+            }
+        ));
+    }
+
+    #[test]
     fn emits_basic_typescript_module() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
         let core = lower_typed_module(typed);
@@ -105,5 +122,19 @@ mod tests {
             .typescript
             .contains("import { println as _ssrg_console_println }"));
         assert_eq!(bundle.source_map.names, vec!["main", "println"]);
+    }
+
+    #[test]
+    fn emits_unit_result_as_plain_undefined() {
+        let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
+        let typed = type_module("artifact/effect-do/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(
+            bundle.typescript,
+            "export const main = (_unit: undefined) => undefined\n"
+        );
     }
 }

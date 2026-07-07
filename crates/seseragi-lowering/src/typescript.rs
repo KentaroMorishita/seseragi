@@ -83,6 +83,7 @@ pub enum TypeScriptType {
     rename_all_fields = "camelCase"
 )]
 pub enum TypeScriptExpr {
+    Undefined,
     Bigint {
         value: String,
     },
@@ -157,10 +158,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
 
 fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
     match expr {
-        CoreExpr::Unit { .. } => TypeScriptExpr::Call {
-            callee: "undefined".to_owned(),
-            arguments: Vec::new(),
-        },
+        CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::EffectOperation {

@@ -131,6 +131,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
 
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
     match expr {
+        TypeScriptExpr::Undefined => "undefined".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::String { value } => format!("{value:?}"),
         TypeScriptExpr::Call { callee, arguments } => {
@@ -189,6 +190,8 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
                 collect_expr_names(argument, names);
             }
         }
-        TypeScriptExpr::Bigint { .. } | TypeScriptExpr::String { .. } => {}
+        TypeScriptExpr::Undefined
+        | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::String { .. } => {}
     }
 }

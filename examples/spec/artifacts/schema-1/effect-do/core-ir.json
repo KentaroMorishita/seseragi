@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-do",
+  "functions": [
+    {
+      "symbol": "artifact/effect-do::main",
+      "visibility": "public",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 68 },
+      "parameters": [{ "id": "unit", "kind": "implicit", "type": "Unit" }],
+      "body": {
+        "kind": "unit",
+        "origin": { "source": "main.ssrg", "start": 67, "end": 67 }
+      }
+    }
+  ]
+}
