@@ -194,13 +194,17 @@ commit用に残し、実作業はissue単位のworktreeで行います。
 | 対象            | 形式                             | 例                                 |
 | --------------- | -------------------------------- | ---------------------------------- |
 | branch          | `codex/wave{n}-{issue}-{slug}`   | `codex/wave0-0b1-conformance`      |
-| worktree path   | `../seseragi-wt-wave{n}-{issue}` | `../seseragi-wt-wave0-0b1`         |
+| worktree path   | `_worktrees/wave{n}-{issue}-{slug}` | `_worktrees/wave0-0b1-conformance` |
 | subagent task名 | `wave{n}_{issue}_{slug}`         | `wave0_0b1_conformance`            |
 | commit subject  | `<area>: <imperative summary>`   | `tooling: discover artifact cases` |
 
 worktreeを切る単位は「lane」ではなく「merge可能なissue」です。0-B1と0-B2のように同じlaneでも、
 同時に進めるなら別worktreeにします。逆にshared schemaを触るcontract changeは一つのworktreeだけで
 行い、他worktreeはそのcommitを取り込んでからproducer / consumer作業を続けます。
+
+Codex desktopではsandboxや権限profileがturnごとに変わることがあるため、標準のworktree置き場はrepo内の
+ignored directoryである`_worktrees/`にします。repo外worktreeを使う場合は、権限profileが書き込み可能で
+あることを先に確認します。
 
 subagentへ渡すtaskには必ず次を含めます。
 

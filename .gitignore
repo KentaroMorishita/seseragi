@@ -49,6 +49,7 @@ coverage/
 tmp/
 temp/
 _wip/
+_worktrees/
 tempCodeRunnerFile.*
 
 # Optional eslint cache
