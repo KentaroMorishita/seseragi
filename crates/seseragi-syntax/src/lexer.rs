@@ -33,6 +33,17 @@ impl Lexer<'_> {
                 '[' => self.bump_fixed(TokenKind::PunctuationSquareLeft, start, char),
                 ']' => self.bump_fixed(TokenKind::PunctuationSquareRight, start, char),
                 ',' => self.bump_fixed(TokenKind::PunctuationComma, start, char),
+                '<' if self.starts_with("<-")
+                    || self.starts_with("<=")
+                    || self.starts_with("<<") =>
+                {
+                    self.scan_operator_run()
+                }
+                '<' => self.bump_fixed(TokenKind::OperatorComparison, start, char),
+                '>' if self.starts_with(">=") || self.starts_with(">>=") => {
+                    self.scan_operator_run()
+                }
+                '>' => self.bump_fixed(TokenKind::OperatorComparison, start, char),
                 '"' => self.scan_quoted(TokenKind::LiteralString, '"'),
                 '`' => self.scan_quoted(TokenKind::LiteralTemplate, '`'),
                 '\\' => self.bump_fixed(TokenKind::OperatorLambda, start, char),
@@ -133,6 +144,7 @@ impl Lexer<'_> {
             "<-" => TokenKind::OperatorBind,
             "|>" => TokenKind::OperatorPipeline,
             "$" => TokenKind::OperatorApply,
+            "<=" | ">=" | "==" | "!=" => TokenKind::OperatorComparison,
             "+" | "-" | "*" | "/" | "%" | "**" => TokenKind::OperatorArithmetic,
             _ => TokenKind::OperatorCustom,
         };
