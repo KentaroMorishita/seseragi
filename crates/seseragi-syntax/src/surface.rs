@@ -54,7 +54,11 @@ pub struct ByteSpan {
     rename_all_fields = "camelCase"
 )]
 pub enum TypeRef {
-    Named { name: String, span: ByteSpan },
+    Named {
+        name: String,
+        arguments: Vec<TypeRef>,
+        span: ByteSpan,
+    },
 }
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
@@ -197,13 +201,73 @@ impl SurfaceParser<'_> {
     }
 
     fn parse_type_name(&self, start: usize, end: usize) -> Option<TypeRef> {
+        self.parse_type_ref(start, end)
+            .map(|(type_ref, _)| type_ref)
+    }
+
+    fn parse_type_ref(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
         let type_index = self.next_significant_token(start, end)?;
-        match self.kind_at(type_index) {
-            Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower) => Some(TypeRef::Named {
-                name: self.tokens.get(type_index)?.raw.clone(),
-                span: self.byte_span(type_index)?,
-            }),
-            _ => None,
+        if !matches!(
+            self.kind_at(type_index),
+            Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower)
+        ) {
+            return None;
+        }
+
+        let name = self.tokens.get(type_index)?.raw.clone();
+        let name_span = self.byte_span(type_index)?;
+        let after_name = type_index + 1;
+        let next = self.next_significant_token(after_name, end);
+        let (arguments, next_index, span_end) =
+            if next.is_some_and(|index| self.is_angle_left(index)) {
+                self.parse_type_arguments(next? + 1, end)
+                    .map(|(arguments, closing_angle)| {
+                        let span_end = self
+                            .tokens
+                            .get(closing_angle)
+                            .map(|token| token.end)
+                            .unwrap_or(name_span.end);
+                        (arguments, closing_angle + 1, span_end)
+                    })
+                    .unwrap_or_else(|| (Vec::new(), after_name, name_span.end))
+            } else {
+                (Vec::new(), after_name, name_span.end)
+            };
+
+        Some((
+            TypeRef::Named {
+                name,
+                arguments,
+                span: ByteSpan {
+                    start: name_span.start,
+                    end: span_end,
+                },
+            },
+            next_index,
+        ))
+    }
+
+    fn parse_type_arguments(&self, start: usize, end: usize) -> Option<(Vec<TypeRef>, usize)> {
+        let mut arguments = Vec::new();
+        let mut cursor = start;
+
+        loop {
+            let next = self.next_significant_token(cursor, end)?;
+            if self.is_angle_right(next) {
+                return Some((arguments, next));
+            }
+
+            let (argument, after_argument) = self.parse_type_ref(next, end)?;
+            arguments.push(argument);
+
+            let separator = self.next_significant_token(after_argument, end)?;
+            if self.is_angle_right(separator) {
+                return Some((arguments, separator));
+            }
+            if self.kind_at(separator) != Some(TokenKind::PunctuationComma) {
+                return None;
+            }
+            cursor = separator + 1;
         }
     }
 
@@ -268,6 +332,16 @@ impl SurfaceParser<'_> {
     fn kind_at(&self, index: usize) -> Option<TokenKind> {
         self.tokens.get(index).map(|token| token.kind)
     }
+
+    fn is_angle_left(&self, index: usize) -> bool {
+        self.kind_at(index) == Some(TokenKind::OperatorComparison)
+            && self.tokens.get(index).is_some_and(|token| token.raw == "<")
+    }
+
+    fn is_angle_right(&self, index: usize) -> bool {
+        self.kind_at(index) == Some(TokenKind::OperatorComparison)
+            && self.tokens.get(index).is_some_and(|token| token.raw == ">")
+    }
 }
 
 #[cfg(test)]
@@ -285,6 +359,7 @@ mod tests {
                 name_span: ByteSpan { start: 8, end: 14 },
                 type_ref: Some(TypeRef::Named {
                     name: "Int".to_owned(),
+                    arguments: Vec::new(),
                     span: ByteSpan { start: 16, end: 19 },
                 }),
                 span: ByteSpan { start: 0, end: 24 },
@@ -308,6 +383,7 @@ mod tests {
             name_span: ByteSpan { start: 10, end: 14 },
             return_type: Some(TypeRef::Named {
                 name: "Unit".to_owned(),
+                arguments: Vec::new(),
                 span: ByteSpan { start: 18, end: 22 },
             }),
             span: ByteSpan { start: 0, end: 72 },
@@ -334,6 +410,7 @@ mod tests {
                 name_span: ByteSpan { start: 8, end: 14 },
                 type_ref: Some(TypeRef::Named {
                     name: "Int".to_owned(),
+                    arguments: Vec::new(),
                     span: ByteSpan { start: 16, end: 19 },
                 }),
                 span: ByteSpan { start: 0, end: 24 },
@@ -383,10 +460,39 @@ mod tests {
                 name_span: ByteSpan { start: 14, end: 18 },
                 return_type: Some(TypeRef::Named {
                     name: "Unit".to_owned(),
+                    arguments: Vec::new(),
                     span: ByteSpan { start: 22, end: 26 },
                 }),
                 span: ByteSpan { start: 0, end: 104 },
             }]
+        );
+    }
+
+    #[test]
+    fn parses_nested_type_arguments_in_surface_ast() {
+        let module = parse_surface_ast("main.ssrg", "pub let values: Array<Maybe<Int>> = []\n");
+
+        assert_eq!(
+            module.declarations[0],
+            SurfaceDecl::Let {
+                visibility: Visibility::Public,
+                name: "values".to_owned(),
+                name_span: ByteSpan { start: 8, end: 14 },
+                type_ref: Some(TypeRef::Named {
+                    name: "Array".to_owned(),
+                    arguments: vec![TypeRef::Named {
+                        name: "Maybe".to_owned(),
+                        arguments: vec![TypeRef::Named {
+                            name: "Int".to_owned(),
+                            arguments: Vec::new(),
+                            span: ByteSpan { start: 28, end: 31 },
+                        }],
+                        span: ByteSpan { start: 22, end: 32 },
+                    }],
+                    span: ByteSpan { start: 16, end: 33 },
+                }),
+                span: ByteSpan { start: 0, end: 38 },
+            }
         );
     }
 }
