@@ -1,5 +1,6 @@
 mod checks;
 mod discovery;
+mod execution;
 mod pipeline;
 mod runner;
 

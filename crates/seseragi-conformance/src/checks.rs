@@ -1,3 +1,4 @@
+use crate::execution;
 use crate::pipeline::{
     emit_generated_module, interface_source_name, parse_core_ir_json, parse_module_interface_json,
     parse_resolved_ast_json, parse_typed_hir_json, parse_typescript_ir_json,
@@ -149,7 +150,7 @@ pub(crate) fn check_generated_module(case: &Path) -> Result<(), String> {
     Ok(())
 }
 
-pub(crate) fn check_execution_case(case: &Path) -> Result<(), String> {
+pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), String> {
     let run_path = case.join("run.json");
     let run_raw = fs::read_to_string(&run_path)
         .map_err(|error| format!("failed to read expected run envelope: {error}"))?;
@@ -170,6 +171,7 @@ pub(crate) fn check_execution_case(case: &Path) -> Result<(), String> {
     if !case.join(compiled_module).is_file() {
         return Err("compiled generated-module.json reference is missing".to_owned());
     }
+    let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
 
     let stdout_name = run
         .pointer("/expected/stdout")
@@ -184,9 +186,6 @@ pub(crate) fn check_execution_case(case: &Path) -> Result<(), String> {
     let stderr = fs::read_to_string(case.join(stderr_name))
         .map_err(|error| format!("failed to read expected stderr snapshot: {error}"))?;
 
-    if !stderr.is_empty() {
-        return Err("initial execution fixtures require empty stderr".to_owned());
-    }
     let trace_stdout = run
         .pointer("/expected/trace/0/stdout")
         .and_then(|value| value.as_str())
@@ -194,8 +193,23 @@ pub(crate) fn check_execution_case(case: &Path) -> Result<(), String> {
     if trace_stdout != stdout {
         return Err("execution stdout trace does not match stdout snapshot".to_owned());
     }
-    if run.pointer("/expected/process/exitCode") != Some(&serde_json::Value::from(0)) {
-        return Err("initial execution fixtures require process exitCode 0".to_owned());
+    let expected_exit_code = run
+        .pointer("/expected/process/exitCode")
+        .and_then(|value| value.as_i64())
+        .ok_or_else(|| "run.json expected.process.exitCode is missing".to_owned())?;
+
+    let actual = execution::run_generated_typescript(root, case, &compiled_typescript)?;
+    if actual.exit_code != expected_exit_code {
+        return Err(format!(
+            "execution exit code mismatch: expected {expected_exit_code}, got {}",
+            actual.exit_code
+        ));
+    }
+    if actual.stdout != stdout {
+        return Err("execution stdout mismatch".to_owned());
+    }
+    if actual.stderr != stderr {
+        return Err("execution stderr mismatch".to_owned());
     }
 
     Ok(())

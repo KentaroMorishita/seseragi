@@ -134,7 +134,7 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         }
     }
     for case in &execution_cases {
-        if let Err(error) = check_execution_case(case) {
+        if let Err(error) = check_execution_case(&root, case) {
             failed += 1;
             eprintln!("{}: {error}", case.display());
         }
