@@ -19,8 +19,9 @@ moduleは公開interfaceへ不完全なsymbolを出しません。
 
 `token-schema-1/`はlexer lane専用のTokenStream fixtureです。CST、diagnostic、module interfaceを要求せず、
 fixed operator、comment、literal、nested type argument表面構文、trivia、UTF-8 byte range、EOF、
-effect / do表面構文、lossless reconstructionだけを先に固定します。`>>`のようなoperator runを型文脈で分割
-するかどうかはparser stageの責務で、lexer stageは入力textを失わず保存することを優先します。
+effect / do表面構文、range operator、member access、lossless reconstructionだけを先に固定します。`>>`のような
+operator runを型文脈で分割するかどうかはparser stageの責務で、lexer stageは入力textを失わず保存することを
+優先します。
 
 rangeはすべて0-based、end-exclusiveのUTF-8 byteです。tokenの`raw`をEOF以外すべて連結するとsourceと
 byte単位で一致しなければなりません。CSTの`startToken` / `endToken`はtoken indexのhalf-open rangeです。

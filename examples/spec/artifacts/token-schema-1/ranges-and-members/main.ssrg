@@ -1,0 +1,5 @@
+let inclusive = 1..=100
+let exclusive = 1..10
+let mapped = arrays.map values
+let empty = maps.empty
+// ranges and members

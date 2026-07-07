@@ -16,6 +16,7 @@ fn main() {
         root.join("examples/spec/artifacts/token-schema-1/effect-do-block"),
         root.join("examples/spec/artifacts/token-schema-1/lexical-operators"),
         root.join("examples/spec/artifacts/token-schema-1/literals-and-nested-types"),
+        root.join("examples/spec/artifacts/token-schema-1/ranges-and-members"),
     ];
     let token_total = token_cases.len();
     let cst_total = frontend_cases.len();

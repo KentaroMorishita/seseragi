@@ -33,6 +33,13 @@ impl Lexer<'_> {
                 '[' => self.bump_fixed(TokenKind::PunctuationSquareLeft, start, char),
                 ']' => self.bump_fixed(TokenKind::PunctuationSquareRight, start, char),
                 ',' => self.bump_fixed(TokenKind::PunctuationComma, start, char),
+                '.' if self.starts_with("..=") => {
+                    self.bump_fixed_raw(TokenKind::OperatorRangeInclusive, start, "..=")
+                }
+                '.' if self.starts_with("..") => {
+                    self.bump_fixed_raw(TokenKind::OperatorRangeExclusive, start, "..")
+                }
+                '.' => self.bump_fixed(TokenKind::PunctuationDot, start, char),
                 '<' if self.starts_with("<-")
                     || self.starts_with("<=")
                     || self.starts_with("<<") =>
@@ -144,6 +151,8 @@ impl Lexer<'_> {
             "<-" => TokenKind::OperatorBind,
             "|>" => TokenKind::OperatorPipeline,
             "$" => TokenKind::OperatorApply,
+            ".." => TokenKind::OperatorRangeExclusive,
+            "..=" => TokenKind::OperatorRangeInclusive,
             "<=" | ">=" | "==" | "!=" => TokenKind::OperatorComparison,
             "+" | "-" | "*" | "/" | "%" | "**" => TokenKind::OperatorArithmetic,
             _ => TokenKind::OperatorCustom,
@@ -164,6 +173,11 @@ impl Lexer<'_> {
 
     fn bump_fixed(&mut self, kind: TokenKind, start: usize, char: char) {
         self.cursor += char.len_utf8();
+        self.push(kind, start, self.cursor);
+    }
+
+    fn bump_fixed_raw(&mut self, kind: TokenKind, start: usize, raw: &str) {
+        self.cursor += raw.len();
         self.push(kind, start, self.cursor);
     }
 
@@ -346,6 +360,74 @@ mod tests {
         assert_eq!(
             stream.reconstructed_text(),
             "pub fn add x: Int -> Int = x + 1\nlet result = values |> map (\\value -> value + 1)\n// ok\n"
+        );
+    }
+
+    #[test]
+    fn lexes_ranges_and_member_paths() {
+        let stream = lex(
+            "main.ssrg",
+            "let inclusive = 1..=100\nlet exclusive = 1..10\nlet mapped = arrays.map values\nlet empty = maps.empty\n// ranges and members\n",
+        );
+        let actual = stream
+            .tokens
+            .iter()
+            .map(|token| (token.kind, token.start, token.end, token.raw.as_str()))
+            .collect::<Vec<_>>();
+
+        assert_eq!(
+            actual,
+            vec![
+                (TokenKind::KeywordLet, 0, 3, "let"),
+                (TokenKind::TriviaSpace, 3, 4, " "),
+                (TokenKind::IdentifierLower, 4, 13, "inclusive"),
+                (TokenKind::TriviaSpace, 13, 14, " "),
+                (TokenKind::OperatorEquals, 14, 15, "="),
+                (TokenKind::TriviaSpace, 15, 16, " "),
+                (TokenKind::LiteralInteger, 16, 17, "1"),
+                (TokenKind::OperatorRangeInclusive, 17, 20, "..="),
+                (TokenKind::LiteralInteger, 20, 23, "100"),
+                (TokenKind::TriviaNewline, 23, 24, "\n"),
+                (TokenKind::KeywordLet, 24, 27, "let"),
+                (TokenKind::TriviaSpace, 27, 28, " "),
+                (TokenKind::IdentifierLower, 28, 37, "exclusive"),
+                (TokenKind::TriviaSpace, 37, 38, " "),
+                (TokenKind::OperatorEquals, 38, 39, "="),
+                (TokenKind::TriviaSpace, 39, 40, " "),
+                (TokenKind::LiteralInteger, 40, 41, "1"),
+                (TokenKind::OperatorRangeExclusive, 41, 43, ".."),
+                (TokenKind::LiteralInteger, 43, 45, "10"),
+                (TokenKind::TriviaNewline, 45, 46, "\n"),
+                (TokenKind::KeywordLet, 46, 49, "let"),
+                (TokenKind::TriviaSpace, 49, 50, " "),
+                (TokenKind::IdentifierLower, 50, 56, "mapped"),
+                (TokenKind::TriviaSpace, 56, 57, " "),
+                (TokenKind::OperatorEquals, 57, 58, "="),
+                (TokenKind::TriviaSpace, 58, 59, " "),
+                (TokenKind::IdentifierLower, 59, 65, "arrays"),
+                (TokenKind::PunctuationDot, 65, 66, "."),
+                (TokenKind::IdentifierLower, 66, 69, "map"),
+                (TokenKind::TriviaSpace, 69, 70, " "),
+                (TokenKind::IdentifierLower, 70, 76, "values"),
+                (TokenKind::TriviaNewline, 76, 77, "\n"),
+                (TokenKind::KeywordLet, 77, 80, "let"),
+                (TokenKind::TriviaSpace, 80, 81, " "),
+                (TokenKind::IdentifierLower, 81, 86, "empty"),
+                (TokenKind::TriviaSpace, 86, 87, " "),
+                (TokenKind::OperatorEquals, 87, 88, "="),
+                (TokenKind::TriviaSpace, 88, 89, " "),
+                (TokenKind::IdentifierLower, 89, 93, "maps"),
+                (TokenKind::PunctuationDot, 93, 94, "."),
+                (TokenKind::IdentifierLower, 94, 99, "empty"),
+                (TokenKind::TriviaNewline, 99, 100, "\n"),
+                (TokenKind::TriviaComment, 100, 121, "// ranges and members"),
+                (TokenKind::TriviaNewline, 121, 122, "\n"),
+                (TokenKind::Eof, 122, 122, ""),
+            ]
+        );
+        assert_eq!(
+            stream.reconstructed_text(),
+            "let inclusive = 1..=100\nlet exclusive = 1..10\nlet mapped = arrays.map values\nlet empty = maps.empty\n// ranges and members\n"
         );
     }
 }

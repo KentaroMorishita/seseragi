@@ -349,6 +349,10 @@ parserのcontextual responsibilityであり、custom operator tokenizationだけ
 `<-`、function application `$`、brace、Unit call `()`をTokenStream contractへ追加しました。Effectの意味論や
 do desugaringではなく、次のparser sliceへ渡す表面tokenを固定するためのfixtureです。
 
+`token-schema-1/ranges-and-members`では、inclusive / exclusive range operator `..=` / `..` とmember access `.`
+をTokenStream contractへ追加しました。`.`をgeneric custom operatorとして扱わず専用punctuationへ分けたため、
+既存のEffect sample内の`console.readLine` tokenも同じkindへ更新しました。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
