@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "artifact/multiple-lets",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/multiple-lets::second",
+      "namespace": "value",
+      "name": "second",
+      "visibility": "public",
+      "declaration": { "start": 14, "end": 37 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
