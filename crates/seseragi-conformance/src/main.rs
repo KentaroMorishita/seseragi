@@ -10,6 +10,7 @@ fn main() {
         root.join("examples/spec/artifacts/schema-1/basic"),
         root.join("examples/spec/artifacts/schema-1/recovery"),
         root.join("examples/spec/artifacts/token-schema-1/lexical-operators"),
+        root.join("examples/spec/artifacts/token-schema-1/literals-and-nested-types"),
     ];
     let total = cases.len();
 

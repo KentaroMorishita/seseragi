@@ -28,6 +28,11 @@ impl Lexer<'_> {
                 '\n' => self.scan_newline(),
                 '(' => self.bump_fixed(TokenKind::PunctuationParenLeft, start, char),
                 ')' => self.bump_fixed(TokenKind::PunctuationParenRight, start, char),
+                '[' => self.bump_fixed(TokenKind::PunctuationSquareLeft, start, char),
+                ']' => self.bump_fixed(TokenKind::PunctuationSquareRight, start, char),
+                ',' => self.bump_fixed(TokenKind::PunctuationComma, start, char),
+                '"' => self.scan_quoted(TokenKind::LiteralString, '"'),
+                '`' => self.scan_quoted(TokenKind::LiteralTemplate, '`'),
                 '\\' => self.bump_fixed(TokenKind::OperatorLambda, start, char),
                 '0'..='9' => self.scan_run(TokenKind::LiteralInteger, |char| char.is_ascii_digit()),
                 '_' | 'a'..='z' | 'A'..='Z' => self.scan_identifier(),
@@ -60,6 +65,8 @@ impl Lexer<'_> {
             "fn" => TokenKind::KeywordFn,
             "pub" => TokenKind::KeywordPub,
             "let" => TokenKind::KeywordLet,
+            "True" | "False" => TokenKind::LiteralBoolean,
+            "_" => TokenKind::Wildcard,
             _ if raw
                 .chars()
                 .next()
@@ -81,6 +88,30 @@ impl Lexer<'_> {
             self.take_char();
         }
         self.push(TokenKind::TriviaComment, start, self.cursor);
+    }
+
+    fn scan_quoted(&mut self, kind: TokenKind, delimiter: char) {
+        let start = self.cursor;
+        self.take_char();
+        let mut escaped = false;
+        while let Some(char) = self.peek_char() {
+            self.take_char();
+            if escaped {
+                escaped = false;
+                continue;
+            }
+            if char == '\\' {
+                escaped = true;
+                continue;
+            }
+            if char == delimiter {
+                break;
+            }
+            if char == '\n' {
+                break;
+            }
+        }
+        self.push(kind, start, self.cursor);
     }
 
     fn scan_operator_run(&mut self) {

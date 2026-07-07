@@ -339,6 +339,12 @@ lexer lane専用の`token-schema-1/lexical-operators`を追加し、CSTやinterf
 このpassはparserや型検査の完成を意味しません。token-only schemaを分けたことで、lexerのcoverageを
 parser laneの未実装状態から独立して増やせるようにしました。
 
+`token-schema-1/literals-and-nested-types`では、文字列、template literal、boolean、wildcard、array literal、
+および`Array<Maybe<Int>>`のようなnested type argument表面構文をTokenStream contractへ追加しました。
+lexerは`>>`をoperator runとしてlosslessに保持します。型構文内でこれを2つの閉じ山括弧として読むかどうかは
+parserのcontextual responsibilityであり、custom operator tokenizationだけでnested type parsingを解決済みとは
+扱いません。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
