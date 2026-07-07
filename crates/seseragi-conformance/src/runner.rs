@@ -1,7 +1,7 @@
 use crate::checks::{
-    check_core_ir_json, check_cst, check_generated_module, check_interface_json,
-    check_resolved_ast_json, check_surface_ast, check_tokens, check_typed_hir_json,
-    check_typescript_ir_json,
+    check_core_ir_json, check_cst, check_execution_case, check_generated_module,
+    check_interface_json, check_resolved_ast_json, check_surface_ast, check_tokens,
+    check_typed_hir_json, check_typescript_ir_json,
 };
 use crate::discovery::{
     discover_artifact_cases, discover_cases, discover_interface_cases, discover_resolved_ast_cases,
@@ -31,6 +31,8 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     let typescript_ir_total = typescript_ir_cases.len();
     let generated_module_cases = discover_artifact_cases(&artifacts, "generated-module.json");
     let generated_module_total = generated_module_cases.len();
+    let execution_cases = discover_artifact_cases(&artifacts, "run.json");
+    let execution_total = execution_cases.len();
 
     if list {
         println!("TokenStream fixtures:");
@@ -69,6 +71,10 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         }
         println!("GeneratedModule fixtures: {generated_module_total}");
         for case in &generated_module_cases {
+            println!("{}", case.display());
+        }
+        println!("Execution fixtures: {execution_total}");
+        for case in &execution_cases {
             println!("{}", case.display());
         }
         return;
@@ -127,6 +133,12 @@ pub(crate) fn run(root: PathBuf, list: bool) {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &execution_cases {
+        if let Err(error) = check_execution_case(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
 
     if failed > 0 {
         std::process::exit(1);
@@ -140,4 +152,5 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     println!("CoreIr fixtures: {core_ir_total} passed");
     println!("TypeScriptIr fixtures: {typescript_ir_total} passed");
     println!("GeneratedModule fixtures: {generated_module_total} passed");
+    println!("Execution fixtures: {execution_total} passed");
 }

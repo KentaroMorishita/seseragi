@@ -149,6 +149,58 @@ pub(crate) fn check_generated_module(case: &Path) -> Result<(), String> {
     Ok(())
 }
 
+pub(crate) fn check_execution_case(case: &Path) -> Result<(), String> {
+    let run_path = case.join("run.json");
+    let run_raw = fs::read_to_string(&run_path)
+        .map_err(|error| format!("failed to read expected run envelope: {error}"))?;
+    let run: serde_json::Value = serde_json::from_str(&run_raw)
+        .map_err(|error| format!("failed to parse expected run envelope: {error}"))?;
+
+    if run.get("schema") != Some(&serde_json::Value::from(1)) {
+        return Err("run.json must use schema 1".to_owned());
+    }
+    if run.pointer("/target").and_then(|value| value.as_str()) != Some("node-process") {
+        return Err("run.json target must be node-process".to_owned());
+    }
+
+    let compiled_module = run
+        .pointer("/entry/compiledModule")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "run.json entry.compiledModule is missing".to_owned())?;
+    if !case.join(compiled_module).is_file() {
+        return Err("compiled generated-module.json reference is missing".to_owned());
+    }
+
+    let stdout_name = run
+        .pointer("/expected/stdout")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "run.json expected.stdout is missing".to_owned())?;
+    let stderr_name = run
+        .pointer("/expected/stderr")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "run.json expected.stderr is missing".to_owned())?;
+    let stdout = fs::read_to_string(case.join(stdout_name))
+        .map_err(|error| format!("failed to read expected stdout snapshot: {error}"))?;
+    let stderr = fs::read_to_string(case.join(stderr_name))
+        .map_err(|error| format!("failed to read expected stderr snapshot: {error}"))?;
+
+    if !stderr.is_empty() {
+        return Err("initial execution fixtures require empty stderr".to_owned());
+    }
+    let trace_stdout = run
+        .pointer("/expected/trace/0/stdout")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "run.json expected.trace[0].stdout is missing".to_owned())?;
+    if trace_stdout != stdout {
+        return Err("execution stdout trace does not match stdout snapshot".to_owned());
+    }
+    if run.pointer("/expected/process/exitCode") != Some(&serde_json::Value::from(0)) {
+        return Err("initial execution fixtures require process exitCode 0".to_owned());
+    }
+
+    Ok(())
+}
+
 pub(crate) fn check_cst(case: &Path) -> Result<(), String> {
     let source_path = case.join("main.ssrg");
     let expected_path = case.join("cst.json");
