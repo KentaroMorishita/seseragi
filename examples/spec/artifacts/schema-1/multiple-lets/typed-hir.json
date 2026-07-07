@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/multiple-lets",
+  "declarations": [
+    {
+      "kind": "let",
+      "symbol": "artifact/multiple-lets::first",
+      "visibility": "private",
+      "origin": { "start": 0, "end": 13 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      },
+      "value": {
+        "kind": "integer",
+        "value": "1",
+        "type": { "kind": "named", "name": "Int", "arguments": [] },
+        "origin": { "start": 12, "end": 13 }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/multiple-lets::second",
+      "visibility": "public",
+      "origin": { "start": 14, "end": 37 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      },
+      "value": {
+        "kind": "integer",
+        "value": "2",
+        "type": { "kind": "named", "name": "Int", "arguments": [] },
+        "origin": { "start": 36, "end": 37 }
+      }
+    }
+  ]
+}

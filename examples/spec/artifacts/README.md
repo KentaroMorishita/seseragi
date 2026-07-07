@@ -20,10 +20,10 @@
 moduleは公開interfaceへ不完全なsymbolを出しません。
 
 `schema-1/effect-do/`は最小の`effect fn main`と空の`do {}` blockをfrontend artifactとして固定します。
-TokenStreamとLosslessCstのproducer比較対象ですが、型検査やdo desugaringはまだ要求しません。
+TypedHirでは空blockをstatementなし、zero-widthのUnit resultを持つ`do-block`として固定します。
 
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
-最小contractです。
+最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。
 
 `token-schema-1/`はlexer lane専用のTokenStream fixtureです。CST、diagnostic、module interfaceを要求せず、
 fixed operator、comment、literal、nested type argument表面構文、trivia、UTF-8 byte range、EOF、

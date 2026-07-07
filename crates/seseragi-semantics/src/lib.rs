@@ -134,6 +134,11 @@ pub struct TypedEffect {
     rename_all_fields = "camelCase"
 )]
 pub enum TypedExpr {
+    Unit {
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Integer {
         value: String,
         #[serde(rename = "type")]
@@ -149,6 +154,11 @@ pub enum TypedExpr {
     EffectCall {
         operation: String,
         arguments: Vec<TypedExpr>,
+        origin: ByteSpan,
+    },
+    DoBlock {
+        statements: Vec<TypedExpr>,
+        result: Box<TypedExpr>,
         origin: ByteSpan,
     },
 }
@@ -348,6 +358,7 @@ fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
 
 fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
     match expr {
+        TypedExpr::Unit { .. } => unit_type(),
         TypedExpr::Integer { .. } => TypedType::Named {
             name: "Int".to_owned(),
             arguments: Vec::new(),
@@ -357,6 +368,7 @@ fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             arguments: Vec::new(),
         },
         TypedExpr::EffectCall { .. } => unit_type(),
+        TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
     }
 }
 
@@ -422,6 +434,11 @@ fn find_effect_body(tokens: &[Token], span: ByteSpan) -> Option<TypedExpr> {
     let operation = tokens[equals_index + 1..]
         .iter()
         .find(|token| token.end <= span.end && is_significant(token))?;
+
+    if operation.kind == TokenKind::KeywordDo {
+        return typed_do_block(tokens, span, operation);
+    }
+
     let argument = tokens
         .iter()
         .skip_while(|token| token.start <= operation.start)
@@ -445,9 +462,32 @@ fn find_effect_body(tokens: &[Token], span: ByteSpan) -> Option<TypedExpr> {
     })
 }
 
+fn typed_do_block(tokens: &[Token], span: ByteSpan, do_token: &Token) -> Option<TypedExpr> {
+    let right_brace = tokens
+        .iter()
+        .skip_while(|token| token.start <= do_token.start)
+        .find(|token| token.end <= span.end && token.raw == "}")?;
+    Some(TypedExpr::DoBlock {
+        statements: Vec::new(),
+        result: Box::new(TypedExpr::Unit {
+            type_ref: unit_type(),
+            origin: ByteSpan {
+                start: right_brace.start,
+                end: right_brace.start,
+            },
+        }),
+        origin: ByteSpan {
+            start: do_token.start,
+            end: right_brace.end,
+        },
+    })
+}
+
 fn expr_origin_end(expr: &TypedExpr) -> usize {
     match expr {
-        TypedExpr::Integer { origin, .. }
+        TypedExpr::Unit { origin, .. }
+        | TypedExpr::DoBlock { origin, .. }
+        | TypedExpr::Integer { origin, .. }
         | TypedExpr::String { origin, .. }
         | TypedExpr::EffectCall { origin, .. } => origin.end,
     }
@@ -575,6 +615,62 @@ mod tests {
     }
 
     #[test]
+    fn types_private_and_public_lets() {
+        let typed = type_module(
+            "artifact/multiple-lets/main.ssrg",
+            "let first = 1\npub let second: Int = 2\n",
+        );
+
+        assert_eq!(
+            typed.declarations,
+            vec![
+                TypedDecl::Let {
+                    symbol: "artifact/multiple-lets::first".to_owned(),
+                    visibility: Visibility::Private,
+                    origin: ByteSpan { start: 0, end: 13 },
+                    scheme: TypedScheme {
+                        type_parameters: Vec::new(),
+                        constraints: Vec::new(),
+                        type_ref: TypedType::Named {
+                            name: "Int".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                    },
+                    value: TypedExpr::Integer {
+                        value: "1".to_owned(),
+                        type_ref: TypedType::Named {
+                            name: "Int".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                        origin: ByteSpan { start: 12, end: 13 },
+                    },
+                },
+                TypedDecl::Let {
+                    symbol: "artifact/multiple-lets::second".to_owned(),
+                    visibility: Visibility::Public,
+                    origin: ByteSpan { start: 14, end: 37 },
+                    scheme: TypedScheme {
+                        type_parameters: Vec::new(),
+                        constraints: Vec::new(),
+                        type_ref: TypedType::Named {
+                            name: "Int".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                    },
+                    value: TypedExpr::Integer {
+                        value: "2".to_owned(),
+                        type_ref: TypedType::Named {
+                            name: "Int".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                        origin: ByteSpan { start: 36, end: 37 },
+                    },
+                },
+            ]
+        );
+    }
+
+    #[test]
     fn types_effect_main() {
         let typed = type_module(
             "artifact/effect-main/main.ssrg",
@@ -618,6 +714,51 @@ mod tests {
                         origin: ByteSpan { start: 71, end: 78 },
                     }],
                     origin: ByteSpan { start: 63, end: 78 },
+                },
+            }]
+        );
+    }
+
+    #[test]
+    fn types_empty_do_block_as_unit_result() {
+        let typed = type_module(
+            "artifact/effect-do/main.ssrg",
+            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n",
+        );
+
+        assert_eq!(
+            typed.declarations,
+            vec![TypedDecl::EffectFn {
+                symbol: "artifact/effect-do::main".to_owned(),
+                visibility: Visibility::Public,
+                origin: ByteSpan { start: 0, end: 68 },
+                parameters: vec![TypedParameter::ImplicitUnit {
+                    type_ref: unit_type(),
+                }],
+                effect: TypedEffect {
+                    environment: TypedType::Record {
+                        closed: true,
+                        fields: vec![TypedRecordField {
+                            name: "console".to_owned(),
+                            type_ref: TypedType::Named {
+                                name: "Console".to_owned(),
+                                arguments: Vec::new(),
+                            },
+                        }],
+                    },
+                    failure: TypedType::Named {
+                        name: "ConsoleError".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    success: unit_type(),
+                },
+                body: TypedExpr::DoBlock {
+                    statements: Vec::new(),
+                    result: Box::new(TypedExpr::Unit {
+                        type_ref: unit_type(),
+                        origin: ByteSpan { start: 67, end: 67 },
+                    }),
+                    origin: ByteSpan { start: 63, end: 68 },
                 },
             }]
         );
