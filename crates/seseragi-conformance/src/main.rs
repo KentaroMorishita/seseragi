@@ -2,16 +2,33 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 fn main() {
-    let root = std::env::args()
-        .nth(1)
-        .map(PathBuf::from)
-        .unwrap_or_else(|| PathBuf::from("."));
+    let mut root = PathBuf::from(".");
+    let mut list = false;
+    for arg in std::env::args().skip(1) {
+        if arg == "--list" {
+            list = true;
+        } else {
+            root = PathBuf::from(arg);
+        }
+    }
     let artifacts = root.join("examples/spec/artifacts");
     let frontend_cases = discover_cases(&artifacts.join("schema-1"));
     let mut token_cases = frontend_cases.clone();
     token_cases.extend(discover_cases(&artifacts.join("token-schema-1")));
     let token_total = token_cases.len();
     let cst_total = frontend_cases.len();
+
+    if list {
+        println!("TokenStream fixtures:");
+        for case in &token_cases {
+            println!("{}", case.display());
+        }
+        println!("LosslessCst fixtures:");
+        for case in &frontend_cases {
+            println!("{}", case.display());
+        }
+        return;
+    }
 
     let mut failed = 0;
     for case in &token_cases {
