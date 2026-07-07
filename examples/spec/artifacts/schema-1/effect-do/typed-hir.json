@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-do",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-do::main",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 68 },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": { "kind": "named", "name": "Unit", "arguments": [] }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": { "kind": "named", "name": "Unit", "arguments": [] }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [],
+        "result": {
+          "kind": "unit",
+          "type": { "kind": "named", "name": "Unit", "arguments": [] },
+          "origin": { "start": 67, "end": 67 }
+        },
+        "origin": { "start": 63, "end": 68 }
+      }
+    }
+  ]
+}
