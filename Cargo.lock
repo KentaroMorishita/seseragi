@@ -84,6 +84,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-semantics"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "seseragi-syntax",
+]
+
+[[package]]
 name = "seseragi-source"
 version = "0.0.0"
 dependencies = [
