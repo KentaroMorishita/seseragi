@@ -1,0 +1,3 @@
+pub fn add x: Int -> Int = x + 1
+let result = values |> map (\value -> value + 1)
+// ok

@@ -1,7 +1,13 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join, relative, resolve } from "node:path"
 
-type Phase = "frontend" | "interface" | "runtime" | "stage" | "execution"
+type Phase =
+  | "token"
+  | "frontend"
+  | "interface"
+  | "runtime"
+  | "stage"
+  | "execution"
 
 type Check = {
   name: string
@@ -70,6 +76,45 @@ const artifactDirectories = (schema: string): string[] => {
     .filter((entry) => entry.isDirectory())
     .map((entry) => join(directory, entry.name))
     .sort()
+}
+
+const checkTokenCase = (directory: string): CaseResult => {
+  const checks: Check[] = []
+  for (const file of ["main.ssrg", "tokens.json"]) {
+    requireFile(join(directory, file), checks, file)
+  }
+  const tokens = readJson<{
+    schema?: unknown
+    source?: unknown
+    positionEncoding?: unknown
+    tokens?: unknown
+  }>(join(directory, "tokens.json"), checks, "token envelope")
+  if (
+    tokens &&
+    (tokens.schema !== 1 ||
+      tokens.source !== "main.ssrg" ||
+      tokens.positionEncoding !== "utf-8" ||
+      !Array.isArray(tokens.tokens))
+  ) {
+    checks.push({
+      name: "token shape",
+      status: "fail",
+      message: "tokens.json must use schema 1 and utf-8 TokenStream shape",
+    })
+  } else if (tokens) {
+    checks.push({ name: "token shape", status: "pass" })
+  }
+
+  return {
+    id: `token-schema-1/${relative(
+      join(artifactsRoot, "token-schema-1"),
+      directory
+    )}`,
+    phase: "token",
+    path: relativeToRepo(directory),
+    status: caseStatus(checks),
+    checks,
+  }
 }
 
 const checkSchemaOneCase = (directory: string): CaseResult => {
@@ -304,6 +349,7 @@ const checkExecutionCase = (directory: string): CaseResult => {
 }
 
 const results: CaseResult[] = [
+  ...artifactDirectories("token-schema-1").map(checkTokenCase),
   ...artifactDirectories("schema-1").map(checkSchemaOneCase),
   ...artifactDirectories("interface-schema-1").map(checkInterfaceCase),
   checkRuntimeCase(),
@@ -341,6 +387,7 @@ if (listOnly) {
 } else {
   console.log(`Conformance artifact cases: ${results.length}`)
   for (const phase of [
+    "token",
     "frontend",
     "interface",
     "runtime",

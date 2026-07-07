@@ -9,6 +9,7 @@ fn main() {
     let cases = [
         root.join("examples/spec/artifacts/schema-1/basic"),
         root.join("examples/spec/artifacts/schema-1/recovery"),
+        root.join("examples/spec/artifacts/token-schema-1/lexical-operators"),
     ];
     let total = cases.len();
 

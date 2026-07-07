@@ -329,6 +329,16 @@ required environmentはclosed structural recordとして照合しますが、act
 このfixtureにより、TypeScript backendがEffectをPromise / throw / direct console writeへ潰さないことと、
 process的な観測結果をrunner側の契約として扱うことを分離しました。
 
+### 2026-07-07: TokenStream producer skeleton
+
+Rust workspaceを開始し、`seseragi-syntax`が最小TokenStream producer、`seseragi-conformance`が
+TokenStream artifact consumerを持つようにしました。最初の`schema-1/basic` / `recovery`に加えて、
+lexer lane専用の`token-schema-1/lexical-operators`を追加し、CSTやinterfaceを要求せずに`fn`、`->`、
+`|>`、lambda、comment、trivia、EOF、lossless reconstructionを検査します。
+
+このpassはparserや型検査の完成を意味しません。token-only schemaを分けたことで、lexerのcoverageを
+parser laneの未実装状態から独立して増やせるようにしました。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

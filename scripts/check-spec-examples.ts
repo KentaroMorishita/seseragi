@@ -431,6 +431,78 @@ const validByteRange = (
     "utf8"
   ).equals(sourceBytes.subarray(0, range.end))
 
+const validateTokenArtifact = (
+  tokens: TokenArtifact,
+  directory: string,
+  prefix: string
+): Buffer | undefined => {
+  const sourcePath = resolve(directory, tokens.source)
+  if (
+    tokens.schema !== 1 ||
+    tokens.positionEncoding !== "utf-8" ||
+    tokens.source.startsWith("/") ||
+    tokens.source.includes("\\") ||
+    tokens.source.split("/").some((segment) => segment === "..") ||
+    !sourcePath.startsWith(`${directory}/`) ||
+    !existsSync(sourcePath) ||
+    !Array.isArray(tokens.tokens) ||
+    tokens.tokens.length === 0
+  ) {
+    errors.push(`${prefix}/tokens.json: invalid token artifact envelope`)
+    return undefined
+  }
+
+  const sourceBytes = readFileSync(sourcePath)
+  let previousEnd = 0
+  let reconstructed = ""
+  for (const [index, token] of tokens.tokens.entries()) {
+    if (
+      !token ||
+      typeof token.kind !== "string" ||
+      !/^[a-z][a-z0-9.-]*$/.test(token.kind) ||
+      typeof token.raw !== "string" ||
+      !Number.isInteger(token.start) ||
+      !Number.isInteger(token.end) ||
+      token.start !== previousEnd ||
+      token.end < token.start ||
+      token.end > sourceBytes.length
+    ) {
+      errors.push(`${prefix}/tokens.json: invalid token ${index}`)
+      continue
+    }
+    const actual = sourceBytes.subarray(token.start, token.end).toString("utf8")
+    if (actual !== token.raw) {
+      errors.push(`${prefix}/tokens.json: raw mismatch at token ${index}`)
+    }
+    const startsOnBoundary = Buffer.from(
+      sourceBytes.subarray(0, token.start).toString("utf8"),
+      "utf8"
+    ).equals(sourceBytes.subarray(0, token.start))
+    const endsOnBoundary = Buffer.from(
+      sourceBytes.subarray(0, token.end).toString("utf8"),
+      "utf8"
+    ).equals(sourceBytes.subarray(0, token.end))
+    if (!startsOnBoundary || !endsOnBoundary) {
+      errors.push(`${prefix}/tokens.json: token ${index} splits UTF-8`)
+    }
+    if (token.kind !== "eof") reconstructed += token.raw
+    previousEnd = token.end
+  }
+  const lastToken = tokens.tokens.at(-1)
+  if (
+    !lastToken ||
+    lastToken.kind !== "eof" ||
+    lastToken.start !== sourceBytes.length ||
+    lastToken.end !== sourceBytes.length ||
+    lastToken.raw !== "" ||
+    reconstructed !== sourceBytes.toString("utf8")
+  ) {
+    errors.push(`${prefix}/tokens.json: token stream is not lossless with EOF`)
+  }
+
+  return sourceBytes
+}
+
 const validateInterfaceArtifact = (
   moduleInterface: InterfaceArtifact,
   sourceName: string,
@@ -586,6 +658,21 @@ if (
   }
 }
 
+const tokenArtifactsDir = join(root, "artifacts", "token-schema-1")
+for (const entry of readdirSync(tokenArtifactsDir, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue
+  const directory = join(tokenArtifactsDir, entry.name)
+  const prefix = `artifacts/token-schema-1/${entry.name}`
+  try {
+    const tokens = JSON.parse(
+      readFileSync(join(directory, "tokens.json"), "utf8")
+    ) as TokenArtifact
+    validateTokenArtifact(tokens, directory, prefix)
+  } catch (error) {
+    errors.push(`${prefix}/tokens.json: invalid JSON: ${error}`)
+  }
+}
+
 const artifactsDir = join(root, "artifacts", "schema-1")
 for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue
@@ -603,69 +690,8 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
 
   const tokens = readArtifact<TokenArtifact>("tokens.json")
   if (!tokens) continue
-  const sourcePath = resolve(directory, tokens.source)
-  if (
-    tokens.schema !== 1 ||
-    tokens.positionEncoding !== "utf-8" ||
-    tokens.source.startsWith("/") ||
-    tokens.source.includes("\\") ||
-    tokens.source.split("/").some((segment) => segment === "..") ||
-    !sourcePath.startsWith(`${directory}/`) ||
-    !existsSync(sourcePath) ||
-    !Array.isArray(tokens.tokens) ||
-    tokens.tokens.length === 0
-  ) {
-    errors.push(`${prefix}/tokens.json: invalid token artifact envelope`)
-    continue
-  }
-
-  const sourceBytes = readFileSync(sourcePath)
-  let previousEnd = 0
-  let reconstructed = ""
-  for (const [index, token] of tokens.tokens.entries()) {
-    if (
-      !token ||
-      typeof token.kind !== "string" ||
-      !/^[a-z][a-z0-9.-]*$/.test(token.kind) ||
-      typeof token.raw !== "string" ||
-      !Number.isInteger(token.start) ||
-      !Number.isInteger(token.end) ||
-      token.start !== previousEnd ||
-      token.end < token.start ||
-      token.end > sourceBytes.length
-    ) {
-      errors.push(`${prefix}/tokens.json: invalid token ${index}`)
-      continue
-    }
-    const actual = sourceBytes.subarray(token.start, token.end).toString("utf8")
-    if (actual !== token.raw) {
-      errors.push(`${prefix}/tokens.json: raw mismatch at token ${index}`)
-    }
-    const startsOnBoundary = Buffer.from(
-      sourceBytes.subarray(0, token.start).toString("utf8"),
-      "utf8"
-    ).equals(sourceBytes.subarray(0, token.start))
-    const endsOnBoundary = Buffer.from(
-      sourceBytes.subarray(0, token.end).toString("utf8"),
-      "utf8"
-    ).equals(sourceBytes.subarray(0, token.end))
-    if (!startsOnBoundary || !endsOnBoundary) {
-      errors.push(`${prefix}/tokens.json: token ${index} splits UTF-8`)
-    }
-    if (token.kind !== "eof") reconstructed += token.raw
-    previousEnd = token.end
-  }
-  const lastToken = tokens.tokens.at(-1)
-  if (
-    !lastToken ||
-    lastToken.kind !== "eof" ||
-    lastToken.start !== sourceBytes.length ||
-    lastToken.end !== sourceBytes.length ||
-    lastToken.raw !== "" ||
-    reconstructed !== sourceBytes.toString("utf8")
-  ) {
-    errors.push(`${prefix}/tokens.json: token stream is not lossless with EOF`)
-  }
+  const sourceBytes = validateTokenArtifact(tokens, directory, prefix)
+  if (!sourceBytes) continue
 
   const cst = readArtifact<CstArtifact>("cst.json")
   if (cst) {

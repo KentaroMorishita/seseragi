@@ -17,6 +17,9 @@
 `error-expr`とmissing expressionを持ち、diagnosticのprimaryも挿入位置のzero-width rangeです。Errorを持つ
 moduleは公開interfaceへ不完全なsymbolを出しません。
 
+`token-schema-1/`はlexer lane専用のTokenStream fixtureです。CST、diagnostic、module interfaceを要求せず、
+fixed operator、comment、trivia、UTF-8 byte range、EOF、lossless reconstructionだけを先に固定します。
+
 rangeはすべて0-based、end-exclusiveのUTF-8 byteです。tokenの`raw`をEOF以外すべて連結するとsourceと
 byte単位で一致しなければなりません。CSTの`startToken` / `endToken`はtoken indexのhalf-open rangeです。
 

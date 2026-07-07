@@ -60,12 +60,13 @@ parse、型検査、実行はまだ保証しません。
 - multi-file conformance入力: project 41件
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
 - grammar対応表: `examples/spec/grammar-coverage.json`
-- stage / execution artifact契約: `examples/spec/artifacts/schema-1/`、
-  `stage-schema-1/`、`execution-schema-1/`
+- token / stage / execution artifact契約: `examples/spec/artifacts/token-schema-1/`、
+  `schema-1/`、`stage-schema-1/`、`execution-schema-1/`
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - artifact runner skeleton: `scripts/conformance-artifacts.ts`
 - Rust workspace skeleton: `crates/seseragi-syntax/` と `crates/seseragi-conformance/`
+- TokenStream conformance: schema-1の2件とtoken-schema-1の1件
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
