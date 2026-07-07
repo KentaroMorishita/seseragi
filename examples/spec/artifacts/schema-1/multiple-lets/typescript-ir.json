@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/multiple-lets",
+  "runtimeRequirements": ["core.int64"],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "first",
+      "type": { "kind": "bigint" },
+      "initializer": { "kind": "bigint", "value": "1" },
+      "origin": { "source": "main.ssrg", "start": 0, "end": 13 }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "second",
+      "type": { "kind": "bigint" },
+      "initializer": { "kind": "bigint", "value": "2" },
+      "origin": { "source": "main.ssrg", "start": 14, "end": 37 }
+    }
+  ]
+}
