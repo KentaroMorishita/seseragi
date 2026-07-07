@@ -845,7 +845,8 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
     if (
       resolvedOnly &&
       (resolvedOnly.schema !== 1 ||
-        resolvedOnly.stage !== "resolved-ast" ||
+        (Object.hasOwn(resolvedOnly, "stage") &&
+          resolvedOnly.stage !== "resolved-ast") ||
         resolvedOnly.source !== tokens.source ||
         resolvedOnly.module !== moduleInterface?.module ||
         !Array.isArray(resolvedOnly.declarations))
@@ -860,9 +861,11 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
       if (!artifact) continue
       const isSurfaceOnlyShape =
         stage === "surface-ast" && !Object.hasOwn(artifact, "stage")
+      const isResolvedOnlyShape =
+        stage === "resolved-ast" && !Object.hasOwn(artifact, "stage")
       if (
         artifact.schema !== 1 ||
-        (!isSurfaceOnlyShape && artifact.stage !== stage)
+        (!isSurfaceOnlyShape && !isResolvedOnlyShape && artifact.stage !== stage)
       ) {
         errors.push(`${prefix}/${stage}.json: invalid stage envelope`)
       }
