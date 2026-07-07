@@ -31,6 +31,8 @@ fn main() {
     let core_ir_total = core_ir_cases.len();
     let typescript_ir_cases = discover_artifact_cases(&artifacts, "typescript-ir.json");
     let typescript_ir_total = typescript_ir_cases.len();
+    let generated_module_cases = discover_artifact_cases(&artifacts, "generated-module.json");
+    let generated_module_total = generated_module_cases.len();
 
     if list {
         println!("TokenStream fixtures:");
@@ -65,6 +67,10 @@ fn main() {
         }
         println!("TypeScriptIr fixtures: {typescript_ir_total}");
         for case in &typescript_ir_cases {
+            println!("{}", case.display());
+        }
+        println!("GeneratedModule fixtures: {generated_module_total}");
+        for case in &generated_module_cases {
             println!("{}", case.display());
         }
         return;
@@ -117,6 +123,12 @@ fn main() {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &generated_module_cases {
+        if let Err(error) = check_generated_module(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
 
     if failed > 0 {
         std::process::exit(1);
@@ -129,6 +141,7 @@ fn main() {
     println!("TypedHir fixtures: {typed_hir_total} passed");
     println!("CoreIr fixtures: {core_ir_total} passed");
     println!("TypeScriptIr fixtures: {typescript_ir_total} passed");
+    println!("GeneratedModule fixtures: {generated_module_total} passed");
 }
 
 fn discover_cases(directory: &Path) -> Vec<PathBuf> {
@@ -309,6 +322,43 @@ fn check_typescript_ir_json(case: &Path) -> Result<(), String> {
     Ok(())
 }
 
+fn check_generated_module(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_metadata_path = case.join("generated-module.json");
+    let expected_typescript_path = case.join("main.ts");
+    let expected_source_map_path = case.join("main.ts.map");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected_metadata = fs::read_to_string(&expected_metadata_path)
+        .map_err(|error| format!("failed to read expected GeneratedModule: {error}"))?;
+    let expected_typescript = fs::read_to_string(&expected_typescript_path)
+        .map_err(|error| format!("failed to read expected main.ts: {error}"))?;
+    let expected_source_map = fs::read_to_string(&expected_source_map_path)
+        .map_err(|error| format!("failed to read expected main.ts.map: {error}"))?;
+    let bundle = emit_generated_module(interface_source_name(case)?, &source)?;
+
+    let actual_metadata_value = serde_json::to_value(&bundle.metadata)
+        .map_err(|error| format!("failed to encode GeneratedModule: {error}"))?;
+    let expected_metadata_value: serde_json::Value = serde_json::from_str(&expected_metadata)
+        .map_err(|error| format!("failed to parse expected GeneratedModule: {error}"))?;
+    if actual_metadata_value != expected_metadata_value {
+        return Err("GeneratedModule artifact mismatch".to_owned());
+    }
+    if bundle.typescript != expected_typescript {
+        return Err("main.ts artifact mismatch".to_owned());
+    }
+
+    let actual_source_map_value = serde_json::to_value(&bundle.source_map)
+        .map_err(|error| format!("failed to encode SourceMap: {error}"))?;
+    let expected_source_map_value: serde_json::Value =
+        serde_json::from_str(&expected_source_map)
+            .map_err(|error| format!("failed to parse expected main.ts.map: {error}"))?;
+    if actual_source_map_value != expected_source_map_value {
+        return Err("main.ts.map artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
 fn interface_source_name(case: &Path) -> Result<String, String> {
     let name = case
         .file_name()
@@ -362,6 +412,19 @@ fn parse_typescript_ir_json(
     let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir(core_ir);
     serde_json::to_value(&typescript_ir)
         .map_err(|error| format!("failed to encode TypeScriptIr: {error}"))
+}
+
+fn emit_generated_module(
+    source_name: impl Into<String>,
+    source: &str,
+) -> Result<seseragi_lowering::GeneratedBundle, String> {
+    let typed_hir = seseragi_semantics::type_module(source_name, source);
+    let core_ir = seseragi_lowering::lower_typed_module(typed_hir);
+    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir(core_ir);
+    Ok(seseragi_lowering::emit_typescript_module(
+        typescript_ir,
+        source,
+    ))
 }
 
 fn check_cst(case: &Path) -> Result<(), String> {
