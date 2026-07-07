@@ -7,4 +7,5 @@ repository.workspace = true
 
 [dependencies]
 serde_json.workspace = true
+seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }
