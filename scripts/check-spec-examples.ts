@@ -815,15 +815,37 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
     "core-ir",
     "typescript-ir",
   ] as const
-  const hasStageArtifacts = stageNames.some((stage) =>
-    existsSync(join(directory, `${stage}.json`))
+  const hasLoweringStageArtifacts = stageNames
+    .filter((stage) => stage !== "surface-ast")
+    .some((stage) => existsSync(join(directory, `${stage}.json`))
   )
-  if (hasStageArtifacts) {
+  const surfaceOnly = existsSync(join(directory, "surface-ast.json"))
+    ? readArtifact<{
+        schema?: unknown
+        source?: unknown
+        declarations?: unknown
+      }>("surface-ast.json")
+    : undefined
+  if (surfaceOnly) {
+    if (
+      surfaceOnly.schema !== 1 ||
+      surfaceOnly.source !== tokens.source ||
+      !Array.isArray(surfaceOnly.declarations)
+    ) {
+      errors.push(`${prefix}/surface-ast.json: invalid surface AST artifact`)
+    }
+  }
+  if (hasLoweringStageArtifacts) {
     const stages = new Map<string, Record<string, unknown>>()
     for (const stage of stageNames) {
       const artifact = readArtifact<Record<string, unknown>>(`${stage}.json`)
       if (!artifact) continue
-      if (artifact.schema !== 1 || artifact.stage !== stage) {
+      const isSurfaceOnlyShape =
+        stage === "surface-ast" && !Object.hasOwn(artifact, "stage")
+      if (
+        artifact.schema !== 1 ||
+        (!isSurfaceOnlyShape && artifact.stage !== stage)
+      ) {
         errors.push(`${prefix}/${stage}.json: invalid stage envelope`)
       }
       stages.set(stage, artifact)
@@ -831,6 +853,7 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
     const surface = stages.get("surface-ast") as
       | {
           source?: unknown
+          declarations?: Array<Record<string, unknown>>
           root?: { declarations?: Array<Record<string, unknown>> }
         }
       | undefined
@@ -858,7 +881,7 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
           bindings?: Array<Record<string, unknown>>
         }
       | undefined
-    const surfaceDecl = surface?.root?.declarations?.[0]
+    const surfaceDecl = (surface?.declarations ?? surface?.root?.declarations)?.[0]
     const resolvedDecl = resolved?.declarations?.[0]
     const typedDecl = typed?.declarations?.[0]
     const coreBinding = core?.bindings?.[0]
