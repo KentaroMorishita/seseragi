@@ -66,7 +66,7 @@ parse、型検査、実行はまだ保証しません。
 - 構造checker: `scripts/check-spec-examples.ts`
 - artifact runner skeleton: `scripts/conformance-artifacts.ts`
 - Rust workspace skeleton: `crates/seseragi-syntax/` と `crates/seseragi-conformance/`
-- TokenStream conformance: schema-1の2件とtoken-schema-1の2件
+- TokenStream conformance: schema-1の2件とtoken-schema-1の3件
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが

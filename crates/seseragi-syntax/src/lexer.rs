@@ -28,6 +28,8 @@ impl Lexer<'_> {
                 '\n' => self.scan_newline(),
                 '(' => self.bump_fixed(TokenKind::PunctuationParenLeft, start, char),
                 ')' => self.bump_fixed(TokenKind::PunctuationParenRight, start, char),
+                '{' => self.bump_fixed(TokenKind::PunctuationBraceLeft, start, char),
+                '}' => self.bump_fixed(TokenKind::PunctuationBraceRight, start, char),
                 '[' => self.bump_fixed(TokenKind::PunctuationSquareLeft, start, char),
                 ']' => self.bump_fixed(TokenKind::PunctuationSquareRight, start, char),
                 ',' => self.bump_fixed(TokenKind::PunctuationComma, start, char),
@@ -62,9 +64,13 @@ impl Lexer<'_> {
         }
         let raw = &self.source[start..self.cursor];
         let kind = match raw {
+            "do" => TokenKind::KeywordDo,
+            "effect" => TokenKind::KeywordEffect,
+            "fails" => TokenKind::KeywordFails,
             "fn" => TokenKind::KeywordFn,
             "pub" => TokenKind::KeywordPub,
             "let" => TokenKind::KeywordLet,
+            "with" => TokenKind::KeywordWith,
             "True" | "False" => TokenKind::LiteralBoolean,
             "_" => TokenKind::Wildcard,
             _ if raw
@@ -124,7 +130,9 @@ impl Lexer<'_> {
             ":" => TokenKind::PunctuationColon,
             "=" => TokenKind::OperatorEquals,
             "->" => TokenKind::OperatorArrow,
+            "<-" => TokenKind::OperatorBind,
             "|>" => TokenKind::OperatorPipeline,
+            "$" => TokenKind::OperatorApply,
             "+" | "-" | "*" | "/" | "%" | "**" => TokenKind::OperatorArithmetic,
             _ => TokenKind::OperatorCustom,
         };

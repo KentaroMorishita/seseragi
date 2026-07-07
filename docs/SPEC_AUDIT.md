@@ -345,6 +345,10 @@ lexerは`>>`をoperator runとしてlosslessに保持します。型構文内で
 parserのcontextual responsibilityであり、custom operator tokenizationだけでnested type parsingを解決済みとは
 扱いません。
 
+`token-schema-1/effect-do-block`では、`effect fn`、environment / failure header、`do` block、monadic bind
+`<-`、function application `$`、brace、Unit call `()`をTokenStream contractへ追加しました。Effectの意味論や
+do desugaringではなく、次のparser sliceへ渡す表面tokenを固定するためのfixtureです。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
