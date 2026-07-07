@@ -816,8 +816,9 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
     "typescript-ir",
   ] as const
   const hasFullLoweringStageArtifacts = stageNames
-    .filter((stage) => stage !== "surface-ast" && stage !== "resolved-ast")
+    .filter((stage) => stage === "core-ir" || stage === "typescript-ir")
     .some((stage) => existsSync(join(directory, `${stage}.json`)))
+    || existsSync(join(directory, "generated-module.json"))
   const surfaceOnly = existsSync(join(directory, "surface-ast.json"))
     ? readArtifact<{
         schema?: unknown
@@ -852,6 +853,25 @@ for (const entry of readdirSync(artifactsDir, { withFileTypes: true })) {
         !Array.isArray(resolvedOnly.declarations))
     ) {
       errors.push(`${prefix}/resolved-ast.json: invalid resolved AST artifact`)
+    }
+  }
+  if (existsSync(join(directory, "typed-hir.json"))) {
+    const typedOnly = readArtifact<{
+      schema?: unknown
+      stage?: unknown
+      source?: unknown
+      module?: unknown
+      declarations?: unknown
+    }>("typed-hir.json")
+    if (
+      typedOnly &&
+      (typedOnly.schema !== 1 ||
+        typedOnly.stage !== "typed-hir" ||
+        typedOnly.source !== tokens.source ||
+        typedOnly.module !== moduleInterface?.module ||
+        !Array.isArray(typedOnly.declarations))
+    ) {
+      errors.push(`${prefix}/typed-hir.json: invalid typed HIR artifact`)
     }
   }
   if (hasFullLoweringStageArtifacts) {
