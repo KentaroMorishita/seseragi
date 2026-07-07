@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "crates/seseragi-conformance",
+  "crates/seseragi-lowering",
   "crates/seseragi-semantics",
   "crates/seseragi-source",
   "crates/seseragi-syntax",

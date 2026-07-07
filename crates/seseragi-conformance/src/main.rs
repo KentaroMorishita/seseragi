@@ -27,6 +27,8 @@ fn main() {
     let resolved_ast_total = resolved_ast_cases.len();
     let typed_hir_cases = discover_artifact_cases(&artifacts, "typed-hir.json");
     let typed_hir_total = typed_hir_cases.len();
+    let core_ir_cases = discover_artifact_cases(&artifacts, "core-ir.json");
+    let core_ir_total = core_ir_cases.len();
 
     if list {
         println!("TokenStream fixtures:");
@@ -53,6 +55,10 @@ fn main() {
         }
         println!("TypedHir fixtures: {typed_hir_total}");
         for case in &typed_hir_cases {
+            println!("{}", case.display());
+        }
+        println!("CoreIr fixtures: {core_ir_total}");
+        for case in &core_ir_cases {
             println!("{}", case.display());
         }
         return;
@@ -93,6 +99,12 @@ fn main() {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &core_ir_cases {
+        if let Err(error) = check_core_ir_json(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
 
     if failed > 0 {
         std::process::exit(1);
@@ -103,6 +115,7 @@ fn main() {
     println!("ModuleInterface fixtures: {interface_total} passed");
     println!("ResolvedAst fixtures: {resolved_ast_total} passed");
     println!("TypedHir fixtures: {typed_hir_total} passed");
+    println!("CoreIr fixtures: {core_ir_total} passed");
 }
 
 fn discover_cases(directory: &Path) -> Vec<PathBuf> {
@@ -249,6 +262,23 @@ fn check_typed_hir_json(case: &Path) -> Result<(), String> {
     Ok(())
 }
 
+fn check_core_ir_json(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("core-ir.json");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected CoreIr: {error}"))?;
+    let actual_value = parse_core_ir_json(interface_source_name(case)?, &source)?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected CoreIr: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("CoreIr artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
 fn interface_source_name(case: &Path) -> Result<String, String> {
     let name = case
         .file_name()
@@ -282,6 +312,15 @@ fn parse_typed_hir_json(
 ) -> Result<serde_json::Value, String> {
     let typed_hir = seseragi_semantics::type_module(source_name, source);
     serde_json::to_value(&typed_hir).map_err(|error| format!("failed to encode TypedHir: {error}"))
+}
+
+fn parse_core_ir_json(
+    source_name: impl Into<String>,
+    source: &str,
+) -> Result<serde_json::Value, String> {
+    let typed_hir = seseragi_semantics::type_module(source_name, source);
+    let core_ir = seseragi_lowering::lower_typed_module(typed_hir);
+    serde_json::to_value(&core_ir).map_err(|error| format!("failed to encode CoreIr: {error}"))
 }
 
 fn check_cst(case: &Path) -> Result<(), String> {

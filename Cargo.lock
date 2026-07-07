@@ -80,6 +80,17 @@ name = "seseragi-conformance"
 version = "0.0.0"
 dependencies = [
  "serde_json",
+ "seseragi-lowering",
+ "seseragi-semantics",
+ "seseragi-syntax",
+]
+
+[[package]]
+name = "seseragi-lowering"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
  "seseragi-semantics",
  "seseragi-syntax",
 ]
