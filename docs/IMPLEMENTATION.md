@@ -211,6 +211,17 @@ subagentへ渡すtaskには必ず次を含めます。
 - 実行してよいtargeted check。
 - legacy全体testを回さないなどの制約。
 
+subagent taskは「調査」ではなく、原則として小さい実装ticketにします。大きなlane名だけを渡さず、
+10〜15分相当で差分が出る粒度へ切ります。各ticketは次のどちらかで終わらせます。
+
+- targeted check済みのcommit。
+- blocked理由、触ったfile、次に必要な判断を3行程度で返す。
+
+成果なしでrate limitを消費しないため、subagent自身がさらにsubagentをspawnすることは通常禁止します。
+再分割が必要な場合はmain orchestratorへ返し、mainがworktree、owner、merge順を切り直します。mainは
+5〜10分おきにworktreeの`git status --short`を確認し、差分が出ないticketは止めるか、より小さい目的へ
+再発行します。
+
 subagentの成果をmainへ戻す条件は次です。
 
 1. worktree内でtargeted checkが通っている。
