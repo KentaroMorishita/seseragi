@@ -10,7 +10,8 @@
 - `diagnostics.json`: frontend共通diagnostic envelope
 - `interface.json`: module consumerが読む公開interface
 - `surface-ast.json`: surface declaration skeleton。後続stageがある場合はstage chainの入口
-- `resolved-ast.json`から`typescript-ir.json`: stage間の最小end-to-end snapshot
+- `resolved-ast.json`と`typed-hir.json`: Rust conformance runnerで個別に比較できるfrontend / semantics stage snapshot
+- `core-ir.json`から`typescript-ir.json`: backend loweringとemitterを含む最小end-to-end snapshot
 - `generated-module.json`と`main.ts`: runtime requirementを含むemitter結果
 - `main.ts.map`: portable Seseragi URIとsourcesContentを持つsource map v3
 
@@ -36,6 +37,11 @@ byte単位で一致しなければなりません。CSTの`startToken` / `endTok
 artifactのJSONは人が手で実装する入力ではありません。新compilerが生成し、conformance runnerが比較します。
 schema fieldを変更するときはproducerとconsumerを同じ巨大changeへ混ぜず、schema fixture、producer、consumerの
 順に移行します。schema majorが異なるartifactを黙って読み替えません。
+
+`schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
+Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する
+必要はありません。backend loweringやTypeScript emitterまで固定するcaseだけが`core-ir.json`、
+`typescript-ir.json`、`generated-module.json`を持ち、full lowering chainとして検査されます。
 
 初期runner skeletonは次でartifact bundleを発見し、必須file、JSON envelope、参照snapshotを検査します。
 
