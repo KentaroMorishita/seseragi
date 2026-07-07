@@ -1,3 +1,5 @@
+use crate::lexer::lex;
+use crate::token::{Token, TokenKind};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -55,6 +57,219 @@ pub enum TypeRef {
     Named { name: String, span: ByteSpan },
 }
 
+pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
+    let stream = lex(source_name, source);
+    let non_eof_token_count = stream
+        .tokens
+        .iter()
+        .position(|token| token.kind == TokenKind::Eof)
+        .unwrap_or(stream.tokens.len());
+    let parser = SurfaceParser {
+        tokens: &stream.tokens,
+        non_eof_token_count,
+    };
+
+    SurfaceModule {
+        schema: 1,
+        source: stream.source,
+        declarations: parser.parse_declarations(),
+    }
+}
+
+struct SurfaceParser<'tokens> {
+    tokens: &'tokens [Token],
+    non_eof_token_count: usize,
+}
+
+impl SurfaceParser<'_> {
+    fn parse_declarations(&self) -> Vec<SurfaceDecl> {
+        let declaration_starts = self.top_level_declaration_starts();
+        declaration_starts
+            .iter()
+            .enumerate()
+            .filter_map(|(position, start)| {
+                let end = declaration_starts
+                    .get(position + 1)
+                    .copied()
+                    .unwrap_or(self.non_eof_token_count);
+                self.parse_top_level_declaration(*start, end)
+            })
+            .collect()
+    }
+
+    fn top_level_declaration_starts(&self) -> Vec<usize> {
+        let mut starts = Vec::new();
+        let mut brace_depth = 0usize;
+        for index in 0..self.non_eof_token_count {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => brace_depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    brace_depth = brace_depth.saturating_sub(1);
+                }
+                Some(TokenKind::KeywordPub | TokenKind::KeywordLet | TokenKind::KeywordEffect)
+                    if brace_depth == 0 && self.is_declaration_boundary(index) =>
+                {
+                    starts.push(index);
+                }
+                _ => {}
+            }
+        }
+        starts
+    }
+
+    fn is_declaration_boundary(&self, index: usize) -> bool {
+        let Some(previous) = self.previous_significant_token(index) else {
+            return true;
+        };
+        (previous + 1..index).any(|candidate| {
+            self.kind_at(candidate)
+                .is_some_and(|kind| kind == TokenKind::TriviaNewline)
+        })
+    }
+
+    fn parse_top_level_declaration(&self, start: usize, end: usize) -> Option<SurfaceDecl> {
+        let first = self.next_significant_token(start, end)?;
+        let (visibility, decl_start) = if self.kind_at(first) == Some(TokenKind::KeywordPub) {
+            (
+                Visibility::Public,
+                self.next_significant_token(first + 1, end)?,
+            )
+        } else {
+            (Visibility::Private, first)
+        };
+
+        match self.kind_at(decl_start) {
+            Some(TokenKind::KeywordLet) => self.parse_let_decl(visibility, start, decl_start, end),
+            Some(TokenKind::KeywordEffect) => {
+                self.parse_effect_fn_decl(visibility, start, decl_start, end)
+            }
+            _ => None,
+        }
+    }
+
+    fn parse_let_decl(
+        &self,
+        visibility: Visibility,
+        top_start: usize,
+        decl_start: usize,
+        end: usize,
+    ) -> Option<SurfaceDecl> {
+        let name_index = self.next_significant_token(decl_start + 1, end)?;
+        let name = self.identifier_name_at(name_index)?;
+        let type_ref = self.parse_type_after_colon(name_index + 1, end);
+
+        Some(SurfaceDecl::Let {
+            visibility,
+            name,
+            name_span: self.byte_span(name_index)?,
+            type_ref,
+            span: self.declaration_span(top_start, end)?,
+        })
+    }
+
+    fn parse_effect_fn_decl(
+        &self,
+        visibility: Visibility,
+        top_start: usize,
+        decl_start: usize,
+        end: usize,
+    ) -> Option<SurfaceDecl> {
+        let fn_index =
+            self.find_significant_token(decl_start + 1, end, |kind| kind == TokenKind::KeywordFn)?;
+        let name_index = self.next_significant_token(fn_index + 1, end)?;
+        let name = self.identifier_name_at(name_index)?;
+        let return_type = self
+            .find_significant_token(name_index + 1, end, |kind| kind == TokenKind::OperatorArrow)
+            .and_then(|arrow| self.parse_type_name(arrow + 1, end));
+
+        Some(SurfaceDecl::EffectFn {
+            visibility,
+            name,
+            name_span: self.byte_span(name_index)?,
+            return_type,
+            span: self.declaration_span(top_start, end)?,
+        })
+    }
+
+    fn parse_type_after_colon(&self, start: usize, end: usize) -> Option<TypeRef> {
+        self.find_significant_token(start, end, |kind| kind == TokenKind::PunctuationColon)
+            .and_then(|colon| self.parse_type_name(colon + 1, end))
+    }
+
+    fn parse_type_name(&self, start: usize, end: usize) -> Option<TypeRef> {
+        let type_index = self.next_significant_token(start, end)?;
+        match self.kind_at(type_index) {
+            Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower) => Some(TypeRef::Named {
+                name: self.tokens.get(type_index)?.raw.clone(),
+                span: self.byte_span(type_index)?,
+            }),
+            _ => None,
+        }
+    }
+
+    fn identifier_name_at(&self, index: usize) -> Option<String> {
+        match self.kind_at(index) {
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper) => {
+                Some(self.tokens.get(index)?.raw.clone())
+            }
+            _ => None,
+        }
+    }
+
+    fn declaration_span(&self, start: usize, end: usize) -> Option<ByteSpan> {
+        let start = self.tokens.get(start)?.start;
+        let end = self
+            .previous_significant_token(end)
+            .and_then(|index| self.tokens.get(index))
+            .map(|token| token.end)
+            .unwrap_or(start);
+        Some(ByteSpan { start, end })
+    }
+
+    fn byte_span(&self, index: usize) -> Option<ByteSpan> {
+        let token = self.tokens.get(index)?;
+        Some(ByteSpan {
+            start: token.start,
+            end: token.end,
+        })
+    }
+
+    fn find_significant_token(
+        &self,
+        start: usize,
+        end: usize,
+        predicate: impl Fn(TokenKind) -> bool,
+    ) -> Option<usize> {
+        (start..end).find(|index| self.kind_at(*index).is_some_and(&predicate))
+    }
+
+    fn next_significant_token(&self, start: usize, end: usize) -> Option<usize> {
+        (start..end).find(|index| {
+            self.kind_at(*index).is_some_and(|kind| {
+                !matches!(
+                    kind,
+                    TokenKind::TriviaComment | TokenKind::TriviaNewline | TokenKind::TriviaSpace
+                )
+            })
+        })
+    }
+
+    fn previous_significant_token(&self, before: usize) -> Option<usize> {
+        (0..before).rev().find(|index| {
+            self.kind_at(*index).is_some_and(|kind| {
+                !matches!(
+                    kind,
+                    TokenKind::TriviaComment | TokenKind::TriviaNewline | TokenKind::TriviaSpace
+                )
+            })
+        })
+    }
+
+    fn kind_at(&self, index: usize) -> Option<TokenKind> {
+        self.tokens.get(index).map(|token| token.kind)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -103,5 +318,75 @@ mod tests {
         assert_eq!(json["kind"], "effectFn");
         assert_eq!(json["visibility"], "private");
         assert_eq!(json["returnType"]["name"], "Unit");
+    }
+
+    #[test]
+    fn parses_public_let_surface_ast() {
+        let module = parse_surface_ast("main.ssrg", "pub let answer: Int = 42\n");
+
+        assert_eq!(module.schema, 1);
+        assert_eq!(module.source, "main.ssrg");
+        assert_eq!(
+            module.declarations,
+            vec![SurfaceDecl::Let {
+                visibility: Visibility::Public,
+                name: "answer".to_owned(),
+                name_span: ByteSpan { start: 8, end: 14 },
+                type_ref: Some(TypeRef::Named {
+                    name: "Int".to_owned(),
+                    span: ByteSpan { start: 16, end: 19 },
+                }),
+                span: ByteSpan { start: 0, end: 24 },
+            }]
+        );
+    }
+
+    #[test]
+    fn parses_multiple_lets_with_visibility_only() {
+        let module = parse_surface_ast("main.ssrg", "let first = 1\npub let second = 2\n");
+
+        assert_eq!(module.declarations.len(), 2);
+        assert_eq!(
+            module.declarations[0],
+            SurfaceDecl::Let {
+                visibility: Visibility::Private,
+                name: "first".to_owned(),
+                name_span: ByteSpan { start: 4, end: 9 },
+                type_ref: None,
+                span: ByteSpan { start: 0, end: 13 },
+            }
+        );
+        assert_eq!(
+            module.declarations[1],
+            SurfaceDecl::Let {
+                visibility: Visibility::Public,
+                name: "second".to_owned(),
+                name_span: ByteSpan { start: 22, end: 28 },
+                type_ref: None,
+                span: ByteSpan { start: 14, end: 32 },
+            }
+        );
+    }
+
+    #[test]
+    fn parses_effect_do_surface_decl() {
+        let module = parse_surface_ast(
+            "main.ssrg",
+            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    value <- console.readLine ()\n  }\n",
+        );
+
+        assert_eq!(
+            module.declarations,
+            vec![SurfaceDecl::EffectFn {
+                visibility: Visibility::Public,
+                name: "main".to_owned(),
+                name_span: ByteSpan { start: 14, end: 18 },
+                return_type: Some(TypeRef::Named {
+                    name: "Unit".to_owned(),
+                    span: ByteSpan { start: 22, end: 26 },
+                }),
+                span: ByteSpan { start: 0, end: 104 },
+            }]
+        );
     }
 }
