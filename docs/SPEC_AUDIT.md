@@ -360,6 +360,10 @@ emissionはまだ`stage-schema-1/effect-main`側の手書きcontractに留めて
 `schema-1/multiple-lets`では、module内の複数top-level declarationをLosslessCstで分離するcontractを追加しました。
 private `let`はmodule interfaceへ出さず、public `let`だけをexportへ載せます。
 
+Rust producerはSurfaceAstから浅いModuleInterfaceを生成し、`schema-1/basic`、`effect-do`、`multiple-lets`の
+`interface.json`と比較するようになりました。現段階ではrelative import、operator export、instance headは
+`interface-schema-1/rich`の手書きcontractに留め、shallow frontend producerの対象外です。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。
