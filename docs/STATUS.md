@@ -69,6 +69,8 @@ parse、型検査、実行はまだ保証しません。
 - TokenStream conformance: schema-1の4件とtoken-schema-1の4件
 - SurfaceAst conformance: schema-1の3件
 - ModuleInterface conformance: schema-1の3件
+- Wave 0の次のcrate境界: ModuleInterface conformance後は`seseragi-semantics`を導入し、
+  型推論の前段としてModuleInterfaceから浅いResolvedAstを生成する。
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
