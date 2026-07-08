@@ -61,6 +61,9 @@ fn check_runtime_abi_feature(
         .get("kind")
         .and_then(|value| value.as_str())
         .ok_or_else(|| format!("runtime ABI feature {id} kind must be a string"))?;
+    if !matches!(kind, "value-representation" | "runtime-helper") {
+        return Err(format!("runtime ABI feature {id} kind is not supported"));
+    }
     feature
         .get("typescript")
         .and_then(|value| value.as_str())
