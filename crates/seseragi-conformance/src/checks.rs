@@ -225,6 +225,16 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     if !case.join(compiled_module).is_file() {
         return Err("compiled generated-module.json reference is missing".to_owned());
     }
+    let entry_module = run
+        .pointer("/entry/module")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "run.json entry.module is missing".to_owned())?;
+    let compiled_module_name = execution::resolve_compiled_module_name(case, compiled_module)?;
+    if compiled_module_name != entry_module {
+        return Err(format!(
+            "execution entry module mismatch: expected {entry_module}, got {compiled_module_name}"
+        ));
+    }
     let entry_export = run
         .pointer("/entry/export")
         .and_then(|value| value.as_str())

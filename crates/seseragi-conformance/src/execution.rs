@@ -45,6 +45,18 @@ pub(crate) fn resolve_compiled_runtime_requirements(
         .collect()
 }
 
+pub(crate) fn resolve_compiled_module_name(
+    case: &Path,
+    compiled_module: &str,
+) -> Result<String, String> {
+    let (_, compiled_module) = read_compiled_module(case, compiled_module)?;
+    compiled_module
+        .pointer("/module")
+        .and_then(|value| value.as_str())
+        .map(str::to_owned)
+        .ok_or_else(|| "compiled generated-module.json module is missing".to_owned())
+}
+
 pub(crate) fn resolve_compiled_exports(
     case: &Path,
     compiled_module: &str,
