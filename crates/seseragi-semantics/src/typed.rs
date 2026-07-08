@@ -13,30 +13,33 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         .exports
         .into_iter()
         .filter(|export| export.namespace == "value")
-        .map(|export| TypedDecl::Let {
-            symbol: export.symbol,
-            visibility: export.visibility,
-            origin: export.declaration,
-            scheme: TypedScheme {
-                type_parameters: export.scheme.type_parameters,
-                constraints: export
-                    .scheme
-                    .constraints
-                    .into_iter()
-                    .map(|constraint| TypedConstraint {
-                        name: constraint.name,
-                    })
-                    .collect(),
-                type_ref: typed_type_from_interface_type(export.scheme.type_ref),
-            },
-            value: TypedExpr::Integer {
-                value: "0".to_owned(),
-                type_ref: TypedType::Named {
-                    name: "Int".to_owned(),
-                    arguments: Vec::new(),
-                },
+        .filter_map(|export| {
+            let type_ref = typed_type_from_interface_type(export.scheme.type_ref)?;
+            Some(TypedDecl::Let {
+                symbol: export.symbol,
+                visibility: export.visibility,
                 origin: export.declaration,
-            },
+                scheme: TypedScheme {
+                    type_parameters: export.scheme.type_parameters,
+                    constraints: export
+                        .scheme
+                        .constraints
+                        .into_iter()
+                        .map(|constraint| TypedConstraint {
+                            name: constraint.name,
+                        })
+                        .collect(),
+                    type_ref,
+                },
+                value: TypedExpr::Integer {
+                    value: "0".to_owned(),
+                    type_ref: TypedType::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    origin: export.declaration,
+                },
+            })
         })
         .collect();
 
@@ -258,5 +261,16 @@ mod tests {
                 },
             }]
         );
+    }
+
+    #[test]
+    fn type_module_interface_ignores_non_value_exports() {
+        let interface = seseragi_syntax::parse_module_interface(
+            "artifact/rich/main.ssrg",
+            include_str!("../../../examples/spec/artifacts/interface-schema-1/rich/main.ssrg"),
+        );
+        let typed = type_module_interface(interface);
+
+        assert!(typed.declarations.is_empty());
     }
 }
