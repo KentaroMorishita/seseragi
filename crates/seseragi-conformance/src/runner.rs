@@ -165,7 +165,7 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         }
     }
     for case in &generated_module_cases {
-        if let Err(error) = check_generated_module(case) {
+        if let Err(error) = check_generated_module(&root, case) {
             failed += 1;
             eprintln!("{}: {error}", case.display());
         }
