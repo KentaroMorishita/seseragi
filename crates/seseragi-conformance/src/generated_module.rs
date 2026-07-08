@@ -54,13 +54,20 @@ fn check_generated_exports(
         let export = export
             .as_str()
             .ok_or_else(|| "generated module export name must be a string".to_owned())?;
-        if !typescript.contains(&format!("export const {export}")) {
+        if !typescript_exports_name(typescript, export) {
             return Err(format!(
                 "generated module export {export} is missing from TypeScript output"
             ));
         }
     }
     Ok(())
+}
+
+fn typescript_exports_name(typescript: &str, name: &str) -> bool {
+    typescript.contains(&format!("export const {name}"))
+        || typescript.contains(&format!("export function {name}"))
+        || typescript.contains(&format!("export {{ {name}"))
+        || typescript.contains(&format!(", {name}"))
 }
 
 fn check_generated_runtime_requirements(
