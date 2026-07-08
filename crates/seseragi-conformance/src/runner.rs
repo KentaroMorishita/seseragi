@@ -1,7 +1,7 @@
 use crate::checks::{
-    check_core_ir_json, check_cst, check_execution_case, check_generated_module,
-    check_interface_json, check_resolved_ast_json, check_surface_ast, check_tokens,
-    check_typed_hir_json, check_typescript_ir_json,
+    check_core_ir_json, check_cst, check_diagnostics_json, check_execution_case,
+    check_generated_module, check_interface_json, check_resolved_ast_json, check_surface_ast,
+    check_tokens, check_typed_hir_json, check_typescript_ir_json,
 };
 use crate::discovery::{
     discover_artifact_cases, discover_cases, discover_interface_cases, discover_resolved_ast_cases,
@@ -15,6 +15,9 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     token_cases.extend(discover_cases(&artifacts.join("token-schema-1")));
     let token_total = token_cases.len();
     let cst_total = frontend_cases.len();
+    let diagnostics_cases =
+        discover_artifact_cases(&artifacts.join("schema-1"), "diagnostics.json");
+    let diagnostics_total = diagnostics_cases.len();
     let surface_ast_total = frontend_cases
         .iter()
         .filter(|case| case.join("surface-ast.json").is_file())
@@ -41,6 +44,10 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         }
         println!("LosslessCst fixtures:");
         for case in &frontend_cases {
+            println!("{}", case.display());
+        }
+        println!("Diagnostics fixtures: {diagnostics_total}");
+        for case in &diagnostics_cases {
             println!("{}", case.display());
         }
         println!("SurfaceAst fixtures:");
@@ -97,6 +104,12 @@ pub(crate) fn run(root: PathBuf, list: bool) {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &diagnostics_cases {
+        if let Err(error) = check_diagnostics_json(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
     for case in &interface_cases {
         if let Err(error) = check_interface_json(case) {
             failed += 1;
@@ -145,6 +158,7 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     }
     println!("TokenStream fixtures: {token_total} passed");
     println!("LosslessCst fixtures: {cst_total} passed");
+    println!("Diagnostics fixtures: {diagnostics_total} passed");
     println!("SurfaceAst fixtures: {surface_ast_total} passed");
     println!("ModuleInterface fixtures: {interface_total} passed");
     println!("ResolvedAst fixtures: {resolved_ast_total} passed");

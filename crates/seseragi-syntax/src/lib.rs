@@ -1,4 +1,5 @@
 mod cst;
+mod diagnostics;
 mod interface;
 mod lexer;
 mod source;
@@ -6,6 +7,10 @@ mod surface;
 mod token;
 
 pub use cst::{parse_cst, CstArtifact, CstError, CstMissing, CstNode};
+pub use diagnostics::{
+    parse_diagnostics, ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticEdit, DiagnosticFix,
+    DiagnosticSeverity, RelatedDiagnostic,
+};
 pub use interface::{
     parse_module_interface, InterfaceConstraint, InterfaceDependency, InterfaceExport,
     InterfaceImport, InterfaceInstance, InterfaceOperator, InterfaceScheme, InterfaceType,

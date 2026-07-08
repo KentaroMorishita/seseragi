@@ -1,7 +1,8 @@
 use crate::execution;
 use crate::pipeline::{
-    emit_generated_module, interface_source_name, parse_core_ir_json, parse_module_interface_json,
-    parse_resolved_ast_json, parse_typed_hir_json, parse_typescript_ir_json,
+    emit_generated_module, interface_source_name, parse_core_ir_json, parse_diagnostics_json,
+    parse_module_interface_json, parse_resolved_ast_json, parse_typed_hir_json,
+    parse_typescript_ir_json,
 };
 use std::fs;
 use std::path::Path;
@@ -41,6 +42,23 @@ pub(crate) fn check_interface_json(case: &Path) -> Result<(), String> {
 
     if actual_value != expected_value {
         return Err("ModuleInterface artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
+pub(crate) fn check_diagnostics_json(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("diagnostics.json");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected Diagnostics: {error}"))?;
+    let actual_value = parse_diagnostics_json("main.ssrg", &source)?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected Diagnostics: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("Diagnostics artifact mismatch".to_owned());
     }
     Ok(())
 }
