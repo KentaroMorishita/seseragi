@@ -160,7 +160,10 @@ fn parses_rich_interface_surface_declarations() {
         module.imports,
         vec![SurfaceImport {
             specifier: "./dep".to_owned(),
-            names: vec!["identity".to_owned()],
+            items: vec![SurfaceImportItem {
+                namespace: "value".to_owned(),
+                name: "identity".to_owned(),
+            }],
             span: ByteSpan { start: 0, end: 32 },
         }]
     );
@@ -289,5 +292,31 @@ fn parses_operator_type_parameters() {
             },
             span: ByteSpan { start: 0, end: 64 },
         }
+    );
+}
+
+#[test]
+fn parses_operator_import_items() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "import { identity, operator <+> } from \"./dep\"\n",
+    );
+
+    assert_eq!(
+        module.imports,
+        vec![SurfaceImport {
+            specifier: "./dep".to_owned(),
+            items: vec![
+                SurfaceImportItem {
+                    namespace: "value".to_owned(),
+                    name: "identity".to_owned(),
+                },
+                SurfaceImportItem {
+                    namespace: "operator".to_owned(),
+                    name: "<+>".to_owned(),
+                },
+            ],
+            span: ByteSpan { start: 0, end: 46 },
+        }]
     );
 }

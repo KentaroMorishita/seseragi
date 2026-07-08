@@ -14,8 +14,15 @@ pub struct SurfaceModule {
 #[serde(rename_all = "camelCase")]
 pub struct SurfaceImport {
     pub specifier: String,
-    pub names: Vec<String>,
+    pub items: Vec<SurfaceImportItem>,
     pub span: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceImportItem {
+    pub namespace: String,
+    pub name: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

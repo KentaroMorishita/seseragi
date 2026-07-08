@@ -21,7 +21,7 @@ pub use interface::{
 pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use surface::{
-    parse_surface_ast, ByteSpan, SurfaceDecl, SurfaceImport, SurfaceModule, SurfaceParameter,
-    TypeRef, Visibility,
+    parse_surface_ast, ByteSpan, SurfaceDecl, SurfaceImport, SurfaceImportItem, SurfaceModule,
+    SurfaceParameter, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

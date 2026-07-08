@@ -147,12 +147,15 @@ fn dependency_from_surface_import(
         module: module.clone(),
         origin: import.span,
         imports: import
-            .names
+            .items
             .into_iter()
-            .map(|name| InterfaceImport {
-                namespace: "value".to_owned(),
-                symbol: format!("{module}::{name}"),
-                name,
+            .map(|item| InterfaceImport {
+                symbol: match item.namespace.as_str() {
+                    "operator" => format!("{module}::operator({})", item.name),
+                    _ => format!("{module}::{}", item.name),
+                },
+                namespace: item.namespace,
+                name: item.name,
             })
             .collect(),
     }

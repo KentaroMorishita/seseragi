@@ -1,6 +1,7 @@
 use crate::lexer::lex;
 pub use crate::surface_model::{
-    ByteSpan, SurfaceDecl, SurfaceImport, SurfaceModule, SurfaceParameter, TypeRef, Visibility,
+    ByteSpan, SurfaceDecl, SurfaceImport, SurfaceImportItem, SurfaceModule, SurfaceParameter,
+    TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 
@@ -143,23 +144,48 @@ impl SurfaceParser<'_> {
         if self.kind_at(specifier_index) != Some(TokenKind::LiteralString) {
             return None;
         }
-        let names = (first + 1..from_index)
-            .filter_map(|index| {
-                if self.kind_at(index) == Some(TokenKind::IdentifierLower) {
-                    self.tokens.get(index).map(|token| token.raw.clone())
-                } else {
-                    None
-                }
-            })
-            .collect::<Vec<_>>();
+        let items = self.parse_import_items(first + 1, from_index);
         Some(SurfaceImport {
             specifier: unquote(self.tokens.get(specifier_index)?.raw.as_str()),
-            names,
+            items,
             span: ByteSpan {
                 start: self.tokens.get(first)?.start,
                 end: self.tokens.get(specifier_index)?.end,
             },
         })
+    }
+
+    fn parse_import_items(&self, start: usize, end: usize) -> Vec<SurfaceImportItem> {
+        let mut items = Vec::new();
+        let mut cursor = start;
+        while let Some(index) = self.next_significant_token(cursor, end) {
+            if self.raw_at(index) == Some("operator") {
+                let Some(operator_start) = self.next_significant_token(index + 1, end) else {
+                    break;
+                };
+                if let Some((name, after_operator)) = self.operator_spelling(operator_start) {
+                    items.push(SurfaceImportItem {
+                        namespace: "operator".to_owned(),
+                        name,
+                    });
+                    cursor = after_operator;
+                    continue;
+                }
+            }
+            if matches!(
+                self.kind_at(index),
+                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+            ) {
+                if let Some(token) = self.tokens.get(index) {
+                    items.push(SurfaceImportItem {
+                        namespace: "value".to_owned(),
+                        name: token.raw.clone(),
+                    });
+                }
+            }
+            cursor = index + 1;
+        }
+        items
     }
 
     fn parse_let_decl(
