@@ -22,6 +22,8 @@ pub(crate) fn check_typescript_runtime_package(
     if package.get("name").and_then(|value| value.as_str()) != Some("@seseragi/runtime") {
         return Err("TypeScript runtime package name must be @seseragi/runtime".to_owned());
     }
+    package_export_source(&package, ".")
+        .ok_or_else(|| "TypeScript runtime package root export is missing".to_owned())?;
 
     let features = abi
         .get("features")
