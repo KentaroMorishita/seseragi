@@ -89,12 +89,12 @@ fn parses_public_effect_fn_interface() {
 fn parses_public_pure_fn_interface() {
     let interface = parse_module_interface(
         "artifact/pure-function/main.ssrg",
-        "pub fn add x: Int -> y: Int -> Int = x + y\n",
+        "pub fn member<A> target: A -> values: List<A> -> Bool\nwhere Eq<A> =\n  contains target values\n",
     );
     let function_export = interface
         .exports
         .iter()
-        .find(|export| export.name == "add")
+        .find(|export| export.name == "member")
         .expect("function export exists");
 
     assert_eq!(
@@ -102,6 +102,8 @@ fn parses_public_pure_fn_interface() {
         Some("function".to_owned())
     );
     assert_eq!(function_export.namespace, "value");
+    assert_eq!(function_export.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(function_export.scheme.constraints[0].name, "Eq");
 }
 
 #[test]

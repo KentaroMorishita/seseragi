@@ -92,6 +92,28 @@ fn parses_pure_function_surface_decl() {
 }
 
 #[test]
+fn parses_pure_function_type_parameters_and_constraints() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub fn member<A> target: A -> values: List<A> -> Bool\nwhere Eq<A> =\n  contains target values\n",
+    );
+
+    let SurfaceDecl::Fn {
+        type_parameters,
+        constraints,
+        span,
+        ..
+    } = &module.declarations[0]
+    else {
+        panic!("expected function declaration");
+    };
+
+    assert_eq!(type_parameters, &vec!["A".to_owned()]);
+    assert_eq!(constraints, &vec!["Eq".to_owned()]);
+    assert_eq!(*span, ByteSpan { start: 0, end: 92 });
+}
+
+#[test]
 fn parses_public_let_surface_ast() {
     let module = parse_surface_ast("main.ssrg", "pub let answer: Int = 42\n");
 

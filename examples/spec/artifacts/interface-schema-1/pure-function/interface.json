@@ -5,22 +5,26 @@
   "dependencies": [],
   "exports": [
     {
-      "symbol": "artifact/pure-function::add",
+      "symbol": "artifact/pure-function::member",
       "namespace": "value",
-      "name": "add",
+      "name": "member",
       "visibility": "public",
       "declarationKind": "function",
-      "declaration": { "start": 0, "end": 42 },
+      "declaration": { "start": 0, "end": 92 },
       "scheme": {
-        "typeParameters": [],
-        "constraints": [],
+        "typeParameters": ["A"],
+        "constraints": [{ "name": "Eq" }],
         "type": {
           "kind": "function",
-          "parameter": { "kind": "named", "name": "Int", "arguments": [] },
+          "parameter": { "kind": "named", "name": "A", "arguments": [] },
           "result": {
             "kind": "function",
-            "parameter": { "kind": "named", "name": "Int", "arguments": [] },
-            "result": { "kind": "named", "name": "Int", "arguments": [] }
+            "parameter": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [{ "kind": "named", "name": "A", "arguments": [] }]
+            },
+            "result": { "kind": "named", "name": "Bool", "arguments": [] }
           }
         }
       }

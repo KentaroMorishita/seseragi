@@ -1,1 +1,3 @@
-pub fn add x: Int -> y: Int -> Int = x + y
+pub fn member<A> target: A -> values: List<A> -> Bool
+where Eq<A> =
+  contains target values

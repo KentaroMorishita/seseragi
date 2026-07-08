@@ -5,34 +5,43 @@
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "add",
-      "nameSpan": { "start": 7, "end": 10 },
+      "name": "member",
+      "nameSpan": { "start": 7, "end": 13 },
+      "typeParameters": ["A"],
       "parameters": [
         {
-          "name": "x",
-          "nameSpan": { "start": 11, "end": 12 },
+          "name": "target",
+          "nameSpan": { "start": 17, "end": 23 },
           "type": {
             "kind": "named",
-            "name": "Int",
-            "span": { "start": 14, "end": 17 }
+            "name": "A",
+            "span": { "start": 25, "end": 26 }
           }
         },
         {
-          "name": "y",
-          "nameSpan": { "start": 21, "end": 22 },
+          "name": "values",
+          "nameSpan": { "start": 30, "end": 36 },
           "type": {
             "kind": "named",
-            "name": "Int",
-            "span": { "start": 24, "end": 27 }
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": { "start": 43, "end": 44 }
+              }
+            ],
+            "span": { "start": 38, "end": 45 }
           }
         }
       ],
       "returnType": {
         "kind": "named",
-        "name": "Int",
-        "span": { "start": 31, "end": 34 }
+        "name": "Bool",
+        "span": { "start": 49, "end": 53 }
       },
-      "span": { "start": 0, "end": 42 }
+      "constraints": ["Eq"],
+      "span": { "start": 0, "end": 92 }
     }
   ]
 }
