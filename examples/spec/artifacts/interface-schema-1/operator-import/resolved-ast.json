@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/operator-import",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "answer",
+      "visibility": "public",
+      "declaration": { "start": 48, "end": 72 }
+    }
+  ]
+}

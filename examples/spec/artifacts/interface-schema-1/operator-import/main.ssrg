@@ -1,0 +1,3 @@
+import { identity, operator <+> } from "./dep"
+
+pub let answer: Int = 42

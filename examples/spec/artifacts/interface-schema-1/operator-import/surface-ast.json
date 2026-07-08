@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "./dep",
+      "items": [
+        { "namespace": "value", "name": "identity" },
+        { "namespace": "operator", "name": "<+>" }
+      ],
+      "span": { "start": 0, "end": 46 }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "answer",
+      "nameSpan": { "start": 56, "end": 62 },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": { "start": 64, "end": 67 }
+      },
+      "span": { "start": 48, "end": 72 }
+    }
+  ]
+}

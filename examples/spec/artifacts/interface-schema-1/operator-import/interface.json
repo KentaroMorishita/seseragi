@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "module": "artifact/operator-import",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./dep",
+      "module": "artifact/operator-import/dep",
+      "origin": { "start": 0, "end": 46 },
+      "imports": [
+        {
+          "namespace": "value",
+          "symbol": "artifact/operator-import/dep::identity",
+          "name": "identity"
+        },
+        {
+          "namespace": "operator",
+          "symbol": "artifact/operator-import/dep::operator(<+>)",
+          "name": "<+>"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/operator-import::answer",
+      "namespace": "value",
+      "name": "answer",
+      "visibility": "public",
+      "declaration": { "start": 48, "end": 72 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
