@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::Path;
+use std::process::Command;
 
 pub(crate) fn check_typescript_runtime_package(
     root: &Path,
@@ -34,6 +35,7 @@ pub(crate) fn check_typescript_runtime_package(
             check_typescript_runtime_helper(root, &package, feature)?;
         }
     }
+    check_typescript_runtime_package_typecheck(root)?;
     Ok(())
 }
 
@@ -101,4 +103,23 @@ fn source_exports_name(source: &str, name: &str) -> bool {
         || source.contains(&format!("export const {name}"))
         || source.contains(&format!("export {{ {name}"))
         || source.contains(&format!(", {name}"))
+}
+
+fn check_typescript_runtime_package_typecheck(root: &Path) -> Result<(), String> {
+    let output = Command::new("bunx")
+        .arg("tsc")
+        .arg("-p")
+        .arg("runtime/ts/tsconfig.json")
+        .arg("--noEmit")
+        .current_dir(root)
+        .output()
+        .map_err(|error| format!("failed to type-check TypeScript runtime package: {error}"))?;
+    if output.status.success() {
+        return Ok(());
+    }
+    Err(format!(
+        "TypeScript runtime package type-check failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    ))
 }
