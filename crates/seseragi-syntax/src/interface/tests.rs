@@ -201,6 +201,33 @@ fn parses_alias_declarations_in_interface() {
 }
 
 #[test]
+fn parses_generic_newtype_interface() {
+    let interface = parse_module_interface(
+        "artifact/generic-newtype/main.ssrg",
+        "pub newtype Box<A> = A\n",
+    );
+
+    assert_eq!(interface.exports.len(), 1);
+    let newtype_export = &interface.exports[0];
+    assert_eq!(newtype_export.name, "Box");
+    assert_eq!(newtype_export.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(
+        newtype_export.scheme.type_ref,
+        InterfaceType::TypeConstructor {
+            name: "Box".to_owned(),
+            arity: 1,
+        }
+    );
+    assert_eq!(
+        newtype_export.representation,
+        Some(InterfaceType::Named {
+            name: "A".to_owned(),
+            arguments: Vec::new(),
+        })
+    );
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

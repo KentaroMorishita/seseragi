@@ -1,0 +1,1 @@
+pub newtype Box<A> = A

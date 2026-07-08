@@ -69,6 +69,7 @@ pub(super) fn export_from_surface_decl(
         SurfaceDecl::Newtype {
             visibility,
             name,
+            type_parameters,
             representation,
             span,
             ..
@@ -80,11 +81,11 @@ pub(super) fn export_from_surface_decl(
             declaration_kind: Some("newtype".to_owned()),
             declaration: *span,
             scheme: InterfaceScheme {
-                type_parameters: Vec::new(),
+                type_parameters: type_parameters.clone(),
                 constraints: Vec::new(),
                 type_ref: InterfaceType::TypeConstructor {
                     name: name.clone(),
-                    arity: 0,
+                    arity: type_parameters.len() as u32,
                 },
             },
             representation: Some(interface_type_from_type_ref(representation)),
