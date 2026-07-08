@@ -220,6 +220,33 @@ fn parses_function_type_references_in_interface() {
 }
 
 #[test]
+fn parses_type_holes_in_partial_instance_heads() {
+    let interface = parse_module_interface(
+        "artifact/partial-instance/main.ssrg",
+        "instance<E> Functor<Either<E, _>> {\n}\n",
+    );
+
+    let json = serde_json::to_value(&interface).expect("interface serializes");
+    assert_eq!(
+        json["instances"][0]["head"],
+        serde_json::json!({
+            "kind": "apply",
+            "constructor": "Functor",
+            "arguments": [
+                {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                        { "kind": "named", "name": "E", "arguments": [] },
+                        { "kind": "hole" }
+                    ]
+                }
+            ],
+        })
+    );
+}
+
+#[test]
 fn parses_operator_type_parameters_in_interface() {
     let interface = parse_module_interface(
         "artifact/generic-operator/main.ssrg",

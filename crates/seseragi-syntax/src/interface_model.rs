@@ -73,6 +73,7 @@ pub enum InterfaceType {
         name: String,
         arguments: Vec<InterfaceType>,
     },
+    Hole,
     TypeConstructor {
         name: String,
         arity: u32,

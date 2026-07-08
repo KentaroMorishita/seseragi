@@ -192,6 +192,7 @@ fn effect_requirements(effect: &TypedEffect) -> Vec<String> {
 fn type_name(type_ref: &TypedType) -> String {
     match type_ref {
         TypedType::Named { name, .. } => name.clone(),
+        TypedType::Hole => "_".to_owned(),
         TypedType::Record { .. } => "Record".to_owned(),
         TypedType::Tuple { .. } => "Tuple".to_owned(),
         TypedType::Function { .. } => "Function".to_owned(),

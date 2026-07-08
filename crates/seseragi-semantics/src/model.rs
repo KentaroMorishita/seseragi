@@ -115,6 +115,7 @@ pub enum TypedType {
         name: String,
         arguments: Vec<TypedType>,
     },
+    Hole,
     Record {
         closed: bool,
         fields: Vec<TypedRecordField>,

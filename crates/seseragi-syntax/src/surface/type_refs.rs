@@ -43,6 +43,14 @@ impl SurfaceParser<'_> {
         if self.kind_at(type_index) == Some(TokenKind::PunctuationParenLeft) {
             return self.parse_parenthesized_type_ref(type_index, end);
         }
+        if self.kind_at(type_index) == Some(TokenKind::Wildcard) {
+            return Some((
+                TypeRef::Hole {
+                    span: self.byte_span(type_index)?,
+                },
+                type_index + 1,
+            ));
+        }
         if !matches!(
             self.kind_at(type_index),
             Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower)
@@ -84,6 +92,7 @@ impl SurfaceParser<'_> {
     fn type_ref_span(&self, type_ref: &TypeRef) -> Option<ByteSpan> {
         match type_ref {
             TypeRef::Named { span, .. }
+            | TypeRef::Hole { span, .. }
             | TypeRef::Record { span, .. }
             | TypeRef::Tuple { span, .. }
             | TypeRef::Function { span, .. } => Some(*span),

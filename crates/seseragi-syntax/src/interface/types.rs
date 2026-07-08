@@ -10,6 +10,7 @@ pub(super) fn interface_type_from_type_ref(type_ref: &TypeRef) -> InterfaceType 
             name: name.clone(),
             arguments: arguments.iter().map(interface_type_from_type_ref).collect(),
         },
+        TypeRef::Hole { .. } => InterfaceType::Hole,
         TypeRef::Record { closed, fields, .. } => InterfaceType::Record {
             closed: *closed,
             fields: fields

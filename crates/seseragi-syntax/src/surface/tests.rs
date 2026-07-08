@@ -721,6 +721,33 @@ fn parses_function_type_references_in_surface_ast() {
 }
 
 #[test]
+fn parses_type_holes_in_partial_type_constructors() {
+    let module = parse_surface_ast("main.ssrg", "instance<E> Functor<Either<E, _>> {\n}\n");
+
+    let SurfaceDecl::Instance { arguments, .. } = &module.declarations[0] else {
+        panic!("expected instance declaration");
+    };
+
+    assert_eq!(
+        arguments,
+        &vec![TypeRef::Named {
+            name: "Either".to_owned(),
+            arguments: vec![
+                TypeRef::Named {
+                    name: "E".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 27, end: 28 },
+                },
+                TypeRef::Hole {
+                    span: ByteSpan { start: 30, end: 31 },
+                },
+            ],
+            span: ByteSpan { start: 20, end: 32 },
+        }]
+    );
+}
+
+#[test]
 fn parses_operator_constraints() {
     let module = parse_surface_ast(
         "main.ssrg",

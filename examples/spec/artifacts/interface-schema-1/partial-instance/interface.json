@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/partial-instance",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Functor",
+      "typeParameters": ["E"],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              { "kind": "named", "name": "E", "arguments": [] },
+              { "kind": "hole" }
+            ]
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": { "start": 0, "end": 37 }
+    }
+  ]
+}

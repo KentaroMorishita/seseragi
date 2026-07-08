@@ -207,6 +207,9 @@ pub enum TypeRef {
         arguments: Vec<TypeRef>,
         span: ByteSpan,
     },
+    Hole {
+        span: ByteSpan,
+    },
     Record {
         closed: bool,
         fields: Vec<TypeRecordField>,

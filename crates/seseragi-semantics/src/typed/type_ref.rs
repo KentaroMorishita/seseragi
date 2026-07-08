@@ -10,6 +10,7 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<
                 .map(typed_type_from_interface_type)
                 .collect::<Option<Vec<_>>>()?,
         }),
+        InterfaceType::Hole => Some(TypedType::Hole),
         InterfaceType::Record { closed, fields } => Some(TypedType::Record {
             closed,
             fields: fields
@@ -45,6 +46,7 @@ pub(crate) fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
             name: name.clone(),
             arguments: arguments.iter().map(typed_type_from_type_ref).collect(),
         },
+        TypeRef::Hole { .. } => TypedType::Hole,
         TypeRef::Record { closed, fields, .. } => TypedType::Record {
             closed: *closed,
             fields: fields

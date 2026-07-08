@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "instance",
+      "typeParameters": ["E"],
+      "traitName": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "span": { "start": 27, "end": 28 }
+            },
+            {
+              "kind": "hole",
+              "span": { "start": 30, "end": 31 }
+            }
+          ],
+          "span": { "start": 20, "end": 32 }
+        }
+      ],
+      "span": { "start": 0, "end": 37 }
+    }
+  ]
+}
