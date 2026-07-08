@@ -112,6 +112,7 @@ fn export_from_surface_decl(
         }),
         SurfaceDecl::Operator {
             visibility,
+            type_parameters,
             spelling,
             parameters,
             return_type,
@@ -125,7 +126,7 @@ fn export_from_surface_decl(
             declaration_kind: Some("custom-operator".to_owned()),
             declaration: *span,
             scheme: InterfaceScheme {
-                type_parameters: Vec::new(),
+                type_parameters: type_parameters.clone(),
                 constraints: Vec::new(),
                 type_ref: operator_interface_type(parameters, return_type),
             },
@@ -373,6 +374,24 @@ mod tests {
                 ],
             })
         );
+    }
+
+    #[test]
+    fn parses_operator_type_parameters_in_interface() {
+        let interface = parse_module_interface(
+            "artifact/generic-operator/main.ssrg",
+            "pub operator<A> infixr 5 <+>\n  left: A -> right: A -> A =\n  left\n",
+        );
+        let operator_export = interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "operator")
+            .expect("operator export exists");
+
+        assert_eq!(operator_export.name, "<+>");
+        assert_eq!(operator_export.scheme.type_parameters, vec!["A".to_owned()]);
+        assert_eq!(interface.operators[0].fixity, "infixr");
+        assert_eq!(interface.operators[0].precedence, 5);
     }
 
     #[test]

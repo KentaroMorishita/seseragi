@@ -236,7 +236,9 @@ impl SurfaceParser<'_> {
         decl_start: usize,
         end: usize,
     ) -> Option<SurfaceDecl> {
-        let fixity_index = self.next_significant_token(decl_start + 1, end)?;
+        let (type_parameters, after_type_parameters) =
+            self.parse_optional_type_parameters(decl_start + 1, end);
+        let fixity_index = self.next_significant_token(after_type_parameters, end)?;
         let precedence_index = self.next_significant_token(fixity_index + 1, end)?;
         let precedence = self.tokens.get(precedence_index)?.raw.parse::<u32>().ok()?;
         let spelling_start = self.next_significant_token(precedence_index + 1, end)?;
@@ -248,6 +250,7 @@ impl SurfaceParser<'_> {
 
         Some(SurfaceDecl::Operator {
             visibility,
+            type_parameters,
             fixity: self.tokens.get(fixity_index)?.raw.clone(),
             precedence,
             spelling,
@@ -316,6 +319,40 @@ impl SurfaceParser<'_> {
             {
                 return Some((parameters, return_type));
             }
+        }
+    }
+
+    fn parse_optional_type_parameters(&self, start: usize, end: usize) -> (Vec<String>, usize) {
+        let Some(open_angle) = self.next_significant_token(start, end) else {
+            return (Vec::new(), start);
+        };
+        if !self.is_angle_left(open_angle) {
+            return (Vec::new(), start);
+        }
+
+        let mut parameters = Vec::new();
+        let mut cursor = open_angle + 1;
+        loop {
+            let Some(next) = self.next_significant_token(cursor, end) else {
+                return (Vec::new(), start);
+            };
+            if self.is_angle_right(next) {
+                return (parameters, next + 1);
+            }
+            let Some(name) = self.identifier_name_at(next) else {
+                return (Vec::new(), start);
+            };
+            parameters.push(name);
+            let Some(separator) = self.next_significant_token(next + 1, end) else {
+                return (Vec::new(), start);
+            };
+            if self.is_angle_right(separator) {
+                return (parameters, separator + 1);
+            }
+            if self.kind_at(separator) != Some(TokenKind::PunctuationComma) {
+                return (Vec::new(), start);
+            }
+            cursor = separator + 1;
         }
     }
 

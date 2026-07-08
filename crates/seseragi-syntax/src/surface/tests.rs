@@ -183,6 +183,7 @@ fn parses_rich_interface_surface_declarations() {
         module.declarations[1],
         SurfaceDecl::Operator {
             visibility: Visibility::Public,
+            type_parameters: Vec::new(),
             fixity: "infixl".to_owned(),
             precedence: 4,
             spelling: "<+>".to_owned(),
@@ -242,6 +243,51 @@ fn parses_rich_interface_surface_declarations() {
                 start: 143,
                 end: 210
             },
+        }
+    );
+}
+
+#[test]
+fn parses_operator_type_parameters() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub operator<A> infixr 5 <+>\n  left: A -> right: A -> A =\n  left\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Operator {
+            visibility: Visibility::Public,
+            type_parameters: vec!["A".to_owned()],
+            fixity: "infixr".to_owned(),
+            precedence: 5,
+            spelling: "<+>".to_owned(),
+            parameters: vec![
+                SurfaceParameter {
+                    name: "left".to_owned(),
+                    name_span: ByteSpan { start: 31, end: 35 },
+                    type_ref: TypeRef::Named {
+                        name: "A".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 37, end: 38 },
+                    },
+                },
+                SurfaceParameter {
+                    name: "right".to_owned(),
+                    name_span: ByteSpan { start: 42, end: 47 },
+                    type_ref: TypeRef::Named {
+                        name: "A".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 49, end: 50 },
+                    },
+                },
+            ],
+            return_type: TypeRef::Named {
+                name: "A".to_owned(),
+                arguments: Vec::new(),
+                span: ByteSpan { start: 54, end: 55 },
+            },
+            span: ByteSpan { start: 0, end: 64 },
         }
     );
 }

@@ -48,6 +48,8 @@ pub enum SurfaceDecl {
     },
     Operator {
         visibility: Visibility,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
         fixity: String,
         precedence: u32,
         spelling: String,
