@@ -19,10 +19,14 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     let diagnostics_cases =
         discover_artifact_cases(&artifacts.join("schema-1"), "diagnostics.json");
     let diagnostics_total = diagnostics_cases.len();
-    let surface_ast_total = frontend_cases
-        .iter()
-        .filter(|case| case.join("surface-ast.json").is_file())
-        .count();
+    let mut surface_ast_cases =
+        discover_artifact_cases(&artifacts.join("schema-1"), "surface-ast.json");
+    surface_ast_cases.extend(discover_artifact_cases(
+        &artifacts.join("interface-schema-1"),
+        "surface-ast.json",
+    ));
+    surface_ast_cases.sort();
+    let surface_ast_total = surface_ast_cases.len();
     let mut interface_cases = discover_interface_cases(&artifacts.join("schema-1"));
     interface_cases.extend(discover_interface_cases(
         &artifacts.join("interface-schema-1"),
@@ -58,10 +62,8 @@ pub(crate) fn run(root: PathBuf, list: bool) {
             println!("{}", case.display());
         }
         println!("SurfaceAst fixtures:");
-        for case in &frontend_cases {
-            if case.join("surface-ast.json").is_file() {
-                println!("{}", case.display());
-            }
+        for case in &surface_ast_cases {
+            println!("{}", case.display());
         }
         println!("ModuleInterface fixtures:");
         for case in &interface_cases {
@@ -110,6 +112,8 @@ pub(crate) fn run(root: PathBuf, list: bool) {
             failed += 1;
             eprintln!("{}: {error}", case.display());
         }
+    }
+    for case in &surface_ast_cases {
         if let Err(error) = check_surface_ast(case) {
             failed += 1;
             eprintln!("{}: {error}", case.display());
