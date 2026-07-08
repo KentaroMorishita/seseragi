@@ -104,6 +104,22 @@ fn expected_trace_stdout(run: &serde_json::Value) -> Result<String, String> {
         .ok_or_else(|| "run.json expected.trace must be an array".to_owned())?;
     let mut stdout = String::new();
     for (index, event) in trace.iter().enumerate() {
+        event
+            .get("service")
+            .and_then(|value| value.as_str())
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| format!("run.json expected.trace[{index}].service is missing"))?;
+        event
+            .get("operation")
+            .and_then(|value| value.as_str())
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| format!("run.json expected.trace[{index}].operation is missing"))?;
+        event
+            .get("arguments")
+            .and_then(|value| value.as_array())
+            .ok_or_else(|| {
+                format!("run.json expected.trace[{index}].arguments must be an array")
+            })?;
         let event_stdout = event
             .get("stdout")
             .and_then(|value| value.as_str())
