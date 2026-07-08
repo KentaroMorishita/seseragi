@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/public-type",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/public-type::Maybe",
+      "namespace": "type",
+      "name": "Maybe",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": { "start": 0, "end": 42 },
+      "scheme": {
+        "typeParameters": ["A"],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Maybe",
+          "arity": 1
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

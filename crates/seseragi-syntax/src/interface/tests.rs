@@ -285,6 +285,47 @@ fn exports_opaque_struct_names_in_interface() {
 }
 
 #[test]
+fn exports_public_type_names_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/public-type/main.ssrg",
+        "pub type Maybe<A> =\n  | Nothing\n  | Just A\n",
+    );
+
+    assert_eq!(interface.exports.len(), 1);
+    let type_export = &interface.exports[0];
+    assert_eq!(type_export.name, "Maybe");
+    assert_eq!(type_export.declaration_kind, Some("type".to_owned()));
+    assert_eq!(type_export.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(
+        type_export.scheme.type_ref,
+        InterfaceType::TypeConstructor {
+            name: "Maybe".to_owned(),
+            arity: 1,
+        }
+    );
+}
+
+#[test]
+fn exports_public_struct_names_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/public-struct/main.ssrg",
+        "pub struct User {\n  name: String,\n}\n",
+    );
+
+    assert_eq!(interface.exports.len(), 1);
+    let struct_export = &interface.exports[0];
+    assert_eq!(struct_export.name, "User");
+    assert_eq!(struct_export.declaration_kind, Some("struct".to_owned()));
+    assert_eq!(
+        struct_export.scheme.type_ref,
+        InterfaceType::TypeConstructor {
+            name: "User".to_owned(),
+            arity: 0,
+        }
+    );
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

@@ -117,36 +117,34 @@ pub(super) fn export_from_surface_decl(
         }),
         SurfaceDecl::Type {
             visibility,
-            opaque: true,
+            opaque,
             name,
             type_parameters,
             span,
             ..
-        }
-        | SurfaceDecl::Struct {
+        } if *visibility == Visibility::Public => Some(nominal_type_export(
+            module_name,
+            name,
+            *visibility,
+            if *opaque { "opaque" } else { "type" },
+            type_parameters,
+            *span,
+        )),
+        SurfaceDecl::Struct {
             visibility,
-            opaque: true,
+            opaque,
             name,
             type_parameters,
             span,
             ..
-        } if *visibility == Visibility::Public => Some(InterfaceExport {
-            symbol: format!("{module_name}::{name}"),
-            namespace: "type".to_owned(),
-            name: name.clone(),
-            visibility: *visibility,
-            declaration_kind: Some("opaque".to_owned()),
-            declaration: *span,
-            scheme: InterfaceScheme {
-                type_parameters: type_parameters.clone(),
-                constraints: Vec::new(),
-                type_ref: InterfaceType::TypeConstructor {
-                    name: name.clone(),
-                    arity: type_parameters.len() as u32,
-                },
-            },
-            representation: None,
-        }),
+        } if *visibility == Visibility::Public => Some(nominal_type_export(
+            module_name,
+            name,
+            *visibility,
+            if *opaque { "opaque" } else { "struct" },
+            type_parameters,
+            *span,
+        )),
         SurfaceDecl::Trait {
             visibility,
             name,
@@ -201,6 +199,33 @@ pub(super) fn export_from_surface_decl(
             representation: None,
         }),
         _ => None,
+    }
+}
+
+fn nominal_type_export(
+    module_name: &str,
+    name: &str,
+    visibility: Visibility,
+    declaration_kind: &str,
+    type_parameters: &[String],
+    span: crate::surface::ByteSpan,
+) -> InterfaceExport {
+    InterfaceExport {
+        symbol: format!("{module_name}::{name}"),
+        namespace: "type".to_owned(),
+        name: name.to_owned(),
+        visibility,
+        declaration_kind: Some(declaration_kind.to_owned()),
+        declaration: span,
+        scheme: InterfaceScheme {
+            type_parameters: type_parameters.to_vec(),
+            constraints: Vec::new(),
+            type_ref: InterfaceType::TypeConstructor {
+                name: name.to_owned(),
+                arity: type_parameters.len() as u32,
+            },
+        },
+        representation: None,
     }
 }
 
