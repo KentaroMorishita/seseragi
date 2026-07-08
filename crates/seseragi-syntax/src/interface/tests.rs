@@ -242,6 +242,49 @@ fn hides_opaque_newtype_representation_in_interface() {
 }
 
 #[test]
+fn exports_opaque_type_names_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/opaque-type/main.ssrg",
+        "pub opaque type Token<A> =\n  | Token A\n",
+    );
+
+    assert_eq!(interface.exports.len(), 1);
+    let type_export = &interface.exports[0];
+    assert_eq!(type_export.name, "Token");
+    assert_eq!(type_export.declaration_kind, Some("opaque".to_owned()));
+    assert_eq!(type_export.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(
+        type_export.scheme.type_ref,
+        InterfaceType::TypeConstructor {
+            name: "Token".to_owned(),
+            arity: 1,
+        }
+    );
+    assert_eq!(type_export.representation, None);
+}
+
+#[test]
+fn exports_opaque_struct_names_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/opaque-struct/main.ssrg",
+        "pub opaque struct UserId {\n  value: Int,\n}\n",
+    );
+
+    assert_eq!(interface.exports.len(), 1);
+    let struct_export = &interface.exports[0];
+    assert_eq!(struct_export.name, "UserId");
+    assert_eq!(struct_export.declaration_kind, Some("opaque".to_owned()));
+    assert_eq!(
+        struct_export.scheme.type_ref,
+        InterfaceType::TypeConstructor {
+            name: "UserId".to_owned(),
+            arity: 0,
+        }
+    );
+    assert_eq!(struct_export.representation, None);
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

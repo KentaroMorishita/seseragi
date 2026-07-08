@@ -1,0 +1,2 @@
+pub opaque type Token<A> =
+  | Token A

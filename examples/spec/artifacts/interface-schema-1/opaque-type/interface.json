@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/opaque-type",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/opaque-type::Token",
+      "namespace": "type",
+      "name": "Token",
+      "visibility": "public",
+      "declarationKind": "opaque",
+      "declaration": { "start": 0, "end": 38 },
+      "scheme": {
+        "typeParameters": ["A"],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Token",
+          "arity": 1
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
