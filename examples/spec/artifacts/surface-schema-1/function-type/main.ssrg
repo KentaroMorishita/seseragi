@@ -1,0 +1,1 @@
+pub let mapper: (String -> Int) = value

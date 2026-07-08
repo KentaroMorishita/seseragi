@@ -14,6 +14,28 @@ impl SurfaceParser<'_> {
     }
 
     pub(super) fn parse_type_ref(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
+        let (parameter, after_parameter) = self.parse_type_atom(start, end)?;
+        let next = self.next_significant_token(after_parameter, end);
+        if next.is_some_and(|index| self.kind_at(index) == Some(TokenKind::OperatorArrow)) {
+            let arrow = next?;
+            let (result, after_result) = self.parse_type_ref(arrow + 1, end)?;
+            let span = ByteSpan {
+                start: self.type_ref_span(&parameter)?.start,
+                end: self.type_ref_span(&result)?.end,
+            };
+            return Some((
+                TypeRef::Function {
+                    parameter: Box::new(parameter),
+                    result: Box::new(result),
+                    span,
+                },
+                after_result,
+            ));
+        }
+        Some((parameter, after_parameter))
+    }
+
+    pub(super) fn parse_type_atom(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
         let type_index = self.next_significant_token(start, end)?;
         if self.kind_at(type_index) == Some(TokenKind::PunctuationBraceLeft) {
             return self.parse_record_type_ref(type_index, end);
@@ -57,6 +79,15 @@ impl SurfaceParser<'_> {
             },
             next_index,
         ))
+    }
+
+    fn type_ref_span(&self, type_ref: &TypeRef) -> Option<ByteSpan> {
+        match type_ref {
+            TypeRef::Named { span, .. }
+            | TypeRef::Record { span, .. }
+            | TypeRef::Tuple { span, .. }
+            | TypeRef::Function { span, .. } => Some(*span),
+        }
     }
 
     fn parse_qualified_type_name(

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "module": "artifact/function-type",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/function-type::mapper",
+      "namespace": "value",
+      "name": "mapper",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 39 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": { "kind": "named", "name": "String", "arguments": [] },
+          "result": { "kind": "named", "name": "Int", "arguments": [] }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

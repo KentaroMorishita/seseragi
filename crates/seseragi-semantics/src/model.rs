@@ -122,6 +122,10 @@ pub enum TypedType {
     Tuple {
         elements: Vec<TypedType>,
     },
+    Function {
+        parameter: Box<TypedType>,
+        result: Box<TypedType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

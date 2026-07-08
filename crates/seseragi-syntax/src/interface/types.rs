@@ -24,5 +24,11 @@ pub(super) fn interface_type_from_type_ref(type_ref: &TypeRef) -> InterfaceType 
         TypeRef::Tuple { elements, .. } => InterfaceType::Tuple {
             elements: elements.iter().map(interface_type_from_type_ref).collect(),
         },
+        TypeRef::Function {
+            parameter, result, ..
+        } => InterfaceType::Function {
+            parameter: Box::new(interface_type_from_type_ref(parameter)),
+            result: Box::new(interface_type_from_type_ref(result)),
+        },
     }
 }

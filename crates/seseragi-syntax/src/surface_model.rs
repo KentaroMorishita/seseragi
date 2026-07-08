@@ -216,6 +216,11 @@ pub enum TypeRef {
         elements: Vec<TypeRef>,
         span: ByteSpan,
     },
+    Function {
+        parameter: Box<TypeRef>,
+        result: Box<TypeRef>,
+        span: ByteSpan,
+    },
 }
 
 fn is_false(value: &bool) -> bool {

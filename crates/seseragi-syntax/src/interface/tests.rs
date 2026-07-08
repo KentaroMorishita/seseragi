@@ -202,6 +202,24 @@ fn parses_tuple_type_references_in_interface() {
 }
 
 #[test]
+fn parses_function_type_references_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/function-type/main.ssrg",
+        "pub let mapper: (String -> Int) = value\n",
+    );
+
+    let json = serde_json::to_value(&interface).expect("interface serializes");
+    assert_eq!(
+        json["exports"][0]["scheme"]["type"],
+        serde_json::json!({
+            "kind": "function",
+            "parameter": { "kind": "named", "name": "String", "arguments": [] },
+            "result": { "kind": "named", "name": "Int", "arguments": [] },
+        })
+    );
+}
+
+#[test]
 fn parses_operator_type_parameters_in_interface() {
     let interface = parse_module_interface(
         "artifact/generic-operator/main.ssrg",

@@ -29,9 +29,11 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<
                 .map(typed_type_from_interface_type)
                 .collect::<Option<Vec<_>>>()?,
         }),
-        InterfaceType::TypeConstructor { .. }
-        | InterfaceType::Function { .. }
-        | InterfaceType::Apply { .. } => None,
+        InterfaceType::Function { parameter, result } => Some(TypedType::Function {
+            parameter: Box::new(typed_type_from_interface_type(*parameter)?),
+            result: Box::new(typed_type_from_interface_type(*result)?),
+        }),
+        InterfaceType::TypeConstructor { .. } | InterfaceType::Apply { .. } => None,
     }
 }
 
@@ -56,6 +58,12 @@ pub(crate) fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
         },
         TypeRef::Tuple { elements, .. } => TypedType::Tuple {
             elements: elements.iter().map(typed_type_from_type_ref).collect(),
+        },
+        TypeRef::Function {
+            parameter, result, ..
+        } => TypedType::Function {
+            parameter: Box::new(typed_type_from_type_ref(parameter)),
+            result: Box::new(typed_type_from_type_ref(result)),
         },
     }
 }

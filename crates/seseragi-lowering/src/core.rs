@@ -194,5 +194,6 @@ fn type_name(type_ref: &TypedType) -> String {
         TypedType::Named { name, .. } => name.clone(),
         TypedType::Record { .. } => "Record".to_owned(),
         TypedType::Tuple { .. } => "Tuple".to_owned(),
+        TypedType::Function { .. } => "Function".to_owned(),
     }
 }
