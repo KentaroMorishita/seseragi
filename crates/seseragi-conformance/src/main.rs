@@ -3,6 +3,7 @@ mod discovery;
 mod execution;
 mod pipeline;
 mod runner;
+mod runtime_abi;
 
 use std::path::PathBuf;
 

@@ -6,6 +6,7 @@ use crate::checks::{
 use crate::discovery::{
     discover_artifact_cases, discover_cases, discover_interface_cases, discover_resolved_ast_cases,
 };
+use crate::runtime_abi::check_runtime_abi_case;
 use std::path::PathBuf;
 
 pub(crate) fn run(root: PathBuf, list: bool) {
@@ -39,6 +40,9 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     let generated_module_total = generated_module_cases.len();
     let execution_cases = discover_artifact_cases(&artifacts, "run.json");
     let execution_total = execution_cases.len();
+    let runtime_abi_cases =
+        discover_artifact_cases(&artifacts.join("runtime-schema-1"), "abi.json");
+    let runtime_abi_total = runtime_abi_cases.len();
 
     if list {
         println!("TokenStream fixtures:");
@@ -85,6 +89,10 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         }
         println!("Execution fixtures: {execution_total}");
         for case in &execution_cases {
+            println!("{}", case.display());
+        }
+        println!("Runtime ABI fixtures: {runtime_abi_total}");
+        for case in &runtime_abi_cases {
             println!("{}", case.display());
         }
         return;
@@ -155,6 +163,12 @@ pub(crate) fn run(root: PathBuf, list: bool) {
             eprintln!("{}: {error}", case.display());
         }
     }
+    for case in &runtime_abi_cases {
+        if let Err(error) = check_runtime_abi_case(case) {
+            failed += 1;
+            eprintln!("{}: {error}", case.display());
+        }
+    }
 
     if failed > 0 {
         std::process::exit(1);
@@ -170,4 +184,5 @@ pub(crate) fn run(root: PathBuf, list: bool) {
     println!("TypeScriptIr fixtures: {typescript_ir_total} passed");
     println!("GeneratedModule fixtures: {generated_module_total} passed");
     println!("Execution fixtures: {execution_total} passed");
+    println!("Runtime ABI fixtures: {runtime_abi_total} passed");
 }
