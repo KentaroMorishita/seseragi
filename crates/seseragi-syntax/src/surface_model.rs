@@ -48,6 +48,18 @@ pub enum SurfaceDecl {
         return_type: Option<TypeRef>,
         span: ByteSpan,
     },
+    Fn {
+        visibility: Visibility,
+        name: String,
+        name_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        parameters: Vec<SurfaceParameter>,
+        return_type: TypeRef,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<String>,
+        span: ByteSpan,
+    },
     Newtype {
         visibility: Visibility,
         name: String,

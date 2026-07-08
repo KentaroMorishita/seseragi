@@ -50,6 +50,48 @@ fn constructs_effect_function_surface_decl() {
 }
 
 #[test]
+fn parses_pure_function_surface_decl() {
+    let module = parse_surface_ast("main.ssrg", "pub fn add x: Int -> y: Int -> Int = x + y\n");
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Fn {
+            visibility: Visibility::Public,
+            name: "add".to_owned(),
+            name_span: ByteSpan { start: 7, end: 10 },
+            type_parameters: Vec::new(),
+            parameters: vec![
+                SurfaceParameter {
+                    name: "x".to_owned(),
+                    name_span: ByteSpan { start: 11, end: 12 },
+                    type_ref: TypeRef::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 14, end: 17 },
+                    },
+                },
+                SurfaceParameter {
+                    name: "y".to_owned(),
+                    name_span: ByteSpan { start: 21, end: 22 },
+                    type_ref: TypeRef::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 24, end: 27 },
+                    },
+                },
+            ],
+            return_type: TypeRef::Named {
+                name: "Int".to_owned(),
+                arguments: Vec::new(),
+                span: ByteSpan { start: 31, end: 34 },
+            },
+            constraints: Vec::new(),
+            span: ByteSpan { start: 0, end: 42 },
+        }
+    );
+}
+
+#[test]
 fn parses_public_let_surface_ast() {
     let module = parse_surface_ast("main.ssrg", "pub let answer: Int = 42\n");
 

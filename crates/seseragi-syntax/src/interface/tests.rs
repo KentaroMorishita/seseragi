@@ -86,6 +86,25 @@ fn parses_public_effect_fn_interface() {
 }
 
 #[test]
+fn parses_public_pure_fn_interface() {
+    let interface = parse_module_interface(
+        "artifact/pure-function/main.ssrg",
+        "pub fn add x: Int -> y: Int -> Int = x + y\n",
+    );
+    let function_export = interface
+        .exports
+        .iter()
+        .find(|export| export.name == "add")
+        .expect("function export exists");
+
+    assert_eq!(
+        function_export.declaration_kind,
+        Some("function".to_owned())
+    );
+    assert_eq!(function_export.namespace, "value");
+}
+
+#[test]
 fn parses_nested_type_arguments_in_interface() {
     let interface = parse_module_interface(
         "artifact/nested-types/main.ssrg",

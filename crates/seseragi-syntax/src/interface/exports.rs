@@ -40,6 +40,32 @@ pub(super) fn export_from_surface_decl(
                 representation: None,
             })
         }
+        SurfaceDecl::Fn {
+            visibility,
+            name,
+            type_parameters,
+            parameters,
+            return_type,
+            constraints,
+            span,
+            ..
+        } if *visibility == Visibility::Public => Some(InterfaceExport {
+            symbol: format!("{module_name}::{name}"),
+            namespace: "value".to_owned(),
+            name: name.clone(),
+            visibility: *visibility,
+            declaration_kind: Some("function".to_owned()),
+            declaration: *span,
+            scheme: InterfaceScheme {
+                type_parameters: type_parameters.clone(),
+                constraints: constraints
+                    .iter()
+                    .map(|name| InterfaceConstraint { name: name.clone() })
+                    .collect(),
+                type_ref: function_interface_type(parameters, return_type),
+            },
+            representation: None,
+        }),
         SurfaceDecl::Newtype {
             visibility,
             name,
@@ -136,7 +162,7 @@ pub(super) fn export_from_surface_decl(
                     .iter()
                     .map(|name| InterfaceConstraint { name: name.clone() })
                     .collect(),
-                type_ref: operator_interface_type(parameters, return_type),
+                type_ref: function_interface_type(parameters, return_type),
             },
             representation: None,
         }),
@@ -167,7 +193,7 @@ pub(super) fn operator_from_surface_decl(
     }
 }
 
-fn operator_interface_type(
+fn function_interface_type(
     parameters: &[crate::surface::SurfaceParameter],
     return_type: &TypeRef,
 ) -> InterfaceType {

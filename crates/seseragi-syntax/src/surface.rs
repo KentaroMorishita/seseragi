@@ -6,9 +6,11 @@ pub use crate::surface_model::{
 use crate::token::{Token, TokenKind};
 
 mod constraints;
+mod functions;
 mod imports;
 mod instances;
 mod operators;
+mod signatures;
 mod traits;
 mod types;
 
@@ -62,9 +64,12 @@ impl SurfaceParser<'_> {
                 Some(TokenKind::PunctuationBraceRight) => {
                     brace_depth = brace_depth.saturating_sub(1);
                 }
-                Some(TokenKind::KeywordPub | TokenKind::KeywordLet | TokenKind::KeywordEffect)
-                    if brace_depth == 0 && self.is_declaration_boundary(index) =>
-                {
+                Some(
+                    TokenKind::KeywordPub
+                    | TokenKind::KeywordLet
+                    | TokenKind::KeywordFn
+                    | TokenKind::KeywordEffect,
+                ) if brace_depth == 0 && self.is_declaration_boundary(index) => {
                     starts.push(index);
                 }
                 Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
@@ -103,6 +108,7 @@ impl SurfaceParser<'_> {
 
         match self.kind_at(decl_start) {
             Some(TokenKind::KeywordLet) => self.parse_let_decl(visibility, start, decl_start, end),
+            Some(TokenKind::KeywordFn) => self.parse_fn_decl(visibility, start, decl_start, end),
             Some(TokenKind::KeywordEffect) => {
                 self.parse_effect_fn_decl(visibility, start, decl_start, end)
             }
