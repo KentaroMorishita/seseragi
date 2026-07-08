@@ -18,7 +18,6 @@ pub(crate) fn discover_interface_cases(schema_directory: &Path) -> Vec<PathBuf> 
     let mut cases = discover_cases(schema_directory)
         .into_iter()
         .filter(|case| case.join("interface.json").is_file())
-        .filter(|case| diagnostics_are_empty(case))
         .collect::<Vec<_>>();
     cases.sort();
     cases

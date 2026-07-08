@@ -1,3 +1,4 @@
+use crate::cst::parse_cst;
 use crate::surface::{parse_surface_ast, ByteSpan, SurfaceDecl, TypeRef, Visibility};
 use serde::{Deserialize, Serialize};
 
@@ -93,6 +94,19 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
     let source_name = source_name.into();
     let module_name = module_name_from_source_name(&source_name);
     let source_file = source_file_from_source_name(&source_name);
+    let cst = parse_cst(source_file.clone(), source);
+    if !cst.errors.is_empty() {
+        return ModuleInterface {
+            schema: 1,
+            module: module_name,
+            source: cst.source,
+            dependencies: Vec::new(),
+            exports: Vec::new(),
+            operators: Vec::new(),
+            instances: Vec::new(),
+        };
+    }
+
     let surface_module = parse_surface_ast(source_file.clone(), source);
 
     ModuleInterface {
@@ -238,6 +252,16 @@ mod tests {
             interface.exports[0].declaration,
             ByteSpan { start: 14, end: 37 }
         );
+    }
+
+    #[test]
+    fn omits_exports_when_module_has_parse_errors() {
+        let interface =
+            parse_module_interface("artifact/recovery/main.ssrg", "pub let answer: Int =");
+
+        assert_eq!(interface.module, "artifact/recovery");
+        assert_eq!(interface.source, "main.ssrg");
+        assert!(interface.exports.is_empty());
     }
 
     #[test]
