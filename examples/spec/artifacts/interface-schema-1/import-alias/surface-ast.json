@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "json",
+      "items": [
+        { "namespace": "value", "name": "parse", "alias": "parseJson" }
+      ],
+      "span": { "start": 0, "end": 41 }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "answer",
+      "nameSpan": { "start": 51, "end": 57 },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": { "start": 59, "end": 62 }
+      },
+      "span": { "start": 43, "end": 67 }
+    }
+  ]
+}

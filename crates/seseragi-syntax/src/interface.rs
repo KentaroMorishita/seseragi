@@ -156,6 +156,7 @@ fn dependency_from_surface_import(
                 },
                 namespace: item.namespace,
                 name: item.name,
+                local_name: item.alias,
             })
             .collect(),
     }
@@ -395,6 +396,23 @@ mod tests {
         assert_eq!(operator_export.scheme.type_parameters, vec!["A".to_owned()]);
         assert_eq!(interface.operators[0].fixity, "infixr");
         assert_eq!(interface.operators[0].precedence, 5);
+    }
+
+    #[test]
+    fn parses_aliased_import_in_interface() {
+        let interface = parse_module_interface(
+            "artifact/import-alias/main.ssrg",
+            "import { parse as parseJson } from \"json\"\n\npub let answer: Int = 42\n",
+        );
+
+        assert_eq!(interface.dependencies.len(), 1);
+        assert_eq!(interface.dependencies[0].imports.len(), 1);
+        assert_eq!(interface.dependencies[0].imports[0].namespace, "value");
+        assert_eq!(interface.dependencies[0].imports[0].name, "parse");
+        assert_eq!(
+            interface.dependencies[0].imports[0].local_name,
+            Some("parseJson".to_owned())
+        );
     }
 
     #[test]

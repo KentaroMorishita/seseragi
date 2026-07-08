@@ -28,6 +28,8 @@ pub struct InterfaceImport {
     pub namespace: String,
     pub name: String,
     pub symbol: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub local_name: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -1,0 +1,3 @@
+import { parse as parseJson } from "json"
+
+pub let answer: Int = 42

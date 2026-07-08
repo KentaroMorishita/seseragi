@@ -167,6 +167,7 @@ impl SurfaceParser<'_> {
                     items.push(SurfaceImportItem {
                         namespace: "operator".to_owned(),
                         name,
+                        alias: None,
                     });
                     cursor = after_operator;
                     continue;
@@ -177,15 +178,35 @@ impl SurfaceParser<'_> {
                 Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
             ) {
                 if let Some(token) = self.tokens.get(index) {
+                    let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end);
                     items.push(SurfaceImportItem {
                         namespace: "value".to_owned(),
                         name: token.raw.clone(),
+                        alias,
                     });
+                    cursor = after_alias;
+                    continue;
                 }
             }
             cursor = index + 1;
         }
         items
+    }
+
+    fn parse_optional_import_alias(&self, start: usize, end: usize) -> (Option<String>, usize) {
+        let Some(as_index) = self.next_significant_token(start, end) else {
+            return (None, start);
+        };
+        if self.raw_at(as_index) != Some("as") {
+            return (None, start);
+        }
+        let Some(alias_index) = self.next_significant_token(as_index + 1, end) else {
+            return (None, start);
+        };
+        let Some(alias) = self.identifier_name_at(alias_index) else {
+            return (None, start);
+        };
+        (Some(alias), alias_index + 1)
     }
 
     fn parse_let_decl(

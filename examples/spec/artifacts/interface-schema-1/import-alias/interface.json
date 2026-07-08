@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "module": "artifact/import-alias",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "json",
+      "module": "artifact/import-alias/json",
+      "origin": { "start": 0, "end": 41 },
+      "imports": [
+        {
+          "namespace": "value",
+          "symbol": "artifact/import-alias/json::parse",
+          "name": "parse",
+          "localName": "parseJson"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/import-alias::answer",
+      "namespace": "value",
+      "name": "answer",
+      "visibility": "public",
+      "declaration": { "start": 43, "end": 67 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

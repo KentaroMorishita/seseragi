@@ -23,6 +23,8 @@ pub struct SurfaceImport {
 pub struct SurfaceImportItem {
     pub namespace: String,
     pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alias: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
