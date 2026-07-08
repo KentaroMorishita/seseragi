@@ -78,3 +78,5 @@ closed Console requirement、ConsoleError failure、Unit successへ展開し、r
 固定します。entry runnerは`main ()`を一度呼び、root resource scopeでEffectを実行し、required environmentへ
 Console serviceを提供します。required environmentはclosedですが、actual host environmentは追加serviceを持てます。
 成功時はUnit valueとexit code 0、Console traceとstdout snapshotを比較します。
+また、entryが参照するgenerated moduleのruntime requirementsを`expected.runtimeRequirements`と比較し、
+実行fixtureが依存するruntime ABI featureを固定します。

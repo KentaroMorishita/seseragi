@@ -31,6 +31,7 @@
   },
   "expected": {
     "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": ["core.unit", "effect.console.println"],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",

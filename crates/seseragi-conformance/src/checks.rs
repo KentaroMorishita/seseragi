@@ -225,6 +225,19 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     if !case.join(compiled_module).is_file() {
         return Err("compiled generated-module.json reference is missing".to_owned());
     }
+    let expected_runtime_requirements = expected_string_array(
+        &run,
+        "/expected/runtimeRequirements",
+        "run.json expected.runtimeRequirements",
+    )?;
+    let actual_runtime_requirements =
+        execution::resolve_compiled_runtime_requirements(case, compiled_module)?;
+    if actual_runtime_requirements != expected_runtime_requirements {
+        return Err(format!(
+            "execution runtime requirements mismatch: expected {:?}, got {:?}",
+            expected_runtime_requirements, actual_runtime_requirements
+        ));
+    }
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
 
     let stdout_name = run
@@ -267,6 +280,24 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     }
 
     Ok(())
+}
+
+fn expected_string_array(
+    value: &serde_json::Value,
+    pointer: &str,
+    label: &str,
+) -> Result<Vec<String>, String> {
+    value
+        .pointer(pointer)
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| format!("{label} must be an array"))?
+        .iter()
+        .map(|item| {
+            item.as_str()
+                .map(str::to_owned)
+                .ok_or_else(|| format!("{label} entries must be strings"))
+        })
+        .collect()
 }
 
 pub(crate) fn check_cst(case: &Path) -> Result<(), String> {

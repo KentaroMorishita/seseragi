@@ -12,11 +12,7 @@ pub(crate) fn resolve_compiled_typescript(
     case: &Path,
     compiled_module: &str,
 ) -> Result<PathBuf, String> {
-    let compiled_module_path = case.join(compiled_module);
-    let compiled_module_raw = fs::read_to_string(&compiled_module_path)
-        .map_err(|error| format!("failed to read compiled generated-module.json: {error}"))?;
-    let compiled_module: serde_json::Value = serde_json::from_str(&compiled_module_raw)
-        .map_err(|error| format!("failed to parse compiled generated-module.json: {error}"))?;
+    let (compiled_module_path, compiled_module) = read_compiled_module(case, compiled_module)?;
     let typescript = compiled_module
         .pointer("/outputs/typescript")
         .and_then(|value| value.as_str())
@@ -29,6 +25,36 @@ pub(crate) fn resolve_compiled_typescript(
         return Err("compiled TypeScript output is missing".to_owned());
     }
     Ok(typescript_path)
+}
+
+pub(crate) fn resolve_compiled_runtime_requirements(
+    case: &Path,
+    compiled_module: &str,
+) -> Result<Vec<String>, String> {
+    let (_, compiled_module) = read_compiled_module(case, compiled_module)?;
+    compiled_module
+        .pointer("/runtime/requirements")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "compiled generated-module.json runtime.requirements is missing".to_owned())?
+        .iter()
+        .map(|requirement| {
+            requirement.as_str().map(str::to_owned).ok_or_else(|| {
+                "compiled generated-module.json runtime requirement must be a string".to_owned()
+            })
+        })
+        .collect()
+}
+
+fn read_compiled_module(
+    case: &Path,
+    compiled_module: &str,
+) -> Result<(PathBuf, serde_json::Value), String> {
+    let compiled_module_path = case.join(compiled_module);
+    let compiled_module_raw = fs::read_to_string(&compiled_module_path)
+        .map_err(|error| format!("failed to read compiled generated-module.json: {error}"))?;
+    let compiled_module: serde_json::Value = serde_json::from_str(&compiled_module_raw)
+        .map_err(|error| format!("failed to parse compiled generated-module.json: {error}"))?;
+    Ok((compiled_module_path, compiled_module))
 }
 
 pub(crate) fn run_generated_typescript(
