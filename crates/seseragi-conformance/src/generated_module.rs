@@ -28,6 +28,7 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
     if bundle.typescript != expected_typescript {
         return Err("main.ts artifact mismatch".to_owned());
     }
+    check_generated_exports(&actual_metadata_value, &bundle.typescript)?;
 
     let actual_source_map_value = serde_json::to_value(&bundle.source_map)
         .map_err(|error| format!("failed to encode SourceMap: {error}"))?;
@@ -36,6 +37,28 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
             .map_err(|error| format!("failed to parse expected main.ts.map: {error}"))?;
     if actual_source_map_value != expected_source_map_value {
         return Err("main.ts.map artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
+fn check_generated_exports(
+    generated_module: &serde_json::Value,
+    typescript: &str,
+) -> Result<(), String> {
+    let exports = generated_module
+        .pointer("/exports")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "generated module exports must be an array".to_owned())?;
+
+    for export in exports {
+        let export = export
+            .as_str()
+            .ok_or_else(|| "generated module export name must be a string".to_owned())?;
+        if !typescript.contains(&format!("export const {export}")) {
+            return Err(format!(
+                "generated module export {export} is missing from TypeScript output"
+            ));
+        }
     }
     Ok(())
 }
