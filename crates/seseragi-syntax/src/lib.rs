@@ -1,11 +1,11 @@
 mod cst;
 mod diagnostics;
 mod interface;
-mod interface_extra;
 mod interface_model;
 mod lexer;
 mod source;
 mod surface;
+mod surface_model;
 mod token;
 
 pub use cst::{parse_cst, CstArtifact, CstError, CstMissing, CstNode};
@@ -20,5 +20,8 @@ pub use interface::{
 };
 pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
-pub use surface::{parse_surface_ast, ByteSpan, SurfaceDecl, SurfaceModule, TypeRef, Visibility};
+pub use surface::{
+    parse_surface_ast, ByteSpan, SurfaceDecl, SurfaceImport, SurfaceModule, SurfaceParameter,
+    TypeRef, Visibility,
+};
 pub use token::{Token, TokenKind, TokenStream};

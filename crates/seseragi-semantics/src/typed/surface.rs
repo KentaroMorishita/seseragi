@@ -96,5 +96,8 @@ pub(crate) fn typed_decl_from_surface(
                 }),
             })
         }
+        SurfaceDecl::Newtype { .. }
+        | SurfaceDecl::Operator { .. }
+        | SurfaceDecl::Instance { .. } => None,
     }
 }

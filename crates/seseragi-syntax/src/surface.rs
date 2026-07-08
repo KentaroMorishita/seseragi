@@ -1,66 +1,8 @@
 use crate::lexer::lex;
+pub use crate::surface_model::{
+    ByteSpan, SurfaceDecl, SurfaceImport, SurfaceModule, SurfaceParameter, TypeRef, Visibility,
+};
 use crate::token::{Token, TokenKind};
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SurfaceModule {
-    pub schema: u32,
-    pub source: String,
-    pub declarations: Vec<SurfaceDecl>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(
-    tag = "kind",
-    rename_all = "camelCase",
-    rename_all_fields = "camelCase"
-)]
-pub enum SurfaceDecl {
-    Let {
-        visibility: Visibility,
-        name: String,
-        name_span: ByteSpan,
-        type_ref: Option<TypeRef>,
-        span: ByteSpan,
-    },
-    EffectFn {
-        visibility: Visibility,
-        name: String,
-        name_span: ByteSpan,
-        return_type: Option<TypeRef>,
-        span: ByteSpan,
-    },
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub enum Visibility {
-    Private,
-    Public,
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ByteSpan {
-    pub start: usize,
-    pub end: usize,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(
-    tag = "kind",
-    rename_all = "camelCase",
-    rename_all_fields = "camelCase"
-)]
-pub enum TypeRef {
-    Named {
-        name: String,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        arguments: Vec<TypeRef>,
-        span: ByteSpan,
-    },
-}
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
     let stream = lex(source_name, source);
@@ -77,6 +19,7 @@ pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> Surfac
     SurfaceModule {
         schema: 1,
         source: stream.source,
+        imports: parser.parse_imports(),
         declarations: parser.parse_declarations(),
     }
 }
@@ -102,6 +45,21 @@ impl SurfaceParser<'_> {
             .collect()
     }
 
+    fn parse_imports(&self) -> Vec<SurfaceImport> {
+        let declaration_starts = self.top_level_declaration_starts();
+        declaration_starts
+            .iter()
+            .enumerate()
+            .filter_map(|(position, start)| {
+                let end = declaration_starts
+                    .get(position + 1)
+                    .copied()
+                    .unwrap_or(self.non_eof_token_count);
+                self.parse_import(*start, end)
+            })
+            .collect()
+    }
+
     fn top_level_declaration_starts(&self) -> Vec<usize> {
         let mut starts = Vec::new();
         let mut brace_depth = 0usize;
@@ -113,6 +71,13 @@ impl SurfaceParser<'_> {
                 }
                 Some(TokenKind::KeywordPub | TokenKind::KeywordLet | TokenKind::KeywordEffect)
                     if brace_depth == 0 && self.is_declaration_boundary(index) =>
+                {
+                    starts.push(index);
+                }
+                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                    if brace_depth == 0
+                        && self.is_declaration_boundary(index)
+                        && self.is_contextual_declaration_start(index) =>
                 {
                     starts.push(index);
                 }
@@ -148,8 +113,53 @@ impl SurfaceParser<'_> {
             Some(TokenKind::KeywordEffect) => {
                 self.parse_effect_fn_decl(visibility, start, decl_start, end)
             }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if self.raw_at(decl_start) == Some("newtype") =>
+            {
+                self.parse_newtype_decl(visibility, start, decl_start, end)
+            }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if self.raw_at(decl_start) == Some("operator") =>
+            {
+                self.parse_operator_decl(visibility, start, decl_start, end)
+            }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if visibility == Visibility::Private
+                    && self.raw_at(decl_start) == Some("instance") =>
+            {
+                self.parse_instance_decl(start, decl_start, end)
+            }
             _ => None,
         }
+    }
+
+    fn parse_import(&self, start: usize, end: usize) -> Option<SurfaceImport> {
+        let first = self.next_significant_token(start, end)?;
+        if self.raw_at(first) != Some("import") {
+            return None;
+        }
+        let from_index = self.find_raw(first + 1, end, "from")?;
+        let specifier_index = self.next_significant_token(from_index + 1, end)?;
+        if self.kind_at(specifier_index) != Some(TokenKind::LiteralString) {
+            return None;
+        }
+        let names = (first + 1..from_index)
+            .filter_map(|index| {
+                if self.kind_at(index) == Some(TokenKind::IdentifierLower) {
+                    self.tokens.get(index).map(|token| token.raw.clone())
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
+        Some(SurfaceImport {
+            specifier: unquote(self.tokens.get(specifier_index)?.raw.as_str()),
+            names,
+            span: ByteSpan {
+                start: self.tokens.get(first)?.start,
+                end: self.tokens.get(specifier_index)?.end,
+            },
+        })
     }
 
     fn parse_let_decl(
@@ -194,6 +204,119 @@ impl SurfaceParser<'_> {
             return_type,
             span: self.declaration_span(top_start, end)?,
         })
+    }
+
+    fn parse_newtype_decl(
+        &self,
+        visibility: Visibility,
+        top_start: usize,
+        decl_start: usize,
+        end: usize,
+    ) -> Option<SurfaceDecl> {
+        let name_index = self.next_significant_token(decl_start + 1, end)?;
+        let name = self.identifier_name_at(name_index)?;
+        let equals = self.find_significant_token(name_index + 1, end, |kind| {
+            kind == TokenKind::OperatorEquals
+        })?;
+        let representation = self.parse_type_name(equals + 1, end)?;
+
+        Some(SurfaceDecl::Newtype {
+            visibility,
+            name,
+            name_span: self.byte_span(name_index)?,
+            representation,
+            span: self.declaration_span(top_start, end)?,
+        })
+    }
+
+    fn parse_operator_decl(
+        &self,
+        visibility: Visibility,
+        top_start: usize,
+        decl_start: usize,
+        end: usize,
+    ) -> Option<SurfaceDecl> {
+        let fixity_index = self.next_significant_token(decl_start + 1, end)?;
+        let precedence_index = self.next_significant_token(fixity_index + 1, end)?;
+        let precedence = self.tokens.get(precedence_index)?.raw.parse::<u32>().ok()?;
+        let spelling_start = self.next_significant_token(precedence_index + 1, end)?;
+        let (spelling, after_spelling) = self.operator_spelling(spelling_start)?;
+        let equals = self.find_significant_token(after_spelling, end, |kind| {
+            kind == TokenKind::OperatorEquals
+        })?;
+        let (parameters, return_type) = self.parse_operator_signature(after_spelling, equals)?;
+
+        Some(SurfaceDecl::Operator {
+            visibility,
+            fixity: self.tokens.get(fixity_index)?.raw.clone(),
+            precedence,
+            spelling,
+            parameters,
+            return_type,
+            span: self.declaration_span(top_start, end)?,
+        })
+    }
+
+    fn parse_instance_decl(
+        &self,
+        top_start: usize,
+        decl_start: usize,
+        end: usize,
+    ) -> Option<SurfaceDecl> {
+        let trait_index = self.next_significant_token(decl_start + 1, end)?;
+        let trait_name = self.identifier_name_at(trait_index)?;
+        let mut arguments = Vec::new();
+        let next = self.next_significant_token(trait_index + 1, end);
+        if next.is_some_and(|index| self.is_angle_left(index)) {
+            let (parsed, _) = self.parse_type_arguments(next? + 1, end)?;
+            arguments = parsed;
+        }
+
+        Some(SurfaceDecl::Instance {
+            trait_name,
+            arguments,
+            span: self.declaration_span(top_start, end)?,
+        })
+    }
+
+    fn parse_operator_signature(
+        &self,
+        start: usize,
+        end: usize,
+    ) -> Option<(Vec<SurfaceParameter>, TypeRef)> {
+        let mut parameters = Vec::new();
+        let mut cursor = start;
+
+        loop {
+            let name_index = self.next_significant_token(cursor, end)?;
+            let name = self.identifier_name_at(name_index)?;
+            let colon = self.find_significant_token(name_index + 1, end, |kind| {
+                kind == TokenKind::PunctuationColon
+            })?;
+            let (type_ref, after_type) = self.parse_type_ref(colon + 1, end)?;
+            let arrow = self.next_significant_token(after_type, end)?;
+            if self.kind_at(arrow) != Some(TokenKind::OperatorArrow) {
+                return None;
+            }
+            parameters.push(SurfaceParameter {
+                name,
+                name_span: self.byte_span(name_index)?,
+                type_ref,
+            });
+            cursor = arrow + 1;
+
+            let next = self.next_significant_token(cursor, end)?;
+            let next_after_type = self.parse_type_ref(next, end);
+            let Some((return_type, after_return_type)) = next_after_type else {
+                continue;
+            };
+            if self
+                .next_significant_token(after_return_type, end)
+                .is_none()
+            {
+                return Some((parameters, return_type));
+            }
+        }
     }
 
     fn parse_type_after_colon(&self, start: usize, end: usize) -> Option<TypeRef> {
@@ -308,6 +431,17 @@ impl SurfaceParser<'_> {
         (start..end).find(|index| self.kind_at(*index).is_some_and(&predicate))
     }
 
+    fn find_raw(&self, start: usize, end: usize, raw: &str) -> Option<usize> {
+        self.find_significant_token(start, end, |_| true)
+            .and_then(|first| {
+                (first..end).find(|index| {
+                    self.tokens
+                        .get(*index)
+                        .is_some_and(|token| token.raw == raw)
+                })
+            })
+    }
+
     fn next_significant_token(&self, start: usize, end: usize) -> Option<usize> {
         (start..end).find(|index| {
             self.kind_at(*index).is_some_and(|kind| {
@@ -334,6 +468,36 @@ impl SurfaceParser<'_> {
         self.tokens.get(index).map(|token| token.kind)
     }
 
+    fn raw_at(&self, index: usize) -> Option<&str> {
+        self.tokens.get(index).map(|token| token.raw.as_str())
+    }
+
+    fn is_contextual_declaration_start(&self, index: usize) -> bool {
+        matches!(
+            self.raw_at(index),
+            Some("import" | "newtype" | "operator" | "instance")
+        )
+    }
+
+    fn operator_spelling(&self, start: usize) -> Option<(String, usize)> {
+        let first = self.tokens.get(start)?;
+        if !is_operator_spelling_token(first.kind) {
+            return None;
+        }
+        let mut spelling = first.raw.clone();
+        let mut cursor = start + 1;
+        let mut previous_end = first.end;
+        while let Some(token) = self.tokens.get(cursor) {
+            if token.start != previous_end || !is_operator_spelling_token(token.kind) {
+                break;
+            }
+            spelling.push_str(&token.raw);
+            previous_end = token.end;
+            cursor += 1;
+        }
+        Some((spelling, cursor))
+    }
+
     fn is_angle_left(&self, index: usize) -> bool {
         self.kind_at(index) == Some(TokenKind::OperatorComparison)
             && self.tokens.get(index).is_some_and(|token| token.raw == "<")
@@ -345,155 +509,26 @@ impl SurfaceParser<'_> {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn constructs_let_surface_module() {
-        let module = SurfaceModule {
-            schema: 1,
-            source: "main.ssrg".to_owned(),
-            declarations: vec![SurfaceDecl::Let {
-                visibility: Visibility::Public,
-                name: "answer".to_owned(),
-                name_span: ByteSpan { start: 8, end: 14 },
-                type_ref: Some(TypeRef::Named {
-                    name: "Int".to_owned(),
-                    arguments: Vec::new(),
-                    span: ByteSpan { start: 16, end: 19 },
-                }),
-                span: ByteSpan { start: 0, end: 24 },
-            }],
-        };
-
-        let json = serde_json::to_value(&module).expect("surface module serializes");
-
-        assert_eq!(json["schema"], 1);
-        assert_eq!(json["source"], "main.ssrg");
-        assert_eq!(json["declarations"][0]["kind"], "let");
-        assert_eq!(json["declarations"][0]["visibility"], "public");
-        assert_eq!(json["declarations"][0]["typeRef"]["kind"], "named");
-    }
-
-    #[test]
-    fn constructs_effect_function_surface_decl() {
-        let decl = SurfaceDecl::EffectFn {
-            visibility: Visibility::Private,
-            name: "main".to_owned(),
-            name_span: ByteSpan { start: 10, end: 14 },
-            return_type: Some(TypeRef::Named {
-                name: "Unit".to_owned(),
-                arguments: Vec::new(),
-                span: ByteSpan { start: 18, end: 22 },
-            }),
-            span: ByteSpan { start: 0, end: 72 },
-        };
-
-        let json = serde_json::to_value(&decl).expect("surface decl serializes");
-
-        assert_eq!(json["kind"], "effectFn");
-        assert_eq!(json["visibility"], "private");
-        assert_eq!(json["returnType"]["name"], "Unit");
-    }
-
-    #[test]
-    fn parses_public_let_surface_ast() {
-        let module = parse_surface_ast("main.ssrg", "pub let answer: Int = 42\n");
-
-        assert_eq!(module.schema, 1);
-        assert_eq!(module.source, "main.ssrg");
-        assert_eq!(
-            module.declarations,
-            vec![SurfaceDecl::Let {
-                visibility: Visibility::Public,
-                name: "answer".to_owned(),
-                name_span: ByteSpan { start: 8, end: 14 },
-                type_ref: Some(TypeRef::Named {
-                    name: "Int".to_owned(),
-                    arguments: Vec::new(),
-                    span: ByteSpan { start: 16, end: 19 },
-                }),
-                span: ByteSpan { start: 0, end: 24 },
-            }]
-        );
-    }
-
-    #[test]
-    fn parses_multiple_lets_with_visibility_only() {
-        let module = parse_surface_ast("main.ssrg", "let first = 1\npub let second = 2\n");
-
-        assert_eq!(module.declarations.len(), 2);
-        assert_eq!(
-            module.declarations[0],
-            SurfaceDecl::Let {
-                visibility: Visibility::Private,
-                name: "first".to_owned(),
-                name_span: ByteSpan { start: 4, end: 9 },
-                type_ref: None,
-                span: ByteSpan { start: 0, end: 13 },
-            }
-        );
-        assert_eq!(
-            module.declarations[1],
-            SurfaceDecl::Let {
-                visibility: Visibility::Public,
-                name: "second".to_owned(),
-                name_span: ByteSpan { start: 22, end: 28 },
-                type_ref: None,
-                span: ByteSpan { start: 14, end: 32 },
-            }
-        );
-    }
-
-    #[test]
-    fn parses_effect_do_surface_decl() {
-        let module = parse_surface_ast(
-            "main.ssrg",
-            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    value <- console.readLine ()\n  }\n",
-        );
-
-        assert_eq!(
-            module.declarations,
-            vec![SurfaceDecl::EffectFn {
-                visibility: Visibility::Public,
-                name: "main".to_owned(),
-                name_span: ByteSpan { start: 14, end: 18 },
-                return_type: Some(TypeRef::Named {
-                    name: "Unit".to_owned(),
-                    arguments: Vec::new(),
-                    span: ByteSpan { start: 22, end: 26 },
-                }),
-                span: ByteSpan { start: 0, end: 104 },
-            }]
-        );
-    }
-
-    #[test]
-    fn parses_nested_type_arguments_in_surface_ast() {
-        let module = parse_surface_ast("main.ssrg", "pub let values: Array<Maybe<Int>> = []\n");
-
-        assert_eq!(
-            module.declarations[0],
-            SurfaceDecl::Let {
-                visibility: Visibility::Public,
-                name: "values".to_owned(),
-                name_span: ByteSpan { start: 8, end: 14 },
-                type_ref: Some(TypeRef::Named {
-                    name: "Array".to_owned(),
-                    arguments: vec![TypeRef::Named {
-                        name: "Maybe".to_owned(),
-                        arguments: vec![TypeRef::Named {
-                            name: "Int".to_owned(),
-                            arguments: Vec::new(),
-                            span: ByteSpan { start: 28, end: 31 },
-                        }],
-                        span: ByteSpan { start: 22, end: 32 },
-                    }],
-                    span: ByteSpan { start: 16, end: 33 },
-                }),
-                span: ByteSpan { start: 0, end: 38 },
-            }
-        );
-    }
+fn is_operator_spelling_token(kind: TokenKind) -> bool {
+    matches!(
+        kind,
+        TokenKind::OperatorArithmetic
+            | TokenKind::OperatorComparison
+            | TokenKind::OperatorCustom
+            | TokenKind::OperatorPipeline
+            | TokenKind::OperatorBind
+            | TokenKind::OperatorApply
+            | TokenKind::OperatorRangeExclusive
+            | TokenKind::OperatorRangeInclusive
+    )
 }
+
+fn unquote(raw: &str) -> String {
+    raw.strip_prefix('"')
+        .and_then(|value| value.strip_suffix('"'))
+        .unwrap_or(raw)
+        .to_owned()
+}
+
+#[cfg(test)]
+mod tests;
