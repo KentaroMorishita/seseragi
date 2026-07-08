@@ -123,6 +123,11 @@ impl SurfaceParser<'_> {
                 self.parse_alias_decl(visibility, start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if self.raw_at(decl_start) == Some("type") =>
+            {
+                self.parse_type_decl(visibility, start, decl_start, end)
+            }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("struct") =>
             {
                 self.parse_struct_decl(visibility, start, decl_start, end)
@@ -381,7 +386,16 @@ impl SurfaceParser<'_> {
     fn is_contextual_declaration_start(&self, index: usize) -> bool {
         matches!(
             self.raw_at(index),
-            Some("import" | "newtype" | "alias" | "struct" | "operator" | "instance" | "trait")
+            Some(
+                "import"
+                    | "newtype"
+                    | "alias"
+                    | "type"
+                    | "struct"
+                    | "operator"
+                    | "instance"
+                    | "trait"
+            )
         )
     }
 

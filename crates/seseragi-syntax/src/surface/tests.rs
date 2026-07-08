@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::surface_model::SurfaceField;
+use crate::surface_model::{SurfaceField, SurfaceVariant};
 
 #[test]
 fn constructs_let_surface_module() {
@@ -388,6 +388,41 @@ fn parses_alias_declarations() {
                 span: ByteSpan { start: 21, end: 27 },
             },
             span: ByteSpan { start: 0, end: 27 },
+        }
+    );
+}
+
+#[test]
+fn parses_type_declarations() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub type Maybe<A> =\n  | Nothing\n  | Just A\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Type {
+            visibility: Visibility::Public,
+            name: "Maybe".to_owned(),
+            name_span: ByteSpan { start: 9, end: 14 },
+            type_parameters: vec!["A".to_owned()],
+            variants: vec![
+                SurfaceVariant {
+                    name: "Nothing".to_owned(),
+                    name_span: ByteSpan { start: 24, end: 31 },
+                    payload: None,
+                },
+                SurfaceVariant {
+                    name: "Just".to_owned(),
+                    name_span: ByteSpan { start: 36, end: 40 },
+                    payload: Some(TypeRef::Named {
+                        name: "A".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 41, end: 42 },
+                    }),
+                },
+            ],
+            span: ByteSpan { start: 0, end: 42 },
         }
     );
 }

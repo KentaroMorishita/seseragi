@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Maybe",
+      "nameSpan": { "start": 9, "end": 14 },
+      "typeParameters": ["A"],
+      "variants": [
+        {
+          "name": "Nothing",
+          "nameSpan": { "start": 24, "end": 31 }
+        },
+        {
+          "name": "Just",
+          "nameSpan": { "start": 36, "end": 40 },
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "span": { "start": 41, "end": 42 }
+          }
+        }
+      ],
+      "span": { "start": 0, "end": 42 }
+    }
+  ]
+}

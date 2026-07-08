@@ -1,5 +1,5 @@
 use super::SurfaceParser;
-use crate::surface_model::{SurfaceDecl, SurfaceField, Visibility};
+use crate::surface_model::{SurfaceDecl, SurfaceField, SurfaceVariant, Visibility};
 use crate::token::TokenKind;
 
 impl SurfaceParser<'_> {
@@ -50,6 +50,61 @@ impl SurfaceParser<'_> {
             target,
             span: self.declaration_span(top_start, end)?,
         })
+    }
+
+    pub(super) fn parse_type_decl(
+        &self,
+        visibility: Visibility,
+        top_start: usize,
+        decl_start: usize,
+        end: usize,
+    ) -> Option<SurfaceDecl> {
+        let name_index = self.next_significant_token(decl_start + 1, end)?;
+        let name = self.identifier_name_at(name_index)?;
+        let (type_parameters, after_type_parameters) =
+            self.parse_optional_type_parameters(name_index + 1, end);
+        let equals = self.find_significant_token(after_type_parameters, end, |kind| {
+            kind == TokenKind::OperatorEquals
+        })?;
+
+        Some(SurfaceDecl::Type {
+            visibility,
+            name,
+            name_span: self.byte_span(name_index)?,
+            type_parameters,
+            variants: self.parse_type_variants(equals + 1, end),
+            span: self.declaration_span(top_start, end)?,
+        })
+    }
+
+    fn parse_type_variants(&self, start: usize, end: usize) -> Vec<SurfaceVariant> {
+        let mut variants = Vec::new();
+        let mut cursor = start;
+        while let Some(pipe) = self.find_raw(cursor, end, "|") {
+            let Some(name_index) = self.next_significant_token(pipe + 1, end) else {
+                break;
+            };
+            let Some(name) = self.identifier_name_at(name_index) else {
+                cursor = name_index + 1;
+                continue;
+            };
+            let Some(name_span) = self.byte_span(name_index) else {
+                break;
+            };
+            let after_name = name_index + 1;
+            let next = self.next_significant_token(after_name, end);
+            let payload = next
+                .filter(|index| self.raw_at(*index) != Some("|"))
+                .and_then(|index| self.parse_type_ref(index, end))
+                .map(|(type_ref, _)| type_ref);
+            variants.push(SurfaceVariant {
+                name,
+                name_span,
+                payload,
+            });
+            cursor = after_name;
+        }
+        variants
     }
 
     pub(super) fn parse_struct_decl(
