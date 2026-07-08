@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/generic-operator",
+  "declarations": [
+    {
+      "kind": "operator",
+      "symbol": 0,
+      "name": "<+>",
+      "visibility": "public",
+      "fixity": "infixr",
+      "precedence": 5,
+      "declaration": { "start": 0, "end": 64 }
+    }
+  ]
+}

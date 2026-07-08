@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "module": "artifact/generic-operator",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/generic-operator::operator(<+>)",
+      "namespace": "operator",
+      "name": "<+>",
+      "visibility": "public",
+      "declarationKind": "custom-operator",
+      "declaration": { "start": 0, "end": 64 },
+      "scheme": {
+        "typeParameters": ["A"],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": { "kind": "named", "name": "A", "arguments": [] },
+          "result": {
+            "kind": "function",
+            "parameter": { "kind": "named", "name": "A", "arguments": [] },
+            "result": { "kind": "named", "name": "A", "arguments": [] }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [
+    {
+      "symbol": "artifact/generic-operator::operator(<+>)",
+      "spelling": "<+>",
+      "fixity": "infixr",
+      "precedence": 5,
+      "origin": { "start": 0, "end": 64 }
+    }
+  ],
+  "instances": []
+}
