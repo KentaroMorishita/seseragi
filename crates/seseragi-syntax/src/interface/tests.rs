@@ -147,6 +147,23 @@ fn parses_instance_type_parameters_and_constraints_in_interface() {
 }
 
 #[test]
+fn parses_trait_declarations_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/basic-trait/main.ssrg",
+        "pub trait Eq<A> {\n  fn eq x: A -> y: A -> Bool\n}\n",
+    );
+    let trait_export = interface
+        .exports
+        .iter()
+        .find(|export| export.namespace == "trait")
+        .expect("trait export exists");
+
+    assert_eq!(trait_export.symbol, "artifact/basic-trait::trait(Eq)");
+    assert_eq!(trait_export.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(trait_export.scheme.constraints, Vec::new());
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

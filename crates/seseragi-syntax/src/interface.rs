@@ -110,6 +110,33 @@ fn export_from_surface_decl(
             },
             representation: Some(interface_type_from_type_ref(representation)),
         }),
+        SurfaceDecl::Trait {
+            visibility,
+            name,
+            type_parameters,
+            constraints,
+            span,
+            ..
+        } if *visibility == Visibility::Public => Some(InterfaceExport {
+            symbol: format!("{module_name}::trait({name})"),
+            namespace: "trait".to_owned(),
+            name: name.clone(),
+            visibility: *visibility,
+            declaration_kind: Some("trait".to_owned()),
+            declaration: *span,
+            scheme: InterfaceScheme {
+                type_parameters: type_parameters.clone(),
+                constraints: constraints
+                    .iter()
+                    .map(|name| InterfaceConstraint { name: name.clone() })
+                    .collect(),
+                type_ref: InterfaceType::TypeConstructor {
+                    name: name.clone(),
+                    arity: type_parameters.len() as u32,
+                },
+            },
+            representation: None,
+        }),
         SurfaceDecl::Operator {
             visibility,
             type_parameters,

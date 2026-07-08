@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/basic-trait",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/basic-trait::trait(Eq)",
+      "namespace": "trait",
+      "name": "Eq",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": { "start": 0, "end": 48 },
+      "scheme": {
+        "typeParameters": ["A"],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Eq",
+          "arity": 1
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

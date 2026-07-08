@@ -9,6 +9,7 @@ mod constraints;
 mod imports;
 mod instances;
 mod operators;
+mod traits;
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
     let stream = lex(source_name, source);
@@ -108,6 +109,11 @@ impl SurfaceParser<'_> {
                 if self.raw_at(decl_start) == Some("newtype") =>
             {
                 self.parse_newtype_decl(visibility, start, decl_start, end)
+            }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if self.raw_at(decl_start) == Some("trait") =>
+            {
+                self.parse_trait_decl(visibility, start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("operator") =>
@@ -381,7 +387,7 @@ impl SurfaceParser<'_> {
     fn is_contextual_declaration_start(&self, index: usize) -> bool {
         matches!(
             self.raw_at(index),
-            Some("import" | "newtype" | "operator" | "instance")
+            Some("import" | "newtype" | "operator" | "instance" | "trait")
         )
     }
 

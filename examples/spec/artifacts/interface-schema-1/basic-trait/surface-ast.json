@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Eq",
+      "nameSpan": { "start": 10, "end": 12 },
+      "typeParameters": ["A"],
+      "span": { "start": 0, "end": 48 }
+    }
+  ]
+}

@@ -282,6 +282,26 @@ fn parses_instance_type_parameters_and_constraints() {
 }
 
 #[test]
+fn parses_trait_declarations() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub trait Eq<A> {\n  fn eq x: A -> y: A -> Bool\n}\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Trait {
+            visibility: Visibility::Public,
+            name: "Eq".to_owned(),
+            name_span: ByteSpan { start: 10, end: 12 },
+            type_parameters: vec!["A".to_owned()],
+            constraints: Vec::new(),
+            span: ByteSpan { start: 0, end: 48 },
+        }
+    );
+}
+
+#[test]
 fn parses_operator_type_parameters() {
     let module = parse_surface_ast(
         "main.ssrg",
