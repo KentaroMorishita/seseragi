@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/text",
+      "items": [
+        { "namespace": "namespace", "name": "*", "alias": "text" }
+      ],
+      "span": { "start": 0, "end": 32 }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "answer",
+      "nameSpan": { "start": 42, "end": 48 },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": { "start": 50, "end": 53 }
+      },
+      "span": { "start": 34, "end": 58 }
+    }
+  ]
+}

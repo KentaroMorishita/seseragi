@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "module": "artifact/namespace-import",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/text",
+      "module": "artifact/namespace-import/std/text",
+      "origin": { "start": 0, "end": 32 },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "symbol": "artifact/namespace-import/std/text::*",
+          "name": "*",
+          "localName": "text"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/namespace-import::answer",
+      "namespace": "value",
+      "name": "answer",
+      "visibility": "public",
+      "declaration": { "start": 34, "end": 58 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

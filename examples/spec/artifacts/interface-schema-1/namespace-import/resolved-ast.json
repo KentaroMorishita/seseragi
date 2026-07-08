@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/namespace-import",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "answer",
+      "visibility": "public",
+      "declaration": { "start": 34, "end": 58 }
+    }
+  ]
+}

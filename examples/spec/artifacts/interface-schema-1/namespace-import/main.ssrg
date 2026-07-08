@@ -1,0 +1,3 @@
+import * as text from "std/text"
+
+pub let answer: Int = 42

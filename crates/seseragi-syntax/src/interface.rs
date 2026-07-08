@@ -152,6 +152,7 @@ fn dependency_from_surface_import(
             .map(|item| InterfaceImport {
                 symbol: match item.namespace.as_str() {
                     "operator" => format!("{module}::operator({})", item.name),
+                    "namespace" => format!("{module}::*"),
                     _ => format!("{module}::{}", item.name),
                 },
                 namespace: item.namespace,
@@ -412,6 +413,23 @@ mod tests {
         assert_eq!(
             interface.dependencies[0].imports[0].local_name,
             Some("parseJson".to_owned())
+        );
+    }
+
+    #[test]
+    fn parses_namespace_import_in_interface() {
+        let interface = parse_module_interface(
+            "artifact/namespace-import/main.ssrg",
+            "import * as text from \"std/text\"\n\npub let answer: Int = 42\n",
+        );
+
+        assert_eq!(interface.dependencies.len(), 1);
+        assert_eq!(interface.dependencies[0].imports.len(), 1);
+        assert_eq!(interface.dependencies[0].imports[0].namespace, "namespace");
+        assert_eq!(interface.dependencies[0].imports[0].name, "*");
+        assert_eq!(
+            interface.dependencies[0].imports[0].local_name,
+            Some("text".to_owned())
         );
     }
 

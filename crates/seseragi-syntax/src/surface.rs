@@ -159,6 +159,18 @@ impl SurfaceParser<'_> {
         let mut items = Vec::new();
         let mut cursor = start;
         while let Some(index) = self.next_significant_token(cursor, end) {
+            if self.raw_at(index) == Some("*") {
+                let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end);
+                if let Some(alias) = alias {
+                    items.push(SurfaceImportItem {
+                        namespace: "namespace".to_owned(),
+                        name: "*".to_owned(),
+                        alias: Some(alias),
+                    });
+                    cursor = after_alias;
+                    continue;
+                }
+            }
             if self.raw_at(index) == Some("operator") {
                 let Some(operator_start) = self.next_significant_token(index + 1, end) else {
                     break;

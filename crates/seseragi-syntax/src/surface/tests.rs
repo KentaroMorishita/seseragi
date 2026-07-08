@@ -341,3 +341,21 @@ fn parses_aliased_import_items() {
         }]
     );
 }
+
+#[test]
+fn parses_namespace_import_items() {
+    let module = parse_surface_ast("main.ssrg", "import * as text from \"std/text\"\n");
+
+    assert_eq!(
+        module.imports,
+        vec![SurfaceImport {
+            specifier: "std/text".to_owned(),
+            items: vec![SurfaceImportItem {
+                namespace: "namespace".to_owned(),
+                name: "*".to_owned(),
+                alias: Some("text".to_owned()),
+            }],
+            span: ByteSpan { start: 0, end: 32 },
+        }]
+    );
+}
