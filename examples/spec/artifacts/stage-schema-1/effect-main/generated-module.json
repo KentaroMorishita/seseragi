@@ -7,6 +7,7 @@
     "abiMajor": 1,
     "requirements": ["core.unit", "effect.console.println"]
   },
+  "exports": ["main"],
   "outputs": {
     "typescript": "main.ts",
     "sourceMap": "main.ts.map"

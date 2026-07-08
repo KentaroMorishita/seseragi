@@ -12,7 +12,7 @@
 - `surface-ast.json`: surface declaration skeleton。後続stageがある場合はstage chainの入口
 - `resolved-ast.json`と`typed-hir.json`: Rust conformance runnerで個別に比較できるfrontend / semantics stage snapshot
 - `core-ir.json`から`typescript-ir.json`: backend loweringとemitterを含む最小end-to-end snapshot
-- `generated-module.json`と`main.ts`: runtime requirementを含むemitter結果
+- `generated-module.json`と`main.ts`: runtime requirementと公開export listを含むemitter結果
 - `main.ts.map`: portable Seseragi URIとsourcesContentを持つsource map v3
 
 `schema-1/recovery/`は式が欠けた編集中sourceを固定します。token列は入力を失わず、CSTはzero-widthの

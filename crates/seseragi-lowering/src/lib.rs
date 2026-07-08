@@ -105,6 +105,7 @@ mod tests {
         let bundle = emit_typescript_module(typescript, "pub let answer: Int = 42\n");
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(bundle.metadata.exports, vec!["answer"]);
         assert_eq!(bundle.typescript, "export const answer: bigint = 42n;\n");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
     }
@@ -121,6 +122,7 @@ mod tests {
         assert!(bundle
             .typescript
             .contains("import { println as _ssrg_console_println }"));
+        assert_eq!(bundle.metadata.exports, vec!["main"]);
         assert_eq!(bundle.source_map.names, vec!["main", "println"]);
     }
 

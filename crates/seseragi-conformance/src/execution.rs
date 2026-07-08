@@ -45,6 +45,24 @@ pub(crate) fn resolve_compiled_runtime_requirements(
         .collect()
 }
 
+pub(crate) fn resolve_compiled_exports(
+    case: &Path,
+    compiled_module: &str,
+) -> Result<Vec<String>, String> {
+    let (_, compiled_module) = read_compiled_module(case, compiled_module)?;
+    compiled_module
+        .pointer("/exports")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "compiled generated-module.json exports is missing".to_owned())?
+        .iter()
+        .map(|export| {
+            export.as_str().map(str::to_owned).ok_or_else(|| {
+                "compiled generated-module.json export name must be a string".to_owned()
+            })
+        })
+        .collect()
+}
+
 fn read_compiled_module(
     case: &Path,
     compiled_module: &str,

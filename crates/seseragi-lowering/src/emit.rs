@@ -16,6 +16,7 @@ pub struct GeneratedModule {
     pub module: String,
     pub target: String,
     pub runtime: GeneratedRuntime,
+    pub exports: Vec<String>,
     pub outputs: GeneratedOutputs,
 }
 
@@ -49,6 +50,7 @@ pub struct SourceMap {
 pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> GeneratedBundle {
     let typescript = render_typescript(&module);
     let source_map = source_map_for_module(&module, source_text);
+    let exports = module_exports(&module);
     let metadata = GeneratedModule {
         schema: module.schema,
         module: module.module,
@@ -58,6 +60,7 @@ pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> Ge
             abi_major: 1,
             requirements: module.runtime_requirements,
         },
+        exports,
         outputs: GeneratedOutputs {
             typescript: "main.ts".to_owned(),
             source_map: "main.ts.map".to_owned(),
@@ -69,6 +72,27 @@ pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> Ge
         typescript,
         source_map,
     }
+}
+
+fn module_exports(module: &TypeScriptModule) -> Vec<String> {
+    let mut exports = Vec::new();
+    for binding in &module.bindings {
+        match binding {
+            TypeScriptBinding::Const { exported, name, .. } if *exported => {
+                exports.push(name.clone());
+            }
+            _ => {}
+        }
+    }
+    for function in &module.functions {
+        match function {
+            TypeScriptFunction::ConstFunction { exported, name, .. } if *exported => {
+                exports.push(name.clone());
+            }
+            _ => {}
+        }
+    }
+    exports
 }
 
 fn render_typescript(module: &TypeScriptModule) -> String {

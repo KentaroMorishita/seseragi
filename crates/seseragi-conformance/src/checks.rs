@@ -225,6 +225,16 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     if !case.join(compiled_module).is_file() {
         return Err("compiled generated-module.json reference is missing".to_owned());
     }
+    let entry_export = run
+        .pointer("/entry/export")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "run.json entry.export is missing".to_owned())?;
+    let compiled_exports = execution::resolve_compiled_exports(case, compiled_module)?;
+    if !compiled_exports.iter().any(|export| export == entry_export) {
+        return Err(format!(
+            "execution entry export {entry_export} is missing from compiled module exports"
+        ));
+    }
     let expected_runtime_requirements = expected_string_array(
         &run,
         "/expected/runtimeRequirements",
