@@ -1,4 +1,4 @@
-import { unit, type Effect, type Unit } from "./effect";
+import { unit, type Unit } from "./effect";
 
 export type Console = {
   readonly println: (value: string) => void;
@@ -19,11 +19,7 @@ export const liveConsole: Console = {
   },
 };
 
-export function println(
-  value: unknown
-): Effect<ConsoleEnvironment, ConsoleError, Unit> {
-  return (environment) => {
-    environment.console.println(String(value));
-    return unit;
-  };
+export function println(value: unknown): Unit {
+  liveConsole.println(String(value));
+  return unit;
 }

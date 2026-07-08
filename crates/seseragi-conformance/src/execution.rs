@@ -77,9 +77,9 @@ fn prepare_execution_dir(root: &Path, case: &Path) -> Result<PathBuf, String> {
 }
 
 fn stage_runtime(root: &Path, execution_dir: &Path) -> Result<(), String> {
-    let runtime_source = root.join("src/runtime");
+    let runtime_source = root.join("runtime/ts");
     if !runtime_source.is_dir() {
-        return Err("src/runtime is missing".to_owned());
+        return Err("runtime/ts is missing".to_owned());
     }
     let runtime_target = execution_dir.join("node_modules/@seseragi/runtime");
     let runtime_parent = runtime_target

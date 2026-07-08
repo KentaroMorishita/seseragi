@@ -9,4 +9,5 @@ helpers required by `examples/spec/artifacts/runtime-schema-1/**/abi.json` here.
 Current scope:
 
 - `./effect`: minimal `Effect<R, E, A>` representation and constructors.
-- `./console`: console service boundary and `println` helper.
+- `./console`: direct `println` helper required by the current generated
+  TypeScript snapshots.
