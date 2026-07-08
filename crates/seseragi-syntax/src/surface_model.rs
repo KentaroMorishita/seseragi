@@ -76,6 +76,15 @@ pub enum SurfaceDecl {
         target: TypeRef,
         span: ByteSpan,
     },
+    Struct {
+        visibility: Visibility,
+        name: String,
+        name_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        fields: Vec<SurfaceField>,
+        span: ByteSpan,
+    },
     Trait {
         visibility: Visibility,
         name: String,
@@ -113,6 +122,15 @@ pub enum SurfaceDecl {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SurfaceParameter {
+    pub name: String,
+    pub name_span: ByteSpan,
+    #[serde(rename = "type")]
+    pub type_ref: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceField {
     pub name: String,
     pub name_span: ByteSpan,
     #[serde(rename = "type")]

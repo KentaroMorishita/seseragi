@@ -25,6 +25,10 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         &artifacts.join("interface-schema-1"),
         "surface-ast.json",
     ));
+    surface_ast_cases.extend(discover_artifact_cases(
+        &artifacts.join("surface-schema-1"),
+        "surface-ast.json",
+    ));
     surface_ast_cases.sort();
     let surface_ast_total = surface_ast_cases.len();
     let mut interface_cases = discover_interface_cases(&artifacts.join("schema-1"));

@@ -1,5 +1,7 @@
 use super::*;
 
+use crate::surface_model::SurfaceField;
+
 #[test]
 fn constructs_let_surface_module() {
     let module = SurfaceModule {
@@ -386,6 +388,31 @@ fn parses_alias_declarations() {
                 span: ByteSpan { start: 21, end: 27 },
             },
             span: ByteSpan { start: 0, end: 27 },
+        }
+    );
+}
+
+#[test]
+fn parses_struct_declarations() {
+    let module = parse_surface_ast("main.ssrg", "pub struct Box<A> {\n  value: A,\n}\n");
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Struct {
+            visibility: Visibility::Public,
+            name: "Box".to_owned(),
+            name_span: ByteSpan { start: 11, end: 14 },
+            type_parameters: vec!["A".to_owned()],
+            fields: vec![SurfaceField {
+                name: "value".to_owned(),
+                name_span: ByteSpan { start: 22, end: 27 },
+                type_ref: TypeRef::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 29, end: 30 },
+                },
+            }],
+            span: ByteSpan { start: 0, end: 33 },
         }
     );
 }

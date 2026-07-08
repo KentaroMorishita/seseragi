@@ -99,6 +99,7 @@ pub(crate) fn typed_decl_from_surface(
         SurfaceDecl::Fn { .. }
         | SurfaceDecl::Newtype { .. }
         | SurfaceDecl::Alias { .. }
+        | SurfaceDecl::Struct { .. }
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }
         | SurfaceDecl::Instance { .. } => None,
