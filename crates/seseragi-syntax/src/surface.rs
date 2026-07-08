@@ -12,6 +12,7 @@ mod instances;
 mod operators;
 mod signatures;
 mod traits;
+mod type_refs;
 mod types;
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
@@ -230,119 +231,6 @@ impl SurfaceParser<'_> {
             }
             if self.kind_at(separator) != Some(TokenKind::PunctuationComma) {
                 return (Vec::new(), start);
-            }
-            cursor = separator + 1;
-        }
-    }
-
-    fn parse_type_after_colon(&self, start: usize, end: usize) -> Option<TypeRef> {
-        self.find_significant_token(start, end, |kind| kind == TokenKind::PunctuationColon)
-            .and_then(|colon| self.parse_type_name(colon + 1, end))
-    }
-
-    fn parse_type_name(&self, start: usize, end: usize) -> Option<TypeRef> {
-        self.parse_type_ref(start, end)
-            .map(|(type_ref, _)| type_ref)
-    }
-
-    fn parse_type_ref(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
-        let type_index = self.next_significant_token(start, end)?;
-        if self.kind_at(type_index) == Some(TokenKind::PunctuationBraceLeft) {
-            return self.parse_record_type_ref(type_index, end);
-        }
-        if !matches!(
-            self.kind_at(type_index),
-            Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower)
-        ) {
-            return None;
-        }
-
-        let (name, name_span, after_name) = self.parse_qualified_type_name(type_index, end)?;
-        let next = self.next_significant_token(after_name, end);
-        let (arguments, next_index, span_end) =
-            if next.is_some_and(|index| self.is_angle_left(index)) {
-                self.parse_type_arguments(next? + 1, end)
-                    .map(|(arguments, closing_angle)| {
-                        let span_end = self
-                            .tokens
-                            .get(closing_angle)
-                            .map(|token| token.end)
-                            .unwrap_or(name_span.end);
-                        (arguments, closing_angle + 1, span_end)
-                    })
-                    .unwrap_or_else(|| (Vec::new(), after_name, name_span.end))
-            } else {
-                (Vec::new(), after_name, name_span.end)
-            };
-
-        Some((
-            TypeRef::Named {
-                name,
-                arguments,
-                span: ByteSpan {
-                    start: name_span.start,
-                    end: span_end,
-                },
-            },
-            next_index,
-        ))
-    }
-
-    fn parse_qualified_type_name(
-        &self,
-        start: usize,
-        end: usize,
-    ) -> Option<(String, ByteSpan, usize)> {
-        let mut parts = vec![self.identifier_name_at(start)?];
-        let mut last = start;
-        let mut cursor = start + 1;
-
-        while let Some(dot) = self.next_significant_token(cursor, end) {
-            if self.kind_at(dot) != Some(TokenKind::PunctuationDot) {
-                break;
-            }
-            let Some(next_name) = self.next_significant_token(dot + 1, end) else {
-                break;
-            };
-            let Some(name) = self.identifier_name_at(next_name) else {
-                break;
-            };
-            parts.push(name);
-            last = next_name;
-            cursor = next_name + 1;
-        }
-
-        let start_span = self.byte_span(start)?;
-        let end_span = self.byte_span(last)?;
-        Some((
-            parts.join("."),
-            ByteSpan {
-                start: start_span.start,
-                end: end_span.end,
-            },
-            cursor,
-        ))
-    }
-
-    fn parse_type_arguments(&self, start: usize, end: usize) -> Option<(Vec<TypeRef>, usize)> {
-        let mut arguments = Vec::new();
-        let mut cursor = start;
-
-        loop {
-            let next = self.next_significant_token(cursor, end)?;
-            if self.is_angle_right(next) {
-                return Some((arguments, next));
-            }
-
-            let (argument, after_argument) = self.parse_type_ref(next, end)?;
-            arguments.push(argument);
-
-            let separator = self.next_significant_token(after_argument, end)?;
-            if self.is_angle_right(separator) {
-                return Some((arguments, separator));
-            }
-            if self.kind_at(separator) != Some(TokenKind::PunctuationComma) {
-                return None;
             }
             cursor = separator + 1;
         }
