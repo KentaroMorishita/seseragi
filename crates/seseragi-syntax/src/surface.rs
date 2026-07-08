@@ -397,6 +397,7 @@ impl SurfaceParser<'_> {
                     | "alias"
                     | "type"
                     | "struct"
+                    | "opaque"
                     | "operator"
                     | "instance"
                     | "trait"

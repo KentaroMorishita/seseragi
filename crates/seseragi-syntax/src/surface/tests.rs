@@ -489,6 +489,29 @@ fn parses_opaque_nominal_declarations() {
 }
 
 #[test]
+fn parses_private_opaque_nominal_declarations() {
+    let module = parse_surface_ast("main.ssrg", "opaque newtype Secret = Int\n");
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Newtype {
+            visibility: Visibility::Private,
+            opaque: true,
+            name: "Secret".to_owned(),
+            name_span: ByteSpan { start: 15, end: 21 },
+            type_parameters: Vec::new(),
+            deriving: Vec::new(),
+            representation: TypeRef::Named {
+                name: "Int".to_owned(),
+                arguments: Vec::new(),
+                span: ByteSpan { start: 24, end: 27 },
+            },
+            span: ByteSpan { start: 0, end: 27 },
+        }
+    );
+}
+
+#[test]
 fn parses_struct_declarations() {
     let module = parse_surface_ast("main.ssrg", "pub struct Box<A> {\n  value: A,\n}\n");
 
