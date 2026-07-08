@@ -1,11 +1,13 @@
 use crate::checks::{
-    check_core_ir_json, check_cst, check_diagnostics_json, check_execution_case,
-    check_generated_module, check_interface_json, check_resolved_ast_json, check_surface_ast,
-    check_tokens, check_typed_hir_json, check_typescript_ir_json,
+    check_core_ir_json, check_cst, check_diagnostics_json, check_interface_json,
+    check_resolved_ast_json, check_surface_ast, check_tokens, check_typed_hir_json,
+    check_typescript_ir_json,
 };
 use crate::discovery::{
     discover_artifact_cases, discover_cases, discover_interface_cases, discover_resolved_ast_cases,
 };
+use crate::execution_case::check_execution_case;
+use crate::generated_module::check_generated_module;
 use crate::runtime_abi::check_runtime_abi_case;
 use std::path::PathBuf;
 

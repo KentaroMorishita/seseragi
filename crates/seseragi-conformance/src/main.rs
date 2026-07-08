@@ -1,6 +1,8 @@
 mod checks;
 mod discovery;
 mod execution;
+mod execution_case;
+mod generated_module;
 mod pipeline;
 mod runner;
 mod runtime_abi;
