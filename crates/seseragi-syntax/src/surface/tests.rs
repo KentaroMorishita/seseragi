@@ -241,6 +241,8 @@ fn parses_rich_interface_surface_declarations() {
             visibility: Visibility::Public,
             name: "Score".to_owned(),
             name_span: ByteSpan { start: 46, end: 51 },
+            type_parameters: Vec::new(),
+            deriving: Vec::new(),
             representation: TypeRef::Named {
                 name: "Int".to_owned(),
                 arguments: Vec::new(),
@@ -406,6 +408,7 @@ fn parses_type_declarations() {
             name: "Maybe".to_owned(),
             name_span: ByteSpan { start: 9, end: 14 },
             type_parameters: vec!["A".to_owned()],
+            deriving: Vec::new(),
             variants: vec![
                 SurfaceVariant {
                     name: "Nothing".to_owned(),
@@ -428,6 +431,38 @@ fn parses_type_declarations() {
 }
 
 #[test]
+fn parses_deriving_clauses_on_nominal_types() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "type Color deriving Eq, Ord, Show =\n  | Red\n  | Blue\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Type {
+            visibility: Visibility::Private,
+            name: "Color".to_owned(),
+            name_span: ByteSpan { start: 5, end: 10 },
+            type_parameters: Vec::new(),
+            deriving: vec!["Eq".to_owned(), "Ord".to_owned(), "Show".to_owned()],
+            variants: vec![
+                SurfaceVariant {
+                    name: "Red".to_owned(),
+                    name_span: ByteSpan { start: 40, end: 43 },
+                    payload: None,
+                },
+                SurfaceVariant {
+                    name: "Blue".to_owned(),
+                    name_span: ByteSpan { start: 48, end: 52 },
+                    payload: None,
+                },
+            ],
+            span: ByteSpan { start: 0, end: 52 },
+        }
+    );
+}
+
+#[test]
 fn parses_struct_declarations() {
     let module = parse_surface_ast("main.ssrg", "pub struct Box<A> {\n  value: A,\n}\n");
 
@@ -438,6 +473,7 @@ fn parses_struct_declarations() {
             name: "Box".to_owned(),
             name_span: ByteSpan { start: 11, end: 14 },
             type_parameters: vec!["A".to_owned()],
+            deriving: Vec::new(),
             fields: vec![SurfaceField {
                 name: "value".to_owned(),
                 name_span: ByteSpan { start: 22, end: 27 },

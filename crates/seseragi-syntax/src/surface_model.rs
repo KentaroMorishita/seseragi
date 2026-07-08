@@ -64,6 +64,10 @@ pub enum SurfaceDecl {
         visibility: Visibility,
         name: String,
         name_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        deriving: Vec<String>,
         representation: TypeRef,
         span: ByteSpan,
     },
@@ -82,6 +86,8 @@ pub enum SurfaceDecl {
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        deriving: Vec<String>,
         variants: Vec<SurfaceVariant>,
         span: ByteSpan,
     },
@@ -91,6 +97,8 @@ pub enum SurfaceDecl {
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        deriving: Vec<String>,
         fields: Vec<SurfaceField>,
         span: ByteSpan,
     },
