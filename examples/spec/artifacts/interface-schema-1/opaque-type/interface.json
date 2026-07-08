@@ -9,7 +9,7 @@
       "namespace": "type",
       "name": "Token",
       "visibility": "public",
-      "declarationKind": "opaque",
+      "declarationKind": "opaque-type",
       "declaration": { "start": 0, "end": 38 },
       "scheme": {
         "typeParameters": ["A"],

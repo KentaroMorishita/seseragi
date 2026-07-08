@@ -9,7 +9,7 @@
       "namespace": "type",
       "name": "UserId",
       "visibility": "public",
-      "declarationKind": "opaque",
+      "declarationKind": "opaque-struct",
       "declaration": { "start": 0, "end": 42 },
       "scheme": {
         "typeParameters": [],

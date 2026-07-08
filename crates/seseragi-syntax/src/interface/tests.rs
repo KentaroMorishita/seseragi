@@ -251,7 +251,7 @@ fn exports_opaque_type_names_in_interface() {
     assert_eq!(interface.exports.len(), 1);
     let type_export = &interface.exports[0];
     assert_eq!(type_export.name, "Token");
-    assert_eq!(type_export.declaration_kind, Some("opaque".to_owned()));
+    assert_eq!(type_export.declaration_kind, Some("opaque-type".to_owned()));
     assert_eq!(type_export.scheme.type_parameters, vec!["A".to_owned()]);
     assert_eq!(
         type_export.scheme.type_ref,
@@ -273,7 +273,10 @@ fn exports_opaque_struct_names_in_interface() {
     assert_eq!(interface.exports.len(), 1);
     let struct_export = &interface.exports[0];
     assert_eq!(struct_export.name, "UserId");
-    assert_eq!(struct_export.declaration_kind, Some("opaque".to_owned()));
+    assert_eq!(
+        struct_export.declaration_kind,
+        Some("opaque-struct".to_owned())
+    );
     assert_eq!(
         struct_export.scheme.type_ref,
         InterfaceType::TypeConstructor {
