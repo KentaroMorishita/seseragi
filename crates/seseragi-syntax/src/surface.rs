@@ -7,8 +7,14 @@ use crate::token::{Token, TokenKind};
 
 mod constraints;
 mod functions;
+#[cfg(test)]
+mod import_tests;
 mod imports;
 mod instances;
+#[cfg(test)]
+mod nominal_tests;
+#[cfg(test)]
+mod operator_tests;
 mod operators;
 mod signatures;
 mod traits;
