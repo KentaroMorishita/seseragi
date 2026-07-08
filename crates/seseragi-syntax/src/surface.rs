@@ -205,7 +205,13 @@ impl SurfaceParser<'_> {
         let equals = self.find_significant_token(after_spelling, end, |kind| {
             kind == TokenKind::OperatorEquals
         })?;
-        let (parameters, return_type) = self.parse_operator_signature(after_spelling, equals)?;
+        let where_index = self.find_raw(after_spelling, equals, "where");
+        let signature_end = where_index.unwrap_or(equals);
+        let constraints = where_index
+            .map(|where_index| self.parse_constraint_names(where_index + 1, equals))
+            .unwrap_or_default();
+        let (parameters, return_type) =
+            self.parse_operator_signature(after_spelling, signature_end)?;
 
         Some(SurfaceDecl::Operator {
             visibility,
@@ -215,6 +221,7 @@ impl SurfaceParser<'_> {
             spelling,
             parameters,
             return_type,
+            constraints,
             span: self.declaration_span(top_start, end)?,
         })
     }
@@ -313,6 +320,26 @@ impl SurfaceParser<'_> {
             }
             cursor = separator + 1;
         }
+    }
+
+    fn parse_constraint_names(&self, start: usize, end: usize) -> Vec<String> {
+        let mut constraints = Vec::new();
+        let mut cursor = start;
+        while let Some(next) = self.next_significant_token(cursor, end) {
+            let Some((constraint, after_constraint)) = self.parse_type_ref(next, end) else {
+                break;
+            };
+            let TypeRef::Named { name, .. } = constraint;
+            constraints.push(name);
+            let Some(separator) = self.next_significant_token(after_constraint, end) else {
+                break;
+            };
+            if self.kind_at(separator) != Some(TokenKind::PunctuationComma) {
+                break;
+            }
+            cursor = separator + 1;
+        }
+        constraints
     }
 
     fn parse_type_after_colon(&self, start: usize, end: usize) -> Option<TypeRef> {

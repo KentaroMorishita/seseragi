@@ -10,7 +10,7 @@
       "visibility": "public",
       "fixity": "infixr",
       "precedence": 5,
-      "declaration": { "start": 0, "end": 64 }
+      "declaration": { "start": 0, "end": 83 }
     }
   ]
 }

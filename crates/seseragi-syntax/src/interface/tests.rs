@@ -119,7 +119,7 @@ fn parses_nested_type_arguments_in_interface() {
 fn parses_operator_type_parameters_in_interface() {
     let interface = parse_module_interface(
         "artifact/generic-operator/main.ssrg",
-        "pub operator<A> infixr 5 <+>\n  left: A -> right: A -> A =\n  left\n",
+        "pub operator<A> infixr 5 <+>\n  left: A -> right: A -> A\nwhere Semigroup<A> =\n  left\n",
     );
     let operator_export = interface
         .exports
@@ -129,6 +129,7 @@ fn parses_operator_type_parameters_in_interface() {
 
     assert_eq!(operator_export.name, "<+>");
     assert_eq!(operator_export.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(operator_export.scheme.constraints[0].name, "Semigroup");
     assert_eq!(interface.operators[0].fixity, "infixr");
     assert_eq!(interface.operators[0].precedence, 5);
 }

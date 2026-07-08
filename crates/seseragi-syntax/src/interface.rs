@@ -116,6 +116,7 @@ fn export_from_surface_decl(
             spelling,
             parameters,
             return_type,
+            constraints,
             span,
             ..
         } if *visibility == Visibility::Public => Some(InterfaceExport {
@@ -127,7 +128,10 @@ fn export_from_surface_decl(
             declaration: *span,
             scheme: InterfaceScheme {
                 type_parameters: type_parameters.clone(),
-                constraints: Vec::new(),
+                constraints: constraints
+                    .iter()
+                    .map(|name| InterfaceConstraint { name: name.clone() })
+                    .collect(),
                 type_ref: operator_interface_type(parameters, return_type),
             },
             representation: None,

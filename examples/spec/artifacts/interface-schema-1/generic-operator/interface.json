@@ -10,10 +10,10 @@
       "name": "<+>",
       "visibility": "public",
       "declarationKind": "custom-operator",
-      "declaration": { "start": 0, "end": 64 },
+      "declaration": { "start": 0, "end": 83 },
       "scheme": {
         "typeParameters": ["A"],
-        "constraints": [],
+        "constraints": [{ "name": "Semigroup" }],
         "type": {
           "kind": "function",
           "parameter": { "kind": "named", "name": "A", "arguments": [] },
@@ -32,7 +32,7 @@
       "spelling": "<+>",
       "fixity": "infixr",
       "precedence": 5,
-      "origin": { "start": 0, "end": 64 }
+      "origin": { "start": 0, "end": 83 }
     }
   ],
   "instances": []

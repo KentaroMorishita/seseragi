@@ -1,3 +1,4 @@
 pub operator<A> infixr 5 <+>
-  left: A -> right: A -> A =
+  left: A -> right: A -> A
+where Semigroup<A> =
   left
