@@ -6,6 +6,7 @@ mod generated_module;
 mod pipeline;
 mod runner;
 mod runtime_abi;
+mod runtime_package;
 
 use std::path::PathBuf;
 
