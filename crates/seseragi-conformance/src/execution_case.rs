@@ -71,10 +71,7 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     let stderr = fs::read_to_string(case.join(stderr_name))
         .map_err(|error| format!("failed to read expected stderr snapshot: {error}"))?;
 
-    let trace_stdout = run
-        .pointer("/expected/trace/0/stdout")
-        .and_then(|value| value.as_str())
-        .ok_or_else(|| "run.json expected.trace[0].stdout is missing".to_owned())?;
+    let trace_stdout = expected_trace_stdout(&run)?;
     if trace_stdout != stdout {
         return Err("execution stdout trace does not match stdout snapshot".to_owned());
     }
@@ -98,6 +95,22 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     }
 
     Ok(())
+}
+
+fn expected_trace_stdout(run: &serde_json::Value) -> Result<String, String> {
+    let trace = run
+        .pointer("/expected/trace")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "run.json expected.trace must be an array".to_owned())?;
+    let mut stdout = String::new();
+    for (index, event) in trace.iter().enumerate() {
+        let event_stdout = event
+            .get("stdout")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| format!("run.json expected.trace[{index}].stdout is missing"))?;
+        stdout.push_str(event_stdout);
+    }
+    Ok(stdout)
 }
 
 fn expected_string_array(
