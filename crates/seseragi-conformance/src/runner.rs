@@ -32,7 +32,12 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         &artifacts.join("interface-schema-1"),
     ));
     let interface_total = interface_cases.len();
-    let resolved_ast_cases = discover_resolved_ast_cases(&artifacts.join("schema-1"));
+    let mut resolved_ast_cases = discover_resolved_ast_cases(&artifacts.join("schema-1"));
+    resolved_ast_cases.extend(discover_artifact_cases(
+        &artifacts.join("interface-schema-1"),
+        "resolved-ast.json",
+    ));
+    resolved_ast_cases.sort();
     let resolved_ast_total = resolved_ast_cases.len();
     let typed_hir_cases = discover_artifact_cases(&artifacts, "typed-hir.json");
     let typed_hir_total = typed_hir_cases.len();
