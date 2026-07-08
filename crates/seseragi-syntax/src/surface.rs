@@ -105,6 +105,11 @@ impl SurfaceParser<'_> {
         } else {
             (Visibility::Private, first)
         };
+        let (opaque, decl_start) = if self.raw_at(decl_start) == Some("opaque") {
+            (true, self.next_significant_token(decl_start + 1, end)?)
+        } else {
+            (false, decl_start)
+        };
 
         match self.kind_at(decl_start) {
             Some(TokenKind::KeywordLet) => self.parse_let_decl(visibility, start, decl_start, end),
@@ -115,7 +120,7 @@ impl SurfaceParser<'_> {
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("newtype") =>
             {
-                self.parse_newtype_decl(visibility, start, decl_start, end)
+                self.parse_newtype_decl(visibility, opaque, start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("alias") =>
@@ -125,12 +130,12 @@ impl SurfaceParser<'_> {
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("type") =>
             {
-                self.parse_type_decl(visibility, start, decl_start, end)
+                self.parse_type_decl(visibility, opaque, start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("struct") =>
             {
-                self.parse_struct_decl(visibility, start, decl_start, end)
+                self.parse_struct_decl(visibility, opaque, start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("trait") =>

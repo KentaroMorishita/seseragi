@@ -228,6 +228,20 @@ fn parses_generic_newtype_interface() {
 }
 
 #[test]
+fn hides_opaque_newtype_representation_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/opaque-newtype/main.ssrg",
+        "pub opaque newtype UserId = Int\n",
+    );
+
+    assert_eq!(interface.exports.len(), 1);
+    let newtype_export = &interface.exports[0];
+    assert_eq!(newtype_export.name, "UserId");
+    assert_eq!(newtype_export.declaration_kind, Some("newtype".to_owned()));
+    assert_eq!(newtype_export.representation, None);
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

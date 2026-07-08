@@ -1,0 +1,1 @@
+pub opaque newtype UserId = Int

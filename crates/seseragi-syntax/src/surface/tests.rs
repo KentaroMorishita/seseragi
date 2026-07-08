@@ -239,6 +239,7 @@ fn parses_rich_interface_surface_declarations() {
         module.declarations[0],
         SurfaceDecl::Newtype {
             visibility: Visibility::Public,
+            opaque: false,
             name: "Score".to_owned(),
             name_span: ByteSpan { start: 46, end: 51 },
             type_parameters: Vec::new(),
@@ -405,6 +406,7 @@ fn parses_type_declarations() {
         module.declarations[0],
         SurfaceDecl::Type {
             visibility: Visibility::Public,
+            opaque: false,
             name: "Maybe".to_owned(),
             name_span: ByteSpan { start: 9, end: 14 },
             type_parameters: vec!["A".to_owned()],
@@ -441,6 +443,7 @@ fn parses_deriving_clauses_on_nominal_types() {
         module.declarations[0],
         SurfaceDecl::Type {
             visibility: Visibility::Private,
+            opaque: false,
             name: "Color".to_owned(),
             name_span: ByteSpan { start: 5, end: 10 },
             type_parameters: Vec::new(),
@@ -463,6 +466,29 @@ fn parses_deriving_clauses_on_nominal_types() {
 }
 
 #[test]
+fn parses_opaque_nominal_declarations() {
+    let module = parse_surface_ast("main.ssrg", "pub opaque newtype UserId = Int\n");
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Newtype {
+            visibility: Visibility::Public,
+            opaque: true,
+            name: "UserId".to_owned(),
+            name_span: ByteSpan { start: 19, end: 25 },
+            type_parameters: Vec::new(),
+            deriving: Vec::new(),
+            representation: TypeRef::Named {
+                name: "Int".to_owned(),
+                arguments: Vec::new(),
+                span: ByteSpan { start: 28, end: 31 },
+            },
+            span: ByteSpan { start: 0, end: 31 },
+        }
+    );
+}
+
+#[test]
 fn parses_struct_declarations() {
     let module = parse_surface_ast("main.ssrg", "pub struct Box<A> {\n  value: A,\n}\n");
 
@@ -470,6 +496,7 @@ fn parses_struct_declarations() {
         module.declarations[0],
         SurfaceDecl::Struct {
             visibility: Visibility::Public,
+            opaque: false,
             name: "Box".to_owned(),
             name_span: ByteSpan { start: 11, end: 14 },
             type_parameters: vec!["A".to_owned()],

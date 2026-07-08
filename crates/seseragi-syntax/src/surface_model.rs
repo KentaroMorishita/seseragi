@@ -62,6 +62,8 @@ pub enum SurfaceDecl {
     },
     Newtype {
         visibility: Visibility,
+        #[serde(default, skip_serializing_if = "is_false")]
+        opaque: bool,
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -82,6 +84,8 @@ pub enum SurfaceDecl {
     },
     Type {
         visibility: Visibility,
+        #[serde(default, skip_serializing_if = "is_false")]
+        opaque: bool,
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -93,6 +97,8 @@ pub enum SurfaceDecl {
     },
     Struct {
         visibility: Visibility,
+        #[serde(default, skip_serializing_if = "is_false")]
+        opaque: bool,
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -190,4 +196,8 @@ pub enum TypeRef {
         arguments: Vec<TypeRef>,
         span: ByteSpan,
     },
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }

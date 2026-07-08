@@ -68,6 +68,7 @@ pub(super) fn export_from_surface_decl(
         }),
         SurfaceDecl::Newtype {
             visibility,
+            opaque,
             name,
             type_parameters,
             representation,
@@ -88,7 +89,7 @@ pub(super) fn export_from_surface_decl(
                     arity: type_parameters.len() as u32,
                 },
             },
-            representation: Some(interface_type_from_type_ref(representation)),
+            representation: (!opaque).then(|| interface_type_from_type_ref(representation)),
         }),
         SurfaceDecl::Alias {
             visibility,

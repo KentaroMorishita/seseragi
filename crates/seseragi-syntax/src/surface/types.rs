@@ -6,6 +6,7 @@ impl SurfaceParser<'_> {
     pub(super) fn parse_newtype_decl(
         &self,
         visibility: Visibility,
+        opaque: bool,
         top_start: usize,
         decl_start: usize,
         end: usize,
@@ -22,6 +23,7 @@ impl SurfaceParser<'_> {
 
         Some(SurfaceDecl::Newtype {
             visibility,
+            opaque,
             name,
             name_span: self.byte_span(name_index)?,
             type_parameters,
@@ -60,6 +62,7 @@ impl SurfaceParser<'_> {
     pub(super) fn parse_type_decl(
         &self,
         visibility: Visibility,
+        opaque: bool,
         top_start: usize,
         decl_start: usize,
         end: usize,
@@ -75,6 +78,7 @@ impl SurfaceParser<'_> {
 
         Some(SurfaceDecl::Type {
             visibility,
+            opaque,
             name,
             name_span: self.byte_span(name_index)?,
             type_parameters,
@@ -117,6 +121,7 @@ impl SurfaceParser<'_> {
     pub(super) fn parse_struct_decl(
         &self,
         visibility: Visibility,
+        opaque: bool,
         top_start: usize,
         decl_start: usize,
         end: usize,
@@ -137,6 +142,7 @@ impl SurfaceParser<'_> {
 
         Some(SurfaceDecl::Struct {
             visibility,
+            opaque,
             name,
             name_span: self.byte_span(name_index)?,
             type_parameters,

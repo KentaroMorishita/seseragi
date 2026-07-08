@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/opaque-newtype",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/opaque-newtype::UserId",
+      "namespace": "type",
+      "name": "UserId",
+      "visibility": "public",
+      "declarationKind": "newtype",
+      "declaration": { "start": 0, "end": 31 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "UserId",
+          "arity": 0
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
