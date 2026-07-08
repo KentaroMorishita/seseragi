@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "module": "artifact/qualified-type",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/qualified-type::counts",
+      "namespace": "value",
+      "name": "counts",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 45 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "maps.Map",
+          "arguments": [
+            { "kind": "named", "name": "String", "arguments": [] },
+            { "kind": "named", "name": "Int", "arguments": [] }
+          ]
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

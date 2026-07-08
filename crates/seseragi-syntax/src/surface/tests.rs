@@ -585,6 +585,40 @@ fn parses_operator_type_parameters() {
 }
 
 #[test]
+fn parses_qualified_type_names_in_surface_ast() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub let counts: maps.Map<String, Int> = value\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Let {
+            visibility: Visibility::Public,
+            name: "counts".to_owned(),
+            name_span: ByteSpan { start: 8, end: 14 },
+            type_ref: Some(TypeRef::Named {
+                name: "maps.Map".to_owned(),
+                arguments: vec![
+                    TypeRef::Named {
+                        name: "String".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 25, end: 31 },
+                    },
+                    TypeRef::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 33, end: 36 },
+                    },
+                ],
+                span: ByteSpan { start: 16, end: 37 },
+            }),
+            span: ByteSpan { start: 0, end: 45 },
+        }
+    );
+}
+
+#[test]
 fn parses_record_type_references_in_surface_ast() {
     let module = parse_surface_ast(
         "main.ssrg",

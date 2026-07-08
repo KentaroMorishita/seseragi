@@ -257,9 +257,7 @@ impl SurfaceParser<'_> {
             return None;
         }
 
-        let name = self.tokens.get(type_index)?.raw.clone();
-        let name_span = self.byte_span(type_index)?;
-        let after_name = type_index + 1;
+        let (name, name_span, after_name) = self.parse_qualified_type_name(type_index, end)?;
         let next = self.next_significant_token(after_name, end);
         let (arguments, next_index, span_end) =
             if next.is_some_and(|index| self.is_angle_left(index)) {
@@ -287,6 +285,42 @@ impl SurfaceParser<'_> {
                 },
             },
             next_index,
+        ))
+    }
+
+    fn parse_qualified_type_name(
+        &self,
+        start: usize,
+        end: usize,
+    ) -> Option<(String, ByteSpan, usize)> {
+        let mut parts = vec![self.identifier_name_at(start)?];
+        let mut last = start;
+        let mut cursor = start + 1;
+
+        while let Some(dot) = self.next_significant_token(cursor, end) {
+            if self.kind_at(dot) != Some(TokenKind::PunctuationDot) {
+                break;
+            }
+            let Some(next_name) = self.next_significant_token(dot + 1, end) else {
+                break;
+            };
+            let Some(name) = self.identifier_name_at(next_name) else {
+                break;
+            };
+            parts.push(name);
+            last = next_name;
+            cursor = next_name + 1;
+        }
+
+        let start_span = self.byte_span(start)?;
+        let end_span = self.byte_span(last)?;
+        Some((
+            parts.join("."),
+            ByteSpan {
+                start: start_span.start,
+                end: end_span.end,
+            },
+            cursor,
         ))
     }
 

@@ -137,6 +137,27 @@ fn parses_nested_type_arguments_in_interface() {
 }
 
 #[test]
+fn parses_qualified_type_names_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/qualified-type/main.ssrg",
+        "pub let counts: maps.Map<String, Int> = value\n",
+    );
+
+    let json = serde_json::to_value(&interface).expect("interface serializes");
+    assert_eq!(
+        json["exports"][0]["scheme"]["type"],
+        serde_json::json!({
+            "kind": "named",
+            "name": "maps.Map",
+            "arguments": [
+                { "kind": "named", "name": "String", "arguments": [] },
+                { "kind": "named", "name": "Int", "arguments": [] }
+            ],
+        })
+    );
+}
+
+#[test]
 fn parses_record_type_references_in_interface() {
     let interface = parse_module_interface(
         "artifact/record-type/main.ssrg",
