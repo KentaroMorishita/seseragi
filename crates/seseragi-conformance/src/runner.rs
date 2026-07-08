@@ -177,7 +177,7 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         }
     }
     for case in &runtime_abi_cases {
-        if let Err(error) = check_runtime_abi_case(case) {
+        if let Err(error) = check_runtime_abi_case(&root, case) {
             failed += 1;
             eprintln!("{}: {error}", case.display());
         }
