@@ -190,6 +190,7 @@ mod tests {
                         closed: true,
                         fields: vec![TypedRecordField {
                             name: "console".to_owned(),
+                            optional: false,
                             type_ref: TypedType::Named {
                                 name: "Console".to_owned(),
                                 arguments: Vec::new(),
@@ -239,6 +240,7 @@ mod tests {
                         closed: true,
                         fields: vec![TypedRecordField {
                             name: "console".to_owned(),
+                            optional: false,
                             type_ref: TypedType::Named {
                                 name: "Console".to_owned(),
                                 arguments: Vec::new(),

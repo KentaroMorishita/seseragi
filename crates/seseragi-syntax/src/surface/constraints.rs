@@ -9,8 +9,9 @@ impl SurfaceParser<'_> {
             let Some((constraint, after_constraint)) = self.parse_type_ref(next, end) else {
                 break;
             };
-            let TypeRef::Named { name, .. } = constraint;
-            constraints.push(name);
+            if let TypeRef::Named { name, .. } = constraint {
+                constraints.push(name);
+            }
             let Some(separator) = self.next_significant_token(after_constraint, end) else {
                 break;
             };

@@ -75,6 +75,7 @@ pub(crate) fn typed_decl_from_surface(
                         fields: with_type
                             .map(|name| TypedRecordField {
                                 name: lower_first(&name),
+                                optional: false,
                                 type_ref: TypedType::Named {
                                     name,
                                     arguments: Vec::new(),

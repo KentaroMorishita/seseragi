@@ -169,6 +169,17 @@ pub struct SurfaceVariant {
     pub payload: Option<TypeRef>,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeRecordField {
+    pub name: String,
+    pub name_span: ByteSpan,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub optional: bool,
+    #[serde(rename = "type")]
+    pub type_ref: TypeRef,
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum Visibility {
@@ -194,6 +205,11 @@ pub enum TypeRef {
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         arguments: Vec<TypeRef>,
+        span: ByteSpan,
+    },
+    Record {
+        closed: bool,
+        fields: Vec<TypeRecordField>,
         span: ByteSpan,
     },
 }

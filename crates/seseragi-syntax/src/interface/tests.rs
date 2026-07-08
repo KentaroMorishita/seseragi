@@ -137,6 +137,30 @@ fn parses_nested_type_arguments_in_interface() {
 }
 
 #[test]
+fn parses_record_type_references_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/record-type/main.ssrg",
+        "pub let env: { console: Console, clock?: Clock } = config\n",
+    );
+
+    let json = serde_json::to_value(&interface).expect("interface serializes");
+    assert_eq!(json["exports"][0]["scheme"]["type"]["kind"], "record");
+    assert_eq!(json["exports"][0]["scheme"]["type"]["closed"], true);
+    assert_eq!(
+        json["exports"][0]["scheme"]["type"]["fields"][0]["name"],
+        "console"
+    );
+    assert_eq!(
+        json["exports"][0]["scheme"]["type"]["fields"][1]["optional"],
+        true
+    );
+    assert_eq!(
+        json["exports"][0]["scheme"]["type"]["fields"][1]["type"]["name"],
+        "Clock"
+    );
+}
+
+#[test]
 fn parses_operator_type_parameters_in_interface() {
     let interface = parse_module_interface(
         "artifact/generic-operator/main.ssrg",

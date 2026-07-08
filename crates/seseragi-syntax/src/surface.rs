@@ -247,6 +247,9 @@ impl SurfaceParser<'_> {
 
     fn parse_type_ref(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
         let type_index = self.next_significant_token(start, end)?;
+        if self.kind_at(type_index) == Some(TokenKind::PunctuationBraceLeft) {
+            return self.parse_record_type_ref(type_index, end);
+        }
         if !matches!(
             self.kind_at(type_index),
             Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower)

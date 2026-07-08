@@ -1,7 +1,7 @@
 use crate::cst::parse_cst;
 pub use crate::interface_model::{
     InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
-    InterfaceOperator, InterfaceScheme, InterfaceType, ModuleInterface,
+    InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType, ModuleInterface,
 };
 use crate::surface::parse_surface_ast;
 

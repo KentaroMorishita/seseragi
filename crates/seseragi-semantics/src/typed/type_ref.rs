@@ -10,6 +10,19 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<
                 .map(typed_type_from_interface_type)
                 .collect::<Option<Vec<_>>>()?,
         }),
+        InterfaceType::Record { closed, fields } => Some(TypedType::Record {
+            closed,
+            fields: fields
+                .into_iter()
+                .map(|field| {
+                    Some(crate::TypedRecordField {
+                        name: field.name,
+                        optional: field.optional,
+                        type_ref: typed_type_from_interface_type(field.type_ref)?,
+                    })
+                })
+                .collect::<Option<Vec<_>>>()?,
+        }),
         InterfaceType::TypeConstructor { .. }
         | InterfaceType::Function { .. }
         | InterfaceType::Apply { .. } => None,
@@ -23,6 +36,17 @@ pub(crate) fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
         } => TypedType::Named {
             name: name.clone(),
             arguments: arguments.iter().map(typed_type_from_type_ref).collect(),
+        },
+        TypeRef::Record { closed, fields, .. } => TypedType::Record {
+            closed: *closed,
+            fields: fields
+                .iter()
+                .map(|field| crate::TypedRecordField {
+                    name: field.name.clone(),
+                    optional: field.optional,
+                    type_ref: typed_type_from_type_ref(&field.type_ref),
+                })
+                .collect(),
         },
     }
 }

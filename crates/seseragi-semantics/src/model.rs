@@ -125,6 +125,8 @@ pub enum TypedType {
 #[serde(rename_all = "camelCase")]
 pub struct TypedRecordField {
     pub name: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub optional: bool,
     #[serde(rename = "type")]
     pub type_ref: TypedType,
 }
@@ -191,4 +193,8 @@ pub(crate) fn unit_type() -> TypedType {
         name: "Unit".to_owned(),
         arguments: Vec::new(),
     }
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }

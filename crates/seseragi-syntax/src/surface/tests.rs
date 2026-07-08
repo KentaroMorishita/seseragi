@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::surface_model::{SurfaceField, SurfaceVariant};
+use crate::surface_model::{SurfaceField, SurfaceVariant, TypeRecordField};
 
 #[test]
 fn constructs_let_surface_module() {
@@ -580,6 +580,50 @@ fn parses_operator_type_parameters() {
             },
             constraints: Vec::new(),
             span: ByteSpan { start: 0, end: 64 },
+        }
+    );
+}
+
+#[test]
+fn parses_record_type_references_in_surface_ast() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub let env: { console: Console, clock?: Clock } = config\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Let {
+            visibility: Visibility::Public,
+            name: "env".to_owned(),
+            name_span: ByteSpan { start: 8, end: 11 },
+            type_ref: Some(TypeRef::Record {
+                closed: true,
+                fields: vec![
+                    TypeRecordField {
+                        name: "console".to_owned(),
+                        name_span: ByteSpan { start: 15, end: 22 },
+                        optional: false,
+                        type_ref: TypeRef::Named {
+                            name: "Console".to_owned(),
+                            arguments: Vec::new(),
+                            span: ByteSpan { start: 24, end: 31 },
+                        },
+                    },
+                    TypeRecordField {
+                        name: "clock".to_owned(),
+                        name_span: ByteSpan { start: 33, end: 38 },
+                        optional: true,
+                        type_ref: TypeRef::Named {
+                            name: "Clock".to_owned(),
+                            arguments: Vec::new(),
+                            span: ByteSpan { start: 41, end: 46 },
+                        },
+                    },
+                ],
+                span: ByteSpan { start: 13, end: 48 },
+            }),
+            span: ByteSpan { start: 0, end: 57 },
         }
     );
 }

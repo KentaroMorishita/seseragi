@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "module": "artifact/record-type",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/record-type::env",
+      "namespace": "value",
+      "name": "env",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 57 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": { "kind": "named", "name": "Console", "arguments": [] }
+            },
+            {
+              "name": "clock",
+              "optional": true,
+              "type": { "kind": "named", "name": "Clock", "arguments": [] }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

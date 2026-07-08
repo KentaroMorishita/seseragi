@@ -85,6 +85,20 @@ pub enum InterfaceType {
         constructor: String,
         arguments: Vec<InterfaceType>,
     },
+    Record {
+        closed: bool,
+        fields: Vec<InterfaceRecordField>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InterfaceRecordField {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub optional: bool,
+    #[serde(rename = "type")]
+    pub type_ref: InterfaceType,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -106,4 +120,8 @@ pub struct InterfaceInstance {
     pub head: InterfaceType,
     pub constraints: Vec<InterfaceConstraint>,
     pub origin: ByteSpan,
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }

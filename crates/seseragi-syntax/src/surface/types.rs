@@ -1,5 +1,7 @@
 use super::SurfaceParser;
-use crate::surface_model::{SurfaceDecl, SurfaceField, SurfaceVariant, Visibility};
+use crate::surface_model::{
+    ByteSpan, SurfaceDecl, SurfaceField, SurfaceVariant, TypeRecordField, TypeRef, Visibility,
+};
 use crate::token::TokenKind;
 
 impl SurfaceParser<'_> {
@@ -183,6 +185,89 @@ impl SurfaceParser<'_> {
                 .unwrap_or(after_type);
         }
         fields
+    }
+
+    pub(super) fn parse_record_type_ref(
+        &self,
+        open_brace: usize,
+        end: usize,
+    ) -> Option<(TypeRef, usize)> {
+        let close_brace = self.find_matching_brace(open_brace, end)?;
+        let fields = self.parse_record_type_fields(open_brace + 1, close_brace);
+        let span = ByteSpan {
+            start: self.tokens.get(open_brace)?.start,
+            end: self.tokens.get(close_brace)?.end,
+        };
+        Some((
+            TypeRef::Record {
+                closed: true,
+                fields,
+                span,
+            },
+            close_brace + 1,
+        ))
+    }
+
+    fn parse_record_type_fields(&self, start: usize, end: usize) -> Vec<TypeRecordField> {
+        let mut fields = Vec::new();
+        let mut cursor = start;
+        while let Some(name_index) = self.next_significant_token(cursor, end) {
+            let Some(name) = self.identifier_name_at(name_index) else {
+                cursor = name_index + 1;
+                continue;
+            };
+            let Some(name_span) = self.byte_span(name_index) else {
+                break;
+            };
+            let after_name = self.next_significant_token(name_index + 1, end);
+            let optional =
+                after_name.is_some_and(|index| matches!(self.raw_at(index), Some("?" | "?:")));
+            let colon = if after_name.is_some_and(|index| self.raw_at(index) == Some("?:")) {
+                after_name
+            } else {
+                let colon_start = if optional {
+                    after_name.map(|index| index + 1).unwrap_or(name_index + 1)
+                } else {
+                    name_index + 1
+                };
+                self.find_significant_token(colon_start, end, |kind| {
+                    kind == TokenKind::PunctuationColon
+                })
+            };
+            let Some(colon) = colon else { break };
+            let Some((type_ref, after_type)) = self.parse_type_ref(colon + 1, end) else {
+                break;
+            };
+            fields.push(TypeRecordField {
+                name,
+                name_span,
+                optional,
+                type_ref,
+            });
+            cursor = self
+                .next_significant_token(after_type, end)
+                .filter(|separator| self.kind_at(*separator) == Some(TokenKind::PunctuationComma))
+                .map(|separator| separator + 1)
+                .unwrap_or(after_type);
+        }
+        fields
+    }
+
+    fn find_matching_brace(&self, open_brace: usize, end: usize) -> Option<usize> {
+        let mut depth = 0usize;
+        for index in open_brace..end {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    depth = depth.saturating_sub(1);
+                    if depth == 0 {
+                        return Some(index);
+                    }
+                }
+                _ => {}
+            }
+        }
+        None
     }
 
     fn parse_optional_deriving(&self, start: usize, end: usize) -> (Vec<String>, usize) {
