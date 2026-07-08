@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "alias",
+      "visibility": "public",
+      "name": "Boxed",
+      "nameSpan": { "start": 10, "end": 15 },
+      "typeParameters": ["A"],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": { "start": 25, "end": 26 }
+          }
+        ],
+        "span": { "start": 21, "end": 27 }
+      },
+      "span": { "start": 0, "end": 27 }
+    }
+  ]
+}

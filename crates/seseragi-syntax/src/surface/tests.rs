@@ -302,6 +302,31 @@ fn parses_trait_declarations() {
 }
 
 #[test]
+fn parses_alias_declarations() {
+    let module = parse_surface_ast("main.ssrg", "pub alias Boxed<A> = Box<A>\n");
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Alias {
+            visibility: Visibility::Public,
+            name: "Boxed".to_owned(),
+            name_span: ByteSpan { start: 10, end: 15 },
+            type_parameters: vec!["A".to_owned()],
+            target: TypeRef::Named {
+                name: "Box".to_owned(),
+                arguments: vec![TypeRef::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 25, end: 26 },
+                }],
+                span: ByteSpan { start: 21, end: 27 },
+            },
+            span: ByteSpan { start: 0, end: 27 },
+        }
+    );
+}
+
+#[test]
 fn parses_operator_type_parameters() {
     let module = parse_surface_ast(
         "main.ssrg",

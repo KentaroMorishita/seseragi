@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/type-alias",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/type-alias::Boxed",
+      "namespace": "type",
+      "name": "Boxed",
+      "visibility": "public",
+      "declarationKind": "alias",
+      "declaration": { "start": 0, "end": 27 },
+      "scheme": {
+        "typeParameters": ["A"],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Boxed",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [{ "kind": "named", "name": "A", "arguments": [] }]
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -10,6 +10,7 @@ mod imports;
 mod instances;
 mod operators;
 mod traits;
+mod types;
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
     let stream = lex(source_name, source);
@@ -111,6 +112,11 @@ impl SurfaceParser<'_> {
                 self.parse_newtype_decl(visibility, start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if self.raw_at(decl_start) == Some("alias") =>
+            {
+                self.parse_alias_decl(visibility, start, decl_start, end)
+            }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if self.raw_at(decl_start) == Some("trait") =>
             {
                 self.parse_trait_decl(visibility, start, decl_start, end)
@@ -170,29 +176,6 @@ impl SurfaceParser<'_> {
             name,
             name_span: self.byte_span(name_index)?,
             return_type,
-            span: self.declaration_span(top_start, end)?,
-        })
-    }
-
-    fn parse_newtype_decl(
-        &self,
-        visibility: Visibility,
-        top_start: usize,
-        decl_start: usize,
-        end: usize,
-    ) -> Option<SurfaceDecl> {
-        let name_index = self.next_significant_token(decl_start + 1, end)?;
-        let name = self.identifier_name_at(name_index)?;
-        let equals = self.find_significant_token(name_index + 1, end, |kind| {
-            kind == TokenKind::OperatorEquals
-        })?;
-        let representation = self.parse_type_name(equals + 1, end)?;
-
-        Some(SurfaceDecl::Newtype {
-            visibility,
-            name,
-            name_span: self.byte_span(name_index)?,
-            representation,
             span: self.declaration_span(top_start, end)?,
         })
     }
@@ -387,7 +370,7 @@ impl SurfaceParser<'_> {
     fn is_contextual_declaration_start(&self, index: usize) -> bool {
         matches!(
             self.raw_at(index),
-            Some("import" | "newtype" | "operator" | "instance" | "trait")
+            Some("import" | "newtype" | "alias" | "operator" | "instance" | "trait")
         )
     }
 

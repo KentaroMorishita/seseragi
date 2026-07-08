@@ -164,6 +164,22 @@ fn parses_trait_declarations_in_interface() {
 }
 
 #[test]
+fn parses_alias_declarations_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/type-alias/main.ssrg",
+        "pub alias Boxed<A> = Box<A>\n",
+    );
+    let alias_export = interface
+        .exports
+        .iter()
+        .find(|export| export.name == "Boxed")
+        .expect("alias export exists");
+
+    assert_eq!(alias_export.declaration_kind, Some("alias".to_owned()));
+    assert_eq!(alias_export.scheme.type_parameters, vec!["A".to_owned()]);
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

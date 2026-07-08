@@ -55,6 +55,15 @@ pub enum SurfaceDecl {
         representation: TypeRef,
         span: ByteSpan,
     },
+    Alias {
+        visibility: Visibility,
+        name: String,
+        name_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        target: TypeRef,
+        span: ByteSpan,
+    },
     Trait {
         visibility: Visibility,
         name: String,

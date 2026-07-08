@@ -63,6 +63,30 @@ pub(super) fn export_from_surface_decl(
             },
             representation: Some(interface_type_from_type_ref(representation)),
         }),
+        SurfaceDecl::Alias {
+            visibility,
+            name,
+            type_parameters,
+            target,
+            span,
+            ..
+        } if *visibility == Visibility::Public => Some(InterfaceExport {
+            symbol: format!("{module_name}::{name}"),
+            namespace: "type".to_owned(),
+            name: name.clone(),
+            visibility: *visibility,
+            declaration_kind: Some("alias".to_owned()),
+            declaration: *span,
+            scheme: InterfaceScheme {
+                type_parameters: type_parameters.clone(),
+                constraints: Vec::new(),
+                type_ref: InterfaceType::TypeConstructor {
+                    name: name.clone(),
+                    arity: type_parameters.len() as u32,
+                },
+            },
+            representation: Some(interface_type_from_type_ref(target)),
+        }),
         SurfaceDecl::Trait {
             visibility,
             name,
