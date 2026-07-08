@@ -1,4 +1,5 @@
 use crate::cst::parse_cst;
+use crate::interface_extra::enrich_module_interface;
 pub use crate::interface_model::{
     InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
     InterfaceOperator, InterfaceScheme, InterfaceType, ModuleInterface,
@@ -24,7 +25,7 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
 
     let surface_module = parse_surface_ast(source_file.clone(), source);
 
-    ModuleInterface {
+    let mut interface = ModuleInterface {
         schema: 1,
         module: module_name.clone(),
         source: surface_module.source,
@@ -36,7 +37,9 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
             .collect(),
         operators: Vec::new(),
         instances: Vec::new(),
-    }
+    };
+    enrich_module_interface(&mut interface, &source_name, source);
+    interface
 }
 
 fn export_from_surface_decl(
@@ -64,12 +67,14 @@ fn export_from_surface_decl(
                 namespace: "value".to_owned(),
                 name,
                 visibility,
+                declaration_kind: None,
                 declaration: span,
                 scheme: InterfaceScheme {
                     type_parameters: Vec::new(),
                     constraints: Vec::new(),
                     type_ref,
                 },
+                representation: None,
             })
         }
         _ => None,
@@ -227,5 +232,20 @@ mod tests {
                 ],
             })
         );
+    }
+
+    #[test]
+    fn parses_rich_module_interface_fixture() {
+        let interface = parse_module_interface(
+            "artifact/rich/main.ssrg",
+            include_str!("../../../examples/spec/artifacts/interface-schema-1/rich/main.ssrg"),
+        );
+        let actual = serde_json::to_value(&interface).expect("interface serializes");
+        let expected: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../examples/spec/artifacts/interface-schema-1/rich/interface.json"
+        ))
+        .expect("expected interface fixture parses");
+
+        assert_eq!(actual, expected);
     }
 }

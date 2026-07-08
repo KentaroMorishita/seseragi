@@ -10,6 +10,27 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> TypedTy
                 .map(typed_type_from_interface_type)
                 .collect(),
         },
+        InterfaceType::TypeConstructor { name, .. } => TypedType::Named {
+            name,
+            arguments: Vec::new(),
+        },
+        InterfaceType::Function { parameter, result } => TypedType::Named {
+            name: "Function".to_owned(),
+            arguments: vec![
+                typed_type_from_interface_type(*parameter),
+                typed_type_from_interface_type(*result),
+            ],
+        },
+        InterfaceType::Apply {
+            constructor,
+            arguments,
+        } => TypedType::Named {
+            name: constructor,
+            arguments: arguments
+                .into_iter()
+                .map(typed_type_from_interface_type)
+                .collect(),
+        },
     }
 }
 

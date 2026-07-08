@@ -1,6 +1,7 @@
 mod cst;
 mod diagnostics;
 mod interface;
+mod interface_extra;
 mod interface_model;
 mod lexer;
 mod source;

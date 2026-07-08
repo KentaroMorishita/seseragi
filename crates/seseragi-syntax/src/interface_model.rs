@@ -37,8 +37,12 @@ pub struct InterfaceExport {
     pub namespace: String,
     pub name: String,
     pub visibility: Visibility,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub declaration_kind: Option<String>,
     pub declaration: ByteSpan,
     pub scheme: InterfaceScheme,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub representation: Option<InterfaceType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -65,6 +69,18 @@ pub struct InterfaceConstraint {
 pub enum InterfaceType {
     Named {
         name: String,
+        arguments: Vec<InterfaceType>,
+    },
+    TypeConstructor {
+        name: String,
+        arity: u32,
+    },
+    Function {
+        parameter: Box<InterfaceType>,
+        result: Box<InterfaceType>,
+    },
+    Apply {
+        constructor: String,
         arguments: Vec<InterfaceType>,
     },
 }

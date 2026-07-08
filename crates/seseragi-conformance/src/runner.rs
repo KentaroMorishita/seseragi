@@ -22,7 +22,10 @@ pub(crate) fn run(root: PathBuf, list: bool) {
         .iter()
         .filter(|case| case.join("surface-ast.json").is_file())
         .count();
-    let interface_cases = discover_interface_cases(&artifacts.join("schema-1"));
+    let mut interface_cases = discover_interface_cases(&artifacts.join("schema-1"));
+    interface_cases.extend(discover_interface_cases(
+        &artifacts.join("interface-schema-1"),
+    ));
     let interface_total = interface_cases.len();
     let resolved_ast_cases = discover_resolved_ast_cases(&artifacts.join("schema-1"));
     let resolved_ast_total = resolved_ast_cases.len();
