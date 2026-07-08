@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "module": "artifact/tuple-type",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/tuple-type::pair",
+      "namespace": "value",
+      "name": "pair",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 35 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            { "kind": "named", "name": "String", "arguments": [] },
+            { "kind": "named", "name": "Int", "arguments": [] }
+          ]
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

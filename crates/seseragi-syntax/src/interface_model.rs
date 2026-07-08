@@ -89,6 +89,9 @@ pub enum InterfaceType {
         closed: bool,
         fields: Vec<InterfaceRecordField>,
     },
+    Tuple {
+        elements: Vec<InterfaceType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

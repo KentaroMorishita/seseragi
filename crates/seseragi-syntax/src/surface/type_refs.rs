@@ -18,6 +18,9 @@ impl SurfaceParser<'_> {
         if self.kind_at(type_index) == Some(TokenKind::PunctuationBraceLeft) {
             return self.parse_record_type_ref(type_index, end);
         }
+        if self.kind_at(type_index) == Some(TokenKind::PunctuationParenLeft) {
+            return self.parse_parenthesized_type_ref(type_index, end);
+        }
         if !matches!(
             self.kind_at(type_index),
             Some(TokenKind::IdentifierUpper | TokenKind::IdentifierLower)
@@ -137,6 +140,52 @@ impl SurfaceParser<'_> {
         ))
     }
 
+    fn parse_parenthesized_type_ref(
+        &self,
+        open_paren: usize,
+        end: usize,
+    ) -> Option<(TypeRef, usize)> {
+        let close_paren = self.find_matching_paren(open_paren, end)?;
+        let mut elements = Vec::new();
+        let mut saw_comma = false;
+        let mut cursor = open_paren + 1;
+        let mut needs_element = false;
+
+        while let Some(next) = self.next_significant_token(cursor, close_paren) {
+            needs_element = false;
+            let (element, after_element) = self.parse_type_ref(next, close_paren)?;
+            elements.push(element);
+            let separator = self.next_significant_token(after_element, close_paren);
+            if separator
+                .is_some_and(|index| self.kind_at(index) == Some(TokenKind::PunctuationComma))
+            {
+                saw_comma = true;
+                needs_element = true;
+                let comma = separator?;
+                cursor = comma + 1;
+                continue;
+            }
+            if separator.is_some() {
+                return None;
+            }
+            break;
+        }
+
+        if !saw_comma {
+            let inner = elements.into_iter().next()?;
+            return Some((inner, close_paren + 1));
+        }
+        if needs_element || elements.len() < 2 {
+            return None;
+        }
+
+        let span = ByteSpan {
+            start: self.tokens.get(open_paren)?.start,
+            end: self.tokens.get(close_paren)?.end,
+        };
+        Some((TypeRef::Tuple { elements, span }, close_paren + 1))
+    }
+
     fn parse_record_type_fields(&self, start: usize, end: usize) -> Vec<TypeRecordField> {
         let mut fields = Vec::new();
         let mut cursor = start;
@@ -188,6 +237,23 @@ impl SurfaceParser<'_> {
             match self.kind_at(index) {
                 Some(TokenKind::PunctuationBraceLeft) => depth += 1,
                 Some(TokenKind::PunctuationBraceRight) => {
+                    depth = depth.saturating_sub(1);
+                    if depth == 0 {
+                        return Some(index);
+                    }
+                }
+                _ => {}
+            }
+        }
+        None
+    }
+
+    fn find_matching_paren(&self, open_paren: usize, end: usize) -> Option<usize> {
+        let mut depth = 0usize;
+        for index in open_paren..end {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationParenLeft) => depth += 1,
+                Some(TokenKind::PunctuationParenRight) => {
                     depth = depth.saturating_sub(1);
                     if depth == 0 {
                         return Some(index);

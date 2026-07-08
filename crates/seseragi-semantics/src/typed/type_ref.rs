@@ -23,6 +23,12 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<
                 })
                 .collect::<Option<Vec<_>>>()?,
         }),
+        InterfaceType::Tuple { elements } => Some(TypedType::Tuple {
+            elements: elements
+                .into_iter()
+                .map(typed_type_from_interface_type)
+                .collect::<Option<Vec<_>>>()?,
+        }),
         InterfaceType::TypeConstructor { .. }
         | InterfaceType::Function { .. }
         | InterfaceType::Apply { .. } => None,
@@ -47,6 +53,9 @@ pub(crate) fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
                     type_ref: typed_type_from_type_ref(&field.type_ref),
                 })
                 .collect(),
+        },
+        TypeRef::Tuple { elements, .. } => TypedType::Tuple {
+            elements: elements.iter().map(typed_type_from_type_ref).collect(),
         },
     }
 }

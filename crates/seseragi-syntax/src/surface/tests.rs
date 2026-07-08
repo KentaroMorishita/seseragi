@@ -663,6 +663,36 @@ fn parses_record_type_references_in_surface_ast() {
 }
 
 #[test]
+fn parses_tuple_type_references_in_surface_ast() {
+    let module = parse_surface_ast("main.ssrg", "pub let pair: (String, Int) = value\n");
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Let {
+            visibility: Visibility::Public,
+            name: "pair".to_owned(),
+            name_span: ByteSpan { start: 8, end: 12 },
+            type_ref: Some(TypeRef::Tuple {
+                elements: vec![
+                    TypeRef::Named {
+                        name: "String".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 15, end: 21 },
+                    },
+                    TypeRef::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan { start: 23, end: 26 },
+                    },
+                ],
+                span: ByteSpan { start: 14, end: 27 },
+            }),
+            span: ByteSpan { start: 0, end: 35 },
+        }
+    );
+}
+
+#[test]
 fn parses_operator_constraints() {
     let module = parse_surface_ast(
         "main.ssrg",

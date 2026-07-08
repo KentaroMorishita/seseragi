@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "pair",
+      "nameSpan": { "start": 8, "end": 12 },
+      "typeRef": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": { "start": 15, "end": 21 }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": { "start": 23, "end": 26 }
+          }
+        ],
+        "span": { "start": 14, "end": 27 }
+      },
+      "span": { "start": 0, "end": 35 }
+    }
+  ]
+}

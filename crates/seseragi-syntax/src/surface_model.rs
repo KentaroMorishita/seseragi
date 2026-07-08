@@ -212,6 +212,10 @@ pub enum TypeRef {
         fields: Vec<TypeRecordField>,
         span: ByteSpan,
     },
+    Tuple {
+        elements: Vec<TypeRef>,
+        span: ByteSpan,
+    },
 }
 
 fn is_false(value: &bool) -> bool {

@@ -21,5 +21,8 @@ pub(super) fn interface_type_from_type_ref(type_ref: &TypeRef) -> InterfaceType 
                 })
                 .collect(),
         },
+        TypeRef::Tuple { elements, .. } => InterfaceType::Tuple {
+            elements: elements.iter().map(interface_type_from_type_ref).collect(),
+        },
     }
 }

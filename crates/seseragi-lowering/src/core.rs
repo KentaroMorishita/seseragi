@@ -193,5 +193,6 @@ fn type_name(type_ref: &TypedType) -> String {
     match type_ref {
         TypedType::Named { name, .. } => name.clone(),
         TypedType::Record { .. } => "Record".to_owned(),
+        TypedType::Tuple { .. } => "Tuple".to_owned(),
     }
 }

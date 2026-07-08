@@ -119,6 +119,9 @@ pub enum TypedType {
         closed: bool,
         fields: Vec<TypedRecordField>,
     },
+    Tuple {
+        elements: Vec<TypedType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

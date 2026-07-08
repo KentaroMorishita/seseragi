@@ -182,6 +182,26 @@ fn parses_record_type_references_in_interface() {
 }
 
 #[test]
+fn parses_tuple_type_references_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/tuple-type/main.ssrg",
+        "pub let pair: (String, Int) = value\n",
+    );
+
+    let json = serde_json::to_value(&interface).expect("interface serializes");
+    assert_eq!(
+        json["exports"][0]["scheme"]["type"],
+        serde_json::json!({
+            "kind": "tuple",
+            "elements": [
+                { "kind": "named", "name": "String", "arguments": [] },
+                { "kind": "named", "name": "Int", "arguments": [] },
+            ],
+        })
+    );
+}
+
+#[test]
 fn parses_operator_type_parameters_in_interface() {
     let interface = parse_module_interface(
         "artifact/generic-operator/main.ssrg",
