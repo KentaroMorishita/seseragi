@@ -350,3 +350,5 @@ fn unquote(raw: &str) -> String {
 
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod type_ref_tests;

@@ -85,3 +85,5 @@ fn source_file_from_source_name(source_name: &str) -> String {
 
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod type_ref_tests;
