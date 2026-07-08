@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "env",
+      "nameSpan": { "start": 8, "end": 11 },
+      "typeRef": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "console",
+            "nameSpan": { "start": 15, "end": 22 },
+            "type": {
+              "kind": "named",
+              "name": "Console",
+              "span": { "start": 24, "end": 31 }
+            }
+          },
+          {
+            "name": "clock",
+            "nameSpan": { "start": 33, "end": 38 },
+            "optional": true,
+            "type": {
+              "kind": "named",
+              "name": "Clock",
+              "span": { "start": 41, "end": 46 }
+            }
+          }
+        ],
+        "span": { "start": 13, "end": 48 }
+      },
+      "span": { "start": 0, "end": 57 }
+    }
+  ]
+}
