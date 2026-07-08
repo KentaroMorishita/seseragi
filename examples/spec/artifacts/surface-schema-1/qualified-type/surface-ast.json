@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "counts",
+      "nameSpan": { "start": 8, "end": 14 },
+      "typeRef": {
+        "kind": "named",
+        "name": "maps.Map",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": { "start": 25, "end": 31 }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": { "start": 33, "end": 36 }
+          }
+        ],
+        "span": { "start": 16, "end": 37 }
+      },
+      "span": { "start": 0, "end": 45 }
+    }
+  ]
+}
