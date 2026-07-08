@@ -1,3 +1,4 @@
-pub trait Eq<A> {
-  fn eq x: A -> y: A -> Bool
+pub trait Ord<A>
+where Eq<A> {
+  fn compare x: A -> y: A -> Ordering
 }

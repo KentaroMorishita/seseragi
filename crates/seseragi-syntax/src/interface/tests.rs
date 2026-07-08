@@ -150,7 +150,7 @@ fn parses_instance_type_parameters_and_constraints_in_interface() {
 fn parses_trait_declarations_in_interface() {
     let interface = parse_module_interface(
         "artifact/basic-trait/main.ssrg",
-        "pub trait Eq<A> {\n  fn eq x: A -> y: A -> Bool\n}\n",
+        "pub trait Ord<A>\nwhere Eq<A> {\n  fn compare x: A -> y: A -> Ordering\n}\n",
     );
     let trait_export = interface
         .exports
@@ -158,9 +158,9 @@ fn parses_trait_declarations_in_interface() {
         .find(|export| export.namespace == "trait")
         .expect("trait export exists");
 
-    assert_eq!(trait_export.symbol, "artifact/basic-trait::trait(Eq)");
+    assert_eq!(trait_export.symbol, "artifact/basic-trait::trait(Ord)");
     assert_eq!(trait_export.scheme.type_parameters, vec!["A".to_owned()]);
-    assert_eq!(trait_export.scheme.constraints, Vec::new());
+    assert_eq!(trait_export.scheme.constraints[0].name, "Eq");
 }
 
 #[test]

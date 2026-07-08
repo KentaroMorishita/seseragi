@@ -5,10 +5,11 @@
     {
       "kind": "trait",
       "visibility": "public",
-      "name": "Eq",
-      "nameSpan": { "start": 10, "end": 12 },
+      "name": "Ord",
+      "nameSpan": { "start": 10, "end": 13 },
       "typeParameters": ["A"],
-      "span": { "start": 0, "end": 48 }
+      "constraints": ["Eq"],
+      "span": { "start": 0, "end": 70 }
     }
   ]
 }
