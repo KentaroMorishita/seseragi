@@ -5,7 +5,9 @@ pub use crate::surface_model::{
 };
 use crate::token::{Token, TokenKind};
 
+mod constraints;
 mod imports;
+mod instances;
 mod operators;
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
@@ -185,28 +187,6 @@ impl SurfaceParser<'_> {
             name,
             name_span: self.byte_span(name_index)?,
             representation,
-            span: self.declaration_span(top_start, end)?,
-        })
-    }
-
-    fn parse_instance_decl(
-        &self,
-        top_start: usize,
-        decl_start: usize,
-        end: usize,
-    ) -> Option<SurfaceDecl> {
-        let trait_index = self.next_significant_token(decl_start + 1, end)?;
-        let trait_name = self.identifier_name_at(trait_index)?;
-        let mut arguments = Vec::new();
-        let next = self.next_significant_token(trait_index + 1, end);
-        if next.is_some_and(|index| self.is_angle_left(index)) {
-            let (parsed, _) = self.parse_type_arguments(next? + 1, end)?;
-            arguments = parsed;
-        }
-
-        Some(SurfaceDecl::Instance {
-            trait_name,
-            arguments,
             span: self.declaration_span(top_start, end)?,
         })
     }

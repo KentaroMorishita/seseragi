@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "instance",
+      "typeParameters": ["A"],
+      "traitName": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": { "start": 21, "end": 22 }
+            }
+          ],
+          "span": { "start": 17, "end": 23 }
+        }
+      ],
+      "constraints": ["Show"],
+      "span": { "start": 0, "end": 84 }
+    }
+  ]
+}

@@ -235,6 +235,7 @@ fn parses_rich_interface_surface_declarations() {
     assert_eq!(
         module.declarations[2],
         SurfaceDecl::Instance {
+            type_parameters: Vec::new(),
             trait_name: "Show".to_owned(),
             arguments: vec![TypeRef::Named {
                 name: "Score".to_owned(),
@@ -244,10 +245,38 @@ fn parses_rich_interface_surface_declarations() {
                     end: 162
                 },
             }],
+            constraints: Vec::new(),
             span: ByteSpan {
                 start: 143,
                 end: 210
             },
+        }
+    );
+}
+
+#[test]
+fn parses_instance_type_parameters_and_constraints() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "instance<A> Show<Box<A>>\nwhere Show<A> {\n  fn show value: Box<A> -> String = \"Box\"\n}\n",
+    );
+
+    assert_eq!(
+        module.declarations[0],
+        SurfaceDecl::Instance {
+            type_parameters: vec!["A".to_owned()],
+            trait_name: "Show".to_owned(),
+            arguments: vec![TypeRef::Named {
+                name: "Box".to_owned(),
+                arguments: vec![TypeRef::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 21, end: 22 },
+                }],
+                span: ByteSpan { start: 17, end: 23 },
+            }],
+            constraints: vec!["Show".to_owned()],
+            span: ByteSpan { start: 0, end: 84 },
         }
     );
 }

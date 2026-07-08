@@ -135,6 +135,18 @@ fn parses_operator_type_parameters_in_interface() {
 }
 
 #[test]
+fn parses_instance_type_parameters_and_constraints_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/constrained-instance/main.ssrg",
+        "instance<A> Show<Box<A>>\nwhere Show<A> {\n  fn show value: Box<A> -> String = \"Box\"\n}\n",
+    );
+
+    assert_eq!(interface.instances.len(), 1);
+    assert_eq!(interface.instances[0].type_parameters, vec!["A".to_owned()]);
+    assert_eq!(interface.instances[0].constraints[0].name, "Show");
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

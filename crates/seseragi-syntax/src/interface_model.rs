@@ -102,6 +102,7 @@ pub struct InterfaceOperator {
 pub struct InterfaceInstance {
     #[serde(rename = "trait")]
     pub trait_name: String,
+    pub type_parameters: Vec<String>,
     pub head: InterfaceType,
     pub constraints: Vec<InterfaceConstraint>,
     pub origin: ByteSpan,

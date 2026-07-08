@@ -69,8 +69,12 @@ pub enum SurfaceDecl {
         span: ByteSpan,
     },
     Instance {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
         trait_name: String,
         arguments: Vec<TypeRef>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<String>,
         span: ByteSpan,
     },
 }

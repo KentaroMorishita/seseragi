@@ -1,0 +1,4 @@
+instance<A> Show<Box<A>>
+where Show<A> {
+  fn show value: Box<A> -> String = "Box"
+}

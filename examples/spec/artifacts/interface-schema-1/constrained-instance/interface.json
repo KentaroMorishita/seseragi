@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/constrained-instance",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Show",
+      "typeParameters": ["A"],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [{ "kind": "named", "name": "A", "arguments": [] }]
+          }
+        ]
+      },
+      "constraints": [{ "name": "Show" }],
+      "origin": { "start": 0, "end": 84 }
+    }
+  ]
+}
