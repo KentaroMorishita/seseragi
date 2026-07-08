@@ -1,0 +1,22 @@
+{
+  "name": "@seseragi/runtime",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./console": {
+      "types": "./src/console.ts",
+      "default": "./src/console.ts"
+    },
+    "./effect": {
+      "types": "./src/effect.ts",
+      "default": "./src/effect.ts"
+    }
+  },
+  "license": "Apache-2.0"
+}
