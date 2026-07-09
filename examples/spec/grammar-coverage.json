@@ -32,6 +32,7 @@
         "parameter",
         "fn-body",
         "effect-fn-decl",
+        "effect-fn-contract",
         "effect-requirements",
         "capability",
         "effect-failure"

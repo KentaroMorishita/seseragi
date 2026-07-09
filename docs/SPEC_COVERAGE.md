@@ -53,6 +53,7 @@
 - Effectのenvironment / error / success channel
 - Effect / Streamのrequirement wideningとNever failure widening
 - 正規Effect型へ展開される `effect fn` とeffectful `for`
+- compact inferred `effect fn` のbody由来contract推論とartifact固定
 - Task alias
 - 順次・並列、resource、cancellation、defect
 - Signal / MutableSignal

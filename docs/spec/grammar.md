@@ -36,9 +36,10 @@ fn-params       = parameter, { "->", parameter } ;
 parameter       = lower-name, ":", type-atom ;
 fn-body         = "=", expr, terminator | block ;
 effect-fn-decl  = "effect", "fn", lower-name, [ type-params ],
-                  [ fn-params ], "->", type,
-                  [ effect-requirements ], [ effect-failure ],
-                  [ constraints ], fn-body ;
+                  [ fn-params ], effect-fn-contract, fn-body ;
+effect-fn-contract = [ "->", type,
+                       [ effect-requirements ], [ effect-failure ],
+                       [ constraints ] ] ;
 effect-requirements = "with", capability, { ",", capability } ;
 capability      = upper-name | lower-name, ":", type ;
 effect-failure  = "fails", type ;
