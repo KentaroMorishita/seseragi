@@ -38,6 +38,44 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
     if actual_source_map_value != expected_source_map_value {
         return Err("main.ts.map artifact mismatch".to_owned());
     }
+    check_generated_source_map(&actual_metadata_value, &actual_source_map_value, &source)?;
+    Ok(())
+}
+
+fn check_generated_source_map(
+    generated_module: &serde_json::Value,
+    source_map: &serde_json::Value,
+    source: &str,
+) -> Result<(), String> {
+    if source_map
+        .pointer("/version")
+        .and_then(|value| value.as_u64())
+        != Some(3)
+    {
+        return Err("generated source map version must be 3".to_owned());
+    }
+    if source_map.pointer("/file").and_then(|value| value.as_str()) != Some("main.ts") {
+        return Err("generated source map file must be main.ts".to_owned());
+    }
+    let module = generated_module
+        .pointer("/module")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "generated module name must be a string".to_owned())?;
+    let expected_source_uri = format!("seseragi://{module}");
+    let sources = source_map
+        .pointer("/sources")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "generated source map sources must be an array".to_owned())?;
+    if sources.len() != 1 || sources[0].as_str() != Some(expected_source_uri.as_str()) {
+        return Err("generated source map sources must contain the Seseragi module URI".to_owned());
+    }
+    let sources_content = source_map
+        .pointer("/sourcesContent")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "generated source map sourcesContent must be an array".to_owned())?;
+    if sources_content.len() != 1 || sources_content[0].as_str() != Some(source) {
+        return Err("generated source map sourcesContent must preserve source text".to_owned());
+    }
     Ok(())
 }
 
