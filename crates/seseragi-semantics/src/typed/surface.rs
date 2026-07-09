@@ -1,12 +1,10 @@
-use crate::{
-    unit_type, TypedDecl, TypedEffect, TypedExpr, TypedParameter, TypedRecordField, TypedScheme,
-    TypedType,
-};
-use seseragi_syntax::{SurfaceDecl, SurfaceParameter, Token, TokenKind};
+use crate::{unit_type, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
+use seseragi_syntax::{SurfaceDecl, SurfaceParameter, Token};
 
+use super::effect::typed_effect_from_surface;
 use super::expr::{
-    find_effect_body, find_type_name_after, find_value_token, find_value_tokens, lower_first,
-    typed_expr_from_value_token, typed_fn_body_from_tokens,
+    find_effect_body, find_value_token, find_value_tokens, typed_expr_from_value_token,
+    typed_fn_body_from_tokens,
 };
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 
@@ -53,6 +51,7 @@ pub(crate) fn typed_decl_from_surface(
             name,
             parameters,
             return_type,
+            inferred_contract,
             span,
             ..
         } => {
@@ -60,17 +59,18 @@ pub(crate) fn typed_decl_from_surface(
                 .iter()
                 .map(typed_parameter_from_surface)
                 .collect::<Vec<_>>();
-            let with_type = find_type_name_after(tokens, span, TokenKind::KeywordWith);
-            let failure = find_type_name_after(tokens, span, TokenKind::KeywordFails)
-                .unwrap_or_else(|| "Never".to_owned());
-            let success = return_type
-                .as_ref()
-                .map(typed_type_from_type_ref)
-                .unwrap_or_else(unit_type);
+            let body = find_effect_body(tokens, span).unwrap_or_else(|| TypedExpr::EffectCall {
+                operation: "std/prelude::unit".to_owned(),
+                arguments: Vec::new(),
+                origin: span,
+            });
+            let effect =
+                typed_effect_from_surface(&return_type, inferred_contract, tokens, span, &body);
             Some(TypedDecl::EffectFn {
                 symbol: format!("{module}::{name}"),
                 visibility,
                 origin: span,
+                inferred_contract,
                 parameters: if typed_parameters.is_empty() {
                     vec![TypedParameter::ImplicitUnit {
                         type_ref: unit_type(),
@@ -78,32 +78,8 @@ pub(crate) fn typed_decl_from_surface(
                 } else {
                     typed_parameters
                 },
-                effect: TypedEffect {
-                    environment: TypedType::Record {
-                        closed: true,
-                        fields: with_type
-                            .map(|name| TypedRecordField {
-                                name: lower_first(&name),
-                                optional: false,
-                                type_ref: TypedType::Named {
-                                    name,
-                                    arguments: Vec::new(),
-                                },
-                            })
-                            .into_iter()
-                            .collect(),
-                    },
-                    failure: TypedType::Named {
-                        name: failure,
-                        arguments: Vec::new(),
-                    },
-                    success,
-                },
-                body: find_effect_body(tokens, span).unwrap_or_else(|| TypedExpr::EffectCall {
-                    operation: "std/prelude::unit".to_owned(),
-                    arguments: Vec::new(),
-                    origin: span,
-                }),
+                effect,
+                body,
             })
         }
         SurfaceDecl::Fn {

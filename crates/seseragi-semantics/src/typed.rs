@@ -1,6 +1,7 @@
 use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
 use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInterface};
 
+mod effect;
 mod expr;
 mod surface;
 mod type_ref;
@@ -182,6 +183,7 @@ mod tests {
                 symbol: "artifact/effect-main::main".to_owned(),
                 visibility: Visibility::Public,
                 origin: ByteSpan { start: 0, end: 78 },
+                inferred_contract: false,
                 parameters: vec![TypedParameter::ImplicitUnit {
                     type_ref: unit_type(),
                 }],
@@ -220,6 +222,62 @@ mod tests {
     }
 
     #[test]
+    fn types_compact_effect_fn_infers_println_contract() {
+        let typed = type_module(
+            "artifact/effect-compact-greet/main.ssrg",
+            "effect fn greet name: String =\n  println \"hello\"\n",
+        );
+
+        assert_eq!(
+            typed.declarations,
+            vec![TypedDecl::EffectFn {
+                symbol: "artifact/effect-compact-greet::greet".to_owned(),
+                visibility: Visibility::Private,
+                origin: ByteSpan { start: 0, end: 48 },
+                inferred_contract: true,
+                parameters: vec![TypedParameter::Named {
+                    name: "name".to_owned(),
+                    type_ref: TypedType::Named {
+                        name: "String".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    origin: ByteSpan { start: 16, end: 20 },
+                }],
+                effect: TypedEffect {
+                    environment: TypedType::Record {
+                        closed: true,
+                        fields: vec![TypedRecordField {
+                            name: "console".to_owned(),
+                            optional: false,
+                            type_ref: TypedType::Named {
+                                name: "Console".to_owned(),
+                                arguments: Vec::new(),
+                            },
+                        }],
+                    },
+                    failure: TypedType::Named {
+                        name: "ConsoleError".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    success: unit_type(),
+                },
+                body: TypedExpr::EffectCall {
+                    operation: "std/prelude::println".to_owned(),
+                    arguments: vec![TypedExpr::String {
+                        value: "hello".to_owned(),
+                        type_ref: TypedType::Named {
+                            name: "String".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                        origin: ByteSpan { start: 41, end: 48 },
+                    }],
+                    origin: ByteSpan { start: 33, end: 48 },
+                },
+            }]
+        );
+    }
+
+    #[test]
     fn types_empty_do_block_as_unit_result() {
         let typed = type_module(
             "artifact/effect-do/main.ssrg",
@@ -232,6 +290,7 @@ mod tests {
                 symbol: "artifact/effect-do::main".to_owned(),
                 visibility: Visibility::Public,
                 origin: ByteSpan { start: 0, end: 68 },
+                inferred_contract: false,
                 parameters: vec![TypedParameter::ImplicitUnit {
                     type_ref: unit_type(),
                 }],

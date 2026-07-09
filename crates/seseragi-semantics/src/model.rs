@@ -91,6 +91,8 @@ pub enum TypedDecl {
         symbol: String,
         visibility: Visibility,
         origin: ByteSpan,
+        #[serde(default, skip_serializing_if = "is_false")]
+        inferred_contract: bool,
         parameters: Vec<TypedParameter>,
         effect: TypedEffect,
         body: TypedExpr,

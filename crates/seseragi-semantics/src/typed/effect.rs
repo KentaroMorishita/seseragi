@@ -1,0 +1,117 @@
+use crate::{unit_type, TypedEffect, TypedExpr, TypedRecordField, TypedType};
+use seseragi_syntax::{ByteSpan, Token, TokenKind, TypeRef};
+
+use super::expr::{find_type_name_after, lower_first};
+use super::type_ref::typed_type_from_type_ref;
+
+pub(crate) fn typed_effect_from_surface(
+    return_type: &Option<TypeRef>,
+    inferred_contract: bool,
+    tokens: &[Token],
+    span: ByteSpan,
+    body: &TypedExpr,
+) -> TypedEffect {
+    if inferred_contract {
+        return infer_compact_effect(body);
+    }
+
+    explicit_effect(return_type, tokens, span)
+}
+
+fn explicit_effect(return_type: &Option<TypeRef>, tokens: &[Token], span: ByteSpan) -> TypedEffect {
+    let with_type = find_type_name_after(tokens, span, TokenKind::KeywordWith);
+    let failure = find_type_name_after(tokens, span, TokenKind::KeywordFails)
+        .unwrap_or_else(|| "Never".to_owned());
+    let success = return_type
+        .as_ref()
+        .map(typed_type_from_type_ref)
+        .unwrap_or_else(unit_type);
+
+    TypedEffect {
+        environment: TypedType::Record {
+            closed: true,
+            fields: with_type
+                .map(environment_field)
+                .into_iter()
+                .collect::<Vec<_>>(),
+        },
+        failure: named_type(&failure),
+        success,
+    }
+}
+
+fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
+    let mut requirements = Vec::new();
+    let mut failure = named_type("Never");
+
+    collect_effect_contract(body, &mut requirements, &mut failure);
+
+    TypedEffect {
+        environment: TypedType::Record {
+            closed: true,
+            fields: requirements,
+        },
+        failure,
+        success: unit_type(),
+    }
+}
+
+fn collect_effect_contract(
+    expr: &TypedExpr,
+    requirements: &mut Vec<TypedRecordField>,
+    failure: &mut TypedType,
+) {
+    match expr {
+        TypedExpr::EffectCall { operation, .. } if operation == "std/prelude::println" => {
+            push_requirement_unique(requirements, environment_field("Console".to_owned()));
+            widen_failure_from_never(failure, named_type("ConsoleError"));
+        }
+        TypedExpr::DoBlock {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                collect_effect_contract(statement, requirements, failure);
+            }
+            collect_effect_contract(result, requirements, failure);
+        }
+        TypedExpr::Unit { .. }
+        | TypedExpr::Integer { .. }
+        | TypedExpr::String { .. }
+        | TypedExpr::Boolean { .. }
+        | TypedExpr::Variable { .. }
+        | TypedExpr::Binary { .. }
+        | TypedExpr::EffectCall { .. } => {}
+    }
+}
+
+fn push_requirement_unique(fields: &mut Vec<TypedRecordField>, candidate: TypedRecordField) {
+    if fields.iter().any(|field| field.name == candidate.name) {
+        return;
+    }
+    fields.push(candidate);
+}
+
+fn widen_failure_from_never(current: &mut TypedType, candidate: TypedType) {
+    if named_type_is(current, "Never") {
+        *current = candidate;
+    }
+}
+
+fn environment_field(name: String) -> TypedRecordField {
+    TypedRecordField {
+        name: lower_first(&name),
+        optional: false,
+        type_ref: named_type(&name),
+    }
+}
+
+fn named_type(name: &str) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments: Vec::new(),
+    }
+}
+
+fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
+    matches!(type_ref, TypedType::Named { name, .. } if name == expected_name)
+}

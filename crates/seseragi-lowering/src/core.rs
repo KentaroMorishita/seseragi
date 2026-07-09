@@ -128,6 +128,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 symbol,
                 visibility,
                 origin,
+                inferred_contract: _,
                 parameters,
                 effect,
                 body,
