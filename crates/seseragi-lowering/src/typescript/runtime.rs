@@ -1,5 +1,6 @@
 use crate::{CoreExpr, CoreParameter};
 
+use super::names::safe_identifier;
 use super::{push_unique, TypeScriptParameter, TypeScriptType};
 
 pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &mut Vec<String>) {
@@ -62,7 +63,7 @@ pub(super) fn lower_core_parameter_to_typescript(parameter: CoreParameter) -> Ty
         name: if parameter.kind == "implicit" {
             "_unit".to_owned()
         } else {
-            parameter.id
+            safe_identifier(&parameter.id)
         },
         type_name: render_type_name(&parameter.type_name).to_owned(),
         implicit: parameter.kind == "implicit",

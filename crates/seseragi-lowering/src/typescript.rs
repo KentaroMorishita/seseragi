@@ -2,8 +2,10 @@ use crate::{CoreExpr, CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
+mod names;
 mod runtime;
 
+use names::safe_identifier;
 use runtime::{
     collect_expr_runtime_requirements, collect_type_runtime_requirement, expr_requires_feature,
     lower_core_parameter_to_typescript, type_ref_from_core_expr,
@@ -138,10 +140,13 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
             }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
             if expr_requires_feature(&function.body, "effect.console.println") {
-                imports.push(TypeScriptImport {
-                    feature: "effect.console.println".to_owned(),
-                    local: "_ssrg_console_println".to_owned(),
-                });
+                push_import_unique(
+                    &mut imports,
+                    TypeScriptImport {
+                        feature: "effect.console.println".to_owned(),
+                        local: "_ssrg_console_println".to_owned(),
+                    },
+                );
             }
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
@@ -174,7 +179,9 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
-        CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier { name },
+        CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier {
+            name: safe_identifier(&name),
+        },
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -182,7 +189,7 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         } => TypeScriptExpr::Call {
             callee: match operation.as_str() {
                 "console.println" => "_ssrg_console_println".to_owned(),
-                other => other.to_owned(),
+                other => safe_identifier(other),
             },
             arguments: arguments
                 .into_iter()
@@ -195,12 +202,21 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
 fn local_name(symbol: &str) -> String {
     symbol
         .rsplit_once("::")
-        .map(|(_, name)| name.to_owned())
-        .unwrap_or_else(|| symbol.to_owned())
+        .map(|(_, name)| safe_identifier(name))
+        .unwrap_or_else(|| safe_identifier(symbol))
 }
 
 pub(super) fn push_unique(values: &mut Vec<String>, value: &str) {
     if !values.iter().any(|existing| existing == value) {
         values.push(value.to_owned());
+    }
+}
+
+fn push_import_unique(imports: &mut Vec<TypeScriptImport>, import: TypeScriptImport) {
+    if !imports
+        .iter()
+        .any(|existing| existing.feature == import.feature && existing.local == import.local)
+    {
+        imports.push(import);
     }
 }

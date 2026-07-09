@@ -124,6 +124,41 @@ mod tests {
     }
 
     #[test]
+    fn deduplicates_runtime_helper_imports_across_functions() {
+        let source = "\
+pub effect fn first -> Unit
+with Console
+fails ConsoleError =
+  println \"one\"
+
+pub effect fn second -> Unit
+with Console
+fails ConsoleError =
+  println \"two\"
+";
+        let typed = type_module("artifact/two-effects/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        assert_eq!(typescript.imports.len(), 1);
+        assert_eq!(typescript.imports[0].feature, "effect.console.println");
+    }
+
+    #[test]
+    fn sanitizes_typescript_parameter_and_variable_names() {
+        let source = "pub fn pick default: Int -> Int = default\n";
+        let typed = type_module("artifact/reserved-param/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(
+            bundle.typescript,
+            "export const pick = (_default: bigint) => _default\n"
+        );
+    }
+
+    #[test]
     fn lowers_unit_result_to_typescript_undefined_expression() {
         let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);

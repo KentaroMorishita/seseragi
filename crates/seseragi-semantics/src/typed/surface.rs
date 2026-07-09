@@ -164,6 +164,14 @@ fn typed_fn_body_from_token(token: &Token, parameters: &[TypedParameter]) -> Typ
                 },
             };
         }
+        return TypedExpr::Variable {
+            name: token.raw.clone(),
+            type_ref: TypedType::Hole,
+            origin: ByteSpan {
+                start: token.start,
+                end: token.end,
+            },
+        };
     }
     typed_expr_from_value_token(token)
 }

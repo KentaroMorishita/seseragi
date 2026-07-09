@@ -1,0 +1,84 @@
+const RESERVED_TYPESCRIPT_WORDS: &[&str] = &[
+    "await",
+    "break",
+    "case",
+    "catch",
+    "class",
+    "const",
+    "continue",
+    "debugger",
+    "default",
+    "delete",
+    "do",
+    "else",
+    "enum",
+    "export",
+    "extends",
+    "false",
+    "finally",
+    "for",
+    "function",
+    "if",
+    "import",
+    "in",
+    "instanceof",
+    "new",
+    "null",
+    "return",
+    "super",
+    "switch",
+    "this",
+    "throw",
+    "true",
+    "try",
+    "typeof",
+    "var",
+    "void",
+    "while",
+    "with",
+    "yield",
+];
+
+pub(super) fn safe_identifier(name: &str) -> String {
+    let mut output = String::with_capacity(name.len());
+    for (index, char) in name.chars().enumerate() {
+        let valid = if index == 0 {
+            char == '_' || char == '$' || char.is_ascii_alphabetic()
+        } else {
+            char == '_' || char == '$' || char.is_ascii_alphanumeric()
+        };
+        output.push(if valid { char } else { '_' });
+    }
+
+    if output.is_empty()
+        || output
+            .chars()
+            .next()
+            .is_some_and(|char| char.is_ascii_digit())
+        || RESERVED_TYPESCRIPT_WORDS.contains(&output.as_str())
+    {
+        output.insert(0, '_');
+    }
+
+    output
+}
+
+#[cfg(test)]
+mod tests {
+    use super::safe_identifier;
+
+    #[test]
+    fn preserves_simple_identifiers() {
+        assert_eq!(safe_identifier("value"), "value");
+    }
+
+    #[test]
+    fn prefixes_reserved_words() {
+        assert_eq!(safe_identifier("default"), "_default");
+    }
+
+    #[test]
+    fn replaces_invalid_identifier_characters() {
+        assert_eq!(safe_identifier("operator(<+>)"), "operator_____");
+    }
+}

@@ -275,4 +275,24 @@ mod tests {
 
         assert!(typed.declarations.is_empty());
     }
+
+    #[test]
+    fn types_unknown_function_identifier_as_hole_variable() {
+        let typed = type_module(
+            "artifact/unknown-fn-body/main.ssrg",
+            "pub fn useMissing value: Int -> Int = missing\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected function declaration");
+        };
+        assert_eq!(
+            body,
+            &TypedExpr::Variable {
+                name: "missing".to_owned(),
+                type_ref: TypedType::Hole,
+                origin: ByteSpan { start: 38, end: 45 },
+            }
+        );
+    }
 }

@@ -325,6 +325,19 @@ mod tests {
     }
 
     #[test]
+    fn recovers_missing_fn_expression() {
+        let cst = parse_cst("main.ssrg", "pub fn identity value: Int -> Int =\n");
+
+        assert_eq!(cst.missing.len(), 1);
+        assert_eq!(cst.missing[0].expected, "expression");
+        assert_eq!(cst.errors[0].code, "SES-P0001");
+        assert_eq!(
+            cst.root.children[0].children[1].children[0].kind,
+            "error-expr"
+        );
+    }
+
+    #[test]
     fn parses_missing_let_expression_recovery_cst() {
         let cst = parse_cst("main.ssrg", "pub let answer: Int =\n");
 
