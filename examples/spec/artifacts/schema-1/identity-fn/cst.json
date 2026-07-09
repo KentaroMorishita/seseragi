@@ -17,6 +17,12 @@
             "startToken": 0,
             "endToken": 1,
             "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 2,
+            "endToken": 19,
+            "children": []
           }
         ]
       }

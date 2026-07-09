@@ -94,9 +94,12 @@ impl CstParser<'_> {
                 Some(TokenKind::PunctuationBraceRight) => {
                     brace_depth = brace_depth.saturating_sub(1);
                 }
-                Some(TokenKind::KeywordPub | TokenKind::KeywordLet | TokenKind::KeywordEffect)
-                    if brace_depth == 0 && self.is_declaration_boundary(index) =>
-                {
+                Some(
+                    TokenKind::KeywordPub
+                    | TokenKind::KeywordLet
+                    | TokenKind::KeywordFn
+                    | TokenKind::KeywordEffect,
+                ) if brace_depth == 0 && self.is_declaration_boundary(index) => {
                     starts.push(index);
                 }
                 _ => {}
@@ -128,6 +131,8 @@ impl CstParser<'_> {
 
         if self.kind_at(decl_start) == Some(TokenKind::KeywordLet) {
             children.push(self.parse_let_decl(decl_start, end));
+        } else if self.kind_at(decl_start) == Some(TokenKind::KeywordFn) {
+            children.push(self.parse_fn_decl(decl_start, end));
         } else if self.kind_at(decl_start) == Some(TokenKind::KeywordEffect) {
             children.push(self.parse_effect_fn_decl(decl_start, end));
         }
@@ -162,6 +167,35 @@ impl CstParser<'_> {
             }
         }
         CstNode::new("let-decl", start, end, children)
+    }
+
+    fn parse_fn_decl(&mut self, start: usize, end: usize) -> CstNode {
+        let mut children = Vec::new();
+        if let Some(equals) =
+            self.find_significant_token(start, end, |kind| kind == TokenKind::OperatorEquals)
+        {
+            let expression_start = self.next_significant_token(equals + 1, end);
+            if expression_start.is_none() {
+                let at_token = equals + 1;
+                let at_byte = self
+                    .tokens
+                    .get(at_token)
+                    .map(|token| token.start)
+                    .unwrap_or_else(|| self.tokens.last().map(|token| token.end).unwrap_or(0));
+                children.push(CstNode::new("error-expr", at_token, at_token, vec![]));
+                self.missing.push(CstMissing {
+                    expected: "expression".to_owned(),
+                    at_token,
+                    at_byte,
+                });
+                self.errors.push(CstError {
+                    code: "SES-P0001".to_owned(),
+                    start_token: at_token,
+                    end_token: at_token,
+                });
+            }
+        }
+        CstNode::new("fn-decl", start, end, children)
     }
 
     fn parse_effect_fn_decl(&mut self, start: usize, end: usize) -> CstNode {
@@ -278,6 +312,16 @@ mod tests {
         assert!(cst.errors.is_empty());
         assert_eq!(cst.root.children[0].children[0].kind, "decl-modifiers");
         assert_eq!(cst.root.children[0].children[1].kind, "let-decl");
+    }
+
+    #[test]
+    fn parses_public_fn_cst() {
+        let cst = parse_cst("main.ssrg", "pub fn identity value: Int -> Int = value\n");
+
+        assert!(cst.missing.is_empty());
+        assert!(cst.errors.is_empty());
+        assert_eq!(cst.root.children[0].children[0].kind, "decl-modifiers");
+        assert_eq!(cst.root.children[0].children[1].kind, "fn-decl");
     }
 
     #[test]
