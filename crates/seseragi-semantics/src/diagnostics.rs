@@ -47,6 +47,28 @@ fn collect_decl_diagnostics(
         return;
     }
 
+    if let Some(clause) = compact_contract_clause(tokens, *span) {
+        diagnostics.push(Diagnostic {
+            id: String::new(),
+            code: "SES-T0002".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.compact-contract-clause".to_owned(),
+            primary: ByteRange {
+                start: clause.start,
+                end: clause.end,
+            },
+            related: vec![RelatedDiagnostic {
+                message: "compact inferred effect function".to_owned(),
+                primary: ByteRange {
+                    start: span.start,
+                    end: span.end,
+                },
+            }],
+            fixes: Vec::new(),
+        });
+        return;
+    }
+
     let Some(operation) = compact_effect_body_operation(tokens, *span) else {
         return;
     };
@@ -103,6 +125,20 @@ fn compact_effect_body_operation(
     tokens[equals_index + 1..]
         .iter()
         .find(|token| token.end <= span.end && is_significant(token))
+}
+
+fn compact_contract_clause(tokens: &[Token], span: seseragi_syntax::ByteSpan) -> Option<&Token> {
+    let equals_index = tokens
+        .iter()
+        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")?;
+    tokens
+        .iter()
+        .take(equals_index)
+        .find(|token| token.start >= span.start && is_compact_contract_clause_token(token))
+}
+
+fn is_compact_contract_clause_token(token: &Token) -> bool {
+    matches!(token.kind, TokenKind::KeywordWith | TokenKind::KeywordFails) || token.raw == "where"
 }
 
 fn compact_do_statement_operation<'tokens>(
@@ -179,6 +215,29 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].related[0].primary,
             ByteRange { start: 0, end: 35 }
+        );
+    }
+
+    #[test]
+    fn reports_contract_clause_in_compact_effect_fn() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-with-clause/main.ssrg",
+            "pub effect fn main with Console =\n  println \"hello\"\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0002");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.compact-contract-clause"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 19, end: 23 }
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].primary,
+            ByteRange { start: 0, end: 51 }
         );
     }
 }

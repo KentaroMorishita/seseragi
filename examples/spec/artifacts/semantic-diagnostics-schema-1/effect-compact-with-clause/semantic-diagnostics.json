@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0002",
+      "severity": "Error",
+      "messageKey": "effect.compact-contract-clause",
+      "primary": { "start": 19, "end": 23 },
+      "related": [
+        {
+          "message": "compact inferred effect function",
+          "primary": { "start": 0, "end": 51 }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}
