@@ -1,3 +1,4 @@
+use crate::effect_ops::runtime_effect_operation;
 use crate::{CoreExpr, CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
@@ -7,8 +8,8 @@ mod runtime;
 
 use names::safe_identifier;
 use runtime::{
-    collect_expr_runtime_requirements, collect_type_runtime_requirement, expr_requires_feature,
-    lower_core_parameter_to_typescript, type_ref_from_core_expr,
+    collect_expr_runtime_imports, collect_expr_runtime_requirements,
+    collect_type_runtime_requirement, lower_core_parameter_to_typescript, type_ref_from_core_expr,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -148,15 +149,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
                 collect_type_runtime_requirement(&parameter.type_name, &mut runtime_requirements);
             }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
-            if expr_requires_feature(&function.body, "effect.console.println") {
-                push_import_unique(
-                    &mut imports,
-                    TypeScriptImport {
-                        feature: "effect.console.println".to_owned(),
-                        local: "_ssrg_console_println".to_owned(),
-                    },
-                );
-            }
+            collect_expr_runtime_imports(&function.body, &mut imports);
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 name: local_name(&function.symbol),
@@ -206,10 +199,9 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             arguments,
             ..
         } => TypeScriptExpr::Call {
-            callee: match operation.as_str() {
-                "console.println" => "_ssrg_console_println".to_owned(),
-                other => safe_identifier(other),
-            },
+            callee: runtime_effect_operation(&operation)
+                .map(|operation| operation.local_name.to_owned())
+                .unwrap_or_else(|| safe_identifier(&operation)),
             arguments: arguments
                 .into_iter()
                 .map(lower_core_expr_to_typescript)
@@ -240,7 +232,7 @@ pub(super) fn push_unique(values: &mut Vec<String>, value: &str) {
     }
 }
 
-fn push_import_unique(imports: &mut Vec<TypeScriptImport>, import: TypeScriptImport) {
+pub(super) fn push_import_unique(imports: &mut Vec<TypeScriptImport>, import: TypeScriptImport) {
     if !imports
         .iter()
         .any(|existing| existing.feature == import.feature && existing.local == import.local)

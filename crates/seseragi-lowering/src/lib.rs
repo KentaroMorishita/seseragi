@@ -1,4 +1,5 @@
 mod core;
+mod effect_ops;
 mod emit;
 mod span;
 mod typescript;

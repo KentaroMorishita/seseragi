@@ -1,4 +1,7 @@
-use crate::{TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule};
+use crate::{
+    effect_ops::{runtime_effect_operation_by_local_name, runtime_effect_operation_for_feature},
+    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -98,10 +101,10 @@ fn module_exports(module: &TypeScriptModule) -> Vec<String> {
 fn render_typescript(module: &TypeScriptModule) -> String {
     let mut output = String::new();
     for import in &module.imports {
-        if import.feature == "effect.console.println" {
+        if let Some(operation) = runtime_effect_operation_for_feature(&import.feature) {
             output.push_str(&format!(
-                "import {{ println as {} }} from \"@seseragi/runtime/console\"\n",
-                import.local
+                "import {{ {} as {} }} from \"{}\"\n",
+                operation.export_name, import.local, operation.module
             ));
         }
     }
@@ -240,8 +243,8 @@ fn module_names(module: &TypeScriptModule) -> Vec<String> {
 fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
     match expr {
         TypeScriptExpr::Call { callee, arguments } => {
-            if callee == "_ssrg_console_println" {
-                names.push("println".to_owned());
+            if let Some(operation) = runtime_effect_operation_by_local_name(callee) {
+                names.push(operation.source_map_name.to_owned());
             }
             for argument in arguments {
                 collect_expr_names(argument, names);

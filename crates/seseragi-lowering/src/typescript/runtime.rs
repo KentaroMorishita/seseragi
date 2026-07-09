@@ -1,7 +1,9 @@
-use crate::{CoreExpr, CoreParameter};
+use crate::{effect_ops::runtime_effect_operation, CoreExpr, CoreParameter};
 
 use super::names::safe_identifier;
-use super::{push_unique, TypeScriptParameter, TypeScriptType};
+use super::{
+    push_import_unique, push_unique, TypeScriptImport, TypeScriptParameter, TypeScriptType,
+};
 
 pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &mut Vec<String>) {
     match expr {
@@ -27,8 +29,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             arguments,
             ..
         } => {
-            if operation == "console.println" {
-                push_unique(requirements, "effect.console.println");
+            if let Some(operation) = runtime_effect_operation(operation) {
+                push_unique(requirements, operation.runtime_feature);
             }
             for argument in arguments {
                 collect_expr_runtime_requirements(argument, requirements);
@@ -45,33 +47,42 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
     }
 }
 
-pub(super) fn expr_requires_feature(expr: &CoreExpr, feature: &str) -> bool {
+pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<TypeScriptImport>) {
     match expr {
         CoreExpr::EffectOperation {
             operation,
             arguments,
             ..
         } => {
-            (feature == "effect.console.println" && operation == "console.println")
-                || arguments
-                    .iter()
-                    .any(|argument| expr_requires_feature(argument, feature))
+            if let Some(operation) = runtime_effect_operation(operation) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
+            for argument in arguments {
+                collect_expr_runtime_imports(argument, imports);
+            }
         }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. }
-        | CoreExpr::Variable { .. } => false,
+        | CoreExpr::Variable { .. } => {}
         CoreExpr::Binary { left, right, .. } => {
-            expr_requires_feature(left, feature) || expr_requires_feature(right, feature)
+            collect_expr_runtime_imports(left, imports);
+            collect_expr_runtime_imports(right, imports);
         }
         CoreExpr::Sequence {
             statements, result, ..
         } => {
-            statements
-                .iter()
-                .any(|statement| expr_requires_feature(statement, feature))
-                || expr_requires_feature(result, feature)
+            for statement in statements {
+                collect_expr_runtime_imports(statement, imports);
+            }
+            collect_expr_runtime_imports(result, imports);
         }
     }
 }
