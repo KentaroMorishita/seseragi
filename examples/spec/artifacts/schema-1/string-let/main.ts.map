@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": ["seseragi://artifact/string-let"],
+  "sourcesContent": ["pub let greeting: String = \"hello\"\n"],
+  "names": ["greeting"],
+  "mappings": "AAAA,aAAQA,iBAAc"
+}

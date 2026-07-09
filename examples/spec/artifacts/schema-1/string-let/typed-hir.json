@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/string-let",
+  "declarations": [
+    {
+      "kind": "let",
+      "symbol": "artifact/string-let::greeting",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 34 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "String", "arguments": [] }
+      },
+      "value": {
+        "kind": "string",
+        "value": "hello",
+        "type": { "kind": "named", "name": "String", "arguments": [] },
+        "origin": { "start": 27, "end": 34 }
+      }
+    }
+  ]
+}

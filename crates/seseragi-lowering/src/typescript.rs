@@ -74,6 +74,8 @@ pub struct TypeScriptParameter {
 )]
 pub enum TypeScriptType {
     Bigint,
+    String,
+    Undefined,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -103,13 +105,11 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         .bindings
         .into_iter()
         .map(|binding| {
-            if matches!(binding.value, CoreExpr::Int64 { .. }) {
-                push_unique(&mut runtime_requirements, "core.int64");
-            }
+            collect_expr_runtime_requirements(&binding.value, &mut runtime_requirements);
             TypeScriptBinding::Const {
                 exported: binding.visibility == Visibility::Public,
                 name: local_name(&binding.symbol),
-                type_ref: TypeScriptType::Bigint,
+                type_ref: type_ref_from_core_expr(&binding.value),
                 initializer: lower_core_expr_to_typescript(binding.value),
                 origin: binding.origin,
             }
@@ -120,8 +120,11 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         .into_iter()
         .map(|function| {
             push_unique(&mut runtime_requirements, "core.unit");
-            if function_body_uses_console_println(&function.body) {
-                push_unique(&mut runtime_requirements, "effect.console.println");
+            collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
+            if runtime_requirements
+                .iter()
+                .any(|feature| feature == "effect.console.println")
+            {
                 imports.push(TypeScriptImport {
                     feature: "effect.console.println".to_owned(),
                     local: "_ssrg_console_println".to_owned(),
@@ -178,10 +181,32 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
     }
 }
 
-fn function_body_uses_console_println(expr: &CoreExpr) -> bool {
+fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &mut Vec<String>) {
     match expr {
-        CoreExpr::EffectOperation { operation, .. } => operation == "console.println",
-        _ => false,
+        CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
+        CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
+        CoreExpr::String { .. } => push_unique(requirements, "core.string"),
+        CoreExpr::EffectOperation {
+            operation,
+            arguments,
+            ..
+        } => {
+            if operation == "console.println" {
+                push_unique(requirements, "effect.console.println");
+            }
+            for argument in arguments {
+                collect_expr_runtime_requirements(argument, requirements);
+            }
+        }
+    }
+}
+
+fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
+    match expr {
+        CoreExpr::Unit { .. } => TypeScriptType::Undefined,
+        CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
+        CoreExpr::String { .. } => TypeScriptType::String,
+        CoreExpr::EffectOperation { .. } => TypeScriptType::Undefined,
     }
 }
 

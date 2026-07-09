@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/string-let",
+  "runtimeRequirements": ["core.string"],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "greeting",
+      "type": { "kind": "string" },
+      "initializer": { "kind": "string", "value": "hello" },
+      "origin": { "source": "main.ssrg", "start": 0, "end": 34 }
+    }
+  ]
+}

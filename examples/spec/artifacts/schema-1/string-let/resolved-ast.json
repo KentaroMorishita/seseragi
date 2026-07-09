@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/string-let",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "greeting",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 34 }
+    }
+  ]
+}

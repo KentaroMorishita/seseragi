@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "module": "artifact/effect-main",
+  "module": "artifact/string-let",
   "target": "typescript-es2022",
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
-    "requirements": ["core.unit", "effect.console.println", "core.string"]
+    "requirements": ["core.string"]
   },
-  "exports": ["main"],
+  "exports": ["greeting"],
   "outputs": {
     "typescript": "main.ts",
     "sourceMap": "main.ts.map"

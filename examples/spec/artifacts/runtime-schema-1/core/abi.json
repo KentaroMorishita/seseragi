@@ -19,6 +19,13 @@
       "import": null
     },
     {
+      "id": "core.string",
+      "kind": "value-representation",
+      "typescript": "string",
+      "boundary": "unicode-scalar-string",
+      "import": null
+    },
+    {
       "id": "effect.console.println",
       "kind": "runtime-helper",
       "typescript": "function",

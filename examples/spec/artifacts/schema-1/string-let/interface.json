@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "artifact/string-let",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/string-let::greeting",
+      "namespace": "value",
+      "name": "greeting",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 34 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "String", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

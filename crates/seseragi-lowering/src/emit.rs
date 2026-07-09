@@ -113,6 +113,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
             TypeScriptBinding::Const {
                 exported,
                 name,
+                type_ref,
                 initializer,
                 ..
             } => {
@@ -120,7 +121,8 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                     output.push_str("export ");
                 }
                 output.push_str(&format!(
-                    "const {name}: bigint = {};\n",
+                    "const {name}: {} = {};\n",
+                    render_typescript_type(type_ref),
                     render_typescript_expr(initializer)
                 ));
             }
@@ -151,6 +153,14 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         }
     }
     output
+}
+
+fn render_typescript_type(type_ref: &crate::TypeScriptType) -> &'static str {
+    match type_ref {
+        crate::TypeScriptType::Bigint => "bigint",
+        crate::TypeScriptType::String => "string",
+        crate::TypeScriptType::Undefined => "undefined",
+    }
 }
 
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {

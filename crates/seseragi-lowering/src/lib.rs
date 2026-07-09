@@ -74,10 +74,25 @@ mod tests {
 
         assert_eq!(
             typescript.runtime_requirements,
-            vec!["core.unit", "effect.console.println"]
+            vec!["core.unit", "effect.console.println", "core.string"]
         );
         assert_eq!(typescript.imports[0].local, "_ssrg_console_println");
         assert_eq!(typescript.functions.len(), 1);
+    }
+
+    #[test]
+    fn lowers_string_binding_to_typescript_string_const() {
+        let source = "pub let greeting: String = \"hello\"\n";
+        let typed = type_module("artifact/string-let/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.string"]);
+        assert_eq!(
+            bundle.typescript,
+            "export const greeting: string = \"hello\";\n"
+        );
     }
 
     #[test]
