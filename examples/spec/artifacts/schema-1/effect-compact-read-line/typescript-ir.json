@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-compact-read-line",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.stdin.readLine"
+  ],
+  "imports": [
+    {
+      "feature": "effect.stdin.readLine",
+      "local": "_ssrg_stdin_readLine"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "isAsync": true,
+      "name": "nextLine",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "await",
+        "value": {
+          "kind": "call",
+          "callee": "_ssrg_stdin_readLine",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      }
+    }
+  ]
+}

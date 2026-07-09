@@ -1,7 +1,8 @@
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{
-    TypedDecl, TypedDoStatement, TypedEffect, TypedExpr, TypedModule, TypedParameter, TypedType,
+    known_effect_operation_by_semantic, TypedDecl, TypedDoStatement, TypedEffect, TypedExpr,
+    TypedModule, TypedParameter,
 };
 use seseragi_syntax::Visibility;
 
@@ -88,7 +89,7 @@ pub enum CoreExpr {
     },
     EffectOperation {
         operation: String,
-        requirements: Vec<String>,
+        requirements: CoreType,
         failure: CoreType,
         success: CoreType,
         arguments: Vec<CoreExpr>,
@@ -191,17 +192,27 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
             operation,
             arguments,
             origin,
-        } => CoreExpr::EffectOperation {
-            operation: lower_effect_operation(&operation),
-            requirements: effect_requirements(&effect),
-            failure: lower_typed_type(effect.failure),
-            success: lower_typed_type(effect.success),
-            arguments: arguments
-                .into_iter()
-                .map(|argument| lower_expr(source, argument))
-                .collect(),
-            origin: source_span(source, origin),
-        },
+        } => {
+            let (requirements, failure, success) = effect_operation_contract(&operation)
+                .unwrap_or_else(|| {
+                    (
+                        lower_typed_type(effect.environment.clone()),
+                        lower_typed_type(effect.failure.clone()),
+                        lower_typed_type(effect.success.clone()),
+                    )
+                });
+            CoreExpr::EffectOperation {
+                operation: lower_effect_operation(&operation),
+                requirements,
+                failure,
+                success,
+                arguments: arguments
+                    .into_iter()
+                    .map(|argument| lower_expr(source, argument))
+                    .collect(),
+                origin: source_span(source, origin),
+            }
+        }
         TypedExpr::DoBlock {
             statements,
             result,
@@ -302,23 +313,27 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             operation,
             arguments,
             origin,
-        } => CoreExpr::EffectOperation {
-            operation: lower_effect_operation(&operation),
-            requirements: Vec::new(),
-            failure: CoreType::Named {
-                name: "Never".to_owned(),
-                arguments: Vec::new(),
-            },
-            success: CoreType::Named {
-                name: "Unit".to_owned(),
-                arguments: Vec::new(),
-            },
-            arguments: arguments
-                .into_iter()
-                .map(|argument| lower_expr(source, argument))
-                .collect(),
-            origin: source_span(source, origin),
-        },
+        } => {
+            let (requirements, failure, success) = effect_operation_contract(&operation)
+                .unwrap_or_else(|| {
+                    (
+                        empty_requirement_record(),
+                        named_core_type("Never"),
+                        named_core_type("Unit"),
+                    )
+                });
+            CoreExpr::EffectOperation {
+                operation: lower_effect_operation(&operation),
+                requirements,
+                failure,
+                success,
+                arguments: arguments
+                    .into_iter()
+                    .map(|argument| lower_expr(source, argument))
+                    .collect(),
+                origin: source_span(source, origin),
+            }
+        }
         TypedExpr::DoBlock {
             statements,
             result,
@@ -370,15 +385,46 @@ fn lower_parameter(parameter: &TypedParameter) -> CoreParameter {
 
 fn lower_effect_operation(operation: &str) -> String {
     match operation {
+        "std/prelude::readLine" => "stdin.readLine".to_owned(),
         "std/prelude::print" => "console.print".to_owned(),
         "std/prelude::println" => "console.println".to_owned(),
         other => other.to_owned(),
     }
 }
 
-fn effect_requirements(effect: &TypedEffect) -> Vec<String> {
-    match &effect.environment {
-        TypedType::Record { fields, .. } => fields.iter().map(|field| field.name.clone()).collect(),
-        _ => Vec::new(),
+fn effect_operation_contract(operation: &str) -> Option<(CoreType, CoreType, CoreType)> {
+    let operation = known_effect_operation_by_semantic(operation)?;
+    Some((
+        CoreType::Record {
+            closed: true,
+            fields: vec![CoreRecordField {
+                name: operation.requirement_field.to_owned(),
+                optional: false,
+                type_ref: named_core_type(operation.requirement_type),
+            }],
+        },
+        named_core_type(operation.failure_type),
+        CoreType::Named {
+            name: operation.success_type.to_owned(),
+            arguments: operation
+                .success_type_arguments
+                .iter()
+                .map(|name| named_core_type(name))
+                .collect(),
+        },
+    ))
+}
+
+fn named_core_type(name: &str) -> CoreType {
+    CoreType::Named {
+        name: name.to_owned(),
+        arguments: Vec::new(),
+    }
+}
+
+fn empty_requirement_record() -> CoreType {
+    CoreType::Record {
+        closed: true,
+        fields: Vec::new(),
     }
 }

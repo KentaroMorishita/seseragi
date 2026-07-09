@@ -337,6 +337,54 @@ mod tests {
     }
 
     #[test]
+    fn types_compact_read_line_with_stdin_and_maybe_string_contract() {
+        let typed = type_module(
+            "artifact/effect-compact-read-line/main.ssrg",
+            "pub effect fn nextLine = readLine ()\n",
+        );
+
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        assert_eq!(
+            effect.environment,
+            TypedType::Record {
+                closed: true,
+                fields: vec![TypedRecordField {
+                    name: "stdin".to_owned(),
+                    optional: false,
+                    type_ref: TypedType::Named {
+                        name: "Stdin".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                }],
+            }
+        );
+        assert_eq!(
+            effect.failure,
+            TypedType::Named {
+                name: "StdinError".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert_eq!(
+            effect.success,
+            TypedType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![TypedType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
+        assert!(matches!(
+            body,
+            TypedExpr::EffectCall { operation, arguments, .. }
+                if operation == "std/prelude::readLine" && arguments.is_empty()
+        ));
+    }
+
+    #[test]
     fn typed_interface_exports_compact_effect_fn_contract() {
         let interface = type_module_public_interface(
             "artifact/effect-compact-public/main.ssrg",

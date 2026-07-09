@@ -249,6 +249,71 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_async_stdin_bind_to_awaited_async_function() {
+        let source =
+            "pub effect fn main =\n  do {\n    first <- readLine ()\n    second <- readLine ()\n  }\n";
+        let typed = type_module("artifact/effect-stdin-read-line/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::Sequence { statements, .. } = &core.functions[0].body else {
+            panic!("expected do block sequence");
+        };
+        let CoreStatement::Bind {
+            value:
+                CoreExpr::EffectOperation {
+                    requirements,
+                    failure,
+                    success,
+                    ..
+                },
+            ..
+        } = &statements[0]
+        else {
+            panic!("expected readLine bind");
+        };
+        assert_eq!(
+            requirements,
+            &CoreType::Record {
+                closed: true,
+                fields: vec![CoreRecordField {
+                    name: "stdin".to_owned(),
+                    optional: false,
+                    type_ref: CoreType::Named {
+                        name: "Stdin".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                }],
+            }
+        );
+        assert_eq!(
+            failure,
+            &CoreType::Named {
+                name: "StdinError".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert_eq!(
+            success,
+            &CoreType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![CoreType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(
+            bundle.metadata.runtime.requirements,
+            vec!["core.unit", "effect.stdin.readLine"]
+        );
+        assert!(bundle.typescript.contains(
+            "export const main = async (_unit: undefined) => (async () => { const first: string | undefined = await _ssrg_stdin_readLine(); const second: string | undefined = await _ssrg_stdin_readLine(); return undefined; })()"
+        ));
+    }
+
+    #[test]
     fn emits_basic_typescript_module() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
         let core = lower_typed_module(typed);

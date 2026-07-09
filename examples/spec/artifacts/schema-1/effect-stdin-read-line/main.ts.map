@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-stdin-read-line"
+  ],
+  "sourcesContent": [
+    "pub effect fn main =\n  do {\n    first <- readLine ()\n    second <- readLine ()\n  }\n"
+  ],
+  "names": [
+    "main",
+    "first",
+    "readLine",
+    "second",
+    "readLine"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

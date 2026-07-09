@@ -6,11 +6,19 @@
     {
       "symbol": "artifact/basic::answer",
       "visibility": "public",
-      "origin": { "source": "main.ssrg", "start": 0, "end": 24 },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 24
+      },
       "value": {
         "kind": "int64",
         "value": "42",
-        "origin": { "source": "main.ssrg", "start": 22, "end": 24 }
+        "origin": {
+          "source": "main.ssrg",
+          "start": 22,
+          "end": 24
+        }
       }
     }
   ]

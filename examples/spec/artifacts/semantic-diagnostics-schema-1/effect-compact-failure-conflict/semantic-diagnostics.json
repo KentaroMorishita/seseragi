@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0003",
+      "severity": "Error",
+      "messageKey": "effect.compact-failure-conflict",
+      "primary": { "start": 40, "end": 47 },
+      "related": [
+        {
+          "message": "operation can fail with StdinError",
+          "primary": { "start": 28, "end": 36 }
+        },
+        {
+          "message": "operation can fail with ConsoleError",
+          "primary": { "start": 40, "end": 47 }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

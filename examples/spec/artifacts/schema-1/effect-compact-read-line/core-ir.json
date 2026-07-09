@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-compact-read-line",
+  "functions": [
+    {
+      "symbol": "artifact/effect-compact-read-line::nextLine",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "stdin.readLine",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "stdin",
+              "type": {
+                "kind": "named",
+                "name": "Stdin",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "StdinError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "arguments": [],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 25,
+          "end": 33
+        }
+      }
+    }
+  ]
+}

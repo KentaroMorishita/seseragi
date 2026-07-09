@@ -57,6 +57,7 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
         ));
     }
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
+    let stdin = read_stdin_input(case, &run)?;
 
     let stdout_name = run
         .pointer("/expected/stdout")
@@ -71,17 +72,23 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     let stderr = fs::read_to_string(case.join(stderr_name))
         .map_err(|error| format!("failed to read expected stderr snapshot: {error}"))?;
 
-    let trace_stdout = expected_trace_stdout(&run)?;
-    if trace_stdout != stdout {
-        return Err("execution stdout trace does not match stdout snapshot".to_owned());
+    if let Some(trace_stdout) = expected_trace_stdout(&run)? {
+        if trace_stdout != stdout {
+            return Err("execution stdout trace does not match stdout snapshot".to_owned());
+        }
     }
     let expected_exit_code = run
         .pointer("/expected/process/exitCode")
         .and_then(|value| value.as_i64())
         .ok_or_else(|| "run.json expected.process.exitCode is missing".to_owned())?;
 
-    let actual =
-        execution::run_generated_typescript(root, case, &compiled_typescript, entry_export)?;
+    let actual = execution::run_generated_typescript(
+        root,
+        case,
+        &compiled_typescript,
+        entry_export,
+        &stdin,
+    )?;
     if actual.exit_code != expected_exit_code {
         return Err(format!(
             "execution exit code mismatch: expected {expected_exit_code}, got {}",
@@ -98,10 +105,29 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     Ok(())
 }
 
-fn expected_trace_stdout(run: &serde_json::Value) -> Result<String, String> {
-    let trace = run
-        .pointer("/expected/trace")
-        .and_then(|value| value.as_array())
+fn read_stdin_input(case: &Path, run: &serde_json::Value) -> Result<String, String> {
+    let Some(input) = run.get("input") else {
+        return Ok(String::new());
+    };
+    let stdin_name = input
+        .get("stdin")
+        .and_then(|value| value.as_str())
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| "run.json input.stdin must name a fixture file".to_owned())?;
+    let stdin_path = case.join(stdin_name);
+    if !stdin_path.is_file() {
+        return Err("execution stdin fixture is missing".to_owned());
+    }
+    fs::read_to_string(&stdin_path)
+        .map_err(|error| format!("failed to read execution stdin fixture: {error}"))
+}
+
+fn expected_trace_stdout(run: &serde_json::Value) -> Result<Option<String>, String> {
+    let Some(trace_value) = run.pointer("/expected/trace") else {
+        return Ok(None);
+    };
+    let trace = trace_value
+        .as_array()
         .ok_or_else(|| "run.json expected.trace must be an array".to_owned())?;
     let mut stdout = String::new();
     for (index, event) in trace.iter().enumerate() {
@@ -127,7 +153,7 @@ fn expected_trace_stdout(run: &serde_json::Value) -> Result<String, String> {
             .ok_or_else(|| format!("run.json expected.trace[{index}].stdout is missing"))?;
         stdout.push_str(event_stdout);
     }
-    Ok(stdout)
+    Ok(Some(stdout))
 }
 
 fn expected_string_array(
@@ -146,4 +172,38 @@ fn expected_string_array(
                 .ok_or_else(|| format!("{label} entries must be strings"))
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{expected_trace_stdout, read_stdin_input};
+    use serde_json::json;
+    use std::path::Path;
+
+    #[test]
+    fn defaults_execution_stdin_to_empty_when_input_is_omitted() {
+        assert_eq!(read_stdin_input(Path::new("."), &json!({})).unwrap(), "");
+    }
+
+    #[test]
+    fn rejects_input_without_a_stdin_fixture_name() {
+        let error = read_stdin_input(Path::new("."), &json!({ "input": {} })).unwrap_err();
+
+        assert!(error.contains("input.stdin"));
+    }
+
+    #[test]
+    fn permits_process_smoke_cases_without_a_runtime_trace() {
+        assert_eq!(
+            expected_trace_stdout(&json!({ "expected": {} })).unwrap(),
+            None
+        );
+    }
+
+    #[test]
+    fn rejects_malformed_runtime_trace_when_it_is_present() {
+        let error = expected_trace_stdout(&json!({ "expected": { "trace": {} } })).unwrap_err();
+
+        assert!(error.contains("expected.trace"));
+    }
 }

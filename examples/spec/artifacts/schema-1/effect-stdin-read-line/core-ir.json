@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-stdin-read-line",
+  "functions": [
+    {
+      "symbol": "artifact/effect-stdin-read-line::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 82
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "first",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "stdin.readLine",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "StdinError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "arguments": [],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 41,
+                "end": 49
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 32,
+              "end": 49
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "second",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "stdin.readLine",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "StdinError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "arguments": [],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 67,
+                "end": 75
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 57,
+              "end": 75
+            }
+          }
+        ],
+        "result": {
+          "kind": "unit",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 81,
+            "end": 81
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 23,
+          "end": 82
+        }
+      }
+    }
+  ]
+}

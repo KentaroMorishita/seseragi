@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-compact-failure-conflict",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

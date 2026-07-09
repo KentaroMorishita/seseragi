@@ -1,6 +1,7 @@
 use std::fs;
+use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 pub(crate) struct ExecutionOutput {
     pub(crate) exit_code: i64,
@@ -92,6 +93,7 @@ pub(crate) fn run_generated_typescript(
     case: &Path,
     compiled_typescript: &Path,
     entry_export: &str,
+    stdin: &str,
 ) -> Result<ExecutionOutput, String> {
     let execution_dir = prepare_execution_dir(root, case)?;
     fs::copy(compiled_typescript, execution_dir.join("main.ts"))
@@ -99,12 +101,27 @@ pub(crate) fn run_generated_typescript(
     stage_runtime(root, &execution_dir)?;
     write_entry(&execution_dir, entry_export)?;
 
-    let output = Command::new("bun")
+    let mut child = Command::new("bun")
         .arg("run")
         .arg(execution_dir.join("entry.ts"))
         .current_dir(root)
-        .output()
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
         .map_err(|error| format!("failed to run bun: {error}"))?;
+    let mut process_stdin = child
+        .stdin
+        .take()
+        .ok_or_else(|| "failed to open bun stdin".to_owned())?;
+    process_stdin
+        .write_all(stdin.as_bytes())
+        .map_err(|error| format!("failed to write bun stdin: {error}"))?;
+    drop(process_stdin);
+
+    let output = child
+        .wait_with_output()
+        .map_err(|error| format!("failed to wait for bun: {error}"))?;
     let exit_code = output
         .status
         .code()

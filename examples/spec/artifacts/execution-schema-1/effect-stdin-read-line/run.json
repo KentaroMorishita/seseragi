@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "case": "effect-stdin-read-line",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effect-stdin-read-line",
+    "export": "main",
+    "compiledModule": "../../schema-1/effect-stdin-read-line/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "input": {
+    "stdin": "stdin.txt"
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "stdin", "type": "Stdin" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "stdin",
+        "type": "Stdin",
+        "adapter": "process-stdin"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.unit",
+      "effect.stdin.readLine"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

@@ -25,9 +25,20 @@
       "body": {
         "kind": "effect-operation",
         "operation": "console.println",
-        "requirements": [
-          "console"
-        ],
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
         "failure": {
           "kind": "named",
           "name": "ConsoleError",

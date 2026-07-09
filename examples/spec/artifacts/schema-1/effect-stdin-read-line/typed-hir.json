@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-stdin-read-line",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-stdin-read-line::main",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 82
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "stdin",
+              "type": {
+                "kind": "named",
+                "name": "Stdin",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "StdinError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "first",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::readLine",
+              "arguments": [],
+              "origin": {
+                "start": 41,
+                "end": 49
+              }
+            },
+            "origin": {
+              "start": 32,
+              "end": 49
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "second",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::readLine",
+              "arguments": [],
+              "origin": {
+                "start": 67,
+                "end": 75
+              }
+            },
+            "origin": {
+              "start": 57,
+              "end": 75
+            }
+          }
+        ],
+        "result": {
+          "kind": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 81,
+            "end": 81
+          }
+        },
+        "origin": {
+          "start": 23,
+          "end": 82
+        }
+      }
+    }
+  ]
+}

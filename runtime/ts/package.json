@@ -13,6 +13,10 @@
       "types": "./src/console.ts",
       "default": "./src/console.ts"
     },
+    "./stdin": {
+      "types": "./src/stdin.ts",
+      "default": "./src/stdin.ts"
+    },
     "./effect": {
       "types": "./src/effect.ts",
       "default": "./src/effect.ts"

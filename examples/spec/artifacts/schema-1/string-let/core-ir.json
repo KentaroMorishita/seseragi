@@ -6,11 +6,19 @@
     {
       "symbol": "artifact/string-let::greeting",
       "visibility": "public",
-      "origin": { "source": "main.ssrg", "start": 0, "end": 34 },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 34
+      },
       "value": {
         "kind": "string",
         "value": "hello",
-        "origin": { "source": "main.ssrg", "start": 27, "end": 34 }
+        "origin": {
+          "source": "main.ssrg",
+          "start": 27,
+          "end": 34
+        }
       }
     }
   ]

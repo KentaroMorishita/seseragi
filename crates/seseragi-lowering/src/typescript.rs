@@ -61,6 +61,8 @@ pub enum TypeScriptBinding {
 pub enum TypeScriptFunction {
     ConstFunction {
         exported: bool,
+        #[serde(default, skip_serializing_if = "is_false")]
+        is_async: bool,
         name: String,
         parameters: Vec<TypeScriptParameter>,
         body: TypeScriptExpr,
@@ -121,6 +123,9 @@ pub enum TypeScriptExpr {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
     },
+    Await {
+        value: Box<TypeScriptExpr>,
+    },
     Sequence {
         statements: Vec<TypeScriptStatement>,
         result: Box<TypeScriptExpr>,
@@ -172,15 +177,17 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
             }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
             collect_expr_runtime_imports(&function.body, &mut imports);
+            let body = lower_core_expr_to_typescript(function.body);
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
+                is_async: typescript_expr_contains_await(&body),
                 name: local_name(&function.symbol),
                 parameters: function
                     .parameters
                     .into_iter()
                     .map(lower_core_parameter_to_typescript)
                     .collect(),
-                body: lower_core_expr_to_typescript(function.body),
+                body,
                 origin: function.origin,
             }
         })
@@ -220,15 +227,28 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             operation,
             arguments,
             ..
-        } => TypeScriptExpr::Call {
-            callee: runtime_effect_operation(&operation)
-                .map(|operation| operation.local_name.to_owned())
-                .unwrap_or_else(|| safe_identifier(&operation)),
-            arguments: arguments
-                .into_iter()
-                .map(lower_core_expr_to_typescript)
-                .collect(),
-        },
+        } => {
+            // The target ABI, rather than Core IR, decides whether an operation
+            // must be awaited.  That keeps the language-level effect operation
+            // independent from the JavaScript runtime calling convention.
+            let runtime_operation = runtime_effect_operation(&operation);
+            let call = TypeScriptExpr::Call {
+                callee: runtime_operation
+                    .map(|operation| operation.local_name.to_owned())
+                    .unwrap_or_else(|| safe_identifier(&operation)),
+                arguments: arguments
+                    .into_iter()
+                    .map(lower_core_expr_to_typescript)
+                    .collect(),
+            };
+            if runtime_operation.is_some_and(|operation| operation.await_result) {
+                TypeScriptExpr::Await {
+                    value: Box::new(call),
+                }
+            } else {
+                call
+            }
+        }
         CoreExpr::Sequence {
             statements, result, ..
         } => TypeScriptExpr::Sequence {
@@ -260,6 +280,36 @@ fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptSta
     }
 }
 
+fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
+    match expr {
+        TypeScriptExpr::Await { .. } => true,
+        TypeScriptExpr::Binary { left, right, .. } => {
+            typescript_expr_contains_await(left) || typescript_expr_contains_await(right)
+        }
+        TypeScriptExpr::Call { arguments, .. } => {
+            arguments.iter().any(typescript_expr_contains_await)
+        }
+        TypeScriptExpr::Sequence { statements, result } => {
+            statements.iter().any(typescript_statement_contains_await)
+                || typescript_expr_contains_await(result)
+        }
+        TypeScriptExpr::Undefined
+        | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::String { .. }
+        | TypeScriptExpr::Boolean { .. }
+        | TypeScriptExpr::Identifier { .. } => false,
+    }
+}
+
+fn typescript_statement_contains_await(statement: &TypeScriptStatement) -> bool {
+    match statement {
+        TypeScriptStatement::Effect { value } => typescript_expr_contains_await(value),
+        TypeScriptStatement::Const { initializer, .. } => {
+            typescript_expr_contains_await(initializer)
+        }
+    }
+}
+
 fn local_name(symbol: &str) -> String {
     symbol
         .rsplit_once("::")
@@ -280,4 +330,8 @@ pub(super) fn push_import_unique(imports: &mut Vec<TypeScriptImport>, import: Ty
     {
         imports.push(import);
     }
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }

@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-compact-read-line"
+  ],
+  "sourcesContent": [
+    "pub effect fn nextLine = readLine ()\n"
+  ],
+  "names": [
+    "nextLine",
+    "readLine"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

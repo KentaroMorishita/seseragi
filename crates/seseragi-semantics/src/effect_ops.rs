@@ -1,15 +1,24 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) struct KnownEffectOperation {
-    pub(crate) surface_name: &'static str,
-    pub(crate) semantic_name: &'static str,
-    pub(crate) requirement_field: &'static str,
-    pub(crate) requirement_type: &'static str,
-    pub(crate) failure_type: &'static str,
-    pub(crate) success_type: &'static str,
-    pub(crate) success_type_arguments: &'static [&'static str],
+pub struct KnownEffectOperation {
+    pub surface_name: &'static str,
+    pub semantic_name: &'static str,
+    pub requirement_field: &'static str,
+    pub requirement_type: &'static str,
+    pub failure_type: &'static str,
+    pub success_type: &'static str,
+    pub success_type_arguments: &'static [&'static str],
 }
 
 const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
+    KnownEffectOperation {
+        surface_name: "readLine",
+        semantic_name: "std/prelude::readLine",
+        requirement_field: "stdin",
+        requirement_type: "Stdin",
+        failure_type: "StdinError",
+        success_type: "Maybe",
+        success_type_arguments: &["String"],
+    },
     KnownEffectOperation {
         surface_name: "print",
         semantic_name: "std/prelude::print",
@@ -39,9 +48,7 @@ pub(crate) fn known_effect_operation_by_surface(
         .find(|operation| operation.surface_name == surface_name)
 }
 
-pub(crate) fn known_effect_operation_by_semantic(
-    semantic_name: &str,
-) -> Option<KnownEffectOperation> {
+pub fn known_effect_operation_by_semantic(semantic_name: &str) -> Option<KnownEffectOperation> {
     KNOWN_EFFECT_OPERATIONS
         .iter()
         .copied()
@@ -83,8 +90,23 @@ mod tests {
     }
 
     #[test]
+    fn resolves_read_line_with_maybe_string_success_type() {
+        let operation = known_effect_operation_by_surface("readLine").unwrap();
+
+        assert_eq!(operation.semantic_name, "std/prelude::readLine");
+        assert_eq!(operation.requirement_field, "stdin");
+        assert_eq!(operation.requirement_type, "Stdin");
+        assert_eq!(operation.failure_type, "StdinError");
+        assert_eq!(operation.success_type, "Maybe");
+        assert_eq!(operation.success_type_arguments, ["String"]);
+    }
+
+    #[test]
     fn leaves_unknown_surface_operation_unmapped() {
-        assert!(known_effect_operation_by_surface("readLine").is_none());
-        assert_eq!(semantic_effect_operation_name("readLine"), "readLine");
+        assert!(known_effect_operation_by_surface("unregistered").is_none());
+        assert_eq!(
+            semantic_effect_operation_name("unregistered"),
+            "unregistered"
+        );
     }
 }

@@ -6,9 +6,19 @@ pub(crate) struct RuntimeEffectOperation {
     pub(crate) module: &'static str,
     pub(crate) export_name: &'static str,
     pub(crate) source_map_name: &'static str,
+    pub(crate) await_result: bool,
 }
 
 const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
+    RuntimeEffectOperation {
+        core_name: "stdin.readLine",
+        runtime_feature: "effect.stdin.readLine",
+        local_name: "_ssrg_stdin_readLine",
+        module: "@seseragi/runtime/stdin",
+        export_name: "readLine",
+        source_map_name: "readLine",
+        await_result: true,
+    },
     RuntimeEffectOperation {
         core_name: "console.print",
         runtime_feature: "effect.console.print",
@@ -16,6 +26,7 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         module: "@seseragi/runtime/console",
         export_name: "print",
         source_map_name: "print",
+        await_result: false,
     },
     RuntimeEffectOperation {
         core_name: "console.println",
@@ -24,6 +35,7 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         module: "@seseragi/runtime/console",
         export_name: "println",
         source_map_name: "println",
+        await_result: false,
     },
 ];
 
@@ -67,7 +79,7 @@ mod tests {
 
     #[test]
     fn rejects_unknown_core_effect_operation() {
-        assert!(runtime_effect_operation("stdin.readLine").is_none());
+        assert!(runtime_effect_operation("stdin.readChunk").is_none());
     }
 
     #[test]
@@ -83,5 +95,13 @@ mod tests {
         let operation = runtime_effect_operation_by_local_name("_ssrg_console_println").unwrap();
 
         assert_eq!(operation.source_map_name, "println");
+    }
+
+    #[test]
+    fn resolves_async_stdin_read_line_runtime_abi() {
+        let operation = runtime_effect_operation("stdin.readLine").unwrap();
+
+        assert_eq!(operation.runtime_feature, "effect.stdin.readLine");
+        assert!(operation.await_result);
     }
 }

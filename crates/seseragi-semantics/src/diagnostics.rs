@@ -1,9 +1,10 @@
-use crate::effect_ops::known_effect_operation_by_surface;
 use seseragi_syntax::{
     lex, parse_diagnostics, parse_surface_ast, ByteRange, Diagnostic, DiagnosticArtifact,
     DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token, TokenKind,
 };
 use std::collections::BTreeSet;
+
+mod effect;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
@@ -52,178 +53,7 @@ fn collect_decl_diagnostics(
         return;
     }
 
-    let SurfaceDecl::EffectFn {
-        inferred_contract,
-        span,
-        ..
-    } = declaration
-    else {
-        return;
-    };
-
-    collect_invalid_do_bind_diagnostics(tokens, *span, diagnostics);
-
-    if !inferred_contract {
-        collect_invalid_explicit_do_statement_diagnostics(tokens, *span, diagnostics);
-        return;
-    }
-
-    if let Some(clause) = compact_contract_clause(tokens, *span) {
-        diagnostics.push(Diagnostic {
-            id: String::new(),
-            code: "SES-T0002".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "effect.compact-contract-clause".to_owned(),
-            primary: ByteRange {
-                start: clause.start,
-                end: clause.end,
-            },
-            related: vec![RelatedDiagnostic {
-                message: "compact inferred effect function".to_owned(),
-                primary: ByteRange {
-                    start: span.start,
-                    end: span.end,
-                },
-            }],
-            fixes: Vec::new(),
-        });
-        return;
-    }
-
-    let Some(operation) = compact_effect_body_operation(tokens, *span) else {
-        return;
-    };
-
-    if is_known_effect_surface_operation(operation) {
-        return;
-    }
-    if operation.kind == TokenKind::KeywordDo {
-        match compact_do_unknown_statement_operation(tokens, *span, operation) {
-            None => return,
-            Some(statement) => {
-                push_compact_body_not_effect_diagnostic(diagnostics, statement, *span);
-                return;
-            }
-        }
-    }
-
-    push_compact_body_not_effect_diagnostic(diagnostics, operation, *span);
-}
-
-fn collect_invalid_explicit_do_statement_diagnostics(
-    tokens: &[Token],
-    span: seseragi_syntax::ByteSpan,
-    diagnostics: &mut Vec<Diagnostic>,
-) {
-    let Some(do_index) = tokens.iter().position(|token| {
-        token.start >= span.start && token.end <= span.end && token.kind == TokenKind::KeywordDo
-    }) else {
-        return;
-    };
-    let Some(left_brace_index) = tokens[do_index + 1..]
-        .iter()
-        .position(|token| token.end <= span.end && token.raw == "{")
-        .map(|index| do_index + 1 + index)
-    else {
-        return;
-    };
-    let Some(right_brace_index) = tokens[left_brace_index + 1..]
-        .iter()
-        .position(|token| token.end <= span.end && token.raw == "}")
-        .map(|index| left_brace_index + 1 + index)
-    else {
-        return;
-    };
-
-    let mut line_start = left_brace_index + 1;
-    for line_end in (left_brace_index + 1..=right_brace_index).filter(|index| {
-        *index == right_brace_index || tokens[*index].kind == TokenKind::TriviaNewline
-    }) {
-        collect_invalid_explicit_do_line(tokens, span, line_start, line_end, diagnostics);
-        line_start = line_end + 1;
-    }
-}
-
-fn collect_invalid_explicit_do_line(
-    tokens: &[Token],
-    span: seseragi_syntax::ByteSpan,
-    start: usize,
-    end: usize,
-    diagnostics: &mut Vec<Diagnostic>,
-) {
-    let significant = tokens[start..end]
-        .iter()
-        .filter(|token| is_significant(token))
-        .collect::<Vec<_>>();
-    let Some(first) = significant.first().copied() else {
-        return;
-    };
-    if significant
-        .iter()
-        .any(|token| token.kind == TokenKind::OperatorBind)
-        || is_known_effect_surface_operation(first)
-    {
-        return;
-    }
-    if first.kind != TokenKind::IdentifierLower {
-        return;
-    }
-    diagnostics.push(Diagnostic {
-        id: String::new(),
-        code: "SES-T0103".to_owned(),
-        severity: DiagnosticSeverity::Error,
-        message_key: "effect.do-statement-not-effect".to_owned(),
-        primary: ByteRange {
-            start: first.start,
-            end: first.end,
-        },
-        related: vec![RelatedDiagnostic {
-            message: "explicit effect function".to_owned(),
-            primary: ByteRange {
-                start: span.start,
-                end: span.end,
-            },
-        }],
-        fixes: Vec::new(),
-    });
-}
-
-fn collect_invalid_do_bind_diagnostics(
-    tokens: &[Token],
-    span: seseragi_syntax::ByteSpan,
-    diagnostics: &mut Vec<Diagnostic>,
-) {
-    for (index, bind) in tokens.iter().enumerate().filter(|(_, token)| {
-        token.start >= span.start && token.end <= span.end && token.kind == TokenKind::OperatorBind
-    }) {
-        let operation = tokens[index + 1..]
-            .iter()
-            .find(|token| token.end <= span.end && token.kind == TokenKind::IdentifierLower);
-        let Some(operation) = operation else {
-            continue;
-        };
-        if is_known_effect_surface_operation(operation) {
-            continue;
-        }
-        diagnostics.push(Diagnostic {
-            id: String::new(),
-            code: "SES-T0102".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "effect.bind-value-not-effect".to_owned(),
-            primary: ByteRange {
-                start: operation.start,
-                end: operation.end,
-            },
-            related: vec![RelatedDiagnostic {
-                message: "do bind statement".to_owned(),
-                primary: ByteRange {
-                    start: bind.start,
-                    end: operation.end,
-                },
-            }],
-            fixes: Vec::new(),
-        });
-    }
+    effect::collect_effect_fn_diagnostics(declaration, tokens, diagnostics);
 }
 
 fn declared_value_names(declarations: &[SurfaceDecl]) -> BTreeSet<String> {
@@ -288,94 +118,6 @@ fn collect_unknown_pure_function_names(
             fixes: Vec::new(),
         });
     }
-}
-
-fn push_compact_body_not_effect_diagnostic(
-    diagnostics: &mut Vec<Diagnostic>,
-    operation: &Token,
-    span: seseragi_syntax::ByteSpan,
-) {
-    diagnostics.push(Diagnostic {
-        id: String::new(),
-        code: "SES-T0001".to_owned(),
-        severity: DiagnosticSeverity::Error,
-        message_key: "effect.compact-body-not-effect".to_owned(),
-        primary: ByteRange {
-            start: operation.start,
-            end: operation.end,
-        },
-        related: vec![RelatedDiagnostic {
-            message: "compact inferred effect function".to_owned(),
-            primary: ByteRange {
-                start: span.start,
-                end: span.end,
-            },
-        }],
-        fixes: Vec::new(),
-    });
-}
-
-fn compact_effect_body_operation(
-    tokens: &[Token],
-    span: seseragi_syntax::ByteSpan,
-) -> Option<&Token> {
-    let equals_index = tokens
-        .iter()
-        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")?;
-    tokens[equals_index + 1..]
-        .iter()
-        .find(|token| token.end <= span.end && is_significant(token))
-}
-
-fn compact_contract_clause(tokens: &[Token], span: seseragi_syntax::ByteSpan) -> Option<&Token> {
-    let equals_index = tokens
-        .iter()
-        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")?;
-    tokens
-        .iter()
-        .take(equals_index)
-        .find(|token| token.start >= span.start && is_compact_contract_clause_token(token))
-}
-
-fn is_compact_contract_clause_token(token: &Token) -> bool {
-    matches!(token.kind, TokenKind::KeywordWith | TokenKind::KeywordFails) || token.raw == "where"
-}
-
-fn is_known_effect_surface_operation(token: &Token) -> bool {
-    known_effect_operation_by_surface(token.raw.as_str()).is_some()
-}
-
-fn compact_do_unknown_statement_operation<'tokens>(
-    tokens: &'tokens [Token],
-    span: seseragi_syntax::ByteSpan,
-    do_token: &Token,
-) -> Option<&'tokens Token> {
-    let left_brace = tokens
-        .iter()
-        .skip_while(|token| token.start <= do_token.start)
-        .find(|token| token.end <= span.end && token.raw == "{")?;
-    let right_brace = tokens
-        .iter()
-        .skip_while(|token| token.start <= do_token.start)
-        .find(|token| token.end <= span.end && token.raw == "}")?;
-    tokens
-        .iter()
-        .skip_while(|token| token.start <= left_brace.start)
-        .find(|token| {
-            token.end <= right_brace.start
-                && token.kind == TokenKind::IdentifierLower
-                && !is_known_effect_surface_operation(token)
-        })
-}
-
-fn is_significant(token: &Token) -> bool {
-    !matches!(
-        token.kind,
-        TokenKind::TriviaComment
-            | TokenKind::TriviaNewline
-            | TokenKind::TriviaSpace
-            | TokenKind::Eof
-    )
 }
 
 #[cfg(test)]
@@ -461,6 +203,40 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].related[0].primary,
             ByteRange { start: 0, end: 51 }
+        );
+    }
+
+    #[test]
+    fn accepts_compact_do_bind_to_known_effect_operation() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-do-bind/main.ssrg",
+            "pub effect fn main =\n  do { line <- readLine () }\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn reports_multiple_non_never_failures_in_compact_effect() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-failure-conflict/main.ssrg",
+            "pub effect fn main =\n  do { readLine () println \"done\" }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0003");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.compact-failure-conflict"
+        );
+        assert_eq!(diagnostics.diagnostics[0].related.len(), 2);
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "operation can fail with StdinError"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[1].message,
+            "operation can fail with ConsoleError"
         );
     }
 

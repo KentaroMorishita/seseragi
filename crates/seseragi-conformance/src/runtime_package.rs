@@ -1,6 +1,7 @@
 use std::fs;
+use std::io::Write;
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 pub(crate) fn check_typescript_runtime_package(
     root: &Path,
@@ -36,7 +37,21 @@ pub(crate) fn check_typescript_runtime_package(
         }
     }
     check_typescript_runtime_package_typecheck(root)?;
+    if runtime_helper_is_declared(abi, "effect.stdin.readLine") {
+        check_typescript_runtime_read_line(root)?;
+    }
     Ok(())
+}
+
+fn runtime_helper_is_declared(abi: &serde_json::Value, id: &str) -> bool {
+    abi.get("features")
+        .and_then(|value| value.as_array())
+        .is_some_and(|features| {
+            features.iter().any(|feature| {
+                feature.get("kind").and_then(|value| value.as_str()) == Some("runtime-helper")
+                    && feature.get("id").and_then(|value| value.as_str()) == Some(id)
+            })
+        })
 }
 
 fn check_typescript_runtime_helper(
@@ -100,6 +115,7 @@ fn package_export_source(package: &serde_json::Value, subpath: &str) -> Option<S
 
 fn source_exports_name(source: &str, name: &str) -> bool {
     source.contains(&format!("export function {name}"))
+        || source.contains(&format!("export async function {name}"))
         || source.contains(&format!("export const {name}"))
         || source.contains(&format!("export {{ {name}"))
         || source.contains(&format!(", {name}"))
@@ -122,4 +138,59 @@ fn check_typescript_runtime_package_typecheck(root: &Path) -> Result<(), String>
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     ))
+}
+
+fn check_typescript_runtime_read_line(root: &Path) -> Result<(), String> {
+    let mut child = Command::new("bun")
+        .arg("--eval")
+        .arg(
+            "import { readLine } from \"./src/stdin.ts\";\n\
+             const values = [await readLine(), await readLine(), await readLine()];\n\
+             process.stdout.write(JSON.stringify(values));\n",
+        )
+        .current_dir(root.join("runtime/ts"))
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(|error| format!("failed to run TypeScript stdin runtime probe: {error}"))?;
+    let mut stdin = child
+        .stdin
+        .take()
+        .ok_or_else(|| "failed to open TypeScript stdin runtime probe input".to_owned())?;
+    stdin.write_all(b"first\nsecond\n").map_err(|error| {
+        format!("failed to write TypeScript stdin runtime probe input: {error}")
+    })?;
+    drop(stdin);
+
+    let output = child
+        .wait_with_output()
+        .map_err(|error| format!("failed to wait for TypeScript stdin runtime probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "TypeScript stdin runtime probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    if output.stdout != b"[\"first\",\"second\",null]" {
+        return Err(format!(
+            "TypeScript stdin runtime probe returned unexpected values: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::source_exports_name;
+
+    #[test]
+    fn recognizes_async_function_exports() {
+        assert!(source_exports_name(
+            "export async function readLine(): Promise<string | undefined> { return undefined; }",
+            "readLine"
+        ));
+    }
 }

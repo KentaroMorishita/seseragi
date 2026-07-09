@@ -147,6 +147,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         match function {
             TypeScriptFunction::ConstFunction {
                 exported,
+                is_async,
                 name,
                 parameters,
                 body,
@@ -160,8 +161,9 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                     .map(|parameter| format!("{}: {}", parameter.name, parameter.type_name))
                     .collect::<Vec<_>>()
                     .join(", ");
+                let async_prefix = if *is_async { "async " } else { "" };
                 output.push_str(&format!(
-                    "const {name} = ({rendered_parameters}) => {}\n",
+                    "const {name} = {async_prefix}({rendered_parameters}) => {}\n",
                     render_typescript_expr(body)
                 ));
             }
@@ -213,17 +215,52 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 .join(", ");
             format!("{callee}({rendered_arguments})")
         }
+        TypeScriptExpr::Await { value } => format!("await {}", render_typescript_expr(value)),
         TypeScriptExpr::Sequence { statements, result } => {
             let rendered_statements = statements
                 .iter()
                 .map(render_typescript_statement)
                 .collect::<Vec<_>>()
                 .join(" ");
+            let async_prefix = if sequence_contains_await(statements, result) {
+                "async "
+            } else {
+                ""
+            };
             format!(
-                "(() => {{ {rendered_statements} return {}; }})()",
+                "({async_prefix}() => {{ {rendered_statements} return {}; }})()",
                 render_typescript_expr(result)
             )
         }
+    }
+}
+
+fn sequence_contains_await(statements: &[TypeScriptStatement], result: &TypeScriptExpr) -> bool {
+    statements.iter().any(statement_contains_await) || expr_contains_await(result)
+}
+
+fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
+    match statement {
+        TypeScriptStatement::Effect { value } => expr_contains_await(value),
+        TypeScriptStatement::Const { initializer, .. } => expr_contains_await(initializer),
+    }
+}
+
+fn expr_contains_await(expr: &TypeScriptExpr) -> bool {
+    match expr {
+        TypeScriptExpr::Await { .. } => true,
+        TypeScriptExpr::Binary { left, right, .. } => {
+            expr_contains_await(left) || expr_contains_await(right)
+        }
+        TypeScriptExpr::Call { arguments, .. } => arguments.iter().any(expr_contains_await),
+        TypeScriptExpr::Sequence { statements, result } => {
+            sequence_contains_await(statements, result)
+        }
+        TypeScriptExpr::Undefined
+        | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::String { .. }
+        | TypeScriptExpr::Boolean { .. }
+        | TypeScriptExpr::Identifier { .. } => false,
     }
 }
 
@@ -288,6 +325,7 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
                 collect_expr_names(argument, names);
             }
         }
+        TypeScriptExpr::Await { value } => collect_expr_names(value, names),
         TypeScriptExpr::Binary { left, right, .. } => {
             collect_expr_names(left, names);
             collect_expr_names(right, names);

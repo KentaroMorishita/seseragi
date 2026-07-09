@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-stdin-read-line",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.stdin.readLine"
+  ],
+  "imports": [
+    {
+      "feature": "effect.stdin.readLine",
+      "local": "_ssrg_stdin_readLine"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "isAsync": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "await",
+              "value": {
+                "kind": "call",
+                "callee": "_ssrg_stdin_readLine",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 32,
+              "end": 49
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "await",
+              "value": {
+                "kind": "call",
+                "callee": "_ssrg_stdin_readLine",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 57,
+              "end": 75
+            }
+          }
+        ],
+        "result": {
+          "kind": "undefined"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 82
+      }
+    }
+  ]
+}

@@ -9,3 +9,5 @@ export { fail, run, succeed, unit } from "./effect";
 
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console";
 export { liveConsole, print, println } from "./console";
+
+export { readLine } from "./stdin";

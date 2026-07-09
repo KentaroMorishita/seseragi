@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "span": {
+        "start": 0,
+        "end": 82
+      }
+    }
+  ]
+}

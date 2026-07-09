@@ -51,6 +51,16 @@
         "module": "@seseragi/runtime/console",
         "export": "println"
       }
+    },
+    {
+      "id": "effect.stdin.readLine",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Effect<{ stdin: Stdin }, StdinError, Maybe<String>>",
+      "import": {
+        "module": "@seseragi/runtime/stdin",
+        "export": "readLine"
+      }
     }
   ]
 }
