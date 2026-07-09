@@ -64,6 +64,7 @@ fn collect_decl_diagnostics(
     collect_invalid_do_bind_diagnostics(tokens, *span, diagnostics);
 
     if !inferred_contract {
+        collect_invalid_explicit_do_statement_diagnostics(tokens, *span, diagnostics);
         return;
     }
 
@@ -107,6 +108,84 @@ fn collect_decl_diagnostics(
     }
 
     push_compact_body_not_effect_diagnostic(diagnostics, operation, *span);
+}
+
+fn collect_invalid_explicit_do_statement_diagnostics(
+    tokens: &[Token],
+    span: seseragi_syntax::ByteSpan,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let Some(do_index) = tokens.iter().position(|token| {
+        token.start >= span.start && token.end <= span.end && token.kind == TokenKind::KeywordDo
+    }) else {
+        return;
+    };
+    let Some(left_brace_index) = tokens[do_index + 1..]
+        .iter()
+        .position(|token| token.end <= span.end && token.raw == "{")
+        .map(|index| do_index + 1 + index)
+    else {
+        return;
+    };
+    let Some(right_brace_index) = tokens[left_brace_index + 1..]
+        .iter()
+        .position(|token| token.end <= span.end && token.raw == "}")
+        .map(|index| left_brace_index + 1 + index)
+    else {
+        return;
+    };
+
+    let mut line_start = left_brace_index + 1;
+    for line_end in (left_brace_index + 1..=right_brace_index).filter(|index| {
+        *index == right_brace_index || tokens[*index].kind == TokenKind::TriviaNewline
+    }) {
+        collect_invalid_explicit_do_line(tokens, span, line_start, line_end, diagnostics);
+        line_start = line_end + 1;
+    }
+}
+
+fn collect_invalid_explicit_do_line(
+    tokens: &[Token],
+    span: seseragi_syntax::ByteSpan,
+    start: usize,
+    end: usize,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let significant = tokens[start..end]
+        .iter()
+        .filter(|token| is_significant(token))
+        .collect::<Vec<_>>();
+    let Some(first) = significant.first().copied() else {
+        return;
+    };
+    if significant
+        .iter()
+        .any(|token| token.kind == TokenKind::OperatorBind)
+        || is_known_effect_surface_operation(first)
+    {
+        return;
+    }
+    if first.kind != TokenKind::IdentifierLower {
+        return;
+    }
+    diagnostics.push(Diagnostic {
+        id: String::new(),
+        code: "SES-T0103".to_owned(),
+        severity: DiagnosticSeverity::Error,
+        message_key: "effect.do-statement-not-effect".to_owned(),
+        primary: ByteRange {
+            start: first.start,
+            end: first.end,
+        },
+        related: vec![RelatedDiagnostic {
+            message: "explicit effect function".to_owned(),
+            primary: ByteRange {
+                start: span.start,
+                end: span.end,
+            },
+        }],
+        fixes: Vec::new(),
+    });
 }
 
 fn collect_invalid_do_bind_diagnostics(
@@ -438,6 +517,21 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.bind-value-not-effect"
+        );
+    }
+
+    #[test]
+    fn reports_non_effect_statement_in_explicit_do_block() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/invalid-explicit-do/main.ssrg",
+            "effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { missing }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0103");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.do-statement-not-effect"
         );
     }
 }
