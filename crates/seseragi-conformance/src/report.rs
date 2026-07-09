@@ -2,6 +2,12 @@ use crate::suite::Suite;
 use serde_json::json;
 use std::path::PathBuf;
 
+struct Category<'suite> {
+    json_key: &'static str,
+    text_label: &'static str,
+    cases: &'suite [PathBuf],
+}
+
 pub(crate) struct Failure {
     pub(crate) kind: &'static str,
     pub(crate) case: PathBuf,
@@ -9,117 +15,44 @@ pub(crate) struct Failure {
 }
 
 pub(crate) fn print_list_text(suite: &Suite) {
-    println!("TokenStream fixtures:");
-    for case in &suite.token_cases {
-        println!("{}", case.display());
-    }
-    println!("LosslessCst fixtures:");
-    for case in &suite.cst_cases {
-        println!("{}", case.display());
-    }
-    println!("Diagnostics fixtures: {}", suite.diagnostics_cases.len());
-    for case in &suite.diagnostics_cases {
-        println!("{}", case.display());
-    }
-    println!("SurfaceAst fixtures:");
-    for case in &suite.surface_ast_cases {
-        println!("{}", case.display());
-    }
-    println!("ModuleInterface fixtures:");
-    for case in &suite.interface_cases {
-        println!("{}", case.display());
-    }
-    println!("ResolvedAst fixtures: {}", suite.resolved_ast_cases.len());
-    for case in &suite.resolved_ast_cases {
-        println!("{}", case.display());
-    }
-    println!("TypedHir fixtures: {}", suite.typed_hir_cases.len());
-    for case in &suite.typed_hir_cases {
-        println!("{}", case.display());
-    }
-    println!("CoreIr fixtures: {}", suite.core_ir_cases.len());
-    for case in &suite.core_ir_cases {
-        println!("{}", case.display());
-    }
-    println!("TypeScriptIr fixtures: {}", suite.typescript_ir_cases.len());
-    for case in &suite.typescript_ir_cases {
-        println!("{}", case.display());
-    }
-    println!(
-        "GeneratedModule fixtures: {}",
-        suite.generated_module_cases.len()
-    );
-    for case in &suite.generated_module_cases {
-        println!("{}", case.display());
-    }
-    println!("Execution fixtures: {}", suite.execution_cases.len());
-    for case in &suite.execution_cases {
-        println!("{}", case.display());
-    }
-    println!("Runtime ABI fixtures: {}", suite.runtime_abi_cases.len());
-    for case in &suite.runtime_abi_cases {
-        println!("{}", case.display());
+    for category in categories(suite) {
+        if matches!(
+            category.json_key,
+            "tokenStream" | "losslessCst" | "surfaceAst" | "moduleInterface"
+        ) {
+            println!("{} fixtures:", category.text_label);
+        } else {
+            println!("{} fixtures: {}", category.text_label, category.cases.len());
+        }
+        for case in category.cases {
+            println!("{}", case.display());
+        }
     }
 }
 
 pub(crate) fn print_list_json(suite: &Suite) {
+    let cases = categories(suite)
+        .into_iter()
+        .map(|category| (category.json_key.to_owned(), json!(paths(category.cases))))
+        .collect::<serde_json::Map<_, _>>();
     println!(
         "{}",
         json!({
             "schema": 1,
             "kind": "conformance-list",
-            "cases": {
-                "tokenStream": paths(&suite.token_cases),
-                "losslessCst": paths(&suite.cst_cases),
-                "diagnostics": paths(&suite.diagnostics_cases),
-                "surfaceAst": paths(&suite.surface_ast_cases),
-                "moduleInterface": paths(&suite.interface_cases),
-                "resolvedAst": paths(&suite.resolved_ast_cases),
-                "typedHir": paths(&suite.typed_hir_cases),
-                "coreIr": paths(&suite.core_ir_cases),
-                "typescriptIr": paths(&suite.typescript_ir_cases),
-                "generatedModule": paths(&suite.generated_module_cases),
-                "execution": paths(&suite.execution_cases),
-                "runtimeAbi": paths(&suite.runtime_abi_cases),
-            }
+            "cases": cases,
         })
     );
 }
 
 pub(crate) fn print_success_text(suite: &Suite) {
-    println!("TokenStream fixtures: {} passed", suite.token_cases.len());
-    println!("LosslessCst fixtures: {} passed", suite.cst_cases.len());
-    println!(
-        "Diagnostics fixtures: {} passed",
-        suite.diagnostics_cases.len()
-    );
-    println!(
-        "SurfaceAst fixtures: {} passed",
-        suite.surface_ast_cases.len()
-    );
-    println!(
-        "ModuleInterface fixtures: {} passed",
-        suite.interface_cases.len()
-    );
-    println!(
-        "ResolvedAst fixtures: {} passed",
-        suite.resolved_ast_cases.len()
-    );
-    println!("TypedHir fixtures: {} passed", suite.typed_hir_cases.len());
-    println!("CoreIr fixtures: {} passed", suite.core_ir_cases.len());
-    println!(
-        "TypeScriptIr fixtures: {} passed",
-        suite.typescript_ir_cases.len()
-    );
-    println!(
-        "GeneratedModule fixtures: {} passed",
-        suite.generated_module_cases.len()
-    );
-    println!("Execution fixtures: {} passed", suite.execution_cases.len());
-    println!(
-        "Runtime ABI fixtures: {} passed",
-        suite.runtime_abi_cases.len()
-    );
+    for category in categories(suite) {
+        println!(
+            "{} fixtures: {} passed",
+            category.text_label,
+            category.cases.len()
+        );
+    }
 }
 
 pub(crate) fn print_run_json(suite: &Suite, failures: &[Failure]) {
@@ -142,20 +75,76 @@ pub(crate) fn print_run_json(suite: &Suite, failures: &[Failure]) {
 }
 
 fn counts(suite: &Suite) -> serde_json::Value {
-    json!({
-        "tokenStream": suite.token_cases.len(),
-        "losslessCst": suite.cst_cases.len(),
-        "diagnostics": suite.diagnostics_cases.len(),
-        "surfaceAst": suite.surface_ast_cases.len(),
-        "moduleInterface": suite.interface_cases.len(),
-        "resolvedAst": suite.resolved_ast_cases.len(),
-        "typedHir": suite.typed_hir_cases.len(),
-        "coreIr": suite.core_ir_cases.len(),
-        "typescriptIr": suite.typescript_ir_cases.len(),
-        "generatedModule": suite.generated_module_cases.len(),
-        "execution": suite.execution_cases.len(),
-        "runtimeAbi": suite.runtime_abi_cases.len(),
-    })
+    categories(suite)
+        .into_iter()
+        .map(|category| (category.json_key.to_owned(), json!(category.cases.len())))
+        .collect::<serde_json::Map<_, _>>()
+        .into()
+}
+
+fn categories(suite: &Suite) -> Vec<Category<'_>> {
+    vec![
+        Category {
+            json_key: "tokenStream",
+            text_label: "TokenStream",
+            cases: &suite.token_cases,
+        },
+        Category {
+            json_key: "losslessCst",
+            text_label: "LosslessCst",
+            cases: &suite.cst_cases,
+        },
+        Category {
+            json_key: "diagnostics",
+            text_label: "Diagnostics",
+            cases: &suite.diagnostics_cases,
+        },
+        Category {
+            json_key: "surfaceAst",
+            text_label: "SurfaceAst",
+            cases: &suite.surface_ast_cases,
+        },
+        Category {
+            json_key: "moduleInterface",
+            text_label: "ModuleInterface",
+            cases: &suite.interface_cases,
+        },
+        Category {
+            json_key: "resolvedAst",
+            text_label: "ResolvedAst",
+            cases: &suite.resolved_ast_cases,
+        },
+        Category {
+            json_key: "typedHir",
+            text_label: "TypedHir",
+            cases: &suite.typed_hir_cases,
+        },
+        Category {
+            json_key: "coreIr",
+            text_label: "CoreIr",
+            cases: &suite.core_ir_cases,
+        },
+        Category {
+            json_key: "typescriptIr",
+            text_label: "TypeScriptIr",
+            cases: &suite.typescript_ir_cases,
+        },
+        Category {
+            json_key: "generatedModule",
+            text_label: "GeneratedModule",
+            cases: &suite.generated_module_cases,
+        },
+        Category {
+            json_key: "execution",
+            text_label: "Execution",
+            cases: &suite.execution_cases,
+        },
+        Category {
+            json_key: "runtimeAbi",
+            text_label: "Runtime ABI",
+            cases: &suite.runtime_abi_cases,
+        },
+    ]
 }
 
 fn paths(cases: &[PathBuf]) -> Vec<String> {
