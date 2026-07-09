@@ -51,10 +51,28 @@ fn collect_decl_diagnostics(
         return;
     };
 
-    if operation.raw == "println" || operation.kind == TokenKind::KeywordDo {
+    if operation.raw == "println" {
         return;
     }
+    if operation.kind == TokenKind::KeywordDo {
+        match compact_do_statement_operation(tokens, *span, operation) {
+            None => return,
+            Some(statement) if statement.raw == "println" => return,
+            Some(statement) => {
+                push_compact_body_not_effect_diagnostic(diagnostics, statement, *span);
+                return;
+            }
+        }
+    }
 
+    push_compact_body_not_effect_diagnostic(diagnostics, operation, *span);
+}
+
+fn push_compact_body_not_effect_diagnostic(
+    diagnostics: &mut Vec<Diagnostic>,
+    operation: &Token,
+    span: seseragi_syntax::ByteSpan,
+) {
     diagnostics.push(Diagnostic {
         id: String::new(),
         code: "SES-T0001".to_owned(),
@@ -85,6 +103,25 @@ fn compact_effect_body_operation(
     tokens[equals_index + 1..]
         .iter()
         .find(|token| token.end <= span.end && is_significant(token))
+}
+
+fn compact_do_statement_operation<'tokens>(
+    tokens: &'tokens [Token],
+    span: seseragi_syntax::ByteSpan,
+    do_token: &Token,
+) -> Option<&'tokens Token> {
+    let left_brace = tokens
+        .iter()
+        .skip_while(|token| token.start <= do_token.start)
+        .find(|token| token.end <= span.end && token.raw == "{")?;
+    let right_brace = tokens
+        .iter()
+        .skip_while(|token| token.start <= do_token.start)
+        .find(|token| token.end <= span.end && token.raw == "}")?;
+    tokens
+        .iter()
+        .skip_while(|token| token.start <= left_brace.start)
+        .find(|token| token.end <= right_brace.start && is_significant(token))
 }
 
 fn is_significant(token: &Token) -> bool {
@@ -123,6 +160,25 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].related[0].primary,
             ByteRange { start: 0, end: 39 }
+        );
+    }
+
+    #[test]
+    fn reports_unknown_compact_do_statement() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-do-not-effect/main.ssrg",
+            "pub effect fn greet =\n  do { name }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 29, end: 33 }
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].primary,
+            ByteRange { start: 0, end: 35 }
         );
     }
 }

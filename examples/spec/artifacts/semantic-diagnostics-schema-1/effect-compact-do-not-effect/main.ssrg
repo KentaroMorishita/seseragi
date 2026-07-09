@@ -1,0 +1,2 @@
+pub effect fn greet =
+  do { name }
