@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-compact-print",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-compact-print::announce",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::print",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "loading",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 33,
+              "end": 42
+            }
+          }
+        ],
+        "origin": {
+          "start": 27,
+          "end": 42
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-compact-print"
+  ],
+  "sourcesContent": [
+    "pub effect fn announce =\n  print \"loading\"\n"
+  ],
+  "names": [
+    "announce",
+    "print"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

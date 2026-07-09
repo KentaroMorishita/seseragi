@@ -289,6 +289,7 @@ fn lower_parameter(parameter: &TypedParameter) -> CoreParameter {
 
 fn lower_effect_operation(operation: &str) -> String {
     match operation {
+        "std/prelude::print" => "console.print".to_owned(),
         "std/prelude::println" => "console.println".to_owned(),
         other => other.to_owned(),
     }

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-compact-print",
+  "functions": [
+    {
+      "symbol": "artifact/effect-compact-print::announce",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": "Unit"
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.print",
+        "requirements": [
+          "console"
+        ],
+        "failure": "ConsoleError",
+        "success": "Unit",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "loading",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 33,
+              "end": 42
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 27,
+          "end": 42
+        }
+      }
+    }
+  ]
+}

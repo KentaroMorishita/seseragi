@@ -8,14 +8,24 @@ pub(crate) struct RuntimeEffectOperation {
     pub(crate) source_map_name: &'static str,
 }
 
-const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[RuntimeEffectOperation {
-    core_name: "console.println",
-    runtime_feature: "effect.console.println",
-    local_name: "_ssrg_console_println",
-    module: "@seseragi/runtime/console",
-    export_name: "println",
-    source_map_name: "println",
-}];
+const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
+    RuntimeEffectOperation {
+        core_name: "console.print",
+        runtime_feature: "effect.console.print",
+        local_name: "_ssrg_console_print",
+        module: "@seseragi/runtime/console",
+        export_name: "print",
+        source_map_name: "print",
+    },
+    RuntimeEffectOperation {
+        core_name: "console.println",
+        runtime_feature: "effect.console.println",
+        local_name: "_ssrg_console_println",
+        module: "@seseragi/runtime/console",
+        export_name: "println",
+        source_map_name: "println",
+    },
+];
 
 pub(crate) fn runtime_effect_operation(core_name: &str) -> Option<RuntimeEffectOperation> {
     RUNTIME_EFFECT_OPERATIONS
@@ -58,6 +68,14 @@ mod tests {
     #[test]
     fn rejects_unknown_core_effect_operation() {
         assert!(runtime_effect_operation("stdin.readLine").is_none());
+    }
+
+    #[test]
+    fn resolves_console_print_runtime_abi() {
+        let operation = runtime_effect_operation("console.print").unwrap();
+
+        assert_eq!(operation.runtime_feature, "effect.console.print");
+        assert_eq!(operation.export_name, "print");
     }
 
     #[test]

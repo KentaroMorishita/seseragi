@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "artifact/effect-compact-print",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "effect.console.print",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "announce"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -8,14 +8,24 @@ pub(crate) struct KnownEffectOperation {
     pub(crate) success_type: &'static str,
 }
 
-const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[KnownEffectOperation {
-    surface_name: "println",
-    semantic_name: "std/prelude::println",
-    requirement_field: "console",
-    requirement_type: "Console",
-    failure_type: "ConsoleError",
-    success_type: "Unit",
-}];
+const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
+    KnownEffectOperation {
+        surface_name: "print",
+        semantic_name: "std/prelude::print",
+        requirement_field: "console",
+        requirement_type: "Console",
+        failure_type: "ConsoleError",
+        success_type: "Unit",
+    },
+    KnownEffectOperation {
+        surface_name: "println",
+        semantic_name: "std/prelude::println",
+        requirement_field: "console",
+        requirement_type: "Console",
+        failure_type: "ConsoleError",
+        success_type: "Unit",
+    },
+];
 
 pub(crate) fn known_effect_operation_by_surface(
     surface_name: &str,
@@ -59,6 +69,13 @@ mod tests {
     fn resolves_println_by_semantic_name() {
         let operation = known_effect_operation_by_semantic("std/prelude::println").unwrap();
         assert_eq!(operation.surface_name, "println");
+    }
+
+    #[test]
+    fn resolves_print_by_surface_name() {
+        let operation = known_effect_operation_by_surface("print").unwrap();
+        assert_eq!(operation.semantic_name, "std/prelude::print");
+        assert_eq!(operation.success_type, "Unit");
     }
 
     #[test]
