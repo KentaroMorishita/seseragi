@@ -1,0 +1,2 @@
+pub effect fn announce =
+  do { print "loading... " println "done" print "ready" }

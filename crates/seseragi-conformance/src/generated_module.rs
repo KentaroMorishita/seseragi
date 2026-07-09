@@ -76,8 +76,10 @@ fn check_generated_runtime_imports(
         let helper = helper_imports.get(feature).ok_or_else(|| {
             format!("TypeScriptIr import feature {feature} has no runtime helper ABI import")
         })?;
-        let expected = expected_runtime_import_line(helper, local);
-        if !typescript.lines().any(|line| line == expected) {
+        if !typescript
+            .lines()
+            .any(|line| typescript_line_imports_helper(line, helper, local))
+        {
             return Err(format!(
                 "generated TypeScript import for runtime feature {feature} does not match ABI"
             ));
@@ -86,14 +88,14 @@ fn check_generated_runtime_imports(
     Ok(())
 }
 
-fn expected_runtime_import_line(
+fn typescript_line_imports_helper(
+    line: &str,
     helper: &crate::runtime_abi::RuntimeHelperImport,
     local: &str,
-) -> String {
-    format!(
-        "import {{ {} as {} }} from \"{}\"",
-        helper.export_name, local, helper.module
-    )
+) -> bool {
+    line.starts_with("import { ")
+        && line.contains(&format!("{} as {local}", helper.export_name))
+        && line.ends_with(&format!("from \"{}\"", helper.module))
 }
 
 fn check_generated_source_map(
@@ -199,19 +201,20 @@ fn check_generated_runtime_requirements(
 
 #[cfg(test)]
 mod tests {
-    use super::expected_runtime_import_line;
+    use super::typescript_line_imports_helper;
     use crate::runtime_abi::RuntimeHelperImport;
 
     #[test]
-    fn renders_generated_import_from_runtime_abi_mapping() {
+    fn accepts_grouped_generated_import_from_runtime_abi_mapping() {
         let helper = RuntimeHelperImport {
             module: "@seseragi/runtime/console".to_owned(),
             export_name: "println".to_owned(),
         };
 
-        assert_eq!(
-            expected_runtime_import_line(&helper, "_ssrg_console_println"),
-            "import { println as _ssrg_console_println } from \"@seseragi/runtime/console\""
-        );
+        assert!(typescript_line_imports_helper(
+            "import { print as _ssrg_console_print, println as _ssrg_console_println } from \"@seseragi/runtime/console\"",
+            &helper,
+            "_ssrg_console_println"
+        ));
     }
 }

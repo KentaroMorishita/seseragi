@@ -100,13 +100,25 @@ fn module_exports(module: &TypeScriptModule) -> Vec<String> {
 
 fn render_typescript(module: &TypeScriptModule) -> String {
     let mut output = String::new();
+    let mut import_groups: Vec<(&str, Vec<String>)> = Vec::new();
     for import in &module.imports {
         if let Some(operation) = runtime_effect_operation_for_feature(&import.feature) {
-            output.push_str(&format!(
-                "import {{ {} as {} }} from \"{}\"\n",
-                operation.export_name, import.local, operation.module
-            ));
+            let rendered = format!("{} as {}", operation.export_name, import.local);
+            if let Some((_, specifiers)) = import_groups
+                .iter_mut()
+                .find(|(module, _)| *module == operation.module)
+            {
+                specifiers.push(rendered);
+            } else {
+                import_groups.push((operation.module, vec![rendered]));
+            }
         }
+    }
+    for (module, specifiers) in import_groups {
+        output.push_str(&format!(
+            "import {{ {} }} from \"{module}\"\n",
+            specifiers.join(", ")
+        ));
     }
     if !module.imports.is_empty() && !module.functions.is_empty() {
         output.push('\n');

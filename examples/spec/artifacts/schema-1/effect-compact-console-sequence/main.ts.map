@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-compact-console-sequence"
+  ],
+  "sourcesContent": [
+    "pub effect fn announce =\n  do { print \"loading... \" println \"done\" print \"ready\" }\n"
+  ],
+  "names": [
+    "announce",
+    "print",
+    "println",
+    "print"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

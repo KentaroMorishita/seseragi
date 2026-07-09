@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-compact-console-sequence",
+  "functions": [
+    {
+      "symbol": "artifact/effect-compact-console-sequence::announce",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 82
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": "Unit"
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect-operation",
+            "operation": "console.print",
+            "requirements": [
+              "console"
+            ],
+            "failure": "ConsoleError",
+            "success": "Unit",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "loading... ",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 38,
+                  "end": 51
+                }
+              }
+            ],
+            "origin": {
+              "source": "main.ssrg",
+              "start": 32,
+              "end": 51
+            }
+          },
+          {
+            "kind": "effect-operation",
+            "operation": "console.println",
+            "requirements": [
+              "console"
+            ],
+            "failure": "ConsoleError",
+            "success": "Unit",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "done",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 60,
+                  "end": 66
+                }
+              }
+            ],
+            "origin": {
+              "source": "main.ssrg",
+              "start": 52,
+              "end": 66
+            }
+          },
+          {
+            "kind": "effect-operation",
+            "operation": "console.print",
+            "requirements": [
+              "console"
+            ],
+            "failure": "ConsoleError",
+            "success": "Unit",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "ready",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 73,
+                  "end": 80
+                }
+              }
+            ],
+            "origin": {
+              "source": "main.ssrg",
+              "start": 67,
+              "end": 80
+            }
+          }
+        ],
+        "result": {
+          "kind": "unit",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 81,
+            "end": 81
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 27,
+          "end": 82
+        }
+      }
+    }
+  ]
+}

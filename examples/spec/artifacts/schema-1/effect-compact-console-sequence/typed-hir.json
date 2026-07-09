@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-compact-console-sequence",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-compact-console-sequence::announce",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 82
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect-call",
+            "operation": "std/prelude::print",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "loading... ",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 38,
+                  "end": 51
+                }
+              }
+            ],
+            "origin": {
+              "start": 32,
+              "end": 51
+            }
+          },
+          {
+            "kind": "effect-call",
+            "operation": "std/prelude::println",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "done",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 60,
+                  "end": 66
+                }
+              }
+            ],
+            "origin": {
+              "start": 52,
+              "end": 66
+            }
+          },
+          {
+            "kind": "effect-call",
+            "operation": "std/prelude::print",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "ready",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 73,
+                  "end": 80
+                }
+              }
+            ],
+            "origin": {
+              "start": 67,
+              "end": 80
+            }
+          }
+        ],
+        "result": {
+          "kind": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 81,
+            "end": 81
+          }
+        },
+        "origin": {
+          "start": 27,
+          "end": 82
+        }
+      }
+    }
+  ]
+}

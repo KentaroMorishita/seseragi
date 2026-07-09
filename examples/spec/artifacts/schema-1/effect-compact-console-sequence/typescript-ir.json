@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-compact-console-sequence",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.console.print",
+    "core.string",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.print",
+      "local": "_ssrg_console_print"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "announce",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "call",
+            "callee": "_ssrg_console_print",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "loading... "
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "_ssrg_console_println",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "done"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "_ssrg_console_print",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "ready"
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "undefined"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 82
+      }
+    }
+  ]
+}
