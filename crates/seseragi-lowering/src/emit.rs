@@ -158,6 +158,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
 fn render_typescript_type(type_ref: &crate::TypeScriptType) -> &'static str {
     match type_ref {
         crate::TypeScriptType::Bigint => "bigint",
+        crate::TypeScriptType::Boolean => "boolean",
         crate::TypeScriptType::String => "string",
         crate::TypeScriptType::Undefined => "undefined",
     }
@@ -168,6 +169,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::String { value } => format!("{value:?}"),
+        TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Call { callee, arguments } => {
             let rendered_arguments = arguments
                 .iter()
@@ -226,6 +228,7 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::Boolean { .. }
         | TypeScriptExpr::String { .. } => {}
     }
 }

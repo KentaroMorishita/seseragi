@@ -23,6 +23,14 @@ pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
             },
             origin,
         },
+        TokenKind::LiteralBoolean => TypedExpr::Boolean {
+            value: token.raw == "True",
+            type_ref: TypedType::Named {
+                name: "Bool".to_owned(),
+                arguments: Vec::new(),
+            },
+            origin,
+        },
         _ => TypedExpr::EffectCall {
             operation: "std/prelude::unknown".to_owned(),
             arguments: Vec::new(),
@@ -130,6 +138,7 @@ fn expr_origin_end(expr: &TypedExpr) -> usize {
         | TypedExpr::DoBlock { origin, .. }
         | TypedExpr::Integer { origin, .. }
         | TypedExpr::String { origin, .. }
+        | TypedExpr::Boolean { origin, .. }
         | TypedExpr::EffectCall { origin, .. } => origin.end,
     }
 }

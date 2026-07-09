@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/bool-let",
+  "runtimeRequirements": ["core.bool"],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "enabled",
+      "type": { "kind": "boolean" },
+      "initializer": { "kind": "boolean", "value": true },
+      "origin": { "source": "main.ssrg", "start": 0, "end": 28 }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": ["seseragi://artifact/bool-let"],
+  "sourcesContent": ["pub let enabled: Bool = True\n"],
+  "names": ["enabled"],
+  "mappings": "AAAA,aAAQA,iBAAc"
+}

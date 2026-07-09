@@ -96,6 +96,18 @@ mod tests {
     }
 
     #[test]
+    fn lowers_boolean_binding_to_typescript_boolean_const() {
+        let source = "pub let enabled: Bool = True\n";
+        let typed = type_module("artifact/bool-let/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.bool"]);
+        assert_eq!(bundle.typescript, "export const enabled: boolean = true;\n");
+    }
+
+    #[test]
     fn lowers_unit_result_to_typescript_undefined_expression() {
         let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);

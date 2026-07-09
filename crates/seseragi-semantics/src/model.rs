@@ -184,6 +184,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Boolean {
+        value: bool,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     EffectCall {
         operation: String,
         arguments: Vec<TypedExpr>,

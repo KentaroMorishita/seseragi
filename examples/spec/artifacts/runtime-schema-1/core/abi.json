@@ -26,6 +26,13 @@
       "import": null
     },
     {
+      "id": "core.bool",
+      "kind": "value-representation",
+      "typescript": "boolean",
+      "boundary": "boolean",
+      "import": null
+    },
+    {
       "id": "effect.console.println",
       "kind": "runtime-helper",
       "typescript": "function",

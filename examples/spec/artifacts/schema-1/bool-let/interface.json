@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "artifact/bool-let",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/bool-let::enabled",
+      "namespace": "value",
+      "name": "enabled",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 28 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Bool", "arguments": [] }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

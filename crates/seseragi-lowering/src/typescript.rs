@@ -74,6 +74,7 @@ pub struct TypeScriptParameter {
 )]
 pub enum TypeScriptType {
     Bigint,
+    Boolean,
     String,
     Undefined,
 }
@@ -91,6 +92,9 @@ pub enum TypeScriptExpr {
     },
     String {
         value: String,
+    },
+    Boolean {
+        value: bool,
     },
     Call {
         callee: String,
@@ -164,6 +168,7 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
+        CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -186,6 +191,7 @@ fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &mut Vec<Str
         CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
         CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
+        CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -206,6 +212,7 @@ fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
         CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
         CoreExpr::String { .. } => TypeScriptType::String,
+        CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
         CoreExpr::EffectOperation { .. } => TypeScriptType::Undefined,
     }
 }

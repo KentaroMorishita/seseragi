@@ -61,6 +61,10 @@ pub enum CoreExpr {
         value: String,
         origin: SourceSpan,
     },
+    Boolean {
+        value: bool,
+        origin: SourceSpan,
+    },
     EffectOperation {
         operation: String,
         requirements: Vec<String>,
@@ -153,6 +157,10 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin: source_span(source, origin),
         },
         TypedExpr::String { value, origin, .. } => CoreExpr::String {
+            value,
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Boolean { value, origin, .. } => CoreExpr::Boolean {
             value,
             origin: source_span(source, origin),
         },

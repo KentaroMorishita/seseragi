@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/bool-let",
+  "bindings": [
+    {
+      "symbol": "artifact/bool-let::enabled",
+      "visibility": "public",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 28 },
+      "value": {
+        "kind": "boolean",
+        "value": true,
+        "origin": { "source": "main.ssrg", "start": 24, "end": 28 }
+      }
+    }
+  ]
+}

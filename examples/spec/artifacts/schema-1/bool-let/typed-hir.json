@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/bool-let",
+  "declarations": [
+    {
+      "kind": "let",
+      "symbol": "artifact/bool-let::enabled",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 28 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Bool", "arguments": [] }
+      },
+      "value": {
+        "kind": "boolean",
+        "value": true,
+        "type": { "kind": "named", "name": "Bool", "arguments": [] },
+        "origin": { "start": 24, "end": 28 }
+      }
+    }
+  ]
+}

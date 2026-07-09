@@ -81,6 +81,10 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             name: "String".to_owned(),
             arguments: Vec::new(),
         },
+        TypedExpr::Boolean { .. } => TypedType::Named {
+            name: "Bool".to_owned(),
+            arguments: Vec::new(),
+        },
         TypedExpr::EffectCall { .. } => unit_type(),
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
     }
