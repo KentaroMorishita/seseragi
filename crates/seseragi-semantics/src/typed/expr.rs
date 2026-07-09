@@ -3,6 +3,7 @@ use crate::{
     unit_type, TypedExpr, TypedParameter, TypedType,
 };
 use seseragi_syntax::{ByteSpan, Token, TokenKind};
+use std::collections::BTreeMap;
 
 pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
     let origin = ByteSpan {
@@ -120,11 +121,12 @@ pub(crate) fn find_effect_body(tokens: &[Token], span: ByteSpan) -> Option<Typed
 pub(crate) fn typed_fn_body_from_tokens(
     tokens: &[&Token],
     parameters: &[TypedParameter],
+    top_level_values: &BTreeMap<String, TypedType>,
 ) -> Option<TypedExpr> {
     match tokens {
         [left, operator, right, ..] if operator.kind == TokenKind::OperatorArithmetic => {
-            let left_expr = typed_fn_body_from_token(left, parameters);
-            let right_expr = typed_fn_body_from_token(right, parameters);
+            let left_expr = typed_fn_body_from_token(left, parameters, top_level_values);
+            let right_expr = typed_fn_body_from_token(right, parameters, top_level_values);
             let type_ref = binary_result_type(operator.raw.as_str(), &left_expr, &right_expr);
             Some(TypedExpr::Binary {
                 operator: operator.raw.clone(),
@@ -137,7 +139,11 @@ pub(crate) fn typed_fn_body_from_tokens(
                 },
             })
         }
-        [token, ..] => Some(typed_fn_body_from_token(token, parameters)),
+        [token, ..] => Some(typed_fn_body_from_token(
+            token,
+            parameters,
+            top_level_values,
+        )),
         [] => None,
     }
 }
@@ -150,12 +156,26 @@ pub(crate) fn lower_first(value: &str) -> String {
     }
 }
 
-fn typed_fn_body_from_token(token: &Token, parameters: &[TypedParameter]) -> TypedExpr {
+fn typed_fn_body_from_token(
+    token: &Token,
+    parameters: &[TypedParameter],
+    top_level_values: &BTreeMap<String, TypedType>,
+) -> TypedExpr {
     if token.kind == TokenKind::IdentifierLower {
         if let Some((name, type_ref)) = find_parameter(token, parameters) {
             return TypedExpr::Variable {
                 name,
                 type_ref,
+                origin: ByteSpan {
+                    start: token.start,
+                    end: token.end,
+                },
+            };
+        }
+        if let Some(type_ref) = top_level_values.get(&token.raw) {
+            return TypedExpr::Variable {
+                name: token.raw.clone(),
+                type_ref: type_ref.clone(),
                 origin: ByteSpan {
                     start: token.start,
                     end: token.end,

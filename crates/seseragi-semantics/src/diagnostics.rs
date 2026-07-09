@@ -3,6 +3,7 @@ use seseragi_syntax::{
     lex, parse_diagnostics, parse_surface_ast, ByteRange, Diagnostic, DiagnosticArtifact,
     DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token, TokenKind,
 };
+use std::collections::BTreeSet;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
@@ -13,10 +14,11 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
 
     let surface = parse_surface_ast(artifact.source.clone(), source);
     let tokens = lex(artifact.source.clone(), source).tokens;
+    let declared_values = declared_value_names(&surface.declarations);
     let mut diagnostics = Vec::new();
 
     for declaration in &surface.declarations {
-        collect_decl_diagnostics(declaration, &tokens, &mut diagnostics);
+        collect_decl_diagnostics(declaration, &tokens, &declared_values, &mut diagnostics);
     }
 
     artifact.diagnostics = diagnostics
@@ -33,8 +35,23 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
 fn collect_decl_diagnostics(
     declaration: &SurfaceDecl,
     tokens: &[Token],
+    declared_values: &BTreeSet<String>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
+    if let SurfaceDecl::Fn {
+        parameters, span, ..
+    } = declaration
+    {
+        collect_unknown_pure_function_names(
+            tokens,
+            *span,
+            parameters,
+            declared_values,
+            diagnostics,
+        );
+        return;
+    }
+
     let SurfaceDecl::EffectFn {
         inferred_contract,
         span,
@@ -88,6 +105,70 @@ fn collect_decl_diagnostics(
     }
 
     push_compact_body_not_effect_diagnostic(diagnostics, operation, *span);
+}
+
+fn declared_value_names(declarations: &[SurfaceDecl]) -> BTreeSet<String> {
+    declarations
+        .iter()
+        .filter_map(|declaration| match declaration {
+            SurfaceDecl::Let { name, .. }
+            | SurfaceDecl::Fn { name, .. }
+            | SurfaceDecl::EffectFn { name, .. } => Some(name.clone()),
+            SurfaceDecl::Newtype { .. }
+            | SurfaceDecl::Alias { .. }
+            | SurfaceDecl::Type { .. }
+            | SurfaceDecl::Struct { .. }
+            | SurfaceDecl::Trait { .. }
+            | SurfaceDecl::Operator { .. }
+            | SurfaceDecl::Instance { .. } => None,
+        })
+        .collect()
+}
+
+fn collect_unknown_pure_function_names(
+    tokens: &[Token],
+    span: seseragi_syntax::ByteSpan,
+    parameters: &[seseragi_syntax::SurfaceParameter],
+    declared_values: &BTreeSet<String>,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let Some(equals_index) = tokens
+        .iter()
+        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")
+    else {
+        return;
+    };
+    let parameter_names = parameters
+        .iter()
+        .map(|parameter| parameter.name.as_str())
+        .collect::<BTreeSet<_>>();
+    for token in tokens[equals_index + 1..]
+        .iter()
+        .take_while(|token| token.end <= span.end)
+        .filter(|token| token.kind == TokenKind::IdentifierLower)
+    {
+        if parameter_names.contains(token.raw.as_str()) || declared_values.contains(&token.raw) {
+            continue;
+        }
+        diagnostics.push(Diagnostic {
+            id: String::new(),
+            code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "name.unresolved".to_owned(),
+            primary: ByteRange {
+                start: token.start,
+                end: token.end,
+            },
+            related: vec![RelatedDiagnostic {
+                message: "pure function body".to_owned(),
+                primary: ByteRange {
+                    start: span.start,
+                    end: span.end,
+                },
+            }],
+            fixes: Vec::new(),
+        });
+    }
 }
 
 fn push_compact_body_not_effect_diagnostic(
@@ -262,5 +343,31 @@ mod tests {
             diagnostics.diagnostics[0].related[0].primary,
             ByteRange { start: 0, end: 51 }
         );
+    }
+
+    #[test]
+    fn reports_unresolved_name_in_pure_function_body() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/unknown-pure-name/main.ssrg",
+            "pub fn useMissing value: Int -> Int = missing\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(diagnostics.diagnostics[0].message_key, "name.unresolved");
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 38, end: 45 }
+        );
+    }
+
+    #[test]
+    fn accepts_top_level_binding_in_pure_function_body() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-binding/main.ssrg",
+            "pub let answer: Int = 42\npub fn answerValue unit: Unit -> Int = answer\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
     }
 }

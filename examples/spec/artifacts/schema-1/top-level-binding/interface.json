@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "module": "artifact/top-level-binding",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/top-level-binding::answer",
+      "namespace": "value",
+      "name": "answer",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/top-level-binding::answerValue",
+      "namespace": "value",
+      "name": "answerValue",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 25,
+        "end": 70
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

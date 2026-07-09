@@ -1,0 +1,2 @@
+pub let answer: Int = 42
+pub fn answerValue unit: Unit -> Int = answer

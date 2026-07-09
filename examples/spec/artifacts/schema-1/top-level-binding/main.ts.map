@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/top-level-binding"
+  ],
+  "sourcesContent": [
+    "pub let answer: Int = 42\npub fn answerValue unit: Unit -> Int = answer\n"
+  ],
+  "names": [
+    "answer",
+    "answerValue"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

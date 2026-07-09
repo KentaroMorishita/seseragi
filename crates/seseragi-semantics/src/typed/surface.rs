@@ -1,5 +1,6 @@
 use crate::{unit_type, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
 use seseragi_syntax::{SurfaceDecl, SurfaceParameter, Token};
+use std::collections::BTreeMap;
 
 use super::effect::typed_effect_from_surface;
 use super::expr::{
@@ -12,6 +13,7 @@ pub(crate) fn typed_decl_from_surface(
     module: &str,
     declaration: SurfaceDecl,
     tokens: &[Token],
+    top_level_values: &BTreeMap<String, TypedType>,
 ) -> Option<TypedDecl> {
     match declaration {
         SurfaceDecl::Let {
@@ -96,13 +98,16 @@ pub(crate) fn typed_decl_from_surface(
                 .iter()
                 .map(typed_parameter_from_surface)
                 .collect::<Vec<_>>();
-            let body =
-                typed_fn_body_from_tokens(&find_value_tokens(tokens, span), &typed_parameters)
-                    .unwrap_or_else(|| TypedExpr::Variable {
-                        name: String::new(),
-                        type_ref: TypedType::Hole,
-                        origin: span,
-                    });
+            let body = typed_fn_body_from_tokens(
+                &find_value_tokens(tokens, span),
+                &typed_parameters,
+                top_level_values,
+            )
+            .unwrap_or_else(|| TypedExpr::Variable {
+                name: String::new(),
+                type_ref: TypedType::Hole,
+                origin: span,
+            });
             Some(TypedDecl::Fn {
                 symbol: format!("{module}::{name}"),
                 visibility,

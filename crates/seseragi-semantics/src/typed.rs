@@ -1,5 +1,6 @@
 use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
 use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInterface};
+use std::collections::BTreeMap;
 
 mod effect;
 mod expr;
@@ -60,10 +61,13 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     let interface = parse_module_interface(source_name.clone(), source);
     let surface = parse_surface_ast(interface.source.clone(), source);
     let tokens = lex(interface.source.clone(), source).tokens;
+    let top_level_values = top_level_value_types(&surface.declarations, &tokens);
     let declarations = surface
         .declarations
         .into_iter()
-        .filter_map(|declaration| typed_decl_from_surface(&interface.module, declaration, &tokens))
+        .filter_map(|declaration| {
+            typed_decl_from_surface(&interface.module, declaration, &tokens, &top_level_values)
+        })
         .collect();
 
     TypedModule {
@@ -73,6 +77,35 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
         module: interface.module,
         declarations,
     }
+}
+
+fn top_level_value_types(
+    declarations: &[seseragi_syntax::SurfaceDecl],
+    tokens: &[seseragi_syntax::Token],
+) -> BTreeMap<String, TypedType> {
+    declarations
+        .iter()
+        .filter_map(|declaration| {
+            let seseragi_syntax::SurfaceDecl::Let {
+                name,
+                type_ref,
+                span,
+                ..
+            } = declaration
+            else {
+                return None;
+            };
+            let type_ref = type_ref
+                .as_ref()
+                .map(type_ref::typed_type_from_type_ref)
+                .or_else(|| {
+                    expr::find_value_token(tokens, *span)
+                        .map(expr::typed_expr_from_value_token)
+                        .map(|value| type_ref::inferred_type_from_expr(&value))
+                })?;
+            Some((name.clone(), type_ref))
+        })
+        .collect()
 }
 
 pub fn type_module_public_interface(
@@ -511,5 +544,25 @@ mod tests {
                 origin: ByteSpan { start: 38, end: 45 },
             }
         );
+    }
+
+    #[test]
+    fn types_pure_function_reference_to_top_level_binding() {
+        let typed = type_module(
+            "artifact/top-level-binding/main.ssrg",
+            "pub let answer: Int = 42\npub fn answerValue unit: Unit -> Int = answer\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::Variable {
+                name,
+                type_ref: TypedType::Named { name: type_name, arguments },
+                ..
+            } if name == "answer" && type_name == "Int" && arguments.is_empty()
+        ));
     }
 }

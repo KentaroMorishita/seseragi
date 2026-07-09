@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/unknown-pure-name",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}
