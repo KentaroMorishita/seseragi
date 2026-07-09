@@ -111,10 +111,10 @@ fn declared_value_names(declarations: &[SurfaceDecl]) -> BTreeSet<String> {
     declarations
         .iter()
         .filter_map(|declaration| match declaration {
-            SurfaceDecl::Let { name, .. }
-            | SurfaceDecl::Fn { name, .. }
-            | SurfaceDecl::EffectFn { name, .. } => Some(name.clone()),
-            SurfaceDecl::Newtype { .. }
+            SurfaceDecl::Let { name, .. } => Some(name.clone()),
+            SurfaceDecl::Fn { .. }
+            | SurfaceDecl::EffectFn { .. }
+            | SurfaceDecl::Newtype { .. }
             | SurfaceDecl::Alias { .. }
             | SurfaceDecl::Type { .. }
             | SurfaceDecl::Struct { .. }
@@ -369,5 +369,20 @@ mod tests {
         );
 
         assert!(diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn rejects_function_value_reference_until_function_values_are_typed() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/function-value-reference/main.ssrg",
+            "fn source unit: Unit -> Int = 1\nfn alias unit: Unit -> Int = source\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 61, end: 67 }
+        );
     }
 }
