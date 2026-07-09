@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/first-fn",
+  "runtimeRequirements": ["core.int64"],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "first",
+      "parameters": [
+        { "name": "left", "type": "bigint", "implicit": false },
+        { "name": "right", "type": "bigint", "implicit": false }
+      ],
+      "body": { "kind": "identifier", "name": "left" },
+      "origin": { "source": "main.ssrg", "start": 0, "end": 50 }
+    }
+  ]
+}

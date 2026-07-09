@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "module": "artifact/first-fn",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/first-fn::first",
+      "namespace": "value",
+      "name": "first",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": { "start": 0, "end": 50 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": { "kind": "named", "name": "Int", "arguments": [] },
+          "result": {
+            "kind": "function",
+            "parameter": { "kind": "named", "name": "Int", "arguments": [] },
+            "result": { "kind": "named", "name": "Int", "arguments": [] }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

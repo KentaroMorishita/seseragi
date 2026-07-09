@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/first-fn",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/first-fn::first",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 50 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": { "kind": "named", "name": "Int", "arguments": [] },
+          "origin": { "start": 13, "end": 17 }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": { "kind": "named", "name": "Int", "arguments": [] },
+          "origin": { "start": 26, "end": 31 }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "left",
+        "type": { "kind": "named", "name": "Int", "arguments": [] },
+        "origin": { "start": 46, "end": 50 }
+      }
+    }
+  ]
+}

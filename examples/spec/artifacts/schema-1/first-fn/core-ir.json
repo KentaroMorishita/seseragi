@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/first-fn",
+  "functions": [
+    {
+      "symbol": "artifact/first-fn::first",
+      "visibility": "public",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 50 },
+      "parameters": [
+        { "id": "left", "kind": "named", "type": "Int" },
+        { "id": "right", "kind": "named", "type": "Int" }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "left",
+        "typeName": "Int",
+        "origin": { "source": "main.ssrg", "start": 46, "end": 50 }
+      }
+    }
+  ]
+}

@@ -124,6 +124,21 @@ mod tests {
     }
 
     #[test]
+    fn lowers_multi_parameter_function_to_typescript_arrow_function() {
+        let source = "pub fn first left: Int -> right: Int -> Int = left\n";
+        let typed = type_module("artifact/first-fn/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(
+            bundle.typescript,
+            "export const first = (left: bigint, right: bigint) => left\n"
+        );
+    }
+
+    #[test]
     fn deduplicates_runtime_helper_imports_across_functions() {
         let source = "\
 pub effect fn first -> Unit
