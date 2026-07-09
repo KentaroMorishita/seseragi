@@ -15,6 +15,23 @@ pub(crate) fn check_runtime_abi_case(root: &Path, case: &Path) -> Result<(), Str
     check_typescript_runtime_package(root, &abi)
 }
 
+pub(crate) fn runtime_feature_ids(root: &Path) -> Result<BTreeSet<String>, String> {
+    let abi_path = root.join("examples/spec/artifacts/runtime-schema-1/core/abi.json");
+    let raw = fs::read_to_string(&abi_path)
+        .map_err(|error| format!("failed to read runtime ABI: {error}"))?;
+    let abi: serde_json::Value = serde_json::from_str(&raw)
+        .map_err(|error| format!("failed to parse runtime ABI: {error}"))?;
+    let features = abi
+        .get("features")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "runtime ABI features must be an array".to_owned())?;
+    Ok(features
+        .iter()
+        .filter_map(|feature| feature.get("id").and_then(|value| value.as_str()))
+        .map(str::to_owned)
+        .collect())
+}
+
 fn check_runtime_abi_envelope(abi: &serde_json::Value) -> Result<(), String> {
     if abi.get("schema") != Some(&serde_json::Value::from(1)) {
         return Err("runtime ABI must use schema 1".to_owned());

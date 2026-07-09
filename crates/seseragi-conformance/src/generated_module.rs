@@ -1,4 +1,5 @@
 use crate::pipeline::{emit_generated_module, interface_source_name};
+use crate::runtime_abi::runtime_feature_ids;
 use std::fs;
 use std::path::Path;
 
@@ -112,19 +113,7 @@ fn check_generated_runtime_requirements(
     root: &Path,
     generated_module: &serde_json::Value,
 ) -> Result<(), String> {
-    let abi_path = root.join("examples/spec/artifacts/runtime-schema-1/core/abi.json");
-    let abi_raw = fs::read_to_string(&abi_path)
-        .map_err(|error| format!("failed to read runtime ABI for generated module: {error}"))?;
-    let abi: serde_json::Value = serde_json::from_str(&abi_raw)
-        .map_err(|error| format!("failed to parse runtime ABI for generated module: {error}"))?;
-    let features = abi
-        .get("features")
-        .and_then(|value| value.as_array())
-        .ok_or_else(|| "runtime ABI features must be an array".to_owned())?;
-    let available = features
-        .iter()
-        .filter_map(|feature| feature.get("id").and_then(|value| value.as_str()))
-        .collect::<std::collections::BTreeSet<_>>();
+    let available = runtime_feature_ids(root)?;
     let requirements = generated_module
         .pointer("/runtime/requirements")
         .and_then(|value| value.as_array())

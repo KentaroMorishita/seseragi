@@ -1,7 +1,6 @@
 use crate::checks::{
     check_core_ir_json, check_cst, check_diagnostics_json, check_interface_json,
     check_resolved_ast_json, check_surface_ast, check_tokens, check_typed_hir_json,
-    check_typescript_ir_json,
 };
 use crate::execution_case::check_execution_case;
 use crate::generated_module::check_generated_module;
@@ -10,6 +9,7 @@ use crate::report::{
 };
 use crate::runtime_abi::check_runtime_abi_case;
 use crate::suite::Suite;
+use crate::typescript_ir::check_typescript_ir_json;
 use std::path::{Path, PathBuf};
 
 pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
@@ -90,7 +90,7 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
         record_failure(
             "typescriptIr",
             case,
-            check_typescript_ir_json(case),
+            check_typescript_ir_json(&root, case),
             json,
             &mut failures,
         );

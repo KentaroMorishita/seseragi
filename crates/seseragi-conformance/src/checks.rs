@@ -1,6 +1,6 @@
 use crate::pipeline::{
     interface_source_name, parse_core_ir_json, parse_diagnostics_json, parse_module_interface_json,
-    parse_resolved_ast_json, parse_typed_hir_json, parse_typescript_ir_json,
+    parse_resolved_ast_json, parse_typed_hir_json,
 };
 use std::fs;
 use std::path::Path;
@@ -108,23 +108,6 @@ pub(crate) fn check_core_ir_json(case: &Path) -> Result<(), String> {
 
     if actual_value != expected_value {
         return Err("CoreIr artifact mismatch".to_owned());
-    }
-    Ok(())
-}
-
-pub(crate) fn check_typescript_ir_json(case: &Path) -> Result<(), String> {
-    let source_path = case.join("main.ssrg");
-    let expected_path = case.join("typescript-ir.json");
-    let source = fs::read_to_string(&source_path)
-        .map_err(|error| format!("failed to read source: {error}"))?;
-    let expected = fs::read_to_string(&expected_path)
-        .map_err(|error| format!("failed to read expected TypeScriptIr: {error}"))?;
-    let actual_value = parse_typescript_ir_json(interface_source_name(case)?, &source)?;
-    let expected_value: serde_json::Value = serde_json::from_str(&expected)
-        .map_err(|error| format!("failed to parse expected TypeScriptIr: {error}"))?;
-
-    if actual_value != expected_value {
-        return Err("TypeScriptIr artifact mismatch".to_owned());
     }
     Ok(())
 }
