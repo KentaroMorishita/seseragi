@@ -1,0 +1,2 @@
+pub effect fn greet name: String =
+  println "hello"

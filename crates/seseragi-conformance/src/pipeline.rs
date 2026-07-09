@@ -44,6 +44,15 @@ pub(crate) fn parse_typed_hir_json(
     serde_json::to_value(&typed_hir).map_err(|error| format!("failed to encode TypedHir: {error}"))
 }
 
+pub(crate) fn parse_typed_interface_json(
+    source_name: impl Into<String>,
+    source: &str,
+) -> Result<serde_json::Value, String> {
+    let typed_interface = seseragi_semantics::type_module_public_interface(source_name, source);
+    serde_json::to_value(&typed_interface)
+        .map_err(|error| format!("failed to encode TypedModuleInterface: {error}"))
+}
+
 pub(crate) fn parse_core_ir_json(
     source_name: impl Into<String>,
     source: &str,

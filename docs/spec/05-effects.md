@@ -163,8 +163,10 @@ interface上の正規Effect型をAPI review対象にします。
 - success型が合流しない: 通常のbranch / do resultの型不一致として報告する。
 
 conformanceでは、compact inferred formを少なくともTokenStream、LosslessCst、SurfaceAst、
-ModuleInterface、ResolvedAst、TypedHir、CoreIr、TypeScriptIr、GeneratedModuleまで固定します。
-positive fixtureは推論された `R` / `E` / `A` がtyped artifactとinterfaceに現れることを確認し、
+ModuleInterface、ResolvedAst、TypedHir、TypedInterface、CoreIr、TypeScriptIr、GeneratedModuleまで
+固定します。ModuleInterfaceはbodyを読まないshallow public surface、TypedInterfaceはtyped bodyから
+推論した公開contractです。positive fixtureは推論された `R` / `E` / `A` がtyped artifactと
+TypedInterfaceに現れることを確認し、
 diagnostic fixtureはbody非Effect、environment衝突、複数非`Never` failureを別caseとして固定します。
 
 parameterを書かない宣言にも1.4の匿名Unit parameter規則を適用します。

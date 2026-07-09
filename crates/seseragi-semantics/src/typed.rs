@@ -3,9 +3,11 @@ use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInte
 
 mod effect;
 mod expr;
+mod interface;
 mod surface;
 mod type_ref;
 
+use interface::typed_interface_from_modules;
 use surface::typed_decl_from_surface;
 use type_ref::typed_type_from_interface_type;
 
@@ -73,11 +75,22 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     }
 }
 
+pub fn type_module_public_interface(
+    source_name: impl Into<String>,
+    source: &str,
+) -> crate::TypedModuleInterface {
+    let source_name = source_name.into();
+    let shallow = parse_module_interface(source_name.clone(), source);
+    let typed = type_module(source_name, source);
+    typed_interface_from_modules(shallow, typed)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{unit_type, TypedEffect, TypedParameter, TypedRecordField};
     use seseragi_syntax::ByteSpan;
+    use seseragi_syntax::InterfaceType;
     use seseragi_syntax::Visibility;
 
     #[test]
@@ -274,6 +287,52 @@ mod tests {
                     origin: ByteSpan { start: 33, end: 48 },
                 },
             }]
+        );
+    }
+
+    #[test]
+    fn typed_interface_exports_compact_effect_fn_contract() {
+        let interface = type_module_public_interface(
+            "artifact/effect-compact-public/main.ssrg",
+            "pub effect fn greet name: String =\n  println \"hello\"\n",
+        );
+
+        let export = &interface.exports[0];
+        assert_eq!(interface.stage, "typed-interface");
+        assert_eq!(export.symbol, "artifact/effect-compact-public::greet");
+        assert_eq!(export.declaration_kind, Some("effect-function".to_owned()));
+        assert_eq!(
+            export.scheme.type_ref,
+            InterfaceType::Function {
+                parameter: Box::new(InterfaceType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }),
+                result: Box::new(InterfaceType::Named {
+                    name: "Effect".to_owned(),
+                    arguments: vec![
+                        InterfaceType::Record {
+                            closed: true,
+                            fields: vec![seseragi_syntax::InterfaceRecordField {
+                                name: "console".to_owned(),
+                                optional: false,
+                                type_ref: InterfaceType::Named {
+                                    name: "Console".to_owned(),
+                                    arguments: Vec::new(),
+                                },
+                            }],
+                        },
+                        InterfaceType::Named {
+                            name: "ConsoleError".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                        InterfaceType::Named {
+                            name: "Unit".to_owned(),
+                            arguments: Vec::new(),
+                        },
+                    ],
+                }),
+            }
         );
     }
 

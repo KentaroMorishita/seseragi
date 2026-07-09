@@ -1,5 +1,8 @@
 use serde::{Deserialize, Serialize};
-use seseragi_syntax::{ByteSpan, InterfaceType, Visibility};
+use seseragi_syntax::{
+    ByteSpan, InterfaceDependency, InterfaceExport, InterfaceInstance, InterfaceOperator,
+    InterfaceType, Visibility,
+};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(transparent)]
@@ -63,6 +66,19 @@ pub struct TypedModule {
     pub source: String,
     pub module: String,
     pub declarations: Vec<TypedDecl>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedModuleInterface {
+    pub schema: u32,
+    pub stage: String,
+    pub module: String,
+    pub source: String,
+    pub dependencies: Vec<InterfaceDependency>,
+    pub exports: Vec<InterfaceExport>,
+    pub operators: Vec<InterfaceOperator>,
+    pub instances: Vec<InterfaceInstance>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

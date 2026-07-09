@@ -1,6 +1,6 @@
 use crate::pipeline::{
     interface_source_name, parse_core_ir_json, parse_diagnostics_json, parse_module_interface_json,
-    parse_resolved_ast_json, parse_typed_hir_json,
+    parse_resolved_ast_json, parse_typed_hir_json, parse_typed_interface_json,
 };
 use std::fs;
 use std::path::Path;
@@ -91,6 +91,23 @@ pub(crate) fn check_typed_hir_json(case: &Path) -> Result<(), String> {
 
     if actual_value != expected_value {
         return Err("TypedHir artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
+pub(crate) fn check_typed_interface_json(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("typed-interface.json");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected TypedModuleInterface: {error}"))?;
+    let actual_value = parse_typed_interface_json(interface_source_name(case)?, &source)?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected TypedModuleInterface: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("TypedModuleInterface artifact mismatch".to_owned());
     }
     Ok(())
 }

@@ -120,6 +120,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.typed_hir_cases,
         },
         Category {
+            json_key: "typedInterface",
+            text_label: "TypedInterface",
+            cases: &suite.typed_interface_cases,
+        },
+        Category {
             json_key: "coreIr",
             text_label: "CoreIr",
             cases: &suite.core_ir_cases,
