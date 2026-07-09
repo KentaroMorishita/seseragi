@@ -18,10 +18,29 @@ fn main() {
     let mut json = false;
     for arg in std::env::args().skip(1) {
         match arg.as_str() {
+            "--help" | "-h" => {
+                print_usage();
+                return;
+            }
             "--list" => list = true,
             "--json" => json = true,
+            flag if flag.starts_with('-') => {
+                eprintln!("unknown option: {flag}");
+                eprintln!();
+                print_usage();
+                std::process::exit(2);
+            }
             _ => root = PathBuf::from(arg),
         }
     }
     runner::run(root, list, json);
+}
+
+fn print_usage() {
+    println!(
+        "usage: seseragi-conformance [ROOT] [--list] [--json]\n\n\
+         ROOT defaults to the current directory.\n\
+         --list  list discovered fixture cases instead of running them\n\
+         --json  emit a machine-readable JSON report"
+    );
 }
