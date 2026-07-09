@@ -81,6 +81,19 @@ pub fn type_module_public_interface(
 ) -> crate::TypedModuleInterface {
     let source_name = source_name.into();
     let shallow = parse_module_interface(source_name.clone(), source);
+    let diagnostics = crate::diagnostics::semantic_diagnostics(source_name.clone(), source);
+    if !diagnostics.diagnostics.is_empty() {
+        return crate::TypedModuleInterface {
+            schema: shallow.schema,
+            stage: "typed-interface".to_owned(),
+            module: shallow.module,
+            source: shallow.source,
+            dependencies: shallow.dependencies,
+            exports: Vec::new(),
+            operators: Vec::new(),
+            instances: Vec::new(),
+        };
+    }
     let typed = type_module(source_name, source);
     typed_interface_from_modules(shallow, typed)
 }
@@ -334,6 +347,18 @@ mod tests {
                 }),
             }
         );
+    }
+
+    #[test]
+    fn typed_interface_omits_exports_when_semantic_diagnostics_exist() {
+        let interface = type_module_public_interface(
+            "artifact/effect-compact-not-effect/main.ssrg",
+            "pub effect fn greet name: String = name\n",
+        );
+
+        assert!(interface.exports.is_empty());
+        assert!(interface.operators.is_empty());
+        assert!(interface.instances.is_empty());
     }
 
     #[test]
