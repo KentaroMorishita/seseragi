@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-compact-greet",
+  "functions": [
+    {
+      "symbol": "artifact/effect-compact-greet::greet",
+      "visibility": "private",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 48 },
+      "parameters": [{ "id": "name", "kind": "named", "type": "String" }],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": ["console"],
+        "failure": "ConsoleError",
+        "success": "Unit",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "hello",
+            "origin": { "source": "main.ssrg", "start": 41, "end": 48 }
+          }
+        ],
+        "origin": { "source": "main.ssrg", "start": 33, "end": 48 }
+      }
+    }
+  ]
+}

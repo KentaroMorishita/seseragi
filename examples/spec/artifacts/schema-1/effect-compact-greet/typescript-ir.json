@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-compact-greet",
+  "runtimeRequirements": ["core.string", "effect.console.println"],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "greet",
+      "parameters": [
+        { "name": "name", "type": "string", "implicit": false }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "_ssrg_console_println",
+        "arguments": [{ "kind": "string", "value": "hello" }]
+      },
+      "origin": { "source": "main.ssrg", "start": 0, "end": 48 }
+    }
+  ]
+}
