@@ -4,6 +4,7 @@ mod execution;
 mod execution_case;
 mod generated_module;
 mod pipeline;
+mod report;
 mod runner;
 mod runtime_abi;
 mod runtime_package;
@@ -14,12 +15,13 @@ use std::path::PathBuf;
 fn main() {
     let mut root = PathBuf::from(".");
     let mut list = false;
+    let mut json = false;
     for arg in std::env::args().skip(1) {
-        if arg == "--list" {
-            list = true;
-        } else {
-            root = PathBuf::from(arg);
+        match arg.as_str() {
+            "--list" => list = true,
+            "--json" => json = true,
+            _ => root = PathBuf::from(arg),
         }
     }
-    runner::run(root, list);
+    runner::run(root, list, json);
 }
