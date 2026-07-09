@@ -26,6 +26,15 @@ pub(crate) fn parse_diagnostics_json(
         .map_err(|error| format!("failed to encode Diagnostics: {error}"))
 }
 
+pub(crate) fn parse_semantic_diagnostics_json(
+    source_name: impl Into<String>,
+    source: &str,
+) -> Result<serde_json::Value, String> {
+    let diagnostics = seseragi_semantics::semantic_diagnostics(source_name, source);
+    serde_json::to_value(&diagnostics)
+        .map_err(|error| format!("failed to encode SemanticDiagnostics: {error}"))
+}
+
 pub(crate) fn parse_resolved_ast_json(
     source_name: impl Into<String>,
     source: &str,

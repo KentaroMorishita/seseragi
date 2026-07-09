@@ -1,0 +1,117 @@
+use seseragi_syntax::{
+    lex, parse_diagnostics, parse_surface_ast, ByteRange, Diagnostic, DiagnosticArtifact,
+    DiagnosticSeverity, SurfaceDecl, Token, TokenKind,
+};
+
+pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
+    let source_name = source_name.into();
+    let mut artifact = parse_diagnostics(source_name.clone(), source);
+    if !artifact.diagnostics.is_empty() {
+        return artifact;
+    }
+
+    let surface = parse_surface_ast(artifact.source.clone(), source);
+    let tokens = lex(artifact.source.clone(), source).tokens;
+    let mut diagnostics = Vec::new();
+
+    for declaration in &surface.declarations {
+        collect_decl_diagnostics(declaration, &tokens, &mut diagnostics);
+    }
+
+    artifact.diagnostics = diagnostics
+        .into_iter()
+        .enumerate()
+        .map(|(index, mut diagnostic)| {
+            diagnostic.id = format!("d{}", index + 1);
+            diagnostic
+        })
+        .collect();
+    artifact
+}
+
+fn collect_decl_diagnostics(
+    declaration: &SurfaceDecl,
+    tokens: &[Token],
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let SurfaceDecl::EffectFn {
+        inferred_contract,
+        span,
+        ..
+    } = declaration
+    else {
+        return;
+    };
+
+    if !inferred_contract {
+        return;
+    }
+
+    let Some(operation) = compact_effect_body_operation(tokens, *span) else {
+        return;
+    };
+
+    if operation.raw == "println" || operation.kind == TokenKind::KeywordDo {
+        return;
+    }
+
+    diagnostics.push(Diagnostic {
+        id: String::new(),
+        code: "SES-T0001".to_owned(),
+        severity: DiagnosticSeverity::Error,
+        message_key: "effect.compact-body-not-effect".to_owned(),
+        primary: ByteRange {
+            start: operation.start,
+            end: operation.end,
+        },
+        related: Vec::new(),
+        fixes: Vec::new(),
+    });
+}
+
+fn compact_effect_body_operation(
+    tokens: &[Token],
+    span: seseragi_syntax::ByteSpan,
+) -> Option<&Token> {
+    let equals_index = tokens
+        .iter()
+        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")?;
+    tokens[equals_index + 1..]
+        .iter()
+        .find(|token| token.end <= span.end && is_significant(token))
+}
+
+fn is_significant(token: &Token) -> bool {
+    !matches!(
+        token.kind,
+        TokenKind::TriviaComment
+            | TokenKind::TriviaNewline
+            | TokenKind::TriviaSpace
+            | TokenKind::Eof
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn reports_compact_effect_body_that_is_not_effect() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-not-effect/main.ssrg",
+            "pub effect fn greet name: String = name\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].id, "d1");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.compact-body-not-effect"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 35, end: 39 }
+        );
+    }
+}

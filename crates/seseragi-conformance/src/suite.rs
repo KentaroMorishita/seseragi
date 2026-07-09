@@ -7,6 +7,7 @@ pub(crate) struct Suite {
     pub(crate) token_cases: Vec<PathBuf>,
     pub(crate) cst_cases: Vec<PathBuf>,
     pub(crate) diagnostics_cases: Vec<PathBuf>,
+    pub(crate) semantic_diagnostics_cases: Vec<PathBuf>,
     pub(crate) surface_ast_cases: Vec<PathBuf>,
     pub(crate) interface_cases: Vec<PathBuf>,
     pub(crate) resolved_ast_cases: Vec<PathBuf>,
@@ -55,6 +56,10 @@ impl Suite {
             token_cases,
             cst_cases: frontend_cases,
             diagnostics_cases,
+            semantic_diagnostics_cases: discover_artifact_cases(
+                artifacts,
+                "semantic-diagnostics.json",
+            ),
             surface_ast_cases,
             interface_cases,
             resolved_ast_cases,

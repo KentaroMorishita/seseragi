@@ -8,6 +8,7 @@
 - `tokens.json`: triviaとEOFを含むlossless token列
 - `cst.json`: token rangeを参照するlossless CST骨格
 - `diagnostics.json`: frontend共通diagnostic envelope
+- `semantic-diagnostics.json`: type / semantics stageのdiagnostic envelope
 - `interface.json`: module consumerが読む公開interface
 - `surface-ast.json`: surface declaration skeleton。後続stageがある場合はstage chainの入口
 - `resolved-ast.json`と`typed-hir.json`: Rust conformance runnerで個別に比較できるfrontend / semantics stage snapshot
@@ -48,6 +49,10 @@ Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や
 TypedHirから生成して固定するstageです。たとえばcompact inferred `effect fn` はsource上に `with` /
 `fails` / success型を書きませんが、`typed-interface.json` では `Effect<R, E, A>` の正規型として公開APIに
 現れます。
+
+`semantic-diagnostics-schema-1/`は、parseには成功したが型・意味論としては受理できないsourceのdiagnosticを
+固定します。syntax/CST由来の`diagnostics.json`とは分け、compact inferred `effect fn` のbodyがEffect型へ
+解決できないcaseなど、typed stageで初めて分かる問題を扱います。
 
 初期runner skeletonは次でartifact bundleを発見し、必須file、JSON envelope、参照snapshotを検査します。
 

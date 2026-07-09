@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0001",
+      "severity": "Error",
+      "messageKey": "effect.compact-body-not-effect",
+      "primary": { "start": 35, "end": 39 },
+      "related": [],
+      "fixes": []
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 use crate::checks::{
     check_core_ir_json, check_cst, check_diagnostics_json, check_interface_json,
-    check_resolved_ast_json, check_surface_ast, check_tokens, check_typed_hir_json,
-    check_typed_interface_json,
+    check_resolved_ast_json, check_semantic_diagnostics_json, check_surface_ast, check_tokens,
+    check_typed_hir_json, check_typed_interface_json,
 };
 use crate::execution_case::check_execution_case;
 use crate::generated_module::check_generated_module;
@@ -47,6 +47,15 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
             "diagnostics",
             case,
             check_diagnostics_json(case),
+            json,
+            &mut failures,
+        );
+    }
+    for case in &suite.semantic_diagnostics_cases {
+        record_failure(
+            "semanticDiagnostics",
+            case,
+            check_semantic_diagnostics_json(case),
             json,
             &mut failures,
         );
