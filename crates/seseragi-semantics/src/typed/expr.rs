@@ -1,4 +1,7 @@
-use crate::{unit_type, TypedExpr, TypedParameter, TypedType};
+use crate::{
+    effect_ops::{known_effect_operation_by_surface, semantic_effect_operation_name},
+    unit_type, TypedExpr, TypedParameter, TypedType,
+};
 use seseragi_syntax::{ByteSpan, Token, TokenKind};
 
 pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
@@ -105,10 +108,7 @@ pub(crate) fn find_effect_body(tokens: &[Token], span: ByteSpan) -> Option<Typed
         .unwrap_or(operation.end);
 
     Some(TypedExpr::EffectCall {
-        operation: match operation.raw.as_str() {
-            "println" => "std/prelude::println".to_owned(),
-            other => other.to_owned(),
-        },
+        operation: semantic_effect_operation_name(operation.raw.as_str()),
         arguments: argument.into_iter().collect(),
         origin: ByteSpan {
             start: operation.start,
@@ -256,9 +256,9 @@ fn typed_do_statements(
         return Vec::new();
     };
 
-    if operation.raw != "println" {
+    let Some(effect_operation) = known_effect_operation_by_surface(operation.raw.as_str()) else {
         return Vec::new();
-    }
+    };
 
     let argument = tokens
         .iter()
@@ -275,7 +275,7 @@ fn typed_do_statements(
         .unwrap_or(operation.end);
 
     vec![TypedExpr::EffectCall {
-        operation: "std/prelude::println".to_owned(),
+        operation: effect_operation.semantic_name.to_owned(),
         arguments: argument.into_iter().collect(),
         origin: ByteSpan {
             start: operation.start,

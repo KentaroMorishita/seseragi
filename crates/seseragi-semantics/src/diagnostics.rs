@@ -1,3 +1,4 @@
+use crate::effect_ops::known_effect_operation_by_surface;
 use seseragi_syntax::{
     lex, parse_diagnostics, parse_surface_ast, ByteRange, Diagnostic, DiagnosticArtifact,
     DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token, TokenKind,
@@ -73,13 +74,13 @@ fn collect_decl_diagnostics(
         return;
     };
 
-    if operation.raw == "println" {
+    if is_known_effect_surface_operation(operation) {
         return;
     }
     if operation.kind == TokenKind::KeywordDo {
         match compact_do_statement_operation(tokens, *span, operation) {
             None => return,
-            Some(statement) if statement.raw == "println" => return,
+            Some(statement) if is_known_effect_surface_operation(statement) => return,
             Some(statement) => {
                 push_compact_body_not_effect_diagnostic(diagnostics, statement, *span);
                 return;
@@ -139,6 +140,10 @@ fn compact_contract_clause(tokens: &[Token], span: seseragi_syntax::ByteSpan) ->
 
 fn is_compact_contract_clause_token(token: &Token) -> bool {
     matches!(token.kind, TokenKind::KeywordWith | TokenKind::KeywordFails) || token.raw == "where"
+}
+
+fn is_known_effect_surface_operation(token: &Token) -> bool {
+    known_effect_operation_by_surface(token.raw.as_str()).is_some()
 }
 
 fn compact_do_statement_operation<'tokens>(

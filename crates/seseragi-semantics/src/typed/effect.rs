@@ -1,4 +1,7 @@
-use crate::{unit_type, TypedEffect, TypedExpr, TypedRecordField, TypedType};
+use crate::{
+    effect_ops::known_effect_operation_by_semantic, unit_type, TypedEffect, TypedExpr,
+    TypedRecordField, TypedType,
+};
 use seseragi_syntax::{ByteSpan, Token, TokenKind, TypeRef};
 
 use super::expr::{find_type_name_after, lower_first};
@@ -31,7 +34,7 @@ fn explicit_effect(return_type: &Option<TypeRef>, tokens: &[Token], span: ByteSp
         environment: TypedType::Record {
             closed: true,
             fields: with_type
-                .map(environment_field)
+                .map(explicit_environment_field)
                 .into_iter()
                 .collect::<Vec<_>>(),
         },
@@ -62,9 +65,15 @@ fn collect_effect_contract(
     failure: &mut TypedType,
 ) {
     match expr {
-        TypedExpr::EffectCall { operation, .. } if operation == "std/prelude::println" => {
-            push_requirement_unique(requirements, environment_field("Console".to_owned()));
-            widen_failure_from_never(failure, named_type("ConsoleError"));
+        TypedExpr::EffectCall { operation, .. } => {
+            let Some(operation) = known_effect_operation_by_semantic(operation) else {
+                return;
+            };
+            push_requirement_unique(
+                requirements,
+                environment_field(operation.requirement_field, operation.requirement_type),
+            );
+            widen_failure_from_never(failure, named_type(operation.failure_type));
         }
         TypedExpr::DoBlock {
             statements, result, ..
@@ -79,8 +88,7 @@ fn collect_effect_contract(
         | TypedExpr::String { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
-        | TypedExpr::Binary { .. }
-        | TypedExpr::EffectCall { .. } => {}
+        | TypedExpr::Binary { .. } => {}
     }
 }
 
@@ -97,11 +105,15 @@ fn widen_failure_from_never(current: &mut TypedType, candidate: TypedType) {
     }
 }
 
-fn environment_field(name: String) -> TypedRecordField {
+fn explicit_environment_field(name: String) -> TypedRecordField {
+    environment_field(&lower_first(&name), &name)
+}
+
+fn environment_field(field_name: &str, type_name: &str) -> TypedRecordField {
     TypedRecordField {
-        name: lower_first(&name),
+        name: field_name.to_owned(),
         optional: false,
-        type_ref: named_type(&name),
+        type_ref: named_type(type_name),
     }
 }
 
