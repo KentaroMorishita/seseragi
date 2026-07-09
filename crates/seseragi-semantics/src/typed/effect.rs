@@ -1,6 +1,6 @@
 use crate::{
-    effect_ops::known_effect_operation_by_semantic, unit_type, TypedEffect, TypedExpr,
-    TypedRecordField, TypedType,
+    effect_ops::known_effect_operation_by_semantic, unit_type, TypedDoStatement, TypedEffect,
+    TypedExpr, TypedRecordField, TypedType,
 };
 use seseragi_syntax::{ByteSpan, Token, TokenKind, TypeRef};
 
@@ -79,7 +79,7 @@ fn collect_effect_contract(
             statements, result, ..
         } => {
             for statement in statements {
-                collect_effect_contract(statement, requirements, failure);
+                collect_effect_contract(do_statement_value(statement), requirements, failure);
             }
             collect_effect_contract(result, requirements, failure);
         }
@@ -89,6 +89,12 @@ fn collect_effect_contract(
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
         | TypedExpr::Binary { .. } => {}
+    }
+}
+
+fn do_statement_value(statement: &TypedDoStatement) -> &TypedExpr {
+    match statement {
+        TypedDoStatement::Effect { value } | TypedDoStatement::Bind { value, .. } => value,
     }
 }
 

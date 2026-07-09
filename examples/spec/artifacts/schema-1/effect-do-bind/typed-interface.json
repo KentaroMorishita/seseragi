@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "stage": "typed-interface",
-  "module": "artifact/effect-compact-do",
+  "module": "artifact/effect-do-bind",
   "source": "main.ssrg",
   "dependencies": [],
   "exports": [
     {
-      "symbol": "artifact/effect-compact-do::main",
+      "symbol": "artifact/effect-do-bind::main",
       "namespace": "value",
       "name": "main",
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
         "start": 0,
-        "end": 45
+        "end": 125
       },
       "scheme": {
         "typeParameters": [],

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "stage": "typescript-ir",
-  "module": "artifact/effect-compact-console-sequence",
+  "module": "artifact/effect-do-bind",
   "runtimeRequirements": [
     "core.unit",
     "effect.console.print",
@@ -22,7 +22,7 @@
     {
       "kind": "const-function",
       "exported": true,
-      "name": "announce",
+      "name": "main",
       "parameters": [
         {
           "name": "_unit",
@@ -34,8 +34,10 @@
         "kind": "sequence",
         "statements": [
           {
-            "kind": "effect",
-            "value": {
+            "kind": "const",
+            "name": "ignored",
+            "type": "undefined",
+            "initializer": {
               "kind": "call",
               "callee": "_ssrg_console_print",
               "arguments": [
@@ -44,6 +46,11 @@
                   "value": "loading... "
                 }
               ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 72,
+              "end": 102
             }
           },
           {
@@ -58,19 +65,6 @@
                 }
               ]
             }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "ready"
-                }
-              ]
-            }
           }
         ],
         "result": {
@@ -80,7 +74,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 84
+        "end": 125
       }
     }
   ]

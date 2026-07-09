@@ -1,0 +1,7 @@
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    ignored <- print "loading... "
+    println "done"
+  }

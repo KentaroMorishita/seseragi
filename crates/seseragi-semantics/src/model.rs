@@ -242,8 +242,27 @@ pub enum TypedExpr {
         origin: ByteSpan,
     },
     DoBlock {
-        statements: Vec<TypedExpr>,
+        statements: Vec<TypedDoStatement>,
         result: Box<TypedExpr>,
+        origin: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedDoStatement {
+    Effect {
+        value: TypedExpr,
+    },
+    Bind {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        value: TypedExpr,
         origin: ByteSpan,
     },
 }

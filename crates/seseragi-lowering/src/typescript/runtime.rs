@@ -1,4 +1,4 @@
-use crate::{effect_ops::runtime_effect_operation, CoreExpr, CoreParameter};
+use crate::{effect_ops::runtime_effect_operation, CoreExpr, CoreParameter, CoreStatement};
 
 use super::names::safe_identifier;
 use super::{
@@ -40,9 +40,20 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             statements, result, ..
         } => {
             for statement in statements {
-                collect_expr_runtime_requirements(statement, requirements);
+                collect_statement_runtime_requirements(statement, requirements);
             }
             collect_expr_runtime_requirements(result, requirements);
+        }
+    }
+}
+
+fn collect_statement_runtime_requirements(
+    statement: &CoreStatement,
+    requirements: &mut Vec<String>,
+) {
+    match statement {
+        CoreStatement::Effect { value } | CoreStatement::Bind { value, .. } => {
+            collect_expr_runtime_requirements(value, requirements);
         }
     }
 }
@@ -80,9 +91,20 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             statements, result, ..
         } => {
             for statement in statements {
-                collect_expr_runtime_imports(statement, imports);
+                collect_statement_runtime_imports(statement, imports);
             }
             collect_expr_runtime_imports(result, imports);
+        }
+    }
+}
+
+fn collect_statement_runtime_imports(
+    statement: &CoreStatement,
+    imports: &mut Vec<TypeScriptImport>,
+) {
+    match statement {
+        CoreStatement::Effect { value } | CoreStatement::Bind { value, .. } => {
+            collect_expr_runtime_imports(value, imports);
         }
     }
 }
@@ -122,7 +144,7 @@ fn type_ref_from_type_name(type_name: &str) -> TypeScriptType {
     }
 }
 
-fn render_type_name(type_name: &str) -> &'static str {
+pub(super) fn render_type_name(type_name: &str) -> &'static str {
     match type_name {
         "Int" => "bigint",
         "String" => "string",

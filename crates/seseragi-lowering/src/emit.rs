@@ -1,6 +1,6 @@
 use crate::{
     effect_ops::{runtime_effect_operation_by_local_name, runtime_effect_operation_for_feature},
-    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
+    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
@@ -206,7 +206,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Sequence { statements, result } => {
             let rendered_statements = statements
                 .iter()
-                .map(|statement| format!("{};", render_typescript_expr(statement)))
+                .map(render_typescript_statement)
                 .collect::<Vec<_>>()
                 .join(" ");
             format!(
@@ -214,6 +214,15 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 render_typescript_expr(result)
             )
         }
+    }
+}
+
+fn render_typescript_statement(statement: &TypeScriptStatement) -> String {
+    match statement {
+        TypeScriptStatement::Effect { value } => format!("{};", render_typescript_expr(value)),
+        TypeScriptStatement::Const {
+            name, initializer, ..
+        } => format!("const {name} = {};", render_typescript_expr(initializer)),
     }
 }
 
@@ -268,7 +277,7 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         }
         TypeScriptExpr::Sequence { statements, result } => {
             for statement in statements {
-                collect_expr_names(statement, names);
+                collect_statement_names(statement, names);
             }
             collect_expr_names(result, names);
         }
@@ -277,5 +286,17 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         | TypeScriptExpr::Boolean { .. }
         | TypeScriptExpr::Identifier { .. }
         | TypeScriptExpr::String { .. } => {}
+    }
+}
+
+fn collect_statement_names(statement: &TypeScriptStatement, names: &mut Vec<String>) {
+    match statement {
+        TypeScriptStatement::Effect { value } => collect_expr_names(value, names),
+        TypeScriptStatement::Const {
+            name, initializer, ..
+        } => {
+            names.push(name.clone());
+            collect_expr_names(initializer, names);
+        }
     }
 }

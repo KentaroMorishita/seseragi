@@ -6,6 +6,7 @@ mod typescript;
 
 pub use core::{
     lower_typed_module, CoreBinding, CoreExpr, CoreFunction, CoreModule, CoreParameter,
+    CoreStatement,
 };
 pub use emit::{
     emit_typescript_module, GeneratedBundle, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
@@ -15,7 +16,7 @@ pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
     lower_core_module_to_typescript_ir, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptImport, TypeScriptModule, TypeScriptParameter, TypeScriptType,
+    TypeScriptImport, TypeScriptModule, TypeScriptParameter, TypeScriptStatement, TypeScriptType,
 };
 
 #[cfg(test)]
@@ -231,6 +232,19 @@ fails ConsoleError =
 
         assert!(bundle.typescript.contains(
             "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"one\"); _ssrg_console_println(\"two\"); return undefined; })()"
+        ));
+    }
+
+    #[test]
+    fn lowers_do_bind_statement_to_typescript_const() {
+        let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    ignored <- print \"hello\"\n    println \"done\"\n  }\n";
+        let typed = type_module("artifact/effect-do-bind/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains(
+            "const ignored = _ssrg_console_print(\"hello\"); _ssrg_console_println(\"done\");"
         ));
     }
 

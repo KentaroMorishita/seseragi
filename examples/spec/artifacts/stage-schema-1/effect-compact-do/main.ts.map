@@ -2,8 +2,15 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/effect-compact-do"],
-  "sourcesContent": ["pub effect fn main =\n  do { println \"hello\" }\n"],
-  "names": ["main", "println"],
+  "sources": [
+    "seseragi://artifact/effect-compact-do"
+  ],
+  "sourcesContent": [
+    "pub effect fn main =\n  do { println \"hello\" }\n"
+  ],
+  "names": [
+    "main",
+    "println"
+  ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

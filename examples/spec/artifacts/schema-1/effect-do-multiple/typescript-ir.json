@@ -29,24 +29,30 @@
         "kind": "sequence",
         "statements": [
           {
-            "kind": "call",
-            "callee": "_ssrg_console_println",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "one"
-              }
-            ]
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "one"
+                }
+              ]
+            }
           },
           {
-            "kind": "call",
-            "callee": "_ssrg_console_println",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "two"
-              }
-            ]
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "two"
+                }
+              ]
+            }
           }
         ],
         "result": {

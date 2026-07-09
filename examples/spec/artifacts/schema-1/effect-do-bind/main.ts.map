@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-do-bind"
+  ],
+  "sourcesContent": [
+    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    ignored <- print \"loading... \"\n    println \"done\"\n  }\n"
+  ],
+  "names": [
+    "main",
+    "ignored",
+    "print",
+    "println"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

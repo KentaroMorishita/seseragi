@@ -1,5 +1,5 @@
 use crate::effect_ops::runtime_effect_operation;
-use crate::{CoreExpr, CoreModule, SourceSpan};
+use crate::{CoreExpr, CoreModule, CoreStatement, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
@@ -9,7 +9,8 @@ mod runtime;
 use names::safe_identifier;
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
-    collect_type_runtime_requirement, lower_core_parameter_to_typescript, type_ref_from_core_expr,
+    collect_type_runtime_requirement, lower_core_parameter_to_typescript, render_type_name,
+    type_ref_from_core_expr,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -119,8 +120,27 @@ pub enum TypeScriptExpr {
         arguments: Vec<TypeScriptExpr>,
     },
     Sequence {
-        statements: Vec<TypeScriptExpr>,
+        statements: Vec<TypeScriptStatement>,
         result: Box<TypeScriptExpr>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypeScriptStatement {
+    Effect {
+        value: TypeScriptExpr,
+    },
+    Const {
+        name: String,
+        #[serde(rename = "type")]
+        type_name: String,
+        initializer: TypeScriptExpr,
+        origin: SourceSpan,
     },
 }
 
@@ -212,9 +232,28 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         } => TypeScriptExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(lower_core_expr_to_typescript)
+                .map(lower_core_statement_to_typescript)
                 .collect(),
             result: Box::new(lower_core_expr_to_typescript(*result)),
+        },
+    }
+}
+
+fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptStatement {
+    match statement {
+        CoreStatement::Effect { value } => TypeScriptStatement::Effect {
+            value: lower_core_expr_to_typescript(value),
+        },
+        CoreStatement::Bind {
+            name,
+            type_name,
+            value,
+            origin,
+        } => TypeScriptStatement::Const {
+            name: safe_identifier(&name),
+            type_name: render_type_name(&type_name).to_owned(),
+            initializer: lower_core_expr_to_typescript(value),
+            origin,
         },
     }
 }

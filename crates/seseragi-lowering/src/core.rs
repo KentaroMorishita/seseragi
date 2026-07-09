@@ -1,7 +1,7 @@
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{
-    TypedDecl, TypedEffect, TypedExpr, TypedModule, TypedParameter, TypedType,
+    TypedDecl, TypedDoStatement, TypedEffect, TypedExpr, TypedModule, TypedParameter, TypedType,
 };
 use seseragi_syntax::Visibility;
 
@@ -88,8 +88,27 @@ pub enum CoreExpr {
         origin: SourceSpan,
     },
     Sequence {
-        statements: Vec<CoreExpr>,
+        statements: Vec<CoreStatement>,
         result: Box<CoreExpr>,
+        origin: SourceSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum CoreStatement {
+    Effect {
+        value: CoreExpr,
+    },
+    Bind {
+        name: String,
+        #[serde(rename = "type")]
+        type_name: String,
+        value: CoreExpr,
         origin: SourceSpan,
     },
 }
@@ -183,12 +202,14 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
         } => {
             let mut statements = statements.into_iter();
             match (statements.next(), statements.next()) {
-                (Some(statement), None) => lower_effect_body(source, effect, statement),
+                (Some(TypedDoStatement::Effect { value }), None) => {
+                    lower_effect_body(source, effect, value)
+                }
                 (Some(first), Some(second)) => {
                     let statements = std::iter::once(first)
                         .chain(std::iter::once(second))
                         .chain(statements)
-                        .map(|statement| lower_effect_body(source, effect.clone(), statement))
+                        .map(|statement| lower_effect_statement(source, effect.clone(), statement))
                         .collect();
                     CoreExpr::Sequence {
                         statements,
@@ -196,10 +217,38 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
                         origin: source_span(source, origin),
                     }
                 }
-                _ => lower_expr(source, *result),
+                (None, _) => lower_expr(source, *result),
+                (Some(statement), None) => CoreExpr::Sequence {
+                    statements: vec![lower_effect_statement(source, effect, statement)],
+                    result: Box::new(lower_expr(source, *result)),
+                    origin: source_span(source, origin),
+                },
             }
         }
         expr => lower_expr(source, expr),
+    }
+}
+
+fn lower_effect_statement(
+    source: &str,
+    effect: TypedEffect,
+    statement: TypedDoStatement,
+) -> CoreStatement {
+    match statement {
+        TypedDoStatement::Effect { value } => CoreStatement::Effect {
+            value: lower_effect_body(source, effect, value),
+        },
+        TypedDoStatement::Bind {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreStatement::Bind {
+            name,
+            type_name: type_name(&type_ref),
+            value: lower_effect_body(source, effect, value),
+            origin: source_span(source, origin),
+        },
     }
 }
 
@@ -264,9 +313,28 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(|statement| lower_expr(source, statement))
+                .map(|statement| lower_expr_statement(source, statement))
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
+            origin: source_span(source, origin),
+        },
+    }
+}
+
+fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> CoreStatement {
+    match statement {
+        TypedDoStatement::Effect { value } => CoreStatement::Effect {
+            value: lower_expr(source, value),
+        },
+        TypedDoStatement::Bind {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreStatement::Bind {
+            name,
+            type_name: type_name(&type_ref),
+            value: lower_expr(source, value),
             origin: source_span(source, origin),
         },
     }

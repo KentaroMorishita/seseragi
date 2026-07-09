@@ -61,6 +61,8 @@ fn collect_decl_diagnostics(
         return;
     };
 
+    collect_invalid_do_bind_diagnostics(tokens, *span, diagnostics);
+
     if !inferred_contract {
         return;
     }
@@ -105,6 +107,44 @@ fn collect_decl_diagnostics(
     }
 
     push_compact_body_not_effect_diagnostic(diagnostics, operation, *span);
+}
+
+fn collect_invalid_do_bind_diagnostics(
+    tokens: &[Token],
+    span: seseragi_syntax::ByteSpan,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    for (index, bind) in tokens.iter().enumerate().filter(|(_, token)| {
+        token.start >= span.start && token.end <= span.end && token.kind == TokenKind::OperatorBind
+    }) {
+        let operation = tokens[index + 1..]
+            .iter()
+            .find(|token| token.end <= span.end && token.kind == TokenKind::IdentifierLower);
+        let Some(operation) = operation else {
+            continue;
+        };
+        if is_known_effect_surface_operation(operation) {
+            continue;
+        }
+        diagnostics.push(Diagnostic {
+            id: String::new(),
+            code: "SES-T0102".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.bind-value-not-effect".to_owned(),
+            primary: ByteRange {
+                start: operation.start,
+                end: operation.end,
+            },
+            related: vec![RelatedDiagnostic {
+                message: "do bind statement".to_owned(),
+                primary: ByteRange {
+                    start: bind.start,
+                    end: operation.end,
+                },
+            }],
+            fixes: Vec::new(),
+        });
+    }
 }
 
 fn declared_value_names(declarations: &[SurfaceDecl]) -> BTreeSet<String> {
@@ -383,6 +423,21 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 61, end: 67 }
+        );
+    }
+
+    #[test]
+    fn reports_non_effect_value_in_explicit_do_bind() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/invalid-do-bind/main.ssrg",
+            "effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { ignored <- missing }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0102");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.bind-value-not-effect"
         );
     }
 }

@@ -1,14 +1,15 @@
 {
   "schema": 1,
-  "module": "artifact/effect-compact-do",
+  "module": "artifact/effect-do-bind",
   "target": "typescript-es2022",
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
       "core.unit",
-      "effect.console.println",
-      "core.string"
+      "effect.console.print",
+      "core.string",
+      "effect.console.println"
     ]
   },
   "exports": [

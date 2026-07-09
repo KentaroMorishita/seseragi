@@ -2,15 +2,15 @@
   "schema": 1,
   "stage": "typed-hir",
   "source": "main.ssrg",
-  "module": "artifact/effect-do-multiple",
+  "module": "artifact/effect-do-bind",
   "declarations": [
     {
       "kind": "effect-fn",
-      "symbol": "artifact/effect-do-multiple::main",
+      "symbol": "artifact/effect-do-bind::main",
       "visibility": "public",
       "origin": {
         "start": 0,
-        "end": 97
+        "end": 125
       },
       "parameters": [
         {
@@ -52,29 +52,39 @@
         "kind": "do-block",
         "statements": [
           {
-            "kind": "effect",
+            "kind": "bind",
+            "name": "ignored",
+            "type": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            },
             "value": {
               "kind": "effect-call",
-              "operation": "std/prelude::println",
+              "operation": "std/prelude::print",
               "arguments": [
                 {
                   "kind": "string",
-                  "value": "one",
+                  "value": "loading... ",
                   "type": {
                     "kind": "named",
                     "name": "String",
                     "arguments": []
                   },
                   "origin": {
-                    "start": 76,
-                    "end": 81
+                    "start": 89,
+                    "end": 102
                   }
                 }
               ],
               "origin": {
-                "start": 68,
-                "end": 81
+                "start": 83,
+                "end": 102
               }
+            },
+            "origin": {
+              "start": 72,
+              "end": 102
             }
           },
           {
@@ -85,21 +95,21 @@
               "arguments": [
                 {
                   "kind": "string",
-                  "value": "two",
+                  "value": "done",
                   "type": {
                     "kind": "named",
                     "name": "String",
                     "arguments": []
                   },
                   "origin": {
-                    "start": 90,
-                    "end": 95
+                    "start": 115,
+                    "end": 121
                   }
                 }
               ],
               "origin": {
-                "start": 82,
-                "end": 95
+                "start": 107,
+                "end": 121
               }
             }
           }
@@ -112,13 +122,13 @@
             "arguments": []
           },
           "origin": {
-            "start": 96,
-            "end": 96
+            "start": 124,
+            "end": 124
           }
         },
         "origin": {
           "start": 63,
-          "end": 97
+          "end": 125
         }
       }
     }

@@ -469,6 +469,36 @@ mod tests {
     }
 
     #[test]
+    fn types_do_bind_statement_separately_from_effect_statement() {
+        let typed = type_module(
+            "artifact/effect-do-bind/main.ssrg",
+            "effect fn record =\n  do {\n    ignored <- print \"hello\"\n    println \"done\"\n  }\n",
+        );
+
+        let TypedDecl::EffectFn { body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        let TypedExpr::DoBlock { statements, .. } = body else {
+            panic!("expected do block body");
+        };
+        assert!(matches!(
+            &statements[0],
+            crate::TypedDoStatement::Bind {
+                name,
+                type_ref: TypedType::Named { name: type_name, arguments },
+                value: TypedExpr::EffectCall { operation, .. },
+                ..
+            } if name == "ignored" && type_name == "Unit" && arguments.is_empty() && operation == "std/prelude::print"
+        ));
+        assert!(matches!(
+            &statements[1],
+            crate::TypedDoStatement::Effect {
+                value: TypedExpr::EffectCall { operation, .. }
+            } if operation == "std/prelude::println"
+        ));
+    }
+
+    #[test]
     fn types_empty_do_block_as_unit_result() {
         let typed = type_module(
             "artifact/effect-do/main.ssrg",

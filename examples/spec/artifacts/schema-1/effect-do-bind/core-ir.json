@@ -1,15 +1,15 @@
 {
   "schema": 1,
   "stage": "core-ir",
-  "module": "artifact/effect-compact-console-sequence",
+  "module": "artifact/effect-do-bind",
   "functions": [
     {
-      "symbol": "artifact/effect-compact-console-sequence::announce",
+      "symbol": "artifact/effect-do-bind::main",
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 84
+        "end": 125
       },
       "parameters": [
         {
@@ -22,7 +22,9 @@
         "kind": "sequence",
         "statements": [
           {
-            "kind": "effect",
+            "kind": "bind",
+            "name": "ignored",
+            "type": "Unit",
             "value": {
               "kind": "effect-operation",
               "operation": "console.print",
@@ -37,16 +39,21 @@
                   "value": "loading... ",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 38,
-                    "end": 51
+                    "start": 89,
+                    "end": 102
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 32,
-                "end": 51
+                "start": 83,
+                "end": 102
               }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 72,
+              "end": 102
             }
           },
           {
@@ -65,43 +72,15 @@
                   "value": "done",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 60,
-                    "end": 66
+                    "start": 115,
+                    "end": 121
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 52,
-                "end": 66
-              }
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-operation",
-              "operation": "console.println",
-              "requirements": [
-                "console"
-              ],
-              "failure": "ConsoleError",
-              "success": "Unit",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "ready",
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 75,
-                    "end": 82
-                  }
-                }
-              ],
-              "origin": {
-                "source": "main.ssrg",
-                "start": 67,
-                "end": 82
+                "start": 107,
+                "end": 121
               }
             }
           }
@@ -110,14 +89,14 @@
           "kind": "unit",
           "origin": {
             "source": "main.ssrg",
-            "start": 83,
-            "end": 83
+            "start": 124,
+            "end": 124
           }
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 27,
-          "end": 84
+          "start": 63,
+          "end": 125
         }
       }
     }
