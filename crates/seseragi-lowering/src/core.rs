@@ -1,6 +1,8 @@
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
-use seseragi_semantics::{TypedDecl, TypedEffect, TypedExpr, TypedModule, TypedType};
+use seseragi_semantics::{
+    TypedDecl, TypedEffect, TypedExpr, TypedModule, TypedParameter, TypedType,
+};
 use seseragi_syntax::Visibility;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -65,6 +67,11 @@ pub enum CoreExpr {
         value: bool,
         origin: SourceSpan,
     },
+    Variable {
+        name: String,
+        type_name: String,
+        origin: SourceSpan,
+    },
     EffectOperation {
         operation: String,
         requirements: Vec<String>,
@@ -93,6 +100,23 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 origin: source_span(&module.source, origin),
                 value: lower_expr(&module.source, value),
             }),
+            TypedDecl::Fn {
+                symbol,
+                visibility,
+                origin,
+                parameters,
+                body,
+                ..
+            } => functions.push(CoreFunction {
+                symbol,
+                visibility,
+                origin: source_span(&module.source, origin),
+                parameters: parameters
+                    .into_iter()
+                    .map(|parameter| lower_parameter(&parameter))
+                    .collect(),
+                body: lower_expr(&module.source, body),
+            }),
             TypedDecl::EffectFn {
                 symbol,
                 visibility,
@@ -106,11 +130,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 origin: source_span(&module.source, origin),
                 parameters: parameters
                     .into_iter()
-                    .map(|_| CoreParameter {
-                        id: "unit".to_owned(),
-                        kind: "implicit".to_owned(),
-                        type_name: "Unit".to_owned(),
-                    })
+                    .map(|parameter| lower_parameter(&parameter))
                     .collect(),
                 body: lower_effect_body(&module.source, effect, body),
             }),
@@ -164,6 +184,15 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             value,
             origin: source_span(source, origin),
         },
+        TypedExpr::Variable {
+            name,
+            type_ref,
+            origin,
+        } => CoreExpr::Variable {
+            name,
+            type_name: type_name(&type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::EffectCall {
             operation,
             arguments,
@@ -180,6 +209,21 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin: source_span(source, origin),
         },
         TypedExpr::DoBlock { result, .. } => lower_expr(source, *result),
+    }
+}
+
+fn lower_parameter(parameter: &TypedParameter) -> CoreParameter {
+    match parameter {
+        TypedParameter::ImplicitUnit { type_ref } => CoreParameter {
+            id: "unit".to_owned(),
+            kind: "implicit".to_owned(),
+            type_name: type_name(type_ref),
+        },
+        TypedParameter::Named { name, type_ref, .. } => CoreParameter {
+            id: name.clone(),
+            kind: "named".to_owned(),
+            type_name: type_name(type_ref),
+        },
     }
 }
 

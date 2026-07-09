@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "identity",
+      "nameSpan": { "start": 7, "end": 15 },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": { "start": 16, "end": 21 },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": { "start": 23, "end": 26 }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": { "start": 30, "end": 33 }
+      },
+      "span": { "start": 0, "end": 41 }
+    }
+  ]
+}

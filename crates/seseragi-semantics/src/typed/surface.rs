@@ -2,7 +2,7 @@ use crate::{
     unit_type, TypedDecl, TypedEffect, TypedExpr, TypedParameter, TypedRecordField, TypedScheme,
     TypedType,
 };
-use seseragi_syntax::{SurfaceDecl, Token, TokenKind};
+use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceParameter, Token, TokenKind};
 
 use super::expr::{
     find_effect_body, find_type_name_after, find_value_token, lower_first,
@@ -97,8 +97,44 @@ pub(crate) fn typed_decl_from_surface(
                 }),
             })
         }
-        SurfaceDecl::Fn { .. }
-        | SurfaceDecl::Newtype { .. }
+        SurfaceDecl::Fn {
+            visibility,
+            name,
+            type_parameters,
+            parameters,
+            return_type,
+            constraints,
+            span,
+            ..
+        } => {
+            let typed_parameters = parameters
+                .iter()
+                .map(typed_parameter_from_surface)
+                .collect::<Vec<_>>();
+            let body = find_value_token(tokens, span)
+                .map(|token| typed_fn_body_from_token(token, &typed_parameters))
+                .unwrap_or_else(|| TypedExpr::Variable {
+                    name: String::new(),
+                    type_ref: TypedType::Hole,
+                    origin: span,
+                });
+            Some(TypedDecl::Fn {
+                symbol: format!("{module}::{name}"),
+                visibility,
+                origin: span,
+                scheme: TypedScheme {
+                    type_parameters,
+                    constraints: constraints
+                        .into_iter()
+                        .map(|name| crate::TypedConstraint { name })
+                        .collect(),
+                    type_ref: typed_type_from_type_ref(&return_type),
+                },
+                parameters: typed_parameters,
+                body,
+            })
+        }
+        SurfaceDecl::Newtype { .. }
         | SurfaceDecl::Alias { .. }
         | SurfaceDecl::Type { .. }
         | SurfaceDecl::Struct { .. }
@@ -106,4 +142,37 @@ pub(crate) fn typed_decl_from_surface(
         | SurfaceDecl::Operator { .. }
         | SurfaceDecl::Instance { .. } => None,
     }
+}
+
+fn typed_parameter_from_surface(parameter: &SurfaceParameter) -> TypedParameter {
+    TypedParameter::Named {
+        name: parameter.name.clone(),
+        type_ref: typed_type_from_type_ref(&parameter.type_ref),
+        origin: parameter.name_span,
+    }
+}
+
+fn typed_fn_body_from_token(token: &Token, parameters: &[TypedParameter]) -> TypedExpr {
+    if token.kind == TokenKind::IdentifierLower {
+        if let Some((name, type_ref)) = find_parameter(token, parameters) {
+            return TypedExpr::Variable {
+                name,
+                type_ref,
+                origin: ByteSpan {
+                    start: token.start,
+                    end: token.end,
+                },
+            };
+        }
+    }
+    typed_expr_from_value_token(token)
+}
+
+fn find_parameter(token: &Token, parameters: &[TypedParameter]) -> Option<(String, TypedType)> {
+    parameters.iter().find_map(|parameter| match parameter {
+        TypedParameter::Named { name, type_ref, .. } if name == &token.raw => {
+            Some((name.clone(), type_ref.clone()))
+        }
+        _ => None,
+    })
 }

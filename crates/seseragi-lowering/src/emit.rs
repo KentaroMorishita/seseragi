@@ -170,6 +170,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
         TypeScriptExpr::String { value } => format!("{value:?}"),
         TypeScriptExpr::Boolean { value } => value.to_string(),
+        TypeScriptExpr::Identifier { name } => name.clone(),
         TypeScriptExpr::Call { callee, arguments } => {
             let rendered_arguments = arguments
                 .iter()
@@ -229,6 +230,7 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Boolean { .. }
+        | TypeScriptExpr::Identifier { .. }
         | TypeScriptExpr::String { .. } => {}
     }
 }

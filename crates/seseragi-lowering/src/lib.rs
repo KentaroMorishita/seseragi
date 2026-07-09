@@ -108,6 +108,22 @@ mod tests {
     }
 
     #[test]
+    fn lowers_identity_function_to_typescript_arrow_function() {
+        let source = "pub fn identity value: Int -> Int = value\n";
+        let typed = type_module("artifact/identity-fn/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(bundle.metadata.exports, vec!["identity"]);
+        assert_eq!(
+            bundle.typescript,
+            "export const identity = (value: bigint) => value\n"
+        );
+    }
+
+    #[test]
     fn lowers_unit_result_to_typescript_undefined_expression() {
         let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);

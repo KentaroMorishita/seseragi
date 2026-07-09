@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/identity-fn",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/identity-fn::identity",
+      "namespace": "value",
+      "name": "identity",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": { "start": 0, "end": 41 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": { "kind": "named", "name": "Int", "arguments": [] },
+          "result": { "kind": "named", "name": "Int", "arguments": [] }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

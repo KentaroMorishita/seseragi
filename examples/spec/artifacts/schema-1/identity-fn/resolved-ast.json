@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/identity-fn",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "identity",
+      "visibility": "public",
+      "declaration": { "start": 0, "end": 41 }
+    }
+  ]
+}

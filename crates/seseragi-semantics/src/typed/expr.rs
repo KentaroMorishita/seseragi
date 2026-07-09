@@ -139,6 +139,7 @@ fn expr_origin_end(expr: &TypedExpr) -> usize {
         | TypedExpr::Integer { origin, .. }
         | TypedExpr::String { origin, .. }
         | TypedExpr::Boolean { origin, .. }
+        | TypedExpr::Variable { origin, .. }
         | TypedExpr::EffectCall { origin, .. } => origin.end,
     }
 }

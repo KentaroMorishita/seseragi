@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/identity-fn",
+  "functions": [
+    {
+      "symbol": "artifact/identity-fn::identity",
+      "visibility": "public",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 41 },
+      "parameters": [
+        { "id": "value", "kind": "named", "type": "Int" }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "typeName": "Int",
+        "origin": { "source": "main.ssrg", "start": 36, "end": 41 }
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/identity-fn",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/identity-fn::identity",
+      "visibility": "public",
+      "origin": { "start": 0, "end": 41 },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": { "kind": "named", "name": "Int", "arguments": [] }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": { "kind": "named", "name": "Int", "arguments": [] },
+          "origin": { "start": 16, "end": 21 }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": { "kind": "named", "name": "Int", "arguments": [] },
+        "origin": { "start": 36, "end": 41 }
+      }
+    }
+  ]
+}

@@ -79,6 +79,14 @@ pub enum TypedDecl {
         scheme: TypedScheme,
         value: TypedExpr,
     },
+    Fn {
+        symbol: String,
+        visibility: Visibility,
+        origin: ByteSpan,
+        scheme: TypedScheme,
+        parameters: Vec<TypedParameter>,
+        body: TypedExpr,
+    },
     EffectFn {
         symbol: String,
         visibility: Visibility,
@@ -150,6 +158,12 @@ pub enum TypedParameter {
         #[serde(rename = "type")]
         type_ref: TypedType,
     },
+    Named {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -186,6 +200,12 @@ pub enum TypedExpr {
     },
     Boolean {
         value: bool,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Variable {
+        name: String,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,

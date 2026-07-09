@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "module": "artifact/identity-fn",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": ["core.int64"]
+  },
+  "exports": ["identity"],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

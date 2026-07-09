@@ -2,6 +2,13 @@ use crate::{CoreExpr, CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
+mod runtime;
+
+use runtime::{
+    collect_expr_runtime_requirements, collect_type_runtime_requirement, expr_requires_feature,
+    lower_core_parameter_to_typescript, type_ref_from_core_expr,
+};
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptModule {
@@ -96,6 +103,9 @@ pub enum TypeScriptExpr {
     Boolean {
         value: bool,
     },
+    Identifier {
+        name: String,
+    },
     Call {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
@@ -123,12 +133,11 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         .functions
         .into_iter()
         .map(|function| {
-            push_unique(&mut runtime_requirements, "core.unit");
+            for parameter in &function.parameters {
+                collect_type_runtime_requirement(&parameter.type_name, &mut runtime_requirements);
+            }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
-            if runtime_requirements
-                .iter()
-                .any(|feature| feature == "effect.console.println")
-            {
+            if expr_requires_feature(&function.body, "effect.console.println") {
                 imports.push(TypeScriptImport {
                     feature: "effect.console.println".to_owned(),
                     local: "_ssrg_console_println".to_owned(),
@@ -140,11 +149,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
                 parameters: function
                     .parameters
                     .into_iter()
-                    .map(|_| TypeScriptParameter {
-                        name: "_unit".to_owned(),
-                        type_name: "undefined".to_owned(),
-                        implicit: true,
-                    })
+                    .map(lower_core_parameter_to_typescript)
                     .collect(),
                 body: lower_core_expr_to_typescript(function.body),
                 origin: function.origin,
@@ -169,6 +174,7 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
+        CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier { name },
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -186,37 +192,6 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
     }
 }
 
-fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &mut Vec<String>) {
-    match expr {
-        CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
-        CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
-        CoreExpr::String { .. } => push_unique(requirements, "core.string"),
-        CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
-        CoreExpr::EffectOperation {
-            operation,
-            arguments,
-            ..
-        } => {
-            if operation == "console.println" {
-                push_unique(requirements, "effect.console.println");
-            }
-            for argument in arguments {
-                collect_expr_runtime_requirements(argument, requirements);
-            }
-        }
-    }
-}
-
-fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
-    match expr {
-        CoreExpr::Unit { .. } => TypeScriptType::Undefined,
-        CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
-        CoreExpr::String { .. } => TypeScriptType::String,
-        CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
-        CoreExpr::EffectOperation { .. } => TypeScriptType::Undefined,
-    }
-}
-
 fn local_name(symbol: &str) -> String {
     symbol
         .rsplit_once("::")
@@ -224,7 +199,7 @@ fn local_name(symbol: &str) -> String {
         .unwrap_or_else(|| symbol.to_owned())
 }
 
-fn push_unique(values: &mut Vec<String>, value: &str) {
+pub(super) fn push_unique(values: &mut Vec<String>, value: &str) {
     if !values.iter().any(|existing| existing == value) {
         values.push(value.to_owned());
     }
