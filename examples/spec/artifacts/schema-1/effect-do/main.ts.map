@@ -2,10 +2,14 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/effect-do"],
+  "sources": [
+    "seseragi://artifact/effect-do"
+  ],
   "sourcesContent": [
     "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n"
   ],
-  "names": ["main"],
+  "names": [
+    "main"
+  ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

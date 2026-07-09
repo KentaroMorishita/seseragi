@@ -2,17 +2,29 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/effect-do",
-  "runtimeRequirements": ["core.unit"],
+  "runtimeRequirements": [
+    "core.unit"
+  ],
   "functions": [
     {
       "kind": "const-function",
       "exported": true,
       "name": "main",
       "parameters": [
-        { "name": "_unit", "type": "undefined", "implicit": true }
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
       ],
-      "body": { "kind": "undefined" },
-      "origin": { "source": "main.ssrg", "start": 0, "end": 68 }
+      "body": {
+        "kind": "undefined"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 68
+      }
     }
   ]
 }

@@ -8,7 +8,10 @@
       "symbol": 0,
       "name": "main",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 68 }
+      "declaration": {
+        "start": 0,
+        "end": 68
+      }
     }
   ]
 }

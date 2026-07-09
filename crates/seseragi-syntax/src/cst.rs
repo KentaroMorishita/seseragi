@@ -226,10 +226,48 @@ impl CstParser<'_> {
                     kind == TokenKind::PunctuationBraceRight
                 })
                 .map_or(end, |index| index + 1);
-            children.push(CstNode::new("do-block", do_start, do_end, vec![]));
+            children.push(self.parse_do_block(do_start, do_end));
         }
 
         CstNode::new("effect-fn-decl", start, end, children)
+    }
+
+    fn parse_do_block(&self, start: usize, end: usize) -> CstNode {
+        let left_brace =
+            self.find_significant_token(start, end, |kind| kind == TokenKind::PunctuationBraceLeft);
+        let children = left_brace
+            .map(|left_brace| self.parse_do_statements(left_brace + 1, end.saturating_sub(1)))
+            .unwrap_or_default();
+        CstNode::new("do-block", start, end, children)
+    }
+
+    fn parse_do_statements(&self, start: usize, end: usize) -> Vec<CstNode> {
+        let mut statements = Vec::new();
+        let mut statement_start = None;
+        let mut statement_end = None;
+        let mut has_bind = false;
+
+        for index in start..end {
+            match self.kind_at(index) {
+                Some(TokenKind::TriviaNewline) => {
+                    push_do_statement(
+                        &mut statements,
+                        statement_start.take(),
+                        statement_end.take(),
+                        has_bind,
+                    );
+                    has_bind = false;
+                }
+                Some(kind) if is_significant_kind(kind) => {
+                    statement_start.get_or_insert(index);
+                    statement_end = Some(index + 1);
+                    has_bind |= kind == TokenKind::OperatorBind;
+                }
+                _ => {}
+            }
+        }
+        push_do_statement(&mut statements, statement_start, statement_end, has_bind);
+        statements
     }
 
     fn find_significant_token(
@@ -277,6 +315,33 @@ impl CstParser<'_> {
     fn kind_at(&self, index: usize) -> Option<TokenKind> {
         self.tokens.get(index).map(|token| token.kind)
     }
+}
+
+fn push_do_statement(
+    statements: &mut Vec<CstNode>,
+    start: Option<usize>,
+    end: Option<usize>,
+    has_bind: bool,
+) {
+    let (Some(start), Some(end)) = (start, end) else {
+        return;
+    };
+    let kind = if has_bind {
+        "do-bind-statement"
+    } else {
+        "do-effect-statement"
+    };
+    statements.push(CstNode::new(kind, start, end, vec![]));
+}
+
+fn is_significant_kind(kind: TokenKind) -> bool {
+    !matches!(
+        kind,
+        TokenKind::TriviaComment
+            | TokenKind::TriviaNewline
+            | TokenKind::TriviaSpace
+            | TokenKind::Eof
+    )
 }
 
 impl CstNode {
@@ -385,6 +450,15 @@ mod tests {
         assert_eq!(effect_decl.children[2].kind, "do-block");
         assert_eq!(effect_decl.children[2].start_token, 23);
         assert_eq!(effect_decl.children[2].end_token, 48);
+        assert_eq!(effect_decl.children[2].children.len(), 2);
+        assert_eq!(
+            effect_decl.children[2].children[0].kind,
+            "do-bind-statement"
+        );
+        assert_eq!(
+            effect_decl.children[2].children[1].kind,
+            "do-effect-statement"
+        );
     }
 
     #[test]

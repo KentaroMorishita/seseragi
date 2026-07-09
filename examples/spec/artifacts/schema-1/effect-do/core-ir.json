@@ -6,11 +6,25 @@
     {
       "symbol": "artifact/effect-do::main",
       "visibility": "public",
-      "origin": { "source": "main.ssrg", "start": 0, "end": 68 },
-      "parameters": [{ "id": "unit", "kind": "implicit", "type": "Unit" }],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 68
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": "Unit"
+        }
+      ],
       "body": {
         "kind": "unit",
-        "origin": { "source": "main.ssrg", "start": 67, "end": 67 }
+        "origin": {
+          "source": "main.ssrg",
+          "start": 67,
+          "end": 67
+        }
       }
     }
   ]

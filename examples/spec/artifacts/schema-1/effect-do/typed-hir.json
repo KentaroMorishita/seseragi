@@ -8,11 +8,18 @@
       "kind": "effect-fn",
       "symbol": "artifact/effect-do::main",
       "visibility": "public",
-      "origin": { "start": 0, "end": 68 },
+      "origin": {
+        "start": 0,
+        "end": 68
+      },
       "parameters": [
         {
           "kind": "implicit-unit",
-          "type": { "kind": "named", "name": "Unit", "arguments": [] }
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
         }
       ],
       "effect": {
@@ -35,17 +42,31 @@
           "name": "ConsoleError",
           "arguments": []
         },
-        "success": { "kind": "named", "name": "Unit", "arguments": [] }
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
       },
       "body": {
         "kind": "do-block",
         "statements": [],
         "result": {
           "kind": "unit",
-          "type": { "kind": "named", "name": "Unit", "arguments": [] },
-          "origin": { "start": 67, "end": 67 }
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 67,
+            "end": 67
+          }
         },
-        "origin": { "start": 63, "end": 68 }
+        "origin": {
+          "start": 63,
+          "end": 68
+        }
       }
     }
   ]

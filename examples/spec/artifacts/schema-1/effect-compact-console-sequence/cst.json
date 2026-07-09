@@ -33,7 +33,14 @@
                 "kind": "do-block",
                 "startToken": 11,
                 "endToken": 28,
-                "children": []
+                "children": [
+                  {
+                    "kind": "do-effect-statement",
+                    "startToken": 15,
+                    "endToken": 26,
+                    "children": []
+                  }
+                ]
               }
             ]
           }
