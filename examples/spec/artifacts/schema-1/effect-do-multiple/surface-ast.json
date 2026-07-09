@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 22,
+          "end": 26
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 97
+      }
+    }
+  ]
+}

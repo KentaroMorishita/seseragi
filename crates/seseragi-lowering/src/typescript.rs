@@ -117,6 +117,10 @@ pub enum TypeScriptExpr {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
     },
+    Sequence {
+        statements: Vec<TypeScriptExpr>,
+        result: Box<TypeScriptExpr>,
+    },
 }
 
 pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {
@@ -210,6 +214,15 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
                 .into_iter()
                 .map(lower_core_expr_to_typescript)
                 .collect(),
+        },
+        CoreExpr::Sequence {
+            statements, result, ..
+        } => TypeScriptExpr::Sequence {
+            statements: statements
+                .into_iter()
+                .map(lower_core_expr_to_typescript)
+                .collect(),
+            result: Box::new(lower_core_expr_to_typescript(*result)),
         },
     }
 }

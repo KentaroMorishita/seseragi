@@ -1,0 +1,4 @@
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do { println "one" println "two" }

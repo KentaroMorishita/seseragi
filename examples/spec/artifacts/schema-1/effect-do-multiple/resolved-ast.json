@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/effect-do-multiple",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 97
+      }
+    }
+  ]
+}

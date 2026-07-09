@@ -78,9 +78,8 @@ fn collect_decl_diagnostics(
         return;
     }
     if operation.kind == TokenKind::KeywordDo {
-        match compact_do_statement_operation(tokens, *span, operation) {
+        match compact_do_unknown_statement_operation(tokens, *span, operation) {
             None => return,
-            Some(statement) if is_known_effect_surface_operation(statement) => return,
             Some(statement) => {
                 push_compact_body_not_effect_diagnostic(diagnostics, statement, *span);
                 return;
@@ -146,7 +145,7 @@ fn is_known_effect_surface_operation(token: &Token) -> bool {
     known_effect_operation_by_surface(token.raw.as_str()).is_some()
 }
 
-fn compact_do_statement_operation<'tokens>(
+fn compact_do_unknown_statement_operation<'tokens>(
     tokens: &'tokens [Token],
     span: seseragi_syntax::ByteSpan,
     do_token: &Token,
@@ -162,7 +161,11 @@ fn compact_do_statement_operation<'tokens>(
     tokens
         .iter()
         .skip_while(|token| token.start <= left_brace.start)
-        .find(|token| token.end <= right_brace.start && is_significant(token))
+        .find(|token| {
+            token.end <= right_brace.start
+                && token.kind == TokenKind::IdentifierLower
+                && !is_known_effect_surface_operation(token)
+        })
 }
 
 fn is_significant(token: &Token) -> bool {
@@ -220,6 +223,21 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].related[0].primary,
             ByteRange { start: 0, end: 35 }
+        );
+    }
+
+    #[test]
+    fn reports_unknown_compact_do_statement_after_known_statement() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-do-late-not-effect/main.ssrg",
+            "pub effect fn greet =\n  do { println \"hello\" name }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 45, end: 49 }
         );
     }
 

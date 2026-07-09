@@ -220,6 +220,20 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_multiple_effect_do_statements_to_typescript_sequence() {
+        let source =
+            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"one\" println \"two\" }\n";
+        let typed = type_module("artifact/effect-do-multiple/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains(
+            "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"one\"); _ssrg_console_println(\"two\"); return undefined; })()"
+        ));
+    }
+
+    #[test]
     fn emits_basic_typescript_module() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
         let core = lower_typed_module(typed);

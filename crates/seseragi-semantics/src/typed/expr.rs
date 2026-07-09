@@ -248,40 +248,36 @@ fn typed_do_statements(
     left_brace: &Token,
     right_brace: &Token,
 ) -> Vec<TypedExpr> {
-    let Some(operation) = tokens
+    tokens
         .iter()
         .skip_while(|token| token.start <= left_brace.start)
-        .find(|token| token.end <= right_brace.start && is_significant(token))
-    else {
-        return Vec::new();
-    };
+        .filter(|token| token.start < right_brace.start && is_significant(token))
+        .filter_map(|operation| {
+            let effect_operation = known_effect_operation_by_surface(operation.raw.as_str())?;
+            let argument = tokens
+                .iter()
+                .skip_while(|token| token.start <= operation.start)
+                .take_while(|token| {
+                    token.start < right_brace.start
+                        && known_effect_operation_by_surface(token.raw.as_str()).is_none()
+                })
+                .find(|token| token.end <= span.end && token.kind == TokenKind::LiteralString)
+                .map(typed_expr_from_value_token);
+            let origin_end = argument
+                .as_ref()
+                .map(expr_origin_end)
+                .unwrap_or(operation.end);
 
-    let Some(effect_operation) = known_effect_operation_by_surface(operation.raw.as_str()) else {
-        return Vec::new();
-    };
-
-    let argument = tokens
-        .iter()
-        .skip_while(|token| token.start <= operation.start)
-        .find(|token| {
-            token.end <= span.end
-                && token.start < right_brace.start
-                && token.kind == TokenKind::LiteralString
+            Some(TypedExpr::EffectCall {
+                operation: effect_operation.semantic_name.to_owned(),
+                arguments: argument.into_iter().collect(),
+                origin: ByteSpan {
+                    start: operation.start,
+                    end: origin_end,
+                },
+            })
         })
-        .map(typed_expr_from_value_token);
-    let origin_end = argument
-        .as_ref()
-        .map(expr_origin_end)
-        .unwrap_or(operation.end);
-
-    vec![TypedExpr::EffectCall {
-        operation: effect_operation.semantic_name.to_owned(),
-        arguments: argument.into_iter().collect(),
-        origin: ByteSpan {
-            start: operation.start,
-            end: origin_end,
-        },
-    }]
+        .collect()
 }
 
 fn expr_origin_end(expr: &TypedExpr) -> usize {

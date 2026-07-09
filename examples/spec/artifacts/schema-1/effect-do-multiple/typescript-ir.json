@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-do-multiple",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.console.println",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "call",
+            "callee": "_ssrg_console_println",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "one"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "_ssrg_console_println",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "two"
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "undefined"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 97
+      }
+    }
+  ]
+}

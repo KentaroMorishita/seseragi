@@ -188,6 +188,17 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 .join(", ");
             format!("{callee}({rendered_arguments})")
         }
+        TypeScriptExpr::Sequence { statements, result } => {
+            let rendered_statements = statements
+                .iter()
+                .map(|statement| format!("{};", render_typescript_expr(statement)))
+                .collect::<Vec<_>>()
+                .join(" ");
+            format!(
+                "(() => {{ {rendered_statements} return {}; }})()",
+                render_typescript_expr(result)
+            )
+        }
     }
 }
 
@@ -239,6 +250,12 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         TypeScriptExpr::Binary { left, right, .. } => {
             collect_expr_names(left, names);
             collect_expr_names(right, names);
+        }
+        TypeScriptExpr::Sequence { statements, result } => {
+            for statement in statements {
+                collect_expr_names(statement, names);
+            }
+            collect_expr_names(result, names);
         }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }

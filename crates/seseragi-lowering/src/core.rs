@@ -87,6 +87,11 @@ pub enum CoreExpr {
         arguments: Vec<CoreExpr>,
         origin: SourceSpan,
     },
+    Sequence {
+        statements: Vec<CoreExpr>,
+        result: Box<CoreExpr>,
+        origin: SourceSpan,
+    },
 }
 
 pub fn lower_typed_module(module: TypedModule) -> CoreModule {
@@ -172,11 +177,25 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
             origin: source_span(source, origin),
         },
         TypedExpr::DoBlock {
-            statements, result, ..
+            statements,
+            result,
+            origin,
         } => {
             let mut statements = statements.into_iter();
             match (statements.next(), statements.next()) {
                 (Some(statement), None) => lower_effect_body(source, effect, statement),
+                (Some(first), Some(second)) => {
+                    let statements = std::iter::once(first)
+                        .chain(std::iter::once(second))
+                        .chain(statements)
+                        .map(|statement| lower_effect_body(source, effect.clone(), statement))
+                        .collect();
+                    CoreExpr::Sequence {
+                        statements,
+                        result: Box::new(lower_expr(source, *result)),
+                        origin: source_span(source, origin),
+                    }
+                }
                 _ => lower_expr(source, *result),
             }
         }
@@ -238,7 +257,18 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
                 .collect(),
             origin: source_span(source, origin),
         },
-        TypedExpr::DoBlock { result, .. } => lower_expr(source, *result),
+        TypedExpr::DoBlock {
+            statements,
+            result,
+            origin,
+        } => CoreExpr::Sequence {
+            statements: statements
+                .into_iter()
+                .map(|statement| lower_expr(source, statement))
+                .collect(),
+            result: Box::new(lower_expr(source, *result)),
+            origin: source_span(source, origin),
+        },
     }
 }
 

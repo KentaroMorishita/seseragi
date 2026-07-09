@@ -34,6 +34,14 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 collect_expr_runtime_requirements(argument, requirements);
             }
         }
+        CoreExpr::Sequence {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                collect_expr_runtime_requirements(statement, requirements);
+            }
+            collect_expr_runtime_requirements(result, requirements);
+        }
     }
 }
 
@@ -57,6 +65,14 @@ pub(super) fn expr_requires_feature(expr: &CoreExpr, feature: &str) -> bool {
         CoreExpr::Binary { left, right, .. } => {
             expr_requires_feature(left, feature) || expr_requires_feature(right, feature)
         }
+        CoreExpr::Sequence {
+            statements, result, ..
+        } => {
+            statements
+                .iter()
+                .any(|statement| expr_requires_feature(statement, feature))
+                || expr_requires_feature(result, feature)
+        }
     }
 }
 
@@ -69,6 +85,7 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         CoreExpr::Variable { type_name, .. } => type_ref_from_type_name(type_name),
         CoreExpr::Binary { type_name, .. } => type_ref_from_type_name(type_name),
         CoreExpr::EffectOperation { .. } => TypeScriptType::Undefined,
+        CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),
     }
 }
 

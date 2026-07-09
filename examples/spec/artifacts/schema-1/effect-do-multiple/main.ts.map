@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-do-multiple"
+  ],
+  "sourcesContent": [
+    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"one\" println \"two\" }\n"
+  ],
+  "names": [
+    "main",
+    "println",
+    "println"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}
