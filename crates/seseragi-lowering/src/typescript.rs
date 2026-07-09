@@ -108,6 +108,11 @@ pub enum TypeScriptExpr {
     Identifier {
         name: String,
     },
+    Binary {
+        operator: String,
+        left: Box<TypeScriptExpr>,
+        right: Box<TypeScriptExpr>,
+    },
     Call {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
@@ -181,6 +186,16 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier {
             name: safe_identifier(&name),
+        },
+        CoreExpr::Binary {
+            operator,
+            left,
+            right,
+            ..
+        } => TypeScriptExpr::Binary {
+            operator,
+            left: Box::new(lower_core_expr_to_typescript(*left)),
+            right: Box::new(lower_core_expr_to_typescript(*right)),
         },
         CoreExpr::EffectOperation {
             operation,

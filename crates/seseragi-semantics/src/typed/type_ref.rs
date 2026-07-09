@@ -85,7 +85,9 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             name: "Bool".to_owned(),
             arguments: Vec::new(),
         },
-        TypedExpr::Variable { type_ref, .. } => type_ref.clone(),
+        TypedExpr::Variable { type_ref, .. } | TypedExpr::Binary { type_ref, .. } => {
+            type_ref.clone()
+        }
         TypedExpr::EffectCall { .. } => unit_type(),
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
     }

@@ -2,11 +2,11 @@ use crate::{
     unit_type, TypedDecl, TypedEffect, TypedExpr, TypedParameter, TypedRecordField, TypedScheme,
     TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceParameter, Token, TokenKind};
+use seseragi_syntax::{SurfaceDecl, SurfaceParameter, Token, TokenKind};
 
 use super::expr::{
-    find_effect_body, find_type_name_after, find_value_token, lower_first,
-    typed_expr_from_value_token,
+    find_effect_body, find_type_name_after, find_value_token, find_value_tokens, lower_first,
+    typed_expr_from_value_token, typed_fn_body_from_tokens,
 };
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 
@@ -111,13 +111,13 @@ pub(crate) fn typed_decl_from_surface(
                 .iter()
                 .map(typed_parameter_from_surface)
                 .collect::<Vec<_>>();
-            let body = find_value_token(tokens, span)
-                .map(|token| typed_fn_body_from_token(token, &typed_parameters))
-                .unwrap_or_else(|| TypedExpr::Variable {
-                    name: String::new(),
-                    type_ref: TypedType::Hole,
-                    origin: span,
-                });
+            let body =
+                typed_fn_body_from_tokens(&find_value_tokens(tokens, span), &typed_parameters)
+                    .unwrap_or_else(|| TypedExpr::Variable {
+                        name: String::new(),
+                        type_ref: TypedType::Hole,
+                        origin: span,
+                    });
             Some(TypedDecl::Fn {
                 symbol: format!("{module}::{name}"),
                 visibility,
@@ -150,37 +150,4 @@ fn typed_parameter_from_surface(parameter: &SurfaceParameter) -> TypedParameter 
         type_ref: typed_type_from_type_ref(&parameter.type_ref),
         origin: parameter.name_span,
     }
-}
-
-fn typed_fn_body_from_token(token: &Token, parameters: &[TypedParameter]) -> TypedExpr {
-    if token.kind == TokenKind::IdentifierLower {
-        if let Some((name, type_ref)) = find_parameter(token, parameters) {
-            return TypedExpr::Variable {
-                name,
-                type_ref,
-                origin: ByteSpan {
-                    start: token.start,
-                    end: token.end,
-                },
-            };
-        }
-        return TypedExpr::Variable {
-            name: token.raw.clone(),
-            type_ref: TypedType::Hole,
-            origin: ByteSpan {
-                start: token.start,
-                end: token.end,
-            },
-        };
-    }
-    typed_expr_from_value_token(token)
-}
-
-fn find_parameter(token: &Token, parameters: &[TypedParameter]) -> Option<(String, TypedType)> {
-    parameters.iter().find_map(|parameter| match parameter {
-        TypedParameter::Named { name, type_ref, .. } if name == &token.raw => {
-            Some((name.clone(), type_ref.clone()))
-        }
-        _ => None,
-    })
 }

@@ -139,6 +139,21 @@ mod tests {
     }
 
     #[test]
+    fn lowers_integer_add_function_to_typescript_binary_expression() {
+        let source = "pub fn add x: Int -> y: Int -> Int = x + y\n";
+        let typed = type_module("artifact/add-fn/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(
+            bundle.typescript,
+            "export const add = (x: bigint, y: bigint) => x + y\n"
+        );
+    }
+
+    #[test]
     fn deduplicates_runtime_helper_imports_across_functions() {
         let source = "\
 pub effect fn first -> Unit

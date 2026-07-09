@@ -171,6 +171,15 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::String { value } => format!("{value:?}"),
         TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Identifier { name } => name.clone(),
+        TypeScriptExpr::Binary {
+            operator,
+            left,
+            right,
+        } => format!(
+            "{} {operator} {}",
+            render_typescript_expr(left),
+            render_typescript_expr(right)
+        ),
         TypeScriptExpr::Call { callee, arguments } => {
             let rendered_arguments = arguments
                 .iter()
@@ -226,6 +235,10 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
             for argument in arguments {
                 collect_expr_names(argument, names);
             }
+        }
+        TypeScriptExpr::Binary { left, right, .. } => {
+            collect_expr_names(left, names);
+            collect_expr_names(right, names);
         }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }

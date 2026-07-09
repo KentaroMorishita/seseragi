@@ -12,6 +12,16 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Variable { type_name, .. } => {
             collect_type_runtime_requirement(type_name, requirements);
         }
+        CoreExpr::Binary {
+            left,
+            right,
+            type_name,
+            ..
+        } => {
+            collect_type_runtime_requirement(type_name, requirements);
+            collect_expr_runtime_requirements(left, requirements);
+            collect_expr_runtime_requirements(right, requirements);
+        }
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -44,6 +54,9 @@ pub(super) fn expr_requires_feature(expr: &CoreExpr, feature: &str) -> bool {
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. }
         | CoreExpr::Variable { .. } => false,
+        CoreExpr::Binary { left, right, .. } => {
+            expr_requires_feature(left, feature) || expr_requires_feature(right, feature)
+        }
     }
 }
 
@@ -54,6 +67,7 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         CoreExpr::String { .. } => TypeScriptType::String,
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
         CoreExpr::Variable { type_name, .. } => type_ref_from_type_name(type_name),
+        CoreExpr::Binary { type_name, .. } => type_ref_from_type_name(type_name),
         CoreExpr::EffectOperation { .. } => TypeScriptType::Undefined,
     }
 }

@@ -72,6 +72,13 @@ pub enum CoreExpr {
         type_name: String,
         origin: SourceSpan,
     },
+    Binary {
+        operator: String,
+        left: Box<CoreExpr>,
+        right: Box<CoreExpr>,
+        type_name: String,
+        origin: SourceSpan,
+    },
     EffectOperation {
         operation: String,
         requirements: Vec<String>,
@@ -190,6 +197,19 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::Variable {
             name,
+            type_name: type_name(&type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Binary {
+            operator,
+            left,
+            right,
+            type_ref,
+            origin,
+        } => CoreExpr::Binary {
+            operator,
+            left: Box::new(lower_expr(source, *left)),
+            right: Box::new(lower_expr(source, *right)),
             type_name: type_name(&type_ref),
             origin: source_span(source, origin),
         },
