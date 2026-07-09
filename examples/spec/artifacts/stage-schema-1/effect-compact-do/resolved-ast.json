@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/effect-compact-do",
+  "declarations": []
+}

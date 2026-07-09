@@ -206,6 +206,20 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_single_effect_do_statement_to_typescript_call() {
+        let source =
+            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";
+        let typed = type_module("artifact/effect-do-println/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains(
+            "export const main = (_unit: undefined) => _ssrg_console_println(\"hello\")"
+        ));
+    }
+
+    #[test]
     fn emits_basic_typescript_module() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
         let core = lower_typed_module(typed);

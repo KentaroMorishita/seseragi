@@ -171,6 +171,15 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
                 .collect(),
             origin: source_span(source, origin),
         },
+        TypedExpr::DoBlock {
+            statements, result, ..
+        } => {
+            let mut statements = statements.into_iter();
+            match (statements.next(), statements.next()) {
+                (Some(statement), None) => lower_effect_body(source, effect, statement),
+                _ => lower_expr(source, *result),
+            }
+        }
         expr => lower_expr(source, expr),
     }
 }

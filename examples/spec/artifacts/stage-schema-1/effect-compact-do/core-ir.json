@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-compact-do",
+  "functions": [
+    {
+      "symbol": "artifact/effect-compact-do::main",
+      "visibility": "public",
+      "origin": { "source": "main.ssrg", "start": 0, "end": 45 },
+      "parameters": [{ "id": "unit", "kind": "implicit", "type": "Unit" }],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": ["console"],
+        "failure": "ConsoleError",
+        "success": "Unit",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "hello",
+            "origin": { "source": "main.ssrg", "start": 36, "end": 43 }
+          }
+        ],
+        "origin": { "source": "main.ssrg", "start": 28, "end": 43 }
+      }
+    }
+  ]
+}

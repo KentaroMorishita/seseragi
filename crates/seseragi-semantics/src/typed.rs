@@ -362,6 +362,43 @@ mod tests {
     }
 
     #[test]
+    fn compact_do_block_infers_println_statement_contract() {
+        let typed = type_module(
+            "artifact/effect-compact-do/main.ssrg",
+            "effect fn greet =\n  do { println \"hello\" }\n",
+        );
+
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        assert_eq!(
+            effect.environment,
+            TypedType::Record {
+                closed: true,
+                fields: vec![TypedRecordField {
+                    name: "console".to_owned(),
+                    optional: false,
+                    type_ref: TypedType::Named {
+                        name: "Console".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                }],
+            }
+        );
+        assert_eq!(
+            effect.failure,
+            TypedType::Named {
+                name: "ConsoleError".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        let TypedExpr::DoBlock { statements, .. } = body else {
+            panic!("expected do block body");
+        };
+        assert_eq!(statements.len(), 1);
+    }
+
+    #[test]
     fn types_empty_do_block_as_unit_result() {
         let typed = type_module(
             "artifact/effect-do/main.ssrg",

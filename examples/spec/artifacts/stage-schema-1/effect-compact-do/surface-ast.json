@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "stage": "surface-ast",
+  "source": "main.ssrg",
+  "root": {
+    "kind": "module",
+    "origin": { "start": 0, "end": 46 },
+    "declarations": [
+      {
+        "kind": "effect-fn",
+        "visibility": "public",
+        "name": "main",
+        "origin": { "start": 0, "end": 45 },
+        "parameters": [],
+        "inferredContract": true,
+        "body": {
+          "kind": "do-block",
+          "origin": { "start": 23, "end": 45 },
+          "statements": [
+            {
+              "kind": "application",
+              "origin": { "start": 28, "end": 43 },
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "origin": { "start": 28, "end": 35 }
+              },
+              "argument": {
+                "kind": "string",
+                "value": "hello",
+                "origin": { "start": 36, "end": 43 }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

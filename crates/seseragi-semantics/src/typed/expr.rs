@@ -217,12 +217,17 @@ fn int_type() -> TypedType {
 }
 
 fn typed_do_block(tokens: &[Token], span: ByteSpan, do_token: &Token) -> Option<TypedExpr> {
+    let left_brace = tokens
+        .iter()
+        .skip_while(|token| token.start <= do_token.start)
+        .find(|token| token.end <= span.end && token.raw == "{")?;
     let right_brace = tokens
         .iter()
         .skip_while(|token| token.start <= do_token.start)
         .find(|token| token.end <= span.end && token.raw == "}")?;
+    let statements = typed_do_statements(tokens, span, left_brace, right_brace);
     Some(TypedExpr::DoBlock {
-        statements: Vec::new(),
+        statements,
         result: Box::new(TypedExpr::Unit {
             type_ref: unit_type(),
             origin: ByteSpan {
@@ -235,6 +240,48 @@ fn typed_do_block(tokens: &[Token], span: ByteSpan, do_token: &Token) -> Option<
             end: right_brace.end,
         },
     })
+}
+
+fn typed_do_statements(
+    tokens: &[Token],
+    span: ByteSpan,
+    left_brace: &Token,
+    right_brace: &Token,
+) -> Vec<TypedExpr> {
+    let Some(operation) = tokens
+        .iter()
+        .skip_while(|token| token.start <= left_brace.start)
+        .find(|token| token.end <= right_brace.start && is_significant(token))
+    else {
+        return Vec::new();
+    };
+
+    if operation.raw != "println" {
+        return Vec::new();
+    }
+
+    let argument = tokens
+        .iter()
+        .skip_while(|token| token.start <= operation.start)
+        .find(|token| {
+            token.end <= span.end
+                && token.start < right_brace.start
+                && token.kind == TokenKind::LiteralString
+        })
+        .map(typed_expr_from_value_token);
+    let origin_end = argument
+        .as_ref()
+        .map(expr_origin_end)
+        .unwrap_or(operation.end);
+
+    vec![TypedExpr::EffectCall {
+        operation: "std/prelude::println".to_owned(),
+        arguments: argument.into_iter().collect(),
+        origin: ByteSpan {
+            start: operation.start,
+            end: origin_end,
+        },
+    }]
 }
 
 fn expr_origin_end(expr: &TypedExpr) -> usize {
