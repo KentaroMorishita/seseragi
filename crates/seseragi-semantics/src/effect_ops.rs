@@ -5,6 +5,7 @@ pub(crate) struct KnownEffectOperation {
     pub(crate) requirement_field: &'static str,
     pub(crate) requirement_type: &'static str,
     pub(crate) failure_type: &'static str,
+    pub(crate) success_type: &'static str,
 }
 
 const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[KnownEffectOperation {
@@ -13,6 +14,7 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[KnownEffectOperation 
     requirement_field: "console",
     requirement_type: "Console",
     failure_type: "ConsoleError",
+    success_type: "Unit",
 }];
 
 pub(crate) fn known_effect_operation_by_surface(
@@ -50,6 +52,7 @@ mod tests {
         assert_eq!(operation.requirement_field, "console");
         assert_eq!(operation.requirement_type, "Console");
         assert_eq!(operation.failure_type, "ConsoleError");
+        assert_eq!(operation.success_type, "Unit");
     }
 
     #[test]

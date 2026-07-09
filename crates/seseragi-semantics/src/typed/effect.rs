@@ -5,7 +5,7 @@ use crate::{
 use seseragi_syntax::{ByteSpan, Token, TokenKind, TypeRef};
 
 use super::expr::{find_type_name_after, lower_first};
-use super::type_ref::typed_type_from_type_ref;
+use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 
 pub(crate) fn typed_effect_from_surface(
     return_type: &Option<TypeRef>,
@@ -55,7 +55,7 @@ fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
             fields: requirements,
         },
         failure,
-        success: unit_type(),
+        success: inferred_type_from_expr(body),
     }
 }
 
