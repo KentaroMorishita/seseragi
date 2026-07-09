@@ -9,7 +9,12 @@
       "severity": "Error",
       "messageKey": "effect.compact-body-not-effect",
       "primary": { "start": 35, "end": 39 },
-      "related": [],
+      "related": [
+        {
+          "message": "compact inferred effect function",
+          "primary": { "start": 0, "end": 39 }
+        }
+      ],
       "fixes": []
     }
   ]

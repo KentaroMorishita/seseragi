@@ -1,6 +1,6 @@
 use seseragi_syntax::{
     lex, parse_diagnostics, parse_surface_ast, ByteRange, Diagnostic, DiagnosticArtifact,
-    DiagnosticSeverity, SurfaceDecl, Token, TokenKind,
+    DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token, TokenKind,
 };
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
@@ -64,7 +64,13 @@ fn collect_decl_diagnostics(
             start: operation.start,
             end: operation.end,
         },
-        related: Vec::new(),
+        related: vec![RelatedDiagnostic {
+            message: "compact inferred effect function".to_owned(),
+            primary: ByteRange {
+                start: span.start,
+                end: span.end,
+            },
+        }],
         fixes: Vec::new(),
     });
 }
@@ -112,6 +118,11 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 35, end: 39 }
+        );
+        assert_eq!(diagnostics.diagnostics[0].related.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].primary,
+            ByteRange { start: 0, end: 39 }
         );
     }
 }
