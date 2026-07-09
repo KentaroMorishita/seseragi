@@ -1,4 +1,5 @@
 use crate::runtime_package::check_typescript_runtime_package;
+use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
@@ -16,11 +17,7 @@ pub(crate) fn check_runtime_abi_case(root: &Path, case: &Path) -> Result<(), Str
 }
 
 pub(crate) fn runtime_feature_ids(root: &Path) -> Result<BTreeSet<String>, String> {
-    let abi_path = root.join("examples/spec/artifacts/runtime-schema-1/core/abi.json");
-    let raw = fs::read_to_string(&abi_path)
-        .map_err(|error| format!("failed to read runtime ABI: {error}"))?;
-    let abi: serde_json::Value = serde_json::from_str(&raw)
-        .map_err(|error| format!("failed to parse runtime ABI: {error}"))?;
+    let abi = read_core_runtime_abi(root)?;
     let features = abi
         .get("features")
         .and_then(|value| value.as_array())
@@ -30,6 +27,58 @@ pub(crate) fn runtime_feature_ids(root: &Path) -> Result<BTreeSet<String>, Strin
         .filter_map(|feature| feature.get("id").and_then(|value| value.as_str()))
         .map(str::to_owned)
         .collect())
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct RuntimeHelperImport {
+    pub(crate) module: String,
+    pub(crate) export_name: String,
+}
+
+pub(crate) fn runtime_helper_imports(
+    root: &Path,
+) -> Result<BTreeMap<String, RuntimeHelperImport>, String> {
+    let abi = read_core_runtime_abi(root)?;
+    let features = abi
+        .get("features")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| "runtime ABI features must be an array".to_owned())?;
+    let mut imports = BTreeMap::new();
+    for feature in features {
+        if feature.get("kind").and_then(|value| value.as_str()) != Some("runtime-helper") {
+            continue;
+        }
+        let id = feature
+            .get("id")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| "runtime helper feature id must be a string".to_owned())?;
+        let import = feature
+            .get("import")
+            .ok_or_else(|| format!("runtime helper {id} import is missing"))?;
+        let module = import
+            .get("module")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| format!("runtime helper {id} import.module must be a string"))?;
+        let export_name = import
+            .get("export")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| format!("runtime helper {id} import.export must be a string"))?;
+        imports.insert(
+            id.to_owned(),
+            RuntimeHelperImport {
+                module: module.to_owned(),
+                export_name: export_name.to_owned(),
+            },
+        );
+    }
+    Ok(imports)
+}
+
+fn read_core_runtime_abi(root: &Path) -> Result<serde_json::Value, String> {
+    let abi_path = root.join("examples/spec/artifacts/runtime-schema-1/core/abi.json");
+    let raw = fs::read_to_string(&abi_path)
+        .map_err(|error| format!("failed to read runtime ABI: {error}"))?;
+    serde_json::from_str(&raw).map_err(|error| format!("failed to parse runtime ABI: {error}"))
 }
 
 fn check_runtime_abi_envelope(abi: &serde_json::Value) -> Result<(), String> {

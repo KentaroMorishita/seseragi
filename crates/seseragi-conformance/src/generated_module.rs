@@ -1,5 +1,6 @@
-use crate::pipeline::{emit_generated_module, interface_source_name};
-use crate::runtime_abi::runtime_feature_ids;
+use crate::pipeline::{emit_generated_module, interface_source_name, parse_typescript_ir_json};
+use crate::runtime_abi::{runtime_feature_ids, runtime_helper_imports};
+use serde_json::Value;
 use std::fs;
 use std::path::Path;
 
@@ -30,6 +31,11 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
         return Err("main.ts artifact mismatch".to_owned());
     }
     check_generated_exports(&actual_metadata_value, &bundle.typescript)?;
+    check_generated_runtime_imports(
+        root,
+        &parse_typescript_ir_json(interface_source_name(case)?, &source)?,
+        &bundle.typescript,
+    )?;
 
     let actual_source_map_value = serde_json::to_value(&bundle.source_map)
         .map_err(|error| format!("failed to encode SourceMap: {error}"))?;
@@ -41,6 +47,53 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
     }
     check_generated_source_map(&actual_metadata_value, &actual_source_map_value, &source)?;
     Ok(())
+}
+
+fn check_generated_runtime_imports(
+    root: &Path,
+    typescript_ir: &Value,
+    typescript: &str,
+) -> Result<(), String> {
+    let helper_imports = runtime_helper_imports(root)?;
+    let Some(imports) = typescript_ir.get("imports") else {
+        return Ok(());
+    };
+    let imports = imports
+        .as_array()
+        .ok_or_else(|| "TypeScriptIr imports must be an array".to_owned())?;
+
+    for (index, import) in imports.iter().enumerate() {
+        let feature = required_string_field(
+            import,
+            "feature",
+            &format!("TypeScriptIr imports[{index}].feature"),
+        )?;
+        let local = required_string_field(
+            import,
+            "local",
+            &format!("TypeScriptIr imports[{index}].local"),
+        )?;
+        let helper = helper_imports.get(feature).ok_or_else(|| {
+            format!("TypeScriptIr import feature {feature} has no runtime helper ABI import")
+        })?;
+        let expected = expected_runtime_import_line(helper, local);
+        if !typescript.lines().any(|line| line == expected) {
+            return Err(format!(
+                "generated TypeScript import for runtime feature {feature} does not match ABI"
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn expected_runtime_import_line(
+    helper: &crate::runtime_abi::RuntimeHelperImport,
+    local: &str,
+) -> String {
+    format!(
+        "import {{ {} as {} }} from \"{}\"",
+        helper.export_name, local, helper.module
+    )
 }
 
 fn check_generated_source_map(
@@ -109,6 +162,18 @@ fn typescript_exports_name(typescript: &str, name: &str) -> bool {
         || typescript.contains(&format!(", {name}"))
 }
 
+fn required_string_field<'a>(
+    value: &'a Value,
+    field: &str,
+    label: &str,
+) -> Result<&'a str, String> {
+    value
+        .get(field)
+        .and_then(Value::as_str)
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| format!("{label} must be a non-empty string"))
+}
+
 fn check_generated_runtime_requirements(
     root: &Path,
     generated_module: &serde_json::Value,
@@ -130,4 +195,23 @@ fn check_generated_runtime_requirements(
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::expected_runtime_import_line;
+    use crate::runtime_abi::RuntimeHelperImport;
+
+    #[test]
+    fn renders_generated_import_from_runtime_abi_mapping() {
+        let helper = RuntimeHelperImport {
+            module: "@seseragi/runtime/console".to_owned(),
+            export_name: "println".to_owned(),
+        };
+
+        assert_eq!(
+            expected_runtime_import_line(&helper, "_ssrg_console_println"),
+            "import { println as _ssrg_console_println } from \"@seseragi/runtime/console\""
+        );
+    }
 }
