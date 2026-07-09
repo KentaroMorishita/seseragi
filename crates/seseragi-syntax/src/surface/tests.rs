@@ -34,6 +34,9 @@ fn constructs_effect_function_surface_decl() {
         visibility: Visibility::Private,
         name: "main".to_owned(),
         name_span: ByteSpan { start: 10, end: 14 },
+        type_parameters: Vec::new(),
+        parameters: Vec::new(),
+        inferred_contract: false,
         return_type: Some(TypeRef::Named {
             name: "Unit".to_owned(),
             arguments: Vec::new(),
@@ -175,12 +178,45 @@ fn parses_effect_do_surface_decl() {
             visibility: Visibility::Public,
             name: "main".to_owned(),
             name_span: ByteSpan { start: 14, end: 18 },
+            type_parameters: Vec::new(),
+            parameters: Vec::new(),
+            inferred_contract: false,
             return_type: Some(TypeRef::Named {
                 name: "Unit".to_owned(),
                 arguments: Vec::new(),
                 span: ByteSpan { start: 22, end: 26 },
             }),
             span: ByteSpan { start: 0, end: 104 },
+        }]
+    );
+}
+
+#[test]
+fn parses_compact_inferred_effect_function_surface_decl() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub effect fn greet name: String =\n  println \"hello\"\n",
+    );
+
+    assert_eq!(
+        module.declarations,
+        vec![SurfaceDecl::EffectFn {
+            visibility: Visibility::Public,
+            name: "greet".to_owned(),
+            name_span: ByteSpan { start: 14, end: 19 },
+            type_parameters: Vec::new(),
+            parameters: vec![SurfaceParameter {
+                name: "name".to_owned(),
+                name_span: ByteSpan { start: 20, end: 24 },
+                type_ref: TypeRef::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 26, end: 32 },
+                },
+            }],
+            inferred_contract: true,
+            return_type: None,
+            span: ByteSpan { start: 0, end: 52 },
         }]
     );
 }

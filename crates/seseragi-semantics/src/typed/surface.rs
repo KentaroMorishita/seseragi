@@ -51,10 +51,15 @@ pub(crate) fn typed_decl_from_surface(
         SurfaceDecl::EffectFn {
             visibility,
             name,
+            parameters,
             return_type,
             span,
             ..
         } => {
+            let typed_parameters = parameters
+                .iter()
+                .map(typed_parameter_from_surface)
+                .collect::<Vec<_>>();
             let with_type = find_type_name_after(tokens, span, TokenKind::KeywordWith);
             let failure = find_type_name_after(tokens, span, TokenKind::KeywordFails)
                 .unwrap_or_else(|| "Never".to_owned());
@@ -66,9 +71,13 @@ pub(crate) fn typed_decl_from_surface(
                 symbol: format!("{module}::{name}"),
                 visibility,
                 origin: span,
-                parameters: vec![TypedParameter::ImplicitUnit {
-                    type_ref: unit_type(),
-                }],
+                parameters: if typed_parameters.is_empty() {
+                    vec![TypedParameter::ImplicitUnit {
+                        type_ref: unit_type(),
+                    }]
+                } else {
+                    typed_parameters
+                },
                 effect: TypedEffect {
                     environment: TypedType::Record {
                         closed: true,
