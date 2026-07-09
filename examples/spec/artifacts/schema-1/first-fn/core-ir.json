@@ -6,16 +6,44 @@
     {
       "symbol": "artifact/first-fn::first",
       "visibility": "public",
-      "origin": { "source": "main.ssrg", "start": 0, "end": 50 },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 50
+      },
       "parameters": [
-        { "id": "left", "kind": "named", "type": "Int" },
-        { "id": "right", "kind": "named", "type": "Int" }
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
       ],
       "body": {
         "kind": "variable",
         "name": "left",
-        "typeName": "Int",
-        "origin": { "source": "main.ssrg", "start": 46, "end": 50 }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 46,
+          "end": 50
+        }
       }
     }
   ]

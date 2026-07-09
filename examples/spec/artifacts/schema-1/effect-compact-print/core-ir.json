@@ -15,7 +15,11 @@
         {
           "id": "unit",
           "kind": "implicit",
-          "type": "Unit"
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
         }
       ],
       "body": {
@@ -24,8 +28,16 @@
         "requirements": [
           "console"
         ],
-        "failure": "ConsoleError",
-        "success": "Unit",
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
         "arguments": [
           {
             "kind": "string",

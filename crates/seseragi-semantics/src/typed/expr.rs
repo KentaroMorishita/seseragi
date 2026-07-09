@@ -328,7 +328,14 @@ fn typed_do_line(
             name: name.raw.clone(),
             type_ref: TypedType::Named {
                 name: known.success_type.to_owned(),
-                arguments: Vec::new(),
+                arguments: known
+                    .success_type_arguments
+                    .iter()
+                    .map(|name| TypedType::Named {
+                        name: (*name).to_owned(),
+                        arguments: Vec::new(),
+                    })
+                    .collect(),
             },
             value,
             origin: ByteSpan {

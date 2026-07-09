@@ -1,4 +1,6 @@
-use crate::{effect_ops::runtime_effect_operation, CoreExpr, CoreParameter, CoreStatement};
+use crate::{
+    effect_ops::runtime_effect_operation, CoreExpr, CoreParameter, CoreStatement, CoreType,
+};
 
 use super::names::safe_identifier;
 use super::{
@@ -11,16 +13,16 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
-        CoreExpr::Variable { type_name, .. } => {
-            collect_type_runtime_requirement(type_name, requirements);
+        CoreExpr::Variable { type_ref, .. } => {
+            collect_type_runtime_requirement(type_ref, requirements);
         }
         CoreExpr::Binary {
             left,
             right,
-            type_name,
+            type_ref,
             ..
         } => {
-            collect_type_runtime_requirement(type_name, requirements);
+            collect_type_runtime_requirement(type_ref, requirements);
             collect_expr_runtime_requirements(left, requirements);
             collect_expr_runtime_requirements(right, requirements);
         }
@@ -115,9 +117,9 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
         CoreExpr::String { .. } => TypeScriptType::String,
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
-        CoreExpr::Variable { type_name, .. } => type_ref_from_type_name(type_name),
-        CoreExpr::Binary { type_name, .. } => type_ref_from_type_name(type_name),
-        CoreExpr::EffectOperation { .. } => TypeScriptType::Undefined,
+        CoreExpr::Variable { type_ref, .. } => type_ref_from_core_type(type_ref),
+        CoreExpr::Binary { type_ref, .. } => type_ref_from_core_type(type_ref),
+        CoreExpr::EffectOperation { success, .. } => type_ref_from_core_type(success),
         CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),
     }
 }
@@ -129,37 +131,95 @@ pub(super) fn lower_core_parameter_to_typescript(parameter: CoreParameter) -> Ty
         } else {
             safe_identifier(&parameter.id)
         },
-        type_name: render_type_name(&parameter.type_name).to_owned(),
+        type_name: render_core_type(&parameter.type_ref),
         implicit: parameter.kind == "implicit",
     }
 }
 
-fn type_ref_from_type_name(type_name: &str) -> TypeScriptType {
-    match type_name {
-        "Int" => TypeScriptType::Bigint,
-        "String" => TypeScriptType::String,
-        "Bool" => TypeScriptType::Boolean,
-        "Unit" => TypeScriptType::Undefined,
-        _ => TypeScriptType::Undefined,
+pub(super) fn type_ref_from_core_type(type_ref: &CoreType) -> TypeScriptType {
+    match type_ref {
+        CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty() => {
+            TypeScriptType::Bigint
+        }
+        CoreType::Named { name, arguments } if name == "String" && arguments.is_empty() => {
+            TypeScriptType::String
+        }
+        CoreType::Named { name, arguments } if name == "Bool" && arguments.is_empty() => {
+            TypeScriptType::Boolean
+        }
+        CoreType::Named { name, arguments } if name == "Unit" && arguments.is_empty() => {
+            TypeScriptType::Undefined
+        }
+        CoreType::Named { name, arguments } if name == "Maybe" && arguments.len() == 1 => {
+            TypeScriptType::Maybe {
+                element: Box::new(type_ref_from_core_type(&arguments[0])),
+            }
+        }
+        CoreType::Hole
+        | CoreType::Named { .. }
+        | CoreType::Record { .. }
+        | CoreType::Tuple { .. }
+        | CoreType::Function { .. } => TypeScriptType::Unknown,
     }
 }
 
-pub(super) fn render_type_name(type_name: &str) -> &'static str {
-    match type_name {
-        "Int" => "bigint",
-        "String" => "string",
-        "Bool" => "boolean",
-        "Unit" => "undefined",
-        _ => "unknown",
+pub(super) fn render_core_type(type_ref: &CoreType) -> String {
+    match type_ref_from_core_type(type_ref) {
+        TypeScriptType::Bigint => "bigint".to_owned(),
+        TypeScriptType::Boolean => "boolean".to_owned(),
+        TypeScriptType::String => "string".to_owned(),
+        TypeScriptType::Undefined => "undefined".to_owned(),
+        TypeScriptType::Unknown => "unknown".to_owned(),
+        TypeScriptType::Maybe { element } => {
+            format!("{} | undefined", render_typescript_type(&element))
+        }
     }
 }
 
-pub(super) fn collect_type_runtime_requirement(type_name: &str, requirements: &mut Vec<String>) {
-    match type_name {
-        "Int" => push_unique(requirements, "core.int64"),
-        "String" => push_unique(requirements, "core.string"),
-        "Bool" => push_unique(requirements, "core.bool"),
-        "Unit" => push_unique(requirements, "core.unit"),
-        _ => {}
+fn render_typescript_type(type_ref: &TypeScriptType) -> String {
+    match type_ref {
+        TypeScriptType::Bigint => "bigint".to_owned(),
+        TypeScriptType::Boolean => "boolean".to_owned(),
+        TypeScriptType::String => "string".to_owned(),
+        TypeScriptType::Undefined => "undefined".to_owned(),
+        TypeScriptType::Unknown => "unknown".to_owned(),
+        TypeScriptType::Maybe { element } => {
+            format!("{} | undefined", render_typescript_type(element))
+        }
+    }
+}
+
+pub(super) fn collect_type_runtime_requirement(
+    type_ref: &CoreType,
+    requirements: &mut Vec<String>,
+) {
+    match type_ref {
+        CoreType::Named { name, arguments } => {
+            match name.as_str() {
+                "Int" => push_unique(requirements, "core.int64"),
+                "String" => push_unique(requirements, "core.string"),
+                "Bool" => push_unique(requirements, "core.bool"),
+                "Unit" => push_unique(requirements, "core.unit"),
+                _ => {}
+            }
+            for argument in arguments {
+                collect_type_runtime_requirement(argument, requirements);
+            }
+        }
+        CoreType::Record { fields, .. } => {
+            for field in fields {
+                collect_type_runtime_requirement(&field.type_ref, requirements);
+            }
+        }
+        CoreType::Tuple { elements } => {
+            for element in elements {
+                collect_type_runtime_requirement(element, requirements);
+            }
+        }
+        CoreType::Function { parameter, result } => {
+            collect_type_runtime_requirement(parameter, requirements);
+            collect_type_runtime_requirement(result, requirements);
+        }
+        CoreType::Hole => {}
     }
 }

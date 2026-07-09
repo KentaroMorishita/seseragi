@@ -9,8 +9,8 @@ mod runtime;
 use names::safe_identifier;
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
-    collect_type_runtime_requirement, lower_core_parameter_to_typescript, render_type_name,
-    type_ref_from_core_expr,
+    collect_type_runtime_requirement, lower_core_parameter_to_typescript, type_ref_from_core_expr,
+    type_ref_from_core_type,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -88,6 +88,8 @@ pub enum TypeScriptType {
     Boolean,
     String,
     Undefined,
+    Unknown,
+    Maybe { element: Box<TypeScriptType> },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -138,7 +140,7 @@ pub enum TypeScriptStatement {
     Const {
         name: String,
         #[serde(rename = "type")]
-        type_name: String,
+        type_ref: TypeScriptType,
         initializer: TypeScriptExpr,
         origin: SourceSpan,
     },
@@ -166,7 +168,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         .into_iter()
         .map(|function| {
             for parameter in &function.parameters {
-                collect_type_runtime_requirement(&parameter.type_name, &mut runtime_requirements);
+                collect_type_runtime_requirement(&parameter.type_ref, &mut runtime_requirements);
             }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
             collect_expr_runtime_imports(&function.body, &mut imports);
@@ -246,12 +248,12 @@ fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptSta
         },
         CoreStatement::Bind {
             name,
-            type_name,
+            type_ref,
             value,
             origin,
         } => TypeScriptStatement::Const {
             name: safe_identifier(&name),
-            type_name: render_type_name(&type_name).to_owned(),
+            type_ref: type_ref_from_core_type(&type_ref),
             initializer: lower_core_expr_to_typescript(value),
             origin,
         },

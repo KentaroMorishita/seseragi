@@ -36,7 +36,9 @@
           {
             "kind": "const",
             "name": "ignored",
-            "type": "undefined",
+            "type": {
+              "kind": "undefined"
+            },
             "initializer": {
               "kind": "call",
               "callee": "_ssrg_console_print",

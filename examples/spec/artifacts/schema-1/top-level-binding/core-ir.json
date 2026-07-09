@@ -35,13 +35,21 @@
         {
           "id": "unit",
           "kind": "named",
-          "type": "Unit"
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
         }
       ],
       "body": {
         "kind": "variable",
         "name": "answer",
-        "typeName": "Int",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
         "origin": {
           "source": "main.ssrg",
           "start": 64,

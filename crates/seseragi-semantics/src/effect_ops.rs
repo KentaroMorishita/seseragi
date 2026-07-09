@@ -6,6 +6,7 @@ pub(crate) struct KnownEffectOperation {
     pub(crate) requirement_type: &'static str,
     pub(crate) failure_type: &'static str,
     pub(crate) success_type: &'static str,
+    pub(crate) success_type_arguments: &'static [&'static str],
 }
 
 const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
@@ -16,6 +17,7 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
         requirement_type: "Console",
         failure_type: "ConsoleError",
         success_type: "Unit",
+        success_type_arguments: &[],
     },
     KnownEffectOperation {
         surface_name: "println",
@@ -24,6 +26,7 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
         requirement_type: "Console",
         failure_type: "ConsoleError",
         success_type: "Unit",
+        success_type_arguments: &[],
     },
 ];
 
@@ -63,6 +66,7 @@ mod tests {
         assert_eq!(operation.requirement_type, "Console");
         assert_eq!(operation.failure_type, "ConsoleError");
         assert_eq!(operation.success_type, "Unit");
+        assert!(operation.success_type_arguments.is_empty());
     }
 
     #[test]

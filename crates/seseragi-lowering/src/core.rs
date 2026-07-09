@@ -5,6 +5,11 @@ use seseragi_semantics::{
 };
 use seseragi_syntax::Visibility;
 
+mod types;
+
+use types::lower_typed_type;
+pub use types::{CoreRecordField, CoreType};
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CoreModule {
@@ -42,7 +47,7 @@ pub struct CoreParameter {
     pub id: String,
     pub kind: String,
     #[serde(rename = "type")]
-    pub type_name: String,
+    pub type_ref: CoreType,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -69,21 +74,23 @@ pub enum CoreExpr {
     },
     Variable {
         name: String,
-        type_name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
         origin: SourceSpan,
     },
     Binary {
         operator: String,
         left: Box<CoreExpr>,
         right: Box<CoreExpr>,
-        type_name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
         origin: SourceSpan,
     },
     EffectOperation {
         operation: String,
         requirements: Vec<String>,
-        failure: String,
-        success: String,
+        failure: CoreType,
+        success: CoreType,
         arguments: Vec<CoreExpr>,
         origin: SourceSpan,
     },
@@ -107,7 +114,7 @@ pub enum CoreStatement {
     Bind {
         name: String,
         #[serde(rename = "type")]
-        type_name: String,
+        type_ref: CoreType,
         value: CoreExpr,
         origin: SourceSpan,
     },
@@ -187,8 +194,8 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
         } => CoreExpr::EffectOperation {
             operation: lower_effect_operation(&operation),
             requirements: effect_requirements(&effect),
-            failure: type_name(&effect.failure),
-            success: type_name(&effect.success),
+            failure: lower_typed_type(effect.failure),
+            success: lower_typed_type(effect.success),
             arguments: arguments
                 .into_iter()
                 .map(|argument| lower_expr(source, argument))
@@ -245,7 +252,7 @@ fn lower_effect_statement(
             origin,
         } => CoreStatement::Bind {
             name,
-            type_name: type_name(&type_ref),
+            type_ref: lower_typed_type(type_ref),
             value: lower_effect_body(source, effect, value),
             origin: source_span(source, origin),
         },
@@ -275,7 +282,7 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::Variable {
             name,
-            type_name: type_name(&type_ref),
+            type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
         TypedExpr::Binary {
@@ -288,7 +295,7 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             operator,
             left: Box::new(lower_expr(source, *left)),
             right: Box::new(lower_expr(source, *right)),
-            type_name: type_name(&type_ref),
+            type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
         TypedExpr::EffectCall {
@@ -298,8 +305,14 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::EffectOperation {
             operation: lower_effect_operation(&operation),
             requirements: Vec::new(),
-            failure: "Never".to_owned(),
-            success: "Unit".to_owned(),
+            failure: CoreType::Named {
+                name: "Never".to_owned(),
+                arguments: Vec::new(),
+            },
+            success: CoreType::Named {
+                name: "Unit".to_owned(),
+                arguments: Vec::new(),
+            },
             arguments: arguments
                 .into_iter()
                 .map(|argument| lower_expr(source, argument))
@@ -333,7 +346,7 @@ fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> CoreStatem
             origin,
         } => CoreStatement::Bind {
             name,
-            type_name: type_name(&type_ref),
+            type_ref: lower_typed_type(type_ref),
             value: lower_expr(source, value),
             origin: source_span(source, origin),
         },
@@ -345,12 +358,12 @@ fn lower_parameter(parameter: &TypedParameter) -> CoreParameter {
         TypedParameter::ImplicitUnit { type_ref } => CoreParameter {
             id: "unit".to_owned(),
             kind: "implicit".to_owned(),
-            type_name: type_name(type_ref),
+            type_ref: lower_typed_type(type_ref.clone()),
         },
         TypedParameter::Named { name, type_ref, .. } => CoreParameter {
             id: name.clone(),
             kind: "named".to_owned(),
-            type_name: type_name(type_ref),
+            type_ref: lower_typed_type(type_ref.clone()),
         },
     }
 }
@@ -367,15 +380,5 @@ fn effect_requirements(effect: &TypedEffect) -> Vec<String> {
     match &effect.environment {
         TypedType::Record { fields, .. } => fields.iter().map(|field| field.name.clone()).collect(),
         _ => Vec::new(),
-    }
-}
-
-fn type_name(type_ref: &TypedType) -> String {
-    match type_ref {
-        TypedType::Named { name, .. } => name.clone(),
-        TypedType::Hole => "_".to_owned(),
-        TypedType::Record { .. } => "Record".to_owned(),
-        TypedType::Tuple { .. } => "Tuple".to_owned(),
-        TypedType::Function { .. } => "Function".to_owned(),
     }
 }

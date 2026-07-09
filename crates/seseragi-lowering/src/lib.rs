@@ -6,7 +6,7 @@ mod typescript;
 
 pub use core::{
     lower_typed_module, CoreBinding, CoreExpr, CoreFunction, CoreModule, CoreParameter,
-    CoreStatement,
+    CoreRecordField, CoreStatement, CoreType,
 };
 pub use emit::{
     emit_typescript_module, GeneratedBundle, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
@@ -244,7 +244,7 @@ fails ConsoleError =
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "const ignored = _ssrg_console_print(\"hello\"); _ssrg_console_println(\"done\");"
+            "const ignored: undefined = _ssrg_console_print(\"hello\"); _ssrg_console_println(\"done\");"
         ));
     }
 

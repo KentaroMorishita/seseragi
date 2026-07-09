@@ -15,7 +15,11 @@
         {
           "id": "unit",
           "kind": "implicit",
-          "type": "Unit"
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
         }
       ],
       "body": {

@@ -176,6 +176,16 @@ fn render_typescript_type(type_ref: &crate::TypeScriptType) -> &'static str {
         crate::TypeScriptType::Boolean => "boolean",
         crate::TypeScriptType::String => "string",
         crate::TypeScriptType::Undefined => "undefined",
+        crate::TypeScriptType::Unknown => "unknown",
+        crate::TypeScriptType::Maybe { element } => match element.as_ref() {
+            crate::TypeScriptType::Bigint => "bigint | undefined",
+            crate::TypeScriptType::Boolean => "boolean | undefined",
+            crate::TypeScriptType::String => "string | undefined",
+            crate::TypeScriptType::Undefined => "undefined",
+            crate::TypeScriptType::Unknown | crate::TypeScriptType::Maybe { .. } => {
+                "unknown | undefined"
+            }
+        },
     }
 }
 
@@ -221,8 +231,15 @@ fn render_typescript_statement(statement: &TypeScriptStatement) -> String {
     match statement {
         TypeScriptStatement::Effect { value } => format!("{};", render_typescript_expr(value)),
         TypeScriptStatement::Const {
-            name, initializer, ..
-        } => format!("const {name} = {};", render_typescript_expr(initializer)),
+            name,
+            type_ref,
+            initializer,
+            ..
+        } => format!(
+            "const {name}: {} = {};",
+            render_typescript_type(type_ref),
+            render_typescript_expr(initializer)
+        ),
     }
 }
 

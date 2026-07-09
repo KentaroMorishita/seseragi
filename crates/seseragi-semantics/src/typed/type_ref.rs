@@ -91,7 +91,14 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         TypedExpr::EffectCall { operation, .. } => known_effect_operation_by_semantic(operation)
             .map(|operation| TypedType::Named {
                 name: operation.success_type.to_owned(),
-                arguments: Vec::new(),
+                arguments: operation
+                    .success_type_arguments
+                    .iter()
+                    .map(|name| TypedType::Named {
+                        name: (*name).to_owned(),
+                        arguments: Vec::new(),
+                    })
+                    .collect(),
             })
             .unwrap_or_else(unit_type),
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
