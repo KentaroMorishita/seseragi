@@ -1,2 +1,2 @@
 pub effect fn announce =
-  do { print "loading... " println "done" print "ready" }
+  do { print "loading... " println "done" println "ready" }

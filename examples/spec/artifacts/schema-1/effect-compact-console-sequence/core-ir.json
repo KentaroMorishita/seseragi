@@ -9,7 +9,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 82
+        "end": 84
       },
       "parameters": [
         {
@@ -73,7 +73,7 @@
           },
           {
             "kind": "effect-operation",
-            "operation": "console.print",
+            "operation": "console.println",
             "requirements": [
               "console"
             ],
@@ -85,15 +85,15 @@
                 "value": "ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 73,
-                  "end": 80
+                  "start": 75,
+                  "end": 82
                 }
               }
             ],
             "origin": {
               "source": "main.ssrg",
               "start": 67,
-              "end": 80
+              "end": 82
             }
           }
         ],
@@ -101,14 +101,14 @@
           "kind": "unit",
           "origin": {
             "source": "main.ssrg",
-            "start": 81,
-            "end": 81
+            "start": 83,
+            "end": 83
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 27,
-          "end": 82
+          "end": 84
         }
       }
     }

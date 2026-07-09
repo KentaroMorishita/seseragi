@@ -6,13 +6,13 @@
     "seseragi://artifact/effect-compact-console-sequence"
   ],
   "sourcesContent": [
-    "pub effect fn announce =\n  do { print \"loading... \" println \"done\" print \"ready\" }\n"
+    "pub effect fn announce =\n  do { print \"loading... \" println \"done\" println \"ready\" }\n"
   ],
   "names": [
     "announce",
     "print",
     "println",
-    "print"
+    "println"
   ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

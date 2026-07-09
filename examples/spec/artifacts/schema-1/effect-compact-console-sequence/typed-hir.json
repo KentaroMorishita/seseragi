@@ -10,7 +10,7 @@
       "visibility": "public",
       "origin": {
         "start": 0,
-        "end": 82
+        "end": 84
       },
       "inferredContract": true,
       "parameters": [
@@ -100,7 +100,7 @@
           },
           {
             "kind": "effect-call",
-            "operation": "std/prelude::print",
+            "operation": "std/prelude::println",
             "arguments": [
               {
                 "kind": "string",
@@ -111,14 +111,14 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 73,
-                  "end": 80
+                  "start": 75,
+                  "end": 82
                 }
               }
             ],
             "origin": {
               "start": 67,
-              "end": 80
+              "end": 82
             }
           }
         ],
@@ -130,13 +130,13 @@
             "arguments": []
           },
           "origin": {
-            "start": 81,
-            "end": 81
+            "start": 83,
+            "end": 83
           }
         },
         "origin": {
           "start": 27,
-          "end": 82
+          "end": 84
         }
       }
     }

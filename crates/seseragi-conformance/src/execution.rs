@@ -91,12 +91,13 @@ pub(crate) fn run_generated_typescript(
     root: &Path,
     case: &Path,
     compiled_typescript: &Path,
+    entry_export: &str,
 ) -> Result<ExecutionOutput, String> {
     let execution_dir = prepare_execution_dir(root, case)?;
     fs::copy(compiled_typescript, execution_dir.join("main.ts"))
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
     stage_runtime(root, &execution_dir)?;
-    write_entry(&execution_dir)?;
+    write_entry(&execution_dir, entry_export)?;
 
     let output = Command::new("bun")
         .arg("run")
@@ -147,10 +148,12 @@ fn stage_runtime(root: &Path, execution_dir: &Path) -> Result<(), String> {
         .map_err(|error| format!("failed to stage @seseragi/runtime: {error}"))
 }
 
-fn write_entry(execution_dir: &Path) -> Result<(), String> {
+fn write_entry(execution_dir: &Path, entry_export: &str) -> Result<(), String> {
     fs::write(
         execution_dir.join("entry.ts"),
-        "import { main } from \"./main.ts\";\nawait main(undefined);\n",
+        format!(
+            "import {{ {entry_export} }} from \"./main.ts\";\nawait {entry_export}(undefined);\n"
+        ),
     )
     .map_err(|error| format!("failed to write execution entry.ts: {error}"))
 }

@@ -55,7 +55,7 @@
           },
           {
             "kind": "call",
-            "callee": "_ssrg_console_print",
+            "callee": "_ssrg_console_println",
             "arguments": [
               {
                 "kind": "string",
@@ -71,7 +71,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 82
+        "end": 84
       }
     }
   ]

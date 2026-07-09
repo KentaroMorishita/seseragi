@@ -80,7 +80,8 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
         .and_then(|value| value.as_i64())
         .ok_or_else(|| "run.json expected.process.exitCode is missing".to_owned())?;
 
-    let actual = execution::run_generated_typescript(root, case, &compiled_typescript)?;
+    let actual =
+        execution::run_generated_typescript(root, case, &compiled_typescript, entry_export)?;
     if actual.exit_code != expected_exit_code {
         return Err(format!(
             "execution exit code mismatch: expected {expected_exit_code}, got {}",

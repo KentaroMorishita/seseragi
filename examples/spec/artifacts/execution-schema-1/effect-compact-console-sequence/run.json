@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "case": "effect-compact-console-sequence",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effect-compact-console-sequence",
+    "export": "announce",
+    "compiledModule": "../../schema-1/effect-compact-console-sequence/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.unit",
+      "effect.console.print",
+      "core.string",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "print",
+        "arguments": ["loading... "],
+        "stdout": "loading... "
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["done"],
+        "stdout": "done\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["ready"],
+        "stdout": "ready\n"
+      }
+    ]
+  }
+}
