@@ -1,3 +1,4 @@
+use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 pub use crate::surface_model::{
     ByteSpan, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImport, SurfaceImportItem,
@@ -307,20 +308,8 @@ impl SurfaceParser<'_> {
     }
 
     fn is_contextual_declaration_start(&self, index: usize) -> bool {
-        matches!(
-            self.raw_at(index),
-            Some(
-                "import"
-                    | "newtype"
-                    | "alias"
-                    | "type"
-                    | "struct"
-                    | "opaque"
-                    | "operator"
-                    | "instance"
-                    | "trait"
-            )
-        )
+        self.raw_at(index)
+            .is_some_and(is_contextual_declaration_start)
     }
 
     fn is_angle_left(&self, index: usize) -> bool {

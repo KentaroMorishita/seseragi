@@ -264,7 +264,7 @@ fn exports_public_type_names_in_interface() {
         "pub type Maybe<A> =\n  | Nothing\n  | Just A\n",
     );
 
-    assert_eq!(interface.exports.len(), 1);
+    assert_eq!(interface.exports.len(), 3);
     let type_export = &interface.exports[0];
     assert_eq!(type_export.name, "Maybe");
     assert_eq!(type_export.declaration_kind, Some("type".to_owned()));
@@ -274,6 +274,46 @@ fn exports_public_type_names_in_interface() {
         InterfaceType::TypeConstructor {
             name: "Maybe".to_owned(),
             arity: 1,
+        }
+    );
+
+    let nothing = &interface.exports[1];
+    assert_eq!(nothing.name, "Nothing");
+    assert_eq!(nothing.namespace, "value");
+    assert_eq!(nothing.declaration_kind.as_deref(), Some("constructor"));
+    assert_eq!(
+        nothing.constructor_of.as_deref(),
+        Some("artifact/public-type::Maybe")
+    );
+    assert_eq!(nothing.scheme.type_parameters, vec!["A".to_owned()]);
+    assert_eq!(
+        nothing.scheme.type_ref,
+        InterfaceType::Named {
+            name: "Maybe".to_owned(),
+            arguments: vec![InterfaceType::Named {
+                name: "A".to_owned(),
+                arguments: Vec::new(),
+            }],
+        }
+    );
+
+    let just = &interface.exports[2];
+    assert_eq!(just.name, "Just");
+    assert_eq!(just.declaration_kind.as_deref(), Some("constructor"));
+    assert_eq!(
+        just.scheme.type_ref,
+        InterfaceType::Function {
+            parameter: Box::new(InterfaceType::Named {
+                name: "A".to_owned(),
+                arguments: Vec::new(),
+            }),
+            result: Box::new(InterfaceType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![InterfaceType::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }),
         }
     );
 }

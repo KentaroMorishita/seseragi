@@ -41,6 +41,16 @@ fn resolved_export(
     operators: &[InterfaceOperator],
 ) -> Option<ResolvedDecl> {
     match export.namespace.as_str() {
+        "value" if export.declaration_kind.as_deref() == Some("constructor") => {
+            Some(ResolvedDecl::Constructor {
+                symbol,
+                name: export.name,
+                owner: export.constructor_of?,
+                visibility: export.visibility,
+                scheme: export.scheme,
+                declaration: export.declaration,
+            })
+        }
         "value" => Some(ResolvedDecl::Value {
             symbol,
             name: export.name,
@@ -84,7 +94,9 @@ fn resolved_instance(symbol: SymbolId, instance: InterfaceInstance) -> ResolvedD
 #[cfg(test)]
 mod tests {
     use super::*;
-    use seseragi_syntax::{parse_module_interface, ByteSpan, InterfaceType, Visibility};
+    use seseragi_syntax::{
+        parse_module_interface, ByteSpan, InterfaceScheme, InterfaceType, Visibility,
+    };
 
     #[test]
     fn resolves_basic_public_let_interface() {
@@ -185,5 +197,60 @@ mod tests {
                 },
             ]
         );
+    }
+
+    #[test]
+    fn resolves_public_adt_constructors_with_owner_and_scheme() {
+        let interface = parse_module_interface(
+            "artifact/public-type/main.ssrg",
+            "pub type Maybe<A> =\n  | Nothing\n  | Just A\n",
+        );
+        let resolved = resolve_module_interface(interface);
+
+        assert_eq!(resolved.declarations.len(), 3);
+        assert!(matches!(
+            &resolved.declarations[0],
+            ResolvedDecl::Type {
+                symbol: SymbolId(0),
+                name,
+                declaration_kind: Some(kind),
+                ..
+            } if name == "Maybe" && kind == "type"
+        ));
+        assert_eq!(
+            resolved.declarations[1],
+            ResolvedDecl::Constructor {
+                symbol: SymbolId(1),
+                name: "Nothing".to_owned(),
+                owner: "artifact/public-type::Maybe".to_owned(),
+                visibility: Visibility::Public,
+                scheme: InterfaceScheme {
+                    type_parameters: vec!["A".to_owned()],
+                    constraints: Vec::new(),
+                    type_ref: InterfaceType::Named {
+                        name: "Maybe".to_owned(),
+                        arguments: vec![InterfaceType::Named {
+                            name: "A".to_owned(),
+                            arguments: Vec::new(),
+                        }],
+                    },
+                },
+                declaration: ByteSpan { start: 24, end: 31 },
+            }
+        );
+        assert!(matches!(
+            &resolved.declarations[2],
+            ResolvedDecl::Constructor {
+                symbol: SymbolId(2),
+                name,
+                owner,
+                scheme: InterfaceScheme {
+                    type_ref: InterfaceType::Function { .. },
+                    ..
+                },
+                declaration: ByteSpan { start: 36, end: 40 },
+                ..
+            } if name == "Just" && owner == "artifact/public-type::Maybe"
+        ));
     }
 }

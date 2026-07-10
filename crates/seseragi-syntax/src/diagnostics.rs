@@ -66,7 +66,7 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     let literal_diagnostics = integer_literal_diagnostics(&tokens.tokens);
     let source_tokens = tokens.tokens.clone();
     let surface = parse_surface_ast(source_name, source);
-    let mut artifact = diagnostics_from_cst(parse_cst_from_tokens(tokens));
+    let mut artifact = diagnostics_from_cst(parse_cst_from_tokens(tokens), &source_tokens);
     let surface_diagnostics = missing_surface_body_diagnostics(
         &surface.declarations,
         &source_tokens,
@@ -242,12 +242,12 @@ fn is_trivia(kind: TokenKind) -> bool {
     )
 }
 
-fn diagnostics_from_cst(cst: CstArtifact) -> DiagnosticArtifact {
+fn diagnostics_from_cst(cst: CstArtifact, tokens: &[Token]) -> DiagnosticArtifact {
     let diagnostics = cst
         .errors
         .iter()
         .enumerate()
-        .map(|(index, error)| diagnostic_from_cst_error(index, error, &cst.missing))
+        .map(|(index, error)| diagnostic_from_cst_error(index, error, &cst.missing, tokens))
         .collect();
 
     DiagnosticArtifact {
@@ -258,8 +258,13 @@ fn diagnostics_from_cst(cst: CstArtifact) -> DiagnosticArtifact {
     }
 }
 
-fn diagnostic_from_cst_error(index: usize, error: &CstError, missing: &[CstMissing]) -> Diagnostic {
-    let primary = primary_range_for_error(error, missing);
+fn diagnostic_from_cst_error(
+    index: usize,
+    error: &CstError,
+    missing: &[CstMissing],
+    tokens: &[Token],
+) -> Diagnostic {
+    let primary = primary_range_for_error(error, missing, tokens);
     Diagnostic {
         id: format!("d{}", index + 1),
         code: error.code.clone(),
@@ -271,13 +276,33 @@ fn diagnostic_from_cst_error(index: usize, error: &CstError, missing: &[CstMissi
     }
 }
 
-fn primary_range_for_error(error: &CstError, missing: &[CstMissing]) -> ByteRange {
-    let start = missing
+fn primary_range_for_error(
+    error: &CstError,
+    missing: &[CstMissing],
+    tokens: &[Token],
+) -> ByteRange {
+    if let Some(missing) = missing
         .iter()
         .find(|missing| missing.at_token == error.start_token)
-        .map(|missing| missing.at_byte)
-        .unwrap_or(error.start_token);
-    ByteRange { start, end: start }
+    {
+        return ByteRange {
+            start: missing.at_byte,
+            end: missing.at_byte,
+        };
+    }
+
+    let start = tokens
+        .get(error.start_token)
+        .map(|token| token.start)
+        .unwrap_or_else(|| tokens.last().map(|token| token.end).unwrap_or(0));
+    let end = error
+        .end_token
+        .checked_sub(1)
+        .and_then(|index| tokens.get(index))
+        .map(|token| token.end)
+        .unwrap_or(start)
+        .max(start);
+    ByteRange { start, end }
 }
 
 fn message_key_for_code(code: &str) -> &str {
@@ -330,6 +355,36 @@ mod tests {
                 diagnostics.diagnostics[0].primary.start < diagnostics.diagnostics[0].primary.end
             );
         }
+    }
+
+    #[test]
+    fn reports_invalid_adt_names_at_the_source_token() {
+        for (source, expected) in [
+            ("type bad = | Rock\n", ByteRange { start: 5, end: 8 }),
+            ("type Bad = | rock\n", ByteRange { start: 13, end: 17 }),
+        ] {
+            let diagnostics = parse_diagnostics("main.ssrg", source);
+
+            assert_eq!(diagnostics.diagnostics.len(), 1, "{source:?}");
+            assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+            assert_eq!(diagnostics.diagnostics[0].primary, expected);
+        }
+    }
+
+    #[test]
+    fn reports_an_empty_adt_at_the_missing_variant_position() {
+        let source = "type Empty =\n";
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange {
+                start: source.find('\n').expect("fixture contains a newline"),
+                end: source.find('\n').expect("fixture contains a newline"),
+            }
+        );
     }
 
     #[test]

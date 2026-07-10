@@ -5,7 +5,21 @@ use super::{
     InterfaceConstraint, InterfaceExport, InterfaceOperator, InterfaceScheme, InterfaceType,
 };
 
-pub(super) fn export_from_surface_decl(
+mod adt;
+
+pub(super) fn exports_from_surface_decl(
+    module_name: &str,
+    declaration: &SurfaceDecl,
+) -> Vec<InterfaceExport> {
+    if matches!(declaration, SurfaceDecl::Type { .. }) {
+        return adt::exports_from_type_decl(module_name, declaration);
+    }
+    export_from_surface_decl(module_name, declaration)
+        .into_iter()
+        .collect()
+}
+
+fn export_from_surface_decl(
     module_name: &str,
     declaration: &SurfaceDecl,
 ) -> Option<InterfaceExport> {
@@ -29,6 +43,7 @@ pub(super) fn export_from_surface_decl(
                 symbol: format!("{module_name}::{name}"),
                 namespace: "value".to_owned(),
                 name: name.clone(),
+                constructor_of: None,
                 visibility: *visibility,
                 declaration_kind: None,
                 declaration: *span,
@@ -53,6 +68,7 @@ pub(super) fn export_from_surface_decl(
             symbol: format!("{module_name}::{name}"),
             namespace: "value".to_owned(),
             name: name.clone(),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("function".to_owned()),
             declaration: *span,
@@ -78,6 +94,7 @@ pub(super) fn export_from_surface_decl(
             symbol: format!("{module_name}::{name}"),
             namespace: "type".to_owned(),
             name: name.clone(),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("newtype".to_owned()),
             declaration: *span,
@@ -102,6 +119,7 @@ pub(super) fn export_from_surface_decl(
             symbol: format!("{module_name}::{name}"),
             namespace: "type".to_owned(),
             name: name.clone(),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("alias".to_owned()),
             declaration: *span,
@@ -115,21 +133,6 @@ pub(super) fn export_from_surface_decl(
             },
             representation: Some(interface_type_from_type_ref(target)),
         }),
-        SurfaceDecl::Type {
-            visibility,
-            opaque,
-            name,
-            type_parameters,
-            span,
-            ..
-        } if *visibility == Visibility::Public => Some(nominal_type_export(
-            module_name,
-            name,
-            *visibility,
-            if *opaque { "opaque-type" } else { "type" },
-            type_parameters,
-            *span,
-        )),
         SurfaceDecl::Struct {
             visibility,
             opaque,
@@ -156,6 +159,7 @@ pub(super) fn export_from_surface_decl(
             symbol: format!("{module_name}::trait({name})"),
             namespace: "trait".to_owned(),
             name: name.clone(),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("trait".to_owned()),
             declaration: *span,
@@ -185,6 +189,7 @@ pub(super) fn export_from_surface_decl(
             symbol: format!("{module_name}::operator({spelling})"),
             namespace: "operator".to_owned(),
             name: spelling.clone(),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("custom-operator".to_owned()),
             declaration: *span,
@@ -214,6 +219,7 @@ fn nominal_type_export(
         symbol: format!("{module_name}::{name}"),
         namespace: "type".to_owned(),
         name: name.to_owned(),
+        constructor_of: None,
         visibility,
         declaration_kind: Some(declaration_kind.to_owned()),
         declaration: span,

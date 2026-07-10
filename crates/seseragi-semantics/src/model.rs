@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::{
     ByteSpan, InterfaceDependency, InterfaceExport, InterfaceInstance, InterfaceOperator,
-    InterfaceType, Visibility,
+    InterfaceScheme, InterfaceType, Visibility,
 };
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize)]
@@ -28,6 +28,14 @@ pub enum ResolvedDecl {
         symbol: SymbolId,
         name: String,
         visibility: Visibility,
+        declaration: ByteSpan,
+    },
+    Constructor {
+        symbol: SymbolId,
+        name: String,
+        owner: String,
+        visibility: Visibility,
+        scheme: InterfaceScheme,
         declaration: ByteSpan,
     },
     Type {

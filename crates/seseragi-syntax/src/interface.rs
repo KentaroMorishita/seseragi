@@ -11,7 +11,7 @@ mod instances;
 mod types;
 
 use dependencies::dependency_from_surface_import;
-use exports::{export_from_surface_decl, operator_from_surface_decl};
+use exports::{exports_from_surface_decl, operator_from_surface_decl};
 use instances::instance_from_surface_decl;
 
 pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> ModuleInterface {
@@ -45,7 +45,7 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
         exports: surface_module
             .declarations
             .iter()
-            .filter_map(|declaration| export_from_surface_decl(&module_name, declaration))
+            .flat_map(|declaration| exports_from_surface_decl(&module_name, declaration))
             .collect(),
         operators: surface_module
             .declarations

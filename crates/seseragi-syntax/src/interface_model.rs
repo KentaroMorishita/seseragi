@@ -38,6 +38,8 @@ pub struct InterfaceExport {
     pub symbol: String,
     pub namespace: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub constructor_of: Option<String>,
     pub visibility: Visibility,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub declaration_kind: Option<String>,

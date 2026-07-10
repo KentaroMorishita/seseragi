@@ -14,7 +14,9 @@ pub(crate) fn typed_interface_from_modules(
     let mut exports = shallow
         .exports
         .into_iter()
-        .filter(|export| export.namespace != "value")
+        .filter(|export| {
+            export.namespace != "value" || export.declaration_kind.as_deref() == Some("constructor")
+        })
         .collect::<Vec<_>>();
     exports.extend(
         typed
@@ -48,6 +50,7 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
             symbol: symbol.clone(),
             namespace: "value".to_owned(),
             name: local_name(symbol),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: None,
             declaration: *origin,
@@ -65,6 +68,7 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
             symbol: symbol.clone(),
             namespace: "value".to_owned(),
             name: local_name(symbol),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("function".to_owned()),
             declaration: *origin,
@@ -95,6 +99,7 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
             symbol: symbol.clone(),
             namespace: "value".to_owned(),
             name: local_name(symbol),
+            constructor_of: None,
             visibility: *visibility,
             declaration_kind: Some("effect-function".to_owned()),
             declaration: *origin,

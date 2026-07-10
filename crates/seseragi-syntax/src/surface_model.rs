@@ -353,6 +353,7 @@ pub struct SurfaceVariant {
     pub name_span: ByteSpan,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payload: Option<TypeRef>,
+    pub span: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

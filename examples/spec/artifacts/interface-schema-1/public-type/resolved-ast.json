@@ -1,42 +1,25 @@
 {
   "schema": 1,
-  "module": "artifact/public-type",
   "source": "main.ssrg",
-  "dependencies": [],
-  "exports": [
+  "module": "artifact/public-type",
+  "declarations": [
     {
-      "symbol": "artifact/public-type::Maybe",
-      "namespace": "type",
+      "kind": "type",
+      "symbol": 0,
       "name": "Maybe",
       "visibility": "public",
       "declarationKind": "type",
       "declaration": {
         "start": 0,
         "end": 42
-      },
-      "scheme": {
-        "typeParameters": [
-          "A"
-        ],
-        "constraints": [],
-        "type": {
-          "kind": "type-constructor",
-          "name": "Maybe",
-          "arity": 1
-        }
       }
     },
     {
-      "symbol": "artifact/public-type::Nothing",
-      "namespace": "value",
+      "kind": "constructor",
+      "symbol": 1,
       "name": "Nothing",
-      "constructorOf": "artifact/public-type::Maybe",
+      "owner": "artifact/public-type::Maybe",
       "visibility": "public",
-      "declarationKind": "constructor",
-      "declaration": {
-        "start": 24,
-        "end": 31
-      },
       "scheme": {
         "typeParameters": [
           "A"
@@ -53,19 +36,18 @@
             }
           ]
         }
+      },
+      "declaration": {
+        "start": 24,
+        "end": 31
       }
     },
     {
-      "symbol": "artifact/public-type::Just",
-      "namespace": "value",
+      "kind": "constructor",
+      "symbol": 2,
       "name": "Just",
-      "constructorOf": "artifact/public-type::Maybe",
+      "owner": "artifact/public-type::Maybe",
       "visibility": "public",
-      "declarationKind": "constructor",
-      "declaration": {
-        "start": 36,
-        "end": 40
-      },
       "scheme": {
         "typeParameters": [
           "A"
@@ -90,9 +72,11 @@
             ]
           }
         }
+      },
+      "declaration": {
+        "start": 36,
+        "end": 40
       }
     }
-  ],
-  "operators": [],
-  "instances": []
+  ]
 }

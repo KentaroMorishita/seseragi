@@ -1,4 +1,5 @@
 mod cst;
+mod declaration;
 mod diagnostics;
 mod interface;
 mod interface_model;

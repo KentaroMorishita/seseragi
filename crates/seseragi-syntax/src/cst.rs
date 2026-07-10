@@ -1,6 +1,9 @@
+use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 use crate::token::{Token, TokenKind, TokenStream};
 use serde::Serialize;
+
+mod adt;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -102,6 +105,15 @@ impl CstParser<'_> {
                 ) if brace_depth == 0 && self.is_declaration_boundary(index) => {
                     starts.push(index);
                 }
+                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                    if brace_depth == 0
+                        && self.is_declaration_boundary(index)
+                        && self
+                            .raw_at(index)
+                            .is_some_and(is_contextual_declaration_start) =>
+                {
+                    starts.push(index);
+                }
                 _ => {}
             }
         }
@@ -124,13 +136,24 @@ impl CstParser<'_> {
     fn parse_top_decl(&mut self, start: usize, end: usize) -> CstNode {
         let mut children = Vec::new();
         let first = self.next_significant_token(start, end).unwrap_or(start);
-        let decl_start = if self.kind_at(first) == Some(TokenKind::KeywordPub) {
+        let mut decl_start = if self.kind_at(first) == Some(TokenKind::KeywordPub) {
             children.push(CstNode::new("decl-modifiers", first, first + 1, vec![]));
             self.next_significant_token(first + 1, end)
                 .unwrap_or(first + 1)
         } else {
             first
         };
+        if self.raw_at(decl_start) == Some("opaque") {
+            children.push(CstNode::new(
+                "decl-modifiers",
+                decl_start,
+                decl_start + 1,
+                vec![],
+            ));
+            decl_start = self
+                .next_significant_token(decl_start + 1, end)
+                .unwrap_or(decl_start + 1);
+        }
 
         if self.kind_at(decl_start) == Some(TokenKind::KeywordLet) {
             children.push(self.parse_let_decl(decl_start, end));
@@ -138,6 +161,8 @@ impl CstParser<'_> {
             children.push(self.parse_fn_decl(decl_start, end));
         } else if self.kind_at(decl_start) == Some(TokenKind::KeywordEffect) {
             children.push(self.parse_effect_fn_decl(decl_start, end));
+        } else if self.raw_at(decl_start) == Some("type") {
+            children.push(adt::parse_type_decl(self, decl_start, end));
         }
 
         CstNode::new("top-decl", start, end, children)
@@ -317,6 +342,10 @@ impl CstParser<'_> {
 
     fn kind_at(&self, index: usize) -> Option<TokenKind> {
         self.tokens.get(index).map(|token| token.kind)
+    }
+
+    fn raw_at(&self, index: usize) -> Option<&str> {
+        self.tokens.get(index).map(|token| token.raw.as_str())
     }
 }
 

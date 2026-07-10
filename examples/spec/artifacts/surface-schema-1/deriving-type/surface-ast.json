@@ -6,19 +6,43 @@
       "kind": "type",
       "visibility": "private",
       "name": "Color",
-      "nameSpan": { "start": 5, "end": 10 },
-      "deriving": ["Eq", "Ord", "Show"],
+      "nameSpan": {
+        "start": 5,
+        "end": 10
+      },
+      "deriving": [
+        "Eq",
+        "Ord",
+        "Show"
+      ],
       "variants": [
         {
           "name": "Red",
-          "nameSpan": { "start": 40, "end": 43 }
+          "nameSpan": {
+            "start": 40,
+            "end": 43
+          },
+          "span": {
+            "start": 38,
+            "end": 43
+          }
         },
         {
           "name": "Blue",
-          "nameSpan": { "start": 48, "end": 52 }
+          "nameSpan": {
+            "start": 48,
+            "end": 52
+          },
+          "span": {
+            "start": 46,
+            "end": 52
+          }
         }
       ],
-      "span": { "start": 0, "end": 52 }
+      "span": {
+        "start": 0,
+        "end": 52
+      }
     }
   ]
 }

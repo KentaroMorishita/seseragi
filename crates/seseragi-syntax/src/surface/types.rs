@@ -12,6 +12,9 @@ impl SurfaceParser<'_> {
         end: usize,
     ) -> Option<SurfaceDecl> {
         let name_index = self.next_significant_token(decl_start + 1, end)?;
+        if self.kind_at(name_index) != Some(TokenKind::IdentifierUpper) {
+            return None;
+        }
         let name = self.identifier_name_at(name_index)?;
         let (type_parameters, after_type_parameters) =
             self.parse_optional_type_parameters(name_index + 1, end);
@@ -83,39 +86,51 @@ impl SurfaceParser<'_> {
             name_span: self.byte_span(name_index)?,
             type_parameters,
             deriving,
-            variants: self.parse_type_variants(equals + 1, end),
+            variants: self.parse_type_variants(equals + 1, end)?,
             span: self.declaration_span(top_start, end)?,
         })
     }
 
-    fn parse_type_variants(&self, start: usize, end: usize) -> Vec<SurfaceVariant> {
+    fn parse_type_variants(&self, start: usize, end: usize) -> Option<Vec<SurfaceVariant>> {
         let mut variants = Vec::new();
         let mut cursor = start;
         while let Some(pipe) = self.find_raw(cursor, end, "|") {
-            let Some(name_index) = self.next_significant_token(pipe + 1, end) else {
-                break;
-            };
-            let Some(name) = self.identifier_name_at(name_index) else {
-                cursor = name_index + 1;
-                continue;
-            };
-            let Some(name_span) = self.byte_span(name_index) else {
-                break;
-            };
+            let variant_end = self.find_raw(pipe + 1, end, "|").unwrap_or(end);
+            let name_index = self.next_significant_token(pipe + 1, end)?;
+            if name_index >= variant_end
+                || self.kind_at(name_index) != Some(TokenKind::IdentifierUpper)
+            {
+                return None;
+            }
+            let name = self.identifier_name_at(name_index)?;
+            let name_span = self.byte_span(name_index)?;
             let after_name = name_index + 1;
-            let next = self.next_significant_token(after_name, end);
-            let payload = next
-                .filter(|index| self.raw_at(*index) != Some("|"))
-                .and_then(|index| self.parse_type_ref(index, end))
-                .map(|(type_ref, _)| type_ref);
+            let next = self.next_significant_token(after_name, variant_end);
+            let payload = if let Some(index) = next {
+                let (type_ref, after_type) = self.parse_type_ref(index, variant_end)?;
+                if self
+                    .next_significant_token(after_type, variant_end)
+                    .is_some()
+                {
+                    return None;
+                }
+                Some(type_ref)
+            } else {
+                None
+            };
+            let variant_last = self.previous_significant_token(variant_end)?;
             variants.push(SurfaceVariant {
                 name,
                 name_span,
                 payload,
+                span: crate::surface_model::ByteSpan {
+                    start: self.tokens.get(pipe)?.start,
+                    end: self.tokens.get(variant_last)?.end,
+                },
             });
-            cursor = after_name;
+            cursor = variant_end;
         }
-        variants
+        (!variants.is_empty()).then_some(variants)
     }
 
     pub(super) fn parse_struct_decl(
