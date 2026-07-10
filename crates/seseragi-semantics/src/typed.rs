@@ -1,6 +1,9 @@
 use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
 use seseragi_syntax::{lex, parse_module_interface, ModuleInterface};
 
+mod adt;
+#[cfg(test)]
+mod adt_tests;
 mod analysis;
 mod effect;
 mod effect_analysis;
@@ -23,7 +26,11 @@ use interface::typed_interface_from_modules;
 pub(crate) use pure_issues::{ConditionalIssue, PureCallIssue};
 pub(crate) use resolution::TypedResolution;
 use surface::typed_decl_from_surface;
+pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use type_ref::typed_type_from_interface_type;
+pub(crate) use type_ref::{
+    inferred_type_from_expr, typed_type_contains_hole, typed_type_from_type_ref,
+};
 
 pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
     let declarations = interface

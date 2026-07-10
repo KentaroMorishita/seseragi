@@ -29,8 +29,3 @@ pub(crate) enum ConditionalIssue {
         else_type: TypedType,
     },
 }
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct UnresolvedNameIssue {
-    pub(crate) origin: ByteSpan,
-}

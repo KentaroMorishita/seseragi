@@ -64,6 +64,73 @@ fn records_unresolved_value_names_in_the_resolver() {
 }
 
 #[test]
+fn records_unresolved_adt_payload_types_in_the_resolver() {
+    let resolved = resolve_module(
+        "artifact/unresolved-adt-payload/main.ssrg",
+        "type Label = | Present Strng\n",
+    );
+
+    assert_eq!(resolved.issues.len(), 1);
+    assert_eq!(resolved.issues[0].code, "SES-N0001");
+    assert_eq!(resolved.issues[0].message_key, "name.unresolved");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Type
+            && reference.spelling == "Strng"
+            && reference.target.is_none()
+    }));
+}
+
+#[test]
+fn rejects_duplicate_constructors_without_creating_ambiguous_symbols() {
+    let resolved = resolve_module(
+        "artifact/duplicate-constructors/main.ssrg",
+        "type First = | Shared\ntype Second = | Shared\nfn use unit: Unit -> First = Shared\n",
+    );
+
+    assert_duplicate_definition(&resolved);
+    let constructors = resolved
+        .symbols
+        .iter()
+        .filter(|symbol| {
+            symbol.namespace == SymbolNamespace::Value
+                && symbol.kind == SymbolKind::Constructor
+                && symbol.spelling == "Shared"
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(constructors.len(), 1);
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Value
+            && reference.spelling == "Shared"
+            && reference.target == Some(constructors[0].id)
+    }));
+}
+
+#[test]
+fn rejects_duplicate_type_declarations_without_creating_ambiguous_symbols() {
+    let resolved = resolve_module(
+        "artifact/duplicate-types/main.ssrg",
+        "type Hand = | Rock\ntype Hand = | Paper\nfn use unit: Unit -> Hand = Rock\n",
+    );
+
+    assert_duplicate_definition(&resolved);
+    let types = resolved
+        .symbols
+        .iter()
+        .filter(|symbol| {
+            symbol.namespace == SymbolNamespace::Type
+                && symbol.kind == SymbolKind::Type
+                && symbol.spelling == "Hand"
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(types.len(), 1);
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Type
+            && reference.spelling == "Hand"
+            && reference.target == Some(types[0].id)
+    }));
+}
+
+#[test]
 fn resolves_do_bindings_in_a_child_scope() {
     let resolved = resolve_module(
         "artifact/do-scope/main.ssrg",
@@ -92,4 +159,14 @@ fn symbol(resolved: &ResolvedModule, kind: SymbolKind, spelling: &str) -> Symbol
         .find(|symbol| symbol.kind == kind && symbol.spelling == spelling)
         .map(|symbol| symbol.id)
         .unwrap_or_else(|| panic!("missing {kind:?} symbol {spelling}"))
+}
+
+fn assert_duplicate_definition(resolved: &ResolvedModule) {
+    let duplicates = resolved
+        .issues
+        .iter()
+        .filter(|issue| issue.code == "SES-N0002")
+        .collect::<Vec<_>>();
+    assert_eq!(duplicates.len(), 1);
+    assert_eq!(duplicates[0].message_key, "name.duplicate-definition");
 }

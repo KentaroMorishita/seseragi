@@ -2,7 +2,7 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
-use crate::typed::functions::application_result_type;
+use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
@@ -31,9 +31,20 @@ pub(super) fn type_application(
         arguments.push(analysis.value.clone());
         child_analyses.push(analysis);
     }
-    let issue = call_issue(*callee_span, signature, &argument_nodes, &arguments);
+    let argument_types = arguments
+        .iter()
+        .map(inferred_type_from_expr)
+        .collect::<Vec<_>>();
+    let application = instantiated_application(signature, &argument_types);
+    let issue = call_issue(
+        *callee_span,
+        signature.parameters.len(),
+        &application.parameters,
+        &argument_nodes,
+        &arguments,
+    );
     let type_ref = if issue.is_none() {
-        application_result_type(signature, arguments.len())
+        instantiated_application_result_type(&application, arguments.len())
     } else {
         TypedType::Hole
     };
@@ -71,20 +82,21 @@ fn type_unknown_application(
 
 fn call_issue(
     callee: ByteSpan,
-    signature: &crate::typed::functions::TopLevelPureFunction,
+    parameter_count: usize,
+    parameters: &[TypedType],
     argument_nodes: &[&SurfaceExpr],
     arguments: &[TypedExpr],
 ) -> Option<PureCallIssue> {
-    if arguments.len() > signature.parameters.len() {
+    if arguments.len() > parameter_count {
         return Some(PureCallIssue::Arity {
             callee,
-            expected: signature.parameters.len(),
+            expected: parameter_count,
             actual: arguments.len(),
         });
     }
     arguments
         .iter()
-        .zip(&signature.parameters)
+        .zip(parameters)
         .zip(argument_nodes)
         .enumerate()
         .find_map(|(index, ((argument, expected), source))| {

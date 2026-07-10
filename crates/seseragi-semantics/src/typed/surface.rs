@@ -1,6 +1,7 @@
 use crate::{unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
 use seseragi_syntax::{SurfaceDecl, Token};
 
+use super::adt::{typed_adt_decl, AdtDeclInput};
 use super::effect::typed_effect_from_surface;
 use super::expr::find_effect_body;
 use super::functions::typed_parameters_from_surface;
@@ -117,9 +118,29 @@ pub(crate) fn typed_decl_from_surface(
                 body,
             })
         }
+        SurfaceDecl::Type {
+            visibility,
+            opaque,
+            name,
+            name_span,
+            type_parameters,
+            variants,
+            span,
+            ..
+        } => typed_adt_decl(
+            resolution,
+            AdtDeclInput {
+                visibility,
+                opaque,
+                name,
+                name_span,
+                type_parameters,
+                variants,
+                origin: span,
+            },
+        ),
         SurfaceDecl::Newtype { .. }
         | SurfaceDecl::Alias { .. }
-        | SurfaceDecl::Type { .. }
         | SurfaceDecl::Struct { .. }
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }

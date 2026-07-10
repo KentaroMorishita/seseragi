@@ -160,6 +160,23 @@ pub enum SurfaceDecl {
     },
 }
 
+impl SurfaceDecl {
+    pub fn span(&self) -> ByteSpan {
+        match self {
+            Self::Let { span, .. }
+            | Self::EffectFn { span, .. }
+            | Self::Fn { span, .. }
+            | Self::Newtype { span, .. }
+            | Self::Alias { span, .. }
+            | Self::Type { span, .. }
+            | Self::Struct { span, .. }
+            | Self::Trait { span, .. }
+            | Self::Operator { span, .. }
+            | Self::Instance { span, .. } => *span,
+        }
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SurfaceParameter {

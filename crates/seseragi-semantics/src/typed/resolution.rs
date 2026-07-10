@@ -6,7 +6,6 @@ use seseragi_syntax::{ByteSpan, SurfaceDecl};
 use std::collections::BTreeMap;
 
 use super::functions::TopLevelPureFunction;
-use super::pure_issues::UnresolvedNameIssue;
 use super::surface_expr::surface_expression_type_hint;
 use super::type_ref::typed_type_from_type_ref;
 
@@ -74,21 +73,6 @@ impl<'a> TypedResolution<'a> {
             })
             .collect()
     }
-
-    pub(crate) fn unresolved_names(&self, body: ByteSpan) -> Vec<UnresolvedNameIssue> {
-        self.resolved
-            .issues
-            .iter()
-            .filter(|issue| {
-                issue.code == "SES-N0001"
-                    && issue.primary.start >= body.start
-                    && issue.primary.end <= body.end
-            })
-            .map(|issue| UnresolvedNameIssue {
-                origin: issue.primary,
-            })
-            .collect()
-    }
 }
 
 fn collect_top_level_value_types(resolved: &ResolvedModule) -> BTreeMap<SymbolId, TypedType> {
@@ -119,45 +103,89 @@ fn collect_top_level_value_types(resolved: &ResolvedModule) -> BTreeMap<SymbolId
 }
 
 fn collect_callables(resolved: &ResolvedModule) -> BTreeMap<SymbolId, TopLevelPureFunction> {
-    resolved
-        .declarations
-        .iter()
-        .filter_map(|declaration| {
-            let SurfaceDecl::Fn {
+    let mut callables = BTreeMap::new();
+    for declaration in &resolved.declarations {
+        match declaration {
+            SurfaceDecl::Fn {
                 name_span,
                 type_parameters,
                 parameters,
                 return_type,
                 constraints,
                 ..
-            } = declaration
-            else {
-                return None;
-            };
-            if !type_parameters.is_empty() || !constraints.is_empty() || parameters.is_empty() {
-                return None;
+            } if type_parameters.is_empty() && constraints.is_empty() && !parameters.is_empty() => {
+                let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                    symbol.kind == SymbolKind::Function && symbol.origin == *name_span
+                }) else {
+                    continue;
+                };
+                let parameters = parameters
+                    .iter()
+                    .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                    .collect::<Vec<_>>();
+                let result = typed_type_from_type_ref(return_type);
+                if parameters.iter().any(contains_function_type) || contains_function_type(&result)
+                {
+                    continue;
+                }
+                let Some(canonical) = symbol.canonical.clone() else {
+                    continue;
+                };
+                callables.insert(
+                    symbol.id,
+                    TopLevelPureFunction {
+                        symbol: canonical,
+                        type_parameters: Vec::new(),
+                        parameters,
+                        result,
+                    },
+                );
             }
-            let symbol = resolved.symbols.iter().find(|symbol| {
-                symbol.kind == SymbolKind::Function && symbol.origin == *name_span
-            })?;
-            let parameters = parameters
-                .iter()
-                .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
-                .collect::<Vec<_>>();
-            let result = typed_type_from_type_ref(return_type);
-            if parameters.iter().any(contains_function_type) || contains_function_type(&result) {
-                return None;
+            SurfaceDecl::Type {
+                name,
+                type_parameters,
+                variants,
+                ..
+            } => {
+                let result = TypedType::Named {
+                    name: name.clone(),
+                    arguments: type_parameters
+                        .iter()
+                        .map(|parameter| TypedType::Named {
+                            name: parameter.clone(),
+                            arguments: Vec::new(),
+                        })
+                        .collect(),
+                };
+                for variant in variants {
+                    let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                        symbol.kind == SymbolKind::Constructor && symbol.origin == variant.name_span
+                    }) else {
+                        continue;
+                    };
+                    let Some(canonical) = symbol.canonical.clone() else {
+                        continue;
+                    };
+                    callables.insert(
+                        symbol.id,
+                        TopLevelPureFunction {
+                            symbol: canonical,
+                            type_parameters: type_parameters.clone(),
+                            parameters: variant
+                                .payload
+                                .as_ref()
+                                .map(typed_type_from_type_ref)
+                                .into_iter()
+                                .collect(),
+                            result: result.clone(),
+                        },
+                    );
+                }
             }
-            Some((
-                symbol.id,
-                TopLevelPureFunction {
-                    symbol: symbol.canonical.clone()?,
-                    parameters,
-                    result,
-                },
-            ))
-        })
-        .collect()
+            _ => {}
+        }
+    }
+    callables
 }
 
 fn contains_function_type(type_ref: &TypedType) -> bool {

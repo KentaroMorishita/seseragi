@@ -69,7 +69,7 @@ pub(super) fn resolve_type_ref(resolver: &mut Resolver, scope: ScopeId, type_ref
             span,
         } => {
             if !name.contains('.') {
-                resolver.reference(scope, SymbolNamespace::Type, name, *span, false);
+                resolver.reference(scope, SymbolNamespace::Type, name, *span, true);
             }
             for argument in arguments {
                 resolve_type_ref(resolver, scope, argument);

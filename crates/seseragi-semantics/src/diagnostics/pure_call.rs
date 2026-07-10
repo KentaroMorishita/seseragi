@@ -11,26 +11,6 @@ pub(super) fn collect_pure_function_diagnostics(
     if let Some(issue) = &analysis.pure_call_issue {
         diagnostics.push(pure_call_diagnostic(issue.clone(), span));
     }
-    for issue in &analysis.unresolved_names {
-        diagnostics.push(Diagnostic {
-            id: String::new(),
-            code: "SES-N0001".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "name.unresolved".to_owned(),
-            primary: ByteRange {
-                start: issue.origin.start,
-                end: issue.origin.end,
-            },
-            related: vec![RelatedDiagnostic {
-                message: "pure function body".to_owned(),
-                primary: ByteRange {
-                    start: span.start,
-                    end: span.end,
-                },
-            }],
-            fixes: Vec::new(),
-        });
-    }
 }
 
 fn pure_call_diagnostic(

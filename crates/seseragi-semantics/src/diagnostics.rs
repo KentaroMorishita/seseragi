@@ -4,7 +4,9 @@ use seseragi_syntax::{lex, parse_diagnostics, Diagnostic, DiagnosticArtifact, Su
 mod conditional;
 mod effect;
 mod function_body;
+mod let_binding;
 mod pure_call;
+mod resolution;
 mod type_labels;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
@@ -30,6 +32,7 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
     for declaration in &resolved.declarations {
         collect_decl_diagnostics(declaration, &tokens, &resolution, &mut diagnostics);
     }
+    resolution::collect_resolution_diagnostics(&resolved, &mut diagnostics);
 
     artifact.diagnostics = diagnostics
         .into_iter()
@@ -48,6 +51,23 @@ fn collect_decl_diagnostics(
     resolution: &TypedResolution<'_>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
+    if let SurfaceDecl::Let {
+        type_ref,
+        body,
+        span,
+        ..
+    } = declaration
+    {
+        let_binding::collect_let_binding_diagnostics(
+            type_ref.as_ref(),
+            body.as_ref(),
+            *span,
+            resolution,
+            diagnostics,
+        );
+        return;
+    }
+
     if let SurfaceDecl::Fn {
         parameters,
         return_type,
@@ -318,6 +338,42 @@ mod tests {
             "argument 1 expected Int, received String"
         );
         assert_ne!(diagnostics.diagnostics[0].message_key, "name.unresolved");
+    }
+
+    #[test]
+    fn reports_payload_constructor_argument_type_mismatch() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/constructor-type-mismatch/main.ssrg",
+            "type Label = | Present String\nfn invalid unit: Unit -> Label = Present 1\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "argument 1 expected String, received Int"
+        );
+    }
+
+    #[test]
+    fn reports_nullary_constructor_overapplication() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/constructor-arity/main.ssrg",
+            "type Hand = | Rock\nfn invalid unit: Unit -> Hand = Rock ()\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.arity-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "expected 0 arguments, received 1"
+        );
     }
 
     #[test]

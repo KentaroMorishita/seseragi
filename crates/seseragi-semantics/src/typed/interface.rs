@@ -40,6 +40,7 @@ pub(crate) fn typed_interface_from_modules(
 
 fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
     match declaration {
+        TypedDecl::Adt { .. } => None,
         TypedDecl::Let {
             symbol,
             visibility,

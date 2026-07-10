@@ -38,6 +38,15 @@ pub struct TypedModuleInterface {
     rename_all_fields = "camelCase"
 )]
 pub enum TypedDecl {
+    Adt {
+        symbol: String,
+        name: String,
+        visibility: Visibility,
+        opaque: bool,
+        type_parameters: Vec<String>,
+        variants: Vec<TypedAdtVariant>,
+        origin: ByteSpan,
+    },
     Let {
         symbol: String,
         visibility: Visibility,
@@ -63,6 +72,17 @@ pub enum TypedDecl {
         effect: TypedEffect,
         body: TypedExpr,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedAdtVariant {
+    pub symbol: String,
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payload: Option<TypedType>,
+    pub scheme: TypedScheme,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

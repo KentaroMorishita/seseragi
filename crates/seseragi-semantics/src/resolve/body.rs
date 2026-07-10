@@ -105,6 +105,16 @@ impl Resolver {
         canonical: Option<String>,
         origin: ByteSpan,
     ) -> SymbolId {
+        let name = (scope, namespace, spelling.to_owned());
+        if let Some(existing) = self.names.get(&name).copied() {
+            self.issues.push(ResolveIssue {
+                code: "SES-N0002".to_owned(),
+                message_key: "name.duplicate-definition".to_owned(),
+                primary: origin,
+            });
+            return existing;
+        }
+
         let id = SymbolId(self.symbols.len() as u32);
         self.symbols.push(ResolvedSymbol {
             id,
@@ -115,9 +125,7 @@ impl Resolver {
             scope,
             origin,
         });
-        self.names
-            .entry((scope, namespace, spelling.to_owned()))
-            .or_insert(id);
+        self.names.insert(name, id);
         id
     }
 
@@ -233,16 +241,5 @@ fn is_prelude_name(namespace: SymbolNamespace, spelling: &str) -> bool {
 }
 
 pub(super) fn declaration_span(declaration: &seseragi_syntax::SurfaceDecl) -> ByteSpan {
-    match declaration {
-        seseragi_syntax::SurfaceDecl::Let { span, .. }
-        | seseragi_syntax::SurfaceDecl::EffectFn { span, .. }
-        | seseragi_syntax::SurfaceDecl::Fn { span, .. }
-        | seseragi_syntax::SurfaceDecl::Newtype { span, .. }
-        | seseragi_syntax::SurfaceDecl::Alias { span, .. }
-        | seseragi_syntax::SurfaceDecl::Type { span, .. }
-        | seseragi_syntax::SurfaceDecl::Struct { span, .. }
-        | seseragi_syntax::SurfaceDecl::Trait { span, .. }
-        | seseragi_syntax::SurfaceDecl::Operator { span, .. }
-        | seseragi_syntax::SurfaceDecl::Instance { span, .. } => *span,
-    }
+    declaration.span()
 }
