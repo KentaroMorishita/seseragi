@@ -9,6 +9,7 @@ use std::collections::BTreeMap;
 
 mod declarations;
 mod expression;
+mod pattern;
 #[cfg(test)]
 mod tests;
 

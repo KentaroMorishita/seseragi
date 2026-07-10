@@ -1,6 +1,8 @@
 use super::Resolver;
-use crate::{ScopeId, ScopeKind, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{SurfaceDoItem, SurfaceExpr, SurfacePattern};
+use crate::{ScopeId, ScopeKind, SymbolNamespace};
+use seseragi_syntax::{SurfaceDoItem, SurfaceExpr};
+
+use super::pattern::resolve_pattern;
 
 pub(super) fn resolve_expression(
     resolver: &mut Resolver,
@@ -80,39 +82,5 @@ fn resolve_do_item(resolver: &mut Resolver, scope: ScopeId, item: &SurfaceDoItem
         SurfaceDoItem::Expression { value, .. } => {
             resolve_expression(resolver, scope, value);
         }
-    }
-}
-
-fn resolve_pattern(resolver: &mut Resolver, scope: ScopeId, pattern: &SurfacePattern) {
-    match pattern {
-        SurfacePattern::Name {
-            name, name_span, ..
-        } => {
-            resolver.register(
-                scope,
-                SymbolNamespace::Value,
-                SymbolKind::PatternBinding,
-                name,
-                None,
-                *name_span,
-            );
-        }
-        SurfacePattern::Constructor {
-            name,
-            name_span,
-            argument,
-            ..
-        } => {
-            resolver.reference(scope, SymbolNamespace::Value, name, *name_span, true);
-            if let Some(argument) = argument {
-                resolve_pattern(resolver, scope, argument);
-            }
-        }
-        SurfacePattern::Tuple { elements, .. } => {
-            for element in elements {
-                resolve_pattern(resolver, scope, element);
-            }
-        }
-        SurfacePattern::Wildcard { .. } | SurfacePattern::Error { .. } => {}
     }
 }
