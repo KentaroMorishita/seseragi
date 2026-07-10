@@ -1,5 +1,6 @@
 use crate::{
-    effect_ops::runtime_effect_operation, CoreExpr, CoreParameter, CoreStatement, CoreType,
+    effect_ops::runtime_effect_operation, int_ops::runtime_int_operation, CoreExpr, CoreParameter,
+    CoreStatement, CoreType,
 };
 
 use super::names::safe_identifier;
@@ -29,12 +30,18 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             }
         }
         CoreExpr::Binary {
+            operator,
             left,
             right,
             type_ref,
             ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
+            if is_int_type(type_ref) {
+                if let Some(operation) = runtime_int_operation(operator) {
+                    push_unique(requirements, operation.runtime_feature);
+                }
+            }
             collect_expr_runtime_requirements(left, requirements);
             collect_expr_runtime_requirements(right, requirements);
         }
@@ -119,7 +126,24 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_expr_runtime_imports(argument, imports);
             }
         }
-        CoreExpr::Binary { left, right, .. } => {
+        CoreExpr::Binary {
+            operator,
+            left,
+            right,
+            type_ref,
+            ..
+        } => {
+            if is_int_type(type_ref) {
+                if let Some(operation) = runtime_int_operation(operator) {
+                    push_import_unique(
+                        imports,
+                        TypeScriptImport {
+                            feature: operation.runtime_feature.to_owned(),
+                            local: operation.local_name.to_owned(),
+                        },
+                    );
+                }
+            }
             collect_expr_runtime_imports(left, imports);
             collect_expr_runtime_imports(right, imports);
         }
@@ -153,6 +177,10 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             collect_expr_runtime_imports(result, imports);
         }
     }
+}
+
+fn is_int_type(type_ref: &CoreType) -> bool {
+    matches!(type_ref, CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty())
 }
 
 fn collect_statement_runtime_imports(

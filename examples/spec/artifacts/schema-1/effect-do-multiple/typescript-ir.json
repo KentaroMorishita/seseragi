@@ -36,7 +36,7 @@
           {
             "kind": "effect",
             "value": {
-              "kind": "call",
+              "kind": "runtime-call",
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
@@ -48,7 +48,7 @@
           }
         ],
         "result": {
-          "kind": "call",
+          "kind": "runtime-call",
           "callee": "_ssrg_console_println",
           "arguments": [
             {

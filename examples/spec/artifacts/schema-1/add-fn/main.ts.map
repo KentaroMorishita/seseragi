@@ -2,8 +2,15 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/add-fn"],
-  "sourcesContent": ["pub fn add x: Int -> y: Int -> Int = x + y\n"],
-  "names": ["add"],
+  "sources": [
+    "seseragi://artifact/add-fn"
+  ],
+  "sourcesContent": [
+    "pub fn add x: Int -> y: Int -> Int = x + y\n"
+  ],
+  "names": [
+    "add",
+    "add"
+  ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

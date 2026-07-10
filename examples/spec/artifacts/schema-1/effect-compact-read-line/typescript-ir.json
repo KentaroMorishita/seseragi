@@ -25,7 +25,7 @@
         }
       ],
       "body": {
-        "kind": "call",
+        "kind": "runtime-call",
         "callee": "_ssrg_stdin_readLine",
         "arguments": []
       },

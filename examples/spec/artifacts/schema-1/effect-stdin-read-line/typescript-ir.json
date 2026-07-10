@@ -47,7 +47,7 @@
               }
             },
             "initializer": {
-              "kind": "call",
+              "kind": "runtime-call",
               "callee": "_ssrg_stdin_readLine",
               "arguments": []
             },
@@ -67,7 +67,7 @@
               }
             },
             "initializer": {
-              "kind": "call",
+              "kind": "runtime-call",
               "callee": "_ssrg_stdin_readLine",
               "arguments": []
             },
@@ -79,7 +79,7 @@
           }
         ],
         "result": {
-          "kind": "call",
+          "kind": "runtime-call",
           "callee": "_ssrg_effect_succeed",
           "arguments": [
             {

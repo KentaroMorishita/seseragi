@@ -1,4 +1,5 @@
 use crate::effect_ops::runtime_effect_operation;
+use crate::int_ops::runtime_int_operation;
 use crate::{CoreExpr, CoreModule, CoreStatement, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
@@ -128,6 +129,10 @@ pub enum TypeScriptExpr {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
     },
+    RuntimeCall {
+        callee: String,
+        arguments: Vec<TypeScriptExpr>,
+    },
     Await {
         value: Box<TypeScriptExpr>,
     },
@@ -234,12 +239,25 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             operator,
             left,
             right,
+            type_ref,
             ..
-        } => TypeScriptExpr::Binary {
-            operator: typescript_binary_operator(&operator).to_owned(),
-            left: Box::new(lower_core_expr_to_typescript(*left)),
-            right: Box::new(lower_core_expr_to_typescript(*right)),
-        },
+        } => {
+            let left = lower_core_expr_to_typescript(*left);
+            let right = lower_core_expr_to_typescript(*right);
+            if is_int_type(&type_ref) {
+                if let Some(operation) = runtime_int_operation(&operator) {
+                    return TypeScriptExpr::RuntimeCall {
+                        callee: operation.local_name.to_owned(),
+                        arguments: vec![left, right],
+                    };
+                }
+            }
+            TypeScriptExpr::Binary {
+                operator: typescript_binary_operator(&operator).to_owned(),
+                left: Box::new(left),
+                right: Box::new(right),
+            }
+        }
         CoreExpr::If {
             condition,
             then_branch,
@@ -263,7 +281,7 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             if operation == "effect.succeed" && arguments.is_empty() {
                 arguments.push(TypeScriptExpr::Undefined);
             }
-            TypeScriptExpr::Call {
+            TypeScriptExpr::RuntimeCall {
                 callee: runtime_operation
                     .map(|operation| operation.local_name.to_owned())
                     .unwrap_or_else(|| safe_identifier(&operation)),
@@ -288,6 +306,10 @@ fn typescript_binary_operator(operator: &str) -> &str {
         "!=" => "!==",
         _ => operator,
     }
+}
+
+fn is_int_type(type_ref: &crate::CoreType) -> bool {
+    matches!(type_ref, crate::CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty())
 }
 
 fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptStatement {
@@ -324,7 +346,7 @@ fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
                 || typescript_expr_contains_await(then_branch)
                 || typescript_expr_contains_await(else_branch)
         }
-        TypeScriptExpr::Call { arguments, .. } => {
+        TypeScriptExpr::Call { arguments, .. } | TypeScriptExpr::RuntimeCall { arguments, .. } => {
             arguments.iter().any(typescript_expr_contains_await)
         }
         TypeScriptExpr::Sequence { statements, result } => {

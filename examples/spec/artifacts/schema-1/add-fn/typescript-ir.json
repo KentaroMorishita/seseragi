@@ -2,23 +2,52 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/add-fn",
-  "runtimeRequirements": ["core.int64"],
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
+  ],
   "functions": [
     {
       "kind": "const-function",
       "exported": true,
       "name": "add",
       "parameters": [
-        { "name": "x", "type": "bigint", "implicit": false },
-        { "name": "y", "type": "bigint", "implicit": false }
+        {
+          "name": "x",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "y",
+          "type": "bigint",
+          "implicit": false
+        }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": { "kind": "identifier", "name": "x" },
-        "right": { "kind": "identifier", "name": "y" }
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "x"
+          },
+          {
+            "kind": "identifier",
+            "name": "y"
+          }
+        ]
       },
-      "origin": { "source": "main.ssrg", "start": 0, "end": 42 }
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      }
     }
   ]
 }

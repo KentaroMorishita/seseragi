@@ -3,7 +3,14 @@
   "stage": "typescript-ir",
   "module": "artifact/partial-application",
   "runtimeRequirements": [
-    "core.int64"
+    "core.int64",
+    "core.int64.add"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
   ],
   "functions": [
     {
@@ -23,16 +30,18 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "identifier",
-          "name": "left"
-        },
-        "right": {
-          "kind": "identifier",
-          "name": "right"
-        }
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

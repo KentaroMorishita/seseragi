@@ -1,5 +1,6 @@
 use crate::{
     effect_ops::{runtime_effect_operation_by_local_name, runtime_effect_operation_for_feature},
+    int_ops::{runtime_int_operation_by_local_name, runtime_int_operation_for_feature},
     TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
@@ -102,15 +103,21 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     let mut output = String::new();
     let mut import_groups: Vec<(&str, Vec<String>)> = Vec::new();
     for import in &module.imports {
-        if let Some(operation) = runtime_effect_operation_for_feature(&import.feature) {
-            let rendered = format!("{} as {}", operation.export_name, import.local);
+        let helper = runtime_effect_operation_for_feature(&import.feature)
+            .map(|operation| (operation.module, operation.export_name))
+            .or_else(|| {
+                runtime_int_operation_for_feature(&import.feature)
+                    .map(|operation| (operation.module, operation.export_name))
+            });
+        if let Some((runtime_module, export_name)) = helper {
+            let rendered = format!("{export_name} as {}", import.local);
             if let Some((_, specifiers)) = import_groups
                 .iter_mut()
-                .find(|(module, _)| *module == operation.module)
+                .find(|(module, _)| *module == runtime_module)
             {
                 specifiers.push(rendered);
             } else {
-                import_groups.push((operation.module, vec![rendered]));
+                import_groups.push((runtime_module, vec![rendered]));
             }
         }
     }
@@ -236,6 +243,14 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 format!("{call}({})", render_typescript_expr(argument))
             })
         }
+        TypeScriptExpr::RuntimeCall { callee, arguments } => {
+            let rendered_arguments = arguments
+                .iter()
+                .map(render_typescript_expr)
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!("{callee}({rendered_arguments})")
+        }
         TypeScriptExpr::Await { value } => format!("await {}", render_typescript_expr(value)),
         TypeScriptExpr::Sequence { statements, result } => {
             render_effect_sequence(statements, result)
@@ -303,8 +318,11 @@ fn module_names(module: &TypeScriptModule) -> Vec<String> {
 
 fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
     match expr {
-        TypeScriptExpr::Call { callee, arguments } => {
+        TypeScriptExpr::Call { callee, arguments }
+        | TypeScriptExpr::RuntimeCall { callee, arguments } => {
             if let Some(operation) = runtime_effect_operation_by_local_name(callee) {
+                names.push(operation.source_map_name.to_owned());
+            } else if let Some(operation) = runtime_int_operation_by_local_name(callee) {
                 names.push(operation.source_map_name.to_owned());
             } else {
                 names.push(callee.clone());

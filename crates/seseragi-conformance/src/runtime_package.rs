@@ -43,6 +43,9 @@ pub(crate) fn check_typescript_runtime_package(
     if runtime_helper_is_declared(abi, "effect.console.println") {
         check_typescript_runtime_console_is_cold(root)?;
     }
+    if runtime_helper_is_declared(abi, "core.int64.add") {
+        check_typescript_runtime_int64(root)?;
+    }
     Ok(())
 }
 
@@ -212,6 +215,38 @@ fn check_typescript_runtime_console_is_cold(root: &Path) -> Result<(), String> {
     if output.stdout != b"before\nafter\n" {
         return Err(format!(
             "TypeScript console effect ran before the runner boundary: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}
+
+fn check_typescript_runtime_int64(root: &Path) -> Result<(), String> {
+    let output = Command::new("bun")
+        .arg("--eval")
+        .arg(
+            "import { add, divide, power, remainder } from \"./src/int64.ts\";\n\
+             const defects = [];\n\
+             for (const operation of [() => add(9223372036854775807n, 1n), () => divide(-9223372036854775808n, -1n), () => power(2n, 63n), () => power(2n, -1n)]) {\n\
+               try { operation(); defects.push(false); } catch (error) { defects.push(error instanceof RangeError); }\n\
+             }\n\
+             process.stdout.write(JSON.stringify({ defects, divide: divide(-5n, 2n).toString(), remainder: remainder(-5n, 2n).toString() }));\n",
+        )
+        .current_dir(root.join("runtime/ts"))
+        .output()
+        .map_err(|error| format!("failed to run TypeScript Int64 runtime probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "TypeScript Int64 runtime probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    if output.stdout
+        != b"{\"defects\":[true,true,true,true],\"divide\":\"-2\",\"remainder\":\"-1\"}"
+    {
+        return Err(format!(
+            "TypeScript Int64 runtime probe returned unexpected values: {}",
             String::from_utf8_lossy(&output.stdout)
         ));
     }

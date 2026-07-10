@@ -20,6 +20,10 @@
     "./effect": {
       "types": "./src/effect.ts",
       "default": "./src/effect.ts"
+    },
+    "./int64": {
+      "types": "./src/int64.ts",
+      "default": "./src/int64.ts"
     }
   },
   "license": "Apache-2.0"

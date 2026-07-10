@@ -12,6 +12,66 @@
       "import": null
     },
     {
+      "id": "core.int64.add",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int or overflow defect",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "add"
+      }
+    },
+    {
+      "id": "core.int64.subtract",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int or overflow defect",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "subtract"
+      }
+    },
+    {
+      "id": "core.int64.multiply",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int or overflow defect",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "multiply"
+      }
+    },
+    {
+      "id": "core.int64.divide",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int or division defect",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "divide"
+      }
+    },
+    {
+      "id": "core.int64.remainder",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int or division defect",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "remainder"
+      }
+    },
+    {
+      "id": "core.int64.power",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int or power defect",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "power"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

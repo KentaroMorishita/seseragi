@@ -1,6 +1,7 @@
 mod core;
 mod effect_ops;
 mod emit;
+mod int_ops;
 mod span;
 mod typescript;
 
@@ -142,17 +143,20 @@ mod tests {
     }
 
     #[test]
-    fn lowers_integer_add_function_to_typescript_binary_expression() {
+    fn lowers_integer_add_function_to_checked_runtime_call() {
         let source = "pub fn add x: Int -> y: Int -> Int = x + y\n";
         let typed = type_module("artifact/add-fn/main.ssrg", source);
         let core = lower_typed_module(typed);
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
 
-        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(
+            bundle.metadata.runtime.requirements,
+            vec!["core.int64", "core.int64.add"]
+        );
         assert_eq!(
             bundle.typescript,
-            "export const add = (x: bigint) => (y: bigint) => x + y\n"
+            "import { add as _ssrg_int64_add } from \"@seseragi/runtime/int64\"\n\nexport const add = (x: bigint) => (y: bigint) => _ssrg_int64_add(x, y)\n"
         );
     }
 
@@ -272,9 +276,9 @@ pub fn useIdentity value: Int -> Int = identity value
             .requirements
             .iter()
             .all(|requirement| !requirement.starts_with("effect.")));
-        assert!(bundle
-            .typescript
-            .contains("export const add = (left: bigint) => (right: bigint) => left + right"));
+        assert!(bundle.typescript.contains(
+            "export const add = (left: bigint) => (right: bigint) => _ssrg_int64_add(left, right)"
+        ));
         assert!(bundle
             .typescript
             .contains("export const addTo = (value: bigint) => add(value)"));
@@ -330,7 +334,7 @@ fails ConsoleError =
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
                 is_async: false,
-                body: TypeScriptExpr::Call { callee, .. },
+                body: TypeScriptExpr::RuntimeCall { callee, .. },
                 ..
             } if callee == "_ssrg_effect_succeed"
         ));
@@ -353,7 +357,7 @@ fails ConsoleError =
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
                 is_async: false,
-                body: TypeScriptExpr::Call { .. },
+                body: TypeScriptExpr::RuntimeCall { .. },
                 ..
             }
         ));
@@ -388,7 +392,7 @@ fails ConsoleError =
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
                 is_async: false,
-                body: TypeScriptExpr::Call { .. },
+                body: TypeScriptExpr::RuntimeCall { .. },
                 ..
             }
         ));
