@@ -65,7 +65,7 @@ pub(super) fn collect_pure_function_diagnostics(
         }
         diagnostics.push(Diagnostic {
             id: String::new(),
-            code: "SES-T0101".to_owned(),
+            code: "SES-N0001".to_owned(),
             severity: DiagnosticSeverity::Error,
             message_key: "name.unresolved".to_owned(),
             primary: ByteRange {

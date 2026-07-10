@@ -127,7 +127,7 @@ mod tests {
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
         assert_eq!(diagnostics.diagnostics[0].id, "d1");
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0001");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.compact-body-not-effect"
@@ -151,7 +151,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0001");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 29, end: 33 }
@@ -170,7 +170,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0001");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 45, end: 49 }
@@ -185,7 +185,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0002");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.compact-contract-clause"
@@ -233,7 +233,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0003");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-E0001");
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.compact-failure-conflict"
@@ -257,7 +257,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0001");
         assert_eq!(diagnostics.diagnostics[0].message_key, "name.unresolved");
         assert_eq!(
             diagnostics.diagnostics[0].primary,
@@ -367,7 +367,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0102");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.bind-value-not-effect"
@@ -382,7 +382,7 @@ mod tests {
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0103");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.do-statement-not-effect"

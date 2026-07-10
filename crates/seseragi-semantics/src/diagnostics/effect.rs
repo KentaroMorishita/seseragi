@@ -35,7 +35,7 @@ pub(super) fn collect_effect_fn_diagnostics(
     if let Some(clause) = compact_contract_clause(tokens, *span) {
         diagnostics.push(Diagnostic {
             id: String::new(),
-            code: "SES-T0002".to_owned(),
+            code: "SES-P0001".to_owned(),
             severity: DiagnosticSeverity::Error,
             message_key: "effect.compact-contract-clause".to_owned(),
             primary: ByteRange {
@@ -170,7 +170,7 @@ fn collect_compact_failure_conflict(
     };
     diagnostics.push(Diagnostic {
         id: String::new(),
-        code: "SES-T0003".to_owned(),
+        code: "SES-E0001".to_owned(),
         severity: DiagnosticSeverity::Error,
         message_key: "effect.compact-failure-conflict".to_owned(),
         primary: ByteRange {
@@ -251,7 +251,7 @@ fn collect_invalid_explicit_do_line(
     }
     diagnostics.push(Diagnostic {
         id: String::new(),
-        code: "SES-T0103".to_owned(),
+        code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,
         message_key: "effect.do-statement-not-effect".to_owned(),
         primary: ByteRange {
@@ -285,7 +285,7 @@ fn collect_invalid_do_bind_diagnostics(
         }
         diagnostics.push(Diagnostic {
             id: String::new(),
-            code: "SES-T0102".to_owned(),
+            code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
             message_key: "effect.bind-value-not-effect".to_owned(),
             primary: ByteRange {
@@ -311,7 +311,7 @@ fn push_compact_body_not_effect_diagnostic(
 ) {
     diagnostics.push(Diagnostic {
         id: String::new(),
-        code: "SES-T0001".to_owned(),
+        code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,
         message_key: "effect.compact-body-not-effect".to_owned(),
         primary: ByteRange {

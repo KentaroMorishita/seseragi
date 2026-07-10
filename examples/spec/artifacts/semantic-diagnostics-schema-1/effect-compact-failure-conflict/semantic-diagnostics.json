@@ -5,18 +5,27 @@
   "diagnostics": [
     {
       "id": "d1",
-      "code": "SES-T0003",
+      "code": "SES-E0001",
       "severity": "Error",
       "messageKey": "effect.compact-failure-conflict",
-      "primary": { "start": 40, "end": 47 },
+      "primary": {
+        "start": 40,
+        "end": 47
+      },
       "related": [
         {
           "message": "operation can fail with StdinError",
-          "primary": { "start": 28, "end": 36 }
+          "primary": {
+            "start": 28,
+            "end": 36
+          }
         },
         {
           "message": "operation can fail with ConsoleError",
-          "primary": { "start": 40, "end": 47 }
+          "primary": {
+            "start": 40,
+            "end": 47
+          }
         }
       ],
       "fixes": []

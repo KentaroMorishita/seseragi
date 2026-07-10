@@ -5,14 +5,20 @@
   "diagnostics": [
     {
       "id": "d1",
-      "code": "SES-T0101",
+      "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
-      "primary": { "start": 38, "end": 45 },
+      "primary": {
+        "start": 38,
+        "end": 45
+      },
       "related": [
         {
           "message": "pure function body",
-          "primary": { "start": 0, "end": 45 }
+          "primary": {
+            "start": 0,
+            "end": 45
+          }
         }
       ],
       "fixes": []
