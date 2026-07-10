@@ -161,6 +161,25 @@ mod tests {
     }
 
     #[test]
+    fn freshens_runtime_import_that_collides_with_user_function() {
+        let source = "pub fn _ssrg_int64_add value: Int -> Int = value\npub fn add x: Int -> y: Int -> Int = x + y\n";
+        let typed = type_module("artifact/runtime-name-collision/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle
+            .typescript
+            .contains("import { add as _ssrg_int64_add_1 } from \"@seseragi/runtime/int64\""));
+        assert!(bundle
+            .typescript
+            .contains("export const _ssrg_int64_add = (value: bigint) => value"));
+        assert!(bundle
+            .typescript
+            .contains("export const add = (x: bigint) => (y: bigint) => _ssrg_int64_add_1(x, y)"));
+    }
+
+    #[test]
     fn lowers_module_qualified_pure_call_without_runtime_helper_import() {
         let source = "pub fn invoke value: Int -> Int = default value\n";
         let origin = SourceSpan {

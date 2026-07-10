@@ -1,0 +1,324 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "add",
+      "nameSpan": {
+        "start": 7,
+        "end": 10
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 11,
+            "end": 15
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 17,
+              "end": 20
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 24,
+            "end": 29
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 31,
+              "end": 34
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 38,
+          "end": 41
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "subtract",
+      "nameSpan": {
+        "start": 64,
+        "end": 72
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 73,
+            "end": 77
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 79,
+              "end": 82
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 86,
+            "end": 91
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 93,
+              "end": 96
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 100,
+          "end": 103
+        }
+      },
+      "span": {
+        "start": 57,
+        "end": 118
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "multiply",
+      "nameSpan": {
+        "start": 126,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 135,
+            "end": 139
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 141,
+              "end": 144
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 148,
+            "end": 153
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 155,
+              "end": 158
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 162,
+          "end": 165
+        }
+      },
+      "span": {
+        "start": 119,
+        "end": 180
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "divide",
+      "nameSpan": {
+        "start": 188,
+        "end": 194
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 195,
+            "end": 199
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 201,
+              "end": 204
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 208,
+            "end": 213
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 215,
+              "end": 218
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 222,
+          "end": 225
+        }
+      },
+      "span": {
+        "start": 181,
+        "end": 240
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "remainder",
+      "nameSpan": {
+        "start": 248,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 258,
+            "end": 262
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 264,
+              "end": 267
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 271,
+            "end": 276
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 278,
+              "end": 281
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 285,
+          "end": 288
+        }
+      },
+      "span": {
+        "start": 241,
+        "end": 303
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "power",
+      "nameSpan": {
+        "start": 311,
+        "end": 316
+      },
+      "parameters": [
+        {
+          "name": "base",
+          "nameSpan": {
+            "start": 317,
+            "end": 321
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 323,
+              "end": 326
+            }
+          }
+        },
+        {
+          "name": "exponent",
+          "nameSpan": {
+            "start": 330,
+            "end": 338
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 340,
+              "end": 343
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 347,
+          "end": 350
+        }
+      },
+      "span": {
+        "start": 304,
+        "end": 369
+      }
+    }
+  ]
+}

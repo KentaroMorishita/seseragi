@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0203",
+      "severity": "Error",
+      "messageKey": "literal.int-outside-range",
+      "primary": {
+        "start": 24,
+        "end": 43
+      },
+      "related": [],
+      "fixes": []
+    }
+  ]
+}

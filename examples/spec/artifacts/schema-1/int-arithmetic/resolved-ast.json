@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/int-arithmetic",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "add",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 1,
+      "name": "subtract",
+      "visibility": "public",
+      "declaration": {
+        "start": 57,
+        "end": 118
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 2,
+      "name": "multiply",
+      "visibility": "public",
+      "declaration": {
+        "start": 119,
+        "end": 180
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 3,
+      "name": "divide",
+      "visibility": "public",
+      "declaration": {
+        "start": 181,
+        "end": 240
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 4,
+      "name": "remainder",
+      "visibility": "public",
+      "declaration": {
+        "start": 241,
+        "end": 303
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 5,
+      "name": "power",
+      "visibility": "public",
+      "declaration": {
+        "start": 304,
+        "end": 369
+      }
+    }
+  ]
+}

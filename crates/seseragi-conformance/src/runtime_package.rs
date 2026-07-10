@@ -225,12 +225,12 @@ fn check_typescript_runtime_int64(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("--eval")
         .arg(
-            "import { add, divide, power, remainder } from \"./src/int64.ts\";\n\
+            "import { add, divide, multiply, power, remainder, subtract } from \"./src/int64.ts\";\n\
              const defects = [];\n\
-             for (const operation of [() => add(9223372036854775807n, 1n), () => divide(-9223372036854775808n, -1n), () => power(2n, 63n), () => power(2n, -1n)]) {\n\
+             for (const operation of [() => add(9223372036854775807n, 1n), () => subtract(-9223372036854775808n, 1n), () => multiply(9223372036854775807n, 2n), () => divide(1n, 0n), () => remainder(1n, 0n), () => divide(-9223372036854775808n, -1n), () => remainder(-9223372036854775808n, -1n), () => power(2n, 63n), () => power(2n, -1n)]) {\n\
                try { operation(); defects.push(false); } catch (error) { defects.push(error instanceof RangeError); }\n\
              }\n\
-             process.stdout.write(JSON.stringify({ defects, divide: divide(-5n, 2n).toString(), remainder: remainder(-5n, 2n).toString() }));\n",
+             process.stdout.write(JSON.stringify({ defects, values: [add(2n, 3n), subtract(2n, 3n), multiply(-2n, 3n), divide(-5n, 2n), remainder(-5n, 2n), power(0n, 0n)].map(String) }));\n",
         )
         .current_dir(root.join("runtime/ts"))
         .output()
@@ -243,7 +243,7 @@ fn check_typescript_runtime_int64(root: &Path) -> Result<(), String> {
         ));
     }
     if output.stdout
-        != b"{\"defects\":[true,true,true,true],\"divide\":\"-2\",\"remainder\":\"-1\"}"
+        != b"{\"defects\":[true,true,true,true,true,true,true,true,true],\"values\":[\"5\",\"-1\",\"-6\",\"-2\",\"-1\",\"1\"]}"
     {
         return Err(format!(
             "TypeScript Int64 runtime probe returned unexpected values: {}",

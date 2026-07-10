@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/int-arithmetic"
+  ],
+  "sourcesContent": [
+    "pub fn add left: Int -> right: Int -> Int = left + right\npub fn subtract left: Int -> right: Int -> Int = left - right\npub fn multiply left: Int -> right: Int -> Int = left * right\npub fn divide left: Int -> right: Int -> Int = left / right\npub fn remainder left: Int -> right: Int -> Int = left % right\npub fn power base: Int -> exponent: Int -> Int = base ** exponent\n"
+  ],
+  "names": [
+    "add",
+    "add",
+    "subtract",
+    "subtract",
+    "multiply",
+    "multiply",
+    "divide",
+    "divide",
+    "remainder",
+    "remainder",
+    "power",
+    "power"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

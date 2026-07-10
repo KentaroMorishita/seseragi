@@ -1,0 +1,6 @@
+pub fn add left: Int -> right: Int -> Int = left + right
+pub fn subtract left: Int -> right: Int -> Int = left - right
+pub fn multiply left: Int -> right: Int -> Int = left * right
+pub fn divide left: Int -> right: Int -> Int = left / right
+pub fn remainder left: Int -> right: Int -> Int = left % right
+pub fn power base: Int -> exponent: Int -> Int = base ** exponent

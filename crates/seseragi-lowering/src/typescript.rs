@@ -4,9 +4,11 @@ use crate::{CoreExpr, CoreModule, CoreStatement, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
+mod imports;
 mod names;
 mod runtime;
 
+use imports::freshen_runtime_imports;
 use names::safe_identifier;
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
@@ -203,7 +205,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         })
         .collect();
 
-    TypeScriptModule {
+    let mut typescript = TypeScriptModule {
         schema: module.schema,
         stage: "typescript-ir".to_owned(),
         module: module.module,
@@ -211,7 +213,9 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         imports,
         bindings,
         functions,
-    }
+    };
+    freshen_runtime_imports(&mut typescript);
+    typescript
 }
 
 fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {

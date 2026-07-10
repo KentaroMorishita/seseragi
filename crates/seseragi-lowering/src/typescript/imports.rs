@@ -1,0 +1,116 @@
+use std::collections::{BTreeMap, BTreeSet};
+
+use super::{
+    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
+};
+
+pub(super) fn freshen_runtime_imports(module: &mut TypeScriptModule) {
+    let mut used = declaration_names(module);
+    let mut renames = BTreeMap::new();
+    for import in &mut module.imports {
+        let original = import.local.clone();
+        let fresh = fresh_name(&original, &used);
+        used.insert(fresh.clone());
+        if fresh != original {
+            renames.insert(original, fresh.clone());
+            import.local = fresh;
+        }
+    }
+    if renames.is_empty() {
+        return;
+    }
+    for binding in &mut module.bindings {
+        match binding {
+            TypeScriptBinding::Const { initializer, .. } => rewrite_expr(initializer, &renames),
+        }
+    }
+    for function in &mut module.functions {
+        match function {
+            TypeScriptFunction::ConstFunction { body, .. } => rewrite_expr(body, &renames),
+        }
+    }
+}
+
+fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
+    module
+        .bindings
+        .iter()
+        .map(|binding| match binding {
+            TypeScriptBinding::Const { name, .. } => name.clone(),
+        })
+        .chain(module.functions.iter().map(|function| match function {
+            TypeScriptFunction::ConstFunction { name, .. } => name.clone(),
+        }))
+        .collect()
+}
+
+fn fresh_name(base: &str, used: &BTreeSet<String>) -> String {
+    if !used.contains(base) {
+        return base.to_owned();
+    }
+    (1usize..)
+        .map(|suffix| format!("{base}_{suffix}"))
+        .find(|candidate| !used.contains(candidate))
+        .expect("runtime import suffix space is unbounded")
+}
+
+fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
+    match expr {
+        TypeScriptExpr::RuntimeCall { callee, arguments } => {
+            if let Some(fresh) = renames.get(callee) {
+                *callee = fresh.clone();
+            }
+            for argument in arguments {
+                rewrite_expr(argument, renames);
+            }
+        }
+        TypeScriptExpr::Call { arguments, .. } => {
+            for argument in arguments {
+                rewrite_expr(argument, renames);
+            }
+        }
+        TypeScriptExpr::Binary { left, right, .. } => {
+            rewrite_expr(left, renames);
+            rewrite_expr(right, renames);
+        }
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            rewrite_expr(condition, renames);
+            rewrite_expr(then_branch, renames);
+            rewrite_expr(else_branch, renames);
+        }
+        TypeScriptExpr::Await { value } => rewrite_expr(value, renames),
+        TypeScriptExpr::Sequence { statements, result } => {
+            for statement in statements {
+                match statement {
+                    TypeScriptStatement::Effect { value } => rewrite_expr(value, renames),
+                    TypeScriptStatement::Const { initializer, .. } => {
+                        rewrite_expr(initializer, renames);
+                    }
+                }
+            }
+            rewrite_expr(result, renames);
+        }
+        TypeScriptExpr::Undefined
+        | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::String { .. }
+        | TypeScriptExpr::Boolean { .. }
+        | TypeScriptExpr::Identifier { .. } => {}
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::fresh_name;
+    use std::collections::BTreeSet;
+
+    #[test]
+    fn suffixes_used_runtime_local() {
+        let used = BTreeSet::from(["_ssrg_int64_add".to_owned(), "_ssrg_int64_add_1".to_owned()]);
+
+        assert_eq!(fresh_name("_ssrg_int64_add", &used), "_ssrg_int64_add_2");
+    }
+}

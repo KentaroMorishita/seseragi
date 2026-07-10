@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/int-arithmetic",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.int64.subtract",
+    "core.int64.multiply",
+    "core.int64.divide",
+    "core.int64.remainder",
+    "core.int64.power"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.int64.multiply",
+      "local": "_ssrg_int64_multiply"
+    },
+    {
+      "feature": "core.int64.divide",
+      "local": "_ssrg_int64_divide"
+    },
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "core.int64.power",
+      "local": "_ssrg_int64_power"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "add",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "subtract",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 57,
+        "end": 118
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "multiply",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_multiply",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 119,
+        "end": 180
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "divide",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_divide",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 181,
+        "end": 240
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "remainder",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_remainder",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 241,
+        "end": 303
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "power",
+      "parameters": [
+        {
+          "name": "base",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "exponent",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_power",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "base"
+          },
+          {
+            "kind": "identifier",
+            "name": "exponent"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 304,
+        "end": 369
+      }
+    }
+  ]
+}
