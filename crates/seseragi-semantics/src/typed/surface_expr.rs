@@ -8,6 +8,7 @@ use super::pure_issues::{ConditionalIssue, PureCallIssue, UnresolvedNameIssue};
 mod application;
 mod binary;
 mod conditional;
+mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
     parameters: BTreeMap<&'a str, TypedType>,
@@ -79,6 +80,12 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
         SurfaceExpr::Integer { .. } => Some(named_type("Int")),
         SurfaceExpr::String { .. } => Some(named_type("String")),
         SurfaceExpr::Boolean { .. } => Some(named_type("Bool")),
+        SurfaceExpr::Tuple { elements, .. } => Some(TypedType::Tuple {
+            elements: elements
+                .iter()
+                .map(surface_expression_type_hint)
+                .collect::<Option<Vec<_>>>()?,
+        }),
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
         SurfaceExpr::If {
             then_branch,
@@ -127,6 +134,7 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Name { name, span } => type_name(name, *span, context),
         SurfaceExpr::Grouped { value, .. } => type_surface_expression(value, context),
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
+        SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
         SurfaceExpr::Binary {
             operator,
             left,

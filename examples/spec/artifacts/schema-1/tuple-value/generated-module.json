@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "artifact/tuple-value",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "sample",
+    "pair"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

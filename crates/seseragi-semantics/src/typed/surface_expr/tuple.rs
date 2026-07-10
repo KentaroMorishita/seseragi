@@ -1,0 +1,31 @@
+use crate::typed::type_ref::inferred_type_from_expr;
+use crate::{TypedExpr, TypedType};
+use seseragi_syntax::{ByteSpan, SurfaceExpr};
+
+use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
+
+pub(super) fn type_tuple(
+    elements: &[SurfaceExpr],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let children = elements
+        .iter()
+        .map(|element| type_surface_expression(element, context))
+        .collect::<Vec<_>>();
+    let type_ref = TypedType::Tuple {
+        elements: children
+            .iter()
+            .map(|child| inferred_type_from_expr(&child.value))
+            .collect(),
+    };
+    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Tuple {
+        elements: children.iter().map(|child| child.value.clone()).collect(),
+        type_ref,
+        origin: span,
+    });
+    for child in children {
+        result.merge_issues_from(child);
+    }
+    result
+}

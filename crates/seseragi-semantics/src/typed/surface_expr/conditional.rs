@@ -5,7 +5,7 @@ use super::{
     named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 use crate::typed::pure_issues::ConditionalIssue;
-use crate::typed::type_ref::inferred_type_from_expr;
+use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
 pub(super) fn type_if(
     condition: &SurfaceExpr,
@@ -23,12 +23,20 @@ pub(super) fn type_if(
     let condition_type = inferred_type_from_expr(&condition.value);
     let then_type = inferred_type_from_expr(&then_branch.value);
     let else_type = inferred_type_from_expr(&else_branch.value);
-    let conditional_issue = if !named_type_is(&condition_type, "Bool") {
+    let has_unresolved_type = typed_type_contains_hole(&condition_type)
+        || typed_type_contains_hole(&then_type)
+        || typed_type_contains_hole(&else_type);
+    let conditional_issue = if typed_type_contains_hole(&condition_type) {
+        None
+    } else if !named_type_is(&condition_type, "Bool") {
         Some(ConditionalIssue::ConditionNotBool {
             condition: condition_span,
             actual: condition_type,
         })
-    } else if then_type != else_type {
+    } else if !typed_type_contains_hole(&then_type)
+        && !typed_type_contains_hole(&else_type)
+        && then_type != else_type
+    {
         Some(ConditionalIssue::BranchTypeMismatch {
             then_branch: then_span,
             else_branch: else_span,
@@ -38,7 +46,7 @@ pub(super) fn type_if(
     } else {
         None
     };
-    let type_ref = if conditional_issue.is_none() {
+    let type_ref = if conditional_issue.is_none() && !has_unresolved_type {
         then_type
     } else {
         TypedType::Hole

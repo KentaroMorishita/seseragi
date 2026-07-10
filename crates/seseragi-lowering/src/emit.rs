@@ -1,3 +1,4 @@
+use crate::typescript::types::render_typescript_type;
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
     TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
@@ -182,25 +183,6 @@ fn render_function_body(
     })
 }
 
-fn render_typescript_type(type_ref: &crate::TypeScriptType) -> &'static str {
-    match type_ref {
-        crate::TypeScriptType::Bigint => "bigint",
-        crate::TypeScriptType::Boolean => "boolean",
-        crate::TypeScriptType::String => "string",
-        crate::TypeScriptType::Undefined => "undefined",
-        crate::TypeScriptType::Unknown => "unknown",
-        crate::TypeScriptType::Maybe { element } => match element.as_ref() {
-            crate::TypeScriptType::Bigint => "bigint | undefined",
-            crate::TypeScriptType::Boolean => "boolean | undefined",
-            crate::TypeScriptType::String => "string | undefined",
-            crate::TypeScriptType::Undefined => "undefined",
-            crate::TypeScriptType::Unknown | crate::TypeScriptType::Maybe { .. } => {
-                "unknown | undefined"
-            }
-        },
-    }
-}
-
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
     match expr {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
@@ -208,6 +190,14 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::String { value } => format!("{value:?}"),
         TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Identifier { name } => name.clone(),
+        TypeScriptExpr::Tuple { elements } => format!(
+            "[{}] as const",
+            elements
+                .iter()
+                .map(render_typescript_expr)
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
         TypeScriptExpr::Binary {
             operator,
             left,

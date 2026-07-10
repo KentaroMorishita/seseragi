@@ -18,6 +18,7 @@ mod nominal_tests;
 #[cfg(test)]
 mod operator_tests;
 mod operators;
+mod pattern;
 mod signatures;
 mod traits;
 mod type_refs;

@@ -220,6 +220,10 @@ pub enum SurfaceExpr {
         argument: Box<SurfaceExpr>,
         span: ByteSpan,
     },
+    Tuple {
+        elements: Vec<SurfaceExpr>,
+        span: ByteSpan,
+    },
     Binary {
         operator: String,
         operator_span: ByteSpan,
@@ -257,6 +261,7 @@ impl SurfaceExpr {
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
             | Self::Application { span, .. }
+            | Self::Tuple { span, .. }
             | Self::Binary { span, .. }
             | Self::If { span, .. }
             | Self::Do { span, .. }
@@ -281,6 +286,17 @@ pub enum SurfacePattern {
     Wildcard {
         span: ByteSpan,
     },
+    Constructor {
+        name: String,
+        name_span: ByteSpan,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        argument: Option<Box<SurfacePattern>>,
+        span: ByteSpan,
+    },
+    Tuple {
+        elements: Vec<SurfacePattern>,
+        span: ByteSpan,
+    },
     Error {
         span: ByteSpan,
     },
@@ -289,7 +305,11 @@ pub enum SurfacePattern {
 impl SurfacePattern {
     pub fn span(&self) -> ByteSpan {
         match self {
-            Self::Name { span, .. } | Self::Wildcard { span } | Self::Error { span } => *span,
+            Self::Name { span, .. }
+            | Self::Wildcard { span }
+            | Self::Constructor { span, .. }
+            | Self::Tuple { span, .. }
+            | Self::Error { span } => *span,
         }
     }
 }

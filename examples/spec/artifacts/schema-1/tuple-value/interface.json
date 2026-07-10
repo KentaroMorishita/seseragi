@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "module": "artifact/tuple-value",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/tuple-value::sample",
+      "namespace": "value",
+      "name": "sample",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/tuple-value::pair",
+      "namespace": "value",
+      "name": "pair",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 41,
+        "end": 110
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "result": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

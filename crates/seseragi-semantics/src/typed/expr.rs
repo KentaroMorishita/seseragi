@@ -274,6 +274,7 @@ fn expr_origin_end(expr: &TypedExpr) -> usize {
         | TypedExpr::Boolean { origin, .. }
         | TypedExpr::Variable { origin, .. }
         | TypedExpr::Call { origin, .. }
+        | TypedExpr::Tuple { origin, .. }
         | TypedExpr::Binary { origin, .. }
         | TypedExpr::If { origin, .. }
         | TypedExpr::EffectCall { origin, .. } => origin.end,

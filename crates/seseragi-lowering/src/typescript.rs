@@ -1,20 +1,21 @@
-use crate::effect_ops::runtime_effect_operation;
-use crate::int_ops::runtime_int_operation;
-use crate::{CoreExpr, CoreModule, CoreStatement, SourceSpan};
+use crate::{CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
+mod expr;
 mod imports;
 mod names;
 mod runtime;
+pub(crate) mod types;
 
+use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
 use imports::freshen_runtime_imports;
-use names::safe_identifier;
+use names::local_name;
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
-    collect_type_runtime_requirement, lower_core_parameter_to_typescript, type_ref_from_core_expr,
-    type_ref_from_core_type,
+    collect_type_runtime_requirement,
 };
+use types::{lower_core_parameter_to_typescript, type_ref_from_core_expr};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -95,6 +96,7 @@ pub enum TypeScriptType {
     Undefined,
     Unknown,
     Maybe { element: Box<TypeScriptType> },
+    Tuple { elements: Vec<TypeScriptType> },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -116,6 +118,9 @@ pub enum TypeScriptExpr {
     },
     Identifier {
         name: String,
+    },
+    Tuple {
+        elements: Vec<TypeScriptExpr>,
     },
     Binary {
         operator: String,
@@ -216,169 +221,6 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
     };
     freshen_runtime_imports(&mut typescript);
     typescript
-}
-
-fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
-    match expr {
-        CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
-        CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
-        CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
-        CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
-        CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier {
-            name: local_name(&name),
-        },
-        CoreExpr::Call {
-            callee, arguments, ..
-        } => TypeScriptExpr::Call {
-            // Core symbols are module-qualified. Generated TypeScript keeps
-            // declarations module-local, so calls use the same local-name
-            // boundary as declarations and parameters.
-            callee: local_name(&callee),
-            arguments: arguments
-                .into_iter()
-                .map(lower_core_expr_to_typescript)
-                .collect(),
-        },
-        CoreExpr::Binary {
-            operator,
-            left,
-            right,
-            type_ref,
-            ..
-        } => {
-            let left = lower_core_expr_to_typescript(*left);
-            let right = lower_core_expr_to_typescript(*right);
-            if is_int_type(&type_ref) {
-                if let Some(operation) = runtime_int_operation(&operator) {
-                    return TypeScriptExpr::RuntimeCall {
-                        callee: operation.local_name.to_owned(),
-                        arguments: vec![left, right],
-                    };
-                }
-            }
-            TypeScriptExpr::Binary {
-                operator: typescript_binary_operator(&operator).to_owned(),
-                left: Box::new(left),
-                right: Box::new(right),
-            }
-        }
-        CoreExpr::If {
-            condition,
-            then_branch,
-            else_branch,
-            ..
-        } => TypeScriptExpr::Conditional {
-            condition: Box::new(lower_core_expr_to_typescript(*condition)),
-            then_branch: Box::new(lower_core_expr_to_typescript(*then_branch)),
-            else_branch: Box::new(lower_core_expr_to_typescript(*else_branch)),
-        },
-        CoreExpr::EffectOperation {
-            operation,
-            arguments,
-            ..
-        } => {
-            let runtime_operation = runtime_effect_operation(&operation);
-            let mut arguments = arguments
-                .into_iter()
-                .map(lower_core_expr_to_typescript)
-                .collect::<Vec<_>>();
-            if operation == "effect.succeed" && arguments.is_empty() {
-                arguments.push(TypeScriptExpr::Undefined);
-            }
-            TypeScriptExpr::RuntimeCall {
-                callee: runtime_operation
-                    .map(|operation| operation.local_name.to_owned())
-                    .unwrap_or_else(|| safe_identifier(&operation)),
-                arguments,
-            }
-        }
-        CoreExpr::Sequence {
-            statements, result, ..
-        } => TypeScriptExpr::Sequence {
-            statements: statements
-                .into_iter()
-                .map(lower_core_statement_to_typescript)
-                .collect(),
-            result: Box::new(lower_core_expr_to_typescript(*result)),
-        },
-    }
-}
-
-fn typescript_binary_operator(operator: &str) -> &str {
-    match operator {
-        "==" => "===",
-        "!=" => "!==",
-        _ => operator,
-    }
-}
-
-fn is_int_type(type_ref: &crate::CoreType) -> bool {
-    matches!(type_ref, crate::CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty())
-}
-
-fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptStatement {
-    match statement {
-        CoreStatement::Effect { value } => TypeScriptStatement::Effect {
-            value: lower_core_expr_to_typescript(value),
-        },
-        CoreStatement::Bind {
-            name,
-            type_ref,
-            value,
-            origin,
-        } => TypeScriptStatement::Const {
-            name: safe_identifier(&name),
-            type_ref: type_ref_from_core_type(&type_ref),
-            initializer: lower_core_expr_to_typescript(value),
-            origin,
-        },
-    }
-}
-
-fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
-    match expr {
-        TypeScriptExpr::Await { .. } => true,
-        TypeScriptExpr::Binary { left, right, .. } => {
-            typescript_expr_contains_await(left) || typescript_expr_contains_await(right)
-        }
-        TypeScriptExpr::Conditional {
-            condition,
-            then_branch,
-            else_branch,
-        } => {
-            typescript_expr_contains_await(condition)
-                || typescript_expr_contains_await(then_branch)
-                || typescript_expr_contains_await(else_branch)
-        }
-        TypeScriptExpr::Call { arguments, .. } | TypeScriptExpr::RuntimeCall { arguments, .. } => {
-            arguments.iter().any(typescript_expr_contains_await)
-        }
-        TypeScriptExpr::Sequence { statements, result } => {
-            statements.iter().any(typescript_statement_contains_await)
-                || typescript_expr_contains_await(result)
-        }
-        TypeScriptExpr::Undefined
-        | TypeScriptExpr::Bigint { .. }
-        | TypeScriptExpr::String { .. }
-        | TypeScriptExpr::Boolean { .. }
-        | TypeScriptExpr::Identifier { .. } => false,
-    }
-}
-
-fn typescript_statement_contains_await(statement: &TypeScriptStatement) -> bool {
-    match statement {
-        TypeScriptStatement::Effect { value } => typescript_expr_contains_await(value),
-        TypeScriptStatement::Const { initializer, .. } => {
-            typescript_expr_contains_await(initializer)
-        }
-    }
-}
-
-fn local_name(symbol: &str) -> String {
-    symbol
-        .rsplit_once("::")
-        .map(|(_, name)| safe_identifier(name))
-        .unwrap_or_else(|| safe_identifier(symbol))
 }
 
 pub(super) fn push_unique(values: &mut Vec<String>, value: &str) {

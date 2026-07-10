@@ -63,9 +63,16 @@ pub(super) fn safe_identifier(name: &str) -> String {
     output
 }
 
+pub(super) fn local_name(symbol: &str) -> String {
+    symbol
+        .rsplit_once("::")
+        .map(|(_, name)| safe_identifier(name))
+        .unwrap_or_else(|| safe_identifier(symbol))
+}
+
 #[cfg(test)]
 mod tests {
-    use super::safe_identifier;
+    use super::{local_name, safe_identifier};
 
     #[test]
     fn preserves_simple_identifiers() {
@@ -80,5 +87,10 @@ mod tests {
     #[test]
     fn replaces_invalid_identifier_characters() {
         assert_eq!(safe_identifier("operator(<+>)"), "operator_____");
+    }
+
+    #[test]
+    fn removes_the_module_qualification_at_the_backend_boundary() {
+        assert_eq!(local_name("artifact/example::answer"), "answer");
     }
 }

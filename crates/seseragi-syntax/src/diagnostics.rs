@@ -1,5 +1,7 @@
 use crate::cst::parse_cst_from_tokens;
 use crate::lexer::lex;
+use crate::surface::parse_surface_ast;
+use crate::surface_model::SurfaceDecl;
 use crate::{CstArtifact, CstError, CstMissing, Token, TokenKind};
 use serde::Serialize;
 
@@ -59,14 +61,28 @@ pub struct DiagnosticEdit {
 }
 
 pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
-    let tokens = lex(source_name, source);
+    let source_name = source_name.into();
+    let tokens = lex(source_name.clone(), source);
     let literal_diagnostics = integer_literal_diagnostics(&tokens.tokens);
+    let source_tokens = tokens.tokens.clone();
+    let surface = parse_surface_ast(source_name, source);
     let mut artifact = diagnostics_from_cst(parse_cst_from_tokens(tokens));
+    let surface_diagnostics = missing_surface_body_diagnostics(
+        &surface.declarations,
+        &source_tokens,
+        &artifact.diagnostics,
+    );
+    append_diagnostics(&mut artifact, surface_diagnostics);
+    append_diagnostics(&mut artifact, literal_diagnostics);
+    artifact
+}
+
+fn append_diagnostics(artifact: &mut DiagnosticArtifact, diagnostics: Vec<Diagnostic>) {
     let next_id = artifact.diagnostics.len() + 1;
     artifact
         .diagnostics
         .extend(
-            literal_diagnostics
+            diagnostics
                 .into_iter()
                 .enumerate()
                 .map(|(index, mut diagnostic)| {
@@ -74,7 +90,86 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
                     diagnostic
                 }),
         );
-    artifact
+}
+
+fn missing_surface_body_diagnostics(
+    declarations: &[SurfaceDecl],
+    tokens: &[Token],
+    existing: &[Diagnostic],
+) -> Vec<Diagnostic> {
+    declarations
+        .iter()
+        .filter_map(|declaration| {
+            let span = match declaration {
+                SurfaceDecl::Let {
+                    body: None, span, ..
+                }
+                | SurfaceDecl::Fn {
+                    body: None, span, ..
+                }
+                | SurfaceDecl::EffectFn {
+                    body: None, span, ..
+                } => *span,
+                _ => return None,
+            };
+            if existing.iter().any(|diagnostic| {
+                diagnostic.code == "SES-P0001"
+                    && diagnostic.primary.start >= span.start
+                    && diagnostic.primary.start <= span.end
+            }) {
+                return None;
+            }
+            let primary = malformed_tuple_body_range(tokens, span.start, span.end)?;
+            Some(Diagnostic {
+                id: String::new(),
+                code: "SES-P0001".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "parser.expected-expression".to_owned(),
+                primary,
+                related: Vec::new(),
+                fixes: Vec::new(),
+            })
+        })
+        .collect()
+}
+
+fn malformed_tuple_body_range(
+    tokens: &[Token],
+    declaration_start: usize,
+    declaration_end: usize,
+) -> Option<ByteRange> {
+    let equals = tokens.iter().find(|token| {
+        token.kind == TokenKind::OperatorEquals
+            && token.start >= declaration_start
+            && token.end <= declaration_end
+    });
+    let equals = equals?;
+    let body = tokens
+        .iter()
+        .filter(|token| {
+            token.start >= equals.end
+                && token.end <= declaration_end
+                && token.kind != TokenKind::Eof
+                && !is_trivia(token.kind)
+        })
+        .collect::<Vec<_>>();
+    match (body.first(), body.last()) {
+        (Some(first), Some(last))
+            if first.kind == TokenKind::PunctuationParenLeft
+                && last.kind == TokenKind::PunctuationParenRight
+                && body
+                    .iter()
+                    .rev()
+                    .nth(1)
+                    .is_some_and(|token| token.kind == TokenKind::PunctuationComma) =>
+        {
+            Some(ByteRange {
+                start: first.start,
+                end: last.end,
+            })
+        }
+        _ => None,
+    }
 }
 
 fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
@@ -222,6 +317,19 @@ mod tests {
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 21, end: 21 }
         );
+    }
+
+    #[test]
+    fn reports_malformed_tuple_expressions_instead_of_silently_dropping_the_body() {
+        for source in ["pub let singleton = (1,)\n", "pub let trailing = (1, 2,)\n"] {
+            let diagnostics = parse_diagnostics("main.ssrg", source);
+
+            assert_eq!(diagnostics.diagnostics.len(), 1);
+            assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+            assert!(
+                diagnostics.diagnostics[0].primary.start < diagnostics.diagnostics[0].primary.end
+            );
+        }
     }
 
     #[test]

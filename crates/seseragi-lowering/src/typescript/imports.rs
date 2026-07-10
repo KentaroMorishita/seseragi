@@ -69,6 +69,11 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 rewrite_expr(argument, renames);
             }
         }
+        TypeScriptExpr::Tuple { elements } => {
+            for element in elements {
+                rewrite_expr(element, renames);
+            }
+        }
         TypeScriptExpr::Binary { left, right, .. } => {
             rewrite_expr(left, renames);
             rewrite_expr(right, renames);

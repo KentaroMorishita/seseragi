@@ -87,6 +87,7 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         },
         TypedExpr::Variable { type_ref, .. }
         | TypedExpr::Call { type_ref, .. }
+        | TypedExpr::Tuple { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. } => type_ref.clone(),
         TypedExpr::EffectCall { operation, .. } => known_effect_operation_by_semantic(operation)
@@ -103,5 +104,19 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             })
             .unwrap_or_else(unit_type),
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
+    }
+}
+
+pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
+    match type_ref {
+        TypedType::Hole => true,
+        TypedType::Named { arguments, .. } => arguments.iter().any(typed_type_contains_hole),
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| typed_type_contains_hole(&field.type_ref)),
+        TypedType::Tuple { elements } => elements.iter().any(typed_type_contains_hole),
+        TypedType::Function { parameter, result } => {
+            typed_type_contains_hole(parameter) || typed_type_contains_hole(result)
+        }
     }
 }

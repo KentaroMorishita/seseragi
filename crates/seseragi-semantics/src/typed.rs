@@ -12,6 +12,8 @@ mod interface;
 mod pure_issues;
 mod surface;
 mod surface_expr;
+#[cfg(test)]
+mod tuple_tests;
 mod type_ref;
 
 pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};

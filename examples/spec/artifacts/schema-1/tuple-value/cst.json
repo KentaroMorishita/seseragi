@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 61,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 24,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 0,
+            "endToken": 1,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 2,
+            "endToken": 24,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 24,
+        "endToken": 61,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 24,
+            "endToken": 25,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 26,
+            "endToken": 61,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

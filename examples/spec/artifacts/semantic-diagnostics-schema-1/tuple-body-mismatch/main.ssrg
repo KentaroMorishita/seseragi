@@ -1,0 +1,2 @@
+pub fn pair value: Int -> (Int, Bool) =
+  (value, "wrong")

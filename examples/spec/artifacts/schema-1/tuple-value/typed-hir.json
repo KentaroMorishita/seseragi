@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/tuple-value",
+  "declarations": [
+    {
+      "kind": "let",
+      "symbol": "artifact/tuple-value::sample",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "integer",
+            "value": "1",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 31,
+              "end": 32
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true,
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "start": 34,
+              "end": 38
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 30,
+          "end": 39
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/tuple-value::pair",
+      "visibility": "public",
+      "origin": {
+        "start": 41,
+        "end": 110
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 53,
+            "end": 57
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 66,
+            "end": 71
+          }
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 98,
+              "end": 102
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "start": 104,
+              "end": 109
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 97,
+          "end": 110
+        }
+      }
+    }
+  ]
+}

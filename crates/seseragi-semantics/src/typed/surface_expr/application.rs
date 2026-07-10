@@ -4,7 +4,7 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr};
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::functions::application_result_type;
 use crate::typed::pure_issues::PureCallIssue;
-use crate::typed::type_ref::inferred_type_from_expr;
+use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
 pub(super) fn type_application(
     expression: &SurfaceExpr,
@@ -87,7 +87,7 @@ fn call_issue(
         .enumerate()
         .find_map(|(index, ((argument, expected), source))| {
             let actual = inferred_type_from_expr(argument);
-            (actual != TypedType::Hole && actual != *expected).then(|| {
+            (!typed_type_contains_hole(&actual) && actual != *expected).then(|| {
                 PureCallIssue::ArgumentType {
                     argument: source.span(),
                     index,

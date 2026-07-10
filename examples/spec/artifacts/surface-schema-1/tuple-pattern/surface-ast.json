@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "private",
+      "name": "split",
+      "nameSpan": {
+        "start": 10,
+        "end": 15
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "name",
+                  "name": "first",
+                  "nameSpan": {
+                    "start": 30,
+                    "end": 35
+                  },
+                  "span": {
+                    "start": 30,
+                    "end": 35
+                  }
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "wildcard",
+                      "span": {
+                        "start": 38,
+                        "end": 39
+                      }
+                    },
+                    {
+                      "kind": "name",
+                      "name": "second",
+                      "nameSpan": {
+                        "start": 41,
+                        "end": 47
+                      },
+                      "span": {
+                        "start": 41,
+                        "end": 47
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 37,
+                    "end": 48
+                  }
+                }
+              ],
+              "span": {
+                "start": 29,
+                "end": 49
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "readPair",
+                "span": {
+                  "start": 53,
+                  "end": 61
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 62,
+                  "end": 64
+                }
+              },
+              "span": {
+                "start": 53,
+                "end": 64
+              }
+            },
+            "span": {
+              "start": 29,
+              "end": 64
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "succeed",
+            "span": {
+              "start": 69,
+              "end": 76
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "second",
+            "span": {
+              "start": 77,
+              "end": 83
+            }
+          },
+          "span": {
+            "start": 69,
+            "end": 83
+          }
+        },
+        "span": {
+          "start": 20,
+          "end": 87
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 87
+      }
+    }
+  ]
+}

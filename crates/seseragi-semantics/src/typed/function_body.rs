@@ -1,4 +1,6 @@
-use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
+use super::type_ref::{
+    inferred_type_from_expr, typed_type_contains_hole, typed_type_from_type_ref,
+};
 use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, TypeRef};
 
@@ -17,7 +19,10 @@ pub(crate) fn function_body_issue(
     let body = body?;
     let expected = typed_type_from_type_ref(return_type);
     let actual = inferred_type_from_expr(body);
-    if expected == TypedType::Hole || actual == TypedType::Hole || expected == actual {
+    if typed_type_contains_hole(&expected)
+        || typed_type_contains_hole(&actual)
+        || expected == actual
+    {
         return None;
     }
 

@@ -88,6 +88,7 @@ fn collect_effect_contract(
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
         | TypedExpr::Call { .. }
+        | TypedExpr::Tuple { .. }
         | TypedExpr::Binary { .. }
         | TypedExpr::If { .. } => {}
     }

@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/tuple-value",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.bool"
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "sample",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "bigint"
+          },
+          {
+            "kind": "boolean"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "bigint",
+            "value": "1"
+          },
+          {
+            "kind": "boolean",
+            "value": true
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 39
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "pair",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 41,
+        "end": 110
+      }
+    }
+  ]
+}

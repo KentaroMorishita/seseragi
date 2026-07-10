@@ -1,0 +1,4 @@
+pub let sample: (Int, Bool) = (1, True)
+
+pub fn pair left: Int -> right: Bool -> (Int, Bool) =
+  (left, right)

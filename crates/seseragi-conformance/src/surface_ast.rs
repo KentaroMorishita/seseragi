@@ -35,6 +35,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
 
     match kind {
         "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
+        "tuple" => validate_expression_array(expression, "elements", path),
         "grouped" => validate_child(expression, "value", path),
         "application" => {
             validate_child(expression, "function", path)?;
@@ -62,13 +63,86 @@ fn validate_do(expression: &Value, path: &str) -> Result<(), String> {
         .and_then(Value::as_array)
         .ok_or_else(|| format!("SurfaceAst {path}.items must be an array"))?;
     for (index, item) in items.iter().enumerate() {
-        require_span(item, &format!("{path}.items[{index}]"))?;
-        validate_child(item, "value", &format!("{path}.items[{index}]"))?;
+        let item_path = format!("{path}.items[{index}]");
+        require_span(item, &item_path)?;
+        let kind = item
+            .get("kind")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("SurfaceAst {item_path}.kind must be a string"))?;
+        match kind {
+            "bind" | "let" => {
+                let pattern = item
+                    .get("pattern")
+                    .ok_or_else(|| format!("SurfaceAst {item_path}.pattern is required"))?;
+                validate_pattern(pattern, &format!("{item_path}.pattern"))?;
+            }
+            "expression" => {}
+            other => {
+                return Err(format!(
+                    "SurfaceAst {item_path} has unknown do item kind {other}"
+                ));
+            }
+        }
+        validate_child(item, "value", &item_path)?;
     }
     let result = expression
         .get("result")
         .ok_or_else(|| format!("valid SurfaceAst {path} must preserve its final do result"))?;
     validate_expression(result, &format!("{path}.result"))
+}
+
+fn validate_expression_array(parent: &Value, field: &str, path: &str) -> Result<(), String> {
+    let elements = parent
+        .get(field)
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.{field} must be an array"))?;
+    if elements.len() < 2 {
+        return Err(format!(
+            "SurfaceAst {path}.{field} must contain at least two elements"
+        ));
+    }
+    for (index, element) in elements.iter().enumerate() {
+        validate_expression(element, &format!("{path}.{field}[{index}]"))?;
+    }
+    Ok(())
+}
+
+fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
+    let kind = pattern
+        .get("kind")
+        .and_then(Value::as_str)
+        .ok_or_else(|| format!("SurfaceAst {path}.kind must be a string"))?;
+    if kind == "error" {
+        return Err(format!(
+            "valid SurfaceAst {path} must not contain an error pattern"
+        ));
+    }
+    require_span(pattern, path)?;
+    match kind {
+        "name" | "wildcard" => Ok(()),
+        "constructor" => match pattern.get("argument") {
+            Some(argument) => validate_pattern(argument, &format!("{path}.argument")),
+            None => Ok(()),
+        },
+        "tuple" => {
+            let elements = pattern
+                .get("elements")
+                .and_then(Value::as_array)
+                .ok_or_else(|| format!("SurfaceAst {path}.elements must be an array"))?;
+            if elements.len() < 2 {
+                return Err(format!(
+                    "SurfaceAst {path}.elements must contain at least two elements"
+                ));
+            }
+            for (index, element) in elements.iter().enumerate() {
+                validate_pattern(element, &format!("{path}.elements[{index}]"))?;
+            }
+            Ok(())
+        }
+        other => Err(format!(
+            "SurfaceAst {path} has unknown pattern kind {other}"
+        )),
+    }
 }
 
 fn validate_child(parent: &Value, field: &str, path: &str) -> Result<(), String> {
@@ -123,6 +197,49 @@ mod tests {
                     },
                     "argument": { "kind": "integer", "span": { "start": 6, "end": 7 } },
                     "span": { "start": 0, "end": 7 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_tuple_values_and_nested_tuple_patterns() {
+        let module = json!({
+            "declarations": [{
+                "kind": "effectFn",
+                "body": {
+                    "kind": "do",
+                    "items": [{
+                        "kind": "bind",
+                        "pattern": {
+                            "kind": "tuple",
+                            "elements": [
+                                { "kind": "name", "span": { "start": 1, "end": 2 } },
+                                {
+                                    "kind": "tuple",
+                                    "elements": [
+                                        { "kind": "wildcard", "span": { "start": 4, "end": 5 } },
+                                        { "kind": "name", "span": { "start": 6, "end": 7 } }
+                                    ],
+                                    "span": { "start": 3, "end": 8 }
+                                }
+                            ],
+                            "span": { "start": 0, "end": 9 }
+                        },
+                        "value": { "kind": "name", "span": { "start": 13, "end": 17 } },
+                        "span": { "start": 0, "end": 17 }
+                    }],
+                    "result": {
+                        "kind": "tuple",
+                        "elements": [
+                            { "kind": "integer", "span": { "start": 19, "end": 20 } },
+                            { "kind": "boolean", "span": { "start": 22, "end": 26 } }
+                        ],
+                        "span": { "start": 18, "end": 27 }
+                    },
+                    "span": { "start": 0, "end": 28 }
                 }
             }]
         });

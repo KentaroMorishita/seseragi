@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/tuple-value"
+  ],
+  "sourcesContent": [
+    "pub let sample: (Int, Bool) = (1, True)\n\npub fn pair left: Int -> right: Bool -> (Int, Bool) =\n  (left, right)\n"
+  ],
+  "names": [
+    "sample",
+    "pair"
+  ],
+  "mappings": "AAAAA;AAEAC"
+}

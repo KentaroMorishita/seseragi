@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/tuple-value",
+  "bindings": [
+    {
+      "symbol": "artifact/tuple-value::sample",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 39
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "int64",
+            "value": "1",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 31,
+              "end": 32
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 34,
+              "end": 38
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 30,
+          "end": 39
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/tuple-value::pair",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 41,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 98,
+              "end": 102
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 104,
+              "end": 109
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 97,
+          "end": 110
+        }
+      }
+    }
+  ]
+}

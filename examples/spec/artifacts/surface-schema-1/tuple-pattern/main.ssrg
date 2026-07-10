@@ -1,0 +1,5 @@
+effect fn split =
+  do {
+    (first, (_, second)) <- readPair ()
+    succeed second
+  }

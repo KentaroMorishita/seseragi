@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/tuple-value",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "sample",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 39
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 1,
+      "name": "pair",
+      "visibility": "public",
+      "declaration": {
+        "start": 41,
+        "end": 110
+      }
+    }
+  ]
+}

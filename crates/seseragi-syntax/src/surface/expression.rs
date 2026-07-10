@@ -3,6 +3,7 @@ use crate::surface_model::{ByteSpan, SurfaceExpr};
 use crate::token::{Token, TokenKind};
 
 mod do_block;
+mod parenthesized;
 #[cfg(test)]
 mod tests;
 
@@ -131,7 +132,7 @@ impl ExpressionParser<'_> {
             TokenKind::IdentifierLower | TokenKind::IdentifierUpper => Some(self.parse_name(index)),
             TokenKind::KeywordIf => self.parse_if(token, stops),
             TokenKind::KeywordDo => self.parse_do(token),
-            TokenKind::PunctuationParenLeft => self.parse_parenthesized(token),
+            TokenKind::PunctuationParenLeft => parenthesized::parse(self, token),
             TokenKind::Unknown => Some(SurfaceExpr::Error {
                 span: token_span(token),
             }),
@@ -208,29 +209,6 @@ impl ExpressionParser<'_> {
             span: ByteSpan {
                 start: do_token.start,
                 end: self.tokens[close].end,
-            },
-        })
-    }
-
-    fn parse_parenthesized(&mut self, open_token: &Token) -> Option<SurfaceExpr> {
-        self.skip_trivia();
-        if self.kind_at_cursor() == Some(TokenKind::PunctuationParenRight) {
-            let close = self.tokens.get(self.cursor)?;
-            self.cursor += 1;
-            return Some(SurfaceExpr::Unit {
-                span: ByteSpan {
-                    start: open_token.start,
-                    end: close.end,
-                },
-            });
-        }
-        let value = self.parse_expr_bp(0, &[TokenKind::PunctuationParenRight])?;
-        let close = self.consume(TokenKind::PunctuationParenRight)?;
-        Some(SurfaceExpr::Grouped {
-            value: Box::new(value),
-            span: ByteSpan {
-                start: open_token.start,
-                end: close.end,
             },
         })
     }

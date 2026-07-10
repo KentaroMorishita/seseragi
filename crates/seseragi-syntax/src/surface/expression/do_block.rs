@@ -1,5 +1,6 @@
 use super::parse_expression_range;
-use crate::surface_model::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
+use crate::surface::pattern::parse_pattern_range;
+use crate::surface_model::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse_do_contents(
@@ -53,7 +54,7 @@ fn parse_segment(tokens: &[Token], start: usize, end: usize) -> Option<ParsedSeg
     {
         let value = expression_or_error(tokens, bind + 1, end, tokens[bind].end);
         return Some(ParsedSegment::Bind(SurfaceDoItem::Bind {
-            pattern: parse_pattern(tokens, start, bind),
+            pattern: parse_pattern_range(tokens, start, bind),
             value,
             span,
         }));
@@ -69,7 +70,7 @@ fn parse_segment(tokens: &[Token], start: usize, end: usize) -> Option<ParsedSeg
             .unwrap_or((end, end, tokens[first].end));
         let value = expression_or_error(tokens, value_start, end, error_at);
         return Some(ParsedSegment::Let(SurfaceDoItem::Let {
-            pattern: parse_pattern(tokens, first + 1, pattern_end),
+            pattern: parse_pattern_range(tokens, first + 1, pattern_end),
             value,
             span,
         }));
@@ -90,33 +91,6 @@ fn expression_or_error(tokens: &[Token], start: usize, end: usize, error_at: usi
             end: error_at,
         },
     })
-}
-
-fn parse_pattern(tokens: &[Token], start: usize, end: usize) -> SurfacePattern {
-    let significant = significant_indices(tokens, start, end);
-    let Some(first) = significant.first().copied() else {
-        let at = tokens.get(start).map(|token| token.start).unwrap_or(0);
-        return SurfacePattern::Error {
-            span: ByteSpan { start: at, end: at },
-        };
-    };
-    let last = significant.last().copied().unwrap_or(first);
-    let span = ByteSpan {
-        start: tokens[first].start,
-        end: tokens[last].end,
-    };
-    if significant.len() != 1 {
-        return SurfacePattern::Error { span };
-    }
-    match tokens[first].kind {
-        TokenKind::IdentifierLower => SurfacePattern::Name {
-            name: tokens[first].raw.clone(),
-            name_span: span,
-            span,
-        },
-        TokenKind::Wildcard => SurfacePattern::Wildcard { span },
-        _ => SurfacePattern::Error { span },
-    }
 }
 
 fn split_segments(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usize)> {

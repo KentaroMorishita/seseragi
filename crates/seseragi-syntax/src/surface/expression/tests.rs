@@ -55,6 +55,99 @@ fn preserves_grouped_expression_boundaries() {
 }
 
 #[test]
+fn parses_tuple_values_without_losing_grouped_expressions() {
+    let body = first_body("pub fn pair left: Int -> right: Bool -> (Int, Bool) = (left, right)\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Tuple { elements, .. }
+            if elements.len() == 2
+                && matches!(&elements[0], SurfaceExpr::Name { name, .. } if name == "left")
+                && matches!(&elements[1], SurfaceExpr::Name { name, .. } if name == "right")
+    ));
+}
+
+#[test]
+fn keeps_a_tuple_as_one_application_argument() {
+    let body =
+        first_body("pub fn usePair left: Int -> right: Bool -> Int = consume (left, right)\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Application { argument, .. }
+            if matches!(*argument, SurfaceExpr::Tuple { ref elements, .. } if elements.len() == 2)
+    ));
+}
+
+#[test]
+fn rejects_one_element_and_trailing_comma_tuples() {
+    for source in ["pub let singleton = (1,)\n", "pub let trailing = (1, 2,)\n"] {
+        let module = parse_surface_ast("main.ssrg", source);
+        assert!(matches!(
+            &module.declarations[0],
+            SurfaceDecl::Let { body: None, .. }
+        ));
+    }
+}
+
+#[test]
+fn parses_nested_tuple_patterns_in_do_bindings() {
+    let body =
+        first_body("effect fn main = do { (first, (_, second)) <- readPair (); succeed second }\n");
+
+    let SurfaceExpr::Do { items, .. } = body else {
+        panic!("expected do expression");
+    };
+    assert!(matches!(
+        &items[0],
+        SurfaceDoItem::Bind {
+            pattern: SurfacePattern::Tuple { elements, .. },
+            ..
+        } if elements.len() == 2
+            && matches!(&elements[0], SurfacePattern::Name { name, .. } if name == "first")
+            && matches!(
+                &elements[1],
+                SurfacePattern::Tuple { elements, .. }
+                    if matches!(&elements[0], SurfacePattern::Wildcard { .. })
+                        && matches!(&elements[1], SurfacePattern::Name { name, .. } if name == "second")
+            )
+    ));
+}
+
+#[test]
+fn distinguishes_constructor_patterns_from_bindings() {
+    let body = first_body(
+        "effect fn main = do { (Present value, Missing) <- readPair (); succeed value }\n",
+    );
+
+    let SurfaceExpr::Do { items, .. } = body else {
+        panic!("expected do expression");
+    };
+    assert!(matches!(
+        &items[0],
+        SurfaceDoItem::Bind {
+            pattern: SurfacePattern::Tuple { elements, .. },
+            ..
+        } if matches!(
+            &elements[0],
+            SurfacePattern::Constructor {
+                name,
+                argument: Some(argument),
+                ..
+            } if name == "Present"
+                && matches!(argument.as_ref(), SurfacePattern::Name { name, .. } if name == "value")
+        ) && matches!(
+            &elements[1],
+            SurfacePattern::Constructor {
+                name,
+                argument: None,
+                ..
+            } if name == "Missing"
+        )
+    ));
+}
+
+#[test]
 fn permits_a_line_break_after_low_precedence_application() {
     let body = first_body("effect fn greet = println $\n  \"hello\"\n");
 
