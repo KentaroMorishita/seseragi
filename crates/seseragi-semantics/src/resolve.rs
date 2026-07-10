@@ -1,7 +1,7 @@
-use crate::{ResolvedDecl, ResolvedModule, SymbolId};
+use crate::{ResolvedInterface, ResolvedInterfaceDecl, SymbolId};
 use seseragi_syntax::{InterfaceExport, InterfaceInstance, InterfaceOperator, ModuleInterface};
 
-pub fn resolve_module_interface(interface: ModuleInterface) -> ResolvedModule {
+pub fn resolve_module_interface(interface: ModuleInterface) -> ResolvedInterface {
     let ModuleInterface {
         schema,
         source,
@@ -27,7 +27,7 @@ pub fn resolve_module_interface(interface: ModuleInterface) -> ResolvedModule {
         declarations.push(resolved_instance(symbol, instance));
     }
 
-    ResolvedModule {
+    ResolvedInterface {
         schema,
         source,
         module,
@@ -39,10 +39,10 @@ fn resolved_export(
     symbol: SymbolId,
     export: InterfaceExport,
     operators: &[InterfaceOperator],
-) -> Option<ResolvedDecl> {
+) -> Option<ResolvedInterfaceDecl> {
     match export.namespace.as_str() {
         "value" if export.declaration_kind.as_deref() == Some("constructor") => {
-            Some(ResolvedDecl::Constructor {
+            Some(ResolvedInterfaceDecl::Constructor {
                 symbol,
                 name: export.name,
                 owner: export.constructor_of?,
@@ -51,13 +51,13 @@ fn resolved_export(
                 declaration: export.declaration,
             })
         }
-        "value" => Some(ResolvedDecl::Value {
+        "value" => Some(ResolvedInterfaceDecl::Value {
             symbol,
             name: export.name,
             visibility: export.visibility,
             declaration: export.declaration,
         }),
-        "type" => Some(ResolvedDecl::Type {
+        "type" => Some(ResolvedInterfaceDecl::Type {
             symbol,
             name: export.name,
             visibility: export.visibility,
@@ -69,7 +69,7 @@ fn resolved_export(
             let operator = operators
                 .iter()
                 .find(|operator| operator.symbol == export.symbol);
-            Some(ResolvedDecl::Operator {
+            Some(ResolvedInterfaceDecl::Operator {
                 symbol,
                 name: export.name,
                 visibility: export.visibility,
@@ -82,8 +82,8 @@ fn resolved_export(
     }
 }
 
-fn resolved_instance(symbol: SymbolId, instance: InterfaceInstance) -> ResolvedDecl {
-    ResolvedDecl::Instance {
+fn resolved_instance(symbol: SymbolId, instance: InterfaceInstance) -> ResolvedInterfaceDecl {
+    ResolvedInterfaceDecl::Instance {
         symbol,
         trait_name: instance.trait_name,
         head: instance.head,
@@ -109,7 +109,7 @@ mod tests {
         assert_eq!(resolved.source, "main.ssrg");
         assert_eq!(
             resolved.declarations,
-            vec![ResolvedDecl::Value {
+            vec![ResolvedInterfaceDecl::Value {
                 symbol: SymbolId(0),
                 name: "answer".to_owned(),
                 visibility: Visibility::Public,
@@ -129,7 +129,7 @@ mod tests {
         assert_eq!(resolved.declarations.len(), 2);
         assert_eq!(
             resolved.declarations[0],
-            ResolvedDecl::Value {
+            ResolvedInterfaceDecl::Value {
                 symbol: SymbolId(0),
                 name: "first".to_owned(),
                 visibility: Visibility::Public,
@@ -138,7 +138,7 @@ mod tests {
         );
         assert_eq!(
             resolved.declarations[1],
-            ResolvedDecl::Value {
+            ResolvedInterfaceDecl::Value {
                 symbol: SymbolId(1),
                 name: "second".to_owned(),
                 visibility: Visibility::Public,
@@ -158,7 +158,7 @@ mod tests {
         assert_eq!(
             resolved.declarations,
             vec![
-                ResolvedDecl::Type {
+                ResolvedInterfaceDecl::Type {
                     symbol: SymbolId(0),
                     name: "Score".to_owned(),
                     visibility: Visibility::Public,
@@ -169,7 +169,7 @@ mod tests {
                         arguments: Vec::new(),
                     }),
                 },
-                ResolvedDecl::Operator {
+                ResolvedInterfaceDecl::Operator {
                     symbol: SymbolId(1),
                     name: "<+>".to_owned(),
                     visibility: Visibility::Public,
@@ -180,7 +180,7 @@ mod tests {
                         end: 141
                     },
                 },
-                ResolvedDecl::Instance {
+                ResolvedInterfaceDecl::Instance {
                     symbol: SymbolId(2),
                     trait_name: "Show".to_owned(),
                     head: InterfaceType::Apply {
@@ -210,7 +210,7 @@ mod tests {
         assert_eq!(resolved.declarations.len(), 3);
         assert!(matches!(
             &resolved.declarations[0],
-            ResolvedDecl::Type {
+            ResolvedInterfaceDecl::Type {
                 symbol: SymbolId(0),
                 name,
                 declaration_kind: Some(kind),
@@ -219,7 +219,7 @@ mod tests {
         ));
         assert_eq!(
             resolved.declarations[1],
-            ResolvedDecl::Constructor {
+            ResolvedInterfaceDecl::Constructor {
                 symbol: SymbolId(1),
                 name: "Nothing".to_owned(),
                 owner: "artifact/public-type::Maybe".to_owned(),
@@ -240,7 +240,7 @@ mod tests {
         );
         assert!(matches!(
             &resolved.declarations[2],
-            ResolvedDecl::Constructor {
+            ResolvedInterfaceDecl::Constructor {
                 symbol: SymbolId(2),
                 name,
                 owner,

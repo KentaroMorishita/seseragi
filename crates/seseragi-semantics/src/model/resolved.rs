@@ -1,5 +1,14 @@
 use serde::{Deserialize, Serialize};
-use seseragi_syntax::{ByteSpan, InterfaceScheme, InterfaceType, Visibility};
+use seseragi_syntax::{InterfaceDependency, SurfaceDecl};
+
+mod interface;
+mod names;
+
+pub use interface::{ResolvedInterface, ResolvedInterfaceDecl};
+pub use names::{
+    ResolveIssue, ResolvedReference, ResolvedScope, ResolvedSymbol, ScopeId, ScopeKind, SymbolKind,
+    SymbolNamespace,
+};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(transparent)]
@@ -9,56 +18,13 @@ pub struct SymbolId(pub u32);
 #[serde(rename_all = "camelCase")]
 pub struct ResolvedModule {
     pub schema: u32,
+    pub stage: String,
     pub source: String,
     pub module: String,
-    pub declarations: Vec<ResolvedDecl>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(
-    tag = "kind",
-    rename_all = "kebab-case",
-    rename_all_fields = "camelCase"
-)]
-pub enum ResolvedDecl {
-    Value {
-        symbol: SymbolId,
-        name: String,
-        visibility: Visibility,
-        declaration: ByteSpan,
-    },
-    Constructor {
-        symbol: SymbolId,
-        name: String,
-        owner: String,
-        visibility: Visibility,
-        scheme: InterfaceScheme,
-        declaration: ByteSpan,
-    },
-    Type {
-        symbol: SymbolId,
-        name: String,
-        visibility: Visibility,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        declaration_kind: Option<String>,
-        declaration: ByteSpan,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        representation: Option<InterfaceType>,
-    },
-    Operator {
-        symbol: SymbolId,
-        name: String,
-        visibility: Visibility,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        fixity: Option<String>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        precedence: Option<u32>,
-        declaration: ByteSpan,
-    },
-    Instance {
-        symbol: SymbolId,
-        trait_name: String,
-        head: InterfaceType,
-        declaration: ByteSpan,
-    },
+    pub dependencies: Vec<InterfaceDependency>,
+    pub declarations: Vec<SurfaceDecl>,
+    pub scopes: Vec<ResolvedScope>,
+    pub symbols: Vec<ResolvedSymbol>,
+    pub references: Vec<ResolvedReference>,
+    pub issues: Vec<ResolveIssue>,
 }
