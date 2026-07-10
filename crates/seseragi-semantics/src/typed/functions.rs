@@ -68,14 +68,6 @@ pub(crate) fn typed_parameters_from_surface(
         .collect()
 }
 
-pub(crate) fn accepts_application_arguments(
-    signature: &TopLevelPureFunction,
-    argument_types: &[TypedType],
-) -> bool {
-    argument_types.len() <= signature.parameters.len()
-        && signature.parameters.starts_with(argument_types)
-}
-
 pub(crate) fn application_result_type(
     signature: &TopLevelPureFunction,
     argument_count: usize,

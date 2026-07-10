@@ -1,13 +1,8 @@
 use crate::{
     effect_ops::{known_effect_operation_by_surface, semantic_effect_operation_name},
-    unit_type, TypedDoStatement, TypedExpr, TypedParameter, TypedType,
+    unit_type, TypedDoStatement, TypedExpr, TypedType,
 };
 use seseragi_syntax::{ByteSpan, Token, TokenKind};
-use std::collections::BTreeMap;
-
-use super::call::typed_top_level_pure_call;
-use super::conditional::typed_conditional;
-use super::functions::TopLevelPureFunction;
 
 pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
     let origin = ByteSpan {
@@ -45,29 +40,6 @@ pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
             origin,
         },
     }
-}
-
-pub(crate) fn find_value_token(tokens: &[Token], span: ByteSpan) -> Option<&Token> {
-    let equals_index = tokens
-        .iter()
-        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")?;
-    tokens[equals_index + 1..]
-        .iter()
-        .find(|token| token.end <= span.end && is_significant(token))
-}
-
-pub(crate) fn find_value_tokens(tokens: &[Token], span: ByteSpan) -> Vec<&Token> {
-    let Some(equals_index) = tokens
-        .iter()
-        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")
-    else {
-        return Vec::new();
-    };
-    tokens[equals_index + 1..]
-        .iter()
-        .take_while(|token| token.end <= span.end)
-        .filter(|token| is_significant(token))
-        .collect()
 }
 
 pub(crate) fn find_type_name_after(
@@ -122,163 +94,11 @@ pub(crate) fn find_effect_body(tokens: &[Token], span: ByteSpan) -> Option<Typed
     })
 }
 
-pub(crate) fn typed_fn_body_from_tokens(
-    tokens: &[&Token],
-    parameters: &[TypedParameter],
-    top_level_values: &BTreeMap<String, TypedType>,
-    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
-) -> Option<TypedExpr> {
-    if let Some(conditional) =
-        typed_conditional(tokens, parameters, top_level_values, top_level_functions)
-    {
-        return Some(conditional);
-    }
-    if let Some(call) =
-        typed_top_level_pure_call(tokens, parameters, top_level_values, top_level_functions)
-    {
-        return Some(call);
-    }
-
-    match tokens {
-        [left, operator, right]
-            if matches!(
-                operator.kind,
-                TokenKind::OperatorArithmetic | TokenKind::OperatorComparison
-            ) =>
-        {
-            let left_expr = typed_fn_body_from_token(left, parameters, top_level_values);
-            let right_expr = typed_fn_body_from_token(right, parameters, top_level_values);
-            let type_ref = binary_result_type(operator.raw.as_str(), &left_expr, &right_expr);
-            Some(TypedExpr::Binary {
-                operator: operator.raw.clone(),
-                left: Box::new(left_expr),
-                right: Box::new(right_expr),
-                type_ref,
-                origin: ByteSpan {
-                    start: left.start,
-                    end: right.end,
-                },
-            })
-        }
-        [token, ..] => Some(typed_fn_body_from_token(
-            token,
-            parameters,
-            top_level_values,
-        )),
-        [] => None,
-    }
-}
-
 pub(crate) fn lower_first(value: &str) -> String {
     let mut chars = value.chars();
     match chars.next() {
         Some(first) => first.to_lowercase().chain(chars).collect(),
         None => String::new(),
-    }
-}
-
-pub(crate) fn typed_fn_body_from_token(
-    token: &Token,
-    parameters: &[TypedParameter],
-    top_level_values: &BTreeMap<String, TypedType>,
-) -> TypedExpr {
-    if token.kind == TokenKind::IdentifierLower {
-        if let Some((name, type_ref)) = find_parameter(token, parameters) {
-            return TypedExpr::Variable {
-                name,
-                type_ref,
-                origin: ByteSpan {
-                    start: token.start,
-                    end: token.end,
-                },
-            };
-        }
-        if let Some(type_ref) = top_level_values.get(&token.raw) {
-            return TypedExpr::Variable {
-                name: token.raw.clone(),
-                type_ref: type_ref.clone(),
-                origin: ByteSpan {
-                    start: token.start,
-                    end: token.end,
-                },
-            };
-        }
-        return TypedExpr::Variable {
-            name: token.raw.clone(),
-            type_ref: TypedType::Hole,
-            origin: ByteSpan {
-                start: token.start,
-                end: token.end,
-            },
-        };
-    }
-    typed_expr_from_value_token(token)
-}
-
-fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> TypedType {
-    if matches!(operator, "+" | "-" | "*" | "/" | "%" | "**")
-        && expr_has_type(left, "Int")
-        && expr_has_type(right, "Int")
-    {
-        return int_type();
-    }
-    if matches!(operator, "==" | "!=")
-        && ["Int", "Bool", "String"]
-            .iter()
-            .any(|name| expr_has_type(left, name) && expr_has_type(right, name))
-    {
-        return bool_type();
-    }
-    if matches!(operator, "<" | "<=" | ">" | ">=")
-        && expr_has_type(left, "Int")
-        && expr_has_type(right, "Int")
-    {
-        return bool_type();
-    }
-    TypedType::Hole
-}
-
-pub(crate) fn find_parameter(
-    token: &Token,
-    parameters: &[TypedParameter],
-) -> Option<(String, TypedType)> {
-    parameters.iter().find_map(|parameter| match parameter {
-        TypedParameter::Named { name, type_ref, .. } if name == &token.raw => {
-            Some((name.clone(), type_ref.clone()))
-        }
-        _ => None,
-    })
-}
-
-fn expr_has_type(expr: &TypedExpr, expected_name: &str) -> bool {
-    match expr {
-        TypedExpr::Integer { type_ref, .. }
-        | TypedExpr::String { type_ref, .. }
-        | TypedExpr::Boolean { type_ref, .. }
-        | TypedExpr::Variable { type_ref, .. }
-        | TypedExpr::Call { type_ref, .. }
-        | TypedExpr::Binary { type_ref, .. }
-        | TypedExpr::If { type_ref, .. }
-        | TypedExpr::Unit { type_ref, .. } => named_type_is(type_ref, expected_name),
-        TypedExpr::EffectCall { .. } | TypedExpr::DoBlock { .. } => false,
-    }
-}
-
-fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
-    matches!(type_ref, TypedType::Named { name, .. } if name == expected_name)
-}
-
-fn int_type() -> TypedType {
-    TypedType::Named {
-        name: "Int".to_owned(),
-        arguments: Vec::new(),
-    }
-}
-
-fn bool_type() -> TypedType {
-    TypedType::Named {
-        name: "Bool".to_owned(),
-        arguments: Vec::new(),
     }
 }
 

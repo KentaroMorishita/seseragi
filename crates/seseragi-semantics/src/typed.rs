@@ -1,26 +1,25 @@
 use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
 use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInterface};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 mod analysis;
-mod call;
-mod conditional;
 mod effect;
 mod effect_analysis;
 mod expr;
 mod function_body;
 mod functions;
 mod interface;
+mod pure_issues;
 mod surface;
+mod surface_expr;
 mod type_ref;
 
 pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};
-pub(crate) use call::PureCallIssue;
-pub(crate) use conditional::ConditionalIssue;
 pub(crate) use effect_analysis::{analyze_effect_function, EffectFunctionIssue};
 pub(crate) use function_body::FunctionBodyIssue;
 pub(crate) use functions::{collect_top_level_pure_function_signatures, TopLevelPureFunction};
 use interface::typed_interface_from_modules;
+pub(crate) use pure_issues::{ConditionalIssue, PureCallIssue};
 use surface::typed_decl_from_surface;
 use type_ref::typed_type_from_interface_type;
 
@@ -72,8 +71,17 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     let source_name = source_name.into();
     let interface = parse_module_interface(source_name.clone(), source);
     let surface = parse_surface_ast(interface.source.clone(), source);
-    let tokens = lex(interface.source.clone(), source).tokens;
-    let top_level_values = top_level_value_types(&surface.declarations, &tokens);
+    let has_effect_functions = surface
+        .declarations
+        .iter()
+        .any(|declaration| matches!(declaration, seseragi_syntax::SurfaceDecl::EffectFn { .. }));
+    let tokens = if has_effect_functions {
+        lex(interface.source.clone(), source).tokens
+    } else {
+        Vec::new()
+    };
+    let top_level_values = top_level_value_types(&surface.declarations);
+    let declared_values = top_level_value_names(&surface.declarations);
     let top_level_functions =
         collect_top_level_pure_function_signatures(&interface.module, &surface.declarations);
     let declarations = surface
@@ -84,6 +92,7 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
                 &interface.module,
                 declaration,
                 &tokens,
+                &declared_values,
                 &top_level_values,
                 &top_level_functions,
             )
@@ -99,9 +108,18 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     }
 }
 
+fn top_level_value_names(declarations: &[seseragi_syntax::SurfaceDecl]) -> BTreeSet<String> {
+    declarations
+        .iter()
+        .filter_map(|declaration| match declaration {
+            seseragi_syntax::SurfaceDecl::Let { name, .. } => Some(name.clone()),
+            _ => None,
+        })
+        .collect()
+}
+
 pub(crate) fn top_level_value_types(
     declarations: &[seseragi_syntax::SurfaceDecl],
-    tokens: &[seseragi_syntax::Token],
 ) -> BTreeMap<String, TypedType> {
     declarations
         .iter()
@@ -109,7 +127,7 @@ pub(crate) fn top_level_value_types(
             let seseragi_syntax::SurfaceDecl::Let {
                 name,
                 type_ref,
-                span,
+                body,
                 ..
             } = declaration
             else {
@@ -119,9 +137,8 @@ pub(crate) fn top_level_value_types(
                 .as_ref()
                 .map(type_ref::typed_type_from_type_ref)
                 .or_else(|| {
-                    expr::find_value_token(tokens, *span)
-                        .map(expr::typed_expr_from_value_token)
-                        .map(|value| type_ref::inferred_type_from_expr(&value))
+                    body.as_ref()
+                        .and_then(surface_expr::surface_expression_type_hint)
                 })?;
             Some((name.clone(), type_ref))
         })
@@ -759,6 +776,34 @@ mod tests {
                 result: Box::new(int_type()),
             }
         );
+    }
+
+    #[test]
+    fn types_nested_surface_expression_as_a_call_argument() {
+        let typed = type_module(
+            "artifact/pure-expression-argument/main.ssrg",
+            "pub fn identity value: Int -> Int = value\npub fn use unit: Unit -> Int = identity (if True then 1 else 2)\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::Call {
+            arguments,
+            type_ref,
+            ..
+        } = body
+        else {
+            panic!("expected direct call");
+        };
+        assert_eq!(type_ref, &int_type());
+        assert!(matches!(
+            arguments.as_slice(),
+            [TypedExpr::If {
+                type_ref: TypedType::Named { name, arguments },
+                ..
+            }] if name == "Int" && arguments.is_empty()
+        ));
     }
 
     fn int_type() -> TypedType {

@@ -1,19 +1,18 @@
 use crate::{unit_type, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
 use seseragi_syntax::{SurfaceDecl, Token};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use super::effect::typed_effect_from_surface;
-use super::expr::{
-    find_effect_body, find_value_token, find_value_tokens, typed_expr_from_value_token,
-    typed_fn_body_from_tokens,
-};
+use super::expr::find_effect_body;
 use super::functions::{typed_parameters_from_surface, TopLevelPureFunction};
+use super::surface_expr::{analyze_surface_expression, PureExpressionContext};
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 
 pub(crate) fn typed_decl_from_surface(
     module: &str,
     declaration: SurfaceDecl,
     tokens: &[Token],
+    declared_values: &BTreeSet<String>,
     top_level_values: &BTreeMap<String, TypedType>,
     top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
 ) -> Option<TypedDecl> {
@@ -22,19 +21,21 @@ pub(crate) fn typed_decl_from_surface(
             visibility,
             name,
             type_ref,
+            body,
             span,
             ..
         } => {
-            let value = find_value_token(tokens, span)
-                .map(typed_expr_from_value_token)
-                .unwrap_or_else(|| TypedExpr::Integer {
-                    value: "0".to_owned(),
-                    type_ref: TypedType::Named {
-                        name: "Int".to_owned(),
-                        arguments: Vec::new(),
-                    },
-                    origin: span,
-                });
+            let no_parameters = Vec::new();
+            let context = PureExpressionContext::new(
+                &no_parameters,
+                declared_values,
+                top_level_values,
+                top_level_functions,
+            );
+            let value = body
+                .as_ref()
+                .map(|body| analyze_surface_expression(body, &context).value)
+                .unwrap_or_else(|| hole_expression(span));
             Some(TypedDecl::Let {
                 symbol: format!("{module}::{name}"),
                 visibility,
@@ -90,21 +91,21 @@ pub(crate) fn typed_decl_from_surface(
             parameters,
             return_type,
             constraints,
+            body,
             span,
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters);
-            let body = typed_fn_body_from_tokens(
-                &find_value_tokens(tokens, span),
+            let context = PureExpressionContext::new(
                 &typed_parameters,
+                declared_values,
                 top_level_values,
                 top_level_functions,
-            )
-            .unwrap_or_else(|| TypedExpr::Variable {
-                name: String::new(),
-                type_ref: TypedType::Hole,
-                origin: span,
-            });
+            );
+            let body = body
+                .as_ref()
+                .map(|body| analyze_surface_expression(body, &context).value)
+                .unwrap_or_else(|| hole_expression(span));
             Some(TypedDecl::Fn {
                 symbol: format!("{module}::{name}"),
                 visibility,
@@ -128,5 +129,13 @@ pub(crate) fn typed_decl_from_surface(
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }
         | SurfaceDecl::Instance { .. } => None,
+    }
+}
+
+fn hole_expression(origin: seseragi_syntax::ByteSpan) -> TypedExpr {
+    TypedExpr::Variable {
+        name: String::new(),
+        type_ref: TypedType::Hole,
+        origin,
     }
 }

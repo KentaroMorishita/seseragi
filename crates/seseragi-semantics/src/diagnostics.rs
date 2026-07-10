@@ -21,9 +21,17 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
     }
 
     let surface = parse_surface_ast(artifact.source.clone(), source);
-    let tokens = lex(artifact.source.clone(), source).tokens;
+    let has_effect_functions = surface
+        .declarations
+        .iter()
+        .any(|declaration| matches!(declaration, SurfaceDecl::EffectFn { .. }));
+    let tokens = if has_effect_functions {
+        lex(artifact.source.clone(), source).tokens
+    } else {
+        Vec::new()
+    };
     let declared_values = declared_value_names(&surface.declarations);
-    let top_level_values = top_level_value_types(&surface.declarations, &tokens);
+    let top_level_values = top_level_value_types(&surface.declarations);
     let top_level_functions = collect_top_level_pure_function_signatures("", &surface.declarations);
     let mut diagnostics = Vec::new();
 
@@ -60,13 +68,13 @@ fn collect_decl_diagnostics(
     if let SurfaceDecl::Fn {
         parameters,
         return_type,
+        body,
         span,
         ..
     } = declaration
     {
         let analysis = analyze_pure_function(
-            tokens,
-            *span,
+            body.as_ref(),
             parameters,
             return_type,
             declared_values,
@@ -352,6 +360,32 @@ mod tests {
             "argument 1 expected Int, received String"
         );
         assert_ne!(diagnostics.diagnostics[0].message_key, "name.unresolved");
+    }
+
+    #[test]
+    fn reports_only_the_unknown_argument_of_a_known_function() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/pure-call-unknown-argument/main.ssrg",
+            "fn identity value: Int -> Int = value\nfn use unit: Unit -> Int = identity missing\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0001");
+        assert_eq!(diagnostics.diagnostics[0].message_key, "name.unresolved");
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 74, end: 81 }
+        );
+    }
+
+    #[test]
+    fn accepts_nested_conditional_as_a_typed_call_argument() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/pure-call-expression-argument/main.ssrg",
+            "fn identity value: Int -> Int = value\nfn use unit: Unit -> Int = identity (if True then 1 else 2)\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
     }
 
     #[test]
