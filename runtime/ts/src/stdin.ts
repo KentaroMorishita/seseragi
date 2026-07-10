@@ -1,5 +1,13 @@
 import { stdin } from "node:process";
 import { createInterface } from "node:readline";
+import type { Effect } from "./effect";
+
+export type StdinEnvironment = Record<string, never>;
+
+export type StdinError = {
+  readonly kind: "stdin-error";
+  readonly message: string;
+};
 
 let lines: AsyncIterator<string> | undefined;
 
@@ -20,7 +28,9 @@ function lineIterator(): AsyncIterator<string> {
  * This is intentionally the narrow first runtime slice: calls must be made
  * sequentially, and EOF is represented by `undefined`.
  */
-export async function readLine(): Promise<string | undefined> {
-  const next = await lineIterator().next();
-  return next.done ? undefined : next.value;
+export function readLine(): Effect<StdinEnvironment, StdinError, string | undefined> {
+  return async () => {
+    const next = await lineIterator().next();
+    return next.done ? undefined : next.value;
+  };
 }

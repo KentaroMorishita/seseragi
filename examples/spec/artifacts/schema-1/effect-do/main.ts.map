@@ -9,7 +9,8 @@
     "pub effect fn main -> Unit =\n  do { succeed () }\n"
   ],
   "names": [
-    "main"
+    "main",
+    "succeed"
   ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

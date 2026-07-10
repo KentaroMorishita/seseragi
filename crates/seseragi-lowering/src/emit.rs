@@ -227,74 +227,30 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         }
         TypeScriptExpr::Await { value } => format!("await {}", render_typescript_expr(value)),
         TypeScriptExpr::Sequence { statements, result } => {
-            let rendered_statements = statements
-                .iter()
-                .map(render_typescript_statement)
-                .collect::<Vec<_>>()
-                .join(" ");
-            let async_prefix = if sequence_contains_await(statements, result) {
-                "async "
-            } else {
-                ""
-            };
-            format!(
-                "({async_prefix}() => {{ {rendered_statements} return {}; }})()",
-                render_typescript_expr(result)
-            )
+            render_effect_sequence(statements, result)
         }
     }
 }
 
-fn sequence_contains_await(statements: &[TypeScriptStatement], result: &TypeScriptExpr) -> bool {
-    statements.iter().any(statement_contains_await) || expr_contains_await(result)
-}
-
-fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
+fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScriptExpr) -> String {
+    let Some((statement, rest)) = statements.split_first() else {
+        return render_typescript_expr(result);
+    };
+    let continuation = render_effect_sequence(rest, result);
     match statement {
-        TypeScriptStatement::Effect { value } => expr_contains_await(value),
-        TypeScriptStatement::Const { initializer, .. } => expr_contains_await(initializer),
-    }
-}
-
-fn expr_contains_await(expr: &TypeScriptExpr) -> bool {
-    match expr {
-        TypeScriptExpr::Await { .. } => true,
-        TypeScriptExpr::Binary { left, right, .. } => {
-            expr_contains_await(left) || expr_contains_await(right)
-        }
-        TypeScriptExpr::Conditional {
-            condition,
-            then_branch,
-            else_branch,
-        } => {
-            expr_contains_await(condition)
-                || expr_contains_await(then_branch)
-                || expr_contains_await(else_branch)
-        }
-        TypeScriptExpr::Call { arguments, .. } => arguments.iter().any(expr_contains_await),
-        TypeScriptExpr::Sequence { statements, result } => {
-            sequence_contains_await(statements, result)
-        }
-        TypeScriptExpr::Undefined
-        | TypeScriptExpr::Bigint { .. }
-        | TypeScriptExpr::String { .. }
-        | TypeScriptExpr::Boolean { .. }
-        | TypeScriptExpr::Identifier { .. } => false,
-    }
-}
-
-fn render_typescript_statement(statement: &TypeScriptStatement) -> String {
-    match statement {
-        TypeScriptStatement::Effect { value } => format!("{};", render_typescript_expr(value)),
+        TypeScriptStatement::Effect { value } => format!(
+            "_ssrg_effect_flatMap({}, () => {continuation})",
+            render_typescript_expr(value)
+        ),
         TypeScriptStatement::Const {
             name,
             type_ref,
             initializer,
             ..
         } => format!(
-            "const {name}: {} = {};",
-            render_typescript_type(type_ref),
-            render_typescript_expr(initializer)
+            "_ssrg_effect_flatMap({}, ({name}: {}) => {continuation})",
+            render_typescript_expr(initializer),
+            render_typescript_type(type_ref)
         ),
     }
 }

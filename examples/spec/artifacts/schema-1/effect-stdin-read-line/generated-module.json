@@ -7,7 +7,9 @@
     "abiMajor": 1,
     "requirements": [
       "core.unit",
-      "effect.stdin.readLine"
+      "effect.core.flatMap",
+      "effect.stdin.readLine",
+      "effect.core.succeed"
     ]
   },
   "exports": [

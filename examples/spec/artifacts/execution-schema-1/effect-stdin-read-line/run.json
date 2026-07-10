@@ -36,7 +36,9 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "core.unit",
-      "effect.stdin.readLine"
+      "effect.core.flatMap",
+      "effect.stdin.readLine",
+      "effect.core.succeed"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

@@ -3,7 +3,14 @@
   "stage": "typescript-ir",
   "module": "artifact/effect-do",
   "runtimeRequirements": [
-    "core.unit"
+    "core.unit",
+    "effect.core.succeed"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    }
   ],
   "functions": [
     {
@@ -18,7 +25,13 @@
         }
       ],
       "body": {
-        "kind": "undefined"
+        "kind": "call",
+        "callee": "_ssrg_effect_succeed",
+        "arguments": [
+          {
+            "kind": "undefined"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

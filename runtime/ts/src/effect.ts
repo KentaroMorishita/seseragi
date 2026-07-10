@@ -28,6 +28,16 @@ export function succeed<Success>(
   return () => value;
 }
 
+export function flatMap<Environment, Failure, Success, NextEnvironment, NextFailure, NextSuccess>(
+  effect: Effect<Environment, Failure, Success>,
+  next: (value: Success) => Effect<NextEnvironment, NextFailure, NextSuccess>
+): Effect<Environment & NextEnvironment, Failure | NextFailure, NextSuccess> {
+  return async (environment) => {
+    const value = await effect(environment);
+    return next(value)(environment);
+  };
+}
+
 export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   return () => {
     throw error;

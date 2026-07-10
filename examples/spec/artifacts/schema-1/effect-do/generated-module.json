@@ -6,7 +6,8 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.unit"
+      "core.unit",
+      "effect.core.succeed"
     ]
   },
   "exports": [

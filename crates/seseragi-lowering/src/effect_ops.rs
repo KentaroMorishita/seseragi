@@ -6,7 +6,6 @@ pub(crate) struct RuntimeEffectOperation {
     pub(crate) module: &'static str,
     pub(crate) export_name: &'static str,
     pub(crate) source_map_name: &'static str,
-    pub(crate) await_result: bool,
 }
 
 const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
@@ -17,7 +16,6 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         module: "@seseragi/runtime/stdin",
         export_name: "readLine",
         source_map_name: "readLine",
-        await_result: true,
     },
     RuntimeEffectOperation {
         core_name: "console.print",
@@ -26,7 +24,6 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         module: "@seseragi/runtime/console",
         export_name: "print",
         source_map_name: "print",
-        await_result: false,
     },
     RuntimeEffectOperation {
         core_name: "console.println",
@@ -35,7 +32,22 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         module: "@seseragi/runtime/console",
         export_name: "println",
         source_map_name: "println",
-        await_result: false,
+    },
+    RuntimeEffectOperation {
+        core_name: "effect.succeed",
+        runtime_feature: "effect.core.succeed",
+        local_name: "_ssrg_effect_succeed",
+        module: "@seseragi/runtime/effect",
+        export_name: "succeed",
+        source_map_name: "succeed",
+    },
+    RuntimeEffectOperation {
+        core_name: "effect.flatMap",
+        runtime_feature: "effect.core.flatMap",
+        local_name: "_ssrg_effect_flatMap",
+        module: "@seseragi/runtime/effect",
+        export_name: "flatMap",
+        source_map_name: "flatMap",
     },
 ];
 
@@ -98,10 +110,18 @@ mod tests {
     }
 
     #[test]
-    fn resolves_async_stdin_read_line_runtime_abi() {
+    fn resolves_cold_stdin_read_line_runtime_abi() {
         let operation = runtime_effect_operation("stdin.readLine").unwrap();
 
         assert_eq!(operation.runtime_feature, "effect.stdin.readLine");
-        assert!(operation.await_result);
+        assert_eq!(operation.module, "@seseragi/runtime/stdin");
+    }
+
+    #[test]
+    fn resolves_effect_composition_runtime_abi() {
+        let operation = runtime_effect_operation("effect.flatMap").unwrap();
+
+        assert_eq!(operation.runtime_feature, "effect.core.flatMap");
+        assert_eq!(operation.export_name, "flatMap");
     }
 }

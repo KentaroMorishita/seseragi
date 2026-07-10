@@ -33,6 +33,26 @@
       "import": null
     },
     {
+      "id": "effect.core.succeed",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "A -> Effect<{}, Never, A>",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "succeed"
+      }
+    },
+    {
+      "id": "effect.core.flatMap",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Effect<R1, E1, A> -> (A -> Effect<R2, E2, B>) -> Effect<R1 & R2, E1 | E2, B>",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "flatMap"
+      }
+    },
+    {
       "id": "effect.console.print",
       "kind": "runtime-helper",
       "typescript": "function",

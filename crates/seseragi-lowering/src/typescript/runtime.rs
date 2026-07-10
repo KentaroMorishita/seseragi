@@ -65,6 +65,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Sequence {
             statements, result, ..
         } => {
+            if !statements.is_empty() {
+                push_unique(requirements, "effect.core.flatMap");
+            }
             for statement in statements {
                 collect_statement_runtime_requirements(statement, requirements);
             }
@@ -133,6 +136,17 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         CoreExpr::Sequence {
             statements, result, ..
         } => {
+            if !statements.is_empty() {
+                let operation = runtime_effect_operation("effect.flatMap")
+                    .expect("effect.flatMap runtime operation must be registered");
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
             for statement in statements {
                 collect_statement_runtime_imports(statement, imports);
             }

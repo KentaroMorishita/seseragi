@@ -255,32 +255,19 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             arguments,
             ..
         } => {
-            if operation == "effect.succeed" {
-                return arguments
-                    .into_iter()
-                    .next()
-                    .map(lower_core_expr_to_typescript)
-                    .unwrap_or(TypeScriptExpr::Undefined);
-            }
-            // The target ABI, rather than Core IR, decides whether an operation
-            // must be awaited.  That keeps the language-level effect operation
-            // independent from the JavaScript runtime calling convention.
             let runtime_operation = runtime_effect_operation(&operation);
-            let call = TypeScriptExpr::Call {
+            let mut arguments = arguments
+                .into_iter()
+                .map(lower_core_expr_to_typescript)
+                .collect::<Vec<_>>();
+            if operation == "effect.succeed" && arguments.is_empty() {
+                arguments.push(TypeScriptExpr::Undefined);
+            }
+            TypeScriptExpr::Call {
                 callee: runtime_operation
                     .map(|operation| operation.local_name.to_owned())
                     .unwrap_or_else(|| safe_identifier(&operation)),
-                arguments: arguments
-                    .into_iter()
-                    .map(lower_core_expr_to_typescript)
-                    .collect(),
-            };
-            if runtime_operation.is_some_and(|operation| operation.await_result) {
-                TypeScriptExpr::Await {
-                    value: Box::new(call),
-                }
-            } else {
-                call
+                arguments,
             }
         }
         CoreExpr::Sequence {

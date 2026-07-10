@@ -4,10 +4,15 @@
   "module": "artifact/effect-do-multiple",
   "runtimeRequirements": [
     "core.unit",
+    "effect.core.flatMap",
     "effect.console.println",
     "core.string"
   ],
   "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"

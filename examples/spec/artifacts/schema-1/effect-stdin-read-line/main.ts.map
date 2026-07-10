@@ -13,7 +13,8 @@
     "first",
     "readLine",
     "second",
-    "readLine"
+    "readLine",
+    "succeed"
   ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

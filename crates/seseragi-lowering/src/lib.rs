@@ -294,19 +294,23 @@ fails ConsoleError =
     }
 
     #[test]
-    fn lowers_succeed_final_do_result_to_typescript_undefined() {
+    fn lowers_succeed_final_do_result_to_cold_effect() {
         let source = "pub effect fn main -> Unit =\n  do { succeed () }\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);
         let core = lower_typed_module(typed);
         let typescript = lower_core_module_to_typescript_ir(core);
 
-        assert_eq!(typescript.runtime_requirements, vec!["core.unit"]);
+        assert_eq!(
+            typescript.runtime_requirements,
+            vec!["core.unit", "effect.core.succeed"]
+        );
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
-                body: TypeScriptExpr::Undefined,
+                is_async: false,
+                body: TypeScriptExpr::Call { callee, .. },
                 ..
-            }
+            } if callee == "_ssrg_effect_succeed"
         ));
     }
 
@@ -339,7 +343,7 @@ fails ConsoleError =
     }
 
     #[test]
-    fn lowers_single_async_effect_as_value_producing_do_result() {
+    fn lowers_single_async_operation_as_cold_value_producing_effect() {
         let source = "pub effect fn main =\n  do { readLine () }\n";
         let typed = type_module("artifact/effect-do-read-line/main.ssrg", source);
         let core = lower_typed_module(typed);
@@ -361,16 +365,16 @@ fails ConsoleError =
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
-                is_async: true,
-                body: TypeScriptExpr::Await { .. },
+                is_async: false,
+                body: TypeScriptExpr::Call { .. },
                 ..
             }
         ));
         let bundle = emit_typescript_module(typescript, source);
 
-        assert!(bundle.typescript.contains(
-            "export const main = async (_unit: undefined) => await _ssrg_stdin_readLine()"
-        ));
+        assert!(bundle
+            .typescript
+            .contains("export const main = (_unit: undefined) => _ssrg_stdin_readLine()"));
     }
 
     #[test]
@@ -383,7 +387,7 @@ fails ConsoleError =
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"one\"); return _ssrg_console_println(\"two\"); })()"
+            "export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(\"one\"), () => _ssrg_console_println(\"two\"))"
         ));
     }
 
@@ -396,12 +400,12 @@ fails ConsoleError =
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "const ignored: undefined = _ssrg_console_print(\"hello\"); return _ssrg_console_println(\"done\");"
+            "_ssrg_effect_flatMap(_ssrg_console_print(\"hello\"), (ignored: undefined) => _ssrg_console_println(\"done\"))"
         ));
     }
 
     #[test]
-    fn lowers_async_stdin_bind_to_awaited_async_function() {
+    fn lowers_async_stdin_bind_to_cold_flat_map_chain() {
         let source =
             "pub effect fn main =\n  do {\n    first <- readLine ()\n    second <- readLine ()\n    succeed ()\n  }\n";
         let typed = type_module("artifact/effect-stdin-read-line/main.ssrg", source);
@@ -458,10 +462,15 @@ fails ConsoleError =
 
         assert_eq!(
             bundle.metadata.runtime.requirements,
-            vec!["core.unit", "effect.stdin.readLine"]
+            vec![
+                "core.unit",
+                "effect.core.flatMap",
+                "effect.stdin.readLine",
+                "effect.core.succeed"
+            ]
         );
         assert!(bundle.typescript.contains(
-            "export const main = async (_unit: undefined) => (async () => { const first: string | undefined = await _ssrg_stdin_readLine(); const second: string | undefined = await _ssrg_stdin_readLine(); return undefined; })()"
+            "export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_stdin_readLine(), (first: string | undefined) => _ssrg_effect_flatMap(_ssrg_stdin_readLine(), (second: string | undefined) => _ssrg_effect_succeed(undefined)))"
         ));
     }
 

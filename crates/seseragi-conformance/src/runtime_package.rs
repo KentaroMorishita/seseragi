@@ -40,6 +40,9 @@ pub(crate) fn check_typescript_runtime_package(
     if runtime_helper_is_declared(abi, "effect.stdin.readLine") {
         check_typescript_runtime_read_line(root)?;
     }
+    if runtime_helper_is_declared(abi, "effect.console.println") {
+        check_typescript_runtime_console_is_cold(root)?;
+    }
     Ok(())
 }
 
@@ -144,8 +147,12 @@ fn check_typescript_runtime_read_line(root: &Path) -> Result<(), String> {
     let mut child = Command::new("bun")
         .arg("--eval")
         .arg(
-            "import { readLine } from \"./src/stdin.ts\";\n\
-             const values = [await readLine(), await readLine(), await readLine()];\n\
+            "import { run } from \"./src/effect.ts\";\n\
+             import { readLine } from \"./src/stdin.ts\";\n\
+             const effects = [readLine(), readLine(), readLine()];\n\
+             const results = [];\n\
+             for (const effect of effects) results.push(await run(effect, {}));\n\
+             const values = results.map((result) => result.kind === \"success\" ? result.value : null);\n\
              process.stdout.write(JSON.stringify(values));\n",
         )
         .current_dir(root.join("runtime/ts"))
@@ -176,6 +183,35 @@ fn check_typescript_runtime_read_line(root: &Path) -> Result<(), String> {
     if output.stdout != b"[\"first\",\"second\",null]" {
         return Err(format!(
             "TypeScript stdin runtime probe returned unexpected values: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}
+
+fn check_typescript_runtime_console_is_cold(root: &Path) -> Result<(), String> {
+    let output = Command::new("bun")
+        .arg("--eval")
+        .arg(
+            "import { run } from \"./src/effect.ts\";\n\
+             import { println } from \"./src/console.ts\";\n\
+             const effect = println(\"after\");\n\
+             process.stdout.write(\"before\\n\");\n\
+             await run(effect, {});\n",
+        )
+        .current_dir(root.join("runtime/ts"))
+        .output()
+        .map_err(|error| format!("failed to run TypeScript cold console probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "TypeScript cold console probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    if output.stdout != b"before\nafter\n" {
+        return Err(format!(
+            "TypeScript console effect ran before the runner boundary: {}",
             String::from_utf8_lossy(&output.stdout)
         ));
     }

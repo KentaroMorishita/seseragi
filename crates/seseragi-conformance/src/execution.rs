@@ -169,7 +169,10 @@ fn write_entry(execution_dir: &Path, entry_export: &str) -> Result<(), String> {
     fs::write(
         execution_dir.join("entry.ts"),
         format!(
-            "import {{ {entry_export} }} from \"./main.ts\";\nawait {entry_export}(undefined);\n"
+            "import {{ run }} from \"@seseragi/runtime/effect\";\n\
+             import {{ {entry_export} }} from \"./main.ts\";\n\
+             const result = await run({entry_export}(undefined), {{}});\n\
+             if (result.kind === \"failure\") throw result.error;\n"
         ),
     )
     .map_err(|error| format!("failed to write execution entry.ts: {error}"))

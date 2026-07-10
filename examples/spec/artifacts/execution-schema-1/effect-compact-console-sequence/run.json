@@ -33,6 +33,7 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "core.unit",
+      "effect.core.flatMap",
       "effect.console.print",
       "core.string",
       "effect.console.println"

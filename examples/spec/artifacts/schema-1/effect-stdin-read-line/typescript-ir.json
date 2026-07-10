@@ -4,19 +4,28 @@
   "module": "artifact/effect-stdin-read-line",
   "runtimeRequirements": [
     "core.unit",
-    "effect.stdin.readLine"
+    "effect.core.flatMap",
+    "effect.stdin.readLine",
+    "effect.core.succeed"
   ],
   "imports": [
     {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
       "feature": "effect.stdin.readLine",
       "local": "_ssrg_stdin_readLine"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
     }
   ],
   "functions": [
     {
       "kind": "const-function",
       "exported": true,
-      "isAsync": true,
       "name": "main",
       "parameters": [
         {
@@ -38,12 +47,9 @@
               }
             },
             "initializer": {
-              "kind": "await",
-              "value": {
-                "kind": "call",
-                "callee": "_ssrg_stdin_readLine",
-                "arguments": []
-              }
+              "kind": "call",
+              "callee": "_ssrg_stdin_readLine",
+              "arguments": []
             },
             "origin": {
               "source": "main.ssrg",
@@ -61,12 +67,9 @@
               }
             },
             "initializer": {
-              "kind": "await",
-              "value": {
-                "kind": "call",
-                "callee": "_ssrg_stdin_readLine",
-                "arguments": []
-              }
+              "kind": "call",
+              "callee": "_ssrg_stdin_readLine",
+              "arguments": []
             },
             "origin": {
               "source": "main.ssrg",
@@ -76,7 +79,13 @@
           }
         ],
         "result": {
-          "kind": "undefined"
+          "kind": "call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "undefined"
+            }
+          ]
         }
       },
       "origin": {

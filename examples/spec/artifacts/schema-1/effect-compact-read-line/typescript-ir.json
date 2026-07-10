@@ -16,7 +16,6 @@
     {
       "kind": "const-function",
       "exported": true,
-      "isAsync": true,
       "name": "nextLine",
       "parameters": [
         {
@@ -26,12 +25,9 @@
         }
       ],
       "body": {
-        "kind": "await",
-        "value": {
-          "kind": "call",
-          "callee": "_ssrg_stdin_readLine",
-          "arguments": []
-        }
+        "kind": "call",
+        "callee": "_ssrg_stdin_readLine",
+        "arguments": []
       },
       "origin": {
         "source": "main.ssrg",
