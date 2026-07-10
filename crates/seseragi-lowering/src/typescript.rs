@@ -2,12 +2,14 @@ use crate::{CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
+mod adt;
 mod expr;
 mod imports;
 mod names;
 mod runtime;
 pub(crate) mod types;
 
+use adt::lower_core_adt_to_typescript;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
 use imports::freshen_runtime_imports;
 use names::local_name;
@@ -27,9 +29,32 @@ pub struct TypeScriptModule {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub imports: Vec<TypeScriptImport>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub adts: Vec<TypeScriptAdt>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<TypeScriptBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub functions: Vec<TypeScriptFunction>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptAdt {
+    pub exported: bool,
+    pub name: String,
+    pub type_parameters: Vec<String>,
+    pub variants: Vec<TypeScriptAdtVariant>,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptAdtVariant {
+    pub exported: bool,
+    pub name: String,
+    pub tag: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payload: Option<TypeScriptType>,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -95,8 +120,16 @@ pub enum TypeScriptType {
     String,
     Undefined,
     Unknown,
-    Maybe { element: Box<TypeScriptType> },
-    Tuple { elements: Vec<TypeScriptType> },
+    Reference {
+        name: String,
+        arguments: Vec<TypeScriptType>,
+    },
+    Maybe {
+        element: Box<TypeScriptType>,
+    },
+    Tuple {
+        elements: Vec<TypeScriptType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -171,6 +204,11 @@ pub enum TypeScriptStatement {
 pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {
     let mut runtime_requirements = Vec::new();
     let mut imports = Vec::new();
+    let adts = module
+        .adts
+        .into_iter()
+        .map(|adt| lower_core_adt_to_typescript(adt, &mut runtime_requirements))
+        .collect();
     let bindings = module
         .bindings
         .into_iter()
@@ -216,6 +254,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         module: module.module,
         runtime_requirements,
         imports,
+        adts,
         bindings,
         functions,
     };

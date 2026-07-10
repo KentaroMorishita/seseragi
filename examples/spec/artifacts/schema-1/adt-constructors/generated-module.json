@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "module": "artifact/adt-constructors",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "Rock",
+    "Paper",
+    "Scissors",
+    "Missing",
+    "Present",
+    "opening",
+    "wrap"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

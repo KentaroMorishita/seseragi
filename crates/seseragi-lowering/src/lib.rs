@@ -6,8 +6,8 @@ mod span;
 mod typescript;
 
 pub use core::{
-    lower_typed_module, CoreBinding, CoreExpr, CoreFunction, CoreModule, CoreParameter,
-    CoreRecordField, CoreStatement, CoreType,
+    lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreExpr, CoreFunction, CoreModule,
+    CoreParameter, CoreRecordField, CoreStatement, CoreType,
 };
 pub use emit::{
     emit_typescript_module, GeneratedBundle, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
@@ -16,8 +16,9 @@ pub use emit::{
 pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
-    lower_core_module_to_typescript_ir, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptImport, TypeScriptModule, TypeScriptParameter, TypeScriptStatement, TypeScriptType,
+    lower_core_module_to_typescript_ir, TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding,
+    TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptModule, TypeScriptParameter,
+    TypeScriptStatement, TypeScriptType,
 };
 
 #[cfg(test)]
@@ -65,6 +66,102 @@ mod tests {
         assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
         assert_eq!(typescript.bindings.len(), 1);
         assert!(typescript.functions.is_empty());
+    }
+
+    #[test]
+    fn lowers_adt_constructors_to_tagged_typescript_values() {
+        let source = "\
+pub type Hand =
+  | Rock
+  | Paper
+  | Scissors
+
+pub type Label =
+  | Missing
+  | Present String
+
+pub let opening: Hand = Rock
+
+pub fn wrap value: String -> Label =
+  Present value
+";
+        let typed = type_module("artifact/adt-constructors/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        assert_eq!(typescript.adts.len(), 2);
+        assert_eq!(
+            typescript.runtime_requirements,
+            vec!["core.adt", "core.string"]
+        );
+        assert_eq!(typescript.adts[0].name, "Hand");
+        assert_eq!(
+            typescript.adts[1].variants[1].payload,
+            Some(TypeScriptType::String)
+        );
+        assert!(typescript.imports.is_empty());
+
+        let bundle = emit_typescript_module(typescript, source);
+        assert_eq!(
+            bundle.metadata.exports,
+            vec!["Rock", "Paper", "Scissors", "Missing", "Present", "opening", "wrap"]
+        );
+        assert_eq!(
+            bundle.typescript,
+            "\
+export type Hand =
+  | { readonly tag: \"Rock\" }
+  | { readonly tag: \"Paper\" }
+  | { readonly tag: \"Scissors\" };
+export const Rock: Hand = { tag: \"Rock\" } as const;
+export const Paper: Hand = { tag: \"Paper\" } as const;
+export const Scissors: Hand = { tag: \"Scissors\" } as const;
+export type Label =
+  | { readonly tag: \"Missing\" }
+  | { readonly tag: \"Present\"; readonly value: string };
+export const Missing: Label = { tag: \"Missing\" } as const;
+export const Present = (value: string): Label => ({ tag: \"Present\", value } as const);
+export const opening: Hand = Rock;
+export const wrap = (value: string) => Present(value)
+"
+        );
+        assert_eq!(
+            bundle.source_map.names,
+            vec![
+                "Hand", "Rock", "Paper", "Scissors", "Label", "Missing", "Present", "opening",
+                "wrap", "Present"
+            ]
+        );
+        assert_eq!(
+            bundle.source_map.mappings,
+            "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAEJC;AAEAC"
+        );
+    }
+
+    #[test]
+    fn keeps_opaque_and_private_adt_constructors_out_of_runtime_exports() {
+        let source = "\
+pub opaque type Token =
+  | Token String
+
+type Internal =
+  | Hidden
+";
+        let typed = type_module("artifact/opaque-adts/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains("export type Token ="));
+        assert!(bundle
+            .typescript
+            .contains("const Token = (value: string): Token =>"));
+        assert!(!bundle.typescript.contains("export const Token"));
+        assert!(bundle.typescript.contains("type Internal ="));
+        assert!(bundle
+            .typescript
+            .contains("const Hidden: Internal = { tag: \"Hidden\" } as const;"));
+        assert!(bundle.metadata.exports.is_empty());
     }
 
     #[test]
@@ -195,6 +292,7 @@ mod tests {
             schema: 1,
             stage: "core-ir".to_owned(),
             module: "artifact/calls".to_owned(),
+            adts: Vec::new(),
             bindings: Vec::new(),
             functions: vec![CoreFunction {
                 symbol: "artifact/calls::invoke".to_owned(),

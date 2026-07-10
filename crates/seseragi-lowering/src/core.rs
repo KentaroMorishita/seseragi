@@ -3,9 +3,12 @@ use serde::{Deserialize, Serialize};
 use seseragi_semantics::{TypedDecl, TypedModule};
 use seseragi_syntax::Visibility;
 
+mod adt;
 mod expr;
 mod types;
 
+use adt::{lower_adt, AdtDeclInput};
+pub use adt::{CoreAdt, CoreAdtVariant};
 use expr::{lower_effect_body, lower_expr, lower_parameter};
 pub use types::{CoreRecordField, CoreType};
 
@@ -15,6 +18,8 @@ pub struct CoreModule {
     pub schema: u32,
     pub stage: String,
     pub module: String,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub adts: Vec<CoreAdt>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<CoreBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -141,11 +146,32 @@ pub enum CoreStatement {
 }
 
 pub fn lower_typed_module(module: TypedModule) -> CoreModule {
+    let mut adts = Vec::new();
     let mut bindings = Vec::new();
     let mut functions = Vec::new();
 
     for declaration in module.declarations {
         match declaration {
+            TypedDecl::Adt {
+                symbol,
+                name,
+                visibility,
+                opaque,
+                type_parameters,
+                variants,
+                origin,
+            } => adts.push(lower_adt(
+                &module.source,
+                AdtDeclInput {
+                    symbol,
+                    name,
+                    visibility,
+                    opaque,
+                    type_parameters,
+                    variants,
+                    origin,
+                },
+            )),
             TypedDecl::Let {
                 symbol,
                 visibility,
@@ -200,6 +226,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         schema: module.schema,
         stage: "core-ir".to_owned(),
         module: module.module,
+        adts,
         bindings,
         functions,
     }

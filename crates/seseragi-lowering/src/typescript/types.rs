@@ -1,6 +1,6 @@
 use crate::{CoreExpr, CoreParameter, CoreType};
 
-use super::names::safe_identifier;
+use super::names::{local_name, safe_identifier};
 use super::{TypeScriptParameter, TypeScriptType};
 
 pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
@@ -50,13 +50,16 @@ pub(super) fn type_ref_from_core_type(type_ref: &CoreType) -> TypeScriptType {
                 element: Box::new(type_ref_from_core_type(&arguments[0])),
             }
         }
+        CoreType::Named { name, arguments } => TypeScriptType::Reference {
+            name: local_name(name),
+            arguments: arguments.iter().map(type_ref_from_core_type).collect(),
+        },
         CoreType::Tuple { elements } => TypeScriptType::Tuple {
             elements: elements.iter().map(type_ref_from_core_type).collect(),
         },
-        CoreType::Hole
-        | CoreType::Named { .. }
-        | CoreType::Record { .. }
-        | CoreType::Function { .. } => TypeScriptType::Unknown,
+        CoreType::Hole | CoreType::Record { .. } | CoreType::Function { .. } => {
+            TypeScriptType::Unknown
+        }
     }
 }
 
@@ -71,6 +74,15 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
         TypeScriptType::String => "string".to_owned(),
         TypeScriptType::Undefined => "undefined".to_owned(),
         TypeScriptType::Unknown => "unknown".to_owned(),
+        TypeScriptType::Reference { name, arguments } if arguments.is_empty() => name.clone(),
+        TypeScriptType::Reference { name, arguments } => format!(
+            "{name}<{}>",
+            arguments
+                .iter()
+                .map(render_typescript_type)
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
         TypeScriptType::Maybe { element } => {
             format!("{} | undefined", render_typescript_type(element))
         }
@@ -82,5 +94,20 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{render_core_type, CoreType};
+
+    #[test]
+    fn renders_qualified_nominal_types_with_local_backend_names() {
+        let type_ref = CoreType::Named {
+            name: "artifact/domain::Hand".to_owned(),
+            arguments: Vec::new(),
+        };
+
+        assert_eq!(render_core_type(&type_ref), "Hand");
     }
 }

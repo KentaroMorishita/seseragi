@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/adt-constructors"
+  ],
+  "sourcesContent": [
+    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type Label =\n  | Missing\n  | Present String\n\npub let opening: Hand = Rock\n\npub fn wrap value: String -> Label =\n  Present value\n"
+  ],
+  "names": [
+    "Hand",
+    "Rock",
+    "Paper",
+    "Scissors",
+    "Label",
+    "Missing",
+    "Present",
+    "opening",
+    "wrap",
+    "Present"
+  ],
+  "mappings": "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAEJC;AAEAC"
+}

@@ -1,7 +1,8 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
@@ -73,6 +74,13 @@ pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> Ge
 
 fn module_exports(module: &TypeScriptModule) -> Vec<String> {
     let mut exports = Vec::new();
+    for adt in &module.adts {
+        for variant in &adt.variants {
+            if variant.exported {
+                exports.push(variant.name.clone());
+            }
+        }
+    }
     for binding in &module.bindings {
         match binding {
             TypeScriptBinding::Const { exported, name, .. } if *exported => {
@@ -120,8 +128,13 @@ fn render_typescript(module: &TypeScriptModule) -> String {
             specifiers.join(", ")
         ));
     }
-    if !module.imports.is_empty() && !module.functions.is_empty() {
+    if !module.imports.is_empty()
+        && (!module.adts.is_empty() || !module.bindings.is_empty() || !module.functions.is_empty())
+    {
         output.push('\n');
+    }
+    for adt in &module.adts {
+        render_adt(&mut output, adt);
     }
     for binding in &module.bindings {
         match binding {
@@ -162,6 +175,82 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         }
     }
     output
+}
+
+fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
+    if adt.exported {
+        output.push_str("export ");
+    }
+    let type_parameters = render_type_parameters(&adt.type_parameters);
+    if adt.variants.is_empty() {
+        output.push_str(&format!("type {}{type_parameters} = never;\n", adt.name));
+    } else {
+        output.push_str(&format!("type {}{type_parameters} =\n", adt.name));
+        for (index, variant) in adt.variants.iter().enumerate() {
+            let suffix = if index + 1 == adt.variants.len() {
+                ";"
+            } else {
+                ""
+            };
+            output.push_str(&format!(
+                "  | {}{suffix}\n",
+                render_adt_variant_type(variant)
+            ));
+        }
+    }
+
+    let result_type = format!(
+        "{}{}",
+        adt.name,
+        render_type_arguments(&adt.type_parameters)
+    );
+    for variant in &adt.variants {
+        if variant.exported {
+            output.push_str("export ");
+        }
+        let tag = format!("{:?}", variant.tag);
+        match &variant.payload {
+            None if adt.type_parameters.is_empty() => output.push_str(&format!(
+                "const {}: {result_type} = {{ tag: {tag} }} as const;\n",
+                variant.name
+            )),
+            None => output.push_str(&format!(
+                "const {} = {{ tag: {tag} }} as const;\n",
+                variant.name
+            )),
+            Some(payload) => {
+                let generic_parameters = render_type_parameters(&adt.type_parameters);
+                output.push_str(&format!(
+                    "const {} = {generic_parameters}(value: {}): {result_type} => ({{ tag: {tag}, value }} as const);\n",
+                    variant.name,
+                    render_typescript_type(payload),
+                ));
+            }
+        }
+    }
+}
+
+fn render_adt_variant_type(variant: &TypeScriptAdtVariant) -> String {
+    let tag = format!("{:?}", variant.tag);
+    match &variant.payload {
+        Some(payload) => format!(
+            "{{ readonly tag: {tag}; readonly value: {} }}",
+            render_typescript_type(payload)
+        ),
+        None => format!("{{ readonly tag: {tag} }}"),
+    }
+}
+
+fn render_type_parameters(parameters: &[String]) -> String {
+    if parameters.is_empty() {
+        String::new()
+    } else {
+        format!("<{}>", parameters.join(", "))
+    }
+}
+
+fn render_type_arguments(parameters: &[String]) -> String {
+    render_type_parameters(parameters)
 }
 
 fn render_function_body(

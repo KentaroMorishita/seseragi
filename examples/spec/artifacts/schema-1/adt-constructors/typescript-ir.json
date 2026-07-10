@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/adt-constructors",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Hand",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Rock",
+          "tag": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "exported": true,
+          "name": "Paper",
+          "tag": "Paper",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "exported": true,
+          "name": "Scissors",
+          "tag": "Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "exported": true,
+      "name": "Label",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Missing",
+          "tag": "Missing",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 70,
+            "end": 77
+          }
+        },
+        {
+          "exported": true,
+          "name": "Present",
+          "tag": "Present",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 82,
+            "end": 89
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 96
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "opening",
+      "type": {
+        "kind": "reference",
+        "name": "Hand",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "identifier",
+        "name": "Rock"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 98,
+        "end": 126
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "wrap",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "Present",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 128,
+        "end": 180
+      }
+    }
+  ]
+}

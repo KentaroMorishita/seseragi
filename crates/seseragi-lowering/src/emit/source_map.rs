@@ -49,6 +49,33 @@ fn module_names_and_mappings(
     let mut mappings = Vec::new();
     let mut generated_line = generated_declaration_start_line(module);
 
+    for adt in &module.adts {
+        push_declaration_mapping(
+            &mut names,
+            &mut mappings,
+            generated_line,
+            &adt.name,
+            &adt.origin,
+            source_text,
+        );
+        let type_lines = if adt.variants.is_empty() {
+            1
+        } else {
+            1 + adt.variants.len()
+        };
+        for (index, variant) in adt.variants.iter().enumerate() {
+            push_declaration_mapping(
+                &mut names,
+                &mut mappings,
+                generated_line + type_lines + index,
+                &variant.name,
+                &variant.origin,
+                source_text,
+            );
+        }
+        generated_line += type_lines + adt.variants.len();
+    }
+
     for binding in &module.bindings {
         match binding {
             TypeScriptBinding::Const {
@@ -117,7 +144,13 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
         .filter_map(|import| runtime_module_for_feature(&import.feature))
         .collect::<BTreeSet<_>>()
         .len();
-    import_lines + usize::from(!module.imports.is_empty() && !module.functions.is_empty())
+    import_lines
+        + usize::from(
+            !module.imports.is_empty()
+                && (!module.adts.is_empty()
+                    || !module.bindings.is_empty()
+                    || !module.functions.is_empty()),
+        )
 }
 
 fn runtime_helper_names(module: &TypeScriptModule) -> BTreeMap<String, String> {

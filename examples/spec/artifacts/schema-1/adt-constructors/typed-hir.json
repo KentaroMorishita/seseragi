@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/adt-constructors",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/adt-constructors::Hand",
+      "name": "Hand",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/adt-constructors::Rock",
+          "name": "Rock",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "symbol": "artifact/adt-constructors::Paper",
+          "name": "Paper",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "symbol": "artifact/adt-constructors::Scissors",
+          "name": "Scissors",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/adt-constructors::Label",
+      "name": "Label",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/adt-constructors::Missing",
+          "name": "Missing",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Label",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 70,
+            "end": 77
+          }
+        },
+        {
+          "symbol": "artifact/adt-constructors::Present",
+          "name": "Present",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Label",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 82,
+            "end": 89
+          }
+        }
+      ],
+      "origin": {
+        "start": 49,
+        "end": 96
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/adt-constructors::opening",
+      "visibility": "public",
+      "origin": {
+        "start": 98,
+        "end": 126
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "variable",
+        "name": "artifact/adt-constructors::Rock",
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        },
+        "origin": {
+          "start": 122,
+          "end": 126
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/adt-constructors::wrap",
+      "visibility": "public",
+      "origin": {
+        "start": 128,
+        "end": 180
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Label",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 140,
+            "end": 145
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/adt-constructors::Present",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 175,
+              "end": 180
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Label",
+          "arguments": []
+        },
+        "origin": {
+          "start": 167,
+          "end": 180
+        }
+      }
+    }
+  ]
+}

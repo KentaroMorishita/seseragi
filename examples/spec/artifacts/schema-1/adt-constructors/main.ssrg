@@ -1,0 +1,13 @@
+pub type Hand =
+  | Rock
+  | Paper
+  | Scissors
+
+pub type Label =
+  | Missing
+  | Present String
+
+pub let opening: Hand = Rock
+
+pub fn wrap value: String -> Label =
+  Present value

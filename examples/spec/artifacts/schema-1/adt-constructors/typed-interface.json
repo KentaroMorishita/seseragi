@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/adt-constructors",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/adt-constructors::Hand",
+      "namespace": "type",
+      "name": "Hand",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Hand",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::Rock",
+      "namespace": "value",
+      "name": "Rock",
+      "constructorOf": "artifact/adt-constructors::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::Paper",
+      "namespace": "value",
+      "name": "Paper",
+      "constructorOf": "artifact/adt-constructors::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 29,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::Scissors",
+      "namespace": "value",
+      "name": "Scissors",
+      "constructorOf": "artifact/adt-constructors::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 39,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::Label",
+      "namespace": "type",
+      "name": "Label",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 49,
+        "end": 96
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Label",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::Missing",
+      "namespace": "value",
+      "name": "Missing",
+      "constructorOf": "artifact/adt-constructors::Label",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 70,
+        "end": 77
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Label",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::Present",
+      "namespace": "value",
+      "name": "Present",
+      "constructorOf": "artifact/adt-constructors::Label",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 82,
+        "end": 89
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Label",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::opening",
+      "namespace": "value",
+      "name": "opening",
+      "visibility": "public",
+      "declaration": {
+        "start": 98,
+        "end": 126
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/adt-constructors::wrap",
+      "namespace": "value",
+      "name": "wrap",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 128,
+        "end": 180
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Label",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

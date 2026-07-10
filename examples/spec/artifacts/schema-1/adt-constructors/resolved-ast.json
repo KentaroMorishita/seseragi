@@ -1,0 +1,428 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/adt-constructors",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        },
+        {
+          "name": "Paper",
+          "nameSpan": {
+            "start": 29,
+            "end": 34
+          },
+          "span": {
+            "start": 27,
+            "end": 34
+          }
+        },
+        {
+          "name": "Scissors",
+          "nameSpan": {
+            "start": 39,
+            "end": 47
+          },
+          "span": {
+            "start": 37,
+            "end": 47
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Label",
+      "nameSpan": {
+        "start": 58,
+        "end": 63
+      },
+      "variants": [
+        {
+          "name": "Missing",
+          "nameSpan": {
+            "start": 70,
+            "end": 77
+          },
+          "span": {
+            "start": 68,
+            "end": 77
+          }
+        },
+        {
+          "name": "Present",
+          "nameSpan": {
+            "start": 82,
+            "end": 89
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 90,
+              "end": 96
+            }
+          },
+          "span": {
+            "start": 80,
+            "end": 96
+          }
+        }
+      ],
+      "span": {
+        "start": 49,
+        "end": 96
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "opening",
+      "nameSpan": {
+        "start": 106,
+        "end": 113
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Hand",
+        "span": {
+          "start": 115,
+          "end": 119
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "Rock",
+        "span": {
+          "start": 122,
+          "end": 126
+        }
+      },
+      "span": {
+        "start": 98,
+        "end": 126
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "wrap",
+      "nameSpan": {
+        "start": 135,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 140,
+            "end": 145
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 147,
+              "end": 153
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Label",
+        "span": {
+          "start": 157,
+          "end": 162
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Present",
+          "span": {
+            "start": 167,
+            "end": 174
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 175,
+            "end": 180
+          }
+        },
+        "span": {
+          "start": 167,
+          "end": 180
+        }
+      },
+      "span": {
+        "start": 128,
+        "end": 180
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 180
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 49,
+        "end": 96
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 128,
+        "end": 180
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Hand",
+      "canonical": "artifact/adt-constructors::Hand",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Rock",
+      "canonical": "artifact/adt-constructors::Rock",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 20,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Paper",
+      "canonical": "artifact/adt-constructors::Paper",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 29,
+        "end": 34
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Scissors",
+      "canonical": "artifact/adt-constructors::Scissors",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 39,
+        "end": 47
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Label",
+      "canonical": "artifact/adt-constructors::Label",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 58,
+        "end": 63
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Missing",
+      "canonical": "artifact/adt-constructors::Missing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 70,
+        "end": 77
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Present",
+      "canonical": "artifact/adt-constructors::Present",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 82,
+        "end": 89
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "opening",
+      "canonical": "artifact/adt-constructors::opening",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 106,
+        "end": 113
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "wrap",
+      "canonical": "artifact/adt-constructors::wrap",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 135,
+        "end": 139
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 140,
+        "end": 145
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 90,
+        "end": 96
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 115,
+        "end": 119
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 122,
+        "end": 126
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 147,
+        "end": 153
+      }
+    },
+    {
+      "spelling": "Label",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 157,
+        "end": 162
+      }
+    },
+    {
+      "spelling": "Present",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 167,
+        "end": 174
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 175,
+        "end": 180
+      }
+    }
+  ],
+  "issues": []
+}

@@ -33,11 +33,15 @@ pub(super) fn freshen_runtime_imports(module: &mut TypeScriptModule) {
 
 fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
     module
-        .bindings
+        .adts
         .iter()
-        .map(|binding| match binding {
-            TypeScriptBinding::Const { name, .. } => name.clone(),
+        .flat_map(|adt| {
+            std::iter::once(adt.name.clone())
+                .chain(adt.variants.iter().map(|variant| variant.name.clone()))
         })
+        .chain(module.bindings.iter().map(|binding| match binding {
+            TypeScriptBinding::Const { name, .. } => name.clone(),
+        }))
         .chain(module.functions.iter().map(|function| match function {
             TypeScriptFunction::ConstFunction { name, .. } => name.clone(),
         }))

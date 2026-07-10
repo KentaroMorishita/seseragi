@@ -93,6 +93,13 @@
       "import": null
     },
     {
+      "id": "core.adt",
+      "kind": "value-representation",
+      "typescript": "readonly tagged object",
+      "boundary": "nullary { readonly tag: C }; payload { readonly tag: C, readonly value: A }",
+      "import": null
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",
