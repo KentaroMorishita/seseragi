@@ -79,6 +79,13 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Call {
+        callee: String,
+        arguments: Vec<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Binary {
         operator: String,
         left: Box<CoreExpr>,
@@ -293,6 +300,20 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::Variable {
             name,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Call {
+            callee,
+            arguments,
+            type_ref,
+            origin,
+        } => CoreExpr::Call {
+            callee,
+            arguments: arguments
+                .into_iter()
+                .map(|argument| lower_expr(source, argument))
+                .collect(),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },

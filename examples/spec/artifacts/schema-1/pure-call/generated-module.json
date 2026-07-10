@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "artifact/pure-call",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.unit"
+    ]
+  },
+  "exports": [
+    "add",
+    "addOne",
+    "total"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

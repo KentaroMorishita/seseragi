@@ -213,6 +213,18 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier {
             name: safe_identifier(&name),
         },
+        CoreExpr::Call {
+            callee, arguments, ..
+        } => TypeScriptExpr::Call {
+            // Core symbols are module-qualified. Generated TypeScript keeps
+            // declarations module-local, so calls use the same local-name
+            // boundary as declarations and parameters.
+            callee: local_name(&callee),
+            arguments: arguments
+                .into_iter()
+                .map(lower_core_expr_to_typescript)
+                .collect(),
+        },
         CoreExpr::Binary {
             operator,
             left,

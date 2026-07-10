@@ -44,6 +44,13 @@ fn write_case(case: &Path, selection: Option<&str>) -> Result<(), String> {
             &seseragi_syntax::parse_diagnostics("main.ssrg", &source),
         )?;
     }
+    if should_write(selection, "semantic-diagnostics") {
+        write_json(
+            case,
+            "semantic-diagnostics.json",
+            &seseragi_semantics::semantic_diagnostics("main.ssrg", &source),
+        )?;
+    }
     if should_write(selection, "interface") {
         write_json(
             case,

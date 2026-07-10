@@ -320,6 +320,8 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         TypeScriptExpr::Call { callee, arguments } => {
             if let Some(operation) = runtime_effect_operation_by_local_name(callee) {
                 names.push(operation.source_map_name.to_owned());
+            } else {
+                names.push(callee.clone());
             }
             for argument in arguments {
                 collect_expr_names(argument, names);

@@ -1,10 +1,13 @@
-use seseragi_syntax::{
-    lex, parse_diagnostics, parse_surface_ast, ByteRange, Diagnostic, DiagnosticArtifact,
-    DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token, TokenKind,
+use crate::typed::{
+    collect_top_level_pure_function_signatures, top_level_value_types, TopLevelPureFunction,
 };
-use std::collections::BTreeSet;
+use seseragi_syntax::{
+    lex, parse_diagnostics, parse_surface_ast, Diagnostic, DiagnosticArtifact, SurfaceDecl, Token,
+};
+use std::collections::{BTreeMap, BTreeSet};
 
 mod effect;
+mod pure_call;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
@@ -16,10 +19,19 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
     let surface = parse_surface_ast(artifact.source.clone(), source);
     let tokens = lex(artifact.source.clone(), source).tokens;
     let declared_values = declared_value_names(&surface.declarations);
+    let top_level_values = top_level_value_types(&surface.declarations, &tokens);
+    let top_level_functions = collect_top_level_pure_function_signatures("", &surface.declarations);
     let mut diagnostics = Vec::new();
 
     for declaration in &surface.declarations {
-        collect_decl_diagnostics(declaration, &tokens, &declared_values, &mut diagnostics);
+        collect_decl_diagnostics(
+            declaration,
+            &tokens,
+            &declared_values,
+            &top_level_values,
+            &top_level_functions,
+            &mut diagnostics,
+        );
     }
 
     artifact.diagnostics = diagnostics
@@ -37,17 +49,21 @@ fn collect_decl_diagnostics(
     declaration: &SurfaceDecl,
     tokens: &[Token],
     declared_values: &BTreeSet<String>,
+    top_level_values: &BTreeMap<String, crate::TypedType>,
+    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     if let SurfaceDecl::Fn {
         parameters, span, ..
     } = declaration
     {
-        collect_unknown_pure_function_names(
+        pure_call::collect_pure_function_diagnostics(
             tokens,
             *span,
             parameters,
             declared_values,
+            top_level_values,
+            top_level_functions,
             diagnostics,
         );
         return;
@@ -74,55 +90,10 @@ fn declared_value_names(declarations: &[SurfaceDecl]) -> BTreeSet<String> {
         .collect()
 }
 
-fn collect_unknown_pure_function_names(
-    tokens: &[Token],
-    span: seseragi_syntax::ByteSpan,
-    parameters: &[seseragi_syntax::SurfaceParameter],
-    declared_values: &BTreeSet<String>,
-    diagnostics: &mut Vec<Diagnostic>,
-) {
-    let Some(equals_index) = tokens
-        .iter()
-        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")
-    else {
-        return;
-    };
-    let parameter_names = parameters
-        .iter()
-        .map(|parameter| parameter.name.as_str())
-        .collect::<BTreeSet<_>>();
-    for token in tokens[equals_index + 1..]
-        .iter()
-        .take_while(|token| token.end <= span.end)
-        .filter(|token| token.kind == TokenKind::IdentifierLower)
-    {
-        if parameter_names.contains(token.raw.as_str()) || declared_values.contains(&token.raw) {
-            continue;
-        }
-        diagnostics.push(Diagnostic {
-            id: String::new(),
-            code: "SES-T0101".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "name.unresolved".to_owned(),
-            primary: ByteRange {
-                start: token.start,
-                end: token.end,
-            },
-            related: vec![RelatedDiagnostic {
-                message: "pure function body".to_owned(),
-                primary: ByteRange {
-                    start: span.start,
-                    end: span.end,
-                },
-            }],
-            fixes: Vec::new(),
-        });
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use seseragi_syntax::ByteRange;
 
     #[test]
     fn reports_compact_effect_body_that_is_not_effect() {
@@ -267,7 +238,7 @@ mod tests {
     }
 
     #[test]
-    fn rejects_function_value_reference_until_function_values_are_typed() {
+    fn reports_known_function_with_no_arguments_as_arity_mismatch() {
         let diagnostics = semantic_diagnostics(
             "artifact/function-value-reference/main.ssrg",
             "fn source unit: Unit -> Int = 1\nfn alias unit: Unit -> Int = source\n",
@@ -276,9 +247,78 @@ mod tests {
         assert_eq!(diagnostics.diagnostics.len(), 1);
         assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.arity-mismatch"
+        );
+        assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 61, end: 67 }
         );
+    }
+
+    #[test]
+    fn accepts_saturated_top_level_pure_function_call() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/pure-call-diagnostics/main.ssrg",
+            "fn identity value: Int -> Int = value\nfn use value: Int -> Int = identity value\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn reports_known_function_with_too_few_arguments_as_arity_mismatch() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/pure-call-too-few/main.ssrg",
+            "fn add left: Int -> right: Int -> Int = left + right\nfn use value: Int -> Int = add value\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.arity-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "expected 2 arguments, received 1"
+        );
+    }
+
+    #[test]
+    fn reports_known_function_with_too_many_arguments_as_arity_mismatch() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/pure-call-too-many/main.ssrg",
+            "fn identity value: Int -> Int = value\nfn use value: Int -> Int = identity value 1\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.arity-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "expected 1 argument, received 2"
+        );
+    }
+
+    #[test]
+    fn reports_known_function_argument_type_mismatch() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/pure-call-type-mismatch/main.ssrg",
+            "fn identity value: Int -> Int = value\nfn use unit: Unit -> Int = identity \"wrong\"\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "argument 1 expected Int, received String"
+        );
+        assert_ne!(diagnostics.diagnostics[0].message_key, "name.unresolved");
     }
 
     #[test]

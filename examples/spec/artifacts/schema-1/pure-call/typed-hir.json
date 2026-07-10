@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/pure-call",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/pure-call::add",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 56
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 11,
+            "end": 15
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 24,
+            "end": 29
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 44,
+          "end": 56
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pure-call::addOne",
+      "visibility": "public",
+      "origin": {
+        "start": 57,
+        "end": 102
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 71,
+            "end": 76
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/pure-call::add",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 95,
+              "end": 100
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "1",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 101,
+              "end": 102
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 91,
+          "end": 102
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pure-call::total",
+      "visibility": "public",
+      "origin": {
+        "start": 103,
+        "end": 145
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 116,
+            "end": 120
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/pure-call::addOne",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "41",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 143,
+              "end": 145
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 136,
+          "end": 145
+        }
+      }
+    }
+  ]
+}

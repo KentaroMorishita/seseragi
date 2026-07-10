@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/pure-call",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/pure-call::add",
+      "namespace": "value",
+      "name": "add",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 56
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pure-call::addOne",
+      "namespace": "value",
+      "name": "addOne",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 57,
+        "end": 102
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pure-call::total",
+      "namespace": "value",
+      "name": "total",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 103,
+        "end": 145
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

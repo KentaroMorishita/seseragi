@@ -5,6 +5,9 @@ use crate::{
 use seseragi_syntax::{ByteSpan, Token, TokenKind};
 use std::collections::BTreeMap;
 
+use super::call::typed_top_level_pure_call;
+use super::functions::TopLevelPureFunction;
+
 pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
     let origin = ByteSpan {
         start: token.start,
@@ -122,9 +125,16 @@ pub(crate) fn typed_fn_body_from_tokens(
     tokens: &[&Token],
     parameters: &[TypedParameter],
     top_level_values: &BTreeMap<String, TypedType>,
+    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
 ) -> Option<TypedExpr> {
+    if let Some(call) =
+        typed_top_level_pure_call(tokens, parameters, top_level_values, top_level_functions)
+    {
+        return Some(call);
+    }
+
     match tokens {
-        [left, operator, right, ..] if operator.kind == TokenKind::OperatorArithmetic => {
+        [left, operator, right] if operator.kind == TokenKind::OperatorArithmetic => {
             let left_expr = typed_fn_body_from_token(left, parameters, top_level_values);
             let right_expr = typed_fn_body_from_token(right, parameters, top_level_values);
             let type_ref = binary_result_type(operator.raw.as_str(), &left_expr, &right_expr);
@@ -156,7 +166,7 @@ pub(crate) fn lower_first(value: &str) -> String {
     }
 }
 
-fn typed_fn_body_from_token(
+pub(crate) fn typed_fn_body_from_token(
     token: &Token,
     parameters: &[TypedParameter],
     top_level_values: &BTreeMap<String, TypedType>,
@@ -204,7 +214,10 @@ fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> Ty
     TypedType::Hole
 }
 
-fn find_parameter(token: &Token, parameters: &[TypedParameter]) -> Option<(String, TypedType)> {
+pub(crate) fn find_parameter(
+    token: &Token,
+    parameters: &[TypedParameter],
+) -> Option<(String, TypedType)> {
     parameters.iter().find_map(|parameter| match parameter {
         TypedParameter::Named { name, type_ref, .. } if name == &token.raw => {
             Some((name.clone(), type_ref.clone()))
@@ -219,6 +232,7 @@ fn expr_has_type(expr: &TypedExpr, expected_name: &str) -> bool {
         | TypedExpr::String { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }
+        | TypedExpr::Call { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::Unit { type_ref, .. } => named_type_is(type_ref, expected_name),
         TypedExpr::EffectCall { .. } | TypedExpr::DoBlock { .. } => false,
@@ -393,6 +407,7 @@ fn expr_origin_end(expr: &TypedExpr) -> usize {
         | TypedExpr::String { origin, .. }
         | TypedExpr::Boolean { origin, .. }
         | TypedExpr::Variable { origin, .. }
+        | TypedExpr::Call { origin, .. }
         | TypedExpr::Binary { origin, .. }
         | TypedExpr::EffectCall { origin, .. } => origin.end,
     }

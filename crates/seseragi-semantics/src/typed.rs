@@ -2,12 +2,22 @@ use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, Typ
 use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInterface};
 use std::collections::BTreeMap;
 
+mod call;
 mod effect;
 mod expr;
+mod functions;
 mod interface;
 mod surface;
 mod type_ref;
 
+pub(crate) use call::{
+    is_known_top_level_pure_call, is_supported_top_level_pure_call, top_level_pure_call_issue,
+    PureCallIssue,
+};
+pub(crate) use expr::find_value_tokens;
+pub(crate) use functions::{
+    collect_top_level_pure_function_signatures, typed_parameters_from_surface, TopLevelPureFunction,
+};
 use interface::typed_interface_from_modules;
 use surface::typed_decl_from_surface;
 use type_ref::typed_type_from_interface_type;
@@ -62,11 +72,19 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     let surface = parse_surface_ast(interface.source.clone(), source);
     let tokens = lex(interface.source.clone(), source).tokens;
     let top_level_values = top_level_value_types(&surface.declarations, &tokens);
+    let top_level_functions =
+        collect_top_level_pure_function_signatures(&interface.module, &surface.declarations);
     let declarations = surface
         .declarations
         .into_iter()
         .filter_map(|declaration| {
-            typed_decl_from_surface(&interface.module, declaration, &tokens, &top_level_values)
+            typed_decl_from_surface(
+                &interface.module,
+                declaration,
+                &tokens,
+                &top_level_values,
+                &top_level_functions,
+            )
         })
         .collect();
 
@@ -79,7 +97,7 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     }
 }
 
-fn top_level_value_types(
+pub(crate) fn top_level_value_types(
     declarations: &[seseragi_syntax::SurfaceDecl],
     tokens: &[seseragi_syntax::Token],
 ) -> BTreeMap<String, TypedType> {
@@ -642,5 +660,72 @@ mod tests {
                 ..
             } if name == "answer" && type_name == "Int" && arguments.is_empty()
         ));
+    }
+
+    #[test]
+    fn types_saturated_multi_parameter_top_level_pure_call() {
+        let typed = type_module(
+            "artifact/pure-calls/main.ssrg",
+            "pub fn add x: Int -> y: Int -> Int = x + y\npub fn total unit: Unit -> Int = add 1 2\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::Call {
+            callee,
+            arguments,
+            type_ref,
+            ..
+        } = body
+        else {
+            panic!("expected saturated direct call");
+        };
+
+        assert_eq!(callee, "artifact/pure-calls::add");
+        assert_eq!(type_ref, &int_type());
+        assert!(matches!(
+            arguments.as_slice(),
+            [
+                TypedExpr::Integer { value: first, .. },
+                TypedExpr::Integer { value: second, .. }
+            ] if first == "1" && second == "2"
+        ));
+    }
+
+    #[test]
+    fn types_parameter_forwarded_to_top_level_pure_call() {
+        let typed = type_module(
+            "artifact/pure-call-parameter/main.ssrg",
+            "pub fn identity value: Int -> Int = value\npub fn use value: Int -> Int = identity value\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::Call {
+            callee,
+            arguments,
+            type_ref,
+            ..
+        } = body
+        else {
+            panic!("expected saturated direct call");
+        };
+
+        assert_eq!(callee, "artifact/pure-call-parameter::identity");
+        assert_eq!(type_ref, &int_type());
+        assert!(matches!(
+            arguments.as_slice(),
+            [TypedExpr::Variable { name, type_ref, .. }]
+                if name == "value" && type_ref == &int_type()
+        ));
+    }
+
+    fn int_type() -> TypedType {
+        TypedType::Named {
+            name: "Int".to_owned(),
+            arguments: Vec::new(),
+        }
     }
 }

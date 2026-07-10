@@ -16,6 +16,18 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Variable { type_ref, .. } => {
             collect_type_runtime_requirement(type_ref, requirements);
         }
+        CoreExpr::Call {
+            arguments,
+            type_ref,
+            ..
+        } => {
+            // A normal Call is not a runtime operation. Its type and its
+            // argument expressions can still require core representations.
+            collect_type_runtime_requirement(type_ref, requirements);
+            for argument in arguments {
+                collect_expr_runtime_requirements(argument, requirements);
+            }
+        }
         CoreExpr::Binary {
             left,
             right,
@@ -85,6 +97,13 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. }
         | CoreExpr::Variable { .. } => {}
+        CoreExpr::Call { arguments, .. } => {
+            // Calls to user functions are emitted as local TypeScript calls;
+            // only nested effect operations contribute runtime imports.
+            for argument in arguments {
+                collect_expr_runtime_imports(argument, imports);
+            }
+        }
         CoreExpr::Binary { left, right, .. } => {
             collect_expr_runtime_imports(left, imports);
             collect_expr_runtime_imports(right, imports);
@@ -118,6 +137,7 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         CoreExpr::String { .. } => TypeScriptType::String,
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
         CoreExpr::Variable { type_ref, .. } => type_ref_from_core_type(type_ref),
+        CoreExpr::Call { type_ref, .. } => type_ref_from_core_type(type_ref),
         CoreExpr::Binary { type_ref, .. } => type_ref_from_core_type(type_ref),
         CoreExpr::EffectOperation { success, .. } => type_ref_from_core_type(success),
         CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),

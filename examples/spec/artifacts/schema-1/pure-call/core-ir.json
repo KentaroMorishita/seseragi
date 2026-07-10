@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/pure-call",
+  "functions": [
+    {
+      "symbol": "artifact/pure-call::add",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 56
+      },
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 51,
+            "end": 56
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 44,
+          "end": 56
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pure-call::addOne",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 57,
+        "end": 102
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/pure-call::add",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 95,
+              "end": 100
+            }
+          },
+          {
+            "kind": "int64",
+            "value": "1",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 101,
+              "end": 102
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 91,
+          "end": 102
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pure-call::total",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 103,
+        "end": 145
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/pure-call::addOne",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "41",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 143,
+              "end": 145
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 136,
+          "end": 145
+        }
+      }
+    }
+  ]
+}

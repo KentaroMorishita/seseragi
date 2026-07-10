@@ -23,6 +23,7 @@ pub use typescript::{
 mod tests {
     use super::*;
     use seseragi_semantics::type_module;
+    use seseragi_syntax::Visibility;
 
     #[test]
     fn lowers_public_let_to_core_binding() {
@@ -152,6 +153,108 @@ mod tests {
         assert_eq!(
             bundle.typescript,
             "export const add = (x: bigint, y: bigint) => x + y\n"
+        );
+    }
+
+    #[test]
+    fn lowers_module_qualified_pure_call_without_runtime_helper_import() {
+        let source = "pub fn invoke value: Int -> Int = default value\n";
+        let origin = SourceSpan {
+            source: "main.ssrg".to_owned(),
+            start: 0,
+            end: source.len(),
+        };
+        let int_type = CoreType::Named {
+            name: "Int".to_owned(),
+            arguments: Vec::new(),
+        };
+        let core = CoreModule {
+            schema: 1,
+            stage: "core-ir".to_owned(),
+            module: "artifact/calls".to_owned(),
+            bindings: Vec::new(),
+            functions: vec![CoreFunction {
+                symbol: "artifact/calls::invoke".to_owned(),
+                visibility: Visibility::Public,
+                origin: origin.clone(),
+                parameters: vec![CoreParameter {
+                    id: "value".to_owned(),
+                    kind: "named".to_owned(),
+                    type_ref: int_type.clone(),
+                }],
+                body: CoreExpr::Call {
+                    callee: "artifact/calls::default".to_owned(),
+                    arguments: vec![CoreExpr::Variable {
+                        name: "value".to_owned(),
+                        type_ref: int_type.clone(),
+                        origin: origin.clone(),
+                    }],
+                    type_ref: int_type,
+                    origin,
+                },
+            }],
+        };
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript.clone(), source);
+
+        assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .all(|requirement| !requirement.starts_with("effect.")));
+        assert!(typescript.imports.is_empty());
+        assert_eq!(
+            bundle.typescript,
+            "export const invoke = (value: bigint) => _default(value)\n"
+        );
+        assert_eq!(bundle.source_map.names, vec!["invoke", "_default"]);
+    }
+
+    #[test]
+    fn lowers_typed_pure_function_call_without_runtime_helper_import() {
+        let source = "\
+pub fn identity value: Int -> Int = value
+pub fn useIdentity value: Int -> Int = identity value
+";
+        let typed = type_module("artifact/calls/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::Call {
+            callee,
+            arguments,
+            type_ref,
+            ..
+        } = &core.functions[1].body
+        else {
+            panic!("expected pure call in second function body");
+        };
+
+        assert_eq!(callee, "artifact/calls::identity");
+        assert_eq!(arguments.len(), 1);
+        assert_eq!(
+            type_ref,
+            &CoreType::Named {
+                name: "Int".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript.clone(), source);
+
+        assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .all(|requirement| !requirement.starts_with("effect.")));
+        assert!(typescript.imports.is_empty());
+        assert_eq!(
+            bundle.typescript,
+            "export const identity = (value: bigint) => value\nexport const useIdentity = (value: bigint) => identity(value)\n"
+        );
+        assert_eq!(
+            bundle.source_map.names,
+            vec!["identity", "useIdentity", "identity"]
         );
     }
 

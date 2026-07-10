@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "add",
+      "nameSpan": {
+        "start": 7,
+        "end": 10
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 11,
+            "end": 15
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 17,
+              "end": 20
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 24,
+            "end": 29
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 31,
+              "end": 34
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 38,
+          "end": 41
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "addOne",
+      "nameSpan": {
+        "start": 64,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 71,
+            "end": 76
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 78,
+              "end": 81
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 85,
+          "end": 88
+        }
+      },
+      "span": {
+        "start": 57,
+        "end": 102
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "total",
+      "nameSpan": {
+        "start": 110,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 116,
+            "end": 120
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 122,
+              "end": 126
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 130,
+          "end": 133
+        }
+      },
+      "span": {
+        "start": 103,
+        "end": 145
+      }
+    }
+  ]
+}

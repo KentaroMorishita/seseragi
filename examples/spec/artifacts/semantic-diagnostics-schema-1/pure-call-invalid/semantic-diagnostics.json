@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.arity-mismatch",
+      "primary": {
+        "start": 126,
+        "end": 129
+      },
+      "related": [
+        {
+          "message": "expected 2 arguments, received 1",
+          "primary": {
+            "start": 92,
+            "end": 135
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.arity-mismatch",
+      "primary": {
+        "start": 171,
+        "end": 179
+      },
+      "related": [
+        {
+          "message": "expected 1 argument, received 2",
+          "primary": {
+            "start": 136,
+            "end": 187
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "primary": {
+        "start": 234,
+        "end": 241
+      },
+      "related": [
+        {
+          "message": "argument 1 expected Int, received String",
+          "primary": {
+            "start": 188,
+            "end": 241
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

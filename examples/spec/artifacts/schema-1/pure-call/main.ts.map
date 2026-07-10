@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/pure-call"
+  ],
+  "sourcesContent": [
+    "pub fn add left: Int -> right: Int -> Int = left + right\npub fn addOne value: Int -> Int = add value 1\npub fn total unit: Unit -> Int = addOne 41\n"
+  ],
+  "names": [
+    "add",
+    "addOne",
+    "add",
+    "total",
+    "addOne"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

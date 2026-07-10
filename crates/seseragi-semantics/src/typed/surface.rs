@@ -1,5 +1,5 @@
 use crate::{unit_type, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
-use seseragi_syntax::{SurfaceDecl, SurfaceParameter, Token};
+use seseragi_syntax::{SurfaceDecl, Token};
 use std::collections::BTreeMap;
 
 use super::effect::typed_effect_from_surface;
@@ -7,6 +7,7 @@ use super::expr::{
     find_effect_body, find_value_token, find_value_tokens, typed_expr_from_value_token,
     typed_fn_body_from_tokens,
 };
+use super::functions::{typed_parameters_from_surface, TopLevelPureFunction};
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 
 pub(crate) fn typed_decl_from_surface(
@@ -14,6 +15,7 @@ pub(crate) fn typed_decl_from_surface(
     declaration: SurfaceDecl,
     tokens: &[Token],
     top_level_values: &BTreeMap<String, TypedType>,
+    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
 ) -> Option<TypedDecl> {
     match declaration {
         SurfaceDecl::Let {
@@ -57,10 +59,7 @@ pub(crate) fn typed_decl_from_surface(
             span,
             ..
         } => {
-            let typed_parameters = parameters
-                .iter()
-                .map(typed_parameter_from_surface)
-                .collect::<Vec<_>>();
+            let typed_parameters = typed_parameters_from_surface(&parameters);
             let body = find_effect_body(tokens, span).unwrap_or_else(|| TypedExpr::EffectCall {
                 operation: "std/prelude::unit".to_owned(),
                 arguments: Vec::new(),
@@ -94,14 +93,12 @@ pub(crate) fn typed_decl_from_surface(
             span,
             ..
         } => {
-            let typed_parameters = parameters
-                .iter()
-                .map(typed_parameter_from_surface)
-                .collect::<Vec<_>>();
+            let typed_parameters = typed_parameters_from_surface(&parameters);
             let body = typed_fn_body_from_tokens(
                 &find_value_tokens(tokens, span),
                 &typed_parameters,
                 top_level_values,
+                top_level_functions,
             )
             .unwrap_or_else(|| TypedExpr::Variable {
                 name: String::new(),
@@ -131,13 +128,5 @@ pub(crate) fn typed_decl_from_surface(
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }
         | SurfaceDecl::Instance { .. } => None,
-    }
-}
-
-fn typed_parameter_from_surface(parameter: &SurfaceParameter) -> TypedParameter {
-    TypedParameter::Named {
-        name: parameter.name.clone(),
-        type_ref: typed_type_from_type_ref(&parameter.type_ref),
-        origin: parameter.name_span,
     }
 }

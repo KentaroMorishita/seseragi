@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/pure-call",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.unit"
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "add",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "identifier",
+          "name": "left"
+        },
+        "right": {
+          "kind": "identifier",
+          "name": "right"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "addOne",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "bigint",
+            "value": "1"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 57,
+        "end": 102
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "total",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "addOne",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "41"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 103,
+        "end": 145
+      }
+    }
+  ]
+}

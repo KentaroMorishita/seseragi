@@ -1,0 +1,6 @@
+fn add left: Int -> right: Int -> Int = left + right
+fn identity value: Int -> Int = value
+
+pub fn tooFew value: Int -> Int = add value
+pub fn tooMany value: Int -> Int = identity value 1
+pub fn wrongType unit: Unit -> Int = identity "wrong"
