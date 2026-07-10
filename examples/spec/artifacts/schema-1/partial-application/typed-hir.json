@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/partial-application",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/partial-application::add",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 56
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 11,
+            "end": 15
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 24,
+            "end": 29
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 44,
+          "end": 56
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/partial-application::addTo",
+      "visibility": "public",
+      "origin": {
+        "start": 57,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 70,
+            "end": 75
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/partial-application::add",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 103,
+              "end": 108
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "start": 99,
+          "end": 108
+        }
+      }
+    }
+  ]
+}

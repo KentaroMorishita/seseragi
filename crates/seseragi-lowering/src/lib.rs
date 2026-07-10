@@ -137,7 +137,7 @@ mod tests {
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
         assert_eq!(
             bundle.typescript,
-            "export const first = (left: bigint, right: bigint) => left\n"
+            "export const first = (left: bigint) => (right: bigint) => left\n"
         );
     }
 
@@ -152,7 +152,7 @@ mod tests {
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
         assert_eq!(
             bundle.typescript,
-            "export const add = (x: bigint, y: bigint) => x + y\n"
+            "export const add = (x: bigint) => (y: bigint) => x + y\n"
         );
     }
 
@@ -256,6 +256,28 @@ pub fn useIdentity value: Int -> Int = identity value
             bundle.source_map.names,
             vec!["identity", "useIdentity", "identity"]
         );
+    }
+
+    #[test]
+    fn lowers_partial_application_to_curried_typescript_call() {
+        let source = "pub fn add left: Int -> right: Int -> Int = left + right\npub fn addTo value: Int -> (Int -> Int) = add value\n";
+        let typed = type_module("artifact/partial-call/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .iter()
+            .all(|requirement| !requirement.starts_with("effect.")));
+        assert!(bundle
+            .typescript
+            .contains("export const add = (left: bigint) => (right: bigint) => left + right"));
+        assert!(bundle
+            .typescript
+            .contains("export const addTo = (value: bigint) => add(value)"));
     }
 
     #[test]

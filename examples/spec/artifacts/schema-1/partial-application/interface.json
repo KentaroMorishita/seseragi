@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "module": "artifact/partial-application",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/partial-application::add",
+      "namespace": "value",
+      "name": "add",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 56
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/partial-application::addTo",
+      "namespace": "value",
+      "name": "addTo",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 57,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

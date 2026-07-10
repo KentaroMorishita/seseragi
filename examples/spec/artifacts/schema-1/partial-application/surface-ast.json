@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "add",
+      "nameSpan": {
+        "start": 7,
+        "end": 10
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 11,
+            "end": 15
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 17,
+              "end": 20
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 24,
+            "end": 29
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 31,
+              "end": 34
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 38,
+          "end": 41
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "addTo",
+      "nameSpan": {
+        "start": 64,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 70,
+            "end": 75
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 77,
+              "end": 80
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 85,
+            "end": 88
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 92,
+            "end": 95
+          }
+        },
+        "span": {
+          "start": 85,
+          "end": 95
+        }
+      },
+      "span": {
+        "start": 57,
+        "end": 108
+      }
+    }
+  ]
+}

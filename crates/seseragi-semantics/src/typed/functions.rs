@@ -68,11 +68,25 @@ pub(crate) fn typed_parameters_from_surface(
         .collect()
 }
 
-pub(crate) fn accepts_saturated_arguments(
+pub(crate) fn accepts_application_arguments(
     signature: &TopLevelPureFunction,
     argument_types: &[TypedType],
 ) -> bool {
-    signature.parameters == argument_types
+    argument_types.len() <= signature.parameters.len()
+        && signature.parameters.starts_with(argument_types)
+}
+
+pub(crate) fn application_result_type(
+    signature: &TopLevelPureFunction,
+    argument_count: usize,
+) -> TypedType {
+    signature.parameters[argument_count..].iter().rev().fold(
+        signature.result.clone(),
+        |result, parameter| TypedType::Function {
+            parameter: Box::new(parameter.clone()),
+            result: Box::new(result),
+        },
+    )
 }
 
 fn contains_function_type(type_ref: &TypedType) -> bool {

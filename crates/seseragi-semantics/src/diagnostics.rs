@@ -276,7 +276,7 @@ mod tests {
     }
 
     #[test]
-    fn reports_known_function_with_no_arguments_as_arity_mismatch() {
+    fn reports_function_value_return_type_mismatch_instead_of_arity() {
         let diagnostics = semantic_diagnostics(
             "artifact/function-value-reference/main.ssrg",
             "fn source unit: Unit -> Int = 1\nfn alias unit: Unit -> Int = source\n",
@@ -286,7 +286,7 @@ mod tests {
         assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
-            "call.arity-mismatch"
+            "function.return-type-mismatch"
         );
         assert_eq!(
             diagnostics.diagnostics[0].primary,
@@ -305,7 +305,7 @@ mod tests {
     }
 
     #[test]
-    fn reports_known_function_with_too_few_arguments_as_arity_mismatch() {
+    fn treats_too_few_arguments_as_partial_application() {
         let diagnostics = semantic_diagnostics(
             "artifact/pure-call-too-few/main.ssrg",
             "fn add left: Int -> right: Int -> Int = left + right\nfn use value: Int -> Int = add value\n",
@@ -314,11 +314,11 @@ mod tests {
         assert_eq!(diagnostics.diagnostics.len(), 1);
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
-            "call.arity-mismatch"
+            "function.return-type-mismatch"
         );
         assert_eq!(
             diagnostics.diagnostics[0].related[0].message,
-            "expected 2 arguments, received 1"
+            "declared Int, body produces function"
         );
     }
 

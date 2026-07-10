@@ -70,6 +70,6 @@ pub fn sameString left: String -> right: String -> Bool = left != right
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const sameBool = (left: boolean, right: boolean) => left === right\nexport const sameString = (left: string, right: string) => left !== right\n"
+        "export const sameBool = (left: boolean) => (right: boolean) => left === right\nexport const sameString = (left: string) => (right: string) => left !== right\n"
     );
 }

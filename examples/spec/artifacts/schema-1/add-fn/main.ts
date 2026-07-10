@@ -1,1 +1,1 @@
-export const add = (x: bigint, y: bigint) => x + y
+export const add = (x: bigint) => (y: bigint) => x + y

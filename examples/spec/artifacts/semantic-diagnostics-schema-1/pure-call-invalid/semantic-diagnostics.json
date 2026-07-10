@@ -7,14 +7,14 @@
       "id": "d1",
       "code": "SES-T0101",
       "severity": "Error",
-      "messageKey": "call.arity-mismatch",
+      "messageKey": "function.return-type-mismatch",
       "primary": {
         "start": 126,
-        "end": 129
+        "end": 135
       },
       "related": [
         {
-          "message": "expected 2 arguments, received 1",
+          "message": "declared Int, body produces function",
           "primary": {
             "start": 92,
             "end": 135

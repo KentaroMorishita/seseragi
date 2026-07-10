@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/partial-application",
+  "runtimeRequirements": [
+    "core.int64"
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "add",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "identifier",
+          "name": "left"
+        },
+        "right": {
+          "kind": "identifier",
+          "name": "right"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "addTo",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 57,
+        "end": 108
+      }
+    }
+  ]
+}

@@ -216,7 +216,7 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier {
-            name: safe_identifier(&name),
+            name: local_name(&name),
         },
         CoreExpr::Call {
             callee, arguments, ..

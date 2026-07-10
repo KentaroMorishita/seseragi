@@ -156,20 +156,31 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 if *exported {
                     output.push_str("export ");
                 }
-                let rendered_parameters = parameters
-                    .iter()
-                    .map(|parameter| format!("{}: {}", parameter.name, parameter.type_name))
-                    .collect::<Vec<_>>()
-                    .join(", ");
-                let async_prefix = if *is_async { "async " } else { "" };
-                output.push_str(&format!(
-                    "const {name} = {async_prefix}({rendered_parameters}) => {}\n",
-                    render_typescript_expr(body)
-                ));
+                let rendered_body = render_function_body(parameters, body, *is_async);
+                output.push_str(&format!("const {name} = {rendered_body}\n",));
             }
         }
     }
     output
+}
+
+fn render_function_body(
+    parameters: &[crate::TypeScriptParameter],
+    body: &TypeScriptExpr,
+    is_async: bool,
+) -> String {
+    let rendered_body = render_typescript_expr(body);
+    let Some((last, leading)) = parameters.split_last() else {
+        return rendered_body;
+    };
+    let async_prefix = if is_async { "async " } else { "" };
+    let final_arrow = format!(
+        "{async_prefix}({}: {}) => {rendered_body}",
+        last.name, last.type_name
+    );
+    leading.iter().rev().fold(final_arrow, |result, parameter| {
+        format!("({}: {}) => {result}", parameter.name, parameter.type_name)
+    })
 }
 
 fn render_typescript_type(type_ref: &crate::TypeScriptType) -> &'static str {
@@ -218,12 +229,12 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             render_typescript_expr(else_branch)
         ),
         TypeScriptExpr::Call { callee, arguments } => {
-            let rendered_arguments = arguments
-                .iter()
-                .map(render_typescript_expr)
-                .collect::<Vec<_>>()
-                .join(", ");
-            format!("{callee}({rendered_arguments})")
+            if arguments.is_empty() {
+                return format!("{callee}()");
+            }
+            arguments.iter().fold(callee.clone(), |call, argument| {
+                format!("{call}({})", render_typescript_expr(argument))
+            })
         }
         TypeScriptExpr::Await { value } => format!("await {}", render_typescript_expr(value)),
         TypeScriptExpr::Sequence { statements, result } => {

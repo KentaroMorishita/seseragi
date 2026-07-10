@@ -732,6 +732,37 @@ mod tests {
         ));
     }
 
+    #[test]
+    fn types_partial_top_level_application_as_remaining_function() {
+        let typed = type_module(
+            "artifact/partial-call/main.ssrg",
+            "pub fn add left: Int -> right: Int -> Int = left + right\npub fn addTo value: Int -> (Int -> Int) = add value\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::Call {
+            callee,
+            arguments,
+            type_ref,
+            ..
+        } = body
+        else {
+            panic!("expected partial direct call");
+        };
+
+        assert_eq!(callee, "artifact/partial-call::add");
+        assert_eq!(arguments.len(), 1);
+        assert_eq!(
+            type_ref,
+            &TypedType::Function {
+                parameter: Box::new(int_type()),
+                result: Box::new(int_type()),
+            }
+        );
+    }
+
     fn int_type() -> TypedType {
         TypedType::Named {
             name: "Int".to_owned(),

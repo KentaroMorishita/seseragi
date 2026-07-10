@@ -3,7 +3,9 @@ use seseragi_syntax::{ByteSpan, Token, TokenKind};
 use std::collections::BTreeMap;
 
 use super::expr::{find_parameter, typed_fn_body_from_token};
-use super::functions::{accepts_saturated_arguments, TopLevelPureFunction};
+use super::functions::{
+    accepts_application_arguments, application_result_type, TopLevelPureFunction,
+};
 use super::type_ref::inferred_type_from_expr;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -42,14 +44,24 @@ pub(crate) fn typed_top_level_pure_call(
         .iter()
         .map(inferred_type_from_expr)
         .collect::<Vec<_>>();
-    if !accepts_saturated_arguments(signature, &argument_types) {
+    if !accepts_application_arguments(signature, &argument_types) {
         return None;
     }
-    let last_argument = argument_tokens.last()?;
+    let type_ref = application_result_type(signature, arguments.len());
+    if arguments.is_empty() {
+        return Some(TypedExpr::Variable {
+            name: signature.symbol.clone(),
+            type_ref,
+            origin: token_span(callee_token),
+        });
+    }
+    let last_argument = argument_tokens
+        .last()
+        .expect("non-empty application has a final argument");
     Some(TypedExpr::Call {
         callee: signature.symbol.clone(),
         arguments,
-        type_ref: signature.result.clone(),
+        type_ref,
         origin: ByteSpan {
             start: callee_token.start,
             end: last_argument.end,
@@ -89,7 +101,7 @@ pub(crate) fn top_level_pure_call_issue(
         top_level_functions,
     )?;
     let argument_tokens = &tokens[1..];
-    if argument_tokens.len() != signature.parameters.len() {
+    if argument_tokens.len() > signature.parameters.len() {
         return Some(PureCallIssue::Arity {
             callee: token_span(callee_token),
             expected: signature.parameters.len(),

@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/partial-application"
+  ],
+  "sourcesContent": [
+    "pub fn add left: Int -> right: Int -> Int = left + right\npub fn addTo value: Int -> (Int -> Int) = add value\n"
+  ],
+  "names": [
+    "add",
+    "addTo",
+    "add"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}
