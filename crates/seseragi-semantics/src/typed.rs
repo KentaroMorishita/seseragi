@@ -6,6 +6,7 @@ mod call;
 mod conditional;
 mod effect;
 mod expr;
+mod function_body;
 mod functions;
 mod interface;
 mod surface;
@@ -17,6 +18,7 @@ pub(crate) use call::{
 };
 pub(crate) use conditional::{conditional_issue, ConditionalIssue};
 pub(crate) use expr::find_value_tokens;
+pub(crate) use function_body::{function_body_issue, FunctionBodyIssue};
 pub(crate) use functions::{
     collect_top_level_pure_function_signatures, typed_parameters_from_surface, TopLevelPureFunction,
 };

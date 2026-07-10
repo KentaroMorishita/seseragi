@@ -8,6 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod conditional;
 mod effect;
+mod function_body;
 mod pure_call;
 mod type_labels;
 
@@ -56,13 +57,25 @@ fn collect_decl_diagnostics(
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     if let SurfaceDecl::Fn {
-        parameters, span, ..
+        parameters,
+        return_type,
+        span,
+        ..
     } = declaration
     {
         conditional::collect_conditional_diagnostics(
             tokens,
             *span,
             parameters,
+            top_level_values,
+            top_level_functions,
+            diagnostics,
+        );
+        function_body::collect_function_body_diagnostics(
+            tokens,
+            *span,
+            parameters,
+            return_type,
             top_level_values,
             top_level_functions,
             diagnostics,
