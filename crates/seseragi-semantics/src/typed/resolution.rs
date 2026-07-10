@@ -1,0 +1,188 @@
+use crate::{
+    ResolvedModule, ResolvedSymbol, SymbolId, SymbolKind, SymbolNamespace, TypedParameter,
+    TypedType,
+};
+use seseragi_syntax::{ByteSpan, SurfaceDecl};
+use std::collections::BTreeMap;
+
+use super::functions::TopLevelPureFunction;
+use super::pure_issues::UnresolvedNameIssue;
+use super::surface_expr::surface_expression_type_hint;
+use super::type_ref::typed_type_from_type_ref;
+
+pub(crate) struct TypedResolution<'a> {
+    resolved: &'a ResolvedModule,
+    top_level_values: BTreeMap<SymbolId, TypedType>,
+    callables: BTreeMap<SymbolId, TopLevelPureFunction>,
+}
+
+impl<'a> TypedResolution<'a> {
+    pub(crate) fn new(resolved: &'a ResolvedModule) -> Self {
+        Self {
+            resolved,
+            top_level_values: collect_top_level_value_types(resolved),
+            callables: collect_callables(resolved),
+        }
+    }
+
+    pub(crate) fn declaration_symbol(
+        &self,
+        origin: ByteSpan,
+        kind: SymbolKind,
+    ) -> Option<&ResolvedSymbol> {
+        self.resolved
+            .symbols
+            .iter()
+            .find(|symbol| symbol.kind == kind && symbol.origin == origin)
+    }
+
+    pub(crate) fn target(&self, origin: ByteSpan, namespace: SymbolNamespace) -> Option<SymbolId> {
+        self.resolved
+            .references
+            .iter()
+            .find(|reference| reference.namespace == namespace && reference.origin == origin)
+            .and_then(|reference| reference.target)
+    }
+
+    pub(crate) fn symbol(&self, id: SymbolId) -> Option<&ResolvedSymbol> {
+        self.resolved.symbols.iter().find(|symbol| symbol.id == id)
+    }
+
+    pub(crate) fn top_level_value_type(&self, id: SymbolId) -> Option<&TypedType> {
+        self.top_level_values.get(&id)
+    }
+
+    pub(crate) fn callable(&self, id: SymbolId) -> Option<&TopLevelPureFunction> {
+        self.callables.get(&id)
+    }
+
+    pub(crate) fn parameter_types(
+        &self,
+        parameters: &[TypedParameter],
+    ) -> BTreeMap<SymbolId, TypedType> {
+        parameters
+            .iter()
+            .filter_map(|parameter| {
+                let (origin, type_ref) = match parameter {
+                    TypedParameter::Named {
+                        origin, type_ref, ..
+                    } => (*origin, type_ref.clone()),
+                    TypedParameter::ImplicitUnit { .. } => return None,
+                };
+                let symbol = self.declaration_symbol(origin, SymbolKind::Parameter)?;
+                Some((symbol.id, type_ref))
+            })
+            .collect()
+    }
+
+    pub(crate) fn unresolved_names(&self, body: ByteSpan) -> Vec<UnresolvedNameIssue> {
+        self.resolved
+            .issues
+            .iter()
+            .filter(|issue| {
+                issue.code == "SES-N0001"
+                    && issue.primary.start >= body.start
+                    && issue.primary.end <= body.end
+            })
+            .map(|issue| UnresolvedNameIssue {
+                origin: issue.primary,
+            })
+            .collect()
+    }
+}
+
+fn collect_top_level_value_types(resolved: &ResolvedModule) -> BTreeMap<SymbolId, TypedType> {
+    resolved
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            let SurfaceDecl::Let {
+                name_span,
+                type_ref,
+                body,
+                ..
+            } = declaration
+            else {
+                return None;
+            };
+            let symbol = resolved
+                .symbols
+                .iter()
+                .find(|symbol| symbol.kind == SymbolKind::Let && symbol.origin == *name_span)?;
+            let type_ref = type_ref
+                .as_ref()
+                .map(typed_type_from_type_ref)
+                .or_else(|| body.as_ref().and_then(surface_expression_type_hint))?;
+            Some((symbol.id, type_ref))
+        })
+        .collect()
+}
+
+fn collect_callables(resolved: &ResolvedModule) -> BTreeMap<SymbolId, TopLevelPureFunction> {
+    resolved
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            let SurfaceDecl::Fn {
+                name_span,
+                type_parameters,
+                parameters,
+                return_type,
+                constraints,
+                ..
+            } = declaration
+            else {
+                return None;
+            };
+            if !type_parameters.is_empty() || !constraints.is_empty() || parameters.is_empty() {
+                return None;
+            }
+            let symbol = resolved.symbols.iter().find(|symbol| {
+                symbol.kind == SymbolKind::Function && symbol.origin == *name_span
+            })?;
+            let parameters = parameters
+                .iter()
+                .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                .collect::<Vec<_>>();
+            let result = typed_type_from_type_ref(return_type);
+            if parameters.iter().any(contains_function_type) || contains_function_type(&result) {
+                return None;
+            }
+            Some((
+                symbol.id,
+                TopLevelPureFunction {
+                    symbol: symbol.canonical.clone()?,
+                    parameters,
+                    result,
+                },
+            ))
+        })
+        .collect()
+}
+
+fn contains_function_type(type_ref: &TypedType) -> bool {
+    match type_ref {
+        TypedType::Function { .. } => true,
+        TypedType::Named { arguments, .. } => arguments.iter().any(contains_function_type),
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| contains_function_type(&field.type_ref)),
+        TypedType::Tuple { elements } => elements.iter().any(contains_function_type),
+        TypedType::Hole => false,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn excludes_generic_and_higher_order_functions_from_direct_call_signatures() {
+        let resolved = crate::resolve_module(
+            "artifact/functions/main.ssrg",
+            "fn identity<A> value: A -> A = value\nfn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
+        );
+
+        assert!(collect_callables(&resolved).is_empty());
+    }
+}

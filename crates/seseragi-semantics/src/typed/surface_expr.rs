@@ -1,9 +1,10 @@
-use crate::{TypedExpr, TypedParameter, TypedType};
+use crate::{SymbolId, SymbolNamespace, TypedExpr, TypedParameter, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
-use super::pure_issues::{ConditionalIssue, PureCallIssue, UnresolvedNameIssue};
+use super::pure_issues::{ConditionalIssue, PureCallIssue};
+use super::TypedResolution;
 
 mod application;
 mod binary;
@@ -11,34 +12,24 @@ mod conditional;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
-    parameters: BTreeMap<&'a str, TypedType>,
-    declared_values: &'a BTreeSet<String>,
-    top_level_values: &'a BTreeMap<String, TypedType>,
-    top_level_functions: &'a BTreeMap<String, TopLevelPureFunction>,
+    parameters: BTreeMap<SymbolId, TypedType>,
+    resolution: &'a TypedResolution<'a>,
 }
 
 impl<'a> PureExpressionContext<'a> {
-    pub(crate) fn new(
-        parameters: &'a [TypedParameter],
-        declared_values: &'a BTreeSet<String>,
-        top_level_values: &'a BTreeMap<String, TypedType>,
-        top_level_functions: &'a BTreeMap<String, TopLevelPureFunction>,
-    ) -> Self {
-        let parameters = parameters
-            .iter()
-            .filter_map(|parameter| match parameter {
-                TypedParameter::Named { name, type_ref, .. } => {
-                    Some((name.as_str(), type_ref.clone()))
-                }
-                TypedParameter::ImplicitUnit { .. } => None,
-            })
-            .collect();
+    pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
         Self {
-            parameters,
-            declared_values,
-            top_level_values,
-            top_level_functions,
+            parameters: resolution.parameter_types(parameters),
+            resolution,
         }
+    }
+
+    pub(super) fn target(&self, origin: ByteSpan) -> Option<SymbolId> {
+        self.resolution.target(origin, SymbolNamespace::Value)
+    }
+
+    pub(super) fn callable(&self, target: SymbolId) -> Option<&TopLevelPureFunction> {
+        self.resolution.callable(target)
     }
 }
 
@@ -47,7 +38,6 @@ pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) conditional_issue: Option<ConditionalIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
-    pub(crate) unresolved_names: Vec<UnresolvedNameIssue>,
 }
 
 impl SurfaceExpressionAnalysis {
@@ -56,18 +46,16 @@ impl SurfaceExpressionAnalysis {
             value,
             conditional_issue: None,
             pure_call_issue: None,
-            unresolved_names: Vec::new(),
         }
     }
 
     pub(super) fn merge_issues_from(&mut self, child: Self) {
         self.conditional_issue = self.conditional_issue.take().or(child.conditional_issue);
         self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
-        self.unresolved_names.extend(child.unresolved_names);
     }
 }
 
-pub(crate) fn analyze_surface_expression(
+pub(crate) fn analyze_resolved_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
@@ -163,21 +151,33 @@ fn type_name(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    if let Some(type_ref) = context.parameters.get(name) {
+    let Some(target) = context.target(span) else {
+        return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
+            name: name.to_owned(),
+            type_ref: TypedType::Hole,
+            origin: span,
+        });
+    };
+    if let Some(type_ref) = context.parameters.get(&target) {
         return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
             name: name.to_owned(),
             type_ref: type_ref.clone(),
             origin: span,
         });
     }
-    if let Some(type_ref) = context.top_level_values.get(name) {
+    if let Some(type_ref) = context.resolution.top_level_value_type(target) {
+        let resolved_name = context
+            .resolution
+            .symbol(target)
+            .map(|symbol| symbol.spelling.clone())
+            .unwrap_or_else(|| name.to_owned());
         return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-            name: name.to_owned(),
+            name: resolved_name,
             type_ref: type_ref.clone(),
             origin: span,
         });
     }
-    if let Some(function) = context.top_level_functions.get(name) {
+    if let Some(function) = context.callable(target) {
         return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
             name: function.symbol.clone(),
             type_ref: application_result_type(function, 0),
@@ -185,17 +185,11 @@ fn type_name(
         });
     }
 
-    let mut analysis = SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
+    SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
         name: name.to_owned(),
         type_ref: TypedType::Hole,
         origin: span,
-    });
-    if !context.declared_values.contains(name) {
-        analysis
-            .unresolved_names
-            .push(UnresolvedNameIssue { origin: span });
-    }
-    analysis
+    })
 }
 
 pub(super) fn named_type(name: &str) -> TypedType {

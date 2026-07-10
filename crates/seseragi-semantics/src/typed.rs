@@ -1,6 +1,5 @@
 use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
-use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInterface};
-use std::collections::{BTreeMap, BTreeSet};
+use seseragi_syntax::{lex, parse_module_interface, ModuleInterface};
 
 mod analysis;
 mod effect;
@@ -10,6 +9,7 @@ mod function_body;
 mod functions;
 mod interface;
 mod pure_issues;
+mod resolution;
 mod surface;
 mod surface_expr;
 #[cfg(test)]
@@ -19,9 +19,9 @@ mod type_ref;
 pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};
 pub(crate) use effect_analysis::{analyze_effect_function, EffectFunctionIssue};
 pub(crate) use function_body::FunctionBodyIssue;
-pub(crate) use functions::{collect_top_level_pure_function_signatures, TopLevelPureFunction};
 use interface::typed_interface_from_modules;
 pub(crate) use pure_issues::{ConditionalIssue, PureCallIssue};
+pub(crate) use resolution::TypedResolution;
 use surface::typed_decl_from_surface;
 use type_ref::typed_type_from_interface_type;
 
@@ -71,80 +71,31 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
 
 pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule {
     let source_name = source_name.into();
-    let interface = parse_module_interface(source_name.clone(), source);
-    let surface = parse_surface_ast(interface.source.clone(), source);
-    let has_effect_functions = surface
+    let resolved = crate::resolve_module(source_name, source);
+    let has_effect_functions = resolved
         .declarations
         .iter()
         .any(|declaration| matches!(declaration, seseragi_syntax::SurfaceDecl::EffectFn { .. }));
     let tokens = if has_effect_functions {
-        lex(interface.source.clone(), source).tokens
+        lex(resolved.source.clone(), source).tokens
     } else {
         Vec::new()
     };
-    let top_level_values = top_level_value_types(&surface.declarations);
-    let declared_values = top_level_value_names(&surface.declarations);
-    let top_level_functions =
-        collect_top_level_pure_function_signatures(&interface.module, &surface.declarations);
-    let declarations = surface
+    let resolution = TypedResolution::new(&resolved);
+    let declarations = resolved
         .declarations
+        .clone()
         .into_iter()
-        .filter_map(|declaration| {
-            typed_decl_from_surface(
-                &interface.module,
-                declaration,
-                &tokens,
-                &declared_values,
-                &top_level_values,
-                &top_level_functions,
-            )
-        })
+        .filter_map(|declaration| typed_decl_from_surface(declaration, &tokens, &resolution))
         .collect();
 
     TypedModule {
-        schema: interface.schema,
+        schema: 1,
         stage: "typed-hir".to_owned(),
-        source: interface.source,
-        module: interface.module,
+        source: resolved.source,
+        module: resolved.module,
         declarations,
     }
-}
-
-fn top_level_value_names(declarations: &[seseragi_syntax::SurfaceDecl]) -> BTreeSet<String> {
-    declarations
-        .iter()
-        .filter_map(|declaration| match declaration {
-            seseragi_syntax::SurfaceDecl::Let { name, .. } => Some(name.clone()),
-            _ => None,
-        })
-        .collect()
-}
-
-pub(crate) fn top_level_value_types(
-    declarations: &[seseragi_syntax::SurfaceDecl],
-) -> BTreeMap<String, TypedType> {
-    declarations
-        .iter()
-        .filter_map(|declaration| {
-            let seseragi_syntax::SurfaceDecl::Let {
-                name,
-                type_ref,
-                body,
-                ..
-            } = declaration
-            else {
-                return None;
-            };
-            let type_ref = type_ref
-                .as_ref()
-                .map(type_ref::typed_type_from_type_ref)
-                .or_else(|| {
-                    body.as_ref()
-                        .and_then(surface_expr::surface_expression_type_hint)
-                })?;
-            Some((name.clone(), type_ref))
-        })
-        .collect()
 }
 
 pub fn type_module_public_interface(

@@ -1,43 +1,36 @@
-use crate::{unit_type, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
+use crate::{unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
 use seseragi_syntax::{SurfaceDecl, Token};
-use std::collections::{BTreeMap, BTreeSet};
 
 use super::effect::typed_effect_from_surface;
 use super::expr::find_effect_body;
-use super::functions::{typed_parameters_from_surface, TopLevelPureFunction};
-use super::surface_expr::{analyze_surface_expression, PureExpressionContext};
+use super::functions::typed_parameters_from_surface;
+use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
+use super::TypedResolution;
 
 pub(crate) fn typed_decl_from_surface(
-    module: &str,
     declaration: SurfaceDecl,
     tokens: &[Token],
-    declared_values: &BTreeSet<String>,
-    top_level_values: &BTreeMap<String, TypedType>,
-    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
+    resolution: &TypedResolution<'_>,
 ) -> Option<TypedDecl> {
     match declaration {
         SurfaceDecl::Let {
             visibility,
             name,
+            name_span,
             type_ref,
             body,
             span,
             ..
         } => {
             let no_parameters = Vec::new();
-            let context = PureExpressionContext::new(
-                &no_parameters,
-                declared_values,
-                top_level_values,
-                top_level_functions,
-            );
+            let context = PureExpressionContext::new(&no_parameters, resolution);
             let value = body
                 .as_ref()
-                .map(|body| analyze_surface_expression(body, &context).value)
+                .map(|body| analyze_resolved_expression(body, &context).value)
                 .unwrap_or_else(|| hole_expression(span));
             Some(TypedDecl::Let {
-                symbol: format!("{module}::{name}"),
+                symbol: declaration_symbol(resolution, name_span, SymbolKind::Let, &name),
                 visibility,
                 origin: span,
                 scheme: TypedScheme {
@@ -54,6 +47,7 @@ pub(crate) fn typed_decl_from_surface(
         SurfaceDecl::EffectFn {
             visibility,
             name,
+            name_span,
             parameters,
             return_type,
             inferred_contract,
@@ -69,7 +63,12 @@ pub(crate) fn typed_decl_from_surface(
             let effect =
                 typed_effect_from_surface(&return_type, inferred_contract, tokens, span, &body);
             Some(TypedDecl::EffectFn {
-                symbol: format!("{module}::{name}"),
+                symbol: declaration_symbol(
+                    resolution,
+                    name_span,
+                    SymbolKind::EffectFunction,
+                    &name,
+                ),
                 visibility,
                 origin: span,
                 inferred_contract,
@@ -87,6 +86,7 @@ pub(crate) fn typed_decl_from_surface(
         SurfaceDecl::Fn {
             visibility,
             name,
+            name_span,
             type_parameters,
             parameters,
             return_type,
@@ -96,18 +96,13 @@ pub(crate) fn typed_decl_from_surface(
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters);
-            let context = PureExpressionContext::new(
-                &typed_parameters,
-                declared_values,
-                top_level_values,
-                top_level_functions,
-            );
+            let context = PureExpressionContext::new(&typed_parameters, resolution);
             let body = body
                 .as_ref()
-                .map(|body| analyze_surface_expression(body, &context).value)
+                .map(|body| analyze_resolved_expression(body, &context).value)
                 .unwrap_or_else(|| hole_expression(span));
             Some(TypedDecl::Fn {
-                symbol: format!("{module}::{name}"),
+                symbol: declaration_symbol(resolution, name_span, SymbolKind::Function, &name),
                 visibility,
                 origin: span,
                 scheme: TypedScheme {
@@ -130,6 +125,18 @@ pub(crate) fn typed_decl_from_surface(
         | SurfaceDecl::Operator { .. }
         | SurfaceDecl::Instance { .. } => None,
     }
+}
+
+fn declaration_symbol(
+    resolution: &TypedResolution<'_>,
+    origin: seseragi_syntax::ByteSpan,
+    kind: SymbolKind,
+    fallback: &str,
+) -> String {
+    resolution
+        .declaration_symbol(origin, kind)
+        .and_then(|symbol| symbol.canonical.clone())
+        .unwrap_or_else(|| fallback.to_owned())
 }
 
 fn hole_expression(origin: seseragi_syntax::ByteSpan) -> TypedExpr {

@@ -1,11 +1,5 @@
-use crate::typed::{
-    analyze_pure_function, collect_top_level_pure_function_signatures, top_level_value_types,
-    TopLevelPureFunction,
-};
-use seseragi_syntax::{
-    lex, parse_diagnostics, parse_surface_ast, Diagnostic, DiagnosticArtifact, SurfaceDecl, Token,
-};
-use std::collections::{BTreeMap, BTreeSet};
+use crate::typed::{analyze_pure_function, TypedResolution};
+use seseragi_syntax::{lex, parse_diagnostics, Diagnostic, DiagnosticArtifact, SurfaceDecl, Token};
 
 mod conditional;
 mod effect;
@@ -20,8 +14,8 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
         return artifact;
     }
 
-    let surface = parse_surface_ast(artifact.source.clone(), source);
-    let has_effect_functions = surface
+    let resolved = crate::resolve_module(source_name, source);
+    let has_effect_functions = resolved
         .declarations
         .iter()
         .any(|declaration| matches!(declaration, SurfaceDecl::EffectFn { .. }));
@@ -30,20 +24,11 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
     } else {
         Vec::new()
     };
-    let declared_values = declared_value_names(&surface.declarations);
-    let top_level_values = top_level_value_types(&surface.declarations);
-    let top_level_functions = collect_top_level_pure_function_signatures("", &surface.declarations);
+    let resolution = TypedResolution::new(&resolved);
     let mut diagnostics = Vec::new();
 
-    for declaration in &surface.declarations {
-        collect_decl_diagnostics(
-            declaration,
-            &tokens,
-            &declared_values,
-            &top_level_values,
-            &top_level_functions,
-            &mut diagnostics,
-        );
+    for declaration in &resolved.declarations {
+        collect_decl_diagnostics(declaration, &tokens, &resolution, &mut diagnostics);
     }
 
     artifact.diagnostics = diagnostics
@@ -60,9 +45,7 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
 fn collect_decl_diagnostics(
     declaration: &SurfaceDecl,
     tokens: &[Token],
-    declared_values: &BTreeSet<String>,
-    top_level_values: &BTreeMap<String, crate::TypedType>,
-    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
+    resolution: &TypedResolution<'_>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     if let SurfaceDecl::Fn {
@@ -73,14 +56,7 @@ fn collect_decl_diagnostics(
         ..
     } = declaration
     {
-        let analysis = analyze_pure_function(
-            body.as_ref(),
-            parameters,
-            return_type,
-            declared_values,
-            top_level_values,
-            top_level_functions,
-        );
+        let analysis = analyze_pure_function(body.as_ref(), parameters, return_type, resolution);
         conditional::collect_conditional_diagnostics(
             analysis.conditional_issue.as_ref(),
             *span,
@@ -96,24 +72,6 @@ fn collect_decl_diagnostics(
     }
 
     effect::collect_effect_fn_diagnostics(declaration, tokens, diagnostics);
-}
-
-fn declared_value_names(declarations: &[SurfaceDecl]) -> BTreeSet<String> {
-    declarations
-        .iter()
-        .filter_map(|declaration| match declaration {
-            SurfaceDecl::Let { name, .. } => Some(name.clone()),
-            SurfaceDecl::Fn { .. }
-            | SurfaceDecl::EffectFn { .. }
-            | SurfaceDecl::Newtype { .. }
-            | SurfaceDecl::Alias { .. }
-            | SurfaceDecl::Type { .. }
-            | SurfaceDecl::Struct { .. }
-            | SurfaceDecl::Trait { .. }
-            | SurfaceDecl::Operator { .. }
-            | SurfaceDecl::Instance { .. } => None,
-        })
-        .collect()
 }
 
 #[cfg(test)]

@@ -12,13 +12,15 @@ pub(super) fn type_application(
 ) -> SurfaceExpressionAnalysis {
     let (callee, argument_nodes) = flatten_application(expression);
     let SurfaceExpr::Name {
-        name,
-        span: callee_span,
+        span: callee_span, ..
     } = callee
     else {
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
-    let Some(signature) = context.top_level_functions.get(name) else {
+    let Some(target) = context.target(*callee_span) else {
+        return type_unknown_application(callee, &argument_nodes, expression.span(), context);
+    };
+    let Some(signature) = context.callable(target) else {
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
