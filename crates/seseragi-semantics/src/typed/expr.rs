@@ -134,7 +134,12 @@ pub(crate) fn typed_fn_body_from_tokens(
     }
 
     match tokens {
-        [left, operator, right] if operator.kind == TokenKind::OperatorArithmetic => {
+        [left, operator, right]
+            if matches!(
+                operator.kind,
+                TokenKind::OperatorArithmetic | TokenKind::OperatorComparison
+            ) =>
+        {
             let left_expr = typed_fn_body_from_token(left, parameters, top_level_values);
             let right_expr = typed_fn_body_from_token(right, parameters, top_level_values);
             let type_ref = binary_result_type(operator.raw.as_str(), &left_expr, &right_expr);
@@ -211,6 +216,12 @@ fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> Ty
     {
         return int_type();
     }
+    if matches!(operator, "==" | "!=" | "<" | "<=" | ">" | ">=")
+        && expr_has_type(left, "Int")
+        && expr_has_type(right, "Int")
+    {
+        return bool_type();
+    }
     TypedType::Hole
 }
 
@@ -246,6 +257,13 @@ fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
 fn int_type() -> TypedType {
     TypedType::Named {
         name: "Int".to_owned(),
+        arguments: Vec::new(),
+    }
+}
+
+fn bool_type() -> TypedType {
+    TypedType::Named {
+        name: "Bool".to_owned(),
         arguments: Vec::new(),
     }
 }

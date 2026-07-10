@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/pure-comparison",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/pure-comparison::isZero",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 45
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 14,
+            "end": 19
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 35,
+            "end": 40
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "0",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 44,
+            "end": 45
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 35,
+          "end": 45
+        }
+      }
+    }
+  ]
+}

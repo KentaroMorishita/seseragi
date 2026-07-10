@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "isZero",
+      "nameSpan": {
+        "start": 7,
+        "end": 13
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 14,
+            "end": 19
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 21,
+              "end": 24
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 28,
+          "end": 32
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 45
+      }
+    }
+  ]
+}

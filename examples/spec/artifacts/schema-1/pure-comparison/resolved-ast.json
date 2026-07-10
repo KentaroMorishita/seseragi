@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/pure-comparison",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "isZero",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 45
+      }
+    }
+  ]
+}

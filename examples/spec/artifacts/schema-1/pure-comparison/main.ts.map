@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/pure-comparison"
+  ],
+  "sourcesContent": [
+    "pub fn isZero value: Int -> Bool = value == 0\n"
+  ],
+  "names": [
+    "isZero"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

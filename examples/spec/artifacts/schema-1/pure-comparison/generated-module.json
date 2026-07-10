@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "module": "artifact/pure-comparison",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "isZero"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

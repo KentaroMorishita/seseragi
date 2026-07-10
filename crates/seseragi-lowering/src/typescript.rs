@@ -231,7 +231,7 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             right,
             ..
         } => TypeScriptExpr::Binary {
-            operator,
+            operator: typescript_binary_operator(&operator).to_owned(),
             left: Box::new(lower_core_expr_to_typescript(*left)),
             right: Box::new(lower_core_expr_to_typescript(*right)),
         },
@@ -270,6 +270,14 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
                 .collect(),
             result: Box::new(lower_core_expr_to_typescript(*result)),
         },
+    }
+}
+
+fn typescript_binary_operator(operator: &str) -> &str {
+    match operator {
+        "==" => "===",
+        "!=" => "!==",
+        _ => operator,
     }
 }
 

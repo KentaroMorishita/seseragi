@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/pure-comparison",
+  "functions": [
+    {
+      "symbol": "artifact/pure-comparison::isZero",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 45
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 35,
+            "end": 40
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "0",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 44,
+            "end": 45
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 35,
+          "end": 45
+        }
+      }
+    }
+  ]
+}
