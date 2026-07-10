@@ -1,9 +1,13 @@
 use crate::{
-    effect_ops::{runtime_effect_operation_by_local_name, runtime_effect_operation_for_feature},
-    int_ops::{runtime_int_operation_by_local_name, runtime_int_operation_for_feature},
+    effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
     TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
+
+mod source_map;
+
+use source_map::source_map_for_module;
+pub use source_map::SourceMap;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,18 +41,6 @@ pub struct GeneratedRuntime {
 pub struct GeneratedOutputs {
     pub typescript: String,
     pub source_map: String,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SourceMap {
-    pub version: u32,
-    pub file: String,
-    pub source_root: String,
-    pub sources: Vec<String>,
-    pub sources_content: Vec<String>,
-    pub names: Vec<String>,
-    pub mappings: String,
 }
 
 pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> GeneratedBundle {
@@ -278,95 +270,5 @@ fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScrip
             render_typescript_expr(initializer),
             render_typescript_type(type_ref)
         ),
-    }
-}
-
-fn source_map_for_module(module: &TypeScriptModule, source_text: &str) -> SourceMap {
-    let names = module_names(module);
-    SourceMap {
-        version: 3,
-        file: "main.ts".to_owned(),
-        source_root: String::new(),
-        sources: vec![format!("seseragi://{}", module.module)],
-        sources_content: vec![source_text.to_owned()],
-        mappings: if module.functions.is_empty() {
-            "AAAA,aAAQA,iBAAc".to_owned()
-        } else {
-            ";;aAAcA,6BAGZC,sBAAQ".to_owned()
-        },
-        names,
-    }
-}
-
-fn module_names(module: &TypeScriptModule) -> Vec<String> {
-    let mut names = Vec::new();
-    for binding in &module.bindings {
-        match binding {
-            TypeScriptBinding::Const { name, .. } => names.push(name.clone()),
-        }
-    }
-    for function in &module.functions {
-        match function {
-            TypeScriptFunction::ConstFunction { name, body, .. } => {
-                names.push(name.clone());
-                collect_expr_names(body, &mut names);
-            }
-        }
-    }
-    names
-}
-
-fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
-    match expr {
-        TypeScriptExpr::Call { callee, arguments }
-        | TypeScriptExpr::RuntimeCall { callee, arguments } => {
-            if let Some(operation) = runtime_effect_operation_by_local_name(callee) {
-                names.push(operation.source_map_name.to_owned());
-            } else if let Some(operation) = runtime_int_operation_by_local_name(callee) {
-                names.push(operation.source_map_name.to_owned());
-            } else {
-                names.push(callee.clone());
-            }
-            for argument in arguments {
-                collect_expr_names(argument, names);
-            }
-        }
-        TypeScriptExpr::Await { value } => collect_expr_names(value, names),
-        TypeScriptExpr::Binary { left, right, .. } => {
-            collect_expr_names(left, names);
-            collect_expr_names(right, names);
-        }
-        TypeScriptExpr::Conditional {
-            condition,
-            then_branch,
-            else_branch,
-        } => {
-            collect_expr_names(condition, names);
-            collect_expr_names(then_branch, names);
-            collect_expr_names(else_branch, names);
-        }
-        TypeScriptExpr::Sequence { statements, result } => {
-            for statement in statements {
-                collect_statement_names(statement, names);
-            }
-            collect_expr_names(result, names);
-        }
-        TypeScriptExpr::Undefined
-        | TypeScriptExpr::Bigint { .. }
-        | TypeScriptExpr::Boolean { .. }
-        | TypeScriptExpr::Identifier { .. }
-        | TypeScriptExpr::String { .. } => {}
-    }
-}
-
-fn collect_statement_names(statement: &TypeScriptStatement, names: &mut Vec<String>) {
-    match statement {
-        TypeScriptStatement::Effect { value } => collect_expr_names(value, names),
-        TypeScriptStatement::Const {
-            name, initializer, ..
-        } => {
-            names.push(name.clone());
-            collect_expr_names(initializer, names);
-        }
     }
 }

@@ -2,8 +2,15 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/effect-compact-greet"],
-  "sourcesContent": ["effect fn greet name: String =\n  println \"hello\"\n"],
-  "names": ["greet", "println"],
-  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+  "sources": [
+    "seseragi://artifact/effect-compact-greet"
+  ],
+  "sourcesContent": [
+    "effect fn greet name: String =\n  println \"hello\"\n"
+  ],
+  "names": [
+    "greet",
+    "println"
+  ],
+  "mappings": ";;AAAAA"
 }

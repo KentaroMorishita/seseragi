@@ -2,8 +2,14 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/identity-fn"],
-  "sourcesContent": ["pub fn identity value: Int -> Int = value\n"],
-  "names": ["identity"],
-  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+  "sources": [
+    "seseragi://artifact/identity-fn"
+  ],
+  "sourcesContent": [
+    "pub fn identity value: Int -> Int = value\n"
+  ],
+  "names": [
+    "identity"
+  ],
+  "mappings": "AAAAA"
 }

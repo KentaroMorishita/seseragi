@@ -2,8 +2,15 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/effect-main"],
-  "sourcesContent": ["pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println \"hello\"\n"],
-  "names": ["main", "println"],
-  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+  "sources": [
+    "seseragi://artifact/effect-main"
+  ],
+  "sourcesContent": [
+    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println \"hello\"\n"
+  ],
+  "names": [
+    "main",
+    "println"
+  ],
+  "mappings": ";;AAAAA"
 }

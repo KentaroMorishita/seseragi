@@ -67,15 +67,6 @@ pub(crate) fn runtime_effect_operation_for_feature(
         .find(|operation| operation.runtime_feature == feature)
 }
 
-pub(crate) fn runtime_effect_operation_by_local_name(
-    local_name: &str,
-) -> Option<RuntimeEffectOperation> {
-    RUNTIME_EFFECT_OPERATIONS
-        .iter()
-        .copied()
-        .find(|operation| operation.local_name == local_name)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -100,13 +91,6 @@ mod tests {
 
         assert_eq!(operation.runtime_feature, "effect.console.print");
         assert_eq!(operation.export_name, "print");
-    }
-
-    #[test]
-    fn resolves_runtime_operation_by_generated_local_name() {
-        let operation = runtime_effect_operation_by_local_name("_ssrg_console_println").unwrap();
-
-        assert_eq!(operation.source_map_name, "println");
     }
 
     #[test]

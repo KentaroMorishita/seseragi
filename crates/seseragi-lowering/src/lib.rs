@@ -530,6 +530,18 @@ fails ConsoleError =
         assert_eq!(bundle.metadata.exports, vec!["answer"]);
         assert_eq!(bundle.typescript, "export const answer: bigint = 42n;\n");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
+        assert_eq!(bundle.source_map.mappings, "AAAAA");
+    }
+
+    #[test]
+    fn maps_generated_declaration_to_its_original_source_line() {
+        let source = "// generated code keeps this offset\n\npub let answer: Int = 42\n";
+        let typed = type_module("artifact/source-map/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.source_map.mappings, "AAEAA");
     }
 
     #[test]
@@ -546,6 +558,7 @@ fails ConsoleError =
             .contains("import { println as _ssrg_console_println }"));
         assert_eq!(bundle.metadata.exports, vec!["main"]);
         assert_eq!(bundle.source_map.names, vec!["main", "println"]);
+        assert_eq!(bundle.source_map.mappings, ";;AAAAA");
     }
 
     #[test]

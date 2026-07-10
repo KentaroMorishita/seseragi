@@ -2,8 +2,14 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/first-fn"],
-  "sourcesContent": ["pub fn first left: Int -> right: Int -> Int = left\n"],
-  "names": ["first"],
-  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+  "sources": [
+    "seseragi://artifact/first-fn"
+  ],
+  "sourcesContent": [
+    "pub fn first left: Int -> right: Int -> Int = left\n"
+  ],
+  "names": [
+    "first"
+  ],
+  "mappings": "AAAAA"
 }

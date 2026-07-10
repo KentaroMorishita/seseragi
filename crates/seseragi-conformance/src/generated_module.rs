@@ -132,6 +132,20 @@ fn check_generated_source_map(
     if sources_content.len() != 1 || sources_content[0].as_str() != Some(source) {
         return Err("generated source map sourcesContent must preserve source text".to_owned());
     }
+    let mappings = source_map
+        .pointer("/mappings")
+        .and_then(|value| value.as_str())
+        .ok_or_else(|| "generated source map mappings must be a string".to_owned())?;
+    let has_exports = generated_module
+        .pointer("/exports")
+        .and_then(|value| value.as_array())
+        .is_some_and(|exports| !exports.is_empty());
+    if has_exports && mappings.is_empty() {
+        return Err("generated source map must map exported declarations".to_owned());
+    }
+    if matches!(mappings, "AAAA,aAAQA,iBAAc" | ";;aAAcA,6BAGZC,sBAAQ") {
+        return Err("generated source map must not use a fixed placeholder mapping".to_owned());
+    }
     Ok(())
 }
 

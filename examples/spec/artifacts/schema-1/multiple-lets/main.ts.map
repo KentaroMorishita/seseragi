@@ -2,8 +2,15 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/multiple-lets"],
-  "sourcesContent": ["let first = 1\npub let second: Int = 2\n"],
-  "names": ["first", "second"],
-  "mappings": "AAAA,aAAQA,iBAAc"
+  "sources": [
+    "seseragi://artifact/multiple-lets"
+  ],
+  "sourcesContent": [
+    "let first = 1\npub let second: Int = 2\n"
+  ],
+  "names": [
+    "first",
+    "second"
+  ],
+  "mappings": "AAAAA;AACAC"
 }

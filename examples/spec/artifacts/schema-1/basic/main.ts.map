@@ -2,8 +2,14 @@
   "version": 3,
   "file": "main.ts",
   "sourceRoot": "",
-  "sources": ["seseragi://artifact/basic"],
-  "sourcesContent": ["pub let answer: Int = 42\n"],
-  "names": ["answer"],
-  "mappings": "AAAA,aAAQA,iBAAc"
+  "sources": [
+    "seseragi://artifact/basic"
+  ],
+  "sourcesContent": [
+    "pub let answer: Int = 42\n"
+  ],
+  "names": [
+    "answer"
+  ],
+  "mappings": "AAAAA"
 }
