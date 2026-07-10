@@ -1,76 +1,25 @@
-use crate::typed::{
-    find_value_tokens, is_known_top_level_pure_call, is_supported_top_level_pure_call,
-    top_level_pure_call_issue, typed_parameters_from_surface, PureCallIssue, TopLevelPureFunction,
-};
-use seseragi_syntax::{
-    ByteRange, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceParameter, Token,
-    TokenKind,
-};
-use std::collections::{BTreeMap, BTreeSet};
+use crate::typed::{PureCallIssue, PureFunctionAnalysis};
+use seseragi_syntax::{ByteRange, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
 
 use super::type_labels::type_label;
 
 pub(super) fn collect_pure_function_diagnostics(
-    tokens: &[Token],
+    analysis: &PureFunctionAnalysis,
     span: seseragi_syntax::ByteSpan,
-    parameters: &[SurfaceParameter],
-    declared_values: &BTreeSet<String>,
-    top_level_values: &BTreeMap<String, crate::TypedType>,
-    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
-    let Some(equals_index) = tokens
-        .iter()
-        .position(|token| token.start >= span.start && token.end <= span.end && token.raw == "=")
-    else {
-        return;
-    };
-    let parameter_names = parameters
-        .iter()
-        .map(|parameter| parameter.name.as_str())
-        .collect::<BTreeSet<_>>();
-    let body_tokens = tokens[equals_index + 1..]
-        .iter()
-        .take_while(|token| token.end <= span.end)
-        .filter(|token| token.kind == TokenKind::IdentifierLower)
-        .collect::<Vec<_>>();
-    let typed_parameters = typed_parameters_from_surface(parameters);
-    let value_tokens = find_value_tokens(tokens, span);
-    let has_supported_call = is_supported_top_level_pure_call(
-        &value_tokens,
-        &typed_parameters,
-        top_level_values,
-        top_level_functions,
-    );
-    let has_known_call = is_known_top_level_pure_call(
-        &value_tokens,
-        &typed_parameters,
-        top_level_values,
-        top_level_functions,
-    );
-    if let Some(issue) = top_level_pure_call_issue(
-        &value_tokens,
-        &typed_parameters,
-        top_level_values,
-        top_level_functions,
-    ) {
-        diagnostics.push(pure_call_diagnostic(issue, span));
+    if let Some(issue) = &analysis.pure_call_issue {
+        diagnostics.push(pure_call_diagnostic(issue.clone(), span));
     }
-    for (index, token) in body_tokens.into_iter().enumerate() {
-        if index == 0 && (has_supported_call || has_known_call) {
-            continue;
-        }
-        if parameter_names.contains(token.raw.as_str()) || declared_values.contains(&token.raw) {
-            continue;
-        }
+    for issue in &analysis.unresolved_names {
         diagnostics.push(Diagnostic {
             id: String::new(),
             code: "SES-N0001".to_owned(),
             severity: DiagnosticSeverity::Error,
             message_key: "name.unresolved".to_owned(),
             primary: ByteRange {
-                start: token.start,
-                end: token.end,
+                start: issue.origin.start,
+                end: issue.origin.end,
             },
             related: vec![RelatedDiagnostic {
                 message: "pure function body".to_owned(),

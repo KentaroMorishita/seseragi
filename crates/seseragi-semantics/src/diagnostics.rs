@@ -1,5 +1,6 @@
 use crate::typed::{
-    collect_top_level_pure_function_signatures, top_level_value_types, TopLevelPureFunction,
+    analyze_pure_function, collect_top_level_pure_function_signatures, top_level_value_types,
+    TopLevelPureFunction,
 };
 use seseragi_syntax::{
     lex, parse_diagnostics, parse_surface_ast, Diagnostic, DiagnosticArtifact, SurfaceDecl, Token,
@@ -63,32 +64,26 @@ fn collect_decl_diagnostics(
         ..
     } = declaration
     {
-        conditional::collect_conditional_diagnostics(
-            tokens,
-            *span,
-            parameters,
-            top_level_values,
-            top_level_functions,
-            diagnostics,
-        );
-        function_body::collect_function_body_diagnostics(
+        let analysis = analyze_pure_function(
             tokens,
             *span,
             parameters,
             return_type,
-            top_level_values,
-            top_level_functions,
-            diagnostics,
-        );
-        pure_call::collect_pure_function_diagnostics(
-            tokens,
-            *span,
-            parameters,
             declared_values,
             top_level_values,
             top_level_functions,
+        );
+        conditional::collect_conditional_diagnostics(
+            analysis.conditional_issue.as_ref(),
+            *span,
             diagnostics,
         );
+        function_body::collect_function_body_diagnostics(
+            analysis.function_body_issue.as_ref(),
+            *span,
+            diagnostics,
+        );
+        pure_call::collect_pure_function_diagnostics(&analysis, *span, diagnostics);
         return;
     }
 

@@ -69,25 +69,6 @@ pub(crate) fn typed_top_level_pure_call(
     })
 }
 
-pub(crate) fn is_supported_top_level_pure_call(
-    tokens: &[&Token],
-    parameters: &[TypedParameter],
-    top_level_values: &BTreeMap<String, TypedType>,
-    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
-) -> bool {
-    typed_top_level_pure_call(tokens, parameters, top_level_values, top_level_functions).is_some()
-}
-
-pub(crate) fn is_known_top_level_pure_call(
-    tokens: &[&Token],
-    parameters: &[TypedParameter],
-    top_level_values: &BTreeMap<String, TypedType>,
-    top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
-) -> bool {
-    direct_top_level_pure_call_signature(tokens, parameters, top_level_values, top_level_functions)
-        .is_some()
-}
-
 pub(crate) fn top_level_pure_call_issue(
     tokens: &[&Token],
     parameters: &[TypedParameter],

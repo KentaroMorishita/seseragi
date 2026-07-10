@@ -2,6 +2,7 @@ use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, Typ
 use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInterface};
 use std::collections::BTreeMap;
 
+mod analysis;
 mod call;
 mod conditional;
 mod effect;
@@ -12,16 +13,11 @@ mod interface;
 mod surface;
 mod type_ref;
 
-pub(crate) use call::{
-    is_known_top_level_pure_call, is_supported_top_level_pure_call, top_level_pure_call_issue,
-    PureCallIssue,
-};
-pub(crate) use conditional::{conditional_issue, ConditionalIssue};
-pub(crate) use expr::find_value_tokens;
-pub(crate) use function_body::{function_body_issue, FunctionBodyIssue};
-pub(crate) use functions::{
-    collect_top_level_pure_function_signatures, typed_parameters_from_surface, TopLevelPureFunction,
-};
+pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};
+pub(crate) use call::PureCallIssue;
+pub(crate) use conditional::ConditionalIssue;
+pub(crate) use function_body::FunctionBodyIssue;
+pub(crate) use functions::{collect_top_level_pure_function_signatures, TopLevelPureFunction};
 use interface::typed_interface_from_modules;
 use surface::typed_decl_from_surface;
 use type_ref::typed_type_from_interface_type;
