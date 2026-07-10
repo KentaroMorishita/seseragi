@@ -1,15 +1,15 @@
 {
   "schema": 1,
   "stage": "core-ir",
-  "module": "artifact/effect-compact-do",
+  "module": "artifact/effect-do-read-line",
   "functions": [
     {
-      "symbol": "artifact/effect-compact-do::main",
+      "symbol": "artifact/effect-do-read-line::main",
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 45
+        "end": 41
       },
       "parameters": [
         {
@@ -29,16 +29,16 @@
             "kind": "effect",
             "value": {
               "kind": "effect-operation",
-              "operation": "console.println",
+              "operation": "stdin.readLine",
               "requirements": {
                 "kind": "record",
                 "closed": true,
                 "fields": [
                   {
-                    "name": "console",
+                    "name": "stdin",
                     "type": {
                       "kind": "named",
-                      "name": "Console",
+                      "name": "Stdin",
                       "arguments": []
                     }
                   }
@@ -46,29 +46,25 @@
               },
               "failure": {
                 "kind": "named",
-                "name": "ConsoleError",
+                "name": "StdinError",
                 "arguments": []
               },
               "success": {
                 "kind": "named",
-                "name": "Unit",
-                "arguments": []
-              },
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "hello",
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 36,
-                    "end": 43
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
                   }
-                }
-              ],
+                ]
+              },
+              "arguments": [],
               "origin": {
                 "source": "main.ssrg",
                 "start": 28,
-                "end": 43
+                "end": 36
               }
             }
           }
@@ -77,14 +73,14 @@
           "kind": "unit",
           "origin": {
             "source": "main.ssrg",
-            "start": 44,
-            "end": 44
+            "start": 40,
+            "end": 40
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 23,
-          "end": 45
+          "end": 41
         }
       }
     }

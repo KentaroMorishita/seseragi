@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-do-read-line",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-do-read-line::main",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "stdin",
+              "type": {
+                "kind": "named",
+                "name": "Stdin",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "StdinError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::readLine",
+              "arguments": [],
+              "origin": {
+                "start": 28,
+                "end": 36
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 40,
+            "end": 40
+          }
+        },
+        "origin": {
+          "start": 23,
+          "end": 41
+        }
+      }
+    }
+  ]
+}

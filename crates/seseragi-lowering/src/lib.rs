@@ -311,16 +311,80 @@ fails ConsoleError =
     }
 
     #[test]
-    fn lowers_single_effect_do_statement_to_typescript_call() {
+    fn lowers_single_sync_effect_do_statement_to_unit_sequence() {
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";
         let typed = type_module("artifact/effect-do-println/main.ssrg", source);
         let core = lower_typed_module(typed);
+        let CoreExpr::Sequence {
+            statements, result, ..
+        } = &core.functions[0].body
+        else {
+            panic!("expected single do statement to remain a sequence");
+        };
+        assert_eq!(statements.len(), 1);
+        assert!(matches!(statements[0], CoreStatement::Effect { .. }));
+        assert!(matches!(result.as_ref(), CoreExpr::Unit { .. }));
+
         let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                is_async: false,
+                body: TypeScriptExpr::Sequence { .. },
+                ..
+            }
+        ));
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "export const main = (_unit: undefined) => _ssrg_console_println(\"hello\")"
+            "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"hello\"); return undefined; })()"
+        ));
+    }
+
+    #[test]
+    fn lowers_single_async_effect_do_statement_to_unit_sequence() {
+        let source = "pub effect fn main =\n  do { readLine () }\n";
+        let typed = type_module("artifact/effect-do-read-line/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::Sequence {
+            statements, result, ..
+        } = &core.functions[0].body
+        else {
+            panic!("expected single do statement to remain a sequence");
+        };
+        assert_eq!(statements.len(), 1);
+        let CoreStatement::Effect {
+            value: CoreExpr::EffectOperation { success, .. },
+        } = &statements[0]
+        else {
+            panic!("expected readLine effect statement");
+        };
+        assert_eq!(
+            success,
+            &CoreType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![CoreType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
+        assert!(matches!(result.as_ref(), CoreExpr::Unit { .. }));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                is_async: true,
+                body: TypeScriptExpr::Sequence { .. },
+                ..
+            }
+        ));
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains(
+            "export const main = async (_unit: undefined) => (async () => { await _ssrg_stdin_readLine(); return undefined; })()"
         ));
     }
 

@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-do-read-line"
+  ],
+  "sourcesContent": [
+    "pub effect fn main =\n  do { readLine () }\n"
+  ],
+  "names": [
+    "main",
+    "readLine"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

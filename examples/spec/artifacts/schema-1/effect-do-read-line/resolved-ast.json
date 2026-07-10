@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/effect-do-read-line",
+  "declarations": []
+}

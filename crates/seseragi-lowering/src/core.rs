@@ -225,29 +225,18 @@ fn lower_effect_body(source: &str, effect: TypedEffect, body: TypedExpr) -> Core
             result,
             origin,
         } => {
-            let mut statements = statements.into_iter();
-            match (statements.next(), statements.next()) {
-                (Some(TypedDoStatement::Effect { value }), None) => {
-                    lower_effect_body(source, effect, value)
-                }
-                (Some(first), Some(second)) => {
-                    let statements = std::iter::once(first)
-                        .chain(std::iter::once(second))
-                        .chain(statements)
-                        .map(|statement| lower_effect_statement(source, effect.clone(), statement))
-                        .collect();
-                    CoreExpr::Sequence {
-                        statements,
-                        result: Box::new(lower_expr(source, *result)),
-                        origin: source_span(source, origin),
-                    }
-                }
-                (None, _) => lower_expr(source, *result),
-                (Some(statement), None) => CoreExpr::Sequence {
-                    statements: vec![lower_effect_statement(source, effect, statement)],
+            let statements = statements
+                .into_iter()
+                .map(|statement| lower_effect_statement(source, effect.clone(), statement))
+                .collect::<Vec<_>>();
+            if statements.is_empty() {
+                lower_expr(source, *result)
+            } else {
+                CoreExpr::Sequence {
+                    statements,
                     result: Box::new(lower_expr(source, *result)),
                     origin: source_span(source, origin),
-                },
+                }
             }
         }
         expr => lower_expr(source, expr),

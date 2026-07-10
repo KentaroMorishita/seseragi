@@ -1,22 +1,22 @@
 {
   "schema": 1,
   "stage": "typescript-ir",
-  "module": "artifact/effect-compact-do",
+  "module": "artifact/effect-do-read-line",
   "runtimeRequirements": [
     "core.unit",
-    "effect.console.println",
-    "core.string"
+    "effect.stdin.readLine"
   ],
   "imports": [
     {
-      "feature": "effect.console.println",
-      "local": "_ssrg_console_println"
+      "feature": "effect.stdin.readLine",
+      "local": "_ssrg_stdin_readLine"
     }
   ],
   "functions": [
     {
       "kind": "const-function",
       "exported": true,
+      "isAsync": true,
       "name": "main",
       "parameters": [
         {
@@ -31,14 +31,12 @@
           {
             "kind": "effect",
             "value": {
-              "kind": "call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "hello"
-                }
-              ]
+              "kind": "await",
+              "value": {
+                "kind": "call",
+                "callee": "_ssrg_stdin_readLine",
+                "arguments": []
+              }
             }
           }
         ],
@@ -49,7 +47,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 45
+        "end": 41
       }
     }
   ]
