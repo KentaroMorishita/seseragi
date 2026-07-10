@@ -1,1 +1,3 @@
 pub fn isZero value: Int -> Bool = value == 0
+pub fn sameBool left: Bool -> right: Bool -> Bool = left == right
+pub fn sameString left: String -> right: String -> Bool = left != right

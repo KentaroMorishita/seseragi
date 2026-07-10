@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 23,
+    "endToken": 83,
     "children": [
       {
         "kind": "top-decl",
@@ -22,6 +22,44 @@
             "kind": "fn-decl",
             "startToken": 2,
             "endToken": 23,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 23,
+        "endToken": 53,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 23,
+            "endToken": 24,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 25,
+            "endToken": 53,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 53,
+        "endToken": 83,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 53,
+            "endToken": 54,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 55,
+            "endToken": 83,
             "children": []
           }
         ]

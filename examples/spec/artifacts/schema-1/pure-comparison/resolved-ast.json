@@ -12,6 +12,26 @@
         "start": 0,
         "end": 45
       }
+    },
+    {
+      "kind": "value",
+      "symbol": 1,
+      "name": "sameBool",
+      "visibility": "public",
+      "declaration": {
+        "start": 46,
+        "end": 111
+      }
+    },
+    {
+      "kind": "value",
+      "symbol": 2,
+      "name": "sameString",
+      "visibility": "public",
+      "declaration": {
+        "start": 112,
+        "end": 183
+      }
     }
   ]
 }

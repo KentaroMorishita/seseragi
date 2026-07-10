@@ -4,7 +4,8 @@
   "module": "artifact/pure-comparison",
   "runtimeRequirements": [
     "core.int64",
-    "core.bool"
+    "core.bool",
+    "core.string"
   ],
   "functions": [
     {
@@ -34,6 +35,74 @@
         "source": "main.ssrg",
         "start": 0,
         "end": 45
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "sameBool",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "boolean",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "identifier",
+          "name": "left"
+        },
+        "right": {
+          "kind": "identifier",
+          "name": "right"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 46,
+        "end": 111
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "sameString",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!==",
+        "left": {
+          "kind": "identifier",
+          "name": "left"
+        },
+        "right": {
+          "kind": "identifier",
+          "name": "right"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 183
       }
     }
   ]

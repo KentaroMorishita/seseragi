@@ -6,10 +6,12 @@
     "seseragi://artifact/pure-comparison"
   ],
   "sourcesContent": [
-    "pub fn isZero value: Int -> Bool = value == 0\n"
+    "pub fn isZero value: Int -> Bool = value == 0\npub fn sameBool left: Bool -> right: Bool -> Bool = left == right\npub fn sameString left: String -> right: String -> Bool = left != right\n"
   ],
   "names": [
-    "isZero"
+    "isZero",
+    "sameBool",
+    "sameString"
   ],
   "mappings": ";;aAAcA,6BAGZC,sBAAQ"
 }

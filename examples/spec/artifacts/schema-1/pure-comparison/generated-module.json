@@ -7,11 +7,14 @@
     "abiMajor": 1,
     "requirements": [
       "core.int64",
-      "core.bool"
+      "core.bool",
+      "core.string"
     ]
   },
   "exports": [
-    "isZero"
+    "isZero",
+    "sameBool",
+    "sameString"
   ],
   "outputs": {
     "typescript": "main.ts",

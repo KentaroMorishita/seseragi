@@ -222,7 +222,14 @@ fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> Ty
     {
         return int_type();
     }
-    if matches!(operator, "==" | "!=" | "<" | "<=" | ">" | ">=")
+    if matches!(operator, "==" | "!=")
+        && ["Int", "Bool", "String"]
+            .iter()
+            .any(|name| expr_has_type(left, name) && expr_has_type(right, name))
+    {
+        return bool_type();
+    }
+    if matches!(operator, "<" | "<=" | ">" | ">=")
         && expr_has_type(left, "Int")
         && expr_has_type(right, "Int")
     {

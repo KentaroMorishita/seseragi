@@ -31,6 +31,78 @@
           }
         }
       }
+    },
+    {
+      "symbol": "artifact/pure-comparison::sameBool",
+      "namespace": "value",
+      "name": "sameBool",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 46,
+        "end": 111
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pure-comparison::sameString",
+      "namespace": "value",
+      "name": "sameString",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 112,
+        "end": 183
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      }
     }
   ],
   "operators": [],

@@ -75,6 +75,176 @@
           "end": 45
         }
       }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pure-comparison::sameBool",
+      "visibility": "public",
+      "origin": {
+        "start": 46,
+        "end": 111
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 62,
+            "end": 66
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 76,
+            "end": 81
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 98,
+            "end": 102
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 106,
+            "end": 111
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 98,
+          "end": 111
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pure-comparison::sameString",
+      "visibility": "public",
+      "origin": {
+        "start": 112,
+        "end": 183
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 130,
+            "end": 134
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 146,
+            "end": 151
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!=",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 170,
+            "end": 174
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 178,
+            "end": 183
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 170,
+          "end": 183
+        }
+      }
     }
   ]
 }
