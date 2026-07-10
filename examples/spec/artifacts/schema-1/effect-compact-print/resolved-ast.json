@@ -1,6 +1,104 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-compact-print",
-  "declarations": []
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "announce",
+      "nameSpan": {
+        "start": 14,
+        "end": 22
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "print",
+          "span": {
+            "start": 27,
+            "end": 32
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"loading\"",
+          "span": {
+            "start": 33,
+            "end": 42
+          }
+        },
+        "span": {
+          "start": 27,
+          "end": 42
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "announce",
+      "canonical": "artifact/effect-compact-print::announce",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 22
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "print",
+      "canonical": "std/prelude::print",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "print",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 27,
+        "end": 32
+      }
+    }
+  ],
+  "issues": []
 }

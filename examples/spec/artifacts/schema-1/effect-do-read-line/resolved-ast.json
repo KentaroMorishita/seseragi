@@ -1,6 +1,120 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-do-read-line",
-  "declarations": []
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "readLine",
+            "span": {
+              "start": 28,
+              "end": 36
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 37,
+              "end": 39
+            }
+          },
+          "span": {
+            "start": 28,
+            "end": 39
+          }
+        },
+        "span": {
+          "start": 23,
+          "end": 41
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 41
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "do-block",
+      "origin": {
+        "start": 23,
+        "end": 41
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "main",
+      "canonical": "artifact/effect-do-read-line::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "readLine",
+      "canonical": "std/prelude::readLine",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "readLine",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 28,
+        "end": 36
+      }
+    }
+  ],
+  "issues": []
 }

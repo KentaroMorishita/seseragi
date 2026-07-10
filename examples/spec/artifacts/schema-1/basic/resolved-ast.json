@@ -1,14 +1,86 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/basic",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "answer",
+      "kind": "let",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 24 }
+      "name": "answer",
+      "nameSpan": {
+        "start": 8,
+        "end": 14
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 16,
+          "end": 19
+        }
+      },
+      "body": {
+        "kind": "integer",
+        "raw": "42",
+        "span": {
+          "start": 22,
+          "end": 24
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 24
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 24
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "answer",
+      "canonical": "artifact/basic::answer",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 8,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 16,
+        "end": 19
+      }
+    }
+  ],
+  "issues": []
 }

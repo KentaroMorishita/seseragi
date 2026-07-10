@@ -1,14 +1,131 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/operator-import",
+  "dependencies": [
+    {
+      "specifier": "./dep",
+      "module": "artifact/operator-import/dep",
+      "origin": {
+        "start": 0,
+        "end": 46
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "identity",
+          "symbol": "artifact/operator-import/dep::identity"
+        },
+        {
+          "namespace": "operator",
+          "name": "<+>",
+          "symbol": "artifact/operator-import/dep::operator(<+>)"
+        }
+      ]
+    }
+  ],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "answer",
+      "kind": "let",
       "visibility": "public",
-      "declaration": { "start": 48, "end": 72 }
+      "name": "answer",
+      "nameSpan": {
+        "start": 56,
+        "end": 62
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 64,
+          "end": 67
+        }
+      },
+      "body": {
+        "kind": "integer",
+        "raw": "42",
+        "span": {
+          "start": 70,
+          "end": 72
+        }
+      },
+      "span": {
+        "start": 48,
+        "end": 72
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 48,
+        "end": 72
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "answer",
+      "canonical": "artifact/operator-import::answer",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 56,
+        "end": 62
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "identity",
+      "canonical": "artifact/operator-import/dep::identity",
+      "namespace": "value",
+      "kind": "imported",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "<+>",
+      "canonical": "artifact/operator-import/dep::operator(<+>)",
+      "namespace": "operator",
+      "kind": "imported",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 64,
+        "end": 67
+      }
+    }
+  ],
+  "issues": []
 }

@@ -1,27 +1,203 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/top-level-binding",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "answer",
+      "kind": "let",
       "visibility": "public",
-      "declaration": {
+      "name": "answer",
+      "nameSpan": {
+        "start": 8,
+        "end": 14
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 16,
+          "end": 19
+        }
+      },
+      "body": {
+        "kind": "integer",
+        "raw": "42",
+        "span": {
+          "start": 22,
+          "end": 24
+        }
+      },
+      "span": {
         "start": 0,
         "end": 24
       }
     },
     {
-      "kind": "value",
-      "symbol": 1,
-      "name": "answerValue",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "answerValue",
+      "nameSpan": {
+        "start": 32,
+        "end": 43
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 44,
+            "end": 48
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 50,
+              "end": 54
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 58,
+          "end": 61
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "answer",
+        "span": {
+          "start": 64,
+          "end": 70
+        }
+      },
+      "span": {
         "start": 25,
         "end": 70
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 70
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 25,
+        "end": 70
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "answer",
+      "canonical": "artifact/top-level-binding::answer",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 8,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "answerValue",
+      "canonical": "artifact/top-level-binding::answerValue",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 32,
+        "end": 43
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 44,
+        "end": 48
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 16,
+        "end": 19
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 50,
+        "end": 54
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 58,
+        "end": 61
+      }
+    },
+    {
+      "spelling": "answer",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 64,
+        "end": 70
+      }
+    }
+  ],
+  "issues": []
 }

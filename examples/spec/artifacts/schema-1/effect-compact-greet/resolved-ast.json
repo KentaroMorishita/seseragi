@@ -1,6 +1,153 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-compact-greet",
-  "declarations": []
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "private",
+      "name": "greet",
+      "nameSpan": {
+        "start": 10,
+        "end": 15
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "nameSpan": {
+            "start": 16,
+            "end": 20
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 22,
+              "end": 28
+            }
+          }
+        }
+      ],
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 33,
+            "end": 40
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"hello\"",
+          "span": {
+            "start": 41,
+            "end": 48
+          }
+        },
+        "span": {
+          "start": 33,
+          "end": 48
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 48
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "greet",
+      "canonical": "artifact/effect-compact-greet::greet",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 10,
+        "end": 15
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "name",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 16,
+        "end": 20
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 22,
+        "end": 28
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 33,
+        "end": 40
+      }
+    }
+  ],
+  "issues": []
 }

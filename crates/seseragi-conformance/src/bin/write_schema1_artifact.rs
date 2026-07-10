@@ -66,12 +66,11 @@ fn write_case(case: &Path, selection: Option<&str>) -> Result<(), String> {
         )?;
     }
 
-    let interface = seseragi_syntax::parse_module_interface(&source_name, &source);
     if should_write(selection, "resolved-ast") {
         write_json(
             case,
             "resolved-ast.json",
-            &seseragi_semantics::resolve_module_interface(interface),
+            &seseragi_semantics::resolve_module(&source_name, &source),
         )?;
     }
 

@@ -1,14 +1,86 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/bool-let",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "enabled",
+      "kind": "let",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 28 }
+      "name": "enabled",
+      "nameSpan": {
+        "start": 8,
+        "end": 15
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 17,
+          "end": 21
+        }
+      },
+      "body": {
+        "kind": "boolean",
+        "value": true,
+        "span": {
+          "start": 24,
+          "end": 28
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 28
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 28
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "enabled",
+      "canonical": "artifact/bool-let::enabled",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 8,
+        "end": 15
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 17,
+        "end": 21
+      }
+    }
+  ],
+  "issues": []
 }

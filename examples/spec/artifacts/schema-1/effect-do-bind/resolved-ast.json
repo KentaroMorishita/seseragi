@@ -1,17 +1,262 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-do-bind",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "main",
+      "kind": "effectFn",
       "visibility": "public",
-      "declaration": {
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 22,
+          "end": 26
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 46,
+          "end": 58
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "ignored",
+              "nameSpan": {
+                "start": 72,
+                "end": 79
+              },
+              "span": {
+                "start": 72,
+                "end": 79
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "print",
+                "span": {
+                  "start": 83,
+                  "end": 88
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"loading... \"",
+                "span": {
+                  "start": 89,
+                  "end": 102
+                }
+              },
+              "span": {
+                "start": 83,
+                "end": 102
+              }
+            },
+            "span": {
+              "start": 72,
+              "end": 102
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 107,
+              "end": 114
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"done\"",
+            "span": {
+              "start": 115,
+              "end": 121
+            }
+          },
+          "span": {
+            "start": 107,
+            "end": 121
+          }
+        },
+        "span": {
+          "start": 63,
+          "end": 125
+        }
+      },
+      "span": {
         "start": 0,
         "end": 125
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 125
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 125
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "do-block",
+      "origin": {
+        "start": 63,
+        "end": 125
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "main",
+      "canonical": "artifact/effect-do-bind::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "print",
+      "canonical": "std/prelude::print",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "ignored",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 72,
+        "end": 79
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 22,
+        "end": 26
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 46,
+        "end": 58
+      }
+    },
+    {
+      "spelling": "print",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 83,
+        "end": 88
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 107,
+        "end": 114
+      }
+    }
+  ],
+  "issues": []
 }

@@ -10,6 +10,7 @@ pub struct ScopeId(pub u32);
 #[serde(rename_all = "kebab-case")]
 pub enum ScopeKind {
     Module,
+    Declaration,
     Function,
     DoBlock,
     MatchArm,
@@ -32,6 +33,7 @@ pub enum SymbolKind {
     Let,
     Function,
     EffectFunction,
+    TypeParameter,
     Parameter,
     PatternBinding,
     Type,

@@ -1,17 +1,147 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-do",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "main",
+      "kind": "effectFn",
       "visibility": "public",
-      "declaration": {
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 22,
+          "end": 26
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "succeed",
+            "span": {
+              "start": 36,
+              "end": 43
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 44,
+              "end": 46
+            }
+          },
+          "span": {
+            "start": 36,
+            "end": 46
+          }
+        },
+        "span": {
+          "start": 31,
+          "end": 48
+        }
+      },
+      "span": {
         "start": 0,
         "end": 48
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "do-block",
+      "origin": {
+        "start": 31,
+        "end": 48
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "main",
+      "canonical": "artifact/effect-do::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "succeed",
+      "canonical": "std/prelude::succeed",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 22,
+        "end": 26
+      }
+    },
+    {
+      "spelling": "succeed",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 36,
+        "end": 43
+      }
+    }
+  ],
+  "issues": []
 }

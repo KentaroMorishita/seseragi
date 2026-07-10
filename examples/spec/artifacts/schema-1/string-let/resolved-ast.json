@@ -1,14 +1,86 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/string-let",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "greeting",
+      "kind": "let",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 34 }
+      "name": "greeting",
+      "nameSpan": {
+        "start": 8,
+        "end": 16
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 18,
+          "end": 24
+        }
+      },
+      "body": {
+        "kind": "string",
+        "raw": "\"hello\"",
+        "span": {
+          "start": 27,
+          "end": 34
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 34
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 34
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "greeting",
+      "canonical": "artifact/string-let::greeting",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 8,
+        "end": 16
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 18,
+        "end": 24
+      }
+    }
+  ],
+  "issues": []
 }

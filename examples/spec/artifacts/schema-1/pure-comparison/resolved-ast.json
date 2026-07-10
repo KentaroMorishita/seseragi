@@ -1,37 +1,574 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/pure-comparison",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "isZero",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "isZero",
+      "nameSpan": {
+        "start": 7,
+        "end": 13
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 14,
+            "end": 19
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 21,
+              "end": 24
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 28,
+          "end": 32
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 41,
+          "end": 43
+        },
+        "left": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 35,
+            "end": 40
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "0",
+          "span": {
+            "start": 44,
+            "end": 45
+          }
+        },
+        "span": {
+          "start": 35,
+          "end": 45
+        }
+      },
+      "span": {
         "start": 0,
         "end": 45
       }
     },
     {
-      "kind": "value",
-      "symbol": 1,
-      "name": "sameBool",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "sameBool",
+      "nameSpan": {
+        "start": 53,
+        "end": 61
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 62,
+            "end": 66
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 68,
+              "end": 72
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 76,
+            "end": 81
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 83,
+              "end": 87
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 91,
+          "end": 95
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 103,
+          "end": 105
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 98,
+            "end": 102
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 106,
+            "end": 111
+          }
+        },
+        "span": {
+          "start": 98,
+          "end": 111
+        }
+      },
+      "span": {
         "start": 46,
         "end": 111
       }
     },
     {
-      "kind": "value",
-      "symbol": 2,
-      "name": "sameString",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "sameString",
+      "nameSpan": {
+        "start": 119,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 130,
+            "end": 134
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 136,
+              "end": 142
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 146,
+            "end": 151
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 153,
+              "end": 159
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 163,
+          "end": 167
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "!=",
+        "operatorSpan": {
+          "start": 175,
+          "end": 177
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 170,
+            "end": 174
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 178,
+            "end": 183
+          }
+        },
+        "span": {
+          "start": 170,
+          "end": 183
+        }
+      },
+      "span": {
         "start": 112,
         "end": 183
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 183
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 45
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 46,
+        "end": 111
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 112,
+        "end": 183
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "isZero",
+      "canonical": "artifact/pure-comparison::isZero",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "sameBool",
+      "canonical": "artifact/pure-comparison::sameBool",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 53,
+        "end": 61
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "sameString",
+      "canonical": "artifact/pure-comparison::sameString",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 119,
+        "end": 129
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 14,
+        "end": 19
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 62,
+        "end": 66
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 76,
+        "end": 81
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 130,
+        "end": 134
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 146,
+        "end": 151
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "!=",
+      "canonical": "std/prelude::!=",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 21,
+        "end": 24
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 28,
+        "end": 32
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 35,
+        "end": 40
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 6,
+      "origin": {
+        "start": 41,
+        "end": 43
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 68,
+        "end": 72
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 83,
+        "end": 87
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 91,
+        "end": 95
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 98,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 6,
+      "origin": {
+        "start": 103,
+        "end": 105
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 106,
+        "end": 111
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 136,
+        "end": 142
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 153,
+        "end": 159
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 163,
+        "end": 167
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 170,
+        "end": 174
+      }
+    },
+    {
+      "spelling": "!=",
+      "namespace": "operator",
+      "target": 12,
+      "origin": {
+        "start": 175,
+        "end": 177
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 178,
+        "end": 183
+      }
+    }
+  ],
+  "issues": []
 }

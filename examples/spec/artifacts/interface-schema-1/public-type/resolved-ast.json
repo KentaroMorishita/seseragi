@@ -1,82 +1,137 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/public-type",
+  "dependencies": [],
   "declarations": [
     {
       "kind": "type",
-      "symbol": 0,
-      "name": "Maybe",
       "visibility": "public",
-      "declarationKind": "type",
-      "declaration": {
+      "name": "Maybe",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "name": "Nothing",
+          "nameSpan": {
+            "start": 24,
+            "end": 31
+          },
+          "span": {
+            "start": 22,
+            "end": 31
+          }
+        },
+        {
+          "name": "Just",
+          "nameSpan": {
+            "start": 36,
+            "end": 40
+          },
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 41,
+              "end": 42
+            }
+          },
+          "span": {
+            "start": 34,
+            "end": 42
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
         "start": 0,
         "end": 42
       }
     },
     {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Maybe",
+      "canonical": "artifact/public-type::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Nothing",
+      "canonical": "artifact/public-type::Nothing",
+      "namespace": "value",
       "kind": "constructor",
-      "symbol": 1,
-      "name": "Nothing",
-      "owner": "artifact/public-type::Maybe",
-      "visibility": "public",
-      "scheme": {
-        "typeParameters": [
-          "A"
-        ],
-        "constraints": [],
-        "type": {
-          "kind": "named",
-          "name": "Maybe",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "A",
-              "arguments": []
-            }
-          ]
-        }
-      },
-      "declaration": {
+      "scope": 0,
+      "origin": {
         "start": 24,
         "end": 31
       }
     },
     {
+      "id": 2,
+      "spelling": "Just",
+      "canonical": "artifact/public-type::Just",
+      "namespace": "value",
       "kind": "constructor",
-      "symbol": 2,
-      "name": "Just",
-      "owner": "artifact/public-type::Maybe",
-      "visibility": "public",
-      "scheme": {
-        "typeParameters": [
-          "A"
-        ],
-        "constraints": [],
-        "type": {
-          "kind": "function",
-          "parameter": {
-            "kind": "named",
-            "name": "A",
-            "arguments": []
-          },
-          "result": {
-            "kind": "named",
-            "name": "Maybe",
-            "arguments": [
-              {
-                "kind": "named",
-                "name": "A",
-                "arguments": []
-              }
-            ]
-          }
-        }
-      },
-      "declaration": {
+      "scope": 0,
+      "origin": {
         "start": 36,
         "end": 40
       }
+    },
+    {
+      "id": 3,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 42
+      }
     }
-  ]
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 41,
+        "end": 42
+      }
+    }
+  ],
+  "issues": []
 }

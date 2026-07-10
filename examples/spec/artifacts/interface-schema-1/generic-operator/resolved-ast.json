@@ -1,16 +1,162 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/generic-operator",
+  "dependencies": [],
   "declarations": [
     {
       "kind": "operator",
-      "symbol": 0,
-      "name": "<+>",
       "visibility": "public",
+      "typeParameters": [
+        "A"
+      ],
       "fixity": "infixr",
       "precedence": 5,
-      "declaration": { "start": 0, "end": 83 }
+      "spelling": "<+>",
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 31,
+            "end": 35
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 37,
+              "end": 38
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 42,
+            "end": 47
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 49,
+              "end": 50
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 54,
+          "end": 55
+        }
+      },
+      "constraints": [
+        "Semigroup"
+      ],
+      "span": {
+        "start": 0,
+        "end": 83
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 83
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 83
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "<+>",
+      "canonical": "artifact/generic-operator::<+>",
+      "namespace": "operator",
+      "kind": "operator",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 83
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 83
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 31,
+        "end": 35
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 42,
+        "end": 47
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 37,
+        "end": 38
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 49,
+        "end": 50
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 54,
+        "end": 55
+      }
+    }
+  ],
+  "issues": []
 }

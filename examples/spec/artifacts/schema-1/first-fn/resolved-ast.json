@@ -1,14 +1,176 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/first-fn",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "first",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 50 }
+      "name": "first",
+      "nameSpan": {
+        "start": 7,
+        "end": 12
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 13,
+            "end": 17
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 19,
+              "end": 22
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 26,
+            "end": 31
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 33,
+              "end": 36
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 40,
+          "end": 43
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "left",
+        "span": {
+          "start": 46,
+          "end": 50
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 50
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 50
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 50
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "first",
+      "canonical": "artifact/first-fn::first",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 12
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 13,
+        "end": 17
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 26,
+        "end": 31
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 19,
+        "end": 22
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 33,
+        "end": 36
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 40,
+        "end": 43
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 46,
+        "end": 50
+      }
+    }
+  ],
+  "issues": []
 }

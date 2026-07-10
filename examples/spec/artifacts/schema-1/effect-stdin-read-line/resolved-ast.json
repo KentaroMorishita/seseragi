@@ -1,6 +1,255 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-stdin-read-line",
-  "declarations": []
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "first",
+              "nameSpan": {
+                "start": 32,
+                "end": 37
+              },
+              "span": {
+                "start": 32,
+                "end": 37
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "readLine",
+                "span": {
+                  "start": 41,
+                  "end": 49
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 50,
+                  "end": 52
+                }
+              },
+              "span": {
+                "start": 41,
+                "end": 52
+              }
+            },
+            "span": {
+              "start": 32,
+              "end": 52
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "second",
+              "nameSpan": {
+                "start": 57,
+                "end": 63
+              },
+              "span": {
+                "start": 57,
+                "end": 63
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "readLine",
+                "span": {
+                  "start": 67,
+                  "end": 75
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 76,
+                  "end": 78
+                }
+              },
+              "span": {
+                "start": 67,
+                "end": 78
+              }
+            },
+            "span": {
+              "start": 57,
+              "end": 78
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "succeed",
+            "span": {
+              "start": 83,
+              "end": 90
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 91,
+              "end": 93
+            }
+          },
+          "span": {
+            "start": 83,
+            "end": 93
+          }
+        },
+        "span": {
+          "start": 23,
+          "end": 97
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 97
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 97
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 97
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "do-block",
+      "origin": {
+        "start": 23,
+        "end": 97
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "main",
+      "canonical": "artifact/effect-stdin-read-line::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "readLine",
+      "canonical": "std/prelude::readLine",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "first",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 32,
+        "end": 37
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "second",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 57,
+        "end": 63
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "succeed",
+      "canonical": "std/prelude::succeed",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "readLine",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 41,
+        "end": 49
+      }
+    },
+    {
+      "spelling": "readLine",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 67,
+        "end": 75
+      }
+    },
+    {
+      "spelling": "succeed",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 83,
+        "end": 90
+      }
+    }
+  ],
+  "issues": []
 }

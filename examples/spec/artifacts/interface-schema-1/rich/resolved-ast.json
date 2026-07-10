@@ -1,36 +1,284 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/rich",
+  "dependencies": [
+    {
+      "specifier": "./dep",
+      "module": "artifact/rich/dep",
+      "origin": {
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "identity",
+          "symbol": "artifact/rich/dep::identity"
+        }
+      ]
+    }
+  ],
   "declarations": [
     {
-      "kind": "type",
-      "symbol": 0,
-      "name": "Score",
+      "kind": "newtype",
       "visibility": "public",
-      "declarationKind": "newtype",
-      "declaration": { "start": 34, "end": 57 },
-      "representation": { "kind": "named", "name": "Int", "arguments": [] }
+      "name": "Score",
+      "nameSpan": {
+        "start": 46,
+        "end": 51
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 54,
+          "end": 57
+        }
+      },
+      "span": {
+        "start": 34,
+        "end": 57
+      }
     },
     {
       "kind": "operator",
-      "symbol": 1,
-      "name": "<+>",
       "visibility": "public",
       "fixity": "infixl",
       "precedence": 4,
-      "declaration": { "start": 59, "end": 141 }
+      "spelling": "<+>",
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 87,
+            "end": 91
+          },
+          "type": {
+            "kind": "named",
+            "name": "Score",
+            "span": {
+              "start": 93,
+              "end": 98
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 102,
+            "end": 107
+          },
+          "type": {
+            "kind": "named",
+            "name": "Score",
+            "span": {
+              "start": 109,
+              "end": 114
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Score",
+        "span": {
+          "start": 118,
+          "end": 123
+        }
+      },
+      "span": {
+        "start": 59,
+        "end": 141
+      }
     },
     {
       "kind": "instance",
-      "symbol": 2,
       "traitName": "Show",
-      "head": {
-        "kind": "apply",
-        "constructor": "Show",
-        "arguments": [{ "kind": "named", "name": "Score", "arguments": [] }]
-      },
-      "declaration": { "start": 143, "end": 210 }
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "span": {
+            "start": 157,
+            "end": 162
+          }
+        }
+      ],
+      "span": {
+        "start": 143,
+        "end": 210
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 34,
+        "end": 210
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 34,
+        "end": 57
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 59,
+        "end": 141
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 143,
+        "end": 210
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Score",
+      "canonical": "artifact/rich::Score",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 46,
+        "end": 51
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Score",
+      "canonical": "artifact/rich::Score",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 46,
+        "end": 51
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "<+>",
+      "canonical": "artifact/rich::<+>",
+      "namespace": "operator",
+      "kind": "operator",
+      "scope": 0,
+      "origin": {
+        "start": 59,
+        "end": 141
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "identity",
+      "canonical": "artifact/rich/dep::identity",
+      "namespace": "value",
+      "kind": "imported",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 32
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 87,
+        "end": 91
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 102,
+        "end": 107
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 54,
+        "end": 57
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 93,
+        "end": 98
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 109,
+        "end": 114
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 118,
+        "end": 123
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 157,
+        "end": 162
+      }
+    }
+  ],
+  "issues": []
 }

@@ -1,27 +1,379 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/partial-application",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "add",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "add",
+      "nameSpan": {
+        "start": 7,
+        "end": 10
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 11,
+            "end": 15
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 17,
+              "end": 20
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 24,
+            "end": 29
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 31,
+              "end": 34
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 38,
+          "end": 41
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 49,
+          "end": 50
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "span": {
+          "start": 44,
+          "end": 56
+        }
+      },
+      "span": {
         "start": 0,
         "end": 56
       }
     },
     {
-      "kind": "value",
-      "symbol": 1,
-      "name": "addTo",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "addTo",
+      "nameSpan": {
+        "start": 64,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 70,
+            "end": 75
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 77,
+              "end": 80
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 85,
+            "end": 88
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 92,
+            "end": 95
+          }
+        },
+        "span": {
+          "start": 85,
+          "end": 95
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "add",
+          "span": {
+            "start": 99,
+            "end": 102
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 103,
+            "end": 108
+          }
+        },
+        "span": {
+          "start": 99,
+          "end": 108
+        }
+      },
+      "span": {
         "start": 57,
         "end": 108
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 108
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 57,
+        "end": 108
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "add",
+      "canonical": "artifact/partial-application::add",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 10
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "addTo",
+      "canonical": "artifact/partial-application::addTo",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 64,
+        "end": 69
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 11,
+        "end": 15
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 24,
+        "end": 29
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 70,
+        "end": 75
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 17,
+        "end": 20
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 31,
+        "end": 34
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 38,
+        "end": 41
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 44,
+        "end": 48
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 49,
+        "end": 50
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 51,
+        "end": 56
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 77,
+        "end": 80
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 85,
+        "end": 88
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 92,
+        "end": 95
+      }
+    },
+    {
+      "spelling": "add",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 99,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 103,
+        "end": 108
+      }
+    }
+  ],
+  "issues": []
 }

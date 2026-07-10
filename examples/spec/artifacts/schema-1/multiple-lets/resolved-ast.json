@@ -1,14 +1,120 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/multiple-lets",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "second",
+      "kind": "let",
+      "visibility": "private",
+      "name": "first",
+      "nameSpan": {
+        "start": 4,
+        "end": 9
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "integer",
+        "raw": "1",
+        "span": {
+          "start": 12,
+          "end": 13
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 13
+      }
+    },
+    {
+      "kind": "let",
       "visibility": "public",
-      "declaration": { "start": 14, "end": 37 }
+      "name": "second",
+      "nameSpan": {
+        "start": 22,
+        "end": 28
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 30,
+          "end": 33
+        }
+      },
+      "body": {
+        "kind": "integer",
+        "raw": "2",
+        "span": {
+          "start": 36,
+          "end": 37
+        }
+      },
+      "span": {
+        "start": 14,
+        "end": 37
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 37
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "first",
+      "canonical": "artifact/multiple-lets::first",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 4,
+        "end": 9
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "second",
+      "canonical": "artifact/multiple-lets::second",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 22,
+        "end": 28
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 30,
+        "end": 33
+      }
+    }
+  ],
+  "issues": []
 }

@@ -1,6 +1,10 @@
 use crate::{ResolvedInterface, ResolvedInterfaceDecl, SymbolId};
 use seseragi_syntax::{InterfaceExport, InterfaceInstance, InterfaceOperator, ModuleInterface};
 
+mod body;
+
+pub use body::resolve_module;
+
 pub fn resolve_module_interface(interface: ModuleInterface) -> ResolvedInterface {
     let ModuleInterface {
         schema,

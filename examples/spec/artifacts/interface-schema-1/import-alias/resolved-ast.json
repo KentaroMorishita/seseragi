@@ -1,14 +1,115 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/import-alias",
+  "dependencies": [
+    {
+      "specifier": "json",
+      "module": "artifact/import-alias/json",
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "parse",
+          "symbol": "artifact/import-alias/json::parse",
+          "localName": "parseJson"
+        }
+      ]
+    }
+  ],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "answer",
+      "kind": "let",
       "visibility": "public",
-      "declaration": { "start": 43, "end": 67 }
+      "name": "answer",
+      "nameSpan": {
+        "start": 51,
+        "end": 57
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 59,
+          "end": 62
+        }
+      },
+      "body": {
+        "kind": "integer",
+        "raw": "42",
+        "span": {
+          "start": 65,
+          "end": 67
+        }
+      },
+      "span": {
+        "start": 43,
+        "end": 67
+      }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 43,
+        "end": 67
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "answer",
+      "canonical": "artifact/import-alias::answer",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 51,
+        "end": 57
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "parseJson",
+      "canonical": "artifact/import-alias/json::parse",
+      "namespace": "value",
+      "kind": "imported",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 59,
+        "end": 62
+      }
+    }
+  ],
+  "issues": []
 }

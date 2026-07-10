@@ -1,27 +1,333 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/tuple-value",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "value",
-      "symbol": 0,
-      "name": "sample",
+      "kind": "let",
       "visibility": "public",
-      "declaration": {
+      "name": "sample",
+      "nameSpan": {
+        "start": 8,
+        "end": 14
+      },
+      "typeRef": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 17,
+              "end": 20
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 22,
+              "end": 26
+            }
+          }
+        ],
+        "span": {
+          "start": 16,
+          "end": 27
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "integer",
+            "raw": "1",
+            "span": {
+              "start": 31,
+              "end": 32
+            }
+          },
+          {
+            "kind": "boolean",
+            "value": true,
+            "span": {
+              "start": 34,
+              "end": 38
+            }
+          }
+        ],
+        "span": {
+          "start": 30,
+          "end": 39
+        }
+      },
+      "span": {
         "start": 0,
         "end": 39
       }
     },
     {
-      "kind": "value",
-      "symbol": 1,
-      "name": "pair",
+      "kind": "fn",
       "visibility": "public",
-      "declaration": {
+      "name": "pair",
+      "nameSpan": {
+        "start": 48,
+        "end": 52
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 53,
+            "end": 57
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 59,
+              "end": 62
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 66,
+            "end": 71
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 73,
+              "end": 77
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 82,
+              "end": 85
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 87,
+              "end": 91
+            }
+          }
+        ],
+        "span": {
+          "start": 81,
+          "end": 92
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 98,
+              "end": 102
+            }
+          },
+          {
+            "kind": "name",
+            "name": "right",
+            "span": {
+              "start": 104,
+              "end": 109
+            }
+          }
+        ],
+        "span": {
+          "start": 97,
+          "end": 110
+        }
+      },
+      "span": {
         "start": 41,
         "end": 110
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 110
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 41,
+        "end": 110
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "sample",
+      "canonical": "artifact/tuple-value::sample",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 8,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "pair",
+      "canonical": "artifact/tuple-value::pair",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 48,
+        "end": 52
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 53,
+        "end": 57
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 66,
+        "end": 71
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 17,
+        "end": 20
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 22,
+        "end": 26
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 59,
+        "end": 62
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 73,
+        "end": 77
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 82,
+        "end": 85
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 87,
+        "end": 91
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 98,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 104,
+        "end": 109
+      }
+    }
+  ],
+  "issues": []
 }

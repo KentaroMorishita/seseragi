@@ -39,8 +39,7 @@ pub(crate) fn parse_resolved_ast_json(
     source_name: impl Into<String>,
     source: &str,
 ) -> Result<serde_json::Value, String> {
-    let interface = seseragi_syntax::parse_module_interface(source_name, source);
-    let resolved_ast = seseragi_semantics::resolve_module_interface(interface);
+    let resolved_ast = seseragi_semantics::resolve_module(source_name, source);
     serde_json::to_value(&resolved_ast)
         .map_err(|error| format!("failed to encode ResolvedAst: {error}"))
 }

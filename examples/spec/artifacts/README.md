@@ -37,6 +37,11 @@ pattern typingとdecision tree loweringはmatch sliceでこの表現を引き継
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
 最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。
 
+`resolved-ast.json`のenvelopeはschema 2です。公開APIだけの`ModuleInterface`とは別に、private宣言を含む
+Surface declaration/body、lexical scope、namespace別symbol、source referenceから`SymbolId`への解決結果、
+未解決reference issueを保持します。型検査はこのtableを入力とし、raw spellingからscope探索を再実装しません。
+interfaceだけをprojectする互換producerはcompiler内部に残しますが、ResolvedAst conformanceの正本ではありません。
+
 `token-schema-1/`はlexer lane専用のTokenStream fixtureです。CST、diagnostic、module interfaceを要求せず、
 fixed operator、comment、literal、nested type argument表面構文、trivia、UTF-8 byte range、EOF、
 effect / do表面構文、range operator、member access、lossless reconstructionだけを先に固定します。`>>`のような

@@ -1,28 +1,170 @@
 {
-  "schema": 1,
+  "schema": 2,
   "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-main",
+  "dependencies": [],
   "declarations": [
     {
-      "kind": "effect-fn",
-      "symbol": "artifact/effect-main::main",
+      "kind": "effectFn",
       "visibility": "public",
-      "origin": { "start": 0, "end": 78 },
-      "implicitUnitParameter": true,
-      "returnType": "std/prelude::Unit",
-      "requirements": [{ "field": "console", "type": "std/prelude::Console" }],
-      "failure": "std/prelude::ConsoleError",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 22,
+          "end": 26
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 46,
+          "end": 58
+        }
+      },
       "body": {
         "kind": "application",
-        "function": "std/prelude::println",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 63,
+            "end": 70
+          }
+        },
         "argument": {
           "kind": "string",
-          "value": "hello",
-          "origin": { "start": 71, "end": 78 }
+          "raw": "\"hello\"",
+          "span": {
+            "start": 71,
+            "end": 78
+          }
         },
-        "origin": { "start": 63, "end": 78 }
+        "span": {
+          "start": 63,
+          "end": 78
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 78
       }
     }
-  ]
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 78
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 78
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "main",
+      "canonical": "artifact/effect-main::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 22,
+        "end": 26
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 46,
+        "end": 58
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 63,
+        "end": 70
+      }
+    }
+  ],
+  "issues": []
 }

@@ -1,6 +1,103 @@
 {
-  "schema": 1,
+  "schema": 2,
+  "stage": "resolved-ast",
   "source": "main.ssrg",
   "module": "artifact/effect-compact-read-line",
-  "declarations": []
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "nextLine",
+      "nameSpan": {
+        "start": 14,
+        "end": 22
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "readLine",
+          "span": {
+            "start": 25,
+            "end": 33
+          }
+        },
+        "argument": {
+          "kind": "unit",
+          "span": {
+            "start": 34,
+            "end": 36
+          }
+        },
+        "span": {
+          "start": 25,
+          "end": 36
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 36
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "nextLine",
+      "canonical": "artifact/effect-compact-read-line::nextLine",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 22
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "readLine",
+      "canonical": "std/prelude::readLine",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "readLine",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 25,
+        "end": 33
+      }
+    }
+  ],
+  "issues": []
 }
