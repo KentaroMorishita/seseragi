@@ -495,10 +495,17 @@ mod tests {
                 arguments: Vec::new(),
             }
         );
-        let TypedExpr::DoBlock { statements, .. } = body else {
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = body
+        else {
             panic!("expected do block body");
         };
-        assert_eq!(statements.len(), 1);
+        assert!(statements.is_empty());
+        assert!(matches!(
+            result.as_ref(),
+            TypedExpr::EffectCall { operation, .. } if operation == "std/prelude::println"
+        ));
     }
 
     #[test]
@@ -532,10 +539,17 @@ mod tests {
                 arguments: Vec::new(),
             }
         );
-        let TypedExpr::DoBlock { statements, .. } = body else {
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = body
+        else {
             panic!("expected do block body");
         };
-        assert_eq!(statements.len(), 2);
+        assert_eq!(statements.len(), 1);
+        assert!(matches!(
+            result.as_ref(),
+            TypedExpr::EffectCall { operation, .. } if operation == "std/prelude::println"
+        ));
     }
 
     #[test]
@@ -548,9 +562,13 @@ mod tests {
         let TypedDecl::EffectFn { body, .. } = &typed.declarations[0] else {
             panic!("expected effect function declaration");
         };
-        let TypedExpr::DoBlock { statements, .. } = body else {
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = body
+        else {
             panic!("expected do block body");
         };
+        assert_eq!(statements.len(), 1);
         assert!(matches!(
             &statements[0],
             crate::TypedDoStatement::Bind {
@@ -561,58 +579,46 @@ mod tests {
             } if name == "ignored" && type_name == "Unit" && arguments.is_empty() && operation == "std/prelude::print"
         ));
         assert!(matches!(
-            &statements[1],
-            crate::TypedDoStatement::Effect {
-                value: TypedExpr::EffectCall { operation, .. }
-            } if operation == "std/prelude::println"
+            result.as_ref(),
+            TypedExpr::EffectCall { operation, .. } if operation == "std/prelude::println"
         ));
     }
 
     #[test]
-    fn types_empty_do_block_as_unit_result() {
+    fn types_succeed_as_final_do_result() {
         let typed = type_module(
             "artifact/effect-do/main.ssrg",
-            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n",
+            "pub effect fn main -> Unit =\n  do { succeed () }\n",
         );
 
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function");
+        };
         assert_eq!(
-            typed.declarations,
-            vec![TypedDecl::EffectFn {
-                symbol: "artifact/effect-do::main".to_owned(),
-                visibility: Visibility::Public,
-                origin: ByteSpan { start: 0, end: 68 },
-                inferred_contract: false,
-                parameters: vec![TypedParameter::ImplicitUnit {
-                    type_ref: unit_type(),
-                }],
-                effect: TypedEffect {
-                    environment: TypedType::Record {
-                        closed: true,
-                        fields: vec![TypedRecordField {
-                            name: "console".to_owned(),
-                            optional: false,
-                            type_ref: TypedType::Named {
-                                name: "Console".to_owned(),
-                                arguments: Vec::new(),
-                            },
-                        }],
-                    },
-                    failure: TypedType::Named {
-                        name: "ConsoleError".to_owned(),
-                        arguments: Vec::new(),
-                    },
-                    success: unit_type(),
-                },
-                body: TypedExpr::DoBlock {
-                    statements: Vec::new(),
-                    result: Box::new(TypedExpr::Unit {
-                        type_ref: unit_type(),
-                        origin: ByteSpan { start: 67, end: 67 },
-                    }),
-                    origin: ByteSpan { start: 63, end: 68 },
-                },
-            }]
+            effect.environment,
+            TypedType::Record {
+                closed: true,
+                fields: Vec::new()
+            }
         );
+        assert_eq!(
+            effect.failure,
+            TypedType::Named {
+                name: "Never".to_owned(),
+                arguments: Vec::new()
+            }
+        );
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = body
+        else {
+            panic!("expected do block");
+        };
+        assert!(statements.is_empty());
+        assert!(matches!(
+            result.as_ref(),
+            TypedExpr::EffectCall { operation, .. } if operation == "std/effect::succeed"
+        ));
     }
 
     #[test]

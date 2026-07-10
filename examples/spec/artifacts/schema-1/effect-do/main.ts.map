@@ -6,7 +6,7 @@
     "seseragi://artifact/effect-do"
   ],
   "sourcesContent": [
-    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n"
+    "pub effect fn main -> Unit =\n  do { succeed () }\n"
   ],
   "names": [
     "main"

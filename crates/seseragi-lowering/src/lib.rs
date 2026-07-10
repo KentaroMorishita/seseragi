@@ -294,8 +294,8 @@ fails ConsoleError =
     }
 
     #[test]
-    fn lowers_unit_result_to_typescript_undefined_expression() {
-        let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {}\n";
+    fn lowers_succeed_final_do_result_to_typescript_undefined() {
+        let source = "pub effect fn main -> Unit =\n  do { succeed () }\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);
         let core = lower_typed_module(typed);
         let typescript = lower_core_module_to_typescript_ir(core);
@@ -311,54 +311,40 @@ fails ConsoleError =
     }
 
     #[test]
-    fn lowers_single_sync_effect_do_statement_to_unit_sequence() {
+    fn lowers_single_sync_effect_as_do_result() {
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";
         let typed = type_module("artifact/effect-do-println/main.ssrg", source);
         let core = lower_typed_module(typed);
-        let CoreExpr::Sequence {
-            statements, result, ..
-        } = &core.functions[0].body
-        else {
-            panic!("expected single do statement to remain a sequence");
-        };
-        assert_eq!(statements.len(), 1);
-        assert!(matches!(statements[0], CoreStatement::Effect { .. }));
-        assert!(matches!(result.as_ref(), CoreExpr::Unit { .. }));
+        assert!(matches!(
+            &core.functions[0].body,
+            CoreExpr::EffectOperation { operation, success, .. }
+                if operation == "console.println" && success == &CoreType::Named { name: "Unit".to_owned(), arguments: Vec::new() }
+        ));
 
         let typescript = lower_core_module_to_typescript_ir(core);
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
                 is_async: false,
-                body: TypeScriptExpr::Sequence { .. },
+                body: TypeScriptExpr::Call { .. },
                 ..
             }
         ));
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"hello\"); return undefined; })()"
+            "export const main = (_unit: undefined) => _ssrg_console_println(\"hello\")"
         ));
     }
 
     #[test]
-    fn lowers_single_async_effect_do_statement_to_unit_sequence() {
+    fn lowers_single_async_effect_as_value_producing_do_result() {
         let source = "pub effect fn main =\n  do { readLine () }\n";
         let typed = type_module("artifact/effect-do-read-line/main.ssrg", source);
         let core = lower_typed_module(typed);
-        let CoreExpr::Sequence {
-            statements, result, ..
-        } = &core.functions[0].body
-        else {
-            panic!("expected single do statement to remain a sequence");
-        };
-        assert_eq!(statements.len(), 1);
-        let CoreStatement::Effect {
-            value: CoreExpr::EffectOperation { success, .. },
-        } = &statements[0]
-        else {
-            panic!("expected readLine effect statement");
+        let CoreExpr::EffectOperation { success, .. } = &core.functions[0].body else {
+            panic!("expected readLine do result");
         };
         assert_eq!(
             success,
@@ -370,21 +356,20 @@ fails ConsoleError =
                 }],
             }
         );
-        assert!(matches!(result.as_ref(), CoreExpr::Unit { .. }));
 
         let typescript = lower_core_module_to_typescript_ir(core);
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
                 is_async: true,
-                body: TypeScriptExpr::Sequence { .. },
+                body: TypeScriptExpr::Await { .. },
                 ..
             }
         ));
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "export const main = async (_unit: undefined) => (async () => { await _ssrg_stdin_readLine(); return undefined; })()"
+            "export const main = async (_unit: undefined) => await _ssrg_stdin_readLine()"
         ));
     }
 
@@ -398,7 +383,7 @@ fails ConsoleError =
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"one\"); _ssrg_console_println(\"two\"); return undefined; })()"
+            "export const main = (_unit: undefined) => (() => { _ssrg_console_println(\"one\"); return _ssrg_console_println(\"two\"); })()"
         ));
     }
 
@@ -411,14 +396,14 @@ fails ConsoleError =
         let bundle = emit_typescript_module(typescript, source);
 
         assert!(bundle.typescript.contains(
-            "const ignored: undefined = _ssrg_console_print(\"hello\"); _ssrg_console_println(\"done\");"
+            "const ignored: undefined = _ssrg_console_print(\"hello\"); return _ssrg_console_println(\"done\");"
         ));
     }
 
     #[test]
     fn lowers_async_stdin_bind_to_awaited_async_function() {
         let source =
-            "pub effect fn main =\n  do {\n    first <- readLine ()\n    second <- readLine ()\n  }\n";
+            "pub effect fn main =\n  do {\n    first <- readLine ()\n    second <- readLine ()\n    succeed ()\n  }\n";
         let typed = type_module("artifact/effect-stdin-read-line/main.ssrg", source);
         let core = lower_typed_module(typed);
         let CoreExpr::Sequence { statements, .. } = &core.functions[0].body else {

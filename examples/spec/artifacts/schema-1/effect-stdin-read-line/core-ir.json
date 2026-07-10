@@ -9,7 +9,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 82
+        "end": 97
       },
       "parameters": [
         {
@@ -147,17 +147,34 @@
           }
         ],
         "result": {
-          "kind": "unit",
+          "kind": "effect-operation",
+          "operation": "effect.succeed",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [],
           "origin": {
             "source": "main.ssrg",
-            "start": 81,
-            "end": 81
+            "start": 83,
+            "end": 90
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 23,
-          "end": 82
+          "end": 97
         }
       }
     }

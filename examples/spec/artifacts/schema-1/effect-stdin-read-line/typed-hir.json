@@ -10,7 +10,7 @@
       "visibility": "public",
       "origin": {
         "start": 0,
-        "end": 82
+        "end": 97
       },
       "inferredContract": true,
       "parameters": [
@@ -110,20 +110,17 @@
           }
         ],
         "result": {
-          "kind": "unit",
-          "type": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          },
+          "kind": "effect-call",
+          "operation": "std/effect::succeed",
+          "arguments": [],
           "origin": {
-            "start": 81,
-            "end": 81
+            "start": 83,
+            "end": 90
           }
         },
         "origin": {
           "start": 23,
-          "end": 82
+          "end": 97
         }
       }
     }

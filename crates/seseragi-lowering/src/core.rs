@@ -419,6 +419,7 @@ fn lower_effect_operation(operation: &str) -> String {
         "std/prelude::readLine" => "stdin.readLine".to_owned(),
         "std/prelude::print" => "console.print".to_owned(),
         "std/prelude::println" => "console.println".to_owned(),
+        "std/effect::succeed" => "effect.succeed".to_owned(),
         other => other.to_owned(),
     }
 }
@@ -428,11 +429,15 @@ fn effect_operation_contract(operation: &str) -> Option<(CoreType, CoreType, Cor
     Some((
         CoreType::Record {
             closed: true,
-            fields: vec![CoreRecordField {
-                name: operation.requirement_field.to_owned(),
-                optional: false,
-                type_ref: named_core_type(operation.requirement_type),
-            }],
+            fields: operation
+                .requirement
+                .map(|(field_name, type_name)| CoreRecordField {
+                    name: field_name.to_owned(),
+                    optional: false,
+                    type_ref: named_core_type(type_name),
+                })
+                .into_iter()
+                .collect(),
         },
         named_core_type(operation.failure_type),
         CoreType::Named {

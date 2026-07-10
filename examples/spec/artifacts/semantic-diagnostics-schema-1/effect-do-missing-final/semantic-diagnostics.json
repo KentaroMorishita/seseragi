@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "effect.do-missing-final-expression",
+      "primary": {
+        "start": 48,
+        "end": 48
+      },
+      "related": [
+        {
+          "message": "do block requires a final monadic expression",
+          "primary": {
+            "start": 0,
+            "end": 49
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

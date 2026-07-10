@@ -58,23 +58,17 @@
                 }
               ]
             }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "ready"
-                }
-              ]
-            }
           }
         ],
         "result": {
-          "kind": "undefined"
+          "kind": "call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "ready"
+            }
+          ]
         }
       },
       "origin": {

@@ -18,7 +18,14 @@ pub(super) fn collect_effect_fn_diagnostics(
         return;
     };
 
+    let diagnostic_count = diagnostics.len();
     collect_invalid_do_bind_diagnostics(tokens, *span, diagnostics);
+    if diagnostics.len() != diagnostic_count {
+        return;
+    }
+    if collect_missing_do_result_diagnostic(tokens, *span, diagnostics) {
+        return;
+    }
 
     if !inferred_contract {
         collect_invalid_explicit_do_statement_diagnostics(tokens, *span, diagnostics);
@@ -66,6 +73,68 @@ pub(super) fn collect_effect_fn_diagnostics(
     }
 
     push_compact_body_not_effect_diagnostic(diagnostics, operation, *span);
+}
+
+fn collect_missing_do_result_diagnostic(
+    tokens: &[Token],
+    span: ByteSpan,
+    diagnostics: &mut Vec<Diagnostic>,
+) -> bool {
+    let Some(do_index) = tokens.iter().position(|token| {
+        token.start >= span.start && token.end <= span.end && token.kind == TokenKind::KeywordDo
+    }) else {
+        return false;
+    };
+    let Some(left_brace_index) = tokens[do_index + 1..]
+        .iter()
+        .position(|token| token.end <= span.end && token.raw == "{")
+        .map(|index| do_index + 1 + index)
+    else {
+        return false;
+    };
+    let Some(right_brace_index) = tokens[left_brace_index + 1..]
+        .iter()
+        .position(|token| token.end <= span.end && token.raw == "}")
+        .map(|index| left_brace_index + 1 + index)
+    else {
+        return false;
+    };
+    let contents = &tokens[left_brace_index + 1..right_brace_index];
+    let significant = contents
+        .iter()
+        .filter(|token| is_significant(token))
+        .collect::<Vec<_>>();
+    let final_operation_index = contents.iter().rposition(is_known_effect_surface_operation);
+    let final_operation_is_bound = final_operation_index.is_some_and(|operation_index| {
+        let line_start = contents[..operation_index]
+            .iter()
+            .rposition(|token| token.kind == TokenKind::TriviaNewline)
+            .map_or(0, |index| index + 1);
+        contents[line_start..operation_index]
+            .iter()
+            .any(|token| token.kind == TokenKind::OperatorBind)
+    });
+    let missing_final_expression = significant.is_empty() || final_operation_is_bound;
+    if !missing_final_expression {
+        return false;
+    }
+    let origin = ByteSpan {
+        start: tokens[right_brace_index].start,
+        end: tokens[right_brace_index].start,
+    };
+    diagnostics.push(Diagnostic {
+        id: String::new(),
+        code: "SES-P0001".to_owned(),
+        severity: DiagnosticSeverity::Error,
+        message_key: "effect.do-missing-final-expression".to_owned(),
+        primary: byte_range(origin),
+        related: vec![RelatedDiagnostic {
+            message: "do block requires a final monadic expression".to_owned(),
+            primary: byte_range(span),
+        }],
+        fixes: Vec::new(),
+    });
+    true
 }
 
 fn collect_compact_failure_conflict(

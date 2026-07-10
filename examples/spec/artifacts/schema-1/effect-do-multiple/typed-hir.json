@@ -76,44 +76,29 @@
                 "end": 81
               }
             }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-call",
-              "operation": "std/prelude::println",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "two",
-                  "type": {
-                    "kind": "named",
-                    "name": "String",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 90,
-                    "end": 95
-                  }
-                }
-              ],
-              "origin": {
-                "start": 82,
-                "end": 95
-              }
-            }
           }
         ],
         "result": {
-          "kind": "unit",
-          "type": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          },
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "two",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 90,
+                "end": 95
+              }
+            }
+          ],
           "origin": {
-            "start": 96,
-            "end": 96
+            "start": 82,
+            "end": 95
           }
         },
         "origin": {

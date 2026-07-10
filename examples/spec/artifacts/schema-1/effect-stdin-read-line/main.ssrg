@@ -2,4 +2,5 @@ pub effect fn main =
   do {
     first <- readLine ()
     second <- readLine ()
+    succeed ()
   }

@@ -13,7 +13,7 @@
       "declarationKind": "effect-function",
       "declaration": {
         "start": 0,
-        "end": 68
+        "end": 48
       },
       "scheme": {
         "typeParameters": [],
@@ -32,20 +32,11 @@
               {
                 "kind": "record",
                 "closed": true,
-                "fields": [
-                  {
-                    "name": "console",
-                    "type": {
-                      "kind": "named",
-                      "name": "Console",
-                      "arguments": []
-                    }
-                  }
-                ]
+                "fields": []
               },
               {
                 "kind": "named",
-                "name": "ConsoleError",
+                "name": "Never",
                 "arguments": []
               },
               {

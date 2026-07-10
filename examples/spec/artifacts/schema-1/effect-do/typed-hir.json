@@ -10,7 +10,7 @@
       "visibility": "public",
       "origin": {
         "start": 0,
-        "end": 68
+        "end": 48
       },
       "parameters": [
         {
@@ -26,20 +26,11 @@
         "environment": {
           "kind": "record",
           "closed": true,
-          "fields": [
-            {
-              "name": "console",
-              "type": {
-                "kind": "named",
-                "name": "Console",
-                "arguments": []
-              }
-            }
-          ]
+          "fields": []
         },
         "failure": {
           "kind": "named",
-          "name": "ConsoleError",
+          "name": "Never",
           "arguments": []
         },
         "success": {
@@ -52,20 +43,17 @@
         "kind": "do-block",
         "statements": [],
         "result": {
-          "kind": "unit",
-          "type": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          },
+          "kind": "effect-call",
+          "operation": "std/effect::succeed",
+          "arguments": [],
           "origin": {
-            "start": 67,
-            "end": 67
+            "start": 36,
+            "end": 43
           }
         },
         "origin": {
-          "start": 63,
-          "end": 68
+          "start": 31,
+          "end": 48
         }
       }
     }

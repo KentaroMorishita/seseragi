@@ -255,6 +255,13 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             arguments,
             ..
         } => {
+            if operation == "effect.succeed" {
+                return arguments
+                    .into_iter()
+                    .next()
+                    .map(lower_core_expr_to_typescript)
+                    .unwrap_or(TypeScriptExpr::Undefined);
+            }
             // The target ABI, rather than Core IR, decides whether an operation
             // must be awaited.  That keeps the language-level effect operation
             // independent from the JavaScript runtime calling convention.

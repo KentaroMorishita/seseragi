@@ -2,8 +2,7 @@
 pub struct KnownEffectOperation {
     pub surface_name: &'static str,
     pub semantic_name: &'static str,
-    pub requirement_field: &'static str,
-    pub requirement_type: &'static str,
+    pub requirement: Option<(&'static str, &'static str)>,
     pub failure_type: &'static str,
     pub success_type: &'static str,
     pub success_type_arguments: &'static [&'static str],
@@ -13,8 +12,7 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
     KnownEffectOperation {
         surface_name: "readLine",
         semantic_name: "std/prelude::readLine",
-        requirement_field: "stdin",
-        requirement_type: "Stdin",
+        requirement: Some(("stdin", "Stdin")),
         failure_type: "StdinError",
         success_type: "Maybe",
         success_type_arguments: &["String"],
@@ -22,8 +20,7 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
     KnownEffectOperation {
         surface_name: "print",
         semantic_name: "std/prelude::print",
-        requirement_field: "console",
-        requirement_type: "Console",
+        requirement: Some(("console", "Console")),
         failure_type: "ConsoleError",
         success_type: "Unit",
         success_type_arguments: &[],
@@ -31,9 +28,16 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
     KnownEffectOperation {
         surface_name: "println",
         semantic_name: "std/prelude::println",
-        requirement_field: "console",
-        requirement_type: "Console",
+        requirement: Some(("console", "Console")),
         failure_type: "ConsoleError",
+        success_type: "Unit",
+        success_type_arguments: &[],
+    },
+    KnownEffectOperation {
+        surface_name: "succeed",
+        semantic_name: "std/effect::succeed",
+        requirement: None,
+        failure_type: "Never",
         success_type: "Unit",
         success_type_arguments: &[],
     },
@@ -69,8 +73,7 @@ mod tests {
     fn resolves_println_by_surface_name() {
         let operation = known_effect_operation_by_surface("println").unwrap();
         assert_eq!(operation.semantic_name, "std/prelude::println");
-        assert_eq!(operation.requirement_field, "console");
-        assert_eq!(operation.requirement_type, "Console");
+        assert_eq!(operation.requirement, Some(("console", "Console")));
         assert_eq!(operation.failure_type, "ConsoleError");
         assert_eq!(operation.success_type, "Unit");
         assert!(operation.success_type_arguments.is_empty());
@@ -94,11 +97,20 @@ mod tests {
         let operation = known_effect_operation_by_surface("readLine").unwrap();
 
         assert_eq!(operation.semantic_name, "std/prelude::readLine");
-        assert_eq!(operation.requirement_field, "stdin");
-        assert_eq!(operation.requirement_type, "Stdin");
+        assert_eq!(operation.requirement, Some(("stdin", "Stdin")));
         assert_eq!(operation.failure_type, "StdinError");
         assert_eq!(operation.success_type, "Maybe");
         assert_eq!(operation.success_type_arguments, ["String"]);
+    }
+
+    #[test]
+    fn resolves_succeed_without_environment_or_failure() {
+        let operation = known_effect_operation_by_surface("succeed").unwrap();
+
+        assert_eq!(operation.semantic_name, "std/effect::succeed");
+        assert_eq!(operation.requirement, None);
+        assert_eq!(operation.failure_type, "Never");
+        assert_eq!(operation.success_type, "Unit");
     }
 
     #[test]

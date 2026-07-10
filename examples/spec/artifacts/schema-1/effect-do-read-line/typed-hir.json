@@ -45,36 +45,26 @@
         },
         "success": {
           "kind": "named",
-          "name": "Unit",
-          "arguments": []
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
         }
       },
       "body": {
         "kind": "do-block",
-        "statements": [
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-call",
-              "operation": "std/prelude::readLine",
-              "arguments": [],
-              "origin": {
-                "start": 28,
-                "end": 36
-              }
-            }
-          }
-        ],
+        "statements": [],
         "result": {
-          "kind": "unit",
-          "type": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          },
+          "kind": "effect-call",
+          "operation": "std/prelude::readLine",
+          "arguments": [],
           "origin": {
-            "start": 40,
-            "end": 40
+            "start": 28,
+            "end": 36
           }
         },
         "origin": {

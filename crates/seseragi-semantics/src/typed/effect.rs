@@ -69,10 +69,9 @@ fn collect_effect_contract(
             let Some(operation) = known_effect_operation_by_semantic(operation) else {
                 return;
             };
-            push_requirement_unique(
-                requirements,
-                environment_field(operation.requirement_field, operation.requirement_type),
-            );
+            if let Some((field_name, type_name)) = operation.requirement {
+                push_requirement_unique(requirements, environment_field(field_name, type_name));
+            }
             widen_failure_from_never(failure, named_type(operation.failure_type));
         }
         TypedExpr::DoBlock {

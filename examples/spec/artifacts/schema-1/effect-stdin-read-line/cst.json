@@ -5,12 +5,12 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 38,
+    "endToken": 44,
     "children": [
       {
         "kind": "top-decl",
         "startToken": 0,
-        "endToken": 38,
+        "endToken": 44,
         "children": [
           {
             "kind": "decl-modifiers",
@@ -21,18 +21,18 @@
           {
             "kind": "effect-fn-decl",
             "startToken": 2,
-            "endToken": 38,
+            "endToken": 44,
             "children": [
               {
                 "kind": "effect-signature",
                 "startToken": 2,
-                "endToken": 38,
+                "endToken": 44,
                 "children": []
               },
               {
                 "kind": "do-block",
                 "startToken": 11,
-                "endToken": 37,
+                "endToken": 43,
                 "children": [
                   {
                     "kind": "do-bind-statement",
@@ -44,6 +44,12 @@
                     "kind": "do-bind-statement",
                     "startToken": 26,
                     "endToken": 34,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-effect-statement",
+                    "startToken": 36,
+                    "endToken": 40,
                     "children": []
                   }
                 ]

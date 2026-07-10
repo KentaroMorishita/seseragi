@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-do-missing-final",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

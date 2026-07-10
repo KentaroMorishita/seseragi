@@ -23,68 +23,47 @@
         }
       ],
       "body": {
-        "kind": "sequence",
-        "statements": [
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-operation",
-              "operation": "console.println",
-              "requirements": {
-                "kind": "record",
-                "closed": true,
-                "fields": [
-                  {
-                    "name": "console",
-                    "type": {
-                      "kind": "named",
-                      "name": "Console",
-                      "arguments": []
-                    }
-                  }
-                ]
-              },
-              "failure": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
                 "kind": "named",
-                "name": "ConsoleError",
+                "name": "Console",
                 "arguments": []
-              },
-              "success": {
-                "kind": "named",
-                "name": "Unit",
-                "arguments": []
-              },
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "hello",
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 36,
-                    "end": 43
-                  }
-                }
-              ],
-              "origin": {
-                "source": "main.ssrg",
-                "start": 28,
-                "end": 43
               }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "hello",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 36,
+              "end": 43
             }
           }
         ],
-        "result": {
-          "kind": "unit",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 44,
-            "end": 44
-          }
-        },
         "origin": {
           "source": "main.ssrg",
-          "start": 23,
-          "end": 45
+          "start": 28,
+          "end": 43
         }
       }
     }

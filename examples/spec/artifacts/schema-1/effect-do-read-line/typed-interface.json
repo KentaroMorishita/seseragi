@@ -50,8 +50,14 @@
               },
               {
                 "kind": "named",
-                "name": "Unit",
-                "arguments": []
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
               }
             ]
           }

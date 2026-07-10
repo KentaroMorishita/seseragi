@@ -23,64 +23,43 @@
         }
       ],
       "body": {
-        "kind": "sequence",
-        "statements": [
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-operation",
-              "operation": "stdin.readLine",
-              "requirements": {
-                "kind": "record",
-                "closed": true,
-                "fields": [
-                  {
-                    "name": "stdin",
-                    "type": {
-                      "kind": "named",
-                      "name": "Stdin",
-                      "arguments": []
-                    }
-                  }
-                ]
-              },
-              "failure": {
+        "kind": "effect-operation",
+        "operation": "stdin.readLine",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "stdin",
+              "type": {
                 "kind": "named",
-                "name": "StdinError",
+                "name": "Stdin",
                 "arguments": []
-              },
-              "success": {
-                "kind": "named",
-                "name": "Maybe",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "String",
-                    "arguments": []
-                  }
-                ]
-              },
-              "arguments": [],
-              "origin": {
-                "source": "main.ssrg",
-                "start": 28,
-                "end": 36
               }
             }
-          }
-        ],
-        "result": {
-          "kind": "unit",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 40,
-            "end": 40
-          }
+          ]
         },
+        "failure": {
+          "kind": "named",
+          "name": "StdinError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "arguments": [],
         "origin": {
           "source": "main.ssrg",
-          "start": 23,
-          "end": 41
+          "start": 28,
+          "end": 36
         }
       }
     }

@@ -26,22 +26,11 @@
         }
       ],
       "body": {
-        "kind": "sequence",
-        "statements": [
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "await",
-              "value": {
-                "kind": "call",
-                "callee": "_ssrg_stdin_readLine",
-                "arguments": []
-              }
-            }
-          }
-        ],
-        "result": {
-          "kind": "undefined"
+        "kind": "await",
+        "value": {
+          "kind": "call",
+          "callee": "_ssrg_stdin_readLine",
+          "arguments": []
         }
       },
       "origin": {

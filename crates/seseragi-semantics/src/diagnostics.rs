@@ -201,10 +201,25 @@ mod tests {
     }
 
     #[test]
-    fn accepts_compact_do_bind_to_known_effect_operation() {
+    fn reports_do_bind_without_final_monadic_expression() {
         let diagnostics = semantic_diagnostics(
             "artifact/effect-compact-do-bind/main.ssrg",
             "pub effect fn main =\n  do { line <- readLine () }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.do-missing-final-expression"
+        );
+    }
+
+    #[test]
+    fn accepts_do_bind_followed_by_final_monadic_expression() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-compact-do-bind-result/main.ssrg",
+            "pub effect fn main =\n  do {\n    line <- readLine ()\n    succeed ()\n  }\n",
         );
 
         assert!(diagnostics.diagnostics.is_empty());

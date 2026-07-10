@@ -291,16 +291,30 @@ fn typed_do_block(tokens: &[Token], span: ByteSpan, do_token: &Token) -> Option<
         .iter()
         .skip_while(|token| token.start <= do_token.start)
         .find(|token| token.end <= span.end && token.raw == "}")?;
-    let statements = typed_do_statements(tokens, span, left_brace, right_brace);
-    Some(TypedExpr::DoBlock {
-        statements,
-        result: Box::new(TypedExpr::Unit {
+    let mut statements = typed_do_statements(tokens, span, left_brace, right_brace);
+    let result = match statements.pop() {
+        Some(TypedDoStatement::Effect { value }) => value,
+        Some(statement @ TypedDoStatement::Bind { .. }) => {
+            statements.push(statement);
+            TypedExpr::Unit {
+                type_ref: unit_type(),
+                origin: ByteSpan {
+                    start: right_brace.start,
+                    end: right_brace.start,
+                },
+            }
+        }
+        None => TypedExpr::Unit {
             type_ref: unit_type(),
             origin: ByteSpan {
                 start: right_brace.start,
                 end: right_brace.start,
             },
-        }),
+        },
+    };
+    Some(TypedExpr::DoBlock {
+        statements,
+        result: Box::new(result),
         origin: ByteSpan {
             start: do_token.start,
             end: right_brace.end,

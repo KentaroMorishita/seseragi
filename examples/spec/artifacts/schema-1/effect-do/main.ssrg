@@ -1,4 +1,2 @@
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  do {}
+pub effect fn main -> Unit =
+  do { succeed () }

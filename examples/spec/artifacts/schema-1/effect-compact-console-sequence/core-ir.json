@@ -118,61 +118,50 @@
                 "end": 66
               }
             }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-operation",
-              "operation": "console.println",
-              "requirements": {
-                "kind": "record",
-                "closed": true,
-                "fields": [
-                  {
-                    "name": "console",
-                    "type": {
-                      "kind": "named",
-                      "name": "Console",
-                      "arguments": []
-                    }
-                  }
-                ]
-              },
-              "failure": {
-                "kind": "named",
-                "name": "ConsoleError",
-                "arguments": []
-              },
-              "success": {
-                "kind": "named",
-                "name": "Unit",
-                "arguments": []
-              },
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "ready",
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 75,
-                    "end": 82
-                  }
-                }
-              ],
-              "origin": {
-                "source": "main.ssrg",
-                "start": 67,
-                "end": 82
-              }
-            }
           }
         ],
         "result": {
-          "kind": "unit",
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "ready",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 75,
+                "end": 82
+              }
+            }
+          ],
           "origin": {
             "source": "main.ssrg",
-            "start": 83,
-            "end": 83
+            "start": 67,
+            "end": 82
           }
         },
         "origin": {

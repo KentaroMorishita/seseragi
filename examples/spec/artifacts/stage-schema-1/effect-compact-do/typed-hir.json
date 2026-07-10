@@ -51,44 +51,28 @@
       },
       "body": {
         "kind": "do-block",
-        "statements": [
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "effect-call",
-              "operation": "std/prelude::println",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "hello",
-                  "type": {
-                    "kind": "named",
-                    "name": "String",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 36,
-                    "end": 43
-                  }
-                }
-              ],
+        "statements": [],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "hello",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
               "origin": {
-                "start": 28,
+                "start": 36,
                 "end": 43
               }
             }
-          }
-        ],
-        "result": {
-          "kind": "unit",
-          "type": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          },
+          ],
           "origin": {
-            "start": 44,
-            "end": 44
+            "start": 28,
+            "end": 43
           }
         },
         "origin": {
