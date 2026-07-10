@@ -18,9 +18,89 @@
           "end": 26
         }
       },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 46,
+          "end": 58
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 68,
+                  "end": 75
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"one\"",
+                "span": {
+                  "start": 76,
+                  "end": 81
+                }
+              },
+              "span": {
+                "start": 68,
+                "end": 81
+              }
+            },
+            "span": {
+              "start": 68,
+              "end": 81
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 83,
+              "end": 90
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"two\"",
+            "span": {
+              "start": 91,
+              "end": 96
+            }
+          },
+          "span": {
+            "start": 83,
+            "end": 96
+          }
+        },
+        "span": {
+          "start": 63,
+          "end": 98
+        }
+      },
       "span": {
         "start": 0,
-        "end": 97
+        "end": 98
       }
     }
   ]

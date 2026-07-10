@@ -6,21 +6,35 @@
       "kind": "fn",
       "visibility": "public",
       "name": "member",
-      "nameSpan": { "start": 7, "end": 13 },
-      "typeParameters": ["A"],
+      "nameSpan": {
+        "start": 7,
+        "end": 13
+      },
+      "typeParameters": [
+        "A"
+      ],
       "parameters": [
         {
           "name": "target",
-          "nameSpan": { "start": 17, "end": 23 },
+          "nameSpan": {
+            "start": 17,
+            "end": 23
+          },
           "type": {
             "kind": "named",
             "name": "A",
-            "span": { "start": 25, "end": 26 }
+            "span": {
+              "start": 25,
+              "end": 26
+            }
           }
         },
         {
           "name": "values",
-          "nameSpan": { "start": 30, "end": 36 },
+          "nameSpan": {
+            "start": 30,
+            "end": 36
+          },
           "type": {
             "kind": "named",
             "name": "List",
@@ -28,20 +42,72 @@
               {
                 "kind": "named",
                 "name": "A",
-                "span": { "start": 43, "end": 44 }
+                "span": {
+                  "start": 43,
+                  "end": 44
+                }
               }
             ],
-            "span": { "start": 38, "end": 45 }
+            "span": {
+              "start": 38,
+              "end": 45
+            }
           }
         }
       ],
       "returnType": {
         "kind": "named",
         "name": "Bool",
-        "span": { "start": 49, "end": 53 }
+        "span": {
+          "start": 49,
+          "end": 53
+        }
       },
-      "constraints": ["Eq"],
-      "span": { "start": 0, "end": 92 }
+      "constraints": [
+        "Eq"
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "contains",
+            "span": {
+              "start": 70,
+              "end": 78
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "target",
+            "span": {
+              "start": 79,
+              "end": 85
+            }
+          },
+          "span": {
+            "start": 70,
+            "end": 85
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 86,
+            "end": 92
+          }
+        },
+        "span": {
+          "start": 70,
+          "end": 92
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 92
+      }
     }
   ]
 }

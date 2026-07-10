@@ -12,9 +12,101 @@
       },
       "inferredContract": true,
       "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "print",
+                "span": {
+                  "start": 32,
+                  "end": 37
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"loading... \"",
+                "span": {
+                  "start": 38,
+                  "end": 51
+                }
+              },
+              "span": {
+                "start": 32,
+                "end": 51
+              }
+            },
+            "span": {
+              "start": 32,
+              "end": 51
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 53,
+                  "end": 60
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"done\"",
+                "span": {
+                  "start": 61,
+                  "end": 67
+                }
+              },
+              "span": {
+                "start": 53,
+                "end": 67
+              }
+            },
+            "span": {
+              "start": 53,
+              "end": 67
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 69,
+              "end": 76
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"ready\"",
+            "span": {
+              "start": 77,
+              "end": 84
+            }
+          },
+          "span": {
+            "start": 69,
+            "end": 84
+          }
+        },
+        "span": {
+          "start": 27,
+          "end": 86
+        }
+      },
       "span": {
         "start": 0,
-        "end": 84
+        "end": 86
       }
     }
   ]

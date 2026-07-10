@@ -41,13 +41,13 @@
                 "endToken": 43,
                 "children": [
                   {
-                    "kind": "do-bind-statement",
+                    "kind": "do-bind-item",
                     "startToken": 28,
                     "endToken": 35,
                     "children": []
                   },
                   {
-                    "kind": "do-effect-statement",
+                    "kind": "do-expression-item",
                     "startToken": 37,
                     "endToken": 40,
                     "children": []

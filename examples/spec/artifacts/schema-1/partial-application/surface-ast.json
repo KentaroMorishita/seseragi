@@ -50,6 +50,34 @@
           "end": 41
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 49,
+          "end": 50
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "span": {
+          "start": 44,
+          "end": 56
+        }
+      },
       "span": {
         "start": 0,
         "end": 56
@@ -101,6 +129,29 @@
         "span": {
           "start": 85,
           "end": 95
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "add",
+          "span": {
+            "start": 99,
+            "end": 102
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 103,
+            "end": 108
+          }
+        },
+        "span": {
+          "start": 99,
+          "end": 108
         }
       },
       "span": {

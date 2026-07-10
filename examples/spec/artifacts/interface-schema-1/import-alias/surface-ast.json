@@ -5,9 +5,16 @@
     {
       "specifier": "json",
       "items": [
-        { "namespace": "value", "name": "parse", "alias": "parseJson" }
+        {
+          "namespace": "value",
+          "name": "parse",
+          "alias": "parseJson"
+        }
       ],
-      "span": { "start": 0, "end": 41 }
+      "span": {
+        "start": 0,
+        "end": 41
+      }
     }
   ],
   "declarations": [
@@ -15,13 +22,30 @@
       "kind": "let",
       "visibility": "public",
       "name": "answer",
-      "nameSpan": { "start": 51, "end": 57 },
+      "nameSpan": {
+        "start": 51,
+        "end": 57
+      },
       "typeRef": {
         "kind": "named",
         "name": "Int",
-        "span": { "start": 59, "end": 62 }
+        "span": {
+          "start": 59,
+          "end": 62
+        }
       },
-      "span": { "start": 43, "end": 67 }
+      "body": {
+        "kind": "integer",
+        "raw": "42",
+        "span": {
+          "start": 65,
+          "end": 67
+        }
+      },
+      "span": {
+        "start": 43,
+        "end": 67
+      }
     }
   ]
 }

@@ -9,7 +9,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 84
+        "end": 86
       },
       "parameters": [
         {
@@ -107,15 +107,15 @@
                   "value": "done",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 60,
-                    "end": 66
+                    "start": 61,
+                    "end": 67
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 52,
-                "end": 66
+                "start": 53,
+                "end": 67
               }
             }
           }
@@ -153,21 +153,21 @@
               "value": "ready",
               "origin": {
                 "source": "main.ssrg",
-                "start": 75,
-                "end": 82
+                "start": 77,
+                "end": 84
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 67,
-            "end": 82
+            "start": 69,
+            "end": 84
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 27,
-          "end": 84
+          "end": 86
         }
       }
     }

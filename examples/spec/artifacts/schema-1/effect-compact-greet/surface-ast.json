@@ -6,17 +6,56 @@
       "kind": "effectFn",
       "visibility": "private",
       "name": "greet",
-      "nameSpan": { "start": 10, "end": 15 },
+      "nameSpan": {
+        "start": 10,
+        "end": 15
+      },
       "parameters": [
         {
           "name": "name",
-          "nameSpan": { "start": 16, "end": 20 },
-          "type": { "kind": "named", "name": "String", "span": { "start": 22, "end": 28 } }
+          "nameSpan": {
+            "start": 16,
+            "end": 20
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 22,
+              "end": 28
+            }
+          }
         }
       ],
       "inferredContract": true,
       "returnType": null,
-      "span": { "start": 0, "end": 48 }
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 33,
+            "end": 40
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"hello\"",
+          "span": {
+            "start": 41,
+            "end": 48
+          }
+        },
+        "span": {
+          "start": 33,
+          "end": 48
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 48
+      }
     }
   ]
 }

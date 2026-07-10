@@ -33,6 +33,7 @@ impl Lexer<'_> {
                 '[' => self.bump_fixed(TokenKind::PunctuationSquareLeft, start, char),
                 ']' => self.bump_fixed(TokenKind::PunctuationSquareRight, start, char),
                 ',' => self.bump_fixed(TokenKind::PunctuationComma, start, char),
+                ';' => self.bump_fixed(TokenKind::PunctuationSemicolon, start, char),
                 '.' if self.starts_with("..=") => {
                     self.bump_fixed_raw(TokenKind::OperatorRangeInclusive, start, "..=")
                 }
@@ -261,6 +262,22 @@ mod tests {
             ]
         );
         assert_eq!(stream.reconstructed_text(), "pub let answer: Int = 42\n");
+    }
+
+    #[test]
+    fn lexes_semicolon_as_a_statement_terminator() {
+        let stream = lex("main.ssrg", "let first = 1; let second = 2\n");
+
+        let semicolon = stream
+            .tokens
+            .iter()
+            .find(|token| token.kind == TokenKind::PunctuationSemicolon)
+            .expect("semicolon token");
+        assert_eq!(semicolon.raw, ";");
+        assert_eq!(
+            stream.reconstructed_text(),
+            "let first = 1; let second = 2\n"
+        );
     }
 
     #[test]

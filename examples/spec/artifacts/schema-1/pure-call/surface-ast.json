@@ -50,6 +50,34 @@
           "end": 41
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 49,
+          "end": 50
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "span": {
+          "start": 44,
+          "end": 56
+        }
+      },
       "span": {
         "start": 0,
         "end": 56
@@ -88,6 +116,44 @@
           "end": 88
         }
       },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "add",
+            "span": {
+              "start": 91,
+              "end": 94
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 95,
+              "end": 100
+            }
+          },
+          "span": {
+            "start": 91,
+            "end": 100
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 101,
+            "end": 102
+          }
+        },
+        "span": {
+          "start": 91,
+          "end": 102
+        }
+      },
       "span": {
         "start": 57,
         "end": 102
@@ -124,6 +190,29 @@
         "span": {
           "start": 130,
           "end": 133
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "addOne",
+          "span": {
+            "start": 136,
+            "end": 142
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "41",
+          "span": {
+            "start": 143,
+            "end": 145
+          }
+        },
+        "span": {
+          "start": 136,
+          "end": 145
         }
       },
       "span": {

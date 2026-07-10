@@ -25,6 +25,7 @@ fn parses_nested_type_arguments_in_surface_ast() {
                 }],
                 span: ByteSpan { start: 16, end: 33 },
             }),
+            body: None,
             span: ByteSpan { start: 0, end: 38 },
         }
     );
@@ -58,6 +59,10 @@ fn parses_qualified_type_names_in_surface_ast() {
                     },
                 ],
                 span: ByteSpan { start: 16, end: 37 },
+            }),
+            body: Some(SurfaceExpr::Name {
+                name: "value".to_owned(),
+                span: ByteSpan { start: 40, end: 45 },
             }),
             span: ByteSpan { start: 0, end: 45 },
         }
@@ -103,6 +108,10 @@ fn parses_record_type_references_in_surface_ast() {
                 ],
                 span: ByteSpan { start: 13, end: 48 },
             }),
+            body: Some(SurfaceExpr::Name {
+                name: "config".to_owned(),
+                span: ByteSpan { start: 51, end: 57 },
+            }),
             span: ByteSpan { start: 0, end: 57 },
         }
     );
@@ -133,6 +142,10 @@ fn parses_tuple_type_references_in_surface_ast() {
                 ],
                 span: ByteSpan { start: 14, end: 27 },
             }),
+            body: Some(SurfaceExpr::Name {
+                name: "value".to_owned(),
+                span: ByteSpan { start: 30, end: 35 },
+            }),
             span: ByteSpan { start: 0, end: 35 },
         }
     );
@@ -160,6 +173,10 @@ fn parses_function_type_references_in_surface_ast() {
                     span: ByteSpan { start: 27, end: 30 },
                 }),
                 span: ByteSpan { start: 17, end: 30 },
+            }),
+            body: Some(SurfaceExpr::Name {
+                name: "value".to_owned(),
+                span: ByteSpan { start: 34, end: 39 },
             }),
             span: ByteSpan { start: 0, end: 39 },
         }

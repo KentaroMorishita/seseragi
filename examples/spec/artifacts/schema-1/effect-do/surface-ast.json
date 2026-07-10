@@ -18,6 +18,36 @@
           "end": 26
         }
       },
+      "body": {
+        "kind": "do",
+        "items": [],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "succeed",
+            "span": {
+              "start": 36,
+              "end": 43
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 44,
+              "end": 46
+            }
+          },
+          "span": {
+            "start": 36,
+            "end": 46
+          }
+        },
+        "span": {
+          "start": 31,
+          "end": 48
+        }
+      },
       "span": {
         "start": 0,
         "end": 48

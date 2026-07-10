@@ -50,6 +50,34 @@
           "end": 41
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 49,
+          "end": 50
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "span": {
+          "start": 44,
+          "end": 56
+        }
+      },
       "span": {
         "start": 0,
         "end": 56
@@ -101,6 +129,34 @@
         "span": {
           "start": 100,
           "end": 103
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 111,
+          "end": 112
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 106,
+            "end": 110
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 113,
+            "end": 118
+          }
+        },
+        "span": {
+          "start": 106,
+          "end": 118
         }
       },
       "span": {
@@ -156,6 +212,34 @@
           "end": 165
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "*",
+        "operatorSpan": {
+          "start": 173,
+          "end": 174
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 168,
+            "end": 172
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 175,
+            "end": 180
+          }
+        },
+        "span": {
+          "start": 168,
+          "end": 180
+        }
+      },
       "span": {
         "start": 119,
         "end": 180
@@ -207,6 +291,34 @@
         "span": {
           "start": 222,
           "end": 225
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "/",
+        "operatorSpan": {
+          "start": 233,
+          "end": 234
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 228,
+            "end": 232
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 235,
+            "end": 240
+          }
+        },
+        "span": {
+          "start": 228,
+          "end": 240
         }
       },
       "span": {
@@ -262,6 +374,34 @@
           "end": 288
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "%",
+        "operatorSpan": {
+          "start": 296,
+          "end": 297
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 291,
+            "end": 295
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 298,
+            "end": 303
+          }
+        },
+        "span": {
+          "start": 291,
+          "end": 303
+        }
+      },
       "span": {
         "start": 241,
         "end": 303
@@ -313,6 +453,34 @@
         "span": {
           "start": 347,
           "end": 350
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "**",
+        "operatorSpan": {
+          "start": 358,
+          "end": 360
+        },
+        "left": {
+          "kind": "name",
+          "name": "base",
+          "span": {
+            "start": 353,
+            "end": 357
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "exponent",
+          "span": {
+            "start": 361,
+            "end": 369
+          }
+        },
+        "span": {
+          "start": 353,
+          "end": 369
         }
       },
       "span": {

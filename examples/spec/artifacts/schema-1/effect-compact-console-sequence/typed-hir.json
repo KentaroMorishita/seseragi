@@ -10,7 +10,7 @@
       "visibility": "public",
       "origin": {
         "start": 0,
-        "end": 84
+        "end": 86
       },
       "inferredContract": true,
       "parameters": [
@@ -93,14 +93,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 60,
-                    "end": 66
+                    "start": 61,
+                    "end": 67
                   }
                 }
               ],
               "origin": {
-                "start": 52,
-                "end": 66
+                "start": 53,
+                "end": 67
               }
             }
           }
@@ -118,19 +118,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 75,
-                "end": 82
+                "start": 77,
+                "end": 84
               }
             }
           ],
           "origin": {
-            "start": 67,
-            "end": 82
+            "start": 69,
+            "end": 84
           }
         },
         "origin": {
           "start": 27,
-          "end": 84
+          "end": 86
         }
       }
     }

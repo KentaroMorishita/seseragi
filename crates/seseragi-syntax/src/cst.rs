@@ -112,6 +112,9 @@ impl CstParser<'_> {
         let Some(previous) = self.previous_significant_token(index) else {
             return true;
         };
+        if self.kind_at(previous) == Some(TokenKind::PunctuationSemicolon) {
+            return true;
+        }
         (previous + 1..index).any(|candidate| {
             self.kind_at(candidate)
                 .is_some_and(|kind| kind == TokenKind::TriviaNewline)
@@ -249,7 +252,7 @@ impl CstParser<'_> {
 
         for index in start..end {
             match self.kind_at(index) {
-                Some(TokenKind::TriviaNewline) => {
+                Some(TokenKind::TriviaNewline | TokenKind::PunctuationSemicolon) => {
                     push_do_statement(
                         &mut statements,
                         statement_start.take(),
@@ -327,9 +330,9 @@ fn push_do_statement(
         return;
     };
     let kind = if has_bind {
-        "do-bind-statement"
+        "do-bind-item"
     } else {
-        "do-effect-statement"
+        "do-expression-item"
     };
     statements.push(CstNode::new(kind, start, end, vec![]));
 }
@@ -451,14 +454,31 @@ mod tests {
         assert_eq!(effect_decl.children[2].start_token, 23);
         assert_eq!(effect_decl.children[2].end_token, 48);
         assert_eq!(effect_decl.children[2].children.len(), 2);
-        assert_eq!(
-            effect_decl.children[2].children[0].kind,
-            "do-bind-statement"
-        );
+        assert_eq!(effect_decl.children[2].children[0].kind, "do-bind-item");
         assert_eq!(
             effect_decl.children[2].children[1].kind,
-            "do-effect-statement"
+            "do-expression-item"
         );
+    }
+
+    #[test]
+    fn separates_do_items_with_semicolons_without_assigning_effect_semantics() {
+        let cst = parse_cst(
+            "main.ssrg",
+            "effect fn main = do { print \"loading\"; println \"done\" }\n",
+        );
+
+        let effect_decl = &cst.root.children[0].children[0];
+        let do_block = effect_decl
+            .children
+            .iter()
+            .find(|child| child.kind == "do-block")
+            .expect("effect declaration contains a do block");
+        assert_eq!(do_block.children.len(), 2);
+        assert!(do_block
+            .children
+            .iter()
+            .all(|child| child.kind == "do-expression-item"));
     }
 
     #[test]

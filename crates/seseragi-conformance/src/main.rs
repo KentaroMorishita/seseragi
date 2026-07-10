@@ -9,6 +9,7 @@ mod runner;
 mod runtime_abi;
 mod runtime_package;
 mod suite;
+mod surface_ast;
 mod typescript_ir;
 
 use std::path::PathBuf;

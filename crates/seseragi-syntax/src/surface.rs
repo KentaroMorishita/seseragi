@@ -1,11 +1,13 @@
 use crate::lexer::lex;
 pub use crate::surface_model::{
-    ByteSpan, SurfaceDecl, SurfaceImport, SurfaceImportItem, SurfaceModule, SurfaceParameter,
-    TypeRef, Visibility,
+    ByteSpan, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImport, SurfaceImportItem,
+    SurfaceModule, SurfaceParameter, SurfacePattern, SurfaceRequirement, TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 
 mod constraints;
+mod effects;
+mod expression;
 mod functions;
 #[cfg(test)]
 mod import_tests;
@@ -96,6 +98,9 @@ impl SurfaceParser<'_> {
         let Some(previous) = self.previous_significant_token(index) else {
             return true;
         };
+        if self.kind_at(previous) == Some(TokenKind::PunctuationSemicolon) {
+            return true;
+        }
         (previous + 1..index).any(|candidate| {
             self.kind_at(candidate)
                 .is_some_and(|kind| kind == TokenKind::TriviaNewline)
@@ -174,82 +179,19 @@ impl SurfaceParser<'_> {
         let name_index = self.next_significant_token(decl_start + 1, end)?;
         let name = self.identifier_name_at(name_index)?;
         let type_ref = self.parse_type_after_colon(name_index + 1, end);
+        let equals = self.find_significant_token(name_index + 1, end, |kind| {
+            kind == TokenKind::OperatorEquals
+        });
+        let body = equals.and_then(|equals| self.parse_expression(equals + 1, end));
 
         Some(SurfaceDecl::Let {
             visibility,
             name,
             name_span: self.byte_span(name_index)?,
             type_ref,
+            body,
             span: self.declaration_span(top_start, end)?,
         })
-    }
-
-    fn parse_effect_fn_decl(
-        &self,
-        visibility: Visibility,
-        top_start: usize,
-        decl_start: usize,
-        end: usize,
-    ) -> Option<SurfaceDecl> {
-        let fn_index =
-            self.find_significant_token(decl_start + 1, end, |kind| kind == TokenKind::KeywordFn)?;
-        let name_index = self.next_significant_token(fn_index + 1, end)?;
-        let name = self.identifier_name_at(name_index)?;
-        let (type_parameters, after_type_parameters) =
-            self.parse_optional_type_parameters(name_index + 1, end);
-        let equals = self
-            .find_significant_token(after_type_parameters, end, |kind| {
-                kind == TokenKind::OperatorEquals
-            })
-            .unwrap_or(end);
-        let arrow = (after_type_parameters..equals)
-            .rev()
-            .find(|index| self.kind_at(*index) == Some(TokenKind::OperatorArrow));
-        let parameter_end = arrow.unwrap_or(equals);
-        let parameters = self.parse_effect_parameters(after_type_parameters, parameter_end);
-        let return_type = arrow.and_then(|arrow| self.parse_type_name(arrow + 1, equals));
-
-        Some(SurfaceDecl::EffectFn {
-            visibility,
-            name,
-            name_span: self.byte_span(name_index)?,
-            type_parameters,
-            parameters,
-            inferred_contract: return_type.is_none(),
-            return_type,
-            span: self.declaration_span(top_start, end)?,
-        })
-    }
-
-    fn parse_effect_parameters(&self, start: usize, end: usize) -> Vec<SurfaceParameter> {
-        let mut parameters = Vec::new();
-        let mut cursor = start;
-        while let Some(name_index) = self.next_significant_token(cursor, end) {
-            if self.kind_at(name_index) != Some(TokenKind::IdentifierLower) {
-                cursor = name_index + 1;
-                continue;
-            }
-            let Some(colon) = self.next_significant_token(name_index + 1, end) else {
-                break;
-            };
-            if self.kind_at(colon) != Some(TokenKind::PunctuationColon) {
-                cursor = colon + 1;
-                continue;
-            }
-            let Some(type_ref) = self.parse_type_name(colon + 1, end) else {
-                break;
-            };
-            parameters.push(SurfaceParameter {
-                name: self.tokens[name_index].raw.clone(),
-                name_span: self.byte_span(name_index).unwrap_or(ByteSpan {
-                    start: self.tokens[name_index].start,
-                    end: self.tokens[name_index].end,
-                }),
-                type_ref,
-            });
-            cursor = colon + 1;
-        }
-        parameters
     }
 
     fn parse_optional_type_parameters(&self, start: usize, end: usize) -> (Vec<String>, usize) {

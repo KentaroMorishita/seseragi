@@ -186,5 +186,6 @@ pub(crate) fn check_surface_ast(case: &Path) -> Result<(), String> {
     if actual_value != expected_value {
         return Err("SurfaceAst artifact mismatch".to_owned());
     }
+    crate::surface_ast::validate_surface_ast(&actual_value)?;
     Ok(())
 }

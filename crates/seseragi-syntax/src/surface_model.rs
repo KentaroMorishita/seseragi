@@ -39,6 +39,8 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         type_ref: Option<TypeRef>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body: Option<SurfaceExpr>,
         span: ByteSpan,
     },
     EffectFn {
@@ -52,6 +54,14 @@ pub enum SurfaceDecl {
         #[serde(default, skip_serializing_if = "is_false")]
         inferred_contract: bool,
         return_type: Option<TypeRef>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        requirements: Vec<SurfaceRequirement>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        failure: Option<TypeRef>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body: Option<SurfaceExpr>,
         span: ByteSpan,
     },
     Fn {
@@ -64,6 +74,8 @@ pub enum SurfaceDecl {
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body: Option<SurfaceExpr>,
         span: ByteSpan,
     },
     Newtype {
@@ -155,6 +167,154 @@ pub struct SurfaceParameter {
     pub name_span: ByteSpan,
     #[serde(rename = "type")]
     pub type_ref: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceRequirement {
+    Shorthand {
+        name: String,
+        span: ByteSpan,
+    },
+    Field {
+        name: String,
+        name_span: ByteSpan,
+        #[serde(rename = "type")]
+        type_ref: TypeRef,
+        span: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceExpr {
+    Unit {
+        span: ByteSpan,
+    },
+    Integer {
+        raw: String,
+        span: ByteSpan,
+    },
+    String {
+        raw: String,
+        span: ByteSpan,
+    },
+    Boolean {
+        value: bool,
+        span: ByteSpan,
+    },
+    Name {
+        name: String,
+        span: ByteSpan,
+    },
+    Application {
+        function: Box<SurfaceExpr>,
+        argument: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
+    Binary {
+        operator: String,
+        operator_span: ByteSpan,
+        left: Box<SurfaceExpr>,
+        right: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
+    If {
+        condition: Box<SurfaceExpr>,
+        then_branch: Box<SurfaceExpr>,
+        else_branch: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
+    Do {
+        items: Vec<SurfaceDoItem>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        result: Option<Box<SurfaceExpr>>,
+        span: ByteSpan,
+    },
+    Grouped {
+        value: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
+    Error {
+        span: ByteSpan,
+    },
+}
+
+impl SurfaceExpr {
+    pub fn span(&self) -> ByteSpan {
+        match self {
+            Self::Unit { span }
+            | Self::Integer { span, .. }
+            | Self::String { span, .. }
+            | Self::Boolean { span, .. }
+            | Self::Name { span, .. }
+            | Self::Application { span, .. }
+            | Self::Binary { span, .. }
+            | Self::If { span, .. }
+            | Self::Do { span, .. }
+            | Self::Grouped { span, .. }
+            | Self::Error { span } => *span,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfacePattern {
+    Name {
+        name: String,
+        name_span: ByteSpan,
+        span: ByteSpan,
+    },
+    Wildcard {
+        span: ByteSpan,
+    },
+    Error {
+        span: ByteSpan,
+    },
+}
+
+impl SurfacePattern {
+    pub fn span(&self) -> ByteSpan {
+        match self {
+            Self::Name { span, .. } | Self::Wildcard { span } | Self::Error { span } => *span,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceDoItem {
+    Bind {
+        pattern: SurfacePattern,
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
+    Let {
+        pattern: SurfacePattern,
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
+    Expression {
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

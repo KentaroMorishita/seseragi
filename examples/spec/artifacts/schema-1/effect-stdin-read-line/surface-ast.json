@@ -12,6 +12,119 @@
       },
       "inferredContract": true,
       "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "first",
+              "nameSpan": {
+                "start": 32,
+                "end": 37
+              },
+              "span": {
+                "start": 32,
+                "end": 37
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "readLine",
+                "span": {
+                  "start": 41,
+                  "end": 49
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 50,
+                  "end": 52
+                }
+              },
+              "span": {
+                "start": 41,
+                "end": 52
+              }
+            },
+            "span": {
+              "start": 32,
+              "end": 52
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "second",
+              "nameSpan": {
+                "start": 57,
+                "end": 63
+              },
+              "span": {
+                "start": 57,
+                "end": 63
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "readLine",
+                "span": {
+                  "start": 67,
+                  "end": 75
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 76,
+                  "end": 78
+                }
+              },
+              "span": {
+                "start": 67,
+                "end": 78
+              }
+            },
+            "span": {
+              "start": 57,
+              "end": 78
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "succeed",
+            "span": {
+              "start": 83,
+              "end": 90
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 91,
+              "end": 93
+            }
+          },
+          "span": {
+            "start": 83,
+            "end": 93
+          }
+        },
+        "span": {
+          "start": 23,
+          "end": 97
+        }
+      },
       "span": {
         "start": 0,
         "end": 97

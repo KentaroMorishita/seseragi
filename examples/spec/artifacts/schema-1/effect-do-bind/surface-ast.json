@@ -18,6 +18,98 @@
           "end": 26
         }
       },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 46,
+          "end": 58
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "ignored",
+              "nameSpan": {
+                "start": 72,
+                "end": 79
+              },
+              "span": {
+                "start": 72,
+                "end": 79
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "print",
+                "span": {
+                  "start": 83,
+                  "end": 88
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"loading... \"",
+                "span": {
+                  "start": 89,
+                  "end": 102
+                }
+              },
+              "span": {
+                "start": 83,
+                "end": 102
+              }
+            },
+            "span": {
+              "start": 72,
+              "end": 102
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 107,
+              "end": 114
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"done\"",
+            "span": {
+              "start": 115,
+              "end": 121
+            }
+          },
+          "span": {
+            "start": 107,
+            "end": 121
+          }
+        },
+        "span": {
+          "start": 63,
+          "end": 125
+        }
+      },
       "span": {
         "start": 0,
         "end": 125

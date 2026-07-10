@@ -38,6 +38,10 @@ impl Suite {
             &artifacts.join("surface-schema-1"),
             "surface-ast.json",
         ));
+        surface_ast_cases.extend(discover_artifact_cases(
+            &artifacts.join("stage-schema-1"),
+            "surface-ast.json",
+        ));
         surface_ast_cases.sort();
 
         let mut interface_cases = discover_interface_cases(&artifacts.join("schema-1"));

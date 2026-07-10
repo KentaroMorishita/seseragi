@@ -12,6 +12,29 @@
       },
       "inferredContract": true,
       "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "print",
+          "span": {
+            "start": 27,
+            "end": 32
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"loading\"",
+          "span": {
+            "start": 33,
+            "end": 42
+          }
+        },
+        "span": {
+          "start": 27,
+          "end": 42
+        }
+      },
       "span": {
         "start": 0,
         "end": 42

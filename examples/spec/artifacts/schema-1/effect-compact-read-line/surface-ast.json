@@ -12,6 +12,28 @@
       },
       "inferredContract": true,
       "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "readLine",
+          "span": {
+            "start": 25,
+            "end": 33
+          }
+        },
+        "argument": {
+          "kind": "unit",
+          "span": {
+            "start": 34,
+            "end": 36
+          }
+        },
+        "span": {
+          "start": 25,
+          "end": 36
+        }
+      },
       "span": {
         "start": 0,
         "end": 36

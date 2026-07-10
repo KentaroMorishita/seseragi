@@ -6,21 +6,52 @@
       "kind": "let",
       "visibility": "private",
       "name": "first",
-      "nameSpan": { "start": 4, "end": 9 },
+      "nameSpan": {
+        "start": 4,
+        "end": 9
+      },
       "typeRef": null,
-      "span": { "start": 0, "end": 13 }
+      "body": {
+        "kind": "integer",
+        "raw": "1",
+        "span": {
+          "start": 12,
+          "end": 13
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 13
+      }
     },
     {
       "kind": "let",
       "visibility": "public",
       "name": "second",
-      "nameSpan": { "start": 22, "end": 28 },
+      "nameSpan": {
+        "start": 22,
+        "end": 28
+      },
       "typeRef": {
         "kind": "named",
         "name": "Int",
-        "span": { "start": 30, "end": 33 }
+        "span": {
+          "start": 30,
+          "end": 33
+        }
       },
-      "span": { "start": 14, "end": 37 }
+      "body": {
+        "kind": "integer",
+        "raw": "2",
+        "span": {
+          "start": 36,
+          "end": 37
+        }
+      },
+      "span": {
+        "start": 14,
+        "end": 37
+      }
     }
   ]
 }

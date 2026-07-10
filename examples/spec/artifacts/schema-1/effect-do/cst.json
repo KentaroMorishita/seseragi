@@ -35,7 +35,7 @@
                 "endToken": 25,
                 "children": [
                   {
-                    "kind": "do-effect-statement",
+                    "kind": "do-expression-item",
                     "startToken": 19,
                     "endToken": 23,
                     "children": []

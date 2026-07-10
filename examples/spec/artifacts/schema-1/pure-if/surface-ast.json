@@ -35,6 +35,57 @@
           "end": 36
         }
       },
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "==",
+          "operatorSpan": {
+            "start": 48,
+            "end": 50
+          },
+          "left": {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 42,
+              "end": 47
+            }
+          },
+          "right": {
+            "kind": "integer",
+            "raw": "0",
+            "span": {
+              "start": 51,
+              "end": 52
+            }
+          },
+          "span": {
+            "start": 42,
+            "end": 52
+          }
+        },
+        "thenBranch": {
+          "kind": "string",
+          "raw": "\"zero\"",
+          "span": {
+            "start": 58,
+            "end": 64
+          }
+        },
+        "elseBranch": {
+          "kind": "string",
+          "raw": "\"other\"",
+          "span": {
+            "start": 70,
+            "end": 77
+          }
+        },
+        "span": {
+          "start": 39,
+          "end": 77
+        }
+      },
       "span": {
         "start": 0,
         "end": 77

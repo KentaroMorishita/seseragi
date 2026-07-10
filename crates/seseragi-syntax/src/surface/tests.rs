@@ -15,6 +15,7 @@ fn constructs_let_surface_module() {
                 arguments: Vec::new(),
                 span: ByteSpan { start: 16, end: 19 },
             }),
+            body: None,
             span: ByteSpan { start: 0, end: 24 },
         }],
     };
@@ -42,6 +43,10 @@ fn constructs_effect_function_surface_decl() {
             arguments: Vec::new(),
             span: ByteSpan { start: 18, end: 22 },
         }),
+        requirements: Vec::new(),
+        failure: None,
+        constraints: Vec::new(),
+        body: None,
         span: ByteSpan { start: 0, end: 72 },
     };
 
@@ -89,6 +94,19 @@ fn parses_pure_function_surface_decl() {
                 span: ByteSpan { start: 31, end: 34 },
             },
             constraints: Vec::new(),
+            body: Some(SurfaceExpr::Binary {
+                operator: "+".to_owned(),
+                operator_span: ByteSpan { start: 39, end: 40 },
+                left: Box::new(SurfaceExpr::Name {
+                    name: "x".to_owned(),
+                    span: ByteSpan { start: 37, end: 38 },
+                }),
+                right: Box::new(SurfaceExpr::Name {
+                    name: "y".to_owned(),
+                    span: ByteSpan { start: 41, end: 42 },
+                }),
+                span: ByteSpan { start: 37, end: 42 },
+            }),
             span: ByteSpan { start: 0, end: 42 },
         }
     );
@@ -133,6 +151,10 @@ fn parses_public_let_surface_ast() {
                 arguments: Vec::new(),
                 span: ByteSpan { start: 16, end: 19 },
             }),
+            body: Some(SurfaceExpr::Integer {
+                raw: "42".to_owned(),
+                span: ByteSpan { start: 22, end: 24 },
+            }),
             span: ByteSpan { start: 0, end: 24 },
         }]
     );
@@ -150,6 +172,10 @@ fn parses_multiple_lets_with_visibility_only() {
             name: "first".to_owned(),
             name_span: ByteSpan { start: 4, end: 9 },
             type_ref: None,
+            body: Some(SurfaceExpr::Integer {
+                raw: "1".to_owned(),
+                span: ByteSpan { start: 12, end: 13 },
+            }),
             span: ByteSpan { start: 0, end: 13 },
         }
     );
@@ -160,6 +186,10 @@ fn parses_multiple_lets_with_visibility_only() {
             name: "second".to_owned(),
             name_span: ByteSpan { start: 22, end: 28 },
             type_ref: None,
+            body: Some(SurfaceExpr::Integer {
+                raw: "2".to_owned(),
+                span: ByteSpan { start: 31, end: 32 },
+            }),
             span: ByteSpan { start: 14, end: 32 },
         }
     );
@@ -185,6 +215,50 @@ fn parses_effect_do_surface_decl() {
                 name: "Unit".to_owned(),
                 arguments: Vec::new(),
                 span: ByteSpan { start: 22, end: 26 },
+            }),
+            requirements: vec![SurfaceRequirement::Shorthand {
+                name: "Console".to_owned(),
+                span: ByteSpan { start: 32, end: 39 },
+            }],
+            failure: Some(TypeRef::Named {
+                name: "ConsoleError".to_owned(),
+                arguments: Vec::new(),
+                span: ByteSpan { start: 46, end: 58 },
+            }),
+            constraints: Vec::new(),
+            body: Some(SurfaceExpr::Do {
+                items: vec![SurfaceDoItem::Bind {
+                    pattern: SurfacePattern::Name {
+                        name: "value".to_owned(),
+                        name_span: ByteSpan { start: 72, end: 77 },
+                        span: ByteSpan { start: 72, end: 77 },
+                    },
+                    value: SurfaceExpr::Application {
+                        function: Box::new(SurfaceExpr::Name {
+                            name: "console.readLine".to_owned(),
+                            span: ByteSpan { start: 81, end: 97 },
+                        }),
+                        argument: Box::new(SurfaceExpr::Unit {
+                            span: ByteSpan {
+                                start: 98,
+                                end: 100,
+                            },
+                        }),
+                        span: ByteSpan {
+                            start: 81,
+                            end: 100,
+                        },
+                    },
+                    span: ByteSpan {
+                        start: 72,
+                        end: 100,
+                    },
+                }],
+                result: None,
+                span: ByteSpan {
+                    start: 63,
+                    end: 104,
+                },
             }),
             span: ByteSpan { start: 0, end: 104 },
         }]
@@ -216,6 +290,20 @@ fn parses_compact_inferred_effect_function_surface_decl() {
             }],
             inferred_contract: true,
             return_type: None,
+            requirements: Vec::new(),
+            failure: None,
+            constraints: Vec::new(),
+            body: Some(SurfaceExpr::Application {
+                function: Box::new(SurfaceExpr::Name {
+                    name: "println".to_owned(),
+                    span: ByteSpan { start: 37, end: 44 },
+                }),
+                argument: Box::new(SurfaceExpr::String {
+                    raw: "\"hello\"".to_owned(),
+                    span: ByteSpan { start: 45, end: 52 },
+                }),
+                span: ByteSpan { start: 37, end: 52 },
+            }),
             span: ByteSpan { start: 0, end: 52 },
         }]
     );

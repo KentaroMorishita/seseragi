@@ -10,7 +10,7 @@
 - `diagnostics.json`: frontend共通diagnostic envelope
 - `semantic-diagnostics.json`: type / semantics stageのdiagnostic envelope
 - `interface.json`: module consumerが読む公開interface
-- `surface-ast.json`: surface declaration skeleton。後続stageがある場合はstage chainの入口
+- `surface-ast.json`: surface declarationとbody expression / pattern。後続stageがある場合はstage chainの入口
 - `resolved-ast.json`と`typed-hir.json`: Rust conformance runnerで個別に比較できるfrontend / semantics stage snapshot
 - `typed-interface.json`: typed bodyから推論した公開contractを含むpublic API snapshot
 - `core-ir.json`から`typescript-ir.json`: backend loweringとemitterを含む最小end-to-end snapshot
@@ -21,8 +21,13 @@
 `error-expr`とmissing expressionを持ち、diagnosticのprimaryも挿入位置のzero-width rangeです。Errorを持つ
 moduleは公開interfaceへ不完全なsymbolを出しません。
 
-`schema-1/effect-do/`は最小の`effect fn main`と空の`do {}` blockをfrontend artifactとして固定します。
-TypedHirでは空blockをstatementなし、zero-widthのUnit resultを持つ`do-block`として固定します。
+`schema-1/effect-do/`は最小の`effect fn main`と、最後のmonadic expressionをresultとして持つ
+`do { succeed () }`をfrontend artifactとして固定します。
+
+SurfaceAstの`let`、`fn`、`effectFn`は有効なsourceでは`body`を必ず持ちます。applicationはcurried
+applicationを保つ一引数nodeとして左へnestし、括弧は`grouped`で保持します。`do`はEffect専用構文として
+扱わず、bind / pure let / expression itemと最後のresultを分離します。item terminatorは規範grammarどおり
+改行または`;`であり、既知operation名やarityを使って同一行を暗黙分割しません。
 
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
 最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。

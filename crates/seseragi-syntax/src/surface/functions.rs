@@ -24,6 +24,7 @@ impl SurfaceParser<'_> {
             .unwrap_or_default();
         let (parameters, return_type) =
             self.parse_curried_signature(after_type_parameters, signature_end)?;
+        let body = self.parse_expression(equals + 1, end);
 
         Some(SurfaceDecl::Fn {
             visibility,
@@ -33,6 +34,7 @@ impl SurfaceParser<'_> {
             parameters,
             return_type,
             constraints,
+            body,
             span: self.declaration_span(top_start, end)?,
         })
     }

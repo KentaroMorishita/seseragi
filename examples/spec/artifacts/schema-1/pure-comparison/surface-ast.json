@@ -35,6 +35,34 @@
           "end": 32
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 41,
+          "end": 43
+        },
+        "left": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 35,
+            "end": 40
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "0",
+          "span": {
+            "start": 44,
+            "end": 45
+          }
+        },
+        "span": {
+          "start": 35,
+          "end": 45
+        }
+      },
       "span": {
         "start": 0,
         "end": 45
@@ -88,6 +116,34 @@
           "end": 95
         }
       },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 103,
+          "end": 105
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 98,
+            "end": 102
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 106,
+            "end": 111
+          }
+        },
+        "span": {
+          "start": 98,
+          "end": 111
+        }
+      },
       "span": {
         "start": 46,
         "end": 111
@@ -139,6 +195,34 @@
         "span": {
           "start": 163,
           "end": 167
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "!=",
+        "operatorSpan": {
+          "start": 175,
+          "end": 177
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 170,
+            "end": 174
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 178,
+            "end": 183
+          }
+        },
+        "span": {
+          "start": 170,
+          "end": 183
         }
       },
       "span": {

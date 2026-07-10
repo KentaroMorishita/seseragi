@@ -6,7 +6,7 @@
     "seseragi://artifact/effect-do-multiple"
   ],
   "sourcesContent": [
-    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"one\" println \"two\" }\n"
+    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"one\"; println \"two\" }\n"
   ],
   "names": [
     "main",
