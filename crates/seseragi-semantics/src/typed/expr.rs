@@ -6,6 +6,7 @@ use seseragi_syntax::{ByteSpan, Token, TokenKind};
 use std::collections::BTreeMap;
 
 use super::call::typed_top_level_pure_call;
+use super::conditional::typed_conditional;
 use super::functions::TopLevelPureFunction;
 
 pub(crate) fn typed_expr_from_value_token(token: &Token) -> TypedExpr {
@@ -127,6 +128,11 @@ pub(crate) fn typed_fn_body_from_tokens(
     top_level_values: &BTreeMap<String, TypedType>,
     top_level_functions: &BTreeMap<String, TopLevelPureFunction>,
 ) -> Option<TypedExpr> {
+    if let Some(conditional) =
+        typed_conditional(tokens, parameters, top_level_values, top_level_functions)
+    {
+        return Some(conditional);
+    }
     if let Some(call) =
         typed_top_level_pure_call(tokens, parameters, top_level_values, top_level_functions)
     {
@@ -245,6 +251,7 @@ fn expr_has_type(expr: &TypedExpr, expected_name: &str) -> bool {
         | TypedExpr::Variable { type_ref, .. }
         | TypedExpr::Call { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
+        | TypedExpr::If { type_ref, .. }
         | TypedExpr::Unit { type_ref, .. } => named_type_is(type_ref, expected_name),
         TypedExpr::EffectCall { .. } | TypedExpr::DoBlock { .. } => false,
     }
@@ -427,6 +434,7 @@ fn expr_origin_end(expr: &TypedExpr) -> usize {
         | TypedExpr::Variable { origin, .. }
         | TypedExpr::Call { origin, .. }
         | TypedExpr::Binary { origin, .. }
+        | TypedExpr::If { origin, .. }
         | TypedExpr::EffectCall { origin, .. } => origin.end,
     }
 }

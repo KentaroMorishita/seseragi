@@ -3,6 +3,7 @@ use seseragi_syntax::{lex, parse_module_interface, parse_surface_ast, ModuleInte
 use std::collections::BTreeMap;
 
 mod call;
+mod conditional;
 mod effect;
 mod expr;
 mod functions;
@@ -14,6 +15,7 @@ pub(crate) use call::{
     is_known_top_level_pure_call, is_supported_top_level_pure_call, top_level_pure_call_issue,
     PureCallIssue,
 };
+pub(crate) use conditional::{conditional_issue, ConditionalIssue};
 pub(crate) use expr::find_value_tokens;
 pub(crate) use functions::{
     collect_top_level_pure_function_signatures, typed_parameters_from_surface, TopLevelPureFunction,

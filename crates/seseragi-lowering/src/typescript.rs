@@ -119,6 +119,11 @@ pub enum TypeScriptExpr {
         left: Box<TypeScriptExpr>,
         right: Box<TypeScriptExpr>,
     },
+    Conditional {
+        condition: Box<TypeScriptExpr>,
+        then_branch: Box<TypeScriptExpr>,
+        else_branch: Box<TypeScriptExpr>,
+    },
     Call {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
@@ -235,6 +240,16 @@ fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             left: Box::new(lower_core_expr_to_typescript(*left)),
             right: Box::new(lower_core_expr_to_typescript(*right)),
         },
+        CoreExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            ..
+        } => TypeScriptExpr::Conditional {
+            condition: Box::new(lower_core_expr_to_typescript(*condition)),
+            then_branch: Box::new(lower_core_expr_to_typescript(*then_branch)),
+            else_branch: Box::new(lower_core_expr_to_typescript(*else_branch)),
+        },
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -305,6 +320,15 @@ fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         TypeScriptExpr::Await { .. } => true,
         TypeScriptExpr::Binary { left, right, .. } => {
             typescript_expr_contains_await(left) || typescript_expr_contains_await(right)
+        }
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            typescript_expr_contains_await(condition)
+                || typescript_expr_contains_await(then_branch)
+                || typescript_expr_contains_await(else_branch)
         }
         TypeScriptExpr::Call { arguments, .. } => {
             arguments.iter().any(typescript_expr_contains_await)

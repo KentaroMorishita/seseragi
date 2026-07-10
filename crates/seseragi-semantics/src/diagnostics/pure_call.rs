@@ -8,6 +8,8 @@ use seseragi_syntax::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+use super::type_labels::type_label;
+
 pub(super) fn collect_pure_function_diagnostics(
     tokens: &[Token],
     span: seseragi_syntax::ByteSpan,
@@ -141,31 +143,5 @@ fn argument_word(count: usize) -> &'static str {
         "argument"
     } else {
         "arguments"
-    }
-}
-
-fn type_label(type_ref: &crate::TypedType) -> String {
-    match type_ref {
-        crate::TypedType::Named { name, arguments } if arguments.is_empty() => name.clone(),
-        crate::TypedType::Named { name, arguments } => format!(
-            "{}<{}>",
-            name,
-            arguments
-                .iter()
-                .map(type_label)
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        crate::TypedType::Function { .. } => "function".to_owned(),
-        crate::TypedType::Record { .. } => "record".to_owned(),
-        crate::TypedType::Tuple { elements } => format!(
-            "({})",
-            elements
-                .iter()
-                .map(type_label)
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        crate::TypedType::Hole => "unknown".to_owned(),
     }
 }

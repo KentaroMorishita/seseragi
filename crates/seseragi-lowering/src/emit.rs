@@ -207,6 +207,16 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             render_typescript_expr(left),
             render_typescript_expr(right)
         ),
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => format!(
+            "{} ? {} : {}",
+            render_typescript_expr(condition),
+            render_typescript_expr(then_branch),
+            render_typescript_expr(else_branch)
+        ),
         TypeScriptExpr::Call { callee, arguments } => {
             let rendered_arguments = arguments
                 .iter()
@@ -251,6 +261,15 @@ fn expr_contains_await(expr: &TypeScriptExpr) -> bool {
         TypeScriptExpr::Await { .. } => true,
         TypeScriptExpr::Binary { left, right, .. } => {
             expr_contains_await(left) || expr_contains_await(right)
+        }
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            expr_contains_await(condition)
+                || expr_contains_await(then_branch)
+                || expr_contains_await(else_branch)
         }
         TypeScriptExpr::Call { arguments, .. } => arguments.iter().any(expr_contains_await),
         TypeScriptExpr::Sequence { statements, result } => {
@@ -331,6 +350,15 @@ fn collect_expr_names(expr: &TypeScriptExpr, names: &mut Vec<String>) {
         TypeScriptExpr::Binary { left, right, .. } => {
             collect_expr_names(left, names);
             collect_expr_names(right, names);
+        }
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            collect_expr_names(condition, names);
+            collect_expr_names(then_branch, names);
+            collect_expr_names(else_branch, names);
         }
         TypeScriptExpr::Sequence { statements, result } => {
             for statement in statements {

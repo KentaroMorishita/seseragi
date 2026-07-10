@@ -94,6 +94,14 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    If {
+        condition: Box<CoreExpr>,
+        then_branch: Box<CoreExpr>,
+        else_branch: Box<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     EffectOperation {
         operation: String,
         requirements: CoreType,
@@ -316,6 +324,19 @@ fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             operator,
             left: Box::new(lower_expr(source, *left)),
             right: Box::new(lower_expr(source, *right)),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            type_ref,
+            origin,
+        } => CoreExpr::If {
+            condition: Box::new(lower_expr(source, *condition)),
+            then_branch: Box::new(lower_expr(source, *then_branch)),
+            else_branch: Box::new(lower_expr(source, *else_branch)),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },

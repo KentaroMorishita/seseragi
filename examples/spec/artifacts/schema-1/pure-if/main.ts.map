@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/pure-if"
+  ],
+  "sourcesContent": [
+    "pub fn classify value: Int -> String = if value == 0 then \"zero\" else \"other\"\n"
+  ],
+  "names": [
+    "classify"
+  ],
+  "mappings": ";;aAAcA,6BAGZC,sBAAQ"
+}

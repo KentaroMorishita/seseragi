@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/pure-if",
+  "declarations": [
+    {
+      "kind": "value",
+      "symbol": 0,
+      "name": "classify",
+      "visibility": "public",
+      "declaration": {
+        "start": 0,
+        "end": 77
+      }
+    }
+  ]
+}

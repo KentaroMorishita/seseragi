@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "if.condition-not-bool",
+      "primary": {
+        "start": 47,
+        "end": 48
+      },
+      "related": [
+        {
+          "message": "expected Bool, received Int",
+          "primary": {
+            "start": 0,
+            "end": 62
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "if.branch-type-mismatch",
+      "primary": {
+        "start": 126,
+        "end": 130
+      },
+      "related": [
+        {
+          "message": "then branch has type Int",
+          "primary": {
+            "start": 119,
+            "end": 120
+          }
+        },
+        {
+          "message": "else branch has type String",
+          "primary": {
+            "start": 126,
+            "end": 130
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

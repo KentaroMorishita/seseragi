@@ -84,10 +84,13 @@ impl Lexer<'_> {
         let kind = match raw {
             "do" => TokenKind::KeywordDo,
             "effect" => TokenKind::KeywordEffect,
+            "else" => TokenKind::KeywordElse,
             "fails" => TokenKind::KeywordFails,
             "fn" => TokenKind::KeywordFn,
+            "if" => TokenKind::KeywordIf,
             "pub" => TokenKind::KeywordPub,
             "let" => TokenKind::KeywordLet,
+            "then" => TokenKind::KeywordThen,
             "with" => TokenKind::KeywordWith,
             "True" | "False" => TokenKind::LiteralBoolean,
             "_" => TokenKind::Wildcard,

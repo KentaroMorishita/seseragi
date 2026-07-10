@@ -1,0 +1,1 @@
+pub fn classify value: Int -> String = if value == 0 then "zero" else "other"

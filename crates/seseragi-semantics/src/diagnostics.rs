@@ -6,8 +6,10 @@ use seseragi_syntax::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod conditional;
 mod effect;
 mod pure_call;
+mod type_labels;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
@@ -57,6 +59,14 @@ fn collect_decl_diagnostics(
         parameters, span, ..
     } = declaration
     {
+        conditional::collect_conditional_diagnostics(
+            tokens,
+            *span,
+            parameters,
+            top_level_values,
+            top_level_functions,
+            diagnostics,
+        );
         pure_call::collect_pure_function_diagnostics(
             tokens,
             *span,

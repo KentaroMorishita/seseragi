@@ -243,6 +243,14 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    If {
+        condition: Box<TypedExpr>,
+        then_branch: Box<TypedExpr>,
+        else_branch: Box<TypedExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     EffectCall {
         operation: String,
         arguments: Vec<TypedExpr>,

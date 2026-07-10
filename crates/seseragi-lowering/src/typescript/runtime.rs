@@ -38,6 +38,18 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             collect_expr_runtime_requirements(left, requirements);
             collect_expr_runtime_requirements(right, requirements);
         }
+        CoreExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            type_ref,
+            ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            collect_expr_runtime_requirements(condition, requirements);
+            collect_expr_runtime_requirements(then_branch, requirements);
+            collect_expr_runtime_requirements(else_branch, requirements);
+        }
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -108,6 +120,16 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             collect_expr_runtime_imports(left, imports);
             collect_expr_runtime_imports(right, imports);
         }
+        CoreExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            collect_expr_runtime_imports(condition, imports);
+            collect_expr_runtime_imports(then_branch, imports);
+            collect_expr_runtime_imports(else_branch, imports);
+        }
         CoreExpr::Sequence {
             statements, result, ..
         } => {
@@ -139,6 +161,7 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         CoreExpr::Variable { type_ref, .. } => type_ref_from_core_type(type_ref),
         CoreExpr::Call { type_ref, .. } => type_ref_from_core_type(type_ref),
         CoreExpr::Binary { type_ref, .. } => type_ref_from_core_type(type_ref),
+        CoreExpr::If { type_ref, .. } => type_ref_from_core_type(type_ref),
         CoreExpr::EffectOperation { success, .. } => type_ref_from_core_type(success),
         CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),
     }
