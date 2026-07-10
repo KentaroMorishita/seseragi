@@ -2,7 +2,7 @@ use crate::cst::parse_cst_from_tokens;
 use crate::lexer::lex;
 use crate::surface::parse_surface_ast;
 use crate::surface_model::SurfaceDecl;
-use crate::{CstArtifact, CstError, CstMissing, Token, TokenKind};
+use crate::{CstArtifact, CstError, CstMissing, CstNode, Token, TokenKind};
 use serde::Serialize;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -66,7 +66,15 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     let literal_diagnostics = integer_literal_diagnostics(&tokens.tokens);
     let source_tokens = tokens.tokens.clone();
     let surface = parse_surface_ast(source_name, source);
-    let mut artifact = diagnostics_from_cst(parse_cst_from_tokens(tokens), &source_tokens);
+    let cst = parse_cst_from_tokens(tokens);
+    let mut artifact = diagnostics_from_cst(&cst, &source_tokens);
+    let surface_declaration_diagnostics = missing_surface_declaration_diagnostics(
+        &cst.root,
+        &surface.declarations,
+        &source_tokens,
+        &artifact.diagnostics,
+    );
+    append_diagnostics(&mut artifact, surface_declaration_diagnostics);
     let surface_diagnostics = missing_surface_body_diagnostics(
         &surface.declarations,
         &source_tokens,
@@ -90,6 +98,60 @@ fn append_diagnostics(artifact: &mut DiagnosticArtifact, diagnostics: Vec<Diagno
                     diagnostic
                 }),
         );
+}
+
+fn missing_surface_declaration_diagnostics(
+    root: &CstNode,
+    declarations: &[SurfaceDecl],
+    tokens: &[Token],
+    existing: &[Diagnostic],
+) -> Vec<Diagnostic> {
+    let surface_type_starts = declarations
+        .iter()
+        .filter_map(|declaration| match declaration {
+            SurfaceDecl::Type { span, .. } => Some(span.start),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+
+    root.children
+        .iter()
+        .filter(|top| top.children.iter().any(|child| child.kind == "type-decl"))
+        .filter_map(|top| {
+            let range = byte_range_for_node(top, tokens)?;
+            if surface_type_starts.contains(&range.start)
+                || existing.iter().any(|diagnostic| {
+                    diagnostic.primary.start >= range.start && diagnostic.primary.start <= range.end
+                })
+            {
+                return None;
+            }
+            Some(Diagnostic {
+                id: String::new(),
+                code: "SES-P0001".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "parser.invalid-type-declaration".to_owned(),
+                primary: range,
+                related: Vec::new(),
+                fixes: Vec::new(),
+            })
+        })
+        .collect()
+}
+
+fn byte_range_for_node(node: &CstNode, tokens: &[Token]) -> Option<ByteRange> {
+    let source_tokens = tokens.get(node.start_token..node.end_token)?;
+    let start = source_tokens
+        .iter()
+        .find(|token| !is_trivia(token.kind))?
+        .start;
+    let end = source_tokens
+        .iter()
+        .rev()
+        .find(|token| !is_trivia(token.kind))
+        .map(|token| token.end)
+        .unwrap_or(start);
+    Some(ByteRange { start, end })
 }
 
 fn missing_surface_body_diagnostics(
@@ -242,7 +304,7 @@ fn is_trivia(kind: TokenKind) -> bool {
     )
 }
 
-fn diagnostics_from_cst(cst: CstArtifact, tokens: &[Token]) -> DiagnosticArtifact {
+fn diagnostics_from_cst(cst: &CstArtifact, tokens: &[Token]) -> DiagnosticArtifact {
     let diagnostics = cst
         .errors
         .iter()
@@ -252,7 +314,7 @@ fn diagnostics_from_cst(cst: CstArtifact, tokens: &[Token]) -> DiagnosticArtifac
 
     DiagnosticArtifact {
         schema: 1,
-        source: cst.source,
+        source: cst.source.clone(),
         position_encoding: "utf-8".to_owned(),
         diagnostics,
     }
@@ -384,6 +446,23 @@ mod tests {
                 start: source.find('\n').expect("fixture contains a newline"),
                 end: source.find('\n').expect("fixture contains a newline"),
             }
+        );
+    }
+
+    #[test]
+    fn reports_an_adt_payload_that_surface_syntax_cannot_normalize() {
+        let source = "type Bad = | Good Int extra\npub let answer: Int = 42\n";
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "parser.invalid-type-declaration"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 0, end: 27 }
         );
     }
 

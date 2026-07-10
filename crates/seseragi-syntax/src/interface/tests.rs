@@ -67,6 +67,16 @@ fn omits_exports_when_module_has_parse_errors() {
 }
 
 #[test]
+fn omits_all_exports_when_an_adt_payload_cannot_be_normalized() {
+    let interface = parse_module_interface(
+        "artifact/invalid-adt/main.ssrg",
+        "type Bad = | Good Int extra\npub let answer: Int = 42\n",
+    );
+
+    assert!(interface.exports.is_empty());
+}
+
+#[test]
 fn parses_public_effect_fn_interface() {
     let interface = parse_module_interface(
         "artifact/effect-do/main.ssrg",

@@ -67,6 +67,21 @@ fn parses_type_declarations() {
 }
 
 #[test]
+fn rejects_adt_names_that_are_not_uppercase_identifiers() {
+    for source in ["type bad = | Rock\n", "type Bad = | rock\n"] {
+        let cst = crate::parse_cst("main.ssrg", source);
+        let surface = parse_surface_ast("main.ssrg", source);
+        let diagnostics = crate::parse_diagnostics("main.ssrg", source);
+        let interface = crate::parse_module_interface("artifact/invalid/main.ssrg", source);
+
+        assert_eq!(cst.errors.len(), 1, "{source:?}");
+        assert!(surface.declarations.is_empty(), "{source:?}");
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{source:?}");
+        assert!(interface.exports.is_empty(), "{source:?}");
+    }
+}
+
+#[test]
 fn parses_deriving_clauses_on_nominal_types() {
     let module = parse_surface_ast(
         "main.ssrg",

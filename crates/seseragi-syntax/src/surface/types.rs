@@ -71,6 +71,9 @@ impl SurfaceParser<'_> {
         end: usize,
     ) -> Option<SurfaceDecl> {
         let name_index = self.next_significant_token(decl_start + 1, end)?;
+        if self.kind_at(name_index) != Some(TokenKind::IdentifierUpper) {
+            return None;
+        }
         let name = self.identifier_name_at(name_index)?;
         let (type_parameters, after_type_parameters) =
             self.parse_optional_type_parameters(name_index + 1, end);

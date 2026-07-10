@@ -1,4 +1,4 @@
-use crate::cst::parse_cst;
+use crate::cst::{parse_cst, CstNode};
 pub use crate::interface_model::{
     InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
     InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType, ModuleInterface,
@@ -20,18 +20,19 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
     let source_file = source_file_from_source_name(&source_name);
     let cst = parse_cst(source_file.clone(), source);
     if !cst.errors.is_empty() {
-        return ModuleInterface {
-            schema: 1,
-            module: module_name,
-            source: cst.source,
-            dependencies: Vec::new(),
-            exports: Vec::new(),
-            operators: Vec::new(),
-            instances: Vec::new(),
-        };
+        return empty_interface(module_name, cst.source);
     }
 
     let surface_module = parse_surface_ast(source_file.clone(), source);
+    if cst_type_declaration_count(&cst.root)
+        != surface_module
+            .declarations
+            .iter()
+            .filter(|declaration| matches!(declaration, crate::SurfaceDecl::Type { .. }))
+            .count()
+    {
+        return empty_interface(module_name, cst.source);
+    }
 
     let interface = ModuleInterface {
         schema: 1,
@@ -59,6 +60,25 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
             .collect(),
     };
     interface
+}
+
+fn empty_interface(module: String, source: String) -> ModuleInterface {
+    ModuleInterface {
+        schema: 1,
+        module,
+        source,
+        dependencies: Vec::new(),
+        exports: Vec::new(),
+        operators: Vec::new(),
+        instances: Vec::new(),
+    }
+}
+
+fn cst_type_declaration_count(root: &CstNode) -> usize {
+    root.children
+        .iter()
+        .filter(|top| top.children.iter().any(|child| child.kind == "type-decl"))
+        .count()
 }
 
 fn module_name_from_source_name(source_name: &str) -> String {
