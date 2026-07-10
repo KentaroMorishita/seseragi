@@ -91,7 +91,9 @@ impl Lexer<'_> {
             "if" => TokenKind::KeywordIf,
             "pub" => TokenKind::KeywordPub,
             "let" => TokenKind::KeywordLet,
+            "match" => TokenKind::KeywordMatch,
             "then" => TokenKind::KeywordThen,
+            "when" => TokenKind::KeywordWhen,
             "with" => TokenKind::KeywordWith,
             "True" | "False" => TokenKind::LiteralBoolean,
             "_" => TokenKind::Wildcard,
@@ -277,6 +279,27 @@ mod tests {
         assert_eq!(
             stream.reconstructed_text(),
             "let first = 1; let second = 2\n"
+        );
+    }
+
+    #[test]
+    fn lexes_match_and_guard_as_reserved_keywords() {
+        let stream = lex(
+            "main.ssrg",
+            "match value { Present item when ready -> item }",
+        );
+
+        assert!(stream
+            .tokens
+            .iter()
+            .any(|token| token.kind == TokenKind::KeywordMatch));
+        assert!(stream
+            .tokens
+            .iter()
+            .any(|token| token.kind == TokenKind::KeywordWhen));
+        assert_eq!(
+            stream.reconstructed_text(),
+            "match value { Present item when ready -> item }"
         );
     }
 
