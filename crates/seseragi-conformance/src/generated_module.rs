@@ -4,6 +4,7 @@ use std::fs;
 use std::path::Path;
 
 mod imports;
+mod typecheck;
 
 pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), String> {
     let source_path = case.join("main.ssrg");
@@ -34,6 +35,7 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
     check_generated_exports(&actual_metadata_value, &bundle.typescript)?;
     let typescript_ir = parse_typescript_ir_json(interface_source_name(case)?, &source)?;
     imports::check_generated_runtime_imports(root, &typescript_ir, &bundle.typescript)?;
+    typecheck::check_generated_typescript(root, case, &typescript_ir, &bundle.typescript)?;
 
     let actual_source_map_value = serde_json::to_value(&bundle.source_map)
         .map_err(|error| format!("failed to encode SourceMap: {error}"))?;

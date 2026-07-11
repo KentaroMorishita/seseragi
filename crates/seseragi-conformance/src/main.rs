@@ -8,6 +8,7 @@ mod report;
 mod runner;
 mod runtime_abi;
 mod runtime_package;
+mod runtime_stage;
 mod suite;
 mod surface_ast;
 mod typescript_ir;
