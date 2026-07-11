@@ -1,4 +1,5 @@
 use crate::{
+    prelude::{is_standalone_symbol, sum_type_for_symbol, PreludeSumType},
     ResolveIssue, ResolvedModule, ResolvedReference, ResolvedScope, ResolvedSymbol, ScopeId,
     ScopeKind, SymbolId, SymbolKind, SymbolNamespace,
 };
@@ -58,6 +59,7 @@ pub(super) struct Resolver {
     references: Vec<ResolvedReference>,
     issues: Vec<ResolveIssue>,
     names: BTreeMap<(ScopeId, SymbolNamespace, String), SymbolId>,
+    prelude_names: BTreeMap<(SymbolNamespace, String), SymbolId>,
 }
 
 impl Resolver {
@@ -74,6 +76,7 @@ impl Resolver {
             references: Vec::new(),
             issues: Vec::new(),
             names: BTreeMap::new(),
+            prelude_names: BTreeMap::new(),
         }
     }
 
@@ -116,6 +119,20 @@ impl Resolver {
             return existing;
         }
 
+        let id = self.push_symbol(scope, namespace, kind, spelling, canonical, origin);
+        self.names.insert(name, id);
+        id
+    }
+
+    fn push_symbol(
+        &mut self,
+        scope: ScopeId,
+        namespace: SymbolNamespace,
+        kind: SymbolKind,
+        spelling: &str,
+        canonical: Option<String>,
+        origin: ByteSpan,
+    ) -> SymbolId {
         let id = SymbolId(self.symbols.len() as u32);
         self.symbols.push(ResolvedSymbol {
             id,
@@ -126,7 +143,6 @@ impl Resolver {
             scope,
             origin,
         });
-        self.names.insert(name, id);
         id
     }
 
@@ -194,10 +210,18 @@ impl Resolver {
     }
 
     fn ensure_prelude(&mut self, namespace: SymbolNamespace, spelling: &str) -> Option<SymbolId> {
-        if !is_prelude_name(namespace, spelling) {
+        let key = (namespace, spelling.to_owned());
+        if let Some(symbol) = self.prelude_names.get(&key) {
+            return Some(*symbol);
+        }
+        if let Some(sum_type) = sum_type_for_symbol(namespace, spelling) {
+            self.materialize_prelude_sum_type(sum_type);
+            return self.prelude_names.get(&key).copied();
+        }
+        if !is_standalone_symbol(namespace, spelling) {
             return None;
         }
-        let id = self.register(
+        let id = self.push_symbol(
             self.module_scope(),
             namespace,
             SymbolKind::Prelude,
@@ -205,39 +229,49 @@ impl Resolver {
             Some(format!("std/prelude::{spelling}")),
             ByteSpan { start: 0, end: 0 },
         );
+        self.prelude_names.insert(key, id);
         Some(id)
     }
-}
 
-fn is_prelude_name(namespace: SymbolNamespace, spelling: &str) -> bool {
-    match namespace {
-        SymbolNamespace::Type => matches!(
-            spelling,
-            "Unit"
-                | "Never"
-                | "Bool"
-                | "Int"
-                | "Float"
-                | "String"
-                | "Array"
-                | "List"
-                | "Maybe"
-                | "Either"
-                | "Effect"
-                | "Console"
-                | "ConsoleError"
-                | "Stdin"
-                | "StdinError"
-        ),
-        SymbolNamespace::Value => matches!(
-            spelling,
-            "print" | "println" | "readLine" | "succeed" | "fail" | "mapError"
-        ),
-        SymbolNamespace::Operator => matches!(
-            spelling,
-            "+" | "-" | "*" | "/" | "%" | "==" | "!=" | "<" | "<=" | ">" | ">="
-        ),
-        _ => false,
+    fn materialize_prelude_sum_type(&mut self, sum_type: &PreludeSumType) {
+        let owner_key = (SymbolNamespace::Type, sum_type.name.to_owned());
+        if self.prelude_names.contains_key(&owner_key) {
+            return;
+        }
+        let origin = ByteSpan { start: 0, end: 0 };
+        let owner = self.push_symbol(
+            self.module_scope(),
+            SymbolNamespace::Type,
+            SymbolKind::Type,
+            sum_type.name,
+            Some(sum_type.canonical.to_owned()),
+            origin,
+        );
+        self.prelude_names.insert(owner_key, owner);
+
+        let declaration_scope = self.new_scope(self.module_scope(), ScopeKind::Declaration, origin);
+        for parameter in sum_type.type_parameters {
+            self.push_symbol(
+                declaration_scope,
+                SymbolNamespace::Type,
+                SymbolKind::TypeParameter,
+                parameter,
+                Some(format!("{}::{parameter}", sum_type.canonical)),
+                origin,
+            );
+        }
+        for variant in sum_type.variants {
+            let symbol = self.push_symbol(
+                self.module_scope(),
+                SymbolNamespace::Value,
+                SymbolKind::Constructor,
+                variant.name,
+                Some(variant.canonical.to_owned()),
+                origin,
+            );
+            self.prelude_names
+                .insert((SymbolNamespace::Value, variant.name.to_owned()), symbol);
+        }
     }
 }
 

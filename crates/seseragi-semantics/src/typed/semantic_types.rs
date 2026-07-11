@@ -4,10 +4,11 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::type_ref::typed_type_from_type_ref;
 
+mod constructors;
+mod prelude;
 mod substitution;
 
 pub(crate) use substitution::instantiate_callable_result;
-use substitution::substitute_type_parameters;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum SemanticTypeKey {
@@ -29,7 +30,9 @@ pub(crate) struct SemanticValueType {
 
 #[derive(Clone, Debug)]
 pub(crate) struct SemanticAdt {
+    pub(crate) name: String,
     pub(crate) type_parameters: Vec<SymbolId>,
+    pub(crate) type_parameter_names: Vec<String>,
     pub(crate) variants: Vec<SemanticVariant>,
 }
 
@@ -39,6 +42,14 @@ pub(crate) struct SemanticVariant {
     pub(crate) canonical: String,
     pub(crate) spelling: String,
     pub(crate) payload: Option<SemanticValueType>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct SemanticConstructorSignature {
+    pub(crate) symbol: String,
+    pub(crate) type_parameters: Vec<String>,
+    pub(crate) parameters: Vec<SemanticValueType>,
+    pub(crate) result: SemanticValueType,
 }
 
 #[derive(Clone, Debug, Default)]
@@ -83,20 +94,30 @@ impl SemanticTypeCatalog {
                             .collect::<Vec<_>>()
                     })
                     .unwrap_or_default();
-                Some(((name_span.start, name_span.end), (symbol.id, parameters)))
+                Some((
+                    (name_span.start, name_span.end),
+                    (
+                        symbol.id,
+                        symbol.spelling.clone(),
+                        parameters,
+                        type_parameters.clone(),
+                    ),
+                ))
             })
             .collect::<BTreeMap<_, _>>();
         let owners = declarations
             .values()
-            .map(|(owner, _)| *owner)
+            .map(|(owner, ..)| *owner)
             .collect::<BTreeSet<_>>();
 
         let mut catalog = Self::default();
-        for (owner, parameters) in declarations.values() {
+        for (owner, name, parameters, parameter_names) in declarations.values() {
             catalog.adts.insert(
                 *owner,
                 SemanticAdt {
+                    name: name.clone(),
                     type_parameters: parameters.clone(),
+                    type_parameter_names: parameter_names.clone(),
                     variants: Vec::new(),
                 },
             );
@@ -110,7 +131,7 @@ impl SemanticTypeCatalog {
             else {
                 continue;
             };
-            let Some((owner, _)) = declarations.get(&(name_span.start, name_span.end)) else {
+            let Some((owner, ..)) = declarations.get(&(name_span.start, name_span.end)) else {
                 continue;
             };
             let owner = *owner;
@@ -140,6 +161,7 @@ impl SemanticTypeCatalog {
                 adt.variants = semantic_variants;
             }
         }
+        catalog.collect_prelude_sum_types(resolved);
         catalog
     }
 
@@ -154,62 +176,6 @@ impl SemanticTypeCatalog {
 
     pub(crate) fn adt(&self, owner: SymbolId) -> Option<&SemanticAdt> {
         self.adts.get(&owner)
-    }
-
-    pub(crate) fn polymorphic_adt_key(
-        &self,
-        owner: SymbolId,
-        type_ref: &TypedType,
-    ) -> SemanticTypeKey {
-        let Some(adt) = self.adts.get(&owner) else {
-            return SemanticTypeKey::Invalid;
-        };
-        let TypedType::Named { arguments, .. } = type_ref else {
-            return SemanticTypeKey::Invalid;
-        };
-        SemanticTypeKey::Adt {
-            owner,
-            arguments: adt
-                .type_parameters
-                .iter()
-                .zip(arguments)
-                .map(|(parameter, type_ref)| SemanticValueType {
-                    type_ref: type_ref.clone(),
-                    key: SemanticTypeKey::TypeParameter(*parameter),
-                })
-                .collect(),
-        }
-    }
-
-    pub(crate) fn constructor(
-        &self,
-        constructor: SymbolId,
-    ) -> Option<(SymbolId, &SemanticVariant)> {
-        let owner = self.constructors.get(&constructor).copied()?;
-        let variant = self
-            .adts
-            .get(&owner)?
-            .variants
-            .iter()
-            .find(|variant| variant.constructor == constructor)?;
-        Some((owner, variant))
-    }
-
-    pub(crate) fn instantiate_payload(
-        &self,
-        owner: SymbolId,
-        arguments: &[SemanticValueType],
-        payload: &SemanticValueType,
-    ) -> SemanticValueType {
-        let substitutions = self
-            .adts
-            .get(&owner)
-            .into_iter()
-            .flat_map(|adt| adt.type_parameters.iter())
-            .copied()
-            .zip(arguments.iter().cloned())
-            .collect::<BTreeMap<_, _>>();
-        substitute_type_parameters(payload, &substitutions)
     }
 }
 

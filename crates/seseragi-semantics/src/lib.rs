@@ -1,6 +1,7 @@
 mod diagnostics;
 mod effect_ops;
 mod model;
+mod prelude;
 mod resolve;
 mod typed;
 

@@ -175,62 +175,29 @@ fn collect_callables(
                     },
                 );
             }
-            SurfaceDecl::Type {
-                name,
-                type_parameters,
-                variants,
-                ..
-            } => {
-                let result = TypedType::Named {
-                    name: name.clone(),
-                    arguments: type_parameters
-                        .iter()
-                        .map(|parameter| TypedType::Named {
-                            name: parameter.clone(),
-                            arguments: Vec::new(),
-                        })
-                        .collect(),
-                };
-                for variant in variants {
-                    let Some(symbol) = resolved.symbols.iter().find(|symbol| {
-                        symbol.kind == SymbolKind::Constructor && symbol.origin == variant.name_span
-                    }) else {
-                        continue;
-                    };
-                    let Some(canonical) = symbol.canonical.clone() else {
-                        continue;
-                    };
-                    callables.insert(
-                        symbol.id,
-                        TopLevelPureFunction {
-                            symbol: canonical,
-                            type_parameters: type_parameters.clone(),
-                            parameters: variant
-                                .payload
-                                .as_ref()
-                                .map(typed_type_from_type_ref)
-                                .into_iter()
-                                .collect(),
-                            semantic_parameters: semantic_types
-                                .constructor(symbol.id)
-                                .and_then(|(_, variant)| {
-                                    variant.payload.as_ref().map(|payload| payload.key.clone())
-                                })
-                                .into_iter()
-                                .collect(),
-                            result: result.clone(),
-                            semantic_result: semantic_types
-                                .constructor(symbol.id)
-                                .map(|(owner, _)| {
-                                    semantic_types.polymorphic_adt_key(owner, &result)
-                                })
-                                .unwrap_or(SemanticTypeKey::Invalid),
-                        },
-                    );
-                }
-            }
             _ => {}
         }
+    }
+    for (constructor, signature) in semantic_types.constructor_signatures() {
+        callables.insert(
+            constructor,
+            TopLevelPureFunction {
+                symbol: signature.symbol,
+                type_parameters: signature.type_parameters,
+                parameters: signature
+                    .parameters
+                    .iter()
+                    .map(|parameter| parameter.type_ref.clone())
+                    .collect(),
+                semantic_parameters: signature
+                    .parameters
+                    .into_iter()
+                    .map(|parameter| parameter.key)
+                    .collect(),
+                result: signature.result.type_ref,
+                semantic_result: signature.result.key,
+            },
+        );
     }
     callables
 }
@@ -286,44 +253,8 @@ fn collect_semantic_value_types(
             _ => {}
         }
     }
-    for symbol in &resolved.symbols {
-        if symbol.kind != SymbolKind::Constructor {
-            continue;
-        }
-        if let Some((owner, _)) = semantic_types.constructor(symbol.id) {
-            let result = resolved
-                .declarations
-                .iter()
-                .find_map(|declaration| {
-                    let SurfaceDecl::Type {
-                        name,
-                        type_parameters,
-                        variants,
-                        ..
-                    } = declaration
-                    else {
-                        return None;
-                    };
-                    variants
-                        .iter()
-                        .any(|variant| variant.name_span == symbol.origin)
-                        .then(|| TypedType::Named {
-                            name: name.clone(),
-                            arguments: type_parameters
-                                .iter()
-                                .map(|parameter| TypedType::Named {
-                                    name: parameter.clone(),
-                                    arguments: Vec::new(),
-                                })
-                                .collect(),
-                        })
-                })
-                .unwrap_or(TypedType::Hole);
-            values.insert(
-                symbol.id,
-                semantic_types.polymorphic_adt_key(owner, &result),
-            );
-        }
+    for (constructor, signature) in semantic_types.constructor_signatures() {
+        values.insert(constructor, signature.result.key);
     }
     values
 }

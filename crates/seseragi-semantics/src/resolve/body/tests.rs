@@ -48,6 +48,65 @@ fn separates_adt_type_and_constructor_symbols_by_namespace() {
 }
 
 #[test]
+fn lazily_materializes_complete_standard_sum_type_families() {
+    let resolved = resolve_module(
+        "artifact/prelude-maybe/main.ssrg",
+        "fn wrap value: String -> Maybe<String> = Just value\n",
+    );
+
+    for (kind, spelling, canonical) in [
+        (SymbolKind::Type, "Maybe", "std/prelude::Maybe"),
+        (SymbolKind::Constructor, "Nothing", "std/prelude::Nothing"),
+        (SymbolKind::Constructor, "Just", "std/prelude::Just"),
+    ] {
+        assert!(resolved.symbols.iter().any(|symbol| {
+            symbol.kind == kind
+                && symbol.spelling == spelling
+                && symbol.canonical.as_deref() == Some(canonical)
+        }));
+    }
+    assert!(resolved.symbols.iter().any(|symbol| {
+        symbol.kind == SymbolKind::TypeParameter
+            && symbol.spelling == "A"
+            && symbol.canonical.as_deref() == Some("std/prelude::Maybe::A")
+    }));
+    assert!(resolved.references.iter().any(|reference| {
+        reference.spelling == "Just"
+            && reference.target.is_some_and(|target| {
+                resolved.symbols.iter().any(|symbol| {
+                    symbol.id == target && symbol.canonical.as_deref() == Some("std/prelude::Just")
+                })
+            })
+    }));
+    assert!(resolved.issues.is_empty());
+}
+
+#[test]
+fn local_adt_family_shadows_the_standard_sum_type_without_materializing_it() {
+    let resolved = resolve_module(
+        "artifact/local-maybe/main.ssrg",
+        "type Maybe<A> = | Empty | Filled A\nfn wrap value: String -> Maybe<String> = Filled value\n",
+    );
+
+    assert!(resolved.symbols.iter().all(|symbol| {
+        !symbol
+            .canonical
+            .as_deref()
+            .is_some_and(|canonical| canonical.starts_with("std/prelude::Maybe"))
+    }));
+    assert!(resolved.references.iter().any(|reference| {
+        reference.spelling == "Maybe"
+            && reference.target.is_some_and(|target| {
+                resolved.symbols.iter().any(|symbol| {
+                    symbol.id == target
+                        && symbol.canonical.as_deref() == Some("artifact/local-maybe::Maybe")
+                })
+            })
+    }));
+    assert!(resolved.issues.is_empty());
+}
+
+#[test]
 fn records_unresolved_value_names_in_the_resolver() {
     let resolved = resolve_module(
         "artifact/unresolved/main.ssrg",

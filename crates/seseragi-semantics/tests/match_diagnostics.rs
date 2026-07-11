@@ -11,6 +11,21 @@ fn accepts_exhaustive_adt_match() {
 }
 
 #[test]
+fn reports_missing_standard_sum_constructor() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "fn valueOrZero result: Either<String, Int> -> Int = match result { Right value -> value }\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0301");
+    assert_eq!(
+        diagnostics.diagnostics[0].related[0].message,
+        "missing patterns: Left _"
+    );
+}
+
+#[test]
 fn reports_missing_adt_constructor() {
     let diagnostics = semantic_diagnostics(
         "main.ssrg",

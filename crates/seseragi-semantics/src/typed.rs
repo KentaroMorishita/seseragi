@@ -13,6 +13,8 @@ mod functions;
 mod interface;
 #[cfg(test)]
 mod match_tests;
+#[cfg(test)]
+mod prelude_tests;
 mod pure_issues;
 mod resolution;
 mod semantic_types;
