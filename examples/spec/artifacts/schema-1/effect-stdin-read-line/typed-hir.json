@@ -69,6 +69,38 @@
             "value": {
               "kind": "effect-call",
               "operation": "std/prelude::readLine",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "stdin",
+                      "type": {
+                        "kind": "named",
+                        "name": "Stdin",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "StdinError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
               "arguments": [],
               "origin": {
                 "start": 41,
@@ -97,6 +129,38 @@
             "value": {
               "kind": "effect-call",
               "operation": "std/prelude::readLine",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "stdin",
+                      "type": {
+                        "kind": "named",
+                        "name": "Stdin",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "StdinError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
               "arguments": [],
               "origin": {
                 "start": 67,
@@ -112,6 +176,23 @@
         "result": {
           "kind": "effect-call",
           "operation": "std/effect::succeed",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
           "arguments": [],
           "origin": {
             "start": 83,

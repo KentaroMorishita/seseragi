@@ -1,6 +1,7 @@
 use crate::{
     effect_ops::{known_effect_operation_by_surface, KnownEffectOperation},
-    unit_type, SymbolKind, SymbolNamespace, TypedDoStatement, TypedExpr, TypedParameter,
+    unit_type, SymbolKind, SymbolNamespace, TypedDoStatement, TypedEffect, TypedExpr,
+    TypedParameter, TypedRecordField, TypedType,
 };
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
 use std::collections::BTreeMap;
@@ -29,8 +30,10 @@ fn type_effect_expression(
     }
 
     if let Some((operation, arguments)) = effect_application(expression, context, resolution) {
+        let effect = operation_effect(operation, &arguments);
         return TypedExpr::EffectCall {
             operation: operation.semantic_name.to_owned(),
+            effect,
             arguments,
             origin: expression.span(),
         };
@@ -46,6 +49,47 @@ fn type_effect_expression(
     }
 
     analyze_resolved_expression(expression, context).value
+}
+
+fn operation_effect(operation: KnownEffectOperation, arguments: &[TypedExpr]) -> TypedEffect {
+    let success = if operation.surface_name == "succeed" {
+        arguments
+            .first()
+            .map(inferred_type_from_expr)
+            .unwrap_or_else(unit_type)
+    } else {
+        TypedType::Named {
+            name: operation.success_type.to_owned(),
+            arguments: operation
+                .success_type_arguments
+                .iter()
+                .map(|name| named_type(name))
+                .collect(),
+        }
+    };
+    TypedEffect {
+        environment: TypedType::Record {
+            closed: true,
+            fields: operation
+                .requirement
+                .map(|(name, type_name)| TypedRecordField {
+                    name: name.to_owned(),
+                    optional: false,
+                    type_ref: named_type(type_name),
+                })
+                .into_iter()
+                .collect(),
+        },
+        failure: named_type(operation.failure_type),
+        success,
+    }
+}
+
+fn named_type(name: &str) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments: Vec::new(),
+    }
 }
 
 fn effect_application(

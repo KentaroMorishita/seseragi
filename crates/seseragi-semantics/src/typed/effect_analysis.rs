@@ -1,4 +1,4 @@
-use crate::{effect_ops::known_effect_operation_by_semantic, TypedDoStatement, TypedExpr};
+use crate::{TypedDoStatement, TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceExpr, Token, TokenKind};
 
 use super::effect_body::typed_effect_body;
@@ -185,14 +185,14 @@ fn compact_failure_conflict(body: &TypedExpr) -> Option<EffectFunctionIssue> {
 
 fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrigin>) {
     match expression {
-        TypedExpr::EffectCall {
-            operation, origin, ..
-        } => {
-            if let Some(operation) = known_effect_operation_by_semantic(operation) {
-                failures.push(EffectFailureOrigin {
-                    failure_type: operation.failure_type.to_owned(),
-                    origin: *origin,
-                });
+        TypedExpr::EffectCall { effect, origin, .. } => {
+            if let TypedType::Named { name, arguments } = &effect.failure {
+                if arguments.is_empty() {
+                    failures.push(EffectFailureOrigin {
+                        failure_type: name.clone(),
+                        origin: *origin,
+                    });
+                }
             }
         }
         TypedExpr::DoBlock {

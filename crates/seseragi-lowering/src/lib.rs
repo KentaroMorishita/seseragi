@@ -460,6 +460,35 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_succeed_value_with_its_concrete_success_type() {
+        let source = "pub effect fn ready = succeed \"ready\"\n";
+        let typed = type_module("artifact/effect-succeed-value/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::EffectOperation {
+            success, arguments, ..
+        } = &core.functions[0].body
+        else {
+            panic!("expected effect operation");
+        };
+        assert_eq!(
+            success,
+            &CoreType::Named {
+                name: "String".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert!(
+            matches!(arguments.as_slice(), [CoreExpr::String { value, .. }] if value == "ready")
+        );
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle
+            .typescript
+            .contains("_ssrg_effect_succeed(\"ready\")"));
+    }
+
+    #[test]
     fn lowers_single_sync_effect_as_do_result() {
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";

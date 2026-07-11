@@ -1,7 +1,4 @@
-use crate::{
-    effect_ops::known_effect_operation_by_semantic, unit_type, TypedDoStatement, TypedEffect,
-    TypedExpr, TypedRecordField, TypedType,
-};
+use crate::{unit_type, TypedDoStatement, TypedEffect, TypedExpr, TypedRecordField, TypedType};
 use seseragi_syntax::{SurfaceRequirement, TypeRef};
 
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
@@ -67,14 +64,13 @@ fn collect_effect_contract(
     failure: &mut TypedType,
 ) {
     match expr {
-        TypedExpr::EffectCall { operation, .. } => {
-            let Some(operation) = known_effect_operation_by_semantic(operation) else {
-                return;
-            };
-            if let Some((field_name, type_name)) = operation.requirement {
-                push_requirement_unique(requirements, environment_field(field_name, type_name));
+        TypedExpr::EffectCall { effect, .. } => {
+            if let TypedType::Record { fields, .. } = &effect.environment {
+                for field in fields {
+                    push_requirement_unique(requirements, field.clone());
+                }
             }
-            widen_failure_from_never(failure, named_type(operation.failure_type));
+            widen_failure_from_never(failure, effect.failure.clone());
         }
         TypedExpr::DoBlock {
             statements, result, ..

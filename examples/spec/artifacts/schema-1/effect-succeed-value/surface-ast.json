@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "ready",
+      "nameSpan": {
+        "start": 14,
+        "end": 19
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "succeed",
+          "span": {
+            "start": 22,
+            "end": 29
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"ready\"",
+          "span": {
+            "start": 30,
+            "end": 37
+          }
+        },
+        "span": {
+          "start": 22,
+          "end": 37
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 37
+      }
+    }
+  ]
+}

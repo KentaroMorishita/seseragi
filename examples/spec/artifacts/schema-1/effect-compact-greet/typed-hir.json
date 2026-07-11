@@ -8,14 +8,24 @@
       "kind": "effect-fn",
       "symbol": "artifact/effect-compact-greet::greet",
       "visibility": "private",
-      "origin": { "start": 0, "end": 48 },
+      "origin": {
+        "start": 0,
+        "end": 48
+      },
       "inferredContract": true,
       "parameters": [
         {
           "kind": "named",
           "name": "name",
-          "type": { "kind": "named", "name": "String", "arguments": [] },
-          "origin": { "start": 16, "end": 20 }
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 16,
+            "end": 20
+          }
         }
       ],
       "effect": {
@@ -38,20 +48,60 @@
           "name": "ConsoleError",
           "arguments": []
         },
-        "success": { "kind": "named", "name": "Unit", "arguments": [] }
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
       },
       "body": {
         "kind": "effect-call",
         "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
         "arguments": [
           {
             "kind": "string",
             "value": "hello",
-            "type": { "kind": "named", "name": "String", "arguments": [] },
-            "origin": { "start": 41, "end": 48 }
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 41,
+              "end": 48
+            }
           }
         ],
-        "origin": { "start": 33, "end": 48 }
+        "origin": {
+          "start": 33,
+          "end": 48
+        }
       }
     }
   ]

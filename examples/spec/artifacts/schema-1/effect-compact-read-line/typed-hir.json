@@ -58,6 +58,38 @@
       "body": {
         "kind": "effect-call",
         "operation": "std/prelude::readLine",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "stdin",
+                "type": {
+                  "kind": "named",
+                  "name": "Stdin",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        },
         "arguments": [],
         "origin": {
           "start": 25,

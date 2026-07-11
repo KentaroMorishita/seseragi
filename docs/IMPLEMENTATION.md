@@ -372,4 +372,5 @@ Effect方針どおりuser定義error ADTと`mapError`で寄せます。CLI entry
 2026-07-11時点でP1-5の前半として、Effect bodyとEffect diagnosticsもresolver済み`SurfaceExpr`へ移行しました。
 do内の`let name = pureExpr`はmonadic bindとは別のTyped / Core / TypeScript statementとして保持し、lexical `const`へ
 lowerします。このstatement単独では`flatMap` helperを要求せず、前にEffect bindがある場合だけそのcontinuation内で
-評価されます。次は`Succeed` / `Fail` / `MapError`のsuccess・failure型を引数から具体化し、error ADTへ接続します。
+評価されます。EffectCall自身も具体化済み`R / E / A`を保持し、`succeed value`は引数型をsuccess型として
+CoreIrまで渡します。次は`Fail` / `MapError`のfailure型を具体化し、error ADTへ接続します。

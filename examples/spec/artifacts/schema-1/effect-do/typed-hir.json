@@ -45,6 +45,23 @@
         "result": {
           "kind": "effect-call",
           "operation": "std/effect::succeed",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
           "arguments": [],
           "origin": {
             "start": 36,

@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-succeed-value",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/effect-succeed-value::ready",
+      "namespace": "value",
+      "name": "ready",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 0,
+        "end": 37
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

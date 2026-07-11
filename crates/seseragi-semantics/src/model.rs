@@ -238,6 +238,7 @@ pub enum TypedExpr {
     },
     EffectCall {
         operation: String,
+        effect: TypedEffect,
         arguments: Vec<TypedExpr>,
         origin: ByteSpan,
     },

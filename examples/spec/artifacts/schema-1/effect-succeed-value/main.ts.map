@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-succeed-value"
+  ],
+  "sourcesContent": [
+    "pub effect fn ready = succeed \"ready\"\n"
+  ],
+  "names": [
+    "ready",
+    "succeed"
+  ],
+  "mappings": ";;AAAAA"
+}

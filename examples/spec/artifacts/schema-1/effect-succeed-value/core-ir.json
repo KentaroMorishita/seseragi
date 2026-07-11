@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-succeed-value",
+  "functions": [
+    {
+      "symbol": "artifact/effect-succeed-value::ready",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 37
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "effect.succeed",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "ready",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 30,
+              "end": 37
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 22,
+          "end": 37
+        }
+      }
+    }
+  ]
+}

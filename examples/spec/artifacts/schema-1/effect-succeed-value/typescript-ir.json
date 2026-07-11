@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-succeed-value",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.core.succeed",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "ready",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_succeed",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "ready"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 37
+      }
+    }
+  ]
+}

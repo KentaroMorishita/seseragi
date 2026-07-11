@@ -28,6 +28,9 @@ moduleは公開interfaceへ不完全なsymbolを出しません。
 通常の式として型付け・lowerし、生成TypeScriptではlexical `const`になります。pure letだけを理由に
 `effect.core.flatMap`を要求せず、最後のEffect valueだけがrunner境界で実行されます。
 
+`schema-1/effect-succeed-value/`はgenericな`succeed`を固定します。EffectCall自身が具体化済み`R / E / A`を
+TypedHirに持ち、文字列引数から`Effect<{}, Never, String>`を導出したままCoreIrとruntime callへ渡します。
+
 SurfaceAstの`let`、`fn`、`effectFn`は有効なsourceでは`body`を必ず持ちます。applicationはcurried
 applicationを保つ一引数nodeとして左へnestし、括弧は`grouped`で保持します。`do`はEffect専用構文として
 扱わず、bind / pure let / expression itemと最後のresultを分離します。item terminatorは規範grammarどおり

@@ -257,6 +257,24 @@ mod tests {
                 },
                 body: TypedExpr::EffectCall {
                     operation: "std/prelude::println".to_owned(),
+                    effect: TypedEffect {
+                        environment: TypedType::Record {
+                            closed: true,
+                            fields: vec![TypedRecordField {
+                                name: "console".to_owned(),
+                                optional: false,
+                                type_ref: TypedType::Named {
+                                    name: "Console".to_owned(),
+                                    arguments: Vec::new()
+                                }
+                            }]
+                        },
+                        failure: TypedType::Named {
+                            name: "ConsoleError".to_owned(),
+                            arguments: Vec::new()
+                        },
+                        success: unit_type()
+                    },
                     arguments: vec![TypedExpr::String {
                         value: "hello".to_owned(),
                         type_ref: TypedType::Named {
@@ -313,6 +331,24 @@ mod tests {
                 },
                 body: TypedExpr::EffectCall {
                     operation: "std/prelude::println".to_owned(),
+                    effect: TypedEffect {
+                        environment: TypedType::Record {
+                            closed: true,
+                            fields: vec![TypedRecordField {
+                                name: "console".to_owned(),
+                                optional: false,
+                                type_ref: TypedType::Named {
+                                    name: "Console".to_owned(),
+                                    arguments: Vec::new()
+                                }
+                            }]
+                        },
+                        failure: TypedType::Named {
+                            name: "ConsoleError".to_owned(),
+                            arguments: Vec::new()
+                        },
+                        success: unit_type()
+                    },
                     arguments: vec![TypedExpr::String {
                         value: "hello".to_owned(),
                         type_ref: TypedType::Named {
@@ -711,6 +747,35 @@ mod tests {
         assert!(matches!(
             result.as_ref(),
             TypedExpr::EffectCall { operation, .. } if operation == "std/effect::succeed"
+        ));
+    }
+
+    #[test]
+    fn infers_succeed_success_from_its_argument() {
+        let typed = type_module(
+            "artifact/effect-succeed-value/main.ssrg",
+            "pub effect fn ready = succeed \"ready\"\n",
+        );
+
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function");
+        };
+        let string_type = TypedType::Named {
+            name: "String".to_owned(),
+            arguments: Vec::new(),
+        };
+        assert_eq!(effect.success, string_type);
+        assert!(matches!(
+            body,
+            TypedExpr::EffectCall {
+                operation,
+                effect: call_effect,
+                arguments,
+                ..
+            } if operation == "std/effect::succeed"
+                && call_effect.success == string_type
+                && matches!(arguments.as_slice(), [TypedExpr::String { value, .. }]
+                    if value == "ready")
         ));
     }
 

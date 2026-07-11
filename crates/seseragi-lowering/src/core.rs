@@ -227,7 +227,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 origin,
                 inferred_contract: _,
                 parameters,
-                effect,
+                effect: _,
                 body,
             } => functions.push(CoreFunction {
                 symbol,
@@ -237,7 +237,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     .into_iter()
                     .map(|parameter| lower_parameter(&parameter))
                     .collect(),
-                body: lower_effect_body(&module.source, effect, body),
+                body: lower_effect_body(&module.source, body),
             }),
         }
     }

@@ -1,4 +1,4 @@
-use crate::{effect_ops::known_effect_operation_by_semantic, unit_type, TypedExpr, TypedType};
+use crate::{unit_type, TypedExpr, TypedType};
 use seseragi_syntax::{InterfaceType, TypeRef};
 
 pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<TypedType> {
@@ -91,19 +91,7 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. } => type_ref.clone(),
-        TypedExpr::EffectCall { operation, .. } => known_effect_operation_by_semantic(operation)
-            .map(|operation| TypedType::Named {
-                name: operation.success_type.to_owned(),
-                arguments: operation
-                    .success_type_arguments
-                    .iter()
-                    .map(|name| TypedType::Named {
-                        name: (*name).to_owned(),
-                        arguments: Vec::new(),
-                    })
-                    .collect(),
-            })
-            .unwrap_or_else(unit_type),
+        TypedExpr::EffectCall { effect, .. } => effect.success.clone(),
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
     }
 }

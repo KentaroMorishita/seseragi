@@ -188,7 +188,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. } => type_ref.clone(),
         TypedExpr::DoBlock { result, .. } => typed_expr_type(result),
-        TypedExpr::EffectCall { .. } => TypedType::Hole,
+        TypedExpr::EffectCall { effect, .. } => effect.success.clone(),
     }
 }
 
