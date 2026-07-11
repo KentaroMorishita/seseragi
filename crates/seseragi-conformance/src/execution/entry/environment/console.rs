@@ -55,13 +55,19 @@ fn render_adapter(local: &str, service: &str) -> String {
         .expect("a Rust string always encodes as a JSON string literal");
     format!(
         "const {local} = {{\n\
-         \x20 print(value: string) {{\n\
-         \x20   liveConsole.print(value);\n\
-         \x20   {TRACE_LOCAL}.push({{ service: {service}, operation: \"print\", arguments: [value], stdout: value }});\n\
+         \x20 async print(value: string) {{\n\
+         \x20   const result = await liveConsole.print(value);\n\
+         \x20   if (result.kind === \"success\") {{\n\
+         \x20     {TRACE_LOCAL}.push({{ service: {service}, operation: \"print\", arguments: [value], stdout: value }});\n\
+         \x20   }}\n\
+         \x20   return result;\n\
          \x20 }},\n\
-         \x20 println(value: string) {{\n\
-         \x20   liveConsole.println(value);\n\
-         \x20   {TRACE_LOCAL}.push({{ service: {service}, operation: \"println\", arguments: [value], stdout: `${{value}}\\n` }});\n\
+         \x20 async println(value: string) {{\n\
+         \x20   const result = await liveConsole.println(value);\n\
+         \x20   if (result.kind === \"success\") {{\n\
+         \x20     {TRACE_LOCAL}.push({{ service: {service}, operation: \"println\", arguments: [value], stdout: `${{value}}\\n` }});\n\
+         \x20   }}\n\
+         \x20   return result;\n\
          \x20 }}\n\
          }};\n"
     )
@@ -100,8 +106,13 @@ mod tests {
         assert!(rendered.setup.contains("service: \"terminal\""));
         assert!(rendered.setup.contains("arguments: [value]"));
         assert!(rendered.setup.contains("stdout: `${value}\\n`"));
+        assert!(rendered.setup.contains("if (result.kind === \"success\")"));
+        assert!(rendered.setup.contains("return result"));
         assert!(
-            rendered.setup.find("liveConsole.print(value)").unwrap()
+            rendered
+                .setup
+                .find("await liveConsole.print(value)")
+                .unwrap()
                 < rendered.setup.find("operation: \"print\"").unwrap()
         );
     }
