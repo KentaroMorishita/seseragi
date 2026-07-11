@@ -1,4 +1,4 @@
-import type { Either } from "./sum";
+import type { Either, Left, Right } from "./sum";
 
 export type Unit = undefined;
 
@@ -54,9 +54,20 @@ export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   };
 }
 
-export function fromEither<Failure, Success>(
-  value: Either<Failure, Success>
-): Effect<unknown, Failure, Success> {
+type EitherFailure<Value> = Value extends Left<infer Failure>
+  ? Failure
+  : never;
+
+type EitherSuccess<Value> = Value extends Right<infer Success>
+  ? Success
+  : never;
+
+export function fromEither<Value extends Either<unknown, unknown>>(
+  value: Value
+): Effect<unknown, EitherFailure<Value>, EitherSuccess<Value>>;
+export function fromEither(
+  value: Either<unknown, unknown>
+): Effect<unknown, unknown, unknown> {
   if (value.tag === "Right") {
     const success = value.value;
     return succeed(success);

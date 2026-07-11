@@ -1,3 +1,4 @@
+use std::fs;
 use std::path::Path;
 use std::process::Command;
 
@@ -42,6 +43,8 @@ pub(super) fn check_typed_failure_boundary(root: &Path) -> Result<(), String> {
 }
 
 pub(super) fn check_from_either_boundary(root: &Path) -> Result<(), String> {
+    check_from_either_inference(root)?;
+
     let output = Command::new("bun")
         .arg("--eval")
         .arg(
@@ -76,4 +79,59 @@ pub(super) fn check_from_either_boundary(root: &Path) -> Result<(), String> {
         ));
     }
     Ok(())
+}
+
+fn check_from_either_inference(root: &Path) -> Result<(), String> {
+    let probe_dir = root.join("target/seseragi-conformance/runtime-package");
+    fs::create_dir_all(&probe_dir)
+        .map_err(|error| format!("failed to create fromEither type probe directory: {error}"))?;
+    let probe_path = probe_dir.join("from-either-inference.ts");
+    fs::write(
+        &probe_path,
+        "import { fromEither, type Effect } from \"../../../runtime/ts/src/effect.ts\";\n\
+         import type { Either } from \"../../../runtime/ts/src/sum.ts\";\n\
+         type AppError = { readonly tag: \"InvalidInput\"; readonly input: string };\n\
+         type Hand = { readonly tag: \"Rock\" } | { readonly tag: \"Paper\" };\n\
+         declare const parsed: Either<AppError, Hand>;\n\
+         const inferred = fromEither(parsed);\n\
+         type Equal<Left, Right> = (<Value>() => Value extends Left ? 1 : 2) extends\n\
+           (<Value>() => Value extends Right ? 1 : 2)\n\
+           ? true\n\
+           : false;\n\
+         type Assert<Condition extends true> = Condition;\n\
+         type InferenceIsExact = Assert<\n\
+           Equal<typeof inferred, Effect<unknown, AppError, Hand>>\n\
+         >;\n\
+         const exact: Effect<unknown, AppError, Hand> = inferred;\n\
+         void (null as unknown as InferenceIsExact);\n\
+         void exact;\n",
+    )
+    .map_err(|error| format!("failed to write fromEither type probe: {error}"))?;
+
+    let output = Command::new("bunx")
+        .arg("tsc")
+        .arg("--noEmit")
+        .arg("--strict")
+        .arg("--target")
+        .arg("ES2022")
+        .arg("--module")
+        .arg("ESNext")
+        .arg("--moduleResolution")
+        .arg("bundler")
+        .arg("--allowImportingTsExtensions")
+        .arg("--skipLibCheck")
+        .arg("--types")
+        .arg("node")
+        .arg(&probe_path)
+        .current_dir(root)
+        .output()
+        .map_err(|error| format!("failed to type-check fromEither inference: {error}"))?;
+    if output.status.success() {
+        return Ok(());
+    }
+    Err(format!(
+        "TypeScript fromEither inference probe failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    ))
 }
