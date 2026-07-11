@@ -52,6 +52,22 @@ export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   };
 }
 
+export function mapError<Environment, Failure, NextFailure, Success>(
+  mapper: (error: Failure) => NextFailure,
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment, NextFailure, Success> {
+  return async (environment) => {
+    try {
+      return await effect(environment);
+    } catch (error) {
+      if (error instanceof TypedFailureSignal) {
+        throw new TypedFailureSignal(mapper(error.error as Failure));
+      }
+      throw error;
+    }
+  };
+}
+
 export async function run<Environment, Failure, Success>(
   effect: Effect<Environment, Failure, Success>,
   environment: Environment

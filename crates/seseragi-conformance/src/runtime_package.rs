@@ -45,7 +45,9 @@ pub(crate) fn check_typescript_runtime_package(
     if runtime_helper_is_declared(abi, "effect.console.println") {
         check_typescript_runtime_console_is_cold(root)?;
     }
-    if runtime_helper_is_declared(abi, "effect.core.fail") {
+    if runtime_helper_is_declared(abi, "effect.core.fail")
+        || runtime_helper_is_declared(abi, "effect.core.mapError")
+    {
         effect::check_typed_failure_boundary(root)?;
     }
     if runtime_helper_is_declared(abi, "core.int64.add") {

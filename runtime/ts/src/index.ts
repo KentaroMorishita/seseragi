@@ -5,7 +5,7 @@ export type {
   EffectSuccess,
   Unit,
 } from "./effect";
-export { fail, flatMap, run, succeed, unit } from "./effect";
+export { fail, flatMap, mapError, run, succeed, unit } from "./effect";
 export { add, divide, multiply, power, remainder, subtract } from "./int64";
 
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console";

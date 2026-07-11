@@ -120,6 +120,16 @@
       }
     },
     {
+      "id": "effect.core.mapError",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(E -> F) -> Effect<R, E, A> -> Effect<R, F, A>",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "mapError"
+      }
+    },
+    {
       "id": "effect.core.flatMap",
       "kind": "runtime-helper",
       "typescript": "function",

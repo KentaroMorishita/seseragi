@@ -17,7 +17,8 @@ Current scope:
 
 Typed failureはruntime内部のprivate carrierでdefectと区別します。`fail`だけがcarrierを発生させ、`run`は
 carrierだけを`EffectResult.failure`へ変換します。任意のJavaScript throw / rejected Promiseはdefectとして
-再throwし、failure channelへ暗黙変換しません。
+再throwし、failure channelへ暗黙変換しません。`mapError`もcarrierだけを変換し、source Effectまたはmapperが
+発生させたdefectを捕捉しません。
 
 `./stdin` is deliberately only the first runtime slice, not the full
 `std/stdin` contract. It does not yet implement byte reads, configurable line
