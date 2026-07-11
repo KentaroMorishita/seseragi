@@ -30,14 +30,12 @@ pub(crate) fn runtime_feature_ids(root: &Path) -> Result<BTreeSet<String>, Strin
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct RuntimeHelperImport {
+pub(crate) struct RuntimeImport {
     pub(crate) module: String,
     pub(crate) export_name: String,
 }
 
-pub(crate) fn runtime_helper_imports(
-    root: &Path,
-) -> Result<BTreeMap<String, RuntimeHelperImport>, String> {
+pub(crate) fn runtime_imports(root: &Path) -> Result<BTreeMap<String, RuntimeImport>, String> {
     let abi = read_core_runtime_abi(root)?;
     let features = abi
         .get("features")
@@ -45,27 +43,28 @@ pub(crate) fn runtime_helper_imports(
         .ok_or_else(|| "runtime ABI features must be an array".to_owned())?;
     let mut imports = BTreeMap::new();
     for feature in features {
-        if feature.get("kind").and_then(|value| value.as_str()) != Some("runtime-helper") {
+        let kind = feature.get("kind").and_then(|value| value.as_str());
+        if !matches!(kind, Some("runtime-helper" | "runtime-binding")) {
             continue;
         }
         let id = feature
             .get("id")
             .and_then(|value| value.as_str())
-            .ok_or_else(|| "runtime helper feature id must be a string".to_owned())?;
+            .ok_or_else(|| "runtime import feature id must be a string".to_owned())?;
         let import = feature
             .get("import")
-            .ok_or_else(|| format!("runtime helper {id} import is missing"))?;
+            .ok_or_else(|| format!("runtime import {id} import is missing"))?;
         let module = import
             .get("module")
             .and_then(|value| value.as_str())
-            .ok_or_else(|| format!("runtime helper {id} import.module must be a string"))?;
+            .ok_or_else(|| format!("runtime import {id} import.module must be a string"))?;
         let export_name = import
             .get("export")
             .and_then(|value| value.as_str())
-            .ok_or_else(|| format!("runtime helper {id} import.export must be a string"))?;
+            .ok_or_else(|| format!("runtime import {id} import.export must be a string"))?;
         imports.insert(
             id.to_owned(),
-            RuntimeHelperImport {
+            RuntimeImport {
                 module: module.to_owned(),
                 export_name: export_name.to_owned(),
             },
@@ -128,7 +127,10 @@ fn check_runtime_abi_feature(
         .get("kind")
         .and_then(|value| value.as_str())
         .ok_or_else(|| format!("runtime ABI feature {id} kind must be a string"))?;
-    if !matches!(kind, "value-representation" | "runtime-helper") {
+    if !matches!(
+        kind,
+        "value-representation" | "runtime-helper" | "runtime-binding"
+    ) {
         return Err(format!("runtime ABI feature {id} kind is not supported"));
     }
     feature
@@ -149,21 +151,21 @@ fn check_runtime_abi_feature_import(
     import: Option<&serde_json::Value>,
 ) -> Result<(), String> {
     match (kind, import) {
-        ("runtime-helper", Some(import)) => {
+        ("runtime-helper" | "runtime-binding", Some(import)) => {
             import
                 .get("module")
                 .and_then(|value| value.as_str())
-                .ok_or_else(|| format!("runtime helper {id} import.module must be a string"))?;
+                .ok_or_else(|| format!("runtime import {id} import.module must be a string"))?;
             import
                 .get("export")
                 .and_then(|value| value.as_str())
-                .ok_or_else(|| format!("runtime helper {id} import.export must be a string"))?;
+                .ok_or_else(|| format!("runtime import {id} import.export must be a string"))?;
         }
         (_, Some(serde_json::Value::Null)) => {}
         (_, None) => return Err(format!("runtime ABI feature {id} import is missing")),
         _ => {
             return Err(format!(
-                "runtime ABI feature {id} may only have structured import for runtime-helper"
+                "runtime ABI feature {id} may only have structured import for an imported runtime binding"
             ));
         }
     }

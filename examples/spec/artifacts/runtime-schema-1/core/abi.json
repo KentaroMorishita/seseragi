@@ -114,6 +114,46 @@
       "import": null
     },
     {
+      "id": "core.maybe.nothing",
+      "kind": "runtime-binding",
+      "typescript": "readonly value",
+      "boundary": "Nothing singleton",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Nothing"
+      }
+    },
+    {
+      "id": "core.maybe.just",
+      "kind": "runtime-binding",
+      "typescript": "generic function",
+      "boundary": "A -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Just"
+      }
+    },
+    {
+      "id": "core.either.left",
+      "kind": "runtime-binding",
+      "typescript": "generic function",
+      "boundary": "E -> Either<E, A>",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Left"
+      }
+    },
+    {
+      "id": "core.either.right",
+      "kind": "runtime-binding",
+      "typescript": "generic function",
+      "boundary": "A -> Either<E, A>",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Right"
+      }
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",

@@ -1,5 +1,5 @@
 use crate::pipeline::{emit_generated_module, interface_source_name, parse_typescript_ir_json};
-use crate::runtime_abi::{runtime_feature_ids, runtime_helper_imports};
+use crate::runtime_abi::{runtime_feature_ids, runtime_imports};
 use serde_json::Value;
 use std::fs;
 use std::path::Path;
@@ -54,7 +54,7 @@ fn check_generated_runtime_imports(
     typescript_ir: &Value,
     typescript: &str,
 ) -> Result<(), String> {
-    let helper_imports = runtime_helper_imports(root)?;
+    let runtime_imports = runtime_imports(root)?;
     let Some(imports) = typescript_ir.get("imports") else {
         return Ok(());
     };
@@ -73,12 +73,12 @@ fn check_generated_runtime_imports(
             "local",
             &format!("TypeScriptIr imports[{index}].local"),
         )?;
-        let helper = helper_imports.get(feature).ok_or_else(|| {
-            format!("TypeScriptIr import feature {feature} has no runtime helper ABI import")
+        let runtime_import = runtime_imports.get(feature).ok_or_else(|| {
+            format!("TypeScriptIr import feature {feature} has no runtime ABI import")
         })?;
         if !typescript
             .lines()
-            .any(|line| typescript_line_imports_helper(line, helper, local))
+            .any(|line| typescript_line_imports_runtime_binding(line, runtime_import, local))
         {
             return Err(format!(
                 "generated TypeScript import for runtime feature {feature} does not match ABI"
@@ -88,14 +88,14 @@ fn check_generated_runtime_imports(
     Ok(())
 }
 
-fn typescript_line_imports_helper(
+fn typescript_line_imports_runtime_binding(
     line: &str,
-    helper: &crate::runtime_abi::RuntimeHelperImport,
+    runtime_import: &crate::runtime_abi::RuntimeImport,
     local: &str,
 ) -> bool {
     line.starts_with("import { ")
-        && line.contains(&format!("{} as {local}", helper.export_name))
-        && line.ends_with(&format!("from \"{}\"", helper.module))
+        && line.contains(&format!("{} as {local}", runtime_import.export_name))
+        && line.ends_with(&format!("from \"{}\"", runtime_import.module))
 }
 
 fn check_generated_source_map(
@@ -215,19 +215,19 @@ fn check_generated_runtime_requirements(
 
 #[cfg(test)]
 mod tests {
-    use super::typescript_line_imports_helper;
-    use crate::runtime_abi::RuntimeHelperImport;
+    use super::typescript_line_imports_runtime_binding;
+    use crate::runtime_abi::RuntimeImport;
 
     #[test]
     fn accepts_grouped_generated_import_from_runtime_abi_mapping() {
-        let helper = RuntimeHelperImport {
+        let runtime_import = RuntimeImport {
             module: "@seseragi/runtime/console".to_owned(),
             export_name: "println".to_owned(),
         };
 
-        assert!(typescript_line_imports_helper(
+        assert!(typescript_line_imports_runtime_binding(
             "import { print as _ssrg_console_print, println as _ssrg_console_println } from \"@seseragi/runtime/console\"",
-            &helper,
+            &runtime_import,
             "_ssrg_console_println"
         ));
     }

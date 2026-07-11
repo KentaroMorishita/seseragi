@@ -35,8 +35,11 @@ pub(crate) fn check_typescript_runtime_package(
         .and_then(|value| value.as_array())
         .ok_or_else(|| "runtime ABI features must be an array".to_owned())?;
     for feature in features {
-        if feature.get("kind").and_then(|value| value.as_str()) == Some("runtime-helper") {
-            check_typescript_runtime_helper(root, &package, feature)?;
+        if matches!(
+            feature.get("kind").and_then(|value| value.as_str()),
+            Some("runtime-helper" | "runtime-binding")
+        ) {
+            check_typescript_runtime_import(root, &package, feature)?;
         }
     }
     check_typescript_runtime_package_typecheck(root)?;
@@ -69,7 +72,7 @@ fn runtime_helper_is_declared(abi: &serde_json::Value, id: &str) -> bool {
         })
 }
 
-fn check_typescript_runtime_helper(
+fn check_typescript_runtime_import(
     root: &Path,
     package: &serde_json::Value,
     feature: &serde_json::Value,
@@ -77,29 +80,29 @@ fn check_typescript_runtime_helper(
     let id = feature
         .get("id")
         .and_then(|value| value.as_str())
-        .ok_or_else(|| "runtime helper feature id must be a string".to_owned())?;
+        .ok_or_else(|| "runtime import feature id must be a string".to_owned())?;
     let import = feature
         .get("import")
-        .ok_or_else(|| format!("runtime helper {id} import is missing"))?;
+        .ok_or_else(|| format!("runtime import {id} import is missing"))?;
     let module = import
         .get("module")
         .and_then(|value| value.as_str())
-        .ok_or_else(|| format!("runtime helper {id} import.module must be a string"))?;
+        .ok_or_else(|| format!("runtime import {id} import.module must be a string"))?;
     let export_name = import
         .get("export")
         .and_then(|value| value.as_str())
-        .ok_or_else(|| format!("runtime helper {id} import.export must be a string"))?;
+        .ok_or_else(|| format!("runtime import {id} import.export must be a string"))?;
 
     let subpath = runtime_package_subpath(module)
-        .ok_or_else(|| format!("runtime helper {id} imports unexpected module {module}"))?;
+        .ok_or_else(|| format!("runtime import {id} uses unexpected module {module}"))?;
     let source_path = package_export_source(package, &subpath)
-        .ok_or_else(|| format!("runtime helper {id} import {module} is not exported"))?;
+        .ok_or_else(|| format!("runtime import {id} module {module} is not exported"))?;
     let source = fs::read_to_string(root.join("runtime/ts").join(source_path))
-        .map_err(|error| format!("failed to read TypeScript runtime helper {module}: {error}"))?;
+        .map_err(|error| format!("failed to read TypeScript runtime import {module}: {error}"))?;
 
     if !source_exports_name(&source, export_name) {
         return Err(format!(
-            "runtime helper {id} import {module} does not export {export_name}"
+            "runtime import {id} module {module} does not export {export_name}"
         ));
     }
     Ok(())

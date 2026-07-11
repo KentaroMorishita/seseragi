@@ -127,7 +127,9 @@ frontend artifactと同じbundleへ押し込まず、module resolverがTokenStre
 `runtime-schema-1/core/abi.json`はTypeScript runtimeのfeature registryです。generated moduleは必要feature IDと
 ABI majorだけを記録し、compiler内部のruntime helper pathを推測しません。import不要なInt表現もfeatureとして
 登録し、ADTは`core.adt`、standard `Maybe` / `Either`は`core.maybe` / `core.either`のreadonly tagged object表現として
-同じ互換性検査へ載せます。`readLine`のEOFは`undefined`ではなくsingleton `Nothing`です。helper featureのimportはmodule / exportのstructured pairで、
+同じ互換性検査へ載せます。`readLine`のEOFは`undefined`ではなくsingleton `Nothing`です。function helperは
+`runtime-helper`、`Nothing`のようなimport valueとconstructor functionは`runtime-binding`として区別し、どちらも
+module / exportのstructured pairを持ちます。
 TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
