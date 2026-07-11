@@ -7,6 +7,10 @@ use seseragi_syntax::{InterfaceRecordField, InterfaceType};
 
 use super::environment::parse_required_environment_fields;
 
+mod failure;
+#[cfg(test)]
+mod model;
+
 pub(super) fn validate_effect_entry_contract(
     case: &Path,
     run: &serde_json::Value,
@@ -48,7 +52,13 @@ pub(super) fn validate_effect_entry_contract(
         .ok_or_else(|| {
             format!("execution entry export {entry_export} is missing from entry.typedInterface")
         })?;
-    let environment = effect_environment(&export.scheme.type_ref, entry_export)?;
+    let effect = effect_type(&export.scheme.type_ref, entry_export)?;
+    let environment = environment_fields(effect.environment, entry_export)?;
+    // Keep failure evidence extraction separate from environment validation so
+    // the generated dictionary contract can be enabled without teaching the
+    // execution runner another type parser. Enforcement is activated when the
+    // generated-module instance metadata is wired into this boundary.
+    let _failure_evidence = failure::analyze_failure_evidence(&interface, effect.failure);
     let required = parse_required_environment_fields(run)?;
     compare_required_environment(&environment, &required, entry_export)
 }
@@ -66,10 +76,24 @@ fn compare_required_environment(
     ))
 }
 
+#[cfg(test)]
 fn effect_environment(
     entry_type: &InterfaceType,
     entry_export: &str,
 ) -> Result<BTreeMap<String, String>, String> {
+    let effect = effect_type(entry_type, entry_export)?;
+    environment_fields(effect.environment, entry_export)
+}
+
+struct EffectType<'a> {
+    environment: &'a InterfaceType,
+    failure: &'a InterfaceType,
+}
+
+fn effect_type<'a>(
+    entry_type: &'a InterfaceType,
+    entry_export: &str,
+) -> Result<EffectType<'a>, String> {
     let InterfaceType::Function { result, .. } = entry_type else {
         return Err(format!(
             "execution Effect entry {entry_export} must have a function type"
@@ -93,7 +117,17 @@ fn effect_environment(
             "execution Effect entry {entry_export} function result must be Effect<R, E, A>"
         ));
     }
-    let InterfaceType::Record { closed, fields } = &arguments[0] else {
+    Ok(EffectType {
+        environment: &arguments[0],
+        failure: &arguments[1],
+    })
+}
+
+fn environment_fields(
+    environment: &InterfaceType,
+    entry_export: &str,
+) -> Result<BTreeMap<String, String>, String> {
+    let InterfaceType::Record { closed, fields } = environment else {
         return Err(format!(
             "execution Effect entry {entry_export} environment R must be a closed record"
         ));
