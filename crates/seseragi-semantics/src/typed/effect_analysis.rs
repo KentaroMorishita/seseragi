@@ -5,6 +5,12 @@ use super::effect_body::typed_effect_body;
 use super::functions::typed_parameters_from_surface;
 use super::TypedResolution;
 
+mod contracts;
+mod intrinsics;
+
+use contracts::compact_failure_conflict;
+use intrinsics::invalid_intrinsic_issues;
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct EffectFailureOrigin {
     pub(crate) failure_type: String,
@@ -32,6 +38,18 @@ pub(crate) enum EffectFunctionIssue {
     },
     CompactBodyNotEffect {
         primary: ByteSpan,
+    },
+    MapErrorMapperNotFunction {
+        primary: ByteSpan,
+        actual: TypedType,
+    },
+    MapErrorSourceNotEffect {
+        primary: ByteSpan,
+    },
+    MapErrorFailureMismatch {
+        primary: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
     },
 }
 
@@ -71,6 +89,11 @@ pub(crate) fn analyze_effect_function(
     {
         let primary = compact_contract_clause(tokens, *span).unwrap_or(*span);
         return vec![EffectFunctionIssue::CompactContractClause { primary }];
+    }
+
+    let intrinsic_issues = invalid_intrinsic_issues(&typed_body);
+    if !intrinsic_issues.is_empty() {
+        return intrinsic_issues;
     }
 
     let statement_issues = invalid_statement_issues(&typed_body, *inferred_contract);
@@ -162,75 +185,6 @@ fn missing_result_issue(body: &SurfaceExpr) -> Option<EffectFunctionIssue> {
     })
 }
 
-fn compact_failure_conflict(body: &TypedExpr) -> Option<EffectFunctionIssue> {
-    let mut failures = Vec::new();
-    collect_failures(body, &mut failures);
-    let mut distinct = Vec::new();
-    for failure in failures {
-        if failure.failure_type == "Never"
-            || distinct
-                .iter()
-                .any(|existing: &EffectFailureOrigin| existing.failure_type == failure.failure_type)
-        {
-            continue;
-        }
-        distinct.push(failure);
-    }
-    let primary = distinct.get(1)?.origin;
-    Some(EffectFunctionIssue::CompactFailureConflict {
-        primary,
-        failures: distinct,
-    })
-}
-
-fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrigin>) {
-    match expression {
-        TypedExpr::EffectCall { effect, origin, .. } => {
-            if let TypedType::Named { name, arguments } = &effect.failure {
-                if arguments.is_empty() {
-                    failures.push(EffectFailureOrigin {
-                        failure_type: name.clone(),
-                        origin: *origin,
-                    });
-                }
-            }
-        }
-        TypedExpr::DoBlock {
-            statements, result, ..
-        } => {
-            for statement in statements {
-                match statement {
-                    TypedDoStatement::Effect { value } | TypedDoStatement::Bind { value, .. } => {
-                        collect_failures(value, failures);
-                    }
-                    TypedDoStatement::PureLet { .. } => {}
-                }
-            }
-            collect_failures(result, failures);
-        }
-        TypedExpr::Match {
-            scrutinee, arms, ..
-        } => {
-            collect_failures(scrutinee, failures);
-            for arm in arms {
-                if let Some(guard) = &arm.guard {
-                    collect_failures(guard, failures);
-                }
-                collect_failures(&arm.body, failures);
-            }
-        }
-        TypedExpr::Unit { .. }
-        | TypedExpr::Integer { .. }
-        | TypedExpr::String { .. }
-        | TypedExpr::Boolean { .. }
-        | TypedExpr::Variable { .. }
-        | TypedExpr::Call { .. }
-        | TypedExpr::Tuple { .. }
-        | TypedExpr::Binary { .. }
-        | TypedExpr::If { .. } => {}
-    }
-}
-
 fn is_effect_expression(expression: &TypedExpr) -> bool {
     matches!(
         expression,
@@ -250,7 +204,7 @@ fn compact_contract_clause(tokens: &[Token], span: ByteSpan) -> Option<ByteSpan>
         .map(token_span)
 }
 
-fn expression_origin(expression: &TypedExpr) -> ByteSpan {
+pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
     match expression {
         TypedExpr::Unit { origin, .. }
         | TypedExpr::Integer { origin, .. }

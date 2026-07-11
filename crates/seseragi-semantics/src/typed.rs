@@ -815,6 +815,50 @@ mod tests {
     }
 
     #[test]
+    fn maps_an_adt_failure_with_a_constructor_function() {
+        let typed = type_module(
+            "artifact/effect-map-error-adt/main.ssrg",
+            "pub type HandInputError = | UnknownHand String\npub type AppError = | InvalidHand HandInputError\npub effect fn rejectUnknownHand input: String = mapError InvalidHand (fail (UnknownHand input))\n",
+        );
+
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[2] else {
+            panic!("expected effect function");
+        };
+        assert_eq!(
+            effect.failure,
+            TypedType::Named {
+                name: "AppError".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert_eq!(
+            effect.success,
+            TypedType::Named {
+                name: "Never".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert!(matches!(
+            body,
+            TypedExpr::EffectCall {
+                operation,
+                effect: mapped,
+                arguments,
+                ..
+            } if operation == "std/effect::mapError"
+                && matches!(&mapped.failure, TypedType::Named { name, .. }
+                    if name == "AppError")
+                && matches!(arguments.as_slice(), [
+                    TypedExpr::Variable { name: mapper, .. },
+                    TypedExpr::EffectCall { operation: source, effect: source_effect, .. }
+                ] if mapper == "artifact/effect-map-error-adt::InvalidHand"
+                    && source == "std/effect::fail"
+                    && matches!(&source_effect.failure, TypedType::Named { name, .. }
+                        if name == "HandInputError"))
+        ));
+    }
+
+    #[test]
     fn type_module_interface_ignores_non_value_exports() {
         let interface = seseragi_syntax::parse_module_interface(
             "artifact/rich/main.ssrg",

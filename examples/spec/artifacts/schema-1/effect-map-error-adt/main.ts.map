@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-map-error-adt"
+  ],
+  "sourcesContent": [
+    "pub type HandInputError =\n  | UnknownHand String\n\npub type AppError =\n  | InvalidHand HandInputError\n\npub effect fn rejectUnknownHand input: String =\n  mapError InvalidHand (fail (UnknownHand input))\n"
+  ],
+  "names": [
+    "HandInputError",
+    "UnknownHand",
+    "AppError",
+    "InvalidHand",
+    "rejectUnknownHand",
+    "mapError",
+    "fail",
+    "UnknownHand"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAEJC;;AACIC;AAEJC"
+}

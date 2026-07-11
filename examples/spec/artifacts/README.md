@@ -35,6 +35,10 @@ TypedHirに持ち、文字列引数から`Effect<{}, Never, String>`を導出し
 `fail Invalid`は`Effect<{}, AppError, Never>`へ具体化され、生成moduleはcoldなruntime helperを呼ぶだけで
 `throw`や`await`を直接出しません。typed failureとdefectの区別はruntime runner境界が保持します。
 
+`schema-1/effect-map-error-adt/`はfailure ADTの明示変換を固定します。payload constructor
+`InvalidHand: HandInputError -> AppError`をmapper関数として解決し、nested `fail`のfailureだけをAppErrorへ変換します。
+sourceのenvironmentとsuccess型は保持し、生成moduleもcoldな`mapError(mapper, effect)`の合成だけを出力します。
+
 SurfaceAstの`let`、`fn`、`effectFn`は有効なsourceでは`body`を必ず持ちます。applicationはcurried
 applicationを保つ一引数nodeとして左へnestし、括弧は`grouped`で保持します。`do`はEffect専用構文として
 扱わず、bind / pure let / expression itemと最後のresultを分離します。item terminatorは規範grammarどおり

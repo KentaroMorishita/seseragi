@@ -3,6 +3,8 @@ use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token,
 };
 
+use super::type_labels::type_label;
+
 pub(super) fn collect_effect_fn_diagnostics(
     declaration: &SurfaceDecl,
     tokens: &[Token],
@@ -84,6 +86,50 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             message_key: "effect.compact-body-not-effect".to_owned(),
             primary: byte_range(primary),
             related: vec![related("compact inferred effect function", function)],
+            fixes: Vec::new(),
+        },
+        EffectFunctionIssue::MapErrorMapperNotFunction { primary, actual } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.map-error-mapper-not-function".to_owned(),
+            primary: byte_range(primary),
+            related: vec![related(
+                &format!(
+                    "expected a failure mapper, received {}",
+                    type_label(&actual)
+                ),
+                function,
+            )],
+            fixes: Vec::new(),
+        },
+        EffectFunctionIssue::MapErrorSourceNotEffect { primary } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.map-error-source-not-effect".to_owned(),
+            primary: byte_range(primary),
+            related: vec![related("mapError requires an Effect value", function)],
+            fixes: Vec::new(),
+        },
+        EffectFunctionIssue::MapErrorFailureMismatch {
+            primary,
+            expected,
+            actual,
+        } => Diagnostic {
+            id: String::new(),
+            code: "SES-E0001".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.map-error-failure-mismatch".to_owned(),
+            primary: byte_range(primary),
+            related: vec![related(
+                &format!(
+                    "mapper accepts {}, but source fails with {}",
+                    type_label(&actual),
+                    type_label(&expected)
+                ),
+                function,
+            )],
             fixes: Vec::new(),
         },
     }

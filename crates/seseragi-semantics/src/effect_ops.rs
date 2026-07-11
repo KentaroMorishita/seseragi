@@ -49,6 +49,14 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
         success_type: "Never",
         success_type_arguments: &[],
     },
+    KnownEffectOperation {
+        surface_name: "mapError",
+        semantic_name: "std/effect::mapError",
+        requirement: None,
+        failure_type: "Never",
+        success_type: "Never",
+        success_type_arguments: &[],
+    },
 ];
 
 pub(crate) fn known_effect_operation_by_surface(
@@ -122,6 +130,14 @@ mod tests {
         assert_eq!(operation.semantic_name, "std/effect::fail");
         assert_eq!(operation.requirement, None);
         assert_eq!(operation.success_type, "Never");
+    }
+
+    #[test]
+    fn resolves_map_error_as_a_generic_failure_transform() {
+        let operation = known_effect_operation_by_surface("mapError").unwrap();
+
+        assert_eq!(operation.semantic_name, "std/effect::mapError");
+        assert_eq!(operation.requirement, None);
     }
 
     #[test]

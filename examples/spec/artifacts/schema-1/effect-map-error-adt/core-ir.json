@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-map-error-adt",
+  "adts": [
+    {
+      "symbol": "artifact/effect-map-error-adt::HandInputError",
+      "name": "HandInputError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-map-error-adt::UnknownHand",
+          "name": "UnknownHand",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 30,
+            "end": 41
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "symbol": "artifact/effect-map-error-adt::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-map-error-adt::InvalidHand",
+          "name": "InvalidHand",
+          "payload": {
+            "kind": "named",
+            "name": "HandInputError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 74,
+            "end": 85
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 100
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/effect-map-error-adt::rejectUnknownHand",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 102,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "effect.mapError",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/effect-map-error-adt::InvalidHand",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "HandInputError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 161,
+              "end": 172
+            }
+          },
+          {
+            "kind": "effect-operation",
+            "operation": "effect.fail",
+            "requirements": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "HandInputError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/effect-map-error-adt::UnknownHand",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "input",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 192,
+                      "end": 197
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "HandInputError",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 180,
+                  "end": 197
+                }
+              }
+            ],
+            "origin": {
+              "source": "main.ssrg",
+              "start": 174,
+              "end": 198
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 152,
+          "end": 199
+        }
+      }
+    }
+  ]
+}

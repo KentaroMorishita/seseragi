@@ -50,6 +50,14 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         source_map_name: "fail",
     },
     RuntimeEffectOperation {
+        core_name: "effect.mapError",
+        runtime_feature: "effect.core.mapError",
+        local_name: "_ssrg_effect_mapError",
+        module: "@seseragi/runtime/effect",
+        export_name: "mapError",
+        source_map_name: "mapError",
+    },
+    RuntimeEffectOperation {
         core_name: "effect.flatMap",
         runtime_feature: "effect.core.flatMap",
         local_name: "_ssrg_effect_flatMap",
@@ -123,5 +131,13 @@ mod tests {
 
         assert_eq!(operation.runtime_feature, "effect.core.fail");
         assert_eq!(operation.export_name, "fail");
+    }
+
+    #[test]
+    fn resolves_failure_mapping_runtime_abi() {
+        let operation = runtime_effect_operation("effect.mapError").unwrap();
+
+        assert_eq!(operation.runtime_feature, "effect.core.mapError");
+        assert_eq!(operation.export_name, "mapError");
     }
 }

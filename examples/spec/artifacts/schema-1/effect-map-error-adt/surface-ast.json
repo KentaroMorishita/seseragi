@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "HandInputError",
+      "nameSpan": {
+        "start": 9,
+        "end": 23
+      },
+      "variants": [
+        {
+          "name": "UnknownHand",
+          "nameSpan": {
+            "start": 30,
+            "end": 41
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 42,
+              "end": 48
+            }
+          },
+          "span": {
+            "start": 28,
+            "end": 48
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "AppError",
+      "nameSpan": {
+        "start": 59,
+        "end": 67
+      },
+      "variants": [
+        {
+          "name": "InvalidHand",
+          "nameSpan": {
+            "start": 74,
+            "end": 85
+          },
+          "payload": {
+            "kind": "named",
+            "name": "HandInputError",
+            "span": {
+              "start": 86,
+              "end": 100
+            }
+          },
+          "span": {
+            "start": 72,
+            "end": 100
+          }
+        }
+      ],
+      "span": {
+        "start": 50,
+        "end": 100
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "rejectUnknownHand",
+      "nameSpan": {
+        "start": 116,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 134,
+            "end": 139
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 141,
+              "end": 147
+            }
+          }
+        }
+      ],
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "mapError",
+            "span": {
+              "start": 152,
+              "end": 160
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "InvalidHand",
+            "span": {
+              "start": 161,
+              "end": 172
+            }
+          },
+          "span": {
+            "start": 152,
+            "end": 172
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "fail",
+              "span": {
+                "start": 174,
+                "end": 178
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "UnknownHand",
+                  "span": {
+                    "start": 180,
+                    "end": 191
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "input",
+                  "span": {
+                    "start": 192,
+                    "end": 197
+                  }
+                },
+                "span": {
+                  "start": 180,
+                  "end": 197
+                }
+              },
+              "span": {
+                "start": 179,
+                "end": 198
+              }
+            },
+            "span": {
+              "start": 174,
+              "end": 198
+            }
+          },
+          "span": {
+            "start": 173,
+            "end": 199
+          }
+        },
+        "span": {
+          "start": 152,
+          "end": 199
+        }
+      },
+      "span": {
+        "start": 102,
+        "end": 199
+      }
+    }
+  ]
+}

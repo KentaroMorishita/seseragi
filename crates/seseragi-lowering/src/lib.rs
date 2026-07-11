@@ -533,6 +533,55 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_adt_failure_mapping_to_nested_cold_runtime_calls() {
+        let source = "pub type HandInputError = | UnknownHand String\npub type AppError = | InvalidHand HandInputError\npub effect fn rejectUnknownHand input: String = mapError InvalidHand (fail (UnknownHand input))\n";
+        let typed = type_module("artifact/effect-map-error-adt/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::EffectOperation {
+            operation,
+            failure,
+            success,
+            arguments,
+            ..
+        } = &core.functions[0].body
+        else {
+            panic!("expected mapped effect operation");
+        };
+        assert_eq!(operation, "effect.mapError");
+        assert!(matches!(failure, CoreType::Named { name, .. } if name == "AppError"));
+        assert!(matches!(success, CoreType::Named { name, .. } if name == "Never"));
+        assert!(matches!(
+            arguments.as_slice(),
+            [CoreExpr::Variable { name: mapper, .. }, CoreExpr::EffectOperation { operation: source, .. }]
+                if mapper == "artifact/effect-map-error-adt::InvalidHand"
+                    && source == "effect.fail"
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .any(|requirement| requirement == "effect.core.mapError"));
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .any(|requirement| requirement == "effect.core.fail"));
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                is_async: false,
+                ..
+            }
+        ));
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle
+            .typescript
+            .contains("_ssrg_effect_mapError(InvalidHand, _ssrg_effect_fail(UnknownHand(input)))"));
+        assert!(!bundle.typescript.contains("throw"));
+        assert!(!bundle.typescript.contains("await"));
+    }
+
+    #[test]
     fn lowers_single_sync_effect_as_do_result() {
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";

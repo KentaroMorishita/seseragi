@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-map-error-adt",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/effect-map-error-adt::HandInputError",
+      "namespace": "type",
+      "name": "HandInputError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 48
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "HandInputError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-map-error-adt::UnknownHand",
+      "namespace": "value",
+      "name": "UnknownHand",
+      "constructorOf": "artifact/effect-map-error-adt::HandInputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 30,
+        "end": 41
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "HandInputError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-map-error-adt::AppError",
+      "namespace": "type",
+      "name": "AppError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 50,
+        "end": 100
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "AppError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-map-error-adt::InvalidHand",
+      "namespace": "value",
+      "name": "InvalidHand",
+      "constructorOf": "artifact/effect-map-error-adt::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 74,
+        "end": 85
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "HandInputError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-map-error-adt::rejectUnknownHand",
+      "namespace": "value",
+      "name": "rejectUnknownHand",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 102,
+        "end": 199
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

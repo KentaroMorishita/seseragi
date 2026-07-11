@@ -458,4 +458,59 @@ mod tests {
             "effect.compact-body-not-effect"
         );
     }
+
+    #[test]
+    fn accepts_matching_map_error_constructor() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-map-error-adt/main.ssrg",
+            "type SourceError = | Source\ntype AppError = | Wrapped SourceError\neffect fn main = mapError Wrapped (fail Source)\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn reports_map_error_failure_type_mismatch() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-map-error-mismatch/main.ssrg",
+            "type SourceError = | Source\ntype WrongError = | Wrong\ntype AppError = | Wrapped WrongError\neffect fn main = mapError Wrapped (fail Source)\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-E0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.map-error-failure-mismatch"
+        );
+    }
+
+    #[test]
+    fn reports_non_function_map_error_mapper() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-map-error-mapper/main.ssrg",
+            "effect fn main = mapError \"not a mapper\" (fail \"source\")\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.map-error-mapper-not-function"
+        );
+    }
+
+    #[test]
+    fn reports_non_effect_map_error_source() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-map-error-source/main.ssrg",
+            "fn wrap error: String -> String = error\neffect fn main = mapError wrap \"source\"\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.map-error-source-not-effect"
+        );
+    }
 }

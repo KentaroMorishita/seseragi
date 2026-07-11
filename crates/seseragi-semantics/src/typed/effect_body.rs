@@ -52,6 +52,9 @@ fn type_effect_expression(
 }
 
 fn operation_effect(operation: KnownEffectOperation, arguments: &[TypedExpr]) -> TypedEffect {
+    if operation.surface_name == "mapError" {
+        return map_error_effect(arguments);
+    }
     let argument_type = || {
         arguments
             .first()
@@ -84,6 +87,34 @@ fn operation_effect(operation: KnownEffectOperation, arguments: &[TypedExpr]) ->
             named_type(operation.failure_type)
         },
         success,
+    }
+}
+
+fn map_error_effect(arguments: &[TypedExpr]) -> TypedEffect {
+    let source = arguments.get(1).and_then(expression_effect);
+    let mapped_failure = arguments
+        .first()
+        .map(inferred_type_from_expr)
+        .and_then(|type_ref| match type_ref {
+            TypedType::Function { result, .. } => Some(*result),
+            _ => None,
+        })
+        .unwrap_or(TypedType::Hole);
+    TypedEffect {
+        environment: source
+            .map(|effect| effect.environment.clone())
+            .unwrap_or(TypedType::Hole),
+        failure: mapped_failure,
+        success: source
+            .map(|effect| effect.success.clone())
+            .unwrap_or(TypedType::Hole),
+    }
+}
+
+fn expression_effect(expression: &TypedExpr) -> Option<&TypedEffect> {
+    match expression {
+        TypedExpr::EffectCall { effect, .. } => Some(effect),
+        _ => None,
     }
 }
 
@@ -120,10 +151,20 @@ fn effect_application(
         return None;
     }
     let operation = known_effect_operation_by_surface(&symbol.spelling)?;
-    let mut arguments = argument_nodes
-        .into_iter()
-        .map(|argument| analyze_resolved_expression(argument, context).value)
-        .collect::<Vec<_>>();
+    if operation.surface_name == "mapError" && argument_nodes.len() != 2 {
+        return None;
+    }
+    let mut arguments = if operation.surface_name == "mapError" {
+        vec![
+            analyze_resolved_expression(argument_nodes[0], context).value,
+            type_effect_expression(argument_nodes[1], context, resolution),
+        ]
+    } else {
+        argument_nodes
+            .into_iter()
+            .map(|argument| analyze_resolved_expression(argument, context).value)
+            .collect::<Vec<_>>()
+    };
     if matches!(operation.surface_name, "readLine" | "succeed")
         && matches!(arguments.as_slice(), [TypedExpr::Unit { .. }])
     {

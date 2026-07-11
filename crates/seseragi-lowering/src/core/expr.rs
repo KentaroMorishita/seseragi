@@ -239,6 +239,7 @@ fn lower_effect_operation(operation: &str) -> String {
         "std/prelude::println" => "console.println".to_owned(),
         "std/effect::succeed" => "effect.succeed".to_owned(),
         "std/effect::fail" => "effect.fail".to_owned(),
+        "std/effect::mapError" => "effect.mapError".to_owned(),
         other => other.to_owned(),
     }
 }

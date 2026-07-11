@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-map-error-adt",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/effect-map-error-adt::HandInputError",
+      "name": "HandInputError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-map-error-adt::UnknownHand",
+          "name": "UnknownHand",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "HandInputError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 30,
+            "end": 41
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/effect-map-error-adt::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-map-error-adt::InvalidHand",
+          "name": "InvalidHand",
+          "payload": {
+            "kind": "named",
+            "name": "HandInputError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "HandInputError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 74,
+            "end": 85
+          }
+        }
+      ],
+      "origin": {
+        "start": 50,
+        "end": 100
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-map-error-adt::rejectUnknownHand",
+      "visibility": "public",
+      "origin": {
+        "start": 102,
+        "end": 199
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 134,
+            "end": 139
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::mapError",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/effect-map-error-adt::InvalidHand",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "HandInputError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 161,
+              "end": 172
+            }
+          },
+          {
+            "kind": "effect-call",
+            "operation": "std/effect::fail",
+            "effect": {
+              "environment": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "named",
+                "name": "HandInputError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            },
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/effect-map-error-adt::UnknownHand",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "input",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 192,
+                      "end": 197
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "HandInputError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 180,
+                  "end": 197
+                }
+              }
+            ],
+            "origin": {
+              "start": 174,
+              "end": 198
+            }
+          }
+        ],
+        "origin": {
+          "start": 152,
+          "end": 199
+        }
+      }
+    }
+  ]
+}

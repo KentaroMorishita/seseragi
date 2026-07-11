@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "module": "artifact/effect-map-error-adt",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "effect.core.mapError",
+      "effect.core.fail"
+    ]
+  },
+  "exports": [
+    "UnknownHand",
+    "InvalidHand",
+    "rejectUnknownHand"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -1,0 +1,412 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/effect-map-error-adt",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "HandInputError",
+      "nameSpan": {
+        "start": 9,
+        "end": 23
+      },
+      "variants": [
+        {
+          "name": "UnknownHand",
+          "nameSpan": {
+            "start": 30,
+            "end": 41
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 42,
+              "end": 48
+            }
+          },
+          "span": {
+            "start": 28,
+            "end": 48
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "AppError",
+      "nameSpan": {
+        "start": 59,
+        "end": 67
+      },
+      "variants": [
+        {
+          "name": "InvalidHand",
+          "nameSpan": {
+            "start": 74,
+            "end": 85
+          },
+          "payload": {
+            "kind": "named",
+            "name": "HandInputError",
+            "span": {
+              "start": 86,
+              "end": 100
+            }
+          },
+          "span": {
+            "start": 72,
+            "end": 100
+          }
+        }
+      ],
+      "span": {
+        "start": 50,
+        "end": 100
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "rejectUnknownHand",
+      "nameSpan": {
+        "start": 116,
+        "end": 133
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 134,
+            "end": 139
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 141,
+              "end": 147
+            }
+          }
+        }
+      ],
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "mapError",
+            "span": {
+              "start": 152,
+              "end": 160
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "InvalidHand",
+            "span": {
+              "start": 161,
+              "end": 172
+            }
+          },
+          "span": {
+            "start": 152,
+            "end": 172
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "fail",
+              "span": {
+                "start": 174,
+                "end": 178
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "UnknownHand",
+                  "span": {
+                    "start": 180,
+                    "end": 191
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "input",
+                  "span": {
+                    "start": 192,
+                    "end": 197
+                  }
+                },
+                "span": {
+                  "start": 180,
+                  "end": 197
+                }
+              },
+              "span": {
+                "start": 179,
+                "end": 198
+              }
+            },
+            "span": {
+              "start": 174,
+              "end": 198
+            }
+          },
+          "span": {
+            "start": 173,
+            "end": 199
+          }
+        },
+        "span": {
+          "start": 152,
+          "end": 199
+        }
+      },
+      "span": {
+        "start": 102,
+        "end": 199
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 199
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 50,
+        "end": 100
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 102,
+        "end": 199
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "HandInputError",
+      "canonical": "artifact/effect-map-error-adt::HandInputError",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 23
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "UnknownHand",
+      "canonical": "artifact/effect-map-error-adt::UnknownHand",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 30,
+        "end": 41
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "AppError",
+      "canonical": "artifact/effect-map-error-adt::AppError",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 59,
+        "end": 67
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "InvalidHand",
+      "canonical": "artifact/effect-map-error-adt::InvalidHand",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 74,
+        "end": 85
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "rejectUnknownHand",
+      "canonical": "artifact/effect-map-error-adt::rejectUnknownHand",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 116,
+        "end": 133
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "input",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 134,
+        "end": 139
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "mapError",
+      "canonical": "std/prelude::mapError",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "fail",
+      "canonical": "std/prelude::fail",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 42,
+        "end": 48
+      }
+    },
+    {
+      "spelling": "HandInputError",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 86,
+        "end": 100
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 141,
+        "end": 147
+      }
+    },
+    {
+      "spelling": "mapError",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 152,
+        "end": 160
+      }
+    },
+    {
+      "spelling": "InvalidHand",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 161,
+        "end": 172
+      }
+    },
+    {
+      "spelling": "fail",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 174,
+        "end": 178
+      }
+    },
+    {
+      "spelling": "UnknownHand",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 180,
+        "end": 191
+      }
+    },
+    {
+      "spelling": "input",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 192,
+        "end": 197
+      }
+    }
+  ],
+  "issues": []
+}

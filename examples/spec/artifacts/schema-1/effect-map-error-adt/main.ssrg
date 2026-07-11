@@ -1,0 +1,8 @@
+pub type HandInputError =
+  | UnknownHand String
+
+pub type AppError =
+  | InvalidHand HandInputError
+
+pub effect fn rejectUnknownHand input: String =
+  mapError InvalidHand (fail (UnknownHand input))

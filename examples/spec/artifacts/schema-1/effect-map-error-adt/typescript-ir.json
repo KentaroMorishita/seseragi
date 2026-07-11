@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-map-error-adt",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "effect.core.mapError",
+    "effect.core.fail"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.core.fail",
+      "local": "_ssrg_effect_fail"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "HandInputError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "UnknownHand",
+          "tag": "UnknownHand",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 30,
+            "end": 41
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "exported": true,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "InvalidHand",
+          "tag": "InvalidHand",
+          "payload": {
+            "kind": "reference",
+            "name": "HandInputError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 74,
+            "end": 85
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 100
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "rejectUnknownHand",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_mapError",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "InvalidHand"
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_effect_fail",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "UnknownHand",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "input"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 102,
+        "end": 199
+      }
+    }
+  ]
+}
