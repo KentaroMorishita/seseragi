@@ -160,6 +160,17 @@ fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptSta
         CoreStatement::Effect { value } => TypeScriptStatement::Effect {
             value: lower_core_expr_to_typescript(value),
         },
+        CoreStatement::PureLet {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => TypeScriptStatement::PureLet {
+            name: safe_identifier(&name),
+            type_ref: type_ref_from_core_type(&type_ref),
+            initializer: lower_core_expr_to_typescript(value),
+            origin,
+        },
         CoreStatement::Bind {
             name,
             type_ref,
@@ -189,7 +200,8 @@ fn is_int_type(type_ref: &CoreType) -> bool {
 fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
     match statement {
         TypeScriptStatement::Effect { value } => typescript_expr_contains_await(value),
-        TypeScriptStatement::Const { initializer, .. } => {
+        TypeScriptStatement::PureLet { initializer, .. }
+        | TypeScriptStatement::Const { initializer, .. } => {
             typescript_expr_contains_await(initializer)
         }
     }

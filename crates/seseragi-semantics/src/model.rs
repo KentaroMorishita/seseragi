@@ -306,6 +306,13 @@ pub enum TypedDoStatement {
     Effect {
         value: TypedExpr,
     },
+    PureLet {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        value: TypedExpr,
+        origin: ByteSpan,
+    },
     Bind {
         name: String,
         #[serde(rename = "type")]

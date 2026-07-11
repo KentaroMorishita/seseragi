@@ -2,29 +2,29 @@ use crate::{
     effect_ops::known_effect_operation_by_semantic, unit_type, TypedDoStatement, TypedEffect,
     TypedExpr, TypedRecordField, TypedType,
 };
-use seseragi_syntax::{ByteSpan, Token, TokenKind, TypeRef};
+use seseragi_syntax::{SurfaceRequirement, TypeRef};
 
-use super::expr::{find_type_name_after, lower_first};
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 
 pub(crate) fn typed_effect_from_surface(
     return_type: &Option<TypeRef>,
+    requirements: &[SurfaceRequirement],
+    failure: Option<&TypeRef>,
     inferred_contract: bool,
-    tokens: &[Token],
-    span: ByteSpan,
     body: &TypedExpr,
 ) -> TypedEffect {
     if inferred_contract {
         return infer_compact_effect(body);
     }
 
-    explicit_effect(return_type, tokens, span)
+    explicit_effect(return_type, requirements, failure)
 }
 
-fn explicit_effect(return_type: &Option<TypeRef>, tokens: &[Token], span: ByteSpan) -> TypedEffect {
-    let with_type = find_type_name_after(tokens, span, TokenKind::KeywordWith);
-    let failure = find_type_name_after(tokens, span, TokenKind::KeywordFails)
-        .unwrap_or_else(|| "Never".to_owned());
+fn explicit_effect(
+    return_type: &Option<TypeRef>,
+    requirements: &[SurfaceRequirement],
+    failure: Option<&TypeRef>,
+) -> TypedEffect {
     let success = return_type
         .as_ref()
         .map(typed_type_from_type_ref)
@@ -33,12 +33,14 @@ fn explicit_effect(return_type: &Option<TypeRef>, tokens: &[Token], span: ByteSp
     TypedEffect {
         environment: TypedType::Record {
             closed: true,
-            fields: with_type
+            fields: requirements
+                .iter()
                 .map(explicit_environment_field)
-                .into_iter()
-                .collect::<Vec<_>>(),
+                .collect(),
         },
-        failure: named_type(&failure),
+        failure: failure
+            .map(typed_type_from_type_ref)
+            .unwrap_or_else(|| named_type("Never")),
         success,
     }
 }
@@ -78,7 +80,9 @@ fn collect_effect_contract(
             statements, result, ..
         } => {
             for statement in statements {
-                collect_effect_contract(do_statement_value(statement), requirements, failure);
+                if let Some(value) = do_statement_effect(statement) {
+                    collect_effect_contract(value, requirements, failure);
+                }
             }
             collect_effect_contract(result, requirements, failure);
         }
@@ -105,9 +109,10 @@ fn collect_effect_contract(
     }
 }
 
-fn do_statement_value(statement: &TypedDoStatement) -> &TypedExpr {
+fn do_statement_effect(statement: &TypedDoStatement) -> Option<&TypedExpr> {
     match statement {
-        TypedDoStatement::Effect { value } | TypedDoStatement::Bind { value, .. } => value,
+        TypedDoStatement::Effect { value } | TypedDoStatement::Bind { value, .. } => Some(value),
+        TypedDoStatement::PureLet { .. } => None,
     }
 }
 
@@ -124,8 +129,15 @@ fn widen_failure_from_never(current: &mut TypedType, candidate: TypedType) {
     }
 }
 
-fn explicit_environment_field(name: String) -> TypedRecordField {
-    environment_field(&lower_first(&name), &name)
+fn explicit_environment_field(requirement: &SurfaceRequirement) -> TypedRecordField {
+    match requirement {
+        SurfaceRequirement::Shorthand { name, .. } => environment_field(&lower_first(name), name),
+        SurfaceRequirement::Field { name, type_ref, .. } => TypedRecordField {
+            name: name.clone(),
+            optional: false,
+            type_ref: typed_type_from_type_ref(type_ref),
+        },
+    }
 }
 
 fn environment_field(field_name: &str, type_name: &str) -> TypedRecordField {
@@ -145,4 +157,12 @@ fn named_type(name: &str) -> TypedType {
 
 fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, .. } if name == expected_name)
+}
+
+fn lower_first(value: &str) -> String {
+    let mut chars = value.chars();
+    match chars.next() {
+        Some(first) => first.to_lowercase().chain(chars).collect(),
+        None => String::new(),
+    }
 }

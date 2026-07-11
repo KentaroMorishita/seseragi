@@ -1,2 +1,2 @@
 pub effect fn main =
-  do { readLine () println "done" }
+  do { readLine (); println "done" }

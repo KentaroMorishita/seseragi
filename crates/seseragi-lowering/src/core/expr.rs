@@ -201,6 +201,17 @@ fn lower_effect_statement(
         TypedDoStatement::Effect { value } => CoreStatement::Effect {
             value: lower_effect_body(source, effect, value),
         },
+        TypedDoStatement::PureLet {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreStatement::PureLet {
+            name,
+            type_ref: lower_typed_type(type_ref),
+            value: lower_expr(source, value),
+            origin: source_span(source, origin),
+        },
         TypedDoStatement::Bind {
             name,
             type_ref,
@@ -219,6 +230,17 @@ fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> CoreStatem
     match statement {
         TypedDoStatement::Effect { value } => CoreStatement::Effect {
             value: lower_expr(source, value),
+        },
+        TypedDoStatement::PureLet {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreStatement::PureLet {
+            name,
+            type_ref: lower_typed_type(type_ref),
+            value: lower_expr(source, value),
+            origin: source_span(source, origin),
         },
         TypedDoStatement::Bind {
             name,

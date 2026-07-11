@@ -59,12 +59,6 @@ pub fn known_effect_operation_by_semantic(semantic_name: &str) -> Option<KnownEf
         .find(|operation| operation.semantic_name == semantic_name)
 }
 
-pub(crate) fn semantic_effect_operation_name(surface_name: &str) -> String {
-    known_effect_operation_by_surface(surface_name)
-        .map(|operation| operation.semantic_name.to_owned())
-        .unwrap_or_else(|| surface_name.to_owned())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -116,9 +110,5 @@ mod tests {
     #[test]
     fn leaves_unknown_surface_operation_unmapped() {
         assert!(known_effect_operation_by_surface("unregistered").is_none());
-        assert_eq!(
-            semantic_effect_operation_name("unregistered"),
-            "unregistered"
-        );
     }
 }

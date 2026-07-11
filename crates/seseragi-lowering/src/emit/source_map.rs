@@ -260,7 +260,10 @@ fn collect_statement_names(
 ) {
     match statement {
         TypeScriptStatement::Effect { value } => collect_expr_names(value, helper_names, names),
-        TypeScriptStatement::Const {
+        TypeScriptStatement::PureLet {
+            name, initializer, ..
+        }
+        | TypeScriptStatement::Const {
             name, initializer, ..
         } => {
             names.push(name.clone());

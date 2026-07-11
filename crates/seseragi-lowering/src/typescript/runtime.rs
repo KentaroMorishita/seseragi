@@ -104,7 +104,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Sequence {
             statements, result, ..
         } => {
-            if !statements.is_empty() {
+            if statements.iter().any(statement_is_monadic) {
                 push_unique(requirements, "effect.core.flatMap");
             }
             for statement in statements {
@@ -120,7 +120,9 @@ fn collect_statement_runtime_requirements(
     requirements: &mut Vec<String>,
 ) {
     match statement {
-        CoreStatement::Effect { value } | CoreStatement::Bind { value, .. } => {
+        CoreStatement::Effect { value }
+        | CoreStatement::PureLet { value, .. }
+        | CoreStatement::Bind { value, .. } => {
             collect_expr_runtime_requirements(value, requirements);
         }
     }
@@ -210,7 +212,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         CoreExpr::Sequence {
             statements, result, ..
         } => {
-            if !statements.is_empty() {
+            if statements.iter().any(statement_is_monadic) {
                 let operation = runtime_effect_operation("effect.flatMap")
                     .expect("effect.flatMap runtime operation must be registered");
                 push_import_unique(
@@ -238,10 +240,19 @@ fn collect_statement_runtime_imports(
     imports: &mut Vec<TypeScriptImport>,
 ) {
     match statement {
-        CoreStatement::Effect { value } | CoreStatement::Bind { value, .. } => {
+        CoreStatement::Effect { value }
+        | CoreStatement::PureLet { value, .. }
+        | CoreStatement::Bind { value, .. } => {
             collect_expr_runtime_imports(value, imports);
         }
     }
+}
+
+fn statement_is_monadic(statement: &CoreStatement) -> bool {
+    matches!(
+        statement,
+        CoreStatement::Effect { .. } | CoreStatement::Bind { .. }
+    )
 }
 
 pub(super) fn collect_type_runtime_requirement(

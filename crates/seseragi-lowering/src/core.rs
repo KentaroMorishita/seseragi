@@ -149,6 +149,13 @@ pub enum CoreStatement {
     Effect {
         value: CoreExpr,
     },
+    PureLet {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        value: CoreExpr,
+        origin: SourceSpan,
+    },
     Bind {
         name: String,
         #[serde(rename = "type")]

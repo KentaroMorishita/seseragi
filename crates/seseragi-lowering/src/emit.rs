@@ -346,6 +346,16 @@ fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScrip
             "_ssrg_effect_flatMap({}, () => {continuation})",
             render_typescript_expr(value)
         ),
+        TypeScriptStatement::PureLet {
+            name,
+            type_ref,
+            initializer,
+            ..
+        } => format!(
+            "(() => {{ const {name}: {} = {}; return {continuation}; }})()",
+            render_typescript_type(type_ref),
+            render_typescript_expr(initializer)
+        ),
         TypeScriptStatement::Const {
             name,
             type_ref,

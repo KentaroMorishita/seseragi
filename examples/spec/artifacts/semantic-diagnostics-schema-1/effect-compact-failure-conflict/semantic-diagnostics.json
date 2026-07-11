@@ -9,22 +9,22 @@
       "severity": "Error",
       "messageKey": "effect.compact-failure-conflict",
       "primary": {
-        "start": 40,
-        "end": 47
+        "start": 41,
+        "end": 55
       },
       "related": [
         {
           "message": "operation can fail with StdinError",
           "primary": {
             "start": 28,
-            "end": 36
+            "end": 39
           }
         },
         {
           "message": "operation can fail with ConsoleError",
           "primary": {
-            "start": 40,
-            "end": 47
+            "start": 41,
+            "end": 55
           }
         }
       ],

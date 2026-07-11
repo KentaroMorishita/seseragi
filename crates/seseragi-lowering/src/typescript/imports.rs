@@ -109,7 +109,8 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             for statement in statements {
                 match statement {
                     TypeScriptStatement::Effect { value } => rewrite_expr(value, renames),
-                    TypeScriptStatement::Const { initializer, .. } => {
+                    TypeScriptStatement::PureLet { initializer, .. }
+                    | TypeScriptStatement::Const { initializer, .. } => {
                         rewrite_expr(initializer, renames);
                     }
                 }

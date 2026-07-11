@@ -1,4 +1,4 @@
-use crate::typed::{analyze_effect_function, EffectFunctionIssue};
+use crate::typed::{analyze_effect_function, EffectFunctionIssue, TypedResolution};
 use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token,
 };
@@ -6,13 +6,14 @@ use seseragi_syntax::{
 pub(super) fn collect_effect_fn_diagnostics(
     declaration: &SurfaceDecl,
     tokens: &[Token],
+    resolution: &TypedResolution<'_>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     let SurfaceDecl::EffectFn { span, .. } = declaration else {
         return;
     };
     diagnostics.extend(
-        analyze_effect_function(declaration, tokens)
+        analyze_effect_function(declaration, tokens, resolution)
             .into_iter()
             .map(|issue| diagnostic_from_issue(issue, *span)),
     );

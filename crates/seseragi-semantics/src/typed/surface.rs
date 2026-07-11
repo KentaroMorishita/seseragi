@@ -1,9 +1,9 @@
 use crate::{unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
-use seseragi_syntax::{SurfaceDecl, Token};
+use seseragi_syntax::SurfaceDecl;
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
 use super::effect::typed_effect_from_surface;
-use super::expr::find_effect_body;
+use super::effect_body::typed_effect_body;
 use super::functions::typed_parameters_from_surface;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
@@ -11,7 +11,6 @@ use super::TypedResolution;
 
 pub(crate) fn typed_decl_from_surface(
     declaration: SurfaceDecl,
-    tokens: &[Token],
     resolution: &TypedResolution<'_>,
 ) -> Option<TypedDecl> {
     match declaration {
@@ -51,18 +50,25 @@ pub(crate) fn typed_decl_from_surface(
             name_span,
             parameters,
             return_type,
+            requirements,
+            failure,
             inferred_contract,
+            body,
             span,
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters);
-            let body = find_effect_body(tokens, span).unwrap_or_else(|| TypedExpr::EffectCall {
-                operation: "std/prelude::unit".to_owned(),
-                arguments: Vec::new(),
-                origin: span,
-            });
-            let effect =
-                typed_effect_from_surface(&return_type, inferred_contract, tokens, span, &body);
+            let body = body
+                .as_ref()
+                .map(|body| typed_effect_body(body, &typed_parameters, resolution))
+                .unwrap_or_else(|| hole_expression(span));
+            let effect = typed_effect_from_surface(
+                &return_type,
+                &requirements,
+                failure.as_ref(),
+                inferred_contract,
+                &body,
+            );
             Some(TypedDecl::EffectFn {
                 symbol: declaration_symbol(
                     resolution,

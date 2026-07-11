@@ -1,5 +1,5 @@
 use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
-use seseragi_syntax::{lex, parse_module_interface, ModuleInterface};
+use seseragi_syntax::{parse_module_interface, ModuleInterface};
 
 mod adt;
 #[cfg(test)]
@@ -7,7 +7,7 @@ mod adt_tests;
 mod analysis;
 mod effect;
 mod effect_analysis;
-mod expr;
+mod effect_body;
 mod function_body;
 mod functions;
 mod interface;
@@ -82,21 +82,12 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
 pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule {
     let source_name = source_name.into();
     let resolved = crate::resolve_module(source_name, source);
-    let has_effect_functions = resolved
-        .declarations
-        .iter()
-        .any(|declaration| matches!(declaration, seseragi_syntax::SurfaceDecl::EffectFn { .. }));
-    let tokens = if has_effect_functions {
-        lex(resolved.source.clone(), source).tokens
-    } else {
-        Vec::new()
-    };
     let resolution = TypedResolution::new(&resolved);
     let declarations = resolved
         .declarations
         .clone()
         .into_iter()
-        .filter_map(|declaration| typed_decl_from_surface(declaration, &tokens, &resolution))
+        .filter_map(|declaration| typed_decl_from_surface(declaration, &resolution))
         .collect();
 
     TypedModule {
@@ -134,7 +125,7 @@ pub fn type_module_public_interface(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{unit_type, TypedEffect, TypedParameter, TypedRecordField};
+    use crate::{unit_type, TypedDoStatement, TypedEffect, TypedParameter, TypedRecordField};
     use seseragi_syntax::ByteSpan;
     use seseragi_syntax::InterfaceType;
     use seseragi_syntax::Visibility;
@@ -490,7 +481,7 @@ mod tests {
     fn compact_do_block_keeps_multiple_println_statements() {
         let typed = type_module(
             "artifact/effect-compact-do-multiple/main.ssrg",
-            "effect fn greet =\n  do { println \"one\" println \"two\" }\n",
+            "effect fn greet =\n  do {\n    println \"one\"\n    println \"two\"\n  }\n",
         );
 
         let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[0] else {
@@ -527,6 +518,130 @@ mod tests {
         assert!(matches!(
             result.as_ref(),
             TypedExpr::EffectCall { operation, .. } if operation == "std/prelude::println"
+        ));
+    }
+
+    #[test]
+    fn types_effect_arguments_from_resolved_parameters() {
+        let typed = type_module(
+            "artifact/effect-parameter/main.ssrg",
+            "effect fn greet name: String = println name\n",
+        );
+
+        let TypedDecl::EffectFn { body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::EffectCall {
+                operation,
+                arguments,
+                ..
+            } if operation == "std/prelude::println"
+                && matches!(arguments.as_slice(), [TypedExpr::Variable { name, type_ref, .. }]
+                    if name == "name" && type_ref == &TypedType::Named {
+                        name: "String".to_owned(),
+                        arguments: Vec::new(),
+                    })
+        ));
+    }
+
+    #[test]
+    fn resolves_do_bindings_in_later_effect_arguments() {
+        let typed = type_module(
+            "artifact/effect-resolved-bind/main.ssrg",
+            "effect fn copy =\n  do {\n    line <- readLine ()\n    succeed line\n  }\n",
+        );
+
+        let TypedDecl::EffectFn { body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = body
+        else {
+            panic!("expected do block");
+        };
+        assert!(matches!(
+            statements.as_slice(),
+            [TypedDoStatement::Bind {
+                name,
+                type_ref: TypedType::Named { name: type_name, arguments },
+                ..
+            }] if name == "line" && type_name == "Maybe"
+                && matches!(arguments.as_slice(), [TypedType::Named { name, arguments }]
+                    if name == "String" && arguments.is_empty())
+        ));
+        assert!(matches!(
+            result.as_ref(),
+            TypedExpr::EffectCall {
+                operation,
+                arguments,
+                ..
+            } if operation == "std/effect::succeed"
+                && matches!(arguments.as_slice(), [TypedExpr::Variable { name, type_ref, .. }]
+                    if name == "line" && matches!(type_ref,
+                        TypedType::Named { name, arguments }
+                            if name == "Maybe" && arguments.len() == 1))
+        ));
+    }
+
+    #[test]
+    fn types_grouped_effect_expression_from_surface_ast() {
+        let typed = type_module(
+            "artifact/effect-grouped/main.ssrg",
+            "effect fn greet = (println \"hello\")\n",
+        );
+
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::EffectCall { operation, .. }
+                if operation == "std/prelude::println"
+        ));
+        assert!(matches!(
+            &effect.environment,
+            TypedType::Record { fields, .. }
+                if matches!(fields.as_slice(), [TypedRecordField { name, .. }]
+                    if name == "console")
+        ));
+    }
+
+    #[test]
+    fn types_pure_let_and_resolves_it_in_final_effect() {
+        let typed = type_module(
+            "artifact/effect-do-pure-let/main.ssrg",
+            "effect fn greet =\n  do {\n    let message = \"hello\"\n    println message\n  }\n",
+        );
+
+        let TypedDecl::EffectFn { body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = body
+        else {
+            panic!("expected do block");
+        };
+        assert!(matches!(
+            statements.as_slice(),
+            [TypedDoStatement::PureLet {
+                name,
+                type_ref: TypedType::Named { name: type_name, arguments },
+                value: TypedExpr::String { value, .. },
+                ..
+            }] if name == "message" && type_name == "String" && arguments.is_empty()
+                && value == "hello"
+        ));
+        assert!(matches!(
+            result.as_ref(),
+            TypedExpr::EffectCall { arguments, .. }
+                if matches!(arguments.as_slice(), [TypedExpr::Variable { name, type_ref, .. }]
+                    if name == "message" && matches!(type_ref,
+                        TypedType::Named { name, arguments }
+                            if name == "String" && arguments.is_empty()))
         ));
     }
 

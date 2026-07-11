@@ -93,7 +93,7 @@ fn collect_decl_diagnostics(
         return;
     }
 
-    effect::collect_effect_fn_diagnostics(declaration, tokens, diagnostics);
+    effect::collect_effect_fn_diagnostics(declaration, tokens, resolution, diagnostics);
 }
 
 #[cfg(test)]
@@ -149,14 +149,14 @@ mod tests {
     fn reports_unknown_compact_do_statement_after_known_statement() {
         let diagnostics = semantic_diagnostics(
             "artifact/effect-compact-do-late-not-effect/main.ssrg",
-            "pub effect fn greet =\n  do { println \"hello\" name }\n",
+            "pub effect fn greet =\n  do { println \"hello\"; name }\n",
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
         assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
         assert_eq!(
             diagnostics.diagnostics[0].primary,
-            ByteRange { start: 45, end: 49 }
+            ByteRange { start: 46, end: 50 }
         );
     }
 
@@ -212,7 +212,7 @@ mod tests {
     fn reports_multiple_non_never_failures_in_compact_effect() {
         let diagnostics = semantic_diagnostics(
             "artifact/effect-compact-failure-conflict/main.ssrg",
-            "pub effect fn main =\n  do { readLine () println \"done\" }\n",
+            "pub effect fn main =\n  do { readLine (); println \"done\" }\n",
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
@@ -431,6 +431,31 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].message_key,
             "effect.do-statement-not-effect"
+        );
+    }
+
+    #[test]
+    fn accepts_pure_let_before_final_effect_expression() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-do-pure-let/main.ssrg",
+            "effect fn main =\n  do {\n    let message = \"hello\"\n    println message\n  }\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn does_not_treat_shadowed_println_as_a_prelude_effect() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-shadowed-prelude/main.ssrg",
+            "effect fn main =\n  do {\n    let println = \"plain\"\n    println\n  }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.compact-body-not-effect"
         );
     }
 }

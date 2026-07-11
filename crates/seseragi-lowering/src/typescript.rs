@@ -245,6 +245,13 @@ pub enum TypeScriptStatement {
     Effect {
         value: TypeScriptExpr,
     },
+    PureLet {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypeScriptType,
+        initializer: TypeScriptExpr,
+        origin: SourceSpan,
+    },
     Const {
         name: String,
         #[serde(rename = "type")]

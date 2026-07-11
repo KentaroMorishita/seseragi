@@ -524,8 +524,7 @@ fails ConsoleError =
 
     #[test]
     fn lowers_multiple_effect_do_statements_to_typescript_sequence() {
-        let source =
-            "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"one\" println \"two\" }\n";
+        let source = "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    println \"one\"\n    println \"two\"\n  }\n";
         let typed = type_module("artifact/effect-do-multiple/main.ssrg", source);
         let core = lower_typed_module(typed);
         let typescript = lower_core_module_to_typescript_ir(core);
@@ -533,6 +532,56 @@ fails ConsoleError =
 
         assert!(bundle.typescript.contains(
             "export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(\"one\"), () => _ssrg_console_println(\"two\"))"
+        ));
+    }
+
+    #[test]
+    fn lowers_pure_do_let_without_flat_map() {
+        let source =
+            "pub effect fn main =\n  do {\n    let message = \"hello\"\n    println message\n  }\n";
+        let typed = type_module("artifact/effect-do-pure-let/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::Sequence { statements, .. } = &core.functions[0].body else {
+            panic!("expected do sequence");
+        };
+        assert!(matches!(
+            statements.as_slice(),
+            [CoreStatement::PureLet {
+                name,
+                value: CoreExpr::String { value, .. },
+                ..
+            }] if name == "message" && value == "hello"
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .all(|requirement| requirement != "effect.core.flatMap"));
+        assert!(typescript
+            .imports
+            .iter()
+            .all(|import| import.feature != "effect.core.flatMap"));
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle.typescript.contains(
+            "(() => { const message: string = \"hello\"; return _ssrg_console_println(message); })()"
+        ));
+    }
+
+    #[test]
+    fn keeps_pure_do_let_inside_the_preceding_effect_continuation() {
+        let source = "pub effect fn main =\n  do {\n    line <- readLine ()\n    let copy = line\n    succeed copy\n  }\n";
+        let typed = type_module("artifact/effect-do-bind-pure-let/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .any(|requirement| requirement == "effect.core.flatMap"));
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle.typescript.contains(
+            "_ssrg_effect_flatMap(_ssrg_stdin_readLine(), (line: string | undefined) => (() => { const copy: string | undefined = line; return _ssrg_effect_succeed(copy); })())"
         ));
     }
 

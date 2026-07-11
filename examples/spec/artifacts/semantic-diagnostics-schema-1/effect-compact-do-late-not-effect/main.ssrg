@@ -1,2 +1,2 @@
 pub effect fn greet =
-  do { println "hello" name }
+  do { println "hello"; name }
