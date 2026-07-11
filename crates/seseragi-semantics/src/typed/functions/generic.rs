@@ -2,34 +2,72 @@ use crate::{TypedRecordField, TypedType};
 use std::collections::BTreeMap;
 
 use super::{application_result_type_from, TopLevelPureFunction};
+use crate::typed::semantic_types::{instantiate_callable, SemanticValueType};
 use crate::typed::type_ref::typed_type_contains_hole;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct InstantiatedApplication {
-    pub(crate) parameters: Vec<TypedType>,
-    pub(crate) result: TypedType,
+    pub(crate) parameters: Vec<SemanticValueType>,
+    pub(crate) result: SemanticValueType,
 }
 
 pub(crate) fn instantiated_application(
     signature: &TopLevelPureFunction,
-    arguments: &[TypedType],
+    expected_result: Option<&SemanticValueType>,
+    arguments: &[SemanticValueType],
 ) -> InstantiatedApplication {
     let mut substitutions = BTreeMap::new();
-    for (parameter, argument) in signature.parameters.iter().zip(arguments) {
+    if let Some(expected_result) = expected_result {
         infer_type_parameters(
-            parameter,
-            argument,
+            &signature.result,
+            &expected_result.type_ref,
             &signature.type_parameters,
             &mut substitutions,
         );
     }
+    for (parameter, argument) in signature.parameters.iter().zip(arguments) {
+        infer_type_parameters(
+            parameter,
+            &argument.type_ref,
+            &signature.type_parameters,
+            &mut substitutions,
+        );
+    }
+    let semantic_parameters = signature
+        .parameters
+        .iter()
+        .cloned()
+        .zip(signature.semantic_parameters.iter().cloned())
+        .map(|(type_ref, key)| SemanticValueType { type_ref, key })
+        .collect::<Vec<_>>();
+    let semantic = instantiate_callable(
+        &semantic_parameters,
+        expected_result,
+        arguments,
+        &SemanticValueType {
+            type_ref: signature.result.clone(),
+            key: signature.semantic_result.clone(),
+        },
+    );
+    let parameter_types = signature
+        .parameters
+        .iter()
+        .map(|parameter| substitute_type_parameters(parameter, &substitutions))
+        .collect::<Vec<_>>();
+    let result_type = substitute_type_parameters(&signature.result, &substitutions);
     InstantiatedApplication {
-        parameters: signature
-            .parameters
-            .iter()
-            .map(|parameter| substitute_type_parameters(parameter, &substitutions))
+        parameters: parameter_types
+            .into_iter()
+            .zip(semantic.parameters)
+            .map(|(type_ref, semantic)| SemanticValueType {
+                type_ref,
+                key: semantic.key,
+            })
             .collect(),
-        result: substitute_type_parameters(&signature.result, &substitutions),
+        result: SemanticValueType {
+            type_ref: result_type,
+            key: semantic.result.key,
+        },
     }
 }
 
@@ -38,8 +76,12 @@ pub(crate) fn instantiated_application_result_type(
     argument_count: usize,
 ) -> TypedType {
     application_result_type_from(
-        &application.parameters,
-        application.result.clone(),
+        &application
+            .parameters
+            .iter()
+            .map(|parameter| parameter.type_ref.clone())
+            .collect::<Vec<_>>(),
+        application.result.type_ref.clone(),
         argument_count,
     )
 }

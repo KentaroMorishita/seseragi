@@ -29,6 +29,94 @@ fn types_standard_maybe_constructor_from_its_argument() {
 }
 
 #[test]
+fn instantiates_standard_sum_constructors_from_the_declared_result() {
+    let typed = type_module(
+        "artifact/prelude-context/main.ssrg",
+        "type Hand = | Rock\n\
+         type HandInputError = | InvalidHand\n\
+         fn accepted hand: Hand -> Either<HandInputError, Hand> = Right hand\n\
+         fn rejected error: HandInputError -> Either<HandInputError, Hand> = Left error\n\
+         fn absent unit: Unit -> Maybe<Hand> = Nothing\n",
+    );
+
+    let expected_either = applied("Either", vec![named("HandInputError"), named("Hand")]);
+    for index in [2, 3] {
+        let TypedDecl::Fn { body, .. } = &typed.declarations[index] else {
+            panic!("expected Either constructor function");
+        };
+        assert_eq!(body_type(body), expected_either);
+    }
+    let TypedDecl::Fn { body, .. } = &typed.declarations[4] else {
+        panic!("expected Maybe constructor function");
+    };
+    assert_eq!(body_type(body), applied("Maybe", vec![named("Hand")]));
+}
+
+#[test]
+fn propagates_expected_sum_types_through_nested_expressions() {
+    let typed = type_module(
+        "artifact/prelude-nested-context/main.ssrg",
+        "type Hand = | Rock\n\
+         type HandInputError = | InvalidHand\n\
+         fn nested unit: Unit -> Maybe<Maybe<Hand>> = Just Nothing\n\
+         fn choose valid: Bool -> Either<HandInputError, Hand> =\n\
+           if valid then Right Rock else Left InvalidHand\n\
+         fn pair unit: Unit -> (Maybe<Hand>, Either<HandInputError, Hand>) =\n\
+           (Nothing, Right Rock)\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[2] else {
+        panic!("expected nested function");
+    };
+    assert_eq!(
+        body_type(body),
+        applied("Maybe", vec![applied("Maybe", vec![named("Hand")])])
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[3] else {
+        panic!("expected conditional function");
+    };
+    assert_eq!(
+        body_type(body),
+        applied("Either", vec![named("HandInputError"), named("Hand")],)
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[4] else {
+        panic!("expected tuple function");
+    };
+    assert_eq!(
+        body_type(body),
+        TypedType::Tuple {
+            elements: vec![
+                applied("Maybe", vec![named("Hand")]),
+                applied("Either", vec![named("HandInputError"), named("Hand")],),
+            ],
+        }
+    );
+}
+
+#[test]
+fn propagates_expected_sum_type_to_match_arm_bodies() {
+    let typed = type_module(
+        "artifact/prelude-match-context/main.ssrg",
+        "type Hand = | Rock | Paper\n\
+         type HandInputError = | InvalidHand\n\
+         fn parse hand: Hand -> Either<HandInputError, Hand> =\n\
+           match hand { Rock -> Right Rock; _ -> Left InvalidHand }\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[2] else {
+        panic!("expected parse function");
+    };
+    let TypedExpr::Match { arms, type_ref, .. } = body else {
+        panic!("expected match expression");
+    };
+    let expected = applied("Either", vec![named("HandInputError"), named("Hand")]);
+    assert_eq!(type_ref, &expected);
+    assert!(arms.iter().all(|arm| body_type(&arm.body) == expected));
+}
+
+#[test]
 fn types_standard_either_patterns_and_proves_the_family_exhaustive() {
     let typed = type_module(
         "artifact/prelude-either/main.ssrg",
@@ -72,4 +160,15 @@ fn named(name: &str) -> TypedType {
         name: name.to_owned(),
         arguments: Vec::new(),
     }
+}
+
+fn applied(name: &str, arguments: Vec<TypedType>) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments,
+    }
+}
+
+fn body_type(expression: &TypedExpr) -> TypedType {
+    crate::typed::type_ref::inferred_type_from_expr(expression)
 }

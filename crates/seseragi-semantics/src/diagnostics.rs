@@ -361,6 +361,24 @@ mod tests {
     }
 
     #[test]
+    fn uses_the_declared_sum_result_to_check_a_generic_constructor_payload() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/prelude-constructor-type-mismatch/main.ssrg",
+            "type Hand = | Rock\ntype HandInputError = | InvalidHand\nfn invalid unit: Unit -> Either<HandInputError, Hand> = Right \"wrong\"\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "argument 1 expected Hand, received String"
+        );
+    }
+
+    #[test]
     fn reports_nullary_constructor_overapplication() {
         let diagnostics = semantic_diagnostics(
             "artifact/constructor-arity/main.ssrg",

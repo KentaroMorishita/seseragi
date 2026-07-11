@@ -2,7 +2,7 @@ use crate::{
     ResolvedModule, ResolvedSymbol, SymbolId, SymbolKind, SymbolNamespace, TypedParameter,
     TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceDecl};
+use seseragi_syntax::{ByteSpan, SurfaceDecl, TypeRef};
 use std::collections::BTreeMap;
 
 use super::functions::TopLevelPureFunction;
@@ -70,6 +70,15 @@ impl<'a> TypedResolution<'a> {
 
     pub(crate) fn semantic_types(&self) -> &SemanticTypeCatalog {
         &self.semantic_types
+    }
+
+    pub(crate) fn semantic_value_from_type_ref(&self, type_ref: &TypeRef) -> SemanticValueType {
+        SemanticValueType {
+            type_ref: typed_type_from_type_ref(type_ref),
+            key: self
+                .semantic_types
+                .key_from_type_ref(self.resolved, type_ref),
+        }
     }
 
     pub(crate) fn parameter_types(

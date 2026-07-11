@@ -8,7 +8,7 @@ mod constructors;
 mod prelude;
 mod substitution;
 
-pub(crate) use substitution::instantiate_callable_result;
+pub(crate) use substitution::instantiate_callable;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum SemanticTypeKey {

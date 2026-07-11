@@ -18,7 +18,8 @@ pub(super) fn type_if(
     let condition_span = condition.span();
     let then_span = then_branch.span();
     let else_span = else_branch.span();
-    let condition = type_surface_expression(condition, context);
+    let condition_context = context.without_expected();
+    let condition = type_surface_expression(condition, &condition_context);
     let then_branch = type_surface_expression(then_branch, context);
     let else_branch = type_surface_expression(else_branch, context);
     let condition_type = inferred_type_from_expr(&condition.value);

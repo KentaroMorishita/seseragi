@@ -24,7 +24,11 @@ pub(crate) fn typed_decl_from_surface(
             ..
         } => {
             let no_parameters = Vec::new();
-            let context = PureExpressionContext::new(&no_parameters, resolution);
+            let context = PureExpressionContext::new(&no_parameters, resolution).with_expected(
+                type_ref
+                    .as_ref()
+                    .map(|type_ref| resolution.semantic_value_from_type_ref(type_ref)),
+            );
             let value = body
                 .as_ref()
                 .map(|body| analyze_resolved_expression(body, &context).value)
@@ -103,7 +107,8 @@ pub(crate) fn typed_decl_from_surface(
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters);
-            let context = PureExpressionContext::new(&typed_parameters, resolution);
+            let context = PureExpressionContext::new(&typed_parameters, resolution)
+                .with_expected(Some(resolution.semantic_value_from_type_ref(&return_type)));
             let body = body
                 .as_ref()
                 .map(|body| analyze_resolved_expression(body, &context).value)

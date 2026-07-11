@@ -30,7 +30,8 @@ pub(crate) fn analyze_pure_function(
         };
     };
     let typed_parameters = typed_parameters_from_surface(parameters);
-    let context = PureExpressionContext::new(&typed_parameters, resolution);
+    let context = PureExpressionContext::new(&typed_parameters, resolution)
+        .with_expected(Some(resolution.semantic_value_from_type_ref(return_type)));
     let expression = analyze_resolved_expression(body, &context);
     let function_body_issue = (expression.conditional_issue.is_none()
         && expression.pure_call_issue.is_none()

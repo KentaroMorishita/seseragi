@@ -63,16 +63,32 @@ pub(super) fn substitute_type_parameters(
     }
 }
 
-pub(crate) fn instantiate_callable_result(
-    parameter_templates: &[SemanticTypeKey],
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct InstantiatedSemanticCallable {
+    pub(crate) parameters: Vec<SemanticValueType>,
+    pub(crate) result: SemanticValueType,
+}
+
+pub(crate) fn instantiate_callable(
+    parameter_templates: &[SemanticValueType],
+    expected_result: Option<&SemanticValueType>,
     arguments: &[SemanticValueType],
-    result: &SemanticValueType,
-) -> SemanticValueType {
+    result_template: &SemanticValueType,
+) -> InstantiatedSemanticCallable {
     let mut substitutions = BTreeMap::new();
-    for (template, argument) in parameter_templates.iter().zip(arguments) {
-        collect_substitutions(template, argument, &mut substitutions);
+    if let Some(expected_result) = expected_result {
+        collect_substitutions(&result_template.key, expected_result, &mut substitutions);
     }
-    substitute_type_parameters(result, &substitutions)
+    for (template, argument) in parameter_templates.iter().zip(arguments) {
+        collect_substitutions(&template.key, argument, &mut substitutions);
+    }
+    InstantiatedSemanticCallable {
+        parameters: parameter_templates
+            .iter()
+            .map(|parameter| substitute_type_parameters(parameter, &substitutions))
+            .collect(),
+        result: substitute_type_parameters(result_template, &substitutions),
+    }
 }
 
 fn collect_substitutions(

@@ -18,7 +18,8 @@ pub(super) fn collect_let_binding_diagnostics(
     let (Some(annotation), Some(body)) = (annotation, body) else {
         return;
     };
-    let context = PureExpressionContext::new(&[], resolution);
+    let context = PureExpressionContext::new(&[], resolution)
+        .with_expected(Some(resolution.semantic_value_from_type_ref(annotation)));
     let analysis = analyze_resolved_expression(body, &context);
     if analysis.conditional_issue.is_some() || analysis.pure_call_issue.is_some() {
         return;

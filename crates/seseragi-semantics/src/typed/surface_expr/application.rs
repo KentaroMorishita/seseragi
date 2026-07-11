@@ -2,9 +2,7 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
-use crate::typed::functions::{
-    instantiated_application, instantiated_application_result_type, instantiated_semantic_result,
-};
+use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
 use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
@@ -27,11 +25,19 @@ pub(super) fn type_application(
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
+    let expected_result = if argument_nodes.len() >= signature.parameters.len() {
+        context.expected()
+    } else {
+        None
+    };
+    let seeded_application = instantiated_application(signature, expected_result, &[]);
     let mut arguments = Vec::with_capacity(argument_nodes.len());
     let mut semantic_arguments = Vec::with_capacity(argument_nodes.len());
     let mut child_analyses = Vec::with_capacity(argument_nodes.len());
-    for argument in &argument_nodes {
-        let analysis = type_surface_expression(argument, context);
+    for (index, argument) in argument_nodes.iter().enumerate() {
+        let expected = seeded_application.parameters.get(index).cloned();
+        let argument_context = context.with_expected(expected);
+        let analysis = type_surface_expression(argument, &argument_context);
         semantic_arguments.push(SemanticValueType {
             type_ref: inferred_type_from_expr(&analysis.value),
             key: analysis.semantic_type.clone(),
@@ -39,11 +45,7 @@ pub(super) fn type_application(
         arguments.push(analysis.value.clone());
         child_analyses.push(analysis);
     }
-    let argument_types = arguments
-        .iter()
-        .map(inferred_type_from_expr)
-        .collect::<Vec<_>>();
-    let application = instantiated_application(signature, &argument_types);
+    let application = instantiated_application(signature, expected_result, &semantic_arguments);
     let issue = call_issue(
         *callee_span,
         signature.parameters.len(),
@@ -59,7 +61,7 @@ pub(super) fn type_application(
     let semantic_type = if issue.is_some() {
         SemanticTypeKey::Invalid
     } else if arguments.len() >= signature.parameters.len() {
-        instantiated_semantic_result(signature, &semantic_arguments)
+        application.result.key.clone()
     } else {
         SemanticTypeKey::Other
     };
@@ -85,9 +87,10 @@ fn type_unknown_application(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let mut callee = type_surface_expression(callee, context);
+    let child_context = context.without_expected();
+    let mut callee = type_surface_expression(callee, &child_context);
     for argument in arguments {
-        let child = type_surface_expression(argument, context);
+        let child = type_surface_expression(argument, &child_context);
         callee.merge_issues_from(child);
     }
     callee.value = TypedExpr::Variable {
@@ -102,7 +105,7 @@ fn type_unknown_application(
 fn call_issue(
     callee: ByteSpan,
     parameter_count: usize,
-    parameters: &[TypedType],
+    parameters: &[SemanticValueType],
     argument_nodes: &[&SurfaceExpr],
     arguments: &[TypedExpr],
 ) -> Option<PureCallIssue> {
@@ -120,11 +123,11 @@ fn call_issue(
         .enumerate()
         .find_map(|(index, ((argument, expected), source))| {
             let actual = inferred_type_from_expr(argument);
-            (!typed_type_contains_hole(&actual) && actual != *expected).then(|| {
+            (!typed_type_contains_hole(&actual) && actual != expected.type_ref).then(|| {
                 PureCallIssue::ArgumentType {
                     argument: source.span(),
                     index,
-                    expected: expected.clone(),
+                    expected: expected.type_ref.clone(),
                     actual,
                 }
             })

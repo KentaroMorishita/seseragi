@@ -17,6 +17,7 @@ mod tuple;
 pub(crate) struct PureExpressionContext<'a> {
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     resolution: &'a TypedResolution<'a>,
+    expected: Option<SemanticValueType>,
 }
 
 impl<'a> PureExpressionContext<'a> {
@@ -24,7 +25,24 @@ impl<'a> PureExpressionContext<'a> {
         Self {
             parameters: resolution.parameter_types(parameters),
             resolution,
+            expected: None,
         }
+    }
+
+    pub(crate) fn with_expected(&self, expected: Option<SemanticValueType>) -> Self {
+        Self {
+            parameters: self.parameters.clone(),
+            resolution: self.resolution,
+            expected,
+        }
+    }
+
+    pub(super) fn without_expected(&self) -> Self {
+        self.with_expected(None)
+    }
+
+    pub(super) fn expected(&self) -> Option<&SemanticValueType> {
+        self.expected.as_ref()
     }
 
     pub(super) fn target(&self, origin: ByteSpan) -> Option<SymbolId> {
@@ -51,6 +69,7 @@ impl<'a> PureExpressionContext<'a> {
         Self {
             parameters,
             resolution: self.resolution,
+            expected: self.expected.clone(),
         }
     }
 }
@@ -238,15 +257,26 @@ fn type_name(
         );
     }
     if let Some(function) = context.callable(target) {
-        let semantic_type = if function.parameters.is_empty() {
-            function.semantic_result.clone()
+        let application = if function.parameters.is_empty() {
+            Some(super::functions::instantiated_application(
+                function,
+                context.expected(),
+                &[],
+            ))
         } else {
-            SemanticTypeKey::Other
+            None
         };
+        let semantic_type = application
+            .as_ref()
+            .map(|application| application.result.key.clone())
+            .unwrap_or(SemanticTypeKey::Other);
+        let type_ref = application
+            .map(|application| application.result.type_ref)
+            .unwrap_or_else(|| application_result_type(function, 0));
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: function.symbol.clone(),
-                type_ref: application_result_type(function, 0),
+                type_ref,
                 origin: span,
             },
             semantic_type,

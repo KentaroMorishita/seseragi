@@ -14,8 +14,9 @@ pub(super) fn type_binary(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let left = type_surface_expression(left, context);
-    let right = type_surface_expression(right, context);
+    let operand_context = context.without_expected();
+    let left = type_surface_expression(left, &operand_context);
+    let right = type_surface_expression(right, &operand_context);
     let result_type = binary_result_type(operator, &left.value, &right.value);
     let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Binary {
         operator: operator.to_owned(),

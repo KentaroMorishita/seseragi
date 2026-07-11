@@ -20,7 +20,8 @@ pub(super) fn type_match(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let scrutinee = type_surface_expression(scrutinee, context);
+    let scrutinee_context = context.without_expected();
+    let scrutinee = type_surface_expression(scrutinee, &scrutinee_context);
     let expected = SemanticValueType {
         type_ref: inferred_type_from_expr(&scrutinee.value),
         key: scrutinee.semantic_type.clone(),
@@ -41,10 +42,10 @@ pub(super) fn type_match(
         coverage_arms.push((pattern.coverage, arm.guard.is_some()));
         let arm_context = context.with_locals(pattern.locals);
 
-        let guard = arm
-            .guard
-            .as_ref()
-            .map(|guard| type_surface_expression(guard, &arm_context));
+        let guard = arm.guard.as_ref().map(|guard| {
+            let guard_context = arm_context.without_expected();
+            type_surface_expression(guard, &guard_context)
+        });
         if let Some(guard) = &guard {
             let guard_type = inferred_type_from_expr(&guard.value);
             if !typed_type_contains_hole(&guard_type) && !named_type_is(&guard_type, "Bool") {
