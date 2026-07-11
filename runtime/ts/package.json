@@ -24,6 +24,10 @@
     "./int64": {
       "types": "./src/int64.ts",
       "default": "./src/int64.ts"
+    },
+    "./sum": {
+      "types": "./src/sum.ts",
+      "default": "./src/sum.ts"
     }
   },
   "license": "Apache-2.0"

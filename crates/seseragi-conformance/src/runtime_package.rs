@@ -4,6 +4,7 @@ use std::path::Path;
 use std::process::{Command, Stdio};
 
 mod effect;
+mod sum;
 
 pub(crate) fn check_typescript_runtime_package(
     root: &Path,
@@ -39,6 +40,7 @@ pub(crate) fn check_typescript_runtime_package(
         }
     }
     check_typescript_runtime_package_typecheck(root)?;
+    sum::check_tagged_standard_sums(root)?;
     if runtime_helper_is_declared(abi, "effect.stdin.readLine") {
         check_typescript_runtime_read_line(root)?;
     }

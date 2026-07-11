@@ -7,6 +7,8 @@ export type {
 } from "./effect";
 export { fail, flatMap, mapError, run, succeed, unit } from "./effect";
 export { add, divide, multiply, power, remainder, subtract } from "./int64";
+export type { Either, Maybe } from "./sum";
+export { Just, Left, Nothing, Right } from "./sum";
 
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console";
 export { liveConsole, print, println } from "./console";
