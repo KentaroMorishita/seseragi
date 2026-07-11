@@ -20,3 +20,12 @@ export type {
   StdinError,
 } from "./stdin";
 export { createProcessStdin, readLine } from "./stdin";
+
+export type {
+  Awaitable,
+  ServiceFailure,
+  ServiceOperation,
+  ServiceResult,
+  ServiceSuccess,
+} from "./service";
+export { serviceEffect, serviceFailure, serviceSuccess } from "./service";

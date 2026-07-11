@@ -28,6 +28,10 @@
     "./sum": {
       "types": "./src/sum.ts",
       "default": "./src/sum.ts"
+    },
+    "./service": {
+      "types": "./src/service.ts",
+      "default": "./src/service.ts"
     }
   },
   "license": "Apache-2.0"

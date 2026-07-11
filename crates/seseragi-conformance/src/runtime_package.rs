@@ -4,6 +4,7 @@ use std::process::Command;
 
 mod effect;
 mod imports;
+mod service;
 mod services;
 mod sum;
 
@@ -47,6 +48,7 @@ pub(crate) fn check_typescript_runtime_package(
         }
     }
     check_typescript_runtime_package_typecheck(root)?;
+    service::check_typed_service_boundary(root)?;
     sum::check_tagged_standard_sums(root)?;
     effect::check_from_either_boundary(root)?;
     if runtime_helper_is_declared(abi, "effect.stdin.readLine") {
