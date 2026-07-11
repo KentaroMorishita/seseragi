@@ -1,0 +1,29 @@
+pub type Hand =
+  | Rock
+  | Paper
+  | Scissors
+
+pub type Outcome =
+  | Player1Wins
+  | Player2Wins
+  | Draw
+
+pub fn decide first: Hand -> second: Hand -> Outcome =
+  match (first, second) {
+    (Rock, Rock) -> Draw
+    (Paper, Paper) -> Draw
+    (Scissors, Scissors) -> Draw
+
+    (Rock, Scissors) -> Player1Wins
+    (Paper, Rock) -> Player1Wins
+    (Scissors, Paper) -> Player1Wins
+
+    _ -> Player2Wins
+  }
+
+pub fn renderOutcome outcome: Outcome -> String =
+  match outcome {
+    Player1Wins -> "Player 1 wins!"
+    Player2Wins -> "Player 2 wins!"
+    Draw -> "Draw!"
+  }

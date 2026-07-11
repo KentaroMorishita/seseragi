@@ -1,0 +1,399 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/rock-paper-scissors-domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Hand",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Rock",
+          "tag": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "exported": true,
+          "name": "Paper",
+          "tag": "Paper",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "exported": true,
+          "name": "Scissors",
+          "tag": "Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "exported": true,
+      "name": "Outcome",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Player1Wins",
+          "tag": "Player1Wins",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 72,
+            "end": 83
+          }
+        },
+        {
+          "exported": true,
+          "name": "Player2Wins",
+          "tag": "Player2Wins",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 99
+          }
+        },
+        {
+          "exported": true,
+          "name": "Draw",
+          "tag": "Draw",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 104,
+            "end": 108
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 108
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "decide",
+      "parameters": [
+        {
+          "name": "first",
+          "type": "Hand",
+          "implicit": false
+        },
+        {
+          "name": "second",
+          "type": "Hand",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "identifier",
+              "name": "first"
+            },
+            {
+              "kind": "identifier",
+              "name": "second"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Rock"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Rock"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Draw"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Paper"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Paper"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Draw"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Scissors"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Scissors"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Draw"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Rock"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Scissors"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Player1Wins"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Paper"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Rock"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Player1Wins"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Scissors"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Paper"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Player1Wins"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "identifier",
+              "name": "Player2Wins"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Outcome",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 408
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "renderOutcome",
+      "parameters": [
+        {
+          "name": "outcome",
+          "type": "Outcome",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "outcome"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Outcome",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Player1Wins"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Player 1 wins!"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Player2Wins"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Player 2 wins!"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Draw!"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 410,
+        "end": 573
+      }
+    }
+  ]
+}

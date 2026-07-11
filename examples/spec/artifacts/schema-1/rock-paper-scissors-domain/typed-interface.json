@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/rock-paper-scissors-domain",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Hand",
+      "namespace": "type",
+      "name": "Hand",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Hand",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Rock",
+      "namespace": "value",
+      "name": "Rock",
+      "constructorOf": "artifact/rock-paper-scissors-domain::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Paper",
+      "namespace": "value",
+      "name": "Paper",
+      "constructorOf": "artifact/rock-paper-scissors-domain::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 29,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Scissors",
+      "namespace": "value",
+      "name": "Scissors",
+      "constructorOf": "artifact/rock-paper-scissors-domain::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 39,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Outcome",
+      "namespace": "type",
+      "name": "Outcome",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 49,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Outcome",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Player1Wins",
+      "namespace": "value",
+      "name": "Player1Wins",
+      "constructorOf": "artifact/rock-paper-scissors-domain::Outcome",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 72,
+        "end": 83
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Player2Wins",
+      "namespace": "value",
+      "name": "Player2Wins",
+      "constructorOf": "artifact/rock-paper-scissors-domain::Outcome",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 88,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::Draw",
+      "namespace": "value",
+      "name": "Draw",
+      "constructorOf": "artifact/rock-paper-scissors-domain::Outcome",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 104,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::decide",
+      "namespace": "value",
+      "name": "decide",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 110,
+        "end": 408
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Outcome",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-domain::renderOutcome",
+      "namespace": "value",
+      "name": "renderOutcome",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 410,
+        "end": 573
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Outcome",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

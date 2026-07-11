@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 217,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 24,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 0,
+            "endToken": 1,
+            "children": []
+          },
+          {
+            "kind": "type-decl",
+            "startToken": 2,
+            "endToken": 24,
+            "children": [
+              {
+                "kind": "variant-decl",
+                "startToken": 9,
+                "endToken": 14,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 14,
+                "endToken": 19,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 19,
+                "endToken": 24,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 24,
+        "endToken": 48,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 24,
+            "endToken": 25,
+            "children": []
+          },
+          {
+            "kind": "type-decl",
+            "startToken": 26,
+            "endToken": 48,
+            "children": [
+              {
+                "kind": "variant-decl",
+                "startToken": 33,
+                "endToken": 38,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 38,
+                "endToken": 43,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 43,
+                "endToken": 48,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 48,
+        "endToken": 169,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 48,
+            "endToken": 49,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 50,
+            "endToken": 169,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 169,
+        "endToken": 217,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 169,
+            "endToken": 170,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 171,
+            "endToken": 217,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

@@ -1,0 +1,1204 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/rock-paper-scissors-domain",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        },
+        {
+          "name": "Paper",
+          "nameSpan": {
+            "start": 29,
+            "end": 34
+          },
+          "span": {
+            "start": 27,
+            "end": 34
+          }
+        },
+        {
+          "name": "Scissors",
+          "nameSpan": {
+            "start": 39,
+            "end": 47
+          },
+          "span": {
+            "start": 37,
+            "end": 47
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Outcome",
+      "nameSpan": {
+        "start": 58,
+        "end": 65
+      },
+      "variants": [
+        {
+          "name": "Player1Wins",
+          "nameSpan": {
+            "start": 72,
+            "end": 83
+          },
+          "span": {
+            "start": 70,
+            "end": 83
+          }
+        },
+        {
+          "name": "Player2Wins",
+          "nameSpan": {
+            "start": 88,
+            "end": 99
+          },
+          "span": {
+            "start": 86,
+            "end": 99
+          }
+        },
+        {
+          "name": "Draw",
+          "nameSpan": {
+            "start": 104,
+            "end": 108
+          },
+          "span": {
+            "start": 102,
+            "end": 108
+          }
+        }
+      ],
+      "span": {
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "decide",
+      "nameSpan": {
+        "start": 117,
+        "end": 123
+      },
+      "parameters": [
+        {
+          "name": "first",
+          "nameSpan": {
+            "start": 124,
+            "end": 129
+          },
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 131,
+              "end": 135
+            }
+          }
+        },
+        {
+          "name": "second",
+          "nameSpan": {
+            "start": 139,
+            "end": 145
+          },
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 147,
+              "end": 151
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Outcome",
+        "span": {
+          "start": 155,
+          "end": 162
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "name",
+              "name": "first",
+              "span": {
+                "start": 174,
+                "end": 179
+              }
+            },
+            {
+              "kind": "name",
+              "name": "second",
+              "span": {
+                "start": 181,
+                "end": 187
+              }
+            }
+          ],
+          "span": {
+            "start": 173,
+            "end": 188
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 196,
+                    "end": 200
+                  },
+                  "span": {
+                    "start": 196,
+                    "end": 200
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 202,
+                    "end": 206
+                  },
+                  "span": {
+                    "start": 202,
+                    "end": 206
+                  }
+                }
+              ],
+              "span": {
+                "start": 195,
+                "end": 207
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 211,
+                "end": 215
+              }
+            },
+            "span": {
+              "start": 195,
+              "end": 215
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 221,
+                    "end": 226
+                  },
+                  "span": {
+                    "start": 221,
+                    "end": 226
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 228,
+                    "end": 233
+                  },
+                  "span": {
+                    "start": 228,
+                    "end": 233
+                  }
+                }
+              ],
+              "span": {
+                "start": 220,
+                "end": 234
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 238,
+                "end": 242
+              }
+            },
+            "span": {
+              "start": 220,
+              "end": 242
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 248,
+                    "end": 256
+                  },
+                  "span": {
+                    "start": 248,
+                    "end": 256
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 258,
+                    "end": 266
+                  },
+                  "span": {
+                    "start": 258,
+                    "end": 266
+                  }
+                }
+              ],
+              "span": {
+                "start": 247,
+                "end": 267
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 271,
+                "end": 275
+              }
+            },
+            "span": {
+              "start": 247,
+              "end": 275
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 282,
+                    "end": 286
+                  },
+                  "span": {
+                    "start": 282,
+                    "end": 286
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 288,
+                    "end": 296
+                  },
+                  "span": {
+                    "start": 288,
+                    "end": 296
+                  }
+                }
+              ],
+              "span": {
+                "start": 281,
+                "end": 297
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player1Wins",
+              "span": {
+                "start": 301,
+                "end": 312
+              }
+            },
+            "span": {
+              "start": 281,
+              "end": 312
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 318,
+                    "end": 323
+                  },
+                  "span": {
+                    "start": 318,
+                    "end": 323
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 325,
+                    "end": 329
+                  },
+                  "span": {
+                    "start": 325,
+                    "end": 329
+                  }
+                }
+              ],
+              "span": {
+                "start": 317,
+                "end": 330
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player1Wins",
+              "span": {
+                "start": 334,
+                "end": 345
+              }
+            },
+            "span": {
+              "start": 317,
+              "end": 345
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 351,
+                    "end": 359
+                  },
+                  "span": {
+                    "start": 351,
+                    "end": 359
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 361,
+                    "end": 366
+                  },
+                  "span": {
+                    "start": 361,
+                    "end": 366
+                  }
+                }
+              ],
+              "span": {
+                "start": 350,
+                "end": 367
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player1Wins",
+              "span": {
+                "start": 371,
+                "end": 382
+              }
+            },
+            "span": {
+              "start": 350,
+              "end": 382
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 388,
+                "end": 389
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player2Wins",
+              "span": {
+                "start": 393,
+                "end": 404
+              }
+            },
+            "span": {
+              "start": 388,
+              "end": 404
+            }
+          }
+        ],
+        "span": {
+          "start": 167,
+          "end": 408
+        }
+      },
+      "span": {
+        "start": 110,
+        "end": 408
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "renderOutcome",
+      "nameSpan": {
+        "start": 417,
+        "end": 430
+      },
+      "parameters": [
+        {
+          "name": "outcome",
+          "nameSpan": {
+            "start": 431,
+            "end": 438
+          },
+          "type": {
+            "kind": "named",
+            "name": "Outcome",
+            "span": {
+              "start": 440,
+              "end": 447
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 451,
+          "end": 457
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "outcome",
+          "span": {
+            "start": 468,
+            "end": 475
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Player1Wins",
+              "nameSpan": {
+                "start": 482,
+                "end": 493
+              },
+              "span": {
+                "start": 482,
+                "end": 493
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"Player 1 wins!\"",
+              "span": {
+                "start": 497,
+                "end": 513
+              }
+            },
+            "span": {
+              "start": 482,
+              "end": 513
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Player2Wins",
+              "nameSpan": {
+                "start": 518,
+                "end": 529
+              },
+              "span": {
+                "start": 518,
+                "end": 529
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"Player 2 wins!\"",
+              "span": {
+                "start": 533,
+                "end": 549
+              }
+            },
+            "span": {
+              "start": 518,
+              "end": 549
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Draw",
+              "nameSpan": {
+                "start": 554,
+                "end": 558
+              },
+              "span": {
+                "start": 554,
+                "end": 558
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"Draw!\"",
+              "span": {
+                "start": 562,
+                "end": 569
+              }
+            },
+            "span": {
+              "start": 554,
+              "end": 569
+            }
+          }
+        ],
+        "span": {
+          "start": 462,
+          "end": 573
+        }
+      },
+      "span": {
+        "start": 410,
+        "end": 573
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 573
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 110,
+        "end": 408
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 195,
+        "end": 215
+      }
+    },
+    {
+      "id": 5,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 220,
+        "end": 242
+      }
+    },
+    {
+      "id": 6,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 247,
+        "end": 275
+      }
+    },
+    {
+      "id": 7,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 281,
+        "end": 312
+      }
+    },
+    {
+      "id": 8,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 317,
+        "end": 345
+      }
+    },
+    {
+      "id": 9,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 350,
+        "end": 382
+      }
+    },
+    {
+      "id": 10,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 388,
+        "end": 404
+      }
+    },
+    {
+      "id": 11,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 410,
+        "end": 573
+      }
+    },
+    {
+      "id": 12,
+      "parent": 11,
+      "kind": "match-arm",
+      "origin": {
+        "start": 482,
+        "end": 513
+      }
+    },
+    {
+      "id": 13,
+      "parent": 11,
+      "kind": "match-arm",
+      "origin": {
+        "start": 518,
+        "end": 549
+      }
+    },
+    {
+      "id": 14,
+      "parent": 11,
+      "kind": "match-arm",
+      "origin": {
+        "start": 554,
+        "end": 569
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Hand",
+      "canonical": "artifact/rock-paper-scissors-domain::Hand",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Rock",
+      "canonical": "artifact/rock-paper-scissors-domain::Rock",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 20,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Paper",
+      "canonical": "artifact/rock-paper-scissors-domain::Paper",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 29,
+        "end": 34
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Scissors",
+      "canonical": "artifact/rock-paper-scissors-domain::Scissors",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 39,
+        "end": 47
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Outcome",
+      "canonical": "artifact/rock-paper-scissors-domain::Outcome",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 58,
+        "end": 65
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Player1Wins",
+      "canonical": "artifact/rock-paper-scissors-domain::Player1Wins",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 72,
+        "end": 83
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Player2Wins",
+      "canonical": "artifact/rock-paper-scissors-domain::Player2Wins",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 88,
+        "end": 99
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Draw",
+      "canonical": "artifact/rock-paper-scissors-domain::Draw",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 104,
+        "end": 108
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "decide",
+      "canonical": "artifact/rock-paper-scissors-domain::decide",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 117,
+        "end": 123
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "renderOutcome",
+      "canonical": "artifact/rock-paper-scissors-domain::renderOutcome",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 417,
+        "end": 430
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "first",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 124,
+        "end": 129
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "second",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 139,
+        "end": 145
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "outcome",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 11,
+      "origin": {
+        "start": 431,
+        "end": 438
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 131,
+        "end": 135
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 147,
+        "end": 151
+      }
+    },
+    {
+      "spelling": "Outcome",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 155,
+        "end": 162
+      }
+    },
+    {
+      "spelling": "first",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 174,
+        "end": 179
+      }
+    },
+    {
+      "spelling": "second",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 181,
+        "end": 187
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 196,
+        "end": 200
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 202,
+        "end": 206
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 211,
+        "end": 215
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 221,
+        "end": 226
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 228,
+        "end": 233
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 238,
+        "end": 242
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 248,
+        "end": 256
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 258,
+        "end": 266
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 271,
+        "end": 275
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 282,
+        "end": 286
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 288,
+        "end": 296
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 301,
+        "end": 312
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 318,
+        "end": 323
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 325,
+        "end": 329
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 334,
+        "end": 345
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 351,
+        "end": 359
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 361,
+        "end": 366
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 371,
+        "end": 382
+      }
+    },
+    {
+      "spelling": "Player2Wins",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 393,
+        "end": 404
+      }
+    },
+    {
+      "spelling": "Outcome",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 440,
+        "end": 447
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 451,
+        "end": 457
+      }
+    },
+    {
+      "spelling": "outcome",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 468,
+        "end": 475
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 482,
+        "end": 493
+      }
+    },
+    {
+      "spelling": "Player2Wins",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 518,
+        "end": 529
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 554,
+        "end": 558
+      }
+    }
+  ],
+  "issues": []
+}

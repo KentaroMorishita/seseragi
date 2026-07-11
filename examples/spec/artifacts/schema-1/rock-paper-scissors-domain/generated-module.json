@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/rock-paper-scissors-domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "Rock",
+    "Paper",
+    "Scissors",
+    "Player1Wins",
+    "Player2Wins",
+    "Draw",
+    "decide",
+    "renderOutcome"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

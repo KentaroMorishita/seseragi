@@ -50,11 +50,39 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             validate_child(expression, "thenBranch", path)?;
             validate_child(expression, "elseBranch", path)
         }
+        "match" => validate_match(expression, path),
         "do" => validate_do(expression, path),
         other => Err(format!(
             "SurfaceAst {path} has unknown expression kind {other}"
         )),
     }
+}
+
+fn validate_match(expression: &Value, path: &str) -> Result<(), String> {
+    validate_child(expression, "scrutinee", path)?;
+
+    let arms = expression
+        .get("arms")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.arms must be an array"))?;
+
+    for (index, arm) in arms.iter().enumerate() {
+        let arm_path = format!("{path}.arms[{index}]");
+        require_span(arm, &arm_path)?;
+
+        let pattern = arm
+            .get("pattern")
+            .ok_or_else(|| format!("SurfaceAst {arm_path}.pattern is required"))?;
+        validate_pattern(pattern, &format!("{arm_path}.pattern"))?;
+
+        if let Some(guard) = arm.get("guard") {
+            validate_expression(guard, &format!("{arm_path}.guard"))?;
+        }
+
+        validate_child(arm, "body", &arm_path)?;
+    }
+
+    Ok(())
 }
 
 fn validate_do(expression: &Value, path: &str) -> Result<(), String> {
@@ -240,6 +268,100 @@ mod tests {
                         "span": { "start": 18, "end": 27 }
                     },
                     "span": { "start": 0, "end": 28 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_match_arms_with_tuple_patterns_and_guards() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "match",
+                    "scrutinee": {
+                        "kind": "name",
+                        "span": { "start": 6, "end": 11 }
+                    },
+                    "arms": [
+                        {
+                            "pattern": {
+                                "kind": "tuple",
+                                "elements": [
+                                    {
+                                        "kind": "constructor",
+                                        "argument": {
+                                            "kind": "name",
+                                            "span": { "start": 20, "end": 25 }
+                                        },
+                                        "span": { "start": 15, "end": 25 }
+                                    },
+                                    { "kind": "wildcard", "span": { "start": 27, "end": 28 } }
+                                ],
+                                "span": { "start": 14, "end": 29 }
+                            },
+                            "guard": {
+                                "kind": "boolean",
+                                "span": { "start": 35, "end": 39 }
+                            },
+                            "body": {
+                                "kind": "name",
+                                "span": { "start": 43, "end": 48 }
+                            },
+                            "span": { "start": 14, "end": 48 }
+                        }
+                    ],
+                    "span": { "start": 0, "end": 50 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn rejects_match_arm_without_a_body() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "match",
+                    "scrutinee": {
+                        "kind": "name",
+                        "span": { "start": 6, "end": 11 }
+                    },
+                    "arms": [{
+                        "pattern": {
+                            "kind": "wildcard",
+                            "span": { "start": 14, "end": 15 }
+                        },
+                        "span": { "start": 14, "end": 15 }
+                    }],
+                    "span": { "start": 0, "end": 17 }
+                }
+            }]
+        });
+
+        let error = validate_surface_ast(&module).unwrap_err();
+        assert!(error.contains("arms[0].body is required"));
+    }
+
+    #[test]
+    fn accepts_an_empty_match_for_later_exhaustiveness_diagnostics() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "match",
+                    "scrutinee": {
+                        "kind": "name",
+                        "span": { "start": 6, "end": 11 }
+                    },
+                    "arms": [],
+                    "span": { "start": 0, "end": 14 }
                 }
             }]
         });
