@@ -8,8 +8,11 @@ use crate::{
 use serde::{Deserialize, Serialize};
 
 mod decision;
+mod metadata;
 mod source_map;
 
+use metadata::generated_module_for;
+pub use metadata::{GeneratedModule, GeneratedOutputs, GeneratedRuntime};
 use source_map::source_map_for_module;
 pub use source_map::SourceMap;
 
@@ -21,85 +24,16 @@ pub struct GeneratedBundle {
     pub source_map: SourceMap,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GeneratedModule {
-    pub schema: u32,
-    pub module: String,
-    pub target: String,
-    pub runtime: GeneratedRuntime,
-    pub exports: Vec<String>,
-    pub outputs: GeneratedOutputs,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GeneratedRuntime {
-    pub identity: String,
-    pub abi_major: u32,
-    pub requirements: Vec<String>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GeneratedOutputs {
-    pub typescript: String,
-    pub source_map: String,
-}
-
 pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> GeneratedBundle {
     let typescript = render_typescript(&module);
     let source_map = source_map_for_module(&module, source_text);
-    let exports = module_exports(&module);
-    let metadata = GeneratedModule {
-        schema: module.schema,
-        module: module.module,
-        target: "typescript-es2022".to_owned(),
-        runtime: GeneratedRuntime {
-            identity: "@seseragi/runtime".to_owned(),
-            abi_major: 1,
-            requirements: module.runtime_requirements,
-        },
-        exports,
-        outputs: GeneratedOutputs {
-            typescript: "main.ts".to_owned(),
-            source_map: "main.ts.map".to_owned(),
-        },
-    };
+    let metadata = generated_module_for(module);
 
     GeneratedBundle {
         metadata,
         typescript,
         source_map,
     }
-}
-
-fn module_exports(module: &TypeScriptModule) -> Vec<String> {
-    let mut exports = Vec::new();
-    for adt in &module.adts {
-        for variant in &adt.variants {
-            if variant.exported {
-                exports.push(variant.name.clone());
-            }
-        }
-    }
-    for binding in &module.bindings {
-        match binding {
-            TypeScriptBinding::Const { exported, name, .. } if *exported => {
-                exports.push(name.clone());
-            }
-            _ => {}
-        }
-    }
-    for function in &module.functions {
-        match function {
-            TypeScriptFunction::ConstFunction { exported, name, .. } if *exported => {
-                exports.push(name.clone());
-            }
-            _ => {}
-        }
-    }
-    exports
 }
 
 fn render_typescript(module: &TypeScriptModule) -> String {
