@@ -71,6 +71,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - cold Effect valueをversioned TypeScript runtimeで実行するConsole / Stdin execution fixture
 - typed ADT、tuple、match、exhaustivenessを通す`rock-paper-scissors-domain` artifact
 - standard `Maybe` / `Either`と、正常・不正入力を実行する`parse-hand-either` artifact
+- pure `parseHand`をcold typed Effectへ変換する`effect-parse-hand` artifact
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
@@ -115,8 +116,8 @@ semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移し
 
 当面は仕様機能を横へ増やさず、次の順で進めます。
 
-1. `parseHand`をStdin / Consoleのcold Effectへ接続し、typed failureをCLI flowへ通す。
-2. フェーズ1のじゃんけんCLIを正常・不正入力のexecution fixtureで固定する。
+1. cold Effect化した`parseHand`をStdin / Consoleへ合成し、typed failureをCLI flowへ通す。
+2. Effectのsuccess / failure exitをrunnerで観測し、じゃんけんCLIの正常・不正入力fixtureを固定する。
 3. その縦sliceで不足したdiagnosticとfrontend recoveryを一般機能として補う。
 
 ## 完了と呼ぶ条件

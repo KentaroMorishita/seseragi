@@ -1,0 +1,492 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-parse-hand",
+  "adts": [
+    {
+      "symbol": "artifact/effect-parse-hand::Hand",
+      "name": "Hand",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-parse-hand::Rock",
+          "name": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "symbol": "artifact/effect-parse-hand::Paper",
+          "name": "Paper",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "symbol": "artifact/effect-parse-hand::Scissors",
+          "name": "Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "symbol": "artifact/effect-parse-hand::HandInputError",
+      "name": "HandInputError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-parse-hand::UnknownHand",
+          "name": "UnknownHand",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 79,
+            "end": 90
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 97
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/effect-parse-hand::parseHand",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 99,
+        "end": 302
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 168,
+            "end": 173
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 180,
+                  "end": 186
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-parse-hand::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 196,
+                    "end": 200
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 190,
+                "end": 200
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 180,
+              "end": 200
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "paper",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 205,
+                  "end": 212
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-parse-hand::Paper",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 222,
+                    "end": 227
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 216,
+                "end": 227
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 205,
+              "end": 227
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "scissors",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 232,
+                  "end": 242
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-parse-hand::Scissors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 252,
+                    "end": 260
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 246,
+                "end": 260
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 232,
+              "end": 260
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "other",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 265,
+                  "end": 270
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Left",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/effect-parse-hand::UnknownHand",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "other",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 292,
+                        "end": 297
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 280,
+                    "end": 297
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 274,
+                "end": 298
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 265,
+              "end": 298
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "HandInputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 162,
+          "end": 302
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-parse-hand::parse",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 304,
+        "end": 370
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "effect.fromEither",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "HandInputError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/effect-parse-hand::parseHand",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "input",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 364,
+                  "end": 369
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "HandInputError",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 354,
+              "end": 369
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 342,
+          "end": 370
+        }
+      }
+    }
+  ]
+}

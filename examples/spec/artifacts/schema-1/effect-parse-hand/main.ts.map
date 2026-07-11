@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-parse-hand"
+  ],
+  "sourcesContent": [
+    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type HandInputError =\n  | UnknownHand String\n\nfn parseHand input: String -> Either<HandInputError, Hand> =\n  match input {\n    \"rock\" -> Right Rock\n    \"paper\" -> Right Paper\n    \"scissors\" -> Right Scissors\n    other -> Left (UnknownHand other)\n  }\n\npub effect fn parse input: String =\n  fromEither (parseHand input)\n"
+  ],
+  "names": [
+    "Hand",
+    "Rock",
+    "Paper",
+    "Scissors",
+    "HandInputError",
+    "UnknownHand",
+    "parseHand",
+    "Right",
+    "Right",
+    "Right",
+    "other",
+    "Left",
+    "UnknownHand",
+    "parse",
+    "fromEither",
+    "parseHand"
+  ],
+  "mappings": ";;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AAEJC;AAQAO"
+}

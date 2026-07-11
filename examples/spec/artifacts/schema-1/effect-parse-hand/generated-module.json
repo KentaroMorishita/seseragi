@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "module": "artifact/effect-parse-hand",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.either.right",
+      "core.either.left",
+      "effect.core.fromEither"
+    ]
+  },
+  "exports": [
+    "Rock",
+    "Paper",
+    "Scissors",
+    "UnknownHand",
+    "parse"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

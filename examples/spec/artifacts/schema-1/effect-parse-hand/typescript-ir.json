@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-parse-hand",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.either",
+    "core.either.right",
+    "core.either.left",
+    "effect.core.fromEither"
+  ],
+  "imports": [
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "effect.core.fromEither",
+      "local": "_ssrg_effect_fromEither"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Hand",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Rock",
+          "tag": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "exported": true,
+          "name": "Paper",
+          "tag": "Paper",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "exported": true,
+          "name": "Scissors",
+          "tag": "Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "exported": true,
+      "name": "HandInputError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "UnknownHand",
+          "tag": "UnknownHand",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 79,
+            "end": 90
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 97
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "parseHand",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "input"
+        },
+        "scrutineeType": {
+          "kind": "string"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "rock"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Rock"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "paper"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Paper"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "scissors"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Scissors"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "other",
+                "type": {
+                  "kind": "string"
+                },
+                "path": []
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Left",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "UnknownHand",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "other"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "HandInputError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 99,
+        "end": 302
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "parse",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_fromEither",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "parseHand",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "input"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 304,
+        "end": 370
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+pub type Hand =
+  | Rock
+  | Paper
+  | Scissors
+
+pub type HandInputError =
+  | UnknownHand String
+
+fn parseHand input: String -> Either<HandInputError, Hand> =
+  match input {
+    "rock" -> Right Rock
+    "paper" -> Right Paper
+    "scissors" -> Right Scissors
+    other -> Left (UnknownHand other)
+  }
+
+pub effect fn parse input: String =
+  fromEither (parseHand input)

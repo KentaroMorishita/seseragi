@@ -1,0 +1,412 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        },
+        {
+          "name": "Paper",
+          "nameSpan": {
+            "start": 29,
+            "end": 34
+          },
+          "span": {
+            "start": 27,
+            "end": 34
+          }
+        },
+        {
+          "name": "Scissors",
+          "nameSpan": {
+            "start": 39,
+            "end": 47
+          },
+          "span": {
+            "start": 37,
+            "end": 47
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "HandInputError",
+      "nameSpan": {
+        "start": 58,
+        "end": 72
+      },
+      "variants": [
+        {
+          "name": "UnknownHand",
+          "nameSpan": {
+            "start": 79,
+            "end": 90
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 91,
+              "end": 97
+            }
+          },
+          "span": {
+            "start": 77,
+            "end": 97
+          }
+        }
+      ],
+      "span": {
+        "start": 49,
+        "end": 97
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "parseHand",
+      "nameSpan": {
+        "start": 102,
+        "end": 111
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 112,
+            "end": 117
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 119,
+              "end": 125
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "HandInputError",
+            "span": {
+              "start": 136,
+              "end": 150
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 152,
+              "end": 156
+            }
+          }
+        ],
+        "span": {
+          "start": 129,
+          "end": 157
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "input",
+          "span": {
+            "start": 168,
+            "end": 173
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"rock\"",
+              "span": {
+                "start": 180,
+                "end": 186
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 190,
+                  "end": 195
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Rock",
+                "span": {
+                  "start": 196,
+                  "end": 200
+                }
+              },
+              "span": {
+                "start": 190,
+                "end": 200
+              }
+            },
+            "span": {
+              "start": 180,
+              "end": 200
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"paper\"",
+              "span": {
+                "start": 205,
+                "end": 212
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 216,
+                  "end": 221
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Paper",
+                "span": {
+                  "start": 222,
+                  "end": 227
+                }
+              },
+              "span": {
+                "start": 216,
+                "end": 227
+              }
+            },
+            "span": {
+              "start": 205,
+              "end": 227
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"scissors\"",
+              "span": {
+                "start": 232,
+                "end": 242
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 246,
+                  "end": 251
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Scissors",
+                "span": {
+                  "start": 252,
+                  "end": 260
+                }
+              },
+              "span": {
+                "start": 246,
+                "end": 260
+              }
+            },
+            "span": {
+              "start": 232,
+              "end": 260
+            }
+          },
+          {
+            "pattern": {
+              "kind": "name",
+              "name": "other",
+              "nameSpan": {
+                "start": 265,
+                "end": 270
+              },
+              "span": {
+                "start": 265,
+                "end": 270
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Left",
+                "span": {
+                  "start": 274,
+                  "end": 278
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "UnknownHand",
+                    "span": {
+                      "start": 280,
+                      "end": 291
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "other",
+                    "span": {
+                      "start": 292,
+                      "end": 297
+                    }
+                  },
+                  "span": {
+                    "start": 280,
+                    "end": 297
+                  }
+                },
+                "span": {
+                  "start": 279,
+                  "end": 298
+                }
+              },
+              "span": {
+                "start": 274,
+                "end": 298
+              }
+            },
+            "span": {
+              "start": 265,
+              "end": 298
+            }
+          }
+        ],
+        "span": {
+          "start": 162,
+          "end": 302
+        }
+      },
+      "span": {
+        "start": 99,
+        "end": 302
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "parse",
+      "nameSpan": {
+        "start": 318,
+        "end": 323
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 324,
+            "end": 329
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 331,
+              "end": 337
+            }
+          }
+        }
+      ],
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "fromEither",
+          "span": {
+            "start": 342,
+            "end": 352
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "parseHand",
+              "span": {
+                "start": 354,
+                "end": 363
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "input",
+              "span": {
+                "start": 364,
+                "end": 369
+              }
+            },
+            "span": {
+              "start": 354,
+              "end": 369
+            }
+          },
+          "span": {
+            "start": 353,
+            "end": 370
+          }
+        },
+        "span": {
+          "start": 342,
+          "end": 370
+        }
+      },
+      "span": {
+        "start": 304,
+        "end": 370
+      }
+    }
+  ]
+}

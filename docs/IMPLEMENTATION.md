@@ -357,7 +357,10 @@ backend registryで`@seseragi/runtime/sum`のimportへ解決し、localな同名
 singleton identityを保つruntime reference、`Just` / `Left` / `Right`はruntime callとしてTypeScriptIrに残します。
 `standard-sum-values` execution fixtureは生成TypeScriptのpure Unit entryを実際に呼び、4つのtagged valueをJSONで
 比較します。`parse-hand-either`はString literal matchを`Either<HandInputError, Hand>`へ載せ替え、typed String引数を
-受けるpure executionで正常入力と不正入力を比較します。これを使う`parseHand`のEffect接続は引き続き未完了です。
+受けるpure executionで正常入力と不正入力を比較します。`effect-parse-hand`はこのpure functionを`fromEither`へ渡し、
+`Either<HandInputError, Hand>`から`Effect<{}, HandInputError, Hand>`を推論してgenerated TypeScriptまで接続します。
+runtimeは入力caseを構築時に一度だけ保持し、Effectのrun時にRightをsuccess、Leftをtyped failureとして公開します。
+Stdin / Consoleとの合成と未処理failureのhost表示はP1-6へ残します。
 
 P1-0は新機能の前提です。SurfaceAstが式を所有しても、TypedHirが再びsource tokenを走査するならmatchやpatternを
 追加するたびに別parserが増えます。したがってpure expression consumerをSurfaceAstへ移してからtupleへ進み、
