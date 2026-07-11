@@ -1,18 +1,20 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    runtime_types::runtime_type_import_for_feature, sum_ops::runtime_sum_constructor_for_feature,
-    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptStatement,
+    runtime_types::runtime_type_import_for_feature, show_ops::runtime_show_dictionary_for_feature,
+    sum_ops::runtime_sum_constructor_for_feature, TypeScriptAdt, TypeScriptAdtVariant,
+    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
 mod decision;
+mod instances;
 mod metadata;
 mod source_map;
 
+use instances::render_typescript_instances;
 use metadata::generated_module_for;
-pub use metadata::{GeneratedModule, GeneratedOutputs, GeneratedRuntime};
+pub use metadata::{GeneratedInstance, GeneratedModule, GeneratedOutputs, GeneratedRuntime};
 use source_map::source_map_for_module;
 pub use source_map::SourceMap;
 
@@ -49,6 +51,10 @@ fn render_typescript(module: &TypeScriptModule) -> String {
             .or_else(|| {
                 runtime_sum_constructor_for_feature(&import.feature)
                     .map(|constructor| (constructor.module, constructor.export_name))
+            })
+            .or_else(|| {
+                runtime_show_dictionary_for_feature(&import.feature)
+                    .map(|dictionary| (dictionary.module, dictionary.export_name))
             });
         if let Some((runtime_module, export_name)) = helper {
             let rendered = format!("{export_name} as {}", import.local);
@@ -82,13 +88,17 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         ));
     }
     if (!module.imports.is_empty() || !module.type_imports.is_empty())
-        && (!module.adts.is_empty() || !module.bindings.is_empty() || !module.functions.is_empty())
+        && (!module.adts.is_empty()
+            || !module.instances.is_empty()
+            || !module.bindings.is_empty()
+            || !module.functions.is_empty())
     {
         output.push('\n');
     }
     for adt in &module.adts {
         render_adt(&mut output, adt);
     }
+    render_typescript_instances(&mut output, &module.instances, &module.type_imports);
     for binding in &module.bindings {
         match binding {
             TypeScriptBinding::Const {

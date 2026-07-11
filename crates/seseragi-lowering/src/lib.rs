@@ -3,6 +3,7 @@ mod effect_ops;
 mod emit;
 mod int_ops;
 mod runtime_types;
+mod show_ops;
 mod span;
 mod sum_ops;
 mod typescript;
@@ -14,8 +15,8 @@ pub use core::{
     CoreRecordField, CoreStatement, CoreType,
 };
 pub use emit::{
-    emit_typescript_module, GeneratedBundle, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
-    SourceMap,
+    emit_typescript_module, GeneratedBundle, GeneratedInstance, GeneratedModule, GeneratedOutputs,
+    GeneratedRuntime, SourceMap,
 };
 pub(crate) use span::source_span;
 pub use span::SourceSpan;

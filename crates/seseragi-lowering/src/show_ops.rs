@@ -1,0 +1,72 @@
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct RuntimeShowDictionary {
+    pub(crate) runtime_feature: &'static str,
+    pub(crate) local_name: &'static str,
+    pub(crate) module: &'static str,
+    pub(crate) export_name: &'static str,
+    pub(crate) source_map_name: &'static str,
+}
+
+const RUNTIME_SHOW_DICTIONARIES: &[RuntimeShowDictionary] = &[
+    RuntimeShowDictionary {
+        runtime_feature: "core.string.show",
+        local_name: "_ssrg_show_stringShow",
+        module: "@seseragi/runtime/show",
+        export_name: "stringShow",
+        source_map_name: "stringShow",
+    },
+    RuntimeShowDictionary {
+        runtime_feature: "effect.console.error.show",
+        local_name: "_ssrg_show_consoleErrorShow",
+        module: "@seseragi/runtime/show",
+        export_name: "consoleErrorShow",
+        source_map_name: "consoleErrorShow",
+    },
+    RuntimeShowDictionary {
+        runtime_feature: "effect.stdin.error.show",
+        local_name: "_ssrg_show_stdinErrorShow",
+        module: "@seseragi/runtime/show",
+        export_name: "stdinErrorShow",
+        source_map_name: "stdinErrorShow",
+    },
+];
+
+pub(crate) fn runtime_show_dictionary_for_feature(feature: &str) -> Option<RuntimeShowDictionary> {
+    RUNTIME_SHOW_DICTIONARIES
+        .iter()
+        .copied()
+        .find(|dictionary| dictionary.runtime_feature == feature)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn maps_the_complete_standard_show_dictionary_family() {
+        for (feature, local_name, export_name) in [
+            ("core.string.show", "_ssrg_show_stringShow", "stringShow"),
+            (
+                "effect.console.error.show",
+                "_ssrg_show_consoleErrorShow",
+                "consoleErrorShow",
+            ),
+            (
+                "effect.stdin.error.show",
+                "_ssrg_show_stdinErrorShow",
+                "stdinErrorShow",
+            ),
+        ] {
+            let dictionary = runtime_show_dictionary_for_feature(feature).unwrap();
+            assert_eq!(dictionary.local_name, local_name);
+            assert_eq!(dictionary.module, "@seseragi/runtime/show");
+            assert_eq!(dictionary.export_name, export_name);
+            assert_eq!(dictionary.source_map_name, export_name);
+        }
+    }
+
+    #[test]
+    fn rejects_unknown_show_dictionary_features() {
+        assert!(runtime_show_dictionary_for_feature("core.int64.show").is_none());
+    }
+}

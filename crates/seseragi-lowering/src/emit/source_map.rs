@@ -1,8 +1,9 @@
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    runtime_types::runtime_type_import_for_feature, sum_ops::runtime_sum_constructor_for_feature,
-    SourceSpan, TypeScriptBinding, TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptStatement,
+    runtime_types::runtime_type_import_for_feature, show_ops::runtime_show_dictionary_for_feature,
+    sum_ops::runtime_sum_constructor_for_feature, SourceSpan, TypeScriptBinding,
+    TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
+    TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -75,6 +76,18 @@ fn module_names_and_mappings(
             );
         }
         generated_line += type_lines + adt.variants.len();
+    }
+
+    for instance in &module.instances {
+        push_declaration_mapping(
+            &mut names,
+            &mut mappings,
+            generated_line,
+            &instance.dictionary_export,
+            &instance.origin,
+            source_text,
+        );
+        generated_line += 1;
     }
 
     for binding in &module.bindings {
@@ -152,6 +165,7 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
         + usize::from(
             (!module.imports.is_empty() || !module.type_imports.is_empty())
                 && (!module.adts.is_empty()
+                    || !module.instances.is_empty()
                     || !module.bindings.is_empty()
                     || !module.functions.is_empty()),
         )
@@ -175,6 +189,9 @@ fn runtime_module_for_feature(feature: &str) -> Option<&'static str> {
         .or_else(|| {
             runtime_sum_constructor_for_feature(feature).map(|constructor| constructor.module)
         })
+        .or_else(|| {
+            runtime_show_dictionary_for_feature(feature).map(|dictionary| dictionary.module)
+        })
         .or_else(|| runtime_type_import_for_feature(feature).map(|type_import| type_import.module))
 }
 
@@ -187,6 +204,10 @@ fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
         .or_else(|| {
             runtime_sum_constructor_for_feature(feature)
                 .map(|constructor| constructor.source_map_name)
+        })
+        .or_else(|| {
+            runtime_show_dictionary_for_feature(feature)
+                .map(|dictionary| dictionary.source_map_name)
         })
 }
 

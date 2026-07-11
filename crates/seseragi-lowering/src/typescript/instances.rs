@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
 
-use crate::{CoreAdt, CoreInstance, CoreInstanceImplementation, CoreType, SourceSpan};
+use crate::{
+    show_ops::runtime_show_dictionary_for_feature, CoreAdt, CoreInstance,
+    CoreInstanceImplementation, CoreType, SourceSpan,
+};
 use serde::{Deserialize, Serialize};
 
 use super::names::{local_name, safe_identifier};
@@ -202,16 +205,15 @@ fn resolve_show_dictionary(
         };
     }
 
-    let (feature, local) = match name.as_str() {
-        "String" | "std/prelude::String" => ("core.string.show", "_ssrg_show_stringShow"),
-        "ConsoleError" | "std/prelude::ConsoleError" => {
-            ("effect.console.error.show", "_ssrg_show_consoleErrorShow")
-        }
-        "StdinError" | "std/prelude::StdinError" => {
-            ("effect.stdin.error.show", "_ssrg_show_stdinErrorShow")
-        }
+    let feature = match name.as_str() {
+        "String" | "std/prelude::String" => "core.string.show",
+        "ConsoleError" | "std/prelude::ConsoleError" => "effect.console.error.show",
+        "StdinError" | "std/prelude::StdinError" => "effect.stdin.error.show",
         _ => unreachable!("selected DerivedShow payload must have a selected dictionary"),
     };
+    let dictionary = runtime_show_dictionary_for_feature(feature)
+        .expect("selected standard Show dictionary must be registered");
+    let local = dictionary.local_name;
     push_unique(runtime_requirements, feature);
     push_import_unique(
         imports,

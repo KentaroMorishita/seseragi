@@ -1,4 +1,6 @@
-use crate::{TypeScriptBinding, TypeScriptFunction, TypeScriptModule};
+use crate::{
+    TypeScriptBinding, TypeScriptFunction, TypeScriptInstance, TypeScriptModule, TypeScriptType,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -9,7 +11,19 @@ pub struct GeneratedModule {
     pub target: String,
     pub runtime: GeneratedRuntime,
     pub exports: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub instances: Vec<GeneratedInstance>,
     pub outputs: GeneratedOutputs,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GeneratedInstance {
+    #[serde(rename = "trait")]
+    pub trait_name: String,
+    pub head: TypeScriptType,
+    pub type_identity: String,
+    pub dictionary_export: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -29,6 +43,11 @@ pub struct GeneratedOutputs {
 
 pub(super) fn generated_module_for(module: TypeScriptModule) -> GeneratedModule {
     let exports = module_exports(&module);
+    let instances = module
+        .instances
+        .iter()
+        .map(generated_instance_from_typescript)
+        .collect();
     GeneratedModule {
         schema: module.schema,
         module: module.module,
@@ -39,10 +58,20 @@ pub(super) fn generated_module_for(module: TypeScriptModule) -> GeneratedModule 
             requirements: module.runtime_requirements,
         },
         exports,
+        instances,
         outputs: GeneratedOutputs {
             typescript: "main.ts".to_owned(),
             source_map: "main.ts.map".to_owned(),
         },
+    }
+}
+
+fn generated_instance_from_typescript(instance: &TypeScriptInstance) -> GeneratedInstance {
+    GeneratedInstance {
+        trait_name: instance.trait_name.clone(),
+        head: instance.head.clone(),
+        type_identity: instance.type_identity.clone(),
+        dictionary_export: instance.dictionary_export.clone(),
     }
 }
 
@@ -72,4 +101,49 @@ fn module_exports(module: &TypeScriptModule) -> Vec<String> {
         }
     }
     exports
+}
+
+#[cfg(test)]
+mod tests {
+    use super::generated_module_for;
+    use crate::{lower_core_module_to_typescript_ir, lower_typed_module, TypeScriptType};
+    use seseragi_semantics::type_module;
+
+    #[test]
+    fn exposes_selected_dictionary_exports_separately_from_source_exports() {
+        let source = "pub type AppError deriving Show =\n  | EndOfInput\n";
+        let typed = type_module("artifact/generated-show/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let metadata = generated_module_for(lower_core_module_to_typescript_ir(core));
+
+        assert_eq!(metadata.exports, vec!["EndOfInput"]);
+        assert_eq!(metadata.instances.len(), 1);
+        assert_eq!(metadata.instances[0].trait_name, "Show");
+        assert_eq!(
+            metadata.instances[0].head,
+            TypeScriptType::Reference {
+                name: "AppError".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert_eq!(
+            metadata.instances[0].type_identity,
+            "artifact/generated-show::AppError"
+        );
+        assert_eq!(
+            metadata.instances[0].dictionary_export,
+            "__ssrg$instance$Show$0"
+        );
+    }
+
+    #[test]
+    fn omits_instance_metadata_when_no_dictionary_is_selected() {
+        let source = "pub let answer: Int = 42\n";
+        let typed = type_module("artifact/no-generated-show/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let metadata = generated_module_for(lower_core_module_to_typescript_ir(core));
+        let json = serde_json::to_value(metadata).unwrap();
+
+        assert!(json.get("instances").is_none());
+    }
 }

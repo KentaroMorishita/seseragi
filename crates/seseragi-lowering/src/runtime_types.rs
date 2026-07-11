@@ -8,6 +8,12 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/prelude::Show",
+        runtime_feature: "core.show.dictionary",
+        module: "@seseragi/runtime/show",
+        export_name: "Show",
+    },
+    RuntimeTypeImport {
         canonical: "std/prelude::Console",
         runtime_feature: "effect.console.service",
         module: "@seseragi/runtime/console",
@@ -64,5 +70,21 @@ mod tests {
     fn does_not_treat_local_spelling_as_a_runtime_type_identity() {
         assert!(runtime_type_import("StdinError").is_none());
         assert!(runtime_type_import("artifact/domain::StdinError").is_none());
+    }
+
+    #[test]
+    fn resolves_show_dictionary_type_by_identity_and_feature() {
+        let expected = RuntimeTypeImport {
+            canonical: "std/prelude::Show",
+            runtime_feature: "core.show.dictionary",
+            module: "@seseragi/runtime/show",
+            export_name: "Show",
+        };
+
+        assert_eq!(runtime_type_import("std/prelude::Show"), Some(expected));
+        assert_eq!(
+            runtime_type_import_for_feature("core.show.dictionary"),
+            Some(expected)
+        );
     }
 }
