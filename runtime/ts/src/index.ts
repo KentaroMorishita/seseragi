@@ -13,5 +13,10 @@ export { Just, Left, Nothing, Right } from "./sum";
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console";
 export { liveConsole, print, println } from "./console";
 
-export type { StdinEnvironment, StdinError } from "./stdin";
-export { readLine } from "./stdin";
+export type {
+  ProcessStdin,
+  Stdin,
+  StdinEnvironment,
+  StdinError,
+} from "./stdin";
+export { createProcessStdin, readLine } from "./stdin";

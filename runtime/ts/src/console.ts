@@ -26,8 +26,8 @@ export const liveConsole: Console = {
 export function print(
   value: unknown
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
-  return () => {
-    liveConsole.print(String(value));
+  return (environment) => {
+    environment.console.print(String(value));
     return unit;
   };
 }
@@ -35,8 +35,8 @@ export function print(
 export function println(
   value: unknown
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
-  return () => {
-    liveConsole.println(String(value));
+  return (environment) => {
+    environment.console.println(String(value));
     return unit;
   };
 }

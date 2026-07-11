@@ -3,6 +3,8 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
+use crate::execution_case::environment::EnvironmentPlan;
+
 mod entry;
 mod exit;
 
@@ -100,6 +102,7 @@ pub(crate) fn run_generated_typescript(
     compiled_typescript: &Path,
     entry_export: &str,
     invocation: Invocation,
+    environment: &EnvironmentPlan,
     stdin: &str,
 ) -> Result<ExecutionOutput, String> {
     let execution_dir = prepare_execution_dir(root, case)?;
@@ -107,7 +110,7 @@ pub(crate) fn run_generated_typescript(
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
     stage_runtime(root, &execution_dir)?;
     let observes_effect_exit = matches!(&invocation, Invocation::Effect { .. });
-    entry::write_entry(&execution_dir, entry_export, invocation)?;
+    entry::write_entry(&execution_dir, entry_export, invocation, environment)?;
 
     let mut child = Command::new("bun")
         .arg("run")

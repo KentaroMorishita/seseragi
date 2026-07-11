@@ -1,37 +1,71 @@
-import { stdin } from "node:process";
+import { stdin as processStdin } from "node:process";
 import { createInterface } from "node:readline";
 import type { Effect } from "./effect";
 import { Just, type Maybe, Nothing } from "./sum";
 
-export type StdinEnvironment = Record<string, never>;
+export type Stdin = {
+  readonly readLine: () => Promise<Maybe<string>> | Maybe<string>;
+};
+
+export type ProcessStdin = Stdin & {
+  readonly close: () => void;
+};
+
+export type StdinEnvironment = {
+  readonly stdin: Stdin;
+};
 
 export type StdinError = {
   readonly kind: "stdin-error";
   readonly message: string;
 };
 
-let lines: AsyncIterator<string> | undefined;
+/**
+ * Creates a root-run-local adapter over process standard input.
+ *
+ * The readline interface is allocated lazily on the first read. `close` is
+ * idempotent, and EOF closes the interface before returning the shared
+ * `Nothing` value.
+ */
+export function createProcessStdin(
+  input: NodeJS.ReadableStream = processStdin
+): ProcessStdin {
+  let interface_: ReturnType<typeof createInterface> | undefined;
+  let lines: AsyncIterator<string> | undefined;
+  let closed = false;
 
-function lineIterator(): AsyncIterator<string> {
-  if (lines === undefined) {
-    lines = createInterface({
-      input: stdin,
-      crlfDelay: Infinity,
-    })[Symbol.asyncIterator]();
-  }
+  const close = () => {
+    if (closed) return;
+    closed = true;
+    interface_?.close();
+    interface_ = undefined;
+    lines = undefined;
+  };
 
-  return lines;
+  return {
+    async readLine() {
+      if (closed) return Nothing;
+
+      if (lines === undefined) {
+        interface_ = createInterface({
+          input,
+          crlfDelay: Infinity,
+        });
+        lines = interface_[Symbol.asyncIterator]();
+      }
+
+      const next = await lines.next();
+      if (next.done) {
+        close();
+        return Nothing;
+      }
+      return Just(next.value);
+    },
+    close,
+  };
 }
 
-/**
- * Reads one line from the process-wide standard-input cursor.
- *
- * This is intentionally the narrow first runtime slice: calls must be made
- * sequentially, and EOF is represented by `Nothing`.
- */
+/** Reads one line from the Stdin service supplied at the runner boundary. */
 export function readLine(): Effect<StdinEnvironment, StdinError, Maybe<string>> {
-  return async () => {
-    const next = await lineIterator().next();
-    return next.done ? Nothing : Just(next.value);
-  };
+  return (environment) => environment.stdin.readLine();
 }

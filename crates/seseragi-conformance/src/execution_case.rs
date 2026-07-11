@@ -2,9 +2,11 @@ use crate::execution;
 use std::fs;
 use std::path::Path;
 
+pub(crate) mod environment;
 mod exit;
 mod invocation;
 
+use environment::parse_environment_plan;
 use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
 
@@ -64,6 +66,10 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     }
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
     let invocation = parse_invocation(&run)?;
+    let environment = parse_environment_plan(
+        &run,
+        matches!(&invocation, execution::Invocation::Effect { .. }),
+    )?;
     let expected_effect_exit = expected_observation(&run, &invocation)?;
     let stdin = read_stdin_input(case, &run)?;
 
@@ -96,6 +102,7 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
         &compiled_typescript,
         entry_export,
         invocation,
+        &environment,
         &stdin,
     )?;
     if actual.exit_code != expected_exit_code {
