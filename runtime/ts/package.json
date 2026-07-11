@@ -32,6 +32,10 @@
     "./service": {
       "types": "./src/service.ts",
       "default": "./src/service.ts"
+    },
+    "./show": {
+      "types": "./src/show.ts",
+      "default": "./src/show.ts"
     }
   },
   "license": "Apache-2.0"

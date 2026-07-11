@@ -86,6 +86,28 @@
       "import": null
     },
     {
+      "id": "core.show.dictionary",
+      "kind": "value-representation",
+      "typescript": "type Show<A>",
+      "boundary": "pure dictionary { readonly show: (value: A) => string }",
+      "typeIdentity": "std/prelude::Show",
+      "typeImport": {
+        "module": "@seseragi/runtime/show",
+        "export": "Show"
+      },
+      "import": null
+    },
+    {
+      "id": "core.string.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<string>",
+      "boundary": "Show<String> identity rendering without quotes",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "stringShow"
+      }
+    },
+    {
       "id": "core.bool",
       "kind": "value-representation",
       "typescript": "boolean",
@@ -139,6 +161,26 @@
         "export": "StdinError"
       },
       "import": null
+    },
+    {
+      "id": "effect.console.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ConsoleError>",
+      "boundary": "user-facing ConsoleError rendering without host object or stack trace",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "consoleErrorShow"
+      }
+    },
+    {
+      "id": "effect.stdin.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<StdinError>",
+      "boundary": "source-like user-facing StdinError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "stdinErrorShow"
+      }
     },
     {
       "id": "core.adt",
