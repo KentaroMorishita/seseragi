@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-do-pure-let",
+  "functions": [
+    {
+      "symbol": "artifact/effect-do-pure-let::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 117
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "message",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "string",
+              "value": "hello",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 86,
+                "end": 93
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 72,
+              "end": 93
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "message",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 106,
+                "end": 113
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 98,
+            "end": 113
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 63,
+          "end": 117
+        }
+      }
+    }
+  ]
+}

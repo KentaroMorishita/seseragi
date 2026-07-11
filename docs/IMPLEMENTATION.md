@@ -368,3 +368,8 @@ CoreIrへ到達する時点で受理済みのdecision treeを持たせます。c
 P1-5とP1-6はpure domainがgreenになってから開始します。typed failureは複数failureを暗黙unionせず、既存の
 Effect方針どおりuser定義error ADTと`mapError`で寄せます。CLI entryはcold Effect valueを返し、runner境界だけが
 実行します。
+
+2026-07-11時点でP1-5の前半として、Effect bodyとEffect diagnosticsもresolver済み`SurfaceExpr`へ移行しました。
+do内の`let name = pureExpr`はmonadic bindとは別のTyped / Core / TypeScript statementとして保持し、lexical `const`へ
+lowerします。このstatement単独では`flatMap` helperを要求せず、前にEffect bindがある場合だけそのcontinuation内で
+評価されます。次は`Succeed` / `Fail` / `MapError`のsuccess・failure型を引数から具体化し、error ADTへ接続します。

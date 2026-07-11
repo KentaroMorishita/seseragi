@@ -24,6 +24,10 @@ moduleは公開interfaceへ不完全なsymbolを出しません。
 `schema-1/effect-do/`は最小の`effect fn main`と、最後のmonadic expressionをresultとして持つ
 `do { succeed () }`をfrontend artifactとして固定します。
 
+`schema-1/effect-do-pure-let/`はdo block内のpure bindingをmonadic bindと区別して固定します。pure initializerは
+通常の式として型付け・lowerし、生成TypeScriptではlexical `const`になります。pure letだけを理由に
+`effect.core.flatMap`を要求せず、最後のEffect valueだけがrunner境界で実行されます。
+
 SurfaceAstの`let`、`fn`、`effectFn`は有効なsourceでは`body`を必ず持ちます。applicationはcurried
 applicationを保つ一引数nodeとして左へnestし、括弧は`grouped`で保持します。`do`はEffect専用構文として
 扱わず、bind / pure let / expression itemと最後のresultを分離します。item terminatorは規範grammarどおり

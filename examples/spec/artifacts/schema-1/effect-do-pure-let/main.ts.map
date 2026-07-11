@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-do-pure-let"
+  ],
+  "sourcesContent": [
+    "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    let message = \"hello\"\n    println message\n  }\n"
+  ],
+  "names": [
+    "main",
+    "message",
+    "println"
+  ],
+  "mappings": ";;AAAAA"
+}

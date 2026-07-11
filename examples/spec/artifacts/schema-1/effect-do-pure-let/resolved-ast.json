@@ -1,0 +1,235 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/effect-do-pure-let",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 22,
+          "end": 26
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 46,
+          "end": 58
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "message",
+              "nameSpan": {
+                "start": 76,
+                "end": 83
+              },
+              "span": {
+                "start": 76,
+                "end": 83
+              }
+            },
+            "value": {
+              "kind": "string",
+              "raw": "\"hello\"",
+              "span": {
+                "start": 86,
+                "end": 93
+              }
+            },
+            "span": {
+              "start": 72,
+              "end": 93
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 98,
+              "end": 105
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "message",
+            "span": {
+              "start": 106,
+              "end": 113
+            }
+          },
+          "span": {
+            "start": 98,
+            "end": 113
+          }
+        },
+        "span": {
+          "start": 63,
+          "end": 117
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 117
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 117
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 117
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "do-block",
+      "origin": {
+        "start": 63,
+        "end": 117
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "main",
+      "canonical": "artifact/effect-do-pure-let::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "message",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 76,
+        "end": 83
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 22,
+        "end": 26
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 46,
+        "end": 58
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 98,
+        "end": 105
+      }
+    },
+    {
+      "spelling": "message",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 106,
+        "end": 113
+      }
+    }
+  ],
+  "issues": []
+}
