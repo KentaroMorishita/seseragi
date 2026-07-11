@@ -44,6 +44,18 @@ fn lower_binding(binding: CoreDecisionBinding) -> TypeScriptDecisionBinding {
 
 fn lower_test(test: CoreDecisionTest) -> TypeScriptDecisionTest {
     match test {
+        CoreDecisionTest::Integer { path, value, .. } => TypeScriptDecisionTest::BigintEquals {
+            path: path.into_iter().map(lower_projection).collect(),
+            value,
+        },
+        CoreDecisionTest::String { path, value, .. } => TypeScriptDecisionTest::StringEquals {
+            path: path.into_iter().map(lower_projection).collect(),
+            value,
+        },
+        CoreDecisionTest::Boolean { path, value, .. } => TypeScriptDecisionTest::BooleanEquals {
+            path: path.into_iter().map(lower_projection).collect(),
+            value,
+        },
         CoreDecisionTest::Constructor {
             path, constructor, ..
         } => TypeScriptDecisionTest::TagEquals {

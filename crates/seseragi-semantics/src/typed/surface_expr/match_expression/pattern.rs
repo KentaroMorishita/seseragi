@@ -6,9 +6,15 @@ use std::collections::BTreeMap;
 
 use super::super::PureExpressionContext;
 
+mod literal;
+
+pub(super) use literal::LiteralPattern;
+use literal::{type_boolean_pattern, type_integer_pattern, type_string_pattern};
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) enum CoveragePattern {
     Any,
+    Literal(LiteralPattern),
     Constructor {
         constructor: SymbolId,
         argument: Option<Box<CoveragePattern>>,
@@ -34,6 +40,9 @@ pub(super) fn type_pattern(
         return suppressed_invalid(pattern_span(pattern));
     }
     match pattern {
+        SurfacePattern::Integer { raw, span } => type_integer_pattern(raw, *span, expected),
+        SurfacePattern::String { raw, span } => type_string_pattern(raw, *span, expected),
+        SurfacePattern::Boolean { value, span } => type_boolean_pattern(*value, *span, expected),
         SurfacePattern::Wildcard { span } => PatternAnalysis {
             typed: TypedPattern::Wildcard {
                 type_ref: expected.type_ref.clone(),
@@ -230,7 +239,10 @@ fn type_tuple_pattern(
     }
 }
 
-fn invalid(span: seseragi_syntax::ByteSpan, message: impl Into<String>) -> PatternAnalysis {
+pub(super) fn invalid(
+    span: seseragi_syntax::ByteSpan,
+    message: impl Into<String>,
+) -> PatternAnalysis {
     PatternAnalysis {
         typed: TypedPattern::Invalid { origin: span },
         coverage: CoveragePattern::Invalid,
@@ -255,7 +267,10 @@ fn suppressed_invalid(span: seseragi_syntax::ByteSpan) -> PatternAnalysis {
 
 fn pattern_span(pattern: &SurfacePattern) -> seseragi_syntax::ByteSpan {
     match pattern {
-        SurfacePattern::Wildcard { span }
+        SurfacePattern::Integer { span, .. }
+        | SurfacePattern::String { span, .. }
+        | SurfacePattern::Boolean { span, .. }
+        | SurfacePattern::Wildcard { span }
         | SurfacePattern::Name { span, .. }
         | SurfacePattern::Constructor { span, .. }
         | SurfacePattern::Tuple { span, .. }

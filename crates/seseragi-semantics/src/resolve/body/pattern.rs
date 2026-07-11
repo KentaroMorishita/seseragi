@@ -32,6 +32,10 @@ pub(super) fn resolve_pattern(resolver: &mut Resolver, scope: ScopeId, pattern: 
                 resolve_pattern(resolver, scope, element);
             }
         }
-        SurfacePattern::Wildcard { .. } | SurfacePattern::Error { .. } => {}
+        SurfacePattern::Integer { .. }
+        | SurfacePattern::String { .. }
+        | SurfacePattern::Boolean { .. }
+        | SurfacePattern::Wildcard { .. }
+        | SurfacePattern::Error { .. } => {}
     }
 }

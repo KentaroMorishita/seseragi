@@ -53,6 +53,18 @@ fn render_condition(branch: &TypeScriptDecisionBranch) -> Option<String> {
 
 fn render_test(test: &TypeScriptDecisionTest) -> String {
     match test {
+        TypeScriptDecisionTest::BigintEquals { path, value } => format!(
+            "{} === {value}n",
+            render_projection_path(SCRUTINEE_NAME, path)
+        ),
+        TypeScriptDecisionTest::StringEquals { path, value } => format!(
+            "{} === {value:?}",
+            render_projection_path(SCRUTINEE_NAME, path)
+        ),
+        TypeScriptDecisionTest::BooleanEquals { path, value } => format!(
+            "{} === {value}",
+            render_projection_path(SCRUTINEE_NAME, path)
+        ),
         TypeScriptDecisionTest::TagEquals { path, tag } => format!(
             "{}.tag === {tag:?}",
             render_projection_path(SCRUTINEE_NAME, path)

@@ -144,3 +144,42 @@ pub fn render choice: Choice -> String =
         "$ssrg_match.tag === \"Value\" && ((enabled: boolean): boolean => enabled)($ssrg_match.value)"
     ));
 }
+
+#[test]
+fn lowers_literal_patterns_to_strict_equality_tests() {
+    let source = r#"pub fn classify value: (Int, String, Bool) -> String =
+  match value {
+    (42, "ready", True) -> "matched"
+    _ -> "other"
+  }
+"#;
+    let typescript = lower("artifact/match-literals/main.ssrg", source);
+    let TypeScriptFunction::ConstFunction { body, .. } = &typescript.functions[0];
+    let TypeScriptExpr::Decision { branches, .. } = body else {
+        panic!("expected TypeScript decision expression");
+    };
+
+    assert!(matches!(
+        &branches[0].tests[0],
+        TypeScriptDecisionTest::BigintEquals { path, value }
+            if path == &[TypeScriptDecisionProjection::TupleElement { index: 0 }]
+                && value == "42"
+    ));
+    assert!(matches!(
+        &branches[0].tests[1],
+        TypeScriptDecisionTest::StringEquals { path, value }
+            if path == &[TypeScriptDecisionProjection::TupleElement { index: 1 }]
+                && value == "ready"
+    ));
+    assert!(matches!(
+        &branches[0].tests[2],
+        TypeScriptDecisionTest::BooleanEquals { path, value: true }
+            if path == &[TypeScriptDecisionProjection::TupleElement { index: 2 }]
+    ));
+    assert!(branches[1].tests.is_empty());
+
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(bundle.typescript.contains(
+        "$ssrg_match[0] === 42n && $ssrg_match[1] === \"ready\" && $ssrg_match[2] === true"
+    ));
+}

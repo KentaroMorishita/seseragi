@@ -37,6 +37,21 @@ pub struct CoreDecisionBinding {
     rename_all_fields = "camelCase"
 )]
 pub enum CoreDecisionTest {
+    Integer {
+        path: Vec<CoreDecisionProjection>,
+        value: String,
+        origin: SourceSpan,
+    },
+    String {
+        path: Vec<CoreDecisionProjection>,
+        value: String,
+        origin: SourceSpan,
+    },
+    Boolean {
+        path: Vec<CoreDecisionProjection>,
+        value: bool,
+        origin: SourceSpan,
+    },
     Constructor {
         path: Vec<CoreDecisionProjection>,
         constructor: String,
@@ -133,6 +148,27 @@ fn lower_pattern(
     bindings: &mut Vec<CoreDecisionBinding>,
 ) {
     match pattern {
+        TypedPattern::Integer { value, origin, .. } => {
+            tests.push(CoreDecisionTest::Integer {
+                path: path.clone(),
+                value,
+                origin: source_span(source, origin),
+            });
+        }
+        TypedPattern::String { value, origin, .. } => {
+            tests.push(CoreDecisionTest::String {
+                path: path.clone(),
+                value,
+                origin: source_span(source, origin),
+            });
+        }
+        TypedPattern::Boolean { value, origin, .. } => {
+            tests.push(CoreDecisionTest::Boolean {
+                path: path.clone(),
+                value,
+                origin: source_span(source, origin),
+            });
+        }
         TypedPattern::Wildcard { .. } => {}
         TypedPattern::Binding {
             name,

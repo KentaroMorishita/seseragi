@@ -311,6 +311,18 @@ pub struct SurfaceMatchArm {
     rename_all_fields = "camelCase"
 )]
 pub enum SurfacePattern {
+    Integer {
+        raw: String,
+        span: ByteSpan,
+    },
+    String {
+        raw: String,
+        span: ByteSpan,
+    },
+    Boolean {
+        value: bool,
+        span: ByteSpan,
+    },
     Name {
         name: String,
         name_span: ByteSpan,
@@ -338,7 +350,10 @@ pub enum SurfacePattern {
 impl SurfacePattern {
     pub fn span(&self) -> ByteSpan {
         match self {
-            Self::Name { span, .. }
+            Self::Integer { span, .. }
+            | Self::String { span, .. }
+            | Self::Boolean { span, .. }
+            | Self::Name { span, .. }
             | Self::Wildcard { span }
             | Self::Constructor { span, .. }
             | Self::Tuple { span, .. }

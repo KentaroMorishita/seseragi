@@ -266,6 +266,24 @@ pub struct TypedMatchArm {
     rename_all_fields = "camelCase"
 )]
 pub enum TypedPattern {
+    Integer {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    String {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Boolean {
+        value: bool,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Wildcard {
         #[serde(rename = "type")]
         type_ref: TypedType,

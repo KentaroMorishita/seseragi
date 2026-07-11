@@ -45,6 +45,18 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
         return SurfacePattern::Error { span };
     }
     match tokens[first].kind {
+        TokenKind::LiteralInteger => SurfacePattern::Integer {
+            raw: tokens[first].raw.clone(),
+            span,
+        },
+        TokenKind::LiteralString => SurfacePattern::String {
+            raw: tokens[first].raw.clone(),
+            span,
+        },
+        TokenKind::LiteralBoolean => SurfacePattern::Boolean {
+            value: tokens[first].raw == "True",
+            span,
+        },
         TokenKind::IdentifierLower => SurfacePattern::Name {
             name: tokens[first].raw.clone(),
             name_span: span,

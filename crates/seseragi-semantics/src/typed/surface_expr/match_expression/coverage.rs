@@ -2,7 +2,7 @@ use crate::typed::semantic_types::{SemanticTypeCatalog, SemanticTypeKey};
 use crate::SymbolId;
 use std::collections::BTreeSet;
 
-use super::pattern::CoveragePattern;
+use super::pattern::{CoveragePattern, LiteralPattern};
 
 const MAX_WITNESSES: usize = 4096;
 
@@ -22,7 +22,15 @@ pub(super) fn analyze_coverage(
     catalog: &SemanticTypeCatalog,
     arms: &[(CoveragePattern, bool)],
 ) -> Option<CoverageResult> {
-    let witnesses = witnesses(key, catalog, &mut BTreeSet::new())?;
+    let witnesses = if key == &SemanticTypeKey::Other {
+        scalar_witnesses(arms)
+    } else {
+        witnesses(key, catalog, &mut BTreeSet::new())?
+    };
+    Some(analyze_witnesses(&witnesses, arms))
+}
+
+fn analyze_witnesses(witnesses: &[Witness], arms: &[(CoveragePattern, bool)]) -> CoverageResult {
     let mut covered = Vec::<CoveragePattern>::new();
     let mut unreachable = Vec::new();
     for (index, (pattern, guarded)) in arms.iter().enumerate() {
@@ -48,10 +56,52 @@ pub(super) fn analyze_coverage(
         })
         .map(|witness| witness.label.clone())
         .collect();
-    Some(CoverageResult {
+    CoverageResult {
         unreachable,
         missing,
-    })
+    }
+}
+
+fn scalar_witnesses(arms: &[(CoveragePattern, bool)]) -> Vec<Witness> {
+    let literals = arms
+        .iter()
+        .filter_map(|(pattern, _)| match pattern {
+            CoveragePattern::Literal(literal) => Some(literal.clone()),
+            _ => None,
+        })
+        .collect::<BTreeSet<_>>();
+    if literals
+        .iter()
+        .all(|literal| matches!(literal, LiteralPattern::Boolean(_)))
+        && !literals.is_empty()
+    {
+        return [false, true]
+            .into_iter()
+            .map(|value| Witness {
+                pattern: CoveragePattern::Literal(LiteralPattern::Boolean(value)),
+                label: if value { "True" } else { "False" }.to_owned(),
+            })
+            .collect();
+    }
+    literals
+        .into_iter()
+        .map(|literal| Witness {
+            label: literal_label(&literal),
+            pattern: CoveragePattern::Literal(literal),
+        })
+        .chain(std::iter::once(Witness {
+            pattern: CoveragePattern::Any,
+            label: "_".to_owned(),
+        }))
+        .collect()
+}
+
+fn literal_label(literal: &LiteralPattern) -> String {
+    match literal {
+        LiteralPattern::Integer(value) => value.clone(),
+        LiteralPattern::String(value) => format!("{value:?}"),
+        LiteralPattern::Boolean(value) => if *value { "True" } else { "False" }.to_owned(),
+    }
 }
 
 fn witnesses(
@@ -135,6 +185,9 @@ fn witnesses(
 fn pattern_matches(pattern: &CoveragePattern, witness: &CoveragePattern) -> bool {
     match (pattern, witness) {
         (CoveragePattern::Any, _) => true,
+        (CoveragePattern::Literal(pattern), CoveragePattern::Literal(witness)) => {
+            pattern == witness
+        }
         (
             CoveragePattern::Constructor {
                 constructor: pattern_constructor,

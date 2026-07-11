@@ -141,3 +141,54 @@ fn unresolved_scrutinee_suppresses_tuple_pattern_mismatch() {
     assert_eq!(diagnostics.diagnostics.len(), 1);
     assert_eq!(diagnostics.diagnostics[0].code, "SES-N0001");
 }
+
+#[test]
+fn accepts_string_literals_followed_by_a_catchall() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "fn parse input: String -> Int = match input { \"rock\" -> 1; \"paper\" -> 2; _ -> 0 }\n",
+    );
+
+    assert!(diagnostics.diagnostics.is_empty());
+}
+
+#[test]
+fn reports_open_literal_match_without_a_catchall() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "fn parse input: String -> Int = match input { \"rock\" -> 1 }\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0301");
+    assert_eq!(
+        diagnostics.diagnostics[0].related[0].message,
+        "missing patterns: _"
+    );
+}
+
+#[test]
+fn reports_duplicate_literal_arm_as_unreachable() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "fn parse input: String -> Int = match input { \"rock\" -> 1; \"rock\" -> 2; _ -> 0 }\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0302");
+}
+
+#[test]
+fn reports_literal_pattern_type_mismatch() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "fn invalid input: Int -> Int = match input { \"one\" -> 1; _ -> 0 }\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "match.pattern-type-mismatch"
+    );
+}

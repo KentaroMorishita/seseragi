@@ -227,6 +227,31 @@ fn parses_rps_match_with_tuple_constructor_patterns_and_wildcard() {
 }
 
 #[test]
+fn preserves_literal_patterns_and_nested_tuple_positions() {
+    let body = first_body(
+        "fn accepts value: (Int, String, Bool) -> Bool =\n  match value {\n    (42, \"go\", True) -> True\n    (0, \"stop\", False) -> False\n    _ -> False\n  }\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::Tuple { elements, .. }
+            if matches!(&elements[0], SurfacePattern::Integer { raw, .. } if raw == "42")
+                && matches!(&elements[1], SurfacePattern::String { raw, .. } if raw == "\"go\"")
+                && matches!(&elements[2], SurfacePattern::Boolean { value: true, .. })
+    ));
+    assert!(matches!(
+        &arms[1].pattern,
+        SurfacePattern::Tuple { elements, .. }
+            if matches!(&elements[0], SurfacePattern::Integer { raw, .. } if raw == "0")
+                && matches!(&elements[1], SurfacePattern::String { raw, .. } if raw == "\"stop\"")
+                && matches!(&elements[2], SurfacePattern::Boolean { value: false, .. })
+    ));
+}
+
+#[test]
 fn preserves_match_payload_binding_and_guard() {
     let body = first_body(
         "fn render value: Label -> String =\n  match value {\n    Present item when ready -> item\n    Missing -> \"missing\"\n  }\n",

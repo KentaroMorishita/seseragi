@@ -156,6 +156,53 @@ fn does_not_mark_an_invalid_unreachable_arm_set_as_total() {
     assert!(!exhaustive);
 }
 
+#[test]
+fn types_string_literal_patterns_and_keeps_the_catchall_total() {
+    let typed = type_module(
+        "artifact/string-pattern/main.ssrg",
+        "fn isRock input: String -> Bool = match input { \"rock\" -> True; _ -> False }\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected isRock function");
+    };
+    let TypedExpr::Match {
+        arms, exhaustive, ..
+    } = body
+    else {
+        panic!("expected typed match");
+    };
+    assert!(*exhaustive);
+    assert!(matches!(
+        &arms[0].pattern,
+        TypedPattern::String { value, type_ref, .. }
+            if value == "rock" && type_ref == &named("String")
+    ));
+}
+
+#[test]
+fn types_boolean_literal_patterns_as_a_finite_total_match() {
+    let typed = type_module(
+        "artifact/bool-pattern/main.ssrg",
+        "fn invert value: Bool -> Bool = match value { True -> False; False -> True }\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected invert function");
+    };
+    let TypedExpr::Match {
+        arms, exhaustive, ..
+    } = body
+    else {
+        panic!("expected typed match");
+    };
+    assert!(*exhaustive);
+    assert!(matches!(
+        &arms[0].pattern,
+        TypedPattern::Boolean { value: true, .. }
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

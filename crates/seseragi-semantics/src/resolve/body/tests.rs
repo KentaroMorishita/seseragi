@@ -209,6 +209,26 @@ fn exposes_pattern_bindings_to_their_guard_but_not_sibling_arms() {
     assert_eq!(resolved.issues[0].code, "SES-N0001");
 }
 
+#[test]
+fn literal_patterns_do_not_create_bindings_or_name_references() {
+    let resolved = resolve_module(
+        "artifact/literal-patterns/main.ssrg",
+        "fn accepts value: (Int, String, Bool) -> Bool = match value { (42, \"go\", True) -> True; (0, \"stop\", False) -> False; _ -> False }\n",
+    );
+
+    assert!(resolved
+        .symbols
+        .iter()
+        .all(|symbol| symbol.kind != SymbolKind::PatternBinding));
+    assert!(resolved.references.iter().all(|reference| {
+        !matches!(
+            reference.spelling.as_str(),
+            "42" | "0" | "\"go\"" | "\"stop\"" | "True" | "False"
+        )
+    }));
+    assert!(resolved.issues.is_empty());
+}
+
 fn symbol(resolved: &ResolvedModule, kind: SymbolKind, spelling: &str) -> SymbolId {
     resolved
         .symbols
