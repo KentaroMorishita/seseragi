@@ -2,8 +2,10 @@ use crate::execution;
 use std::fs;
 use std::path::Path;
 
+mod exit;
 mod invocation;
 
+use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
 
 pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), String> {
@@ -62,6 +64,7 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     }
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
     let invocation = parse_invocation(&run)?;
+    let expected_effect_exit = expected_observation(&run, &invocation)?;
     let stdin = read_stdin_input(case, &run)?;
 
     let stdout_name = run
@@ -107,6 +110,7 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     if actual.stderr != stderr {
         return Err("execution stderr mismatch".to_owned());
     }
+    compare_observation(expected_effect_exit.as_ref(), actual.effect_exit.as_ref())?;
 
     Ok(())
 }

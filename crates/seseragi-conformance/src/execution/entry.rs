@@ -1,6 +1,8 @@
 use std::fs;
 use std::path::Path;
 
+use super::exit::OBSERVATION_FILE;
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum Invocation {
     Effect { arguments: Vec<InvocationArgument> },
@@ -30,9 +32,14 @@ fn entry_source(entry_export: &str, invocation: Invocation) -> String {
         Invocation::Effect { arguments } => {
             let call = render_entry_call(entry_export, &arguments);
             format!(
-                "import {{ run }} from \"@seseragi/runtime/effect\";\n\
+                "import {{ writeFileSync }} from \"node:fs\";\n\
+                 import {{ run }} from \"@seseragi/runtime/effect\";\n\
                  import {{ {entry_export} }} from \"./main.ts\";\n\
                  const result = await run({call}, {{}});\n\
+                 const observation = result.kind === \"success\"\n\
+                   ? {{ kind: \"success\", value: result.value === undefined ? \"Unit\" : result.value }}\n\
+                   : {{ kind: \"failure\", error: result.error }};\n\
+                 writeFileSync(new URL(\"./{OBSERVATION_FILE}\", import.meta.url), JSON.stringify(observation));\n\
                  if (result.kind === \"failure\") throw result.error;\n"
             )
         }
@@ -77,6 +84,10 @@ mod tests {
         );
 
         assert!(source.contains("await run(main(undefined), {})"));
+        assert!(source.contains(".seseragi-effect-exit.json"));
+        assert!(source.contains("result.value === undefined ? \"Unit\""));
+        assert!(source.contains("error: result.error"));
+        assert!(source.find("writeFileSync").unwrap() < source.find("throw result.error").unwrap());
     }
 
     #[test]
@@ -90,6 +101,7 @@ mod tests {
 
         assert!(source.contains("JSON.stringify(values(undefined))"));
         assert!(!source.contains("@seseragi/runtime/effect"));
+        assert!(!source.contains("seseragi-effect-exit"));
     }
 
     #[test]
