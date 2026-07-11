@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "case": "effect-parse-hand-valid",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effect-parse-hand",
+    "export": "parse",
+    "compiledModule": "../../schema-1/effect-parse-hand/generated-module.json"
+  },
+  "invocation": {
+    "arguments": [{ "type": "String", "value": "rock" }],
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": []
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": []
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": { "tag": "Rock" } },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.either.right",
+      "core.either.left",
+      "effect.core.fromEither"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

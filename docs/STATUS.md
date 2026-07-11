@@ -71,7 +71,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - cold Effect valueをversioned TypeScript runtimeで実行するConsole / Stdin execution fixture
 - typed ADT、tuple、match、exhaustivenessを通す`rock-paper-scissors-domain` artifact
 - standard `Maybe` / `Either`と、正常・不正入力を実行する`parse-hand-either` artifact
-- pure `parseHand`をcold typed Effectへ変換する`effect-parse-hand` artifact
+- pure `parseHand`をcold typed Effectへ変換し、success payloadを実行比較する`effect-parse-hand` artifact
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが

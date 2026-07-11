@@ -72,7 +72,8 @@ pure Unit entryをEffect runnerへ渡さず直接呼び、生成値のJSONをrun
 `schema-1/effect-parse-hand/`は同じpure `parseHand`を`fromEither`でcold Effectへ変換します。
 TypedHirは`Either<HandInputError, Hand>`の型引数からfailure / successを取り出し、CoreIrとTypeScriptIrは
 `effect.core.fromEither` runtime helperへのcallを保持します。生成moduleはEffectを実行せず、`async` / `await`や
-直接throwを出しません。
+直接throwを出しません。`execution-schema-1/effect-parse-hand-valid/`はEffect runnerが観測した
+`Right Rock`由来のsuccess payloadを`expected.exit`と比較します。
 
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
 最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。

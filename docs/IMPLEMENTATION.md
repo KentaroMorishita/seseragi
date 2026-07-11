@@ -360,7 +360,8 @@ singleton identityを保つruntime reference、`Just` / `Left` / `Right`はrunti
 受けるpure executionで正常入力と不正入力を比較します。`effect-parse-hand`はこのpure functionを`fromEither`へ渡し、
 `Either<HandInputError, Hand>`から`Effect<{}, HandInputError, Hand>`を推論してgenerated TypeScriptまで接続します。
 runtimeは入力caseを構築時に一度だけ保持し、Effectのrun時にRightをsuccess、Leftをtyped failureとして公開します。
-Stdin / Consoleとの合成と未処理failureのhost表示はP1-6へ残します。
+conformance runnerはEffectのsuccess / failure payloadをprivate sidecarで観測し、`effect-parse-hand-valid`で
+`Rock` successまで比較します。Stdin / Consoleとの合成と未処理failureのhost表示はP1-6へ残します。
 
 P1-0は新機能の前提です。SurfaceAstが式を所有しても、TypedHirが再びsource tokenを走査するならmatchやpatternを
 追加するたびに別parserが増えます。したがってpure expression consumerをSurfaceAstへ移してからtupleへ進み、
