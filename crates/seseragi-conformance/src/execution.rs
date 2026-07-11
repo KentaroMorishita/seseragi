@@ -9,6 +9,12 @@ pub(crate) struct ExecutionOutput {
     pub(crate) stderr: String,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum Invocation {
+    Effect,
+    PureJson,
+}
+
 pub(crate) fn resolve_compiled_typescript(
     case: &Path,
     compiled_module: &str,
@@ -93,13 +99,14 @@ pub(crate) fn run_generated_typescript(
     case: &Path,
     compiled_typescript: &Path,
     entry_export: &str,
+    invocation: Invocation,
     stdin: &str,
 ) -> Result<ExecutionOutput, String> {
     let execution_dir = prepare_execution_dir(root, case)?;
     fs::copy(compiled_typescript, execution_dir.join("main.ts"))
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
     stage_runtime(root, &execution_dir)?;
-    write_entry(&execution_dir, entry_export)?;
+    write_entry(&execution_dir, entry_export, invocation)?;
 
     let mut child = Command::new("bun")
         .arg("run")
@@ -165,17 +172,31 @@ fn stage_runtime(root: &Path, execution_dir: &Path) -> Result<(), String> {
         .map_err(|error| format!("failed to stage @seseragi/runtime: {error}"))
 }
 
-fn write_entry(execution_dir: &Path, entry_export: &str) -> Result<(), String> {
+fn write_entry(
+    execution_dir: &Path,
+    entry_export: &str,
+    invocation: Invocation,
+) -> Result<(), String> {
     fs::write(
         execution_dir.join("entry.ts"),
-        format!(
+        entry_source(entry_export, invocation),
+    )
+    .map_err(|error| format!("failed to write execution entry.ts: {error}"))
+}
+
+fn entry_source(entry_export: &str, invocation: Invocation) -> String {
+    match invocation {
+        Invocation::Effect => format!(
             "import {{ run }} from \"@seseragi/runtime/effect\";\n\
              import {{ {entry_export} }} from \"./main.ts\";\n\
              const result = await run({entry_export}(undefined), {{}});\n\
              if (result.kind === \"failure\") throw result.error;\n"
         ),
-    )
-    .map_err(|error| format!("failed to write execution entry.ts: {error}"))
+        Invocation::PureJson => format!(
+            "import {{ {entry_export} }} from \"./main.ts\";\n\
+             process.stdout.write(JSON.stringify({entry_export}(undefined)) + \"\\n\");\n"
+        ),
+    }
 }
 
 fn copy_dir(source: &Path, target: &Path) -> Result<(), std::io::Error> {
@@ -192,4 +213,24 @@ fn copy_dir(source: &Path, target: &Path) -> Result<(), std::io::Error> {
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{entry_source, Invocation};
+
+    #[test]
+    fn keeps_effect_execution_at_the_runner_boundary() {
+        let source = entry_source("main", Invocation::Effect);
+
+        assert!(source.contains("await run(main(undefined), {})"));
+    }
+
+    #[test]
+    fn invokes_pure_unit_entry_without_the_effect_runner() {
+        let source = entry_source("values", Invocation::PureJson);
+
+        assert!(source.contains("JSON.stringify(values(undefined))"));
+        assert!(!source.contains("@seseragi/runtime/effect"));
+    }
 }

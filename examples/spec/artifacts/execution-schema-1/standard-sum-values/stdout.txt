@@ -1,0 +1,1 @@
+[{"tag":"Right","value":{"tag":"Rock"}},{"tag":"Left","value":{"tag":"InvalidHand"}},{"tag":"Just","value":{"tag":"Rock"}},{"tag":"Nothing"}]

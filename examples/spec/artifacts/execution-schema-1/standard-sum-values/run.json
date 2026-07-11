@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "case": "standard-sum-values",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/standard-sum-values",
+    "export": "standardSumValues",
+    "compiledModule": "../../schema-1/standard-sum-values/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.adt",
+      "core.unit",
+      "core.either",
+      "core.maybe",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe.just",
+      "core.maybe.nothing"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}
