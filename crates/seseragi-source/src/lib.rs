@@ -1,5 +1,9 @@
 use serde::{Deserialize, Serialize};
 
+mod line_index;
+
+pub use line_index::{LineColumn, LineIndex, LineIndexError};
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct SourceSnapshot {
     source_name: String,
@@ -55,50 +59,6 @@ impl Span {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct LineColumn {
-    pub line: usize,
-    pub column: usize,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-pub struct LineIndex {
-    line_starts: Vec<usize>,
-}
-
-impl LineIndex {
-    pub fn new(text: &str) -> Self {
-        let mut line_starts = vec![0];
-        for (index, byte) in text.bytes().enumerate() {
-            if byte == b'\n' {
-                line_starts.push(index + 1);
-            }
-        }
-        Self { line_starts }
-    }
-
-    pub fn line_starts(&self) -> &[usize] {
-        &self.line_starts
-    }
-
-    pub fn line_count(&self) -> usize {
-        self.line_starts.len()
-    }
-
-    pub fn locate(&self, byte_offset: usize) -> LineColumn {
-        let line_index = match self.line_starts.binary_search(&byte_offset) {
-            Ok(index) => index,
-            Err(0) => 0,
-            Err(index) => index - 1,
-        };
-
-        LineColumn {
-            line: line_index + 1,
-            column: byte_offset - self.line_starts[line_index] + 1,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -120,28 +80,6 @@ mod tests {
         assert_eq!(span.len(), 6);
         assert!(!span.is_empty());
         assert!(Span::new(4, 4).is_empty());
-    }
-
-    #[test]
-    fn line_index_maps_lf_offsets_to_one_based_positions() {
-        let index = LineIndex::new("one\ntwo\nthree");
-
-        assert_eq!(index.line_starts(), &[0, 4, 8]);
-        assert_eq!(index.line_count(), 3);
-        assert_eq!(index.locate(0), LineColumn { line: 1, column: 1 });
-        assert_eq!(index.locate(4), LineColumn { line: 2, column: 1 });
-        assert_eq!(index.locate(11), LineColumn { line: 3, column: 4 });
-    }
-
-    #[test]
-    fn line_index_maps_crlf_offsets_without_normalizing_bytes() {
-        let index = LineIndex::new("one\r\ntwo\r\n");
-
-        assert_eq!(index.line_starts(), &[0, 5, 10]);
-        assert_eq!(index.line_count(), 3);
-        assert_eq!(index.locate(5), LineColumn { line: 2, column: 1 });
-        assert_eq!(index.locate(9), LineColumn { line: 2, column: 5 });
-        assert_eq!(index.locate(10), LineColumn { line: 3, column: 1 });
     }
 
     #[test]
