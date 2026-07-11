@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/parse-hand-literals"
+  ],
+  "sourcesContent": [
+    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type HandParse =\n  | Parsed Hand\n  | UnknownHand String\n\npub fn parseHand input: String -> HandParse =\n  match input {\n    \"rock\" -> Parsed Rock\n    \"paper\" -> Parsed Paper\n    \"scissors\" -> Parsed Scissors\n    other -> UnknownHand other\n  }\n"
+  ],
+  "names": [
+    "Hand",
+    "Rock",
+    "Paper",
+    "Scissors",
+    "HandParse",
+    "Parsed",
+    "UnknownHand",
+    "parseHand",
+    "Parsed",
+    "Parsed",
+    "Parsed",
+    "other",
+    "UnknownHand"
+  ],
+  "mappings": "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAEJC"
+}

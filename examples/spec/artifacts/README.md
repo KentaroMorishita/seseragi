@@ -54,6 +54,11 @@ pattern typingとdecision tree loweringはmatch sliceでこの表現を引き継
 TypedHirのexhaustiveness proof、CoreIrのsingle-scrutinee decision、TypeScriptIrのtag testとresidual fallbackを
 固定します。生成物はruntime match helperを要求せず、metadataはADT / String表現だけを宣言します。
 
+`schema-1/parse-hand-literals/`はInt / String / Bool literal patternのうち、CLI入力に必要なString matchを
+ADT constructorと組み合わせて固定します。openなString domainには最後のbinding armを要求し、CoreIrのliteral testを
+TypeScriptのstrict equalityへlowerします。`HandParse`はstandard `Either`接続前のmonomorphicなdomain resultであり、
+`Maybe` / `Either`のpublic ABIを代用するものではありません。
+
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
 最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。
 

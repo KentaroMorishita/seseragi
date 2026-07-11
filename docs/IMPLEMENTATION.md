@@ -374,9 +374,14 @@ do内の`let name = pureExpr`はmonadic bindとは別のTyped / Core / TypeScrip
 lowerします。このstatement単独では`flatMap` helperを要求せず、前にEffect bindがある場合だけそのcontinuation内で
 評価されます。EffectCall自身も具体化済み`R / E / A`を保持し、`succeed value`は引数型をsuccess型として
 CoreIrまで渡します。`fail error`も引数のADT型から`Effect<{}, E, Never>`へ具体化し、runtimeのprivate
-typed-failure carrierへ接続しました。次は`MapError`でerror ADT同士を明示変換します。
+typed-failure carrierへ接続しました。failure ADT同士の明示変換は次段落の`mapError`へ接続します。
 
 `mapError mapper source`も、mapperをresolver済みpure function、sourceをEffect expressionとして別々に型付けします。
 mapperの入力型とsource failure型を検査し、sourceのenvironment / successを保持したままmapper結果を新しいfailure型に
 します。これにより`UnknownHand input |> fail |> mapError InvalidHand`相当の不正入力経路が、pipeline糖衣なしでも
 通常compiler pipelineを通るようになりました。
+
+matchのliteral patternもInt / String / BoolをSurfaceAstからTypeScript生成まで縦断します。literalはresolverで
+bindingやname referenceを生成せず、scrutinee型との一致をsemanticsで検査します。String / Intのようなopen domainは
+catch-allがなければnon-exhaustive、重複literalはunreachableです。Boolは`True` / `False`を有限domainとして証明します。
+CoreIrは比較対象とprojectionを保持し、TypeScript backendだけがbigintを含むstrict equalityへlowerします。

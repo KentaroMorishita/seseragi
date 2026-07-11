@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "artifact/parse-hand-literals",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "Rock",
+    "Paper",
+    "Scissors",
+    "Parsed",
+    "UnknownHand",
+    "parseHand"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

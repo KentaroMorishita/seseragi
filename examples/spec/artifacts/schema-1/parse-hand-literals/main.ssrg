@@ -1,0 +1,16 @@
+pub type Hand =
+  | Rock
+  | Paper
+  | Scissors
+
+pub type HandParse =
+  | Parsed Hand
+  | UnknownHand String
+
+pub fn parseHand input: String -> HandParse =
+  match input {
+    "rock" -> Parsed Rock
+    "paper" -> Parsed Paper
+    "scissors" -> Parsed Scissors
+    other -> UnknownHand other
+  }

@@ -1,0 +1,397 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/parse-hand-literals",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/parse-hand-literals::Hand",
+      "name": "Hand",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/parse-hand-literals::Rock",
+          "name": "Rock",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "symbol": "artifact/parse-hand-literals::Paper",
+          "name": "Paper",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "symbol": "artifact/parse-hand-literals::Scissors",
+          "name": "Scissors",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/parse-hand-literals::HandParse",
+      "name": "HandParse",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/parse-hand-literals::Parsed",
+          "name": "Parsed",
+          "payload": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "HandParse",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 74,
+            "end": 80
+          }
+        },
+        {
+          "symbol": "artifact/parse-hand-literals::UnknownHand",
+          "name": "UnknownHand",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "HandParse",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 90,
+            "end": 101
+          }
+        }
+      ],
+      "origin": {
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/parse-hand-literals::parseHand",
+      "visibility": "public",
+      "origin": {
+        "start": 110,
+        "end": 294
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "HandParse",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 127,
+            "end": 132
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 164,
+            "end": 169
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "rock",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 176,
+                "end": 182
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/parse-hand-literals::Parsed",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/parse-hand-literals::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 193,
+                    "end": 197
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "HandParse",
+                "arguments": []
+              },
+              "origin": {
+                "start": 186,
+                "end": 197
+              }
+            },
+            "origin": {
+              "start": 176,
+              "end": 197
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "paper",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 202,
+                "end": 209
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/parse-hand-literals::Parsed",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/parse-hand-literals::Paper",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 220,
+                    "end": 225
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "HandParse",
+                "arguments": []
+              },
+              "origin": {
+                "start": 213,
+                "end": 225
+              }
+            },
+            "origin": {
+              "start": 202,
+              "end": 225
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "scissors",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 230,
+                "end": 240
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/parse-hand-literals::Parsed",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/parse-hand-literals::Scissors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 251,
+                    "end": 259
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "HandParse",
+                "arguments": []
+              },
+              "origin": {
+                "start": 244,
+                "end": 259
+              }
+            },
+            "origin": {
+              "start": 230,
+              "end": 259
+            }
+          },
+          {
+            "pattern": {
+              "kind": "binding",
+              "symbol": 10,
+              "name": "other",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 264,
+                "end": 269
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/parse-hand-literals::UnknownHand",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "other",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 285,
+                    "end": 290
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "HandParse",
+                "arguments": []
+              },
+              "origin": {
+                "start": 273,
+                "end": 290
+              }
+            },
+            "origin": {
+              "start": 264,
+              "end": 290
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "HandParse",
+          "arguments": []
+        },
+        "origin": {
+          "start": 158,
+          "end": 294
+        }
+      }
+    }
+  ]
+}

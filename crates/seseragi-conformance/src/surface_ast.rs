@@ -147,7 +147,7 @@ fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
     }
     require_span(pattern, path)?;
     match kind {
-        "name" | "wildcard" => Ok(()),
+        "integer" | "string" | "boolean" | "name" | "wildcard" => Ok(()),
         "constructor" => match pattern.get("argument") {
             Some(argument) => validate_pattern(argument, &format!("{path}.argument")),
             None => Ok(()),
@@ -316,6 +316,40 @@ mod tests {
                     ],
                     "span": { "start": 0, "end": 50 }
                 }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_literal_patterns() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "match",
+                    "scrutinee": { "kind": "name", "span": { "start": 0, "end": 5 } },
+                    "arms": [
+                        {
+                            "pattern": { "kind": "string", "raw": "\"rock\"", "span": { "start": 8, "end": 14 } },
+                            "body": { "kind": "boolean", "value": true, "span": { "start": 18, "end": 22 } },
+                            "span": { "start": 8, "end": 22 }
+                        },
+                        {
+                            "pattern": { "kind": "integer", "raw": "1", "span": { "start": 24, "end": 25 } },
+                            "body": { "kind": "boolean", "value": false, "span": { "start": 29, "end": 34 } },
+                            "span": { "start": 24, "end": 34 }
+                        },
+                        {
+                            "pattern": { "kind": "boolean", "value": true, "span": { "start": 36, "end": 40 } },
+                            "body": { "kind": "boolean", "value": true, "span": { "start": 44, "end": 48 } },
+                            "span": { "start": 36, "end": 48 }
+                        }
+                    ],
+                    "span": { "start": 0, "end": 49 }
+                },
+                "span": { "start": 0, "end": 49 }
             }]
         });
 
