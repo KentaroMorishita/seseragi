@@ -8,6 +8,7 @@ mod let_binding;
 mod match_expression;
 mod pure_call;
 mod resolution;
+mod traits;
 mod type_labels;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
@@ -33,6 +34,7 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
     for declaration in &resolved.declarations {
         collect_decl_diagnostics(declaration, &tokens, &resolution, &mut diagnostics);
     }
+    traits::collect_trait_diagnostics(&resolved, &resolution, &mut diagnostics);
     resolution::collect_resolution_diagnostics(&resolved, &mut diagnostics);
 
     artifact.diagnostics = diagnostics

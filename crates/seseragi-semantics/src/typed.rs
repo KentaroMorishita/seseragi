@@ -12,6 +12,7 @@ mod effect_body;
 mod effect_from_either_tests;
 mod function_body;
 mod functions;
+pub(crate) mod instances;
 mod interface;
 #[cfg(test)]
 mod match_tests;
@@ -80,6 +81,7 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         source: interface.source,
         module: interface.module,
         external_type_bindings: Vec::new(),
+        instances: Vec::new(),
         declarations,
     }
 }
@@ -95,6 +97,7 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
         .filter_map(|declaration| typed_decl_from_surface(declaration, &resolution))
         .collect();
     let external_type_bindings = resolution.external_type_bindings();
+    let instances = instances::analyze_derived_instances(&resolved, &resolution).instances;
 
     TypedModule {
         schema: 1,
@@ -102,6 +105,7 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
         source: resolved.source,
         module: resolved.module,
         external_type_bindings,
+        instances,
         declarations,
     }
 }

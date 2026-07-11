@@ -20,6 +20,10 @@ pub struct TypedModule {
     /// occurrence-level replacement for resolved type symbols.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub external_type_bindings: Vec<ExternalTypeBinding>,
+    /// Trait instances selected by semantic analysis. Later stages consume
+    /// this evidence instead of rediscovering instances from ADT shape.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub instances: Vec<TypedInstance>,
     pub declarations: Vec<TypedDecl>,
 }
 
@@ -110,6 +114,28 @@ pub struct TypedScheme {
 #[serde(rename_all = "camelCase")]
 pub struct TypedConstraint {
     pub name: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedInstance {
+    #[serde(rename = "trait")]
+    pub trait_name: String,
+    pub head: TypedType,
+    pub type_identity: String,
+    pub constraints: Vec<TypedConstraint>,
+    pub origin: ByteSpan,
+    pub implementation: TypedInstanceImplementation,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedInstanceImplementation {
+    DerivedShow { adt_symbol: String },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

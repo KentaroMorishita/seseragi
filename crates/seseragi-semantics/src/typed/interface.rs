@@ -1,10 +1,10 @@
 use crate::{
-    TypedDecl, TypedEffect, TypedModule, TypedModuleInterface, TypedParameter, TypedRecordField,
-    TypedScheme, TypedType,
+    TypedDecl, TypedEffect, TypedInstance, TypedModule, TypedModuleInterface, TypedParameter,
+    TypedRecordField, TypedScheme, TypedType,
 };
 use seseragi_syntax::{
-    InterfaceConstraint, InterfaceExport, InterfaceRecordField, InterfaceScheme, InterfaceType,
-    ModuleInterface, Visibility,
+    InterfaceConstraint, InterfaceExport, InterfaceInstance, InterfaceRecordField, InterfaceScheme,
+    InterfaceType, ModuleInterface, Visibility,
 };
 
 pub(crate) fn typed_interface_from_modules(
@@ -26,6 +26,9 @@ pub(crate) fn typed_interface_from_modules(
             .collect::<Vec<_>>(),
     );
 
+    let mut instances = shallow.instances;
+    instances.extend(typed.instances.iter().map(interface_instance_from_typed));
+
     TypedModuleInterface {
         schema: shallow.schema,
         stage: "typed-interface".to_owned(),
@@ -34,7 +37,26 @@ pub(crate) fn typed_interface_from_modules(
         dependencies: shallow.dependencies,
         exports,
         operators: shallow.operators,
-        instances: shallow.instances,
+        instances,
+    }
+}
+
+fn interface_instance_from_typed(instance: &TypedInstance) -> InterfaceInstance {
+    InterfaceInstance {
+        trait_name: instance.trait_name.clone(),
+        type_parameters: Vec::new(),
+        head: InterfaceType::Apply {
+            constructor: instance.trait_name.clone(),
+            arguments: vec![interface_type_from_typed_type(&instance.head)],
+        },
+        constraints: instance
+            .constraints
+            .iter()
+            .map(|constraint| InterfaceConstraint {
+                name: constraint.name.clone(),
+            })
+            .collect(),
+        origin: instance.origin,
     }
 }
 
