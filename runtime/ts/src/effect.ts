@@ -20,6 +20,14 @@ export type EffectResult<Failure, Success> =
   | EffectFailure<Failure>
   | EffectSuccess<Success>;
 
+class TypedFailureSignal<Failure> {
+  readonly error: Failure;
+
+  constructor(error: Failure) {
+    this.error = error;
+  }
+}
+
 export const unit: Unit = undefined;
 
 export function succeed<Success>(
@@ -40,7 +48,7 @@ export function flatMap<Environment, Failure, Success, NextEnvironment, NextFail
 
 export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   return () => {
-    throw error;
+    throw new TypedFailureSignal(error);
   };
 }
 
@@ -51,6 +59,9 @@ export async function run<Environment, Failure, Success>(
   try {
     return { kind: "success", value: await effect(environment) };
   } catch (error) {
-    return { kind: "failure", error: error as Failure };
+    if (error instanceof TypedFailureSignal) {
+      return { kind: "failure", error: error.error as Failure };
+    }
+    throw error;
   }
 }

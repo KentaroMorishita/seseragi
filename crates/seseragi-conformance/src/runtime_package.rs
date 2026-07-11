@@ -3,6 +3,8 @@ use std::io::Write;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
+mod effect;
+
 pub(crate) fn check_typescript_runtime_package(
     root: &Path,
     abi: &serde_json::Value,
@@ -42,6 +44,9 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "effect.console.println") {
         check_typescript_runtime_console_is_cold(root)?;
+    }
+    if runtime_helper_is_declared(abi, "effect.core.fail") {
+        effect::check_typed_failure_boundary(root)?;
     }
     if runtime_helper_is_declared(abi, "core.int64.add") {
         check_typescript_runtime_int64(root)?;

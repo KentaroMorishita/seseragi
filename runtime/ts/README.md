@@ -15,6 +15,10 @@ Current scope:
   process-wide input cursor; callers must invoke it sequentially and receive
   `undefined` at EOF.
 
+Typed failureはruntime内部のprivate carrierでdefectと区別します。`fail`だけがcarrierを発生させ、`run`は
+carrierだけを`EffectResult.failure`へ変換します。任意のJavaScript throw / rejected Promiseはdefectとして
+再throwし、failure channelへ暗黙変換しません。
+
 `./stdin` is deliberately only the first runtime slice, not the full
 `std/stdin` contract. It does not yet implement byte reads, configurable line
 limits, strict UTF-8 diagnostics, `StdinError` conversion, concurrent-read

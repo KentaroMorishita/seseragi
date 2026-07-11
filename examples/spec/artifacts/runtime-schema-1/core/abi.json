@@ -110,6 +110,16 @@
       }
     },
     {
+      "id": "effect.core.fail",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "E -> Effect<{}, E, Never>",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "fail"
+      }
+    },
+    {
       "id": "effect.core.flatMap",
       "kind": "runtime-helper",
       "typescript": "function",
