@@ -2,6 +2,12 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "artifact/effect-main",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/effect-main::main",

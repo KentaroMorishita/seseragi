@@ -15,7 +15,19 @@ pub struct TypedModule {
     pub stage: String,
     pub source: String,
     pub module: String,
+    /// External nominal types referenced by this module and needed by later
+    /// target-specific import selection. This is a module import set, not an
+    /// occurrence-level replacement for resolved type symbols.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub external_type_bindings: Vec<ExternalTypeBinding>,
     pub declarations: Vec<TypedDecl>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExternalTypeBinding {
+    pub spelling: String,
+    pub canonical: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

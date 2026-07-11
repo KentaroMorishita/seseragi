@@ -4,6 +4,10 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 
+mod type_imports;
+
+pub(crate) use type_imports::runtime_type_imports;
+
 pub(crate) fn check_runtime_abi_case(root: &Path, case: &Path) -> Result<(), String> {
     let abi_path = case.join("abi.json");
     let raw = fs::read_to_string(&abi_path)
@@ -142,6 +146,7 @@ fn check_runtime_abi_feature(
         .and_then(|value| value.as_str())
         .ok_or_else(|| format!("runtime ABI feature {id} boundary must be a string"))?;
 
+    type_imports::check_feature_type_metadata(id, kind, feature)?;
     check_runtime_abi_feature_import(id, kind, feature.get("import"))
 }
 

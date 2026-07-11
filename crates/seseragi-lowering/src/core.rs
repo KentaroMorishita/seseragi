@@ -1,6 +1,6 @@
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
-use seseragi_semantics::{TypedDecl, TypedModule};
+use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedModule};
 use seseragi_syntax::Visibility;
 
 mod adt;
@@ -22,6 +22,8 @@ pub struct CoreModule {
     pub schema: u32,
     pub stage: String,
     pub module: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub external_type_bindings: Vec<ExternalTypeBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<CoreAdt>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -246,6 +248,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         schema: module.schema,
         stage: "core-ir".to_owned(),
         module: module.module,
+        external_type_bindings: module.external_type_bindings,
         adts,
         bindings,
         functions,

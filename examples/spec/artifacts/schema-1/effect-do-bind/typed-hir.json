@@ -3,6 +3,12 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "artifact/effect-do-bind",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
   "declarations": [
     {
       "kind": "effect-fn",

@@ -1,8 +1,9 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    sum_ops::runtime_sum_constructor_for_feature, TypeScriptAdt, TypeScriptAdtVariant,
-    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
+    runtime_types::runtime_type_import_for_feature, sum_ops::runtime_sum_constructor_for_feature,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
@@ -127,13 +128,26 @@ fn render_typescript(module: &TypeScriptModule) -> String {
             }
         }
     }
+    for import in &module.type_imports {
+        if let Some(type_import) = runtime_type_import_for_feature(&import.feature) {
+            let rendered = format!("type {} as {}", type_import.export_name, import.local);
+            if let Some((_, specifiers)) = import_groups
+                .iter_mut()
+                .find(|(module, _)| *module == type_import.module)
+            {
+                specifiers.push(rendered);
+            } else {
+                import_groups.push((type_import.module, vec![rendered]));
+            }
+        }
+    }
     for (module, specifiers) in import_groups {
         output.push_str(&format!(
             "import {{ {} }} from \"{module}\"\n",
             specifiers.join(", ")
         ));
     }
-    if !module.imports.is_empty()
+    if (!module.imports.is_empty() || !module.type_imports.is_empty())
         && (!module.adts.is_empty() || !module.bindings.is_empty() || !module.functions.is_empty())
     {
         output.push('\n');

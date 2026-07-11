@@ -79,6 +79,7 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         stage: "typed-hir".to_owned(),
         source: interface.source,
         module: interface.module,
+        external_type_bindings: Vec::new(),
         declarations,
     }
 }
@@ -93,12 +94,14 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
         .into_iter()
         .filter_map(|declaration| typed_decl_from_surface(declaration, &resolution))
         .collect();
+    let external_type_bindings = resolution.external_type_bindings();
 
     TypedModule {
         schema: 1,
         stage: "typed-hir".to_owned(),
         source: resolved.source,
         module: resolved.module,
+        external_type_bindings,
         declarations,
     }
 }

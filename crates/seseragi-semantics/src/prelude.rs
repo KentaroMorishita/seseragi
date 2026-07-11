@@ -100,6 +100,16 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
     }
 }
 
+pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
+    matches!(
+        canonical,
+        "std/prelude::Console"
+            | "std/prelude::ConsoleError"
+            | "std/prelude::Stdin"
+            | "std/prelude::StdinError"
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

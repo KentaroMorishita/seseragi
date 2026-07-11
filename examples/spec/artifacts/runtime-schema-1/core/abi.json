@@ -93,6 +93,54 @@
       "import": null
     },
     {
+      "id": "effect.console.service",
+      "kind": "value-representation",
+      "typescript": "type Console",
+      "boundary": "Console service interface",
+      "typeIdentity": "std/prelude::Console",
+      "typeImport": {
+        "module": "@seseragi/runtime/console",
+        "export": "Console"
+      },
+      "import": null
+    },
+    {
+      "id": "effect.console.error",
+      "kind": "value-representation",
+      "typescript": "type ConsoleError",
+      "boundary": "Console operation failure",
+      "typeIdentity": "std/prelude::ConsoleError",
+      "typeImport": {
+        "module": "@seseragi/runtime/console",
+        "export": "ConsoleError"
+      },
+      "import": null
+    },
+    {
+      "id": "effect.stdin.service",
+      "kind": "value-representation",
+      "typescript": "type Stdin",
+      "boundary": "Stdin service interface",
+      "typeIdentity": "std/prelude::Stdin",
+      "typeImport": {
+        "module": "@seseragi/runtime/stdin",
+        "export": "Stdin"
+      },
+      "import": null
+    },
+    {
+      "id": "effect.stdin.error",
+      "kind": "value-representation",
+      "typescript": "type StdinError",
+      "boundary": "Stdin operation failure",
+      "typeIdentity": "std/prelude::StdinError",
+      "typeImport": {
+        "module": "@seseragi/runtime/stdin",
+        "export": "StdinError"
+      },
+      "import": null
+    },
+    {
       "id": "core.adt",
       "kind": "value-representation",
       "typescript": "readonly tagged object",

@@ -8,6 +8,7 @@ mod expr;
 mod imports;
 mod names;
 mod runtime;
+mod type_imports;
 pub(crate) mod types;
 
 use adt::lower_core_adt_to_typescript;
@@ -18,6 +19,7 @@ use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
     collect_type_runtime_requirement,
 };
+use type_imports::collect_module_type_imports;
 use types::{lower_core_parameter_to_typescript, type_ref_from_core_expr};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -29,6 +31,8 @@ pub struct TypeScriptModule {
     pub runtime_requirements: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub imports: Vec<TypeScriptImport>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_imports: Vec<TypeScriptTypeImport>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<TypeScriptAdt>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -61,6 +65,13 @@ pub struct TypeScriptAdtVariant {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptImport {
+    pub feature: String,
+    pub local: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptTypeImport {
     pub feature: String,
     pub local: String,
 }
@@ -283,6 +294,8 @@ pub enum TypeScriptStatement {
 pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {
     let mut runtime_requirements = Vec::new();
     let mut imports = Vec::new();
+    let mut type_imports = Vec::new();
+    collect_module_type_imports(&module, &mut runtime_requirements, &mut type_imports);
     let adts = module
         .adts
         .into_iter()
@@ -334,6 +347,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         module: module.module,
         runtime_requirements,
         imports,
+        type_imports,
         adts,
         bindings,
         functions,

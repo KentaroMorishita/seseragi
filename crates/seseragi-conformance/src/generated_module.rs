@@ -1,8 +1,9 @@
 use crate::pipeline::{emit_generated_module, interface_source_name, parse_typescript_ir_json};
-use crate::runtime_abi::{runtime_feature_ids, runtime_imports};
-use serde_json::Value;
+use crate::runtime_abi::runtime_feature_ids;
 use std::fs;
 use std::path::Path;
+
+mod imports;
 
 pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), String> {
     let source_path = case.join("main.ssrg");
@@ -31,11 +32,8 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
         return Err("main.ts artifact mismatch".to_owned());
     }
     check_generated_exports(&actual_metadata_value, &bundle.typescript)?;
-    check_generated_runtime_imports(
-        root,
-        &parse_typescript_ir_json(interface_source_name(case)?, &source)?,
-        &bundle.typescript,
-    )?;
+    let typescript_ir = parse_typescript_ir_json(interface_source_name(case)?, &source)?;
+    imports::check_generated_runtime_imports(root, &typescript_ir, &bundle.typescript)?;
 
     let actual_source_map_value = serde_json::to_value(&bundle.source_map)
         .map_err(|error| format!("failed to encode SourceMap: {error}"))?;
@@ -47,55 +45,6 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
     }
     check_generated_source_map(&actual_metadata_value, &actual_source_map_value, &source)?;
     Ok(())
-}
-
-fn check_generated_runtime_imports(
-    root: &Path,
-    typescript_ir: &Value,
-    typescript: &str,
-) -> Result<(), String> {
-    let runtime_imports = runtime_imports(root)?;
-    let Some(imports) = typescript_ir.get("imports") else {
-        return Ok(());
-    };
-    let imports = imports
-        .as_array()
-        .ok_or_else(|| "TypeScriptIr imports must be an array".to_owned())?;
-
-    for (index, import) in imports.iter().enumerate() {
-        let feature = required_string_field(
-            import,
-            "feature",
-            &format!("TypeScriptIr imports[{index}].feature"),
-        )?;
-        let local = required_string_field(
-            import,
-            "local",
-            &format!("TypeScriptIr imports[{index}].local"),
-        )?;
-        let runtime_import = runtime_imports.get(feature).ok_or_else(|| {
-            format!("TypeScriptIr import feature {feature} has no runtime ABI import")
-        })?;
-        if !typescript
-            .lines()
-            .any(|line| typescript_line_imports_runtime_binding(line, runtime_import, local))
-        {
-            return Err(format!(
-                "generated TypeScript import for runtime feature {feature} does not match ABI"
-            ));
-        }
-    }
-    Ok(())
-}
-
-fn typescript_line_imports_runtime_binding(
-    line: &str,
-    runtime_import: &crate::runtime_abi::RuntimeImport,
-    local: &str,
-) -> bool {
-    line.starts_with("import { ")
-        && line.contains(&format!("{} as {local}", runtime_import.export_name))
-        && line.ends_with(&format!("from \"{}\"", runtime_import.module))
 }
 
 fn check_generated_source_map(
@@ -178,18 +127,6 @@ fn typescript_exports_name(typescript: &str, name: &str) -> bool {
         || typescript.contains(&format!(", {name}"))
 }
 
-fn required_string_field<'a>(
-    value: &'a Value,
-    field: &str,
-    label: &str,
-) -> Result<&'a str, String> {
-    value
-        .get(field)
-        .and_then(Value::as_str)
-        .filter(|value| !value.is_empty())
-        .ok_or_else(|| format!("{label} must be a non-empty string"))
-}
-
 fn check_generated_runtime_requirements(
     root: &Path,
     generated_module: &serde_json::Value,
@@ -211,24 +148,4 @@ fn check_generated_runtime_requirements(
         }
     }
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::typescript_line_imports_runtime_binding;
-    use crate::runtime_abi::RuntimeImport;
-
-    #[test]
-    fn accepts_grouped_generated_import_from_runtime_abi_mapping() {
-        let runtime_import = RuntimeImport {
-            module: "@seseragi/runtime/console".to_owned(),
-            export_name: "println".to_owned(),
-        };
-
-        assert!(typescript_line_imports_runtime_binding(
-            "import { print as _ssrg_console_print, println as _ssrg_console_println } from \"@seseragi/runtime/console\"",
-            &runtime_import,
-            "_ssrg_console_println"
-        ));
-    }
 }

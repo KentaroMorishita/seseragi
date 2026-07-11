@@ -1,8 +1,8 @@
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    sum_ops::runtime_sum_constructor_for_feature, SourceSpan, TypeScriptBinding,
-    TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
-    TypeScriptStatement,
+    runtime_types::runtime_type_import_for_feature, sum_ops::runtime_sum_constructor_for_feature,
+    SourceSpan, TypeScriptBinding, TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -143,11 +143,14 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
         .imports
         .iter()
         .filter_map(|import| runtime_module_for_feature(&import.feature))
+        .chain(module.type_imports.iter().filter_map(|import| {
+            runtime_type_import_for_feature(&import.feature).map(|type_import| type_import.module)
+        }))
         .collect::<BTreeSet<_>>()
         .len();
     import_lines
         + usize::from(
-            !module.imports.is_empty()
+            (!module.imports.is_empty() || !module.type_imports.is_empty())
                 && (!module.adts.is_empty()
                     || !module.bindings.is_empty()
                     || !module.functions.is_empty()),
@@ -172,6 +175,7 @@ fn runtime_module_for_feature(feature: &str) -> Option<&'static str> {
         .or_else(|| {
             runtime_sum_constructor_for_feature(feature).map(|constructor| constructor.module)
         })
+        .or_else(|| runtime_type_import_for_feature(feature).map(|type_import| type_import.module))
 }
 
 fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {

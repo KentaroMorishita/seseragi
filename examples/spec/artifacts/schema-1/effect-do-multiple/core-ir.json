@@ -2,6 +2,12 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "artifact/effect-do-multiple",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/effect-do-multiple::main",

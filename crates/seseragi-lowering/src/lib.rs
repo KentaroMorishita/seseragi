@@ -2,6 +2,7 @@ mod core;
 mod effect_ops;
 mod emit;
 mod int_ops;
+mod runtime_types;
 mod span;
 mod sum_ops;
 mod typescript;
@@ -21,7 +22,7 @@ pub use typescript::{
     lower_core_module_to_typescript_ir, TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding,
     TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
     TypeScriptDecisionTest, TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptModule,
-    TypeScriptParameter, TypeScriptStatement, TypeScriptType,
+    TypeScriptParameter, TypeScriptStatement, TypeScriptType, TypeScriptTypeImport,
 };
 
 #[cfg(test)]
@@ -295,6 +296,7 @@ type Internal =
             schema: 1,
             stage: "core-ir".to_owned(),
             module: "artifact/calls".to_owned(),
+            external_type_bindings: Vec::new(),
             adts: Vec::new(),
             bindings: Vec::new(),
             functions: vec![CoreFunction {
