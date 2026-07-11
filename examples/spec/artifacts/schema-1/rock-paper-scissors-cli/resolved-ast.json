@@ -1,0 +1,3091 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/rock-paper-scissors-cli",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        },
+        {
+          "name": "Paper",
+          "nameSpan": {
+            "start": 29,
+            "end": 34
+          },
+          "span": {
+            "start": 27,
+            "end": 34
+          }
+        },
+        {
+          "name": "Scissors",
+          "nameSpan": {
+            "start": 39,
+            "end": 47
+          },
+          "span": {
+            "start": 37,
+            "end": 47
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Outcome",
+      "nameSpan": {
+        "start": 58,
+        "end": 65
+      },
+      "variants": [
+        {
+          "name": "Player1Wins",
+          "nameSpan": {
+            "start": 72,
+            "end": 83
+          },
+          "span": {
+            "start": 70,
+            "end": 83
+          }
+        },
+        {
+          "name": "Player2Wins",
+          "nameSpan": {
+            "start": 88,
+            "end": 99
+          },
+          "span": {
+            "start": 86,
+            "end": 99
+          }
+        },
+        {
+          "name": "Draw",
+          "nameSpan": {
+            "start": 104,
+            "end": 108
+          },
+          "span": {
+            "start": 102,
+            "end": 108
+          }
+        }
+      ],
+      "span": {
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "AppError",
+      "nameSpan": {
+        "start": 119,
+        "end": 127
+      },
+      "variants": [
+        {
+          "name": "StdinFailure",
+          "nameSpan": {
+            "start": 134,
+            "end": 146
+          },
+          "payload": {
+            "kind": "named",
+            "name": "StdinError",
+            "span": {
+              "start": 147,
+              "end": 157
+            }
+          },
+          "span": {
+            "start": 132,
+            "end": 157
+          }
+        },
+        {
+          "name": "EndOfInput",
+          "nameSpan": {
+            "start": 162,
+            "end": 172
+          },
+          "span": {
+            "start": 160,
+            "end": 172
+          }
+        },
+        {
+          "name": "UnknownHand",
+          "nameSpan": {
+            "start": 177,
+            "end": 188
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 189,
+              "end": 195
+            }
+          },
+          "span": {
+            "start": 175,
+            "end": 195
+          }
+        },
+        {
+          "name": "ConsoleFailure",
+          "nameSpan": {
+            "start": 200,
+            "end": 214
+          },
+          "payload": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "span": {
+              "start": 215,
+              "end": 227
+            }
+          },
+          "span": {
+            "start": 198,
+            "end": 227
+          }
+        }
+      ],
+      "span": {
+        "start": 110,
+        "end": 227
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "parseHand",
+      "nameSpan": {
+        "start": 232,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 242,
+            "end": 247
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 249,
+              "end": 255
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "span": {
+              "start": 266,
+              "end": 274
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 276,
+              "end": 280
+            }
+          }
+        ],
+        "span": {
+          "start": 259,
+          "end": 281
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "input",
+          "span": {
+            "start": 292,
+            "end": 297
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"rock\"",
+              "span": {
+                "start": 304,
+                "end": 310
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 314,
+                  "end": 319
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Rock",
+                "span": {
+                  "start": 320,
+                  "end": 324
+                }
+              },
+              "span": {
+                "start": 314,
+                "end": 324
+              }
+            },
+            "span": {
+              "start": 304,
+              "end": 324
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"paper\"",
+              "span": {
+                "start": 329,
+                "end": 336
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 340,
+                  "end": 345
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Paper",
+                "span": {
+                  "start": 346,
+                  "end": 351
+                }
+              },
+              "span": {
+                "start": 340,
+                "end": 351
+              }
+            },
+            "span": {
+              "start": 329,
+              "end": 351
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"scissors\"",
+              "span": {
+                "start": 356,
+                "end": 366
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 370,
+                  "end": 375
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Scissors",
+                "span": {
+                  "start": 376,
+                  "end": 384
+                }
+              },
+              "span": {
+                "start": 370,
+                "end": 384
+              }
+            },
+            "span": {
+              "start": 356,
+              "end": 384
+            }
+          },
+          {
+            "pattern": {
+              "kind": "name",
+              "name": "other",
+              "nameSpan": {
+                "start": 389,
+                "end": 394
+              },
+              "span": {
+                "start": 389,
+                "end": 394
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Left",
+                "span": {
+                  "start": 398,
+                  "end": 402
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "UnknownHand",
+                    "span": {
+                      "start": 404,
+                      "end": 415
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "other",
+                    "span": {
+                      "start": 416,
+                      "end": 421
+                    }
+                  },
+                  "span": {
+                    "start": 404,
+                    "end": 421
+                  }
+                },
+                "span": {
+                  "start": 403,
+                  "end": 422
+                }
+              },
+              "span": {
+                "start": 398,
+                "end": 422
+              }
+            },
+            "span": {
+              "start": 389,
+              "end": 422
+            }
+          }
+        ],
+        "span": {
+          "start": 286,
+          "end": 426
+        }
+      },
+      "span": {
+        "start": 229,
+        "end": 426
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "parseInput",
+      "nameSpan": {
+        "start": 431,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 442,
+            "end": 447
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 455,
+                  "end": 461
+                }
+              }
+            ],
+            "span": {
+              "start": 449,
+              "end": 462
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "span": {
+              "start": 473,
+              "end": 481
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 483,
+              "end": 487
+            }
+          }
+        ],
+        "span": {
+          "start": 466,
+          "end": 488
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "input",
+          "span": {
+            "start": 499,
+            "end": 504
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Nothing",
+              "nameSpan": {
+                "start": 511,
+                "end": 518
+              },
+              "span": {
+                "start": 511,
+                "end": 518
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Left",
+                "span": {
+                  "start": 522,
+                  "end": 526
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "EndOfInput",
+                "span": {
+                  "start": 527,
+                  "end": 537
+                }
+              },
+              "span": {
+                "start": 522,
+                "end": 537
+              }
+            },
+            "span": {
+              "start": 511,
+              "end": 537
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Just",
+              "nameSpan": {
+                "start": 542,
+                "end": 546
+              },
+              "argument": {
+                "kind": "name",
+                "name": "line",
+                "nameSpan": {
+                  "start": 547,
+                  "end": 551
+                },
+                "span": {
+                  "start": 547,
+                  "end": 551
+                }
+              },
+              "span": {
+                "start": 542,
+                "end": 551
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "parseHand",
+                "span": {
+                  "start": 555,
+                  "end": 564
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "line",
+                "span": {
+                  "start": 565,
+                  "end": 569
+                }
+              },
+              "span": {
+                "start": 555,
+                "end": 569
+              }
+            },
+            "span": {
+              "start": 542,
+              "end": 569
+            }
+          }
+        ],
+        "span": {
+          "start": 493,
+          "end": 573
+        }
+      },
+      "span": {
+        "start": 428,
+        "end": 573
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "decide",
+      "nameSpan": {
+        "start": 578,
+        "end": 584
+      },
+      "parameters": [
+        {
+          "name": "first",
+          "nameSpan": {
+            "start": 585,
+            "end": 590
+          },
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 592,
+              "end": 596
+            }
+          }
+        },
+        {
+          "name": "second",
+          "nameSpan": {
+            "start": 600,
+            "end": 606
+          },
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 608,
+              "end": 612
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Outcome",
+        "span": {
+          "start": 616,
+          "end": 623
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "name",
+              "name": "first",
+              "span": {
+                "start": 635,
+                "end": 640
+              }
+            },
+            {
+              "kind": "name",
+              "name": "second",
+              "span": {
+                "start": 642,
+                "end": 648
+              }
+            }
+          ],
+          "span": {
+            "start": 634,
+            "end": 649
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 657,
+                    "end": 661
+                  },
+                  "span": {
+                    "start": 657,
+                    "end": 661
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 663,
+                    "end": 667
+                  },
+                  "span": {
+                    "start": 663,
+                    "end": 667
+                  }
+                }
+              ],
+              "span": {
+                "start": 656,
+                "end": 668
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 672,
+                "end": 676
+              }
+            },
+            "span": {
+              "start": 656,
+              "end": 676
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 682,
+                    "end": 687
+                  },
+                  "span": {
+                    "start": 682,
+                    "end": 687
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 689,
+                    "end": 694
+                  },
+                  "span": {
+                    "start": 689,
+                    "end": 694
+                  }
+                }
+              ],
+              "span": {
+                "start": 681,
+                "end": 695
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 699,
+                "end": 703
+              }
+            },
+            "span": {
+              "start": 681,
+              "end": 703
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 709,
+                    "end": 717
+                  },
+                  "span": {
+                    "start": 709,
+                    "end": 717
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 719,
+                    "end": 727
+                  },
+                  "span": {
+                    "start": 719,
+                    "end": 727
+                  }
+                }
+              ],
+              "span": {
+                "start": 708,
+                "end": 728
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 732,
+                "end": 736
+              }
+            },
+            "span": {
+              "start": 708,
+              "end": 736
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 742,
+                    "end": 746
+                  },
+                  "span": {
+                    "start": 742,
+                    "end": 746
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 748,
+                    "end": 756
+                  },
+                  "span": {
+                    "start": 748,
+                    "end": 756
+                  }
+                }
+              ],
+              "span": {
+                "start": 741,
+                "end": 757
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player1Wins",
+              "span": {
+                "start": 761,
+                "end": 772
+              }
+            },
+            "span": {
+              "start": 741,
+              "end": 772
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 778,
+                    "end": 783
+                  },
+                  "span": {
+                    "start": 778,
+                    "end": 783
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 785,
+                    "end": 789
+                  },
+                  "span": {
+                    "start": 785,
+                    "end": 789
+                  }
+                }
+              ],
+              "span": {
+                "start": 777,
+                "end": 790
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player1Wins",
+              "span": {
+                "start": 794,
+                "end": 805
+              }
+            },
+            "span": {
+              "start": 777,
+              "end": 805
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Scissors",
+                  "nameSpan": {
+                    "start": 811,
+                    "end": 819
+                  },
+                  "span": {
+                    "start": 811,
+                    "end": 819
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 821,
+                    "end": 826
+                  },
+                  "span": {
+                    "start": 821,
+                    "end": 826
+                  }
+                }
+              ],
+              "span": {
+                "start": 810,
+                "end": 827
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player1Wins",
+              "span": {
+                "start": 831,
+                "end": 842
+              }
+            },
+            "span": {
+              "start": 810,
+              "end": 842
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 847,
+                "end": 848
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Player2Wins",
+              "span": {
+                "start": 852,
+                "end": 863
+              }
+            },
+            "span": {
+              "start": 847,
+              "end": 863
+            }
+          }
+        ],
+        "span": {
+          "start": 628,
+          "end": 867
+        }
+      },
+      "span": {
+        "start": 575,
+        "end": 867
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderOutcome",
+      "nameSpan": {
+        "start": 872,
+        "end": 885
+      },
+      "parameters": [
+        {
+          "name": "outcome",
+          "nameSpan": {
+            "start": 886,
+            "end": 893
+          },
+          "type": {
+            "kind": "named",
+            "name": "Outcome",
+            "span": {
+              "start": 895,
+              "end": 902
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 906,
+          "end": 912
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "outcome",
+          "span": {
+            "start": 923,
+            "end": 930
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Player1Wins",
+              "nameSpan": {
+                "start": 937,
+                "end": 948
+              },
+              "span": {
+                "start": 937,
+                "end": 948
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"Player 1 wins!\"",
+              "span": {
+                "start": 952,
+                "end": 968
+              }
+            },
+            "span": {
+              "start": 937,
+              "end": 968
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Player2Wins",
+              "nameSpan": {
+                "start": 973,
+                "end": 984
+              },
+              "span": {
+                "start": 973,
+                "end": 984
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"Player 2 wins!\"",
+              "span": {
+                "start": 988,
+                "end": 1004
+              }
+            },
+            "span": {
+              "start": 973,
+              "end": 1004
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Draw",
+              "nameSpan": {
+                "start": 1009,
+                "end": 1013
+              },
+              "span": {
+                "start": 1009,
+                "end": 1013
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"Draw!\"",
+              "span": {
+                "start": 1017,
+                "end": 1024
+              }
+            },
+            "span": {
+              "start": 1009,
+              "end": 1024
+            }
+          }
+        ],
+        "span": {
+          "start": 917,
+          "end": 1028
+        }
+      },
+      "span": {
+        "start": 869,
+        "end": 1028
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 1044,
+        "end": 1048
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "firstInput",
+              "nameSpan": {
+                "start": 1062,
+                "end": 1072
+              },
+              "span": {
+                "start": 1062,
+                "end": 1072
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "mapError",
+                  "span": {
+                    "start": 1076,
+                    "end": 1084
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "StdinFailure",
+                  "span": {
+                    "start": 1085,
+                    "end": 1097
+                  }
+                },
+                "span": {
+                  "start": 1076,
+                  "end": 1097
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "readLine",
+                    "span": {
+                      "start": 1099,
+                      "end": 1107
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 1108,
+                      "end": 1110
+                    }
+                  },
+                  "span": {
+                    "start": 1099,
+                    "end": 1110
+                  }
+                },
+                "span": {
+                  "start": 1098,
+                  "end": 1111
+                }
+              },
+              "span": {
+                "start": 1076,
+                "end": 1111
+              }
+            },
+            "span": {
+              "start": 1062,
+              "end": 1111
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "first",
+              "nameSpan": {
+                "start": 1116,
+                "end": 1121
+              },
+              "span": {
+                "start": 1116,
+                "end": 1121
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "fromEither",
+                "span": {
+                  "start": 1125,
+                  "end": 1135
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "parseInput",
+                    "span": {
+                      "start": 1137,
+                      "end": 1147
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "firstInput",
+                    "span": {
+                      "start": 1148,
+                      "end": 1158
+                    }
+                  },
+                  "span": {
+                    "start": 1137,
+                    "end": 1158
+                  }
+                },
+                "span": {
+                  "start": 1136,
+                  "end": 1159
+                }
+              },
+              "span": {
+                "start": 1125,
+                "end": 1159
+              }
+            },
+            "span": {
+              "start": 1116,
+              "end": 1159
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "secondInput",
+              "nameSpan": {
+                "start": 1164,
+                "end": 1175
+              },
+              "span": {
+                "start": 1164,
+                "end": 1175
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "mapError",
+                  "span": {
+                    "start": 1179,
+                    "end": 1187
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "StdinFailure",
+                  "span": {
+                    "start": 1188,
+                    "end": 1200
+                  }
+                },
+                "span": {
+                  "start": 1179,
+                  "end": 1200
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "readLine",
+                    "span": {
+                      "start": 1202,
+                      "end": 1210
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 1211,
+                      "end": 1213
+                    }
+                  },
+                  "span": {
+                    "start": 1202,
+                    "end": 1213
+                  }
+                },
+                "span": {
+                  "start": 1201,
+                  "end": 1214
+                }
+              },
+              "span": {
+                "start": 1179,
+                "end": 1214
+              }
+            },
+            "span": {
+              "start": 1164,
+              "end": 1214
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "second",
+              "nameSpan": {
+                "start": 1219,
+                "end": 1225
+              },
+              "span": {
+                "start": 1219,
+                "end": 1225
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "fromEither",
+                "span": {
+                  "start": 1229,
+                  "end": 1239
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "parseInput",
+                    "span": {
+                      "start": 1241,
+                      "end": 1251
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "secondInput",
+                    "span": {
+                      "start": 1252,
+                      "end": 1263
+                    }
+                  },
+                  "span": {
+                    "start": 1241,
+                    "end": 1263
+                  }
+                },
+                "span": {
+                  "start": 1240,
+                  "end": 1264
+                }
+              },
+              "span": {
+                "start": 1229,
+                "end": 1264
+              }
+            },
+            "span": {
+              "start": 1219,
+              "end": 1264
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "outcome",
+              "nameSpan": {
+                "start": 1273,
+                "end": 1280
+              },
+              "span": {
+                "start": 1273,
+                "end": 1280
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "decide",
+                  "span": {
+                    "start": 1283,
+                    "end": 1289
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "first",
+                  "span": {
+                    "start": 1290,
+                    "end": 1295
+                  }
+                },
+                "span": {
+                  "start": 1283,
+                  "end": 1295
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "second",
+                "span": {
+                  "start": 1296,
+                  "end": 1302
+                }
+              },
+              "span": {
+                "start": 1283,
+                "end": 1302
+              }
+            },
+            "span": {
+              "start": 1269,
+              "end": 1302
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "mapError",
+              "span": {
+                "start": 1307,
+                "end": 1315
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "ConsoleFailure",
+              "span": {
+                "start": 1316,
+                "end": 1330
+              }
+            },
+            "span": {
+              "start": 1307,
+              "end": 1330
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1332,
+                  "end": 1339
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "renderOutcome",
+                    "span": {
+                      "start": 1341,
+                      "end": 1354
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "outcome",
+                    "span": {
+                      "start": 1355,
+                      "end": 1362
+                    }
+                  },
+                  "span": {
+                    "start": 1341,
+                    "end": 1362
+                  }
+                },
+                "span": {
+                  "start": 1340,
+                  "end": 1363
+                }
+              },
+              "span": {
+                "start": 1332,
+                "end": 1363
+              }
+            },
+            "span": {
+              "start": 1331,
+              "end": 1364
+            }
+          },
+          "span": {
+            "start": 1307,
+            "end": 1364
+          }
+        },
+        "span": {
+          "start": 1053,
+          "end": 1368
+        }
+      },
+      "span": {
+        "start": 1030,
+        "end": 1368
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 1368
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 110,
+        "end": 227
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 229,
+        "end": 426
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 304,
+        "end": 324
+      }
+    },
+    {
+      "id": 7,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 329,
+        "end": 351
+      }
+    },
+    {
+      "id": 8,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 356,
+        "end": 384
+      }
+    },
+    {
+      "id": 9,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 389,
+        "end": 422
+      }
+    },
+    {
+      "id": 10,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 428,
+        "end": 573
+      }
+    },
+    {
+      "id": 11,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "parent": 10,
+      "kind": "match-arm",
+      "origin": {
+        "start": 511,
+        "end": 537
+      }
+    },
+    {
+      "id": 13,
+      "parent": 10,
+      "kind": "match-arm",
+      "origin": {
+        "start": 542,
+        "end": 569
+      }
+    },
+    {
+      "id": 14,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 575,
+        "end": 867
+      }
+    },
+    {
+      "id": 15,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 656,
+        "end": 676
+      }
+    },
+    {
+      "id": 16,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 681,
+        "end": 703
+      }
+    },
+    {
+      "id": 17,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 708,
+        "end": 736
+      }
+    },
+    {
+      "id": 18,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 741,
+        "end": 772
+      }
+    },
+    {
+      "id": 19,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 777,
+        "end": 805
+      }
+    },
+    {
+      "id": 20,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 810,
+        "end": 842
+      }
+    },
+    {
+      "id": 21,
+      "parent": 14,
+      "kind": "match-arm",
+      "origin": {
+        "start": 847,
+        "end": 863
+      }
+    },
+    {
+      "id": 22,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 869,
+        "end": 1028
+      }
+    },
+    {
+      "id": 23,
+      "parent": 22,
+      "kind": "match-arm",
+      "origin": {
+        "start": 937,
+        "end": 968
+      }
+    },
+    {
+      "id": 24,
+      "parent": 22,
+      "kind": "match-arm",
+      "origin": {
+        "start": 973,
+        "end": 1004
+      }
+    },
+    {
+      "id": 25,
+      "parent": 22,
+      "kind": "match-arm",
+      "origin": {
+        "start": 1009,
+        "end": 1024
+      }
+    },
+    {
+      "id": 26,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 1030,
+        "end": 1368
+      }
+    },
+    {
+      "id": 27,
+      "parent": 26,
+      "kind": "do-block",
+      "origin": {
+        "start": 1053,
+        "end": 1368
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Hand",
+      "canonical": "artifact/rock-paper-scissors-cli::Hand",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Rock",
+      "canonical": "artifact/rock-paper-scissors-cli::Rock",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 20,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Paper",
+      "canonical": "artifact/rock-paper-scissors-cli::Paper",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 29,
+        "end": 34
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Scissors",
+      "canonical": "artifact/rock-paper-scissors-cli::Scissors",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 39,
+        "end": 47
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Outcome",
+      "canonical": "artifact/rock-paper-scissors-cli::Outcome",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 58,
+        "end": 65
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Player1Wins",
+      "canonical": "artifact/rock-paper-scissors-cli::Player1Wins",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 72,
+        "end": 83
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Player2Wins",
+      "canonical": "artifact/rock-paper-scissors-cli::Player2Wins",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 88,
+        "end": 99
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Draw",
+      "canonical": "artifact/rock-paper-scissors-cli::Draw",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 104,
+        "end": 108
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "AppError",
+      "canonical": "artifact/rock-paper-scissors-cli::AppError",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 119,
+        "end": 127
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "StdinFailure",
+      "canonical": "artifact/rock-paper-scissors-cli::StdinFailure",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 134,
+        "end": 146
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "EndOfInput",
+      "canonical": "artifact/rock-paper-scissors-cli::EndOfInput",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 162,
+        "end": 172
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "UnknownHand",
+      "canonical": "artifact/rock-paper-scissors-cli::UnknownHand",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 177,
+        "end": 188
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "ConsoleFailure",
+      "canonical": "artifact/rock-paper-scissors-cli::ConsoleFailure",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 200,
+        "end": 214
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "parseHand",
+      "canonical": "artifact/rock-paper-scissors-cli::parseHand",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 232,
+        "end": 241
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "parseInput",
+      "canonical": "artifact/rock-paper-scissors-cli::parseInput",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 431,
+        "end": 441
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "decide",
+      "canonical": "artifact/rock-paper-scissors-cli::decide",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 578,
+        "end": 584
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "renderOutcome",
+      "canonical": "artifact/rock-paper-scissors-cli::renderOutcome",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 872,
+        "end": 885
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "main",
+      "canonical": "artifact/rock-paper-scissors-cli::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 1044,
+        "end": 1048
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "StdinError",
+      "canonical": "std/prelude::StdinError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "input",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 242,
+        "end": 247
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "Either",
+      "canonical": "std/prelude::Either",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "E",
+      "canonical": "std/prelude::Either::E",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 24,
+      "spelling": "A",
+      "canonical": "std/prelude::Either::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 25,
+      "spelling": "Left",
+      "canonical": "std/prelude::Left",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 26,
+      "spelling": "Right",
+      "canonical": "std/prelude::Right",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 27,
+      "spelling": "other",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 9,
+      "origin": {
+        "start": 389,
+        "end": 394
+      }
+    },
+    {
+      "id": 28,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 29,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 11,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 30,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 31,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 32,
+      "spelling": "input",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 10,
+      "origin": {
+        "start": 442,
+        "end": 447
+      }
+    },
+    {
+      "id": 33,
+      "spelling": "line",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 13,
+      "origin": {
+        "start": 547,
+        "end": 551
+      }
+    },
+    {
+      "id": 34,
+      "spelling": "first",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 14,
+      "origin": {
+        "start": 585,
+        "end": 590
+      }
+    },
+    {
+      "id": 35,
+      "spelling": "second",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 14,
+      "origin": {
+        "start": 600,
+        "end": 606
+      }
+    },
+    {
+      "id": 36,
+      "spelling": "outcome",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 22,
+      "origin": {
+        "start": 886,
+        "end": 893
+      }
+    },
+    {
+      "id": 37,
+      "spelling": "mapError",
+      "canonical": "std/prelude::mapError",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 38,
+      "spelling": "readLine",
+      "canonical": "std/prelude::readLine",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 39,
+      "spelling": "firstInput",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 27,
+      "origin": {
+        "start": 1062,
+        "end": 1072
+      }
+    },
+    {
+      "id": 40,
+      "spelling": "fromEither",
+      "canonical": "std/prelude::fromEither",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 41,
+      "spelling": "first",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 27,
+      "origin": {
+        "start": 1116,
+        "end": 1121
+      }
+    },
+    {
+      "id": 42,
+      "spelling": "secondInput",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 27,
+      "origin": {
+        "start": 1164,
+        "end": 1175
+      }
+    },
+    {
+      "id": 43,
+      "spelling": "second",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 27,
+      "origin": {
+        "start": 1219,
+        "end": 1225
+      }
+    },
+    {
+      "id": 44,
+      "spelling": "outcome",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 27,
+      "origin": {
+        "start": 1273,
+        "end": 1280
+      }
+    },
+    {
+      "id": 45,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "StdinError",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 147,
+        "end": 157
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 189,
+        "end": 195
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 20,
+      "origin": {
+        "start": 215,
+        "end": 227
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 249,
+        "end": 255
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 22,
+      "origin": {
+        "start": 259,
+        "end": 281
+      }
+    },
+    {
+      "spelling": "AppError",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 266,
+        "end": 274
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 276,
+        "end": 280
+      }
+    },
+    {
+      "spelling": "input",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 292,
+        "end": 297
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 26,
+      "origin": {
+        "start": 314,
+        "end": 319
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 320,
+        "end": 324
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 26,
+      "origin": {
+        "start": 340,
+        "end": 345
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 346,
+        "end": 351
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 26,
+      "origin": {
+        "start": 370,
+        "end": 375
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 376,
+        "end": 384
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
+      "target": 25,
+      "origin": {
+        "start": 398,
+        "end": 402
+      }
+    },
+    {
+      "spelling": "UnknownHand",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 404,
+        "end": 415
+      }
+    },
+    {
+      "spelling": "other",
+      "namespace": "value",
+      "target": 27,
+      "origin": {
+        "start": 416,
+        "end": 421
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 28,
+      "origin": {
+        "start": 449,
+        "end": 462
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 455,
+        "end": 461
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 22,
+      "origin": {
+        "start": 466,
+        "end": 488
+      }
+    },
+    {
+      "spelling": "AppError",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 473,
+        "end": 481
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 483,
+        "end": 487
+      }
+    },
+    {
+      "spelling": "input",
+      "namespace": "value",
+      "target": 32,
+      "origin": {
+        "start": 499,
+        "end": 504
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 30,
+      "origin": {
+        "start": 511,
+        "end": 518
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
+      "target": 25,
+      "origin": {
+        "start": 522,
+        "end": 526
+      }
+    },
+    {
+      "spelling": "EndOfInput",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 527,
+        "end": 537
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 31,
+      "origin": {
+        "start": 542,
+        "end": 546
+      }
+    },
+    {
+      "spelling": "parseHand",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 555,
+        "end": 564
+      }
+    },
+    {
+      "spelling": "line",
+      "namespace": "value",
+      "target": 33,
+      "origin": {
+        "start": 565,
+        "end": 569
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 592,
+        "end": 596
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 608,
+        "end": 612
+      }
+    },
+    {
+      "spelling": "Outcome",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 616,
+        "end": 623
+      }
+    },
+    {
+      "spelling": "first",
+      "namespace": "value",
+      "target": 34,
+      "origin": {
+        "start": 635,
+        "end": 640
+      }
+    },
+    {
+      "spelling": "second",
+      "namespace": "value",
+      "target": 35,
+      "origin": {
+        "start": 642,
+        "end": 648
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 657,
+        "end": 661
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 663,
+        "end": 667
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 672,
+        "end": 676
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 682,
+        "end": 687
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 689,
+        "end": 694
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 699,
+        "end": 703
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 709,
+        "end": 717
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 719,
+        "end": 727
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 732,
+        "end": 736
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 742,
+        "end": 746
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 748,
+        "end": 756
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 761,
+        "end": 772
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 778,
+        "end": 783
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 785,
+        "end": 789
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 794,
+        "end": 805
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 811,
+        "end": 819
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 821,
+        "end": 826
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 831,
+        "end": 842
+      }
+    },
+    {
+      "spelling": "Player2Wins",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 852,
+        "end": 863
+      }
+    },
+    {
+      "spelling": "Outcome",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 895,
+        "end": 902
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 906,
+        "end": 912
+      }
+    },
+    {
+      "spelling": "outcome",
+      "namespace": "value",
+      "target": 36,
+      "origin": {
+        "start": 923,
+        "end": 930
+      }
+    },
+    {
+      "spelling": "Player1Wins",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 937,
+        "end": 948
+      }
+    },
+    {
+      "spelling": "Player2Wins",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 973,
+        "end": 984
+      }
+    },
+    {
+      "spelling": "Draw",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 1009,
+        "end": 1013
+      }
+    },
+    {
+      "spelling": "mapError",
+      "namespace": "value",
+      "target": 37,
+      "origin": {
+        "start": 1076,
+        "end": 1084
+      }
+    },
+    {
+      "spelling": "StdinFailure",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1085,
+        "end": 1097
+      }
+    },
+    {
+      "spelling": "readLine",
+      "namespace": "value",
+      "target": 38,
+      "origin": {
+        "start": 1099,
+        "end": 1107
+      }
+    },
+    {
+      "spelling": "fromEither",
+      "namespace": "value",
+      "target": 40,
+      "origin": {
+        "start": 1125,
+        "end": 1135
+      }
+    },
+    {
+      "spelling": "parseInput",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 1137,
+        "end": 1147
+      }
+    },
+    {
+      "spelling": "firstInput",
+      "namespace": "value",
+      "target": 39,
+      "origin": {
+        "start": 1148,
+        "end": 1158
+      }
+    },
+    {
+      "spelling": "mapError",
+      "namespace": "value",
+      "target": 37,
+      "origin": {
+        "start": 1179,
+        "end": 1187
+      }
+    },
+    {
+      "spelling": "StdinFailure",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1188,
+        "end": 1200
+      }
+    },
+    {
+      "spelling": "readLine",
+      "namespace": "value",
+      "target": 38,
+      "origin": {
+        "start": 1202,
+        "end": 1210
+      }
+    },
+    {
+      "spelling": "fromEither",
+      "namespace": "value",
+      "target": 40,
+      "origin": {
+        "start": 1229,
+        "end": 1239
+      }
+    },
+    {
+      "spelling": "parseInput",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 1241,
+        "end": 1251
+      }
+    },
+    {
+      "spelling": "secondInput",
+      "namespace": "value",
+      "target": 42,
+      "origin": {
+        "start": 1252,
+        "end": 1263
+      }
+    },
+    {
+      "spelling": "decide",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 1283,
+        "end": 1289
+      }
+    },
+    {
+      "spelling": "first",
+      "namespace": "value",
+      "target": 41,
+      "origin": {
+        "start": 1290,
+        "end": 1295
+      }
+    },
+    {
+      "spelling": "second",
+      "namespace": "value",
+      "target": 43,
+      "origin": {
+        "start": 1296,
+        "end": 1302
+      }
+    },
+    {
+      "spelling": "mapError",
+      "namespace": "value",
+      "target": 37,
+      "origin": {
+        "start": 1307,
+        "end": 1315
+      }
+    },
+    {
+      "spelling": "ConsoleFailure",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 1316,
+        "end": 1330
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 45,
+      "origin": {
+        "start": 1332,
+        "end": 1339
+      }
+    },
+    {
+      "spelling": "renderOutcome",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 1341,
+        "end": 1354
+      }
+    },
+    {
+      "spelling": "outcome",
+      "namespace": "value",
+      "target": 44,
+      "origin": {
+        "start": 1355,
+        "end": 1362
+      }
+    }
+  ],
+  "issues": []
+}

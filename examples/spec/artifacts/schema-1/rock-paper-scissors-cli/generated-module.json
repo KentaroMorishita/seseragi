@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "module": "artifact/rock-paper-scissors-cli",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "effect.stdin.error",
+      "effect.console.error",
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.stdin.readLine",
+      "effect.core.fromEither",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "Rock",
+    "Paper",
+    "Scissors",
+    "Player1Wins",
+    "Player2Wins",
+    "Draw",
+    "StdinFailure",
+    "EndOfInput",
+    "UnknownHand",
+    "ConsoleFailure",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

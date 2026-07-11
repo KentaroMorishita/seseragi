@@ -1,0 +1,57 @@
+pub type Hand =
+  | Rock
+  | Paper
+  | Scissors
+
+pub type Outcome =
+  | Player1Wins
+  | Player2Wins
+  | Draw
+
+pub type AppError =
+  | StdinFailure StdinError
+  | EndOfInput
+  | UnknownHand String
+  | ConsoleFailure ConsoleError
+
+fn parseHand input: String -> Either<AppError, Hand> =
+  match input {
+    "rock" -> Right Rock
+    "paper" -> Right Paper
+    "scissors" -> Right Scissors
+    other -> Left (UnknownHand other)
+  }
+
+fn parseInput input: Maybe<String> -> Either<AppError, Hand> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> parseHand line
+  }
+
+fn decide first: Hand -> second: Hand -> Outcome =
+  match (first, second) {
+    (Rock, Rock) -> Draw
+    (Paper, Paper) -> Draw
+    (Scissors, Scissors) -> Draw
+    (Rock, Scissors) -> Player1Wins
+    (Paper, Rock) -> Player1Wins
+    (Scissors, Paper) -> Player1Wins
+    _ -> Player2Wins
+  }
+
+fn renderOutcome outcome: Outcome -> String =
+  match outcome {
+    Player1Wins -> "Player 1 wins!"
+    Player2Wins -> "Player 2 wins!"
+    Draw -> "Draw!"
+  }
+
+pub effect fn main =
+  do {
+    firstInput <- mapError StdinFailure (readLine ())
+    first <- fromEither (parseInput firstInput)
+    secondInput <- mapError StdinFailure (readLine ())
+    second <- fromEither (parseInput secondInput)
+    let outcome = decide first second
+    mapError ConsoleFailure (println (renderOutcome outcome))
+  }

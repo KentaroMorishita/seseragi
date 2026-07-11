@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "case": "rock-paper-scissors-cli-valid",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/rock-paper-scissors-cli",
+    "export": "main",
+    "compiledModule": "../../schema-1/rock-paper-scissors-cli/generated-module.json",
+    "typedInterface": "../../schema-1/rock-paper-scissors-cli/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "input": {
+    "stdin": "stdin.txt"
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "stdin",
+        "type": "Stdin"
+      },
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "stdin",
+        "type": "Stdin",
+        "adapter": "process-stdin"
+      },
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "effect.stdin.error",
+      "effect.console.error",
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.stdin.readLine",
+      "effect.core.fromEither",
+      "effect.console.println"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

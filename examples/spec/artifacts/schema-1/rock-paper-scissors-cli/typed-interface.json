@@ -1,0 +1,366 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/rock-paper-scissors-cli",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Hand",
+      "namespace": "type",
+      "name": "Hand",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Hand",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Rock",
+      "namespace": "value",
+      "name": "Rock",
+      "constructorOf": "artifact/rock-paper-scissors-cli::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Paper",
+      "namespace": "value",
+      "name": "Paper",
+      "constructorOf": "artifact/rock-paper-scissors-cli::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 29,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Scissors",
+      "namespace": "value",
+      "name": "Scissors",
+      "constructorOf": "artifact/rock-paper-scissors-cli::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 39,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Outcome",
+      "namespace": "type",
+      "name": "Outcome",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 49,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Outcome",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Player1Wins",
+      "namespace": "value",
+      "name": "Player1Wins",
+      "constructorOf": "artifact/rock-paper-scissors-cli::Outcome",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 72,
+        "end": 83
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Player2Wins",
+      "namespace": "value",
+      "name": "Player2Wins",
+      "constructorOf": "artifact/rock-paper-scissors-cli::Outcome",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 88,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Draw",
+      "namespace": "value",
+      "name": "Draw",
+      "constructorOf": "artifact/rock-paper-scissors-cli::Outcome",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 104,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::AppError",
+      "namespace": "type",
+      "name": "AppError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 110,
+        "end": 227
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "AppError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::StdinFailure",
+      "namespace": "value",
+      "name": "StdinFailure",
+      "constructorOf": "artifact/rock-paper-scissors-cli::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 134,
+        "end": 146
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::EndOfInput",
+      "namespace": "value",
+      "name": "EndOfInput",
+      "constructorOf": "artifact/rock-paper-scissors-cli::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 162,
+        "end": 172
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::UnknownHand",
+      "namespace": "value",
+      "name": "UnknownHand",
+      "constructorOf": "artifact/rock-paper-scissors-cli::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 177,
+        "end": 188
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::ConsoleFailure",
+      "namespace": "value",
+      "name": "ConsoleFailure",
+      "constructorOf": "artifact/rock-paper-scissors-cli::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 200,
+        "end": 214
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1030,
+        "end": 1368
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

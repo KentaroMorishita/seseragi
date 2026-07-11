@@ -1,0 +1,935 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/rock-paper-scissors-cli",
+  "runtimeRequirements": [
+    "effect.stdin.error",
+    "effect.console.error",
+    "core.adt",
+    "core.string",
+    "core.either",
+    "core.either.right",
+    "core.either.left",
+    "core.maybe",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.core.mapError",
+    "effect.stdin.readLine",
+    "effect.core.fromEither",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.stdin.readLine",
+      "local": "_ssrg_stdin_readLine"
+    },
+    {
+      "feature": "effect.core.fromEither",
+      "local": "_ssrg_effect_fromEither"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.stdin.error",
+      "local": "StdinError"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Hand",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Rock",
+          "tag": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "exported": true,
+          "name": "Paper",
+          "tag": "Paper",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "exported": true,
+          "name": "Scissors",
+          "tag": "Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "exported": true,
+      "name": "Outcome",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Player1Wins",
+          "tag": "Player1Wins",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 72,
+            "end": 83
+          }
+        },
+        {
+          "exported": true,
+          "name": "Player2Wins",
+          "tag": "Player2Wins",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 99
+          }
+        },
+        {
+          "exported": true,
+          "name": "Draw",
+          "tag": "Draw",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 104,
+            "end": 108
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "exported": true,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "StdinFailure",
+          "tag": "StdinFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 134,
+            "end": 146
+          }
+        },
+        {
+          "exported": true,
+          "name": "EndOfInput",
+          "tag": "EndOfInput",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 162,
+            "end": 172
+          }
+        },
+        {
+          "exported": true,
+          "name": "UnknownHand",
+          "tag": "UnknownHand",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 177,
+            "end": 188
+          }
+        },
+        {
+          "exported": true,
+          "name": "ConsoleFailure",
+          "tag": "ConsoleFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 200,
+            "end": 214
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 227
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "parseHand",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "input"
+        },
+        "scrutineeType": {
+          "kind": "string"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "rock"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Rock"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "paper"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Paper"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "scissors"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Scissors"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "other",
+                "type": {
+                  "kind": "string"
+                },
+                "path": []
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Left",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "UnknownHand",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "other"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "AppError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 229,
+        "end": 426
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "parseInput",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "input"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "string"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Left",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "EndOfInput"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "line",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "parseHand",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "line"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "AppError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 428,
+        "end": 573
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "decide",
+      "parameters": [
+        {
+          "name": "first",
+          "type": "Hand",
+          "implicit": false
+        },
+        {
+          "name": "second",
+          "type": "Hand",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "identifier",
+              "name": "first"
+            },
+            {
+              "kind": "identifier",
+              "name": "second"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Rock"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Rock"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Draw"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Paper"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Paper"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Draw"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Scissors"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Scissors"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Draw"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Rock"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Scissors"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Player1Wins"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Paper"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Rock"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Player1Wins"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Scissors"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Paper"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Player1Wins"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "identifier",
+              "name": "Player2Wins"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Outcome",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 575,
+        "end": 867
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderOutcome",
+      "parameters": [
+        {
+          "name": "outcome",
+          "type": "Outcome",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "outcome"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Outcome",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Player1Wins"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Player 1 wins!"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Player2Wins"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Player 2 wins!"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Draw!"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 869,
+        "end": 1028
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "firstInput",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "StdinFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_stdin_readLine",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1062,
+              "end": 1111
+            }
+          },
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_fromEither",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "parseInput",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "firstInput"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1116,
+              "end": 1159
+            }
+          },
+          {
+            "kind": "const",
+            "name": "secondInput",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "StdinFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_stdin_readLine",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1164,
+              "end": 1214
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_fromEither",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "parseInput",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "secondInput"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1219,
+              "end": 1264
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "outcome",
+            "type": {
+              "kind": "reference",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "decide",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "first"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "second"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1269,
+              "end": 1302
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_mapError",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "ConsoleFailure"
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderOutcome",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "outcome"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1030,
+        "end": 1368
+      }
+    }
+  ]
+}

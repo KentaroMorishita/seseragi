@@ -1,0 +1,1928 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/rock-paper-scissors-cli",
+  "externalTypeBindings": [
+    {
+      "spelling": "StdinError",
+      "canonical": "std/prelude::StdinError"
+    },
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Hand",
+      "name": "Hand",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::Rock",
+          "name": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::Paper",
+          "name": "Paper",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::Scissors",
+          "name": "Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 39,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::Outcome",
+      "name": "Outcome",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::Player1Wins",
+          "name": "Player1Wins",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 72,
+            "end": 83
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::Player2Wins",
+          "name": "Player2Wins",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 99
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::Draw",
+          "name": "Draw",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 104,
+            "end": 108
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 108
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::StdinFailure",
+          "name": "StdinFailure",
+          "payload": {
+            "kind": "named",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 134,
+            "end": 146
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::EndOfInput",
+          "name": "EndOfInput",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 162,
+            "end": 172
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::UnknownHand",
+          "name": "UnknownHand",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 177,
+            "end": 188
+          }
+        },
+        {
+          "symbol": "artifact/rock-paper-scissors-cli::ConsoleFailure",
+          "name": "ConsoleFailure",
+          "payload": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 200,
+            "end": 214
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 227
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::parseHand",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 229,
+        "end": 426
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 292,
+            "end": 297
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 304,
+                  "end": 310
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/rock-paper-scissors-cli::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 320,
+                    "end": 324
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 314,
+                "end": 324
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 304,
+              "end": 324
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "paper",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 329,
+                  "end": 336
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/rock-paper-scissors-cli::Paper",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 346,
+                    "end": 351
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 340,
+                "end": 351
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 329,
+              "end": 351
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "scissors",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 356,
+                  "end": 366
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/rock-paper-scissors-cli::Scissors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 376,
+                    "end": 384
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 370,
+                "end": 384
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 356,
+              "end": 384
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "other",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 389,
+                  "end": 394
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Left",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/rock-paper-scissors-cli::UnknownHand",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "other",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 416,
+                        "end": 421
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 404,
+                    "end": 421
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 398,
+                "end": 422
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 389,
+              "end": 422
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 286,
+          "end": 426
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::parseInput",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 428,
+        "end": 573
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 499,
+            "end": 504
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Nothing",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 511,
+                  "end": 518
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Left",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/rock-paper-scissors-cli::EndOfInput",
+                  "type": {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 527,
+                    "end": 537
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 522,
+                "end": 537
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 511,
+              "end": 537
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 542,
+                  "end": 551
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "line",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 547,
+                  "end": 551
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/rock-paper-scissors-cli::parseHand",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "line",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 565,
+                    "end": 569
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 555,
+                "end": 569
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 542,
+              "end": 569
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 493,
+          "end": 573
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::decide",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 575,
+        "end": 867
+      },
+      "parameters": [
+        {
+          "id": "first",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          }
+        },
+        {
+          "id": "second",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "variable",
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 635,
+                "end": 640
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 642,
+                "end": 648
+              }
+            }
+          ],
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 634,
+            "end": 649
+          }
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 657,
+                  "end": 661
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 663,
+                  "end": 667
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Draw",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 672,
+                "end": 676
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 656,
+              "end": 676
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Paper",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 682,
+                  "end": 687
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Paper",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 689,
+                  "end": 694
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Draw",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 699,
+                "end": 703
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 681,
+              "end": 703
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Scissors",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 709,
+                  "end": 717
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Scissors",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 719,
+                  "end": 727
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Draw",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 732,
+                "end": 736
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 708,
+              "end": 736
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 742,
+                  "end": 746
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Scissors",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 748,
+                  "end": 756
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Player1Wins",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 761,
+                "end": 772
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 741,
+              "end": 772
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Paper",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 778,
+                  "end": 783
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 785,
+                  "end": 789
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Player1Wins",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 794,
+                "end": 805
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 777,
+              "end": 805
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Scissors",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 811,
+                  "end": 819
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "artifact/rock-paper-scissors-cli::Paper",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 821,
+                  "end": 826
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Player1Wins",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 831,
+                "end": 842
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 810,
+              "end": 842
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::Player2Wins",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 852,
+                "end": 863
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 847,
+              "end": 863
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 628,
+          "end": 867
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::renderOutcome",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 869,
+        "end": 1028
+      },
+      "parameters": [
+        {
+          "id": "outcome",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Outcome",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "outcome",
+          "type": {
+            "kind": "named",
+            "name": "Outcome",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 923,
+            "end": 930
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/rock-paper-scissors-cli::Player1Wins",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 937,
+                  "end": 948
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Player 1 wins!",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 952,
+                "end": 968
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 937,
+              "end": 968
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/rock-paper-scissors-cli::Player2Wins",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 973,
+                  "end": 984
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Player 2 wins!",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 988,
+                "end": 1004
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 973,
+              "end": 1004
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Draw!",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1017,
+                "end": 1024
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1009,
+              "end": 1024
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 917,
+          "end": 1028
+        }
+      }
+    },
+    {
+      "symbol": "artifact/rock-paper-scissors-cli::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1030,
+        "end": 1368
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "firstInput",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.mapError",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/rock-paper-scissors-cli::StdinFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "StdinError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1085,
+                    "end": 1097
+                  }
+                },
+                {
+                  "kind": "effect-operation",
+                  "operation": "stdin.readLine",
+                  "requirements": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "stdin",
+                        "type": {
+                          "kind": "named",
+                          "name": "Stdin",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "StdinError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "arguments": [],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1099,
+                    "end": 1110
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1076,
+                "end": 1111
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1062,
+              "end": 1111
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "first",
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.fromEither",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/rock-paper-scissors-cli::parseInput",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "firstInput",
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1148,
+                        "end": 1158
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "AppError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Hand",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1137,
+                    "end": 1158
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1125,
+                "end": 1159
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1116,
+              "end": 1159
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "secondInput",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.mapError",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/rock-paper-scissors-cli::StdinFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "StdinError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1188,
+                    "end": 1200
+                  }
+                },
+                {
+                  "kind": "effect-operation",
+                  "operation": "stdin.readLine",
+                  "requirements": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "stdin",
+                        "type": {
+                          "kind": "named",
+                          "name": "Stdin",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "StdinError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "arguments": [],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1202,
+                    "end": 1213
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1179,
+                "end": 1214
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1164,
+              "end": 1214
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "second",
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.fromEither",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/rock-paper-scissors-cli::parseInput",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "secondInput",
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1252,
+                        "end": 1263
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "AppError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Hand",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1241,
+                    "end": 1263
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1229,
+                "end": 1264
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1219,
+              "end": 1264
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "outcome",
+            "type": {
+              "kind": "named",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/rock-paper-scissors-cli::decide",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "first",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1290,
+                    "end": 1295
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "second",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1296,
+                    "end": 1302
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1283,
+                "end": 1302
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1269,
+              "end": 1302
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "effect.mapError",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "artifact/rock-paper-scissors-cli::ConsoleFailure",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1316,
+                "end": 1330
+              }
+            },
+            {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/rock-paper-scissors-cli::renderOutcome",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "outcome",
+                      "type": {
+                        "kind": "named",
+                        "name": "Outcome",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1355,
+                        "end": 1362
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1341,
+                    "end": 1362
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1332,
+                "end": 1363
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1307,
+            "end": 1364
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1053,
+          "end": 1368
+        }
+      }
+    }
+  ]
+}

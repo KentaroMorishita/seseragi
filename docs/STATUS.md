@@ -72,6 +72,8 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - typed ADT、tuple、match、exhaustivenessを通す`rock-paper-scissors-domain` artifact
 - standard `Maybe` / `Either`と、正常・不正入力を実行する`parse-hand-either` artifact
 - pure `parseHand`をcold typed Effectへ変換し、success payloadを実行比較する`effect-parse-hand` artifact
+- ADT / match / typed failure / Stdin / Consoleを統合し、正常・不正・EOFを実行比較する
+  `rock-paper-scissors-cli` artifact
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
@@ -116,9 +118,9 @@ semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移し
 
 当面は仕様機能を横へ増やさず、次の順で進めます。
 
-1. cold Effect化した`parseHand`をStdin / Consoleへ合成し、typed failureをCLI flowへ通す。
-2. Effectのsuccess / failure exitをrunnerで観測し、じゃんけんCLIの正常・不正入力fixtureを固定する。
-3. その縦sliceで不足したdiagnosticとfrontend recoveryを一般機能として補う。
+1. `Show<AppError>` dictionaryをentry contractへ接続し、未処理typed failureのstderr表示を仕様どおり固定する。
+2. `capture-console`のactual operation traceとConsole / Stdin host failureのtyped変換を実装する。
+3. じゃんけん縦sliceで不足したdiagnosticとfrontend recoveryを一般機能として補う。
 
 ## 完了と呼ぶ条件
 

@@ -361,7 +361,20 @@ singleton identityを保つruntime reference、`Just` / `Left` / `Right`はrunti
 `Either<HandInputError, Hand>`から`Effect<{}, HandInputError, Hand>`を推論してgenerated TypeScriptまで接続します。
 runtimeは入力caseを構築時に一度だけ保持し、Effectのrun時にRightをsuccess、Leftをtyped failureとして公開します。
 conformance runnerはEffectのsuccess / failure payloadをprivate sidecarで観測し、`effect-parse-hand-valid`で
-`Rock` successまで比較します。Stdin / Consoleとの合成と未処理failureのhost表示はP1-6へ残します。
+`Rock` successまで比較します。
+
+P1-6の最初のend-to-end sliceとして、`schema-1/rock-paper-scissors-cli/`は`readLine`、`Maybe`、
+`Either`、`fromEither`、`mapError`、do内pure binding、Console出力を一つの通常pipelineへ接続しました。
+resolverが確定したexternal nominal typeだけをTypedHir / CoreIrのmodule import setへ残し、backendは
+runtime ABIの`typeIdentity` / `typeImport`から`StdinError`と`ConsoleError`のtype-only importを生成します。
+generated TypeScriptはcold Effect valueを返し、Stdin / Console serviceの構築と実行はhost runnerだけが行います。
+
+`rock-paper-scissors-cli-valid`、`-invalid`、`-eof` execution fixtureは、それぞれUnit success、
+`UnknownHand "lizard"`、`EndOfInput`を実runtimeで観測します。runnerはrun.jsonのrequired environmentを
+generated typed interfaceの`Effect<R, E, A>`にあるclosed `R`と照合し、typed failureを生のJavaScript throwへ
+変換せずexit code 1へ分類します。現段階ではgenerated `Show<AppError>` dictionaryをhostへ渡していないため、
+typed failureのstderr表示は未接続です。また`capture-console` adapterのoperation trace実測と、Console / Stdinの
+host failureをtyped channelへ変換する処理もP1-6の残作業です。
 
 P1-0は新機能の前提です。SurfaceAstが式を所有しても、TypedHirが再びsource tokenを走査するならmatchやpatternを
 追加するたびに別parserが増えます。したがってpure expression consumerをSurfaceAstへ移してからtupleへ進み、
