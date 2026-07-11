@@ -29,6 +29,8 @@
     "runtimeRequirements": [
       "core.adt",
       "core.string",
+      "core.show.dictionary",
+      "core.string.show",
       "core.either",
       "core.either.right",
       "core.either.left",

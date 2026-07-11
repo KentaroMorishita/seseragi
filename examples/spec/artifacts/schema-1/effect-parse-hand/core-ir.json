@@ -61,15 +61,35 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 79,
-            "end": 90
+            "start": 93,
+            "end": 104
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 49,
-        "end": 97
+        "end": 111
+      }
+    }
+  ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "HandInputError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/effect-parse-hand::HandInputError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 111
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/effect-parse-hand::HandInputError"
       }
     }
   ],
@@ -79,8 +99,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 99,
-        "end": 302
+        "start": 113,
+        "end": 316
       },
       "parameters": [
         {
@@ -105,8 +125,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 168,
-            "end": 173
+            "start": 182,
+            "end": 187
           }
         },
         "scrutineeType": {
@@ -123,8 +143,8 @@
                 "value": "rock",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 180,
-                  "end": 186
+                  "start": 194,
+                  "end": 200
                 }
               }
             ],
@@ -142,8 +162,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 196,
-                    "end": 200
+                    "start": 210,
+                    "end": 214
                   }
                 }
               ],
@@ -165,14 +185,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 190,
-                "end": 200
+                "start": 204,
+                "end": 214
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 180,
-              "end": 200
+              "start": 194,
+              "end": 214
             }
           },
           {
@@ -183,8 +203,8 @@
                 "value": "paper",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 205,
-                  "end": 212
+                  "start": 219,
+                  "end": 226
                 }
               }
             ],
@@ -202,8 +222,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 222,
-                    "end": 227
+                    "start": 236,
+                    "end": 241
                   }
                 }
               ],
@@ -225,14 +245,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 216,
-                "end": 227
+                "start": 230,
+                "end": 241
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 205,
-              "end": 227
+              "start": 219,
+              "end": 241
             }
           },
           {
@@ -243,8 +263,8 @@
                 "value": "scissors",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 232,
-                  "end": 242
+                  "start": 246,
+                  "end": 256
                 }
               }
             ],
@@ -262,8 +282,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 252,
-                    "end": 260
+                    "start": 266,
+                    "end": 274
                   }
                 }
               ],
@@ -285,14 +305,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 246,
-                "end": 260
+                "start": 260,
+                "end": 274
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 232,
-              "end": 260
+              "start": 246,
+              "end": 274
             }
           },
           {
@@ -308,8 +328,8 @@
                 "path": [],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 265,
-                  "end": 270
+                  "start": 279,
+                  "end": 284
                 }
               }
             ],
@@ -331,8 +351,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 292,
-                        "end": 297
+                        "start": 306,
+                        "end": 311
                       }
                     }
                   ],
@@ -343,8 +363,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 280,
-                    "end": 297
+                    "start": 294,
+                    "end": 311
                   }
                 }
               ],
@@ -366,14 +386,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 274,
-                "end": 298
+                "start": 288,
+                "end": 312
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 265,
-              "end": 298
+              "start": 279,
+              "end": 312
             }
           }
         ],
@@ -396,8 +416,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 162,
-          "end": 302
+          "start": 176,
+          "end": 316
         }
       }
     },
@@ -406,8 +426,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 304,
-        "end": 370
+        "start": 318,
+        "end": 384
       },
       "parameters": [
         {
@@ -453,8 +473,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 364,
-                  "end": 369
+                  "start": 378,
+                  "end": 383
                 }
               }
             ],
@@ -476,15 +496,15 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 354,
-              "end": 369
+              "start": 368,
+              "end": 383
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 342,
-          "end": 370
+          "start": 356,
+          "end": 384
         }
       }
     }

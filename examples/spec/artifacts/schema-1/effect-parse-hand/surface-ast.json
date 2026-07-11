@@ -58,30 +58,33 @@
         "start": 58,
         "end": 72
       },
+      "deriving": [
+        "Show"
+      ],
       "variants": [
         {
           "name": "UnknownHand",
           "nameSpan": {
-            "start": 79,
-            "end": 90
+            "start": 93,
+            "end": 104
           },
           "payload": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 91,
-              "end": 97
+              "start": 105,
+              "end": 111
             }
           },
           "span": {
-            "start": 77,
-            "end": 97
+            "start": 91,
+            "end": 111
           }
         }
       ],
       "span": {
         "start": 49,
-        "end": 97
+        "end": 111
       }
     },
     {
@@ -89,22 +92,22 @@
       "visibility": "private",
       "name": "parseHand",
       "nameSpan": {
-        "start": 102,
-        "end": 111
+        "start": 116,
+        "end": 125
       },
       "parameters": [
         {
           "name": "input",
           "nameSpan": {
-            "start": 112,
-            "end": 117
+            "start": 126,
+            "end": 131
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 119,
-              "end": 125
+              "start": 133,
+              "end": 139
             }
           }
         }
@@ -117,22 +120,22 @@
             "kind": "named",
             "name": "HandInputError",
             "span": {
-              "start": 136,
-              "end": 150
+              "start": 150,
+              "end": 164
             }
           },
           {
             "kind": "named",
             "name": "Hand",
             "span": {
-              "start": 152,
-              "end": 156
+              "start": 166,
+              "end": 170
             }
           }
         ],
         "span": {
-          "start": 129,
-          "end": 157
+          "start": 143,
+          "end": 171
         }
       },
       "body": {
@@ -141,8 +144,8 @@
           "kind": "name",
           "name": "input",
           "span": {
-            "start": 168,
-            "end": 173
+            "start": 182,
+            "end": 187
           }
         },
         "arms": [
@@ -151,8 +154,8 @@
               "kind": "string",
               "raw": "\"rock\"",
               "span": {
-                "start": 180,
-                "end": 186
+                "start": 194,
+                "end": 200
               }
             },
             "body": {
@@ -161,26 +164,26 @@
                 "kind": "name",
                 "name": "Right",
                 "span": {
-                  "start": 190,
-                  "end": 195
+                  "start": 204,
+                  "end": 209
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "Rock",
                 "span": {
-                  "start": 196,
-                  "end": 200
+                  "start": 210,
+                  "end": 214
                 }
               },
               "span": {
-                "start": 190,
-                "end": 200
+                "start": 204,
+                "end": 214
               }
             },
             "span": {
-              "start": 180,
-              "end": 200
+              "start": 194,
+              "end": 214
             }
           },
           {
@@ -188,8 +191,8 @@
               "kind": "string",
               "raw": "\"paper\"",
               "span": {
-                "start": 205,
-                "end": 212
+                "start": 219,
+                "end": 226
               }
             },
             "body": {
@@ -198,26 +201,26 @@
                 "kind": "name",
                 "name": "Right",
                 "span": {
-                  "start": 216,
-                  "end": 221
+                  "start": 230,
+                  "end": 235
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "Paper",
                 "span": {
-                  "start": 222,
-                  "end": 227
+                  "start": 236,
+                  "end": 241
                 }
               },
               "span": {
-                "start": 216,
-                "end": 227
+                "start": 230,
+                "end": 241
               }
             },
             "span": {
-              "start": 205,
-              "end": 227
+              "start": 219,
+              "end": 241
             }
           },
           {
@@ -225,8 +228,8 @@
               "kind": "string",
               "raw": "\"scissors\"",
               "span": {
-                "start": 232,
-                "end": 242
+                "start": 246,
+                "end": 256
               }
             },
             "body": {
@@ -235,26 +238,26 @@
                 "kind": "name",
                 "name": "Right",
                 "span": {
-                  "start": 246,
-                  "end": 251
+                  "start": 260,
+                  "end": 265
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "Scissors",
                 "span": {
-                  "start": 252,
-                  "end": 260
+                  "start": 266,
+                  "end": 274
                 }
               },
               "span": {
-                "start": 246,
-                "end": 260
+                "start": 260,
+                "end": 274
               }
             },
             "span": {
-              "start": 232,
-              "end": 260
+              "start": 246,
+              "end": 274
             }
           },
           {
@@ -262,12 +265,12 @@
               "kind": "name",
               "name": "other",
               "nameSpan": {
-                "start": 265,
-                "end": 270
+                "start": 279,
+                "end": 284
               },
               "span": {
-                "start": 265,
-                "end": 270
+                "start": 279,
+                "end": 284
               }
             },
             "body": {
@@ -276,8 +279,8 @@
                 "kind": "name",
                 "name": "Left",
                 "span": {
-                  "start": 274,
-                  "end": 278
+                  "start": 288,
+                  "end": 292
                 }
               },
               "argument": {
@@ -288,47 +291,47 @@
                     "kind": "name",
                     "name": "UnknownHand",
                     "span": {
-                      "start": 280,
-                      "end": 291
+                      "start": 294,
+                      "end": 305
                     }
                   },
                   "argument": {
                     "kind": "name",
                     "name": "other",
                     "span": {
-                      "start": 292,
-                      "end": 297
+                      "start": 306,
+                      "end": 311
                     }
                   },
                   "span": {
-                    "start": 280,
-                    "end": 297
+                    "start": 294,
+                    "end": 311
                   }
                 },
                 "span": {
-                  "start": 279,
-                  "end": 298
+                  "start": 293,
+                  "end": 312
                 }
               },
               "span": {
-                "start": 274,
-                "end": 298
+                "start": 288,
+                "end": 312
               }
             },
             "span": {
-              "start": 265,
-              "end": 298
+              "start": 279,
+              "end": 312
             }
           }
         ],
         "span": {
-          "start": 162,
-          "end": 302
+          "start": 176,
+          "end": 316
         }
       },
       "span": {
-        "start": 99,
-        "end": 302
+        "start": 113,
+        "end": 316
       }
     },
     {
@@ -336,22 +339,22 @@
       "visibility": "public",
       "name": "parse",
       "nameSpan": {
-        "start": 318,
-        "end": 323
+        "start": 332,
+        "end": 337
       },
       "parameters": [
         {
           "name": "input",
           "nameSpan": {
-            "start": 324,
-            "end": 329
+            "start": 338,
+            "end": 343
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 331,
-              "end": 337
+              "start": 345,
+              "end": 351
             }
           }
         }
@@ -364,8 +367,8 @@
           "kind": "name",
           "name": "fromEither",
           "span": {
-            "start": 342,
-            "end": 352
+            "start": 356,
+            "end": 366
           }
         },
         "argument": {
@@ -376,36 +379,36 @@
               "kind": "name",
               "name": "parseHand",
               "span": {
-                "start": 354,
-                "end": 363
+                "start": 368,
+                "end": 377
               }
             },
             "argument": {
               "kind": "name",
               "name": "input",
               "span": {
-                "start": 364,
-                "end": 369
+                "start": 378,
+                "end": 383
               }
             },
             "span": {
-              "start": 354,
-              "end": 369
+              "start": 368,
+              "end": 383
             }
           },
           "span": {
-            "start": 353,
-            "end": 370
+            "start": 367,
+            "end": 384
           }
         },
         "span": {
-          "start": 342,
-          "end": 370
+          "start": 356,
+          "end": 384
         }
       },
       "span": {
-        "start": 304,
-        "end": 370
+        "start": 318,
+        "end": 384
       }
     }
   ]

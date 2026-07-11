@@ -9,6 +9,9 @@ mod invocation;
 mod trace;
 
 use effect_contract::validate_effect_entry_contract;
+#[cfg(test)]
+pub(crate) use effect_contract::DictionaryImport;
+pub(crate) use effect_contract::FailureRenderer;
 use environment::parse_environment_plan;
 use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
@@ -70,9 +73,9 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     }
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
     let invocation = parse_invocation(&run)?;
-    if matches!(&invocation, execution::Invocation::Effect { .. }) {
-        validate_effect_entry_contract(case, &run, entry_export)?;
-    }
+    let effect_contract = matches!(&invocation, execution::Invocation::Effect { .. })
+        .then(|| validate_effect_entry_contract(case, &run, entry_export))
+        .transpose()?;
     let environment = parse_environment_plan(
         &run,
         matches!(&invocation, execution::Invocation::Effect { .. }),
@@ -107,11 +110,16 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     let actual = execution::run_generated_typescript(
         root,
         case,
-        &compiled_typescript,
-        entry_export,
-        invocation,
-        &environment,
-        &stdin,
+        execution::ExecutionRequest {
+            compiled_typescript: &compiled_typescript,
+            entry_export,
+            invocation,
+            failure_renderer: effect_contract
+                .as_ref()
+                .map(|contract| &contract.failure_renderer),
+            environment: &environment,
+            stdin: &stdin,
+        },
     )?;
     if actual.exit_code != expected_exit_code {
         return Err(format!(

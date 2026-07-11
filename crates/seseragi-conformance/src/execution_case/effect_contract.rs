@@ -8,14 +8,17 @@ use seseragi_syntax::{InterfaceRecordField, InterfaceType};
 use super::environment::parse_required_environment_fields;
 
 mod failure;
-#[cfg(test)]
 mod model;
+
+#[cfg(test)]
+pub(crate) use model::DictionaryImport;
+pub(crate) use model::{EffectEntryContract, FailureRenderer};
 
 pub(super) fn validate_effect_entry_contract(
     case: &Path,
     run: &serde_json::Value,
     entry_export: &str,
-) -> Result<(), String> {
+) -> Result<EffectEntryContract, String> {
     let relative_path = run
         .pointer("/entry/typedInterface")
         .and_then(serde_json::Value::as_str)
@@ -54,13 +57,34 @@ pub(super) fn validate_effect_entry_contract(
         })?;
     let effect = effect_type(&export.scheme.type_ref, entry_export)?;
     let environment = environment_fields(effect.environment, entry_export)?;
-    // Keep failure evidence extraction separate from environment validation so
-    // the generated dictionary contract can be enabled without teaching the
-    // execution runner another type parser. Enforcement is activated when the
-    // generated-module instance metadata is wired into this boundary.
-    let _failure_evidence = failure::analyze_failure_evidence(&interface, effect.failure);
     let required = parse_required_environment_fields(run)?;
-    compare_required_environment(&environment, &required, entry_export)
+    compare_required_environment(&environment, &required, entry_export)?;
+
+    let compiled_module = read_compiled_module(case, run)?;
+    if compiled_module
+        .get("module")
+        .and_then(serde_json::Value::as_str)
+        != Some(entry_module)
+    {
+        return Err(format!(
+            "execution compiled module does not match typed interface module {entry_module}"
+        ));
+    }
+    failure::resolve_effect_entry_contract(&interface, effect.failure, &compiled_module)
+}
+
+fn read_compiled_module(case: &Path, run: &serde_json::Value) -> Result<serde_json::Value, String> {
+    let relative_path = run
+        .pointer("/entry/compiledModule")
+        .and_then(serde_json::Value::as_str)
+        .filter(|value| !value.is_empty())
+        .ok_or_else(|| {
+            "run.json entry.compiledModule is required for Effect invocation".to_owned()
+        })?;
+    let raw = fs::read_to_string(case.join(relative_path))
+        .map_err(|error| format!("failed to read execution generated module: {error}"))?;
+    serde_json::from_str(&raw)
+        .map_err(|error| format!("failed to parse execution generated module: {error}"))
 }
 
 fn compare_required_environment(

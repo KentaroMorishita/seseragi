@@ -3,7 +3,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use crate::execution_case::environment::EnvironmentPlan;
+use crate::execution_case::{environment::EnvironmentPlan, FailureRenderer};
 use crate::runtime_stage::stage_runtime;
 
 mod entry;
@@ -18,6 +18,15 @@ pub(crate) struct ExecutionOutput {
     pub(crate) stderr: String,
     pub(crate) effect_exit: Option<serde_json::Value>,
     pub(crate) operation_trace: Option<serde_json::Value>,
+}
+
+pub(crate) struct ExecutionRequest<'a> {
+    pub(crate) compiled_typescript: &'a Path,
+    pub(crate) entry_export: &'a str,
+    pub(crate) invocation: Invocation,
+    pub(crate) failure_renderer: Option<&'a FailureRenderer>,
+    pub(crate) environment: &'a EnvironmentPlan,
+    pub(crate) stdin: &'a str,
 }
 
 pub(crate) fn resolve_compiled_typescript(
@@ -102,19 +111,21 @@ fn read_compiled_module(
 pub(crate) fn run_generated_typescript(
     root: &Path,
     case: &Path,
-    compiled_typescript: &Path,
-    entry_export: &str,
-    invocation: Invocation,
-    environment: &EnvironmentPlan,
-    stdin: &str,
+    request: ExecutionRequest<'_>,
 ) -> Result<ExecutionOutput, String> {
     let execution_dir = prepare_execution_dir(root, case)?;
-    fs::copy(compiled_typescript, execution_dir.join("main.ts"))
+    fs::copy(request.compiled_typescript, execution_dir.join("main.ts"))
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
     stage_runtime(root, &execution_dir)?;
-    let observes_effect_exit = matches!(&invocation, Invocation::Effect { .. });
-    let observes_operation_trace = observes_effect_exit && environment.captures_console();
-    entry::write_entry(&execution_dir, entry_export, invocation, environment)?;
+    let observes_effect_exit = matches!(&request.invocation, Invocation::Effect { .. });
+    let observes_operation_trace = observes_effect_exit && request.environment.captures_console();
+    entry::write_entry(
+        &execution_dir,
+        request.entry_export,
+        request.invocation,
+        request.failure_renderer,
+        request.environment,
+    )?;
 
     let mut child = Command::new("bun")
         .arg("run")
@@ -130,7 +141,7 @@ pub(crate) fn run_generated_typescript(
         .take()
         .ok_or_else(|| "failed to open bun stdin".to_owned())?;
     process_stdin
-        .write_all(stdin.as_bytes())
+        .write_all(request.stdin.as_bytes())
         .map_err(|error| format!("failed to write bun stdin: {error}"))?;
     drop(process_stdin);
 

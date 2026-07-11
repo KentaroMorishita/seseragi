@@ -95,7 +95,7 @@
       "declarationKind": "type",
       "declaration": {
         "start": 49,
-        "end": 97
+        "end": 111
       },
       "scheme": {
         "typeParameters": [],
@@ -115,8 +115,8 @@
       "visibility": "public",
       "declarationKind": "constructor",
       "declaration": {
-        "start": 79,
-        "end": 90
+        "start": 93,
+        "end": 104
       },
       "scheme": {
         "typeParameters": [],

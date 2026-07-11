@@ -3,7 +3,7 @@ pub type Hand =
   | Paper
   | Scissors
 
-pub type HandInputError =
+pub type HandInputError deriving Show =
   | UnknownHand String
 
 fn parseHand input: String -> Either<HandInputError, Hand> =

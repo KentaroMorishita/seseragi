@@ -4,8 +4,10 @@ use seseragi_syntax::{
     ByteSpan, InterfaceExport, InterfaceInstance, InterfaceScheme, InterfaceType, Visibility,
 };
 
-use super::{analyze_failure_evidence, resolve_effect_entry_contract, FailureEvidence};
-use crate::execution_case::effect_contract::model::{EffectEntryContract, FailureRenderer};
+use super::resolve_effect_entry_contract;
+use crate::execution_case::effect_contract::model::{
+    DictionaryImport, EffectEntryContract, FailureRenderer,
+};
 
 fn named(name: &str) -> InterfaceType {
     InterfaceType::Named {
@@ -14,11 +16,11 @@ fn named(name: &str) -> InterfaceType {
     }
 }
 
-fn app_error_export() -> InterfaceExport {
+fn type_export(name: &str) -> InterfaceExport {
     InterfaceExport {
-        symbol: "artifact/example::AppError".to_owned(),
+        symbol: format!("artifact/example::{name}"),
         namespace: "type".to_owned(),
-        name: "AppError".to_owned(),
+        name: name.to_owned(),
         constructor_of: None,
         visibility: Visibility::Public,
         declaration_kind: Some("type".to_owned()),
@@ -27,7 +29,7 @@ fn app_error_export() -> InterfaceExport {
             type_parameters: Vec::new(),
             constraints: Vec::new(),
             type_ref: InterfaceType::TypeConstructor {
-                name: "AppError".to_owned(),
+                name: name.to_owned(),
                 arity: 0,
             },
         },
@@ -48,17 +50,24 @@ fn show_instance(type_ref: InterfaceType) -> InterfaceInstance {
     }
 }
 
-fn interface(instances: Vec<InterfaceInstance>) -> TypedModuleInterface {
+fn interface_with_exports(
+    exports: Vec<InterfaceExport>,
+    instances: Vec<InterfaceInstance>,
+) -> TypedModuleInterface {
     TypedModuleInterface {
         schema: 1,
         stage: "typed-interface".to_owned(),
         module: "artifact/example".to_owned(),
         source: "main.ssrg".to_owned(),
         dependencies: Vec::new(),
-        exports: vec![app_error_export()],
+        exports,
         operators: Vec::new(),
         instances,
     }
+}
+
+fn interface(instances: Vec<InterfaceInstance>) -> TypedModuleInterface {
+    interface_with_exports(vec![type_export("AppError")], instances)
 }
 
 fn generated_instances(instances: serde_json::Value) -> serde_json::Value {
@@ -94,23 +103,55 @@ fn leaves_never_without_a_dictionary_contract() {
 #[test]
 fn resolves_a_unique_selected_show_dictionary_from_generated_metadata() {
     let typed = interface(vec![show_instance(named("AppError"))]);
-    let generated = generated_instances(json!([generated_show("__ssrg$instance$Show0")]));
+    let generated = generated_instances(json!([generated_show("__ssrg$instance$Show$0")]));
 
-    assert_eq!(
-        analyze_failure_evidence(&typed, &named("AppError")),
-        FailureEvidence::Concrete {
-            type_identity: Some("artifact/example::AppError".to_owned()),
-            selected_show_count: 1,
-        }
-    );
     assert_eq!(
         resolve_effect_entry_contract(&typed, &named("AppError"), &generated).unwrap(),
         EffectEntryContract {
             failure_renderer: FailureRenderer::Show {
-                dictionary_export: "__ssrg$instance$Show0".to_owned(),
+                dictionary: DictionaryImport {
+                    module: "./main.ts".to_owned(),
+                    export: "__ssrg$instance$Show$0".to_owned(),
+                },
             },
         }
     );
+}
+
+#[test]
+fn resolves_standard_show_dictionaries_without_local_instance_metadata() {
+    let typed = interface_with_exports(Vec::new(), Vec::new());
+    let generated = generated_instances(json!([]));
+
+    for (failure, export) in [
+        ("String", "stringShow"),
+        ("ConsoleError", "consoleErrorShow"),
+        ("StdinError", "stdinErrorShow"),
+    ] {
+        assert_eq!(
+            resolve_effect_entry_contract(&typed, &named(failure), &generated).unwrap(),
+            EffectEntryContract {
+                failure_renderer: FailureRenderer::Show {
+                    dictionary: DictionaryImport {
+                        module: "@seseragi/runtime/show".to_owned(),
+                        export: export.to_owned(),
+                    },
+                },
+            }
+        );
+    }
+}
+
+#[test]
+fn local_export_shadows_a_standard_failure_type_spelling() {
+    let local = interface_with_exports(vec![type_export("ConsoleError")], Vec::new());
+    let generated = generated_instances(json!([]));
+
+    let error =
+        resolve_effect_entry_contract(&local, &named("ConsoleError"), &generated).unwrap_err();
+
+    assert!(error.contains("requires a selected Show instance"));
+    assert!(!error.contains("@seseragi/runtime/show"));
 }
 
 #[test]

@@ -96,7 +96,7 @@
       "declarationKind": "type",
       "declaration": {
         "start": 49,
-        "end": 97
+        "end": 111
       },
       "scheme": {
         "typeParameters": [],
@@ -116,8 +116,8 @@
       "visibility": "public",
       "declarationKind": "constructor",
       "declaration": {
-        "start": 79,
-        "end": 90
+        "start": 93,
+        "end": 104
       },
       "scheme": {
         "typeParameters": [],
@@ -144,8 +144,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 304,
-        "end": 370
+        "start": 318,
+        "end": 384
       },
       "scheme": {
         "typeParameters": [],
@@ -183,5 +183,26 @@
     }
   ],
   "operators": [],
-  "instances": []
+  "instances": [
+    {
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "HandInputError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 49,
+        "end": 111
+      }
+    }
+  ]
 }

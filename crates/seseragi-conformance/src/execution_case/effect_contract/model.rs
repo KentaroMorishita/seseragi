@@ -6,5 +6,11 @@ pub(crate) struct EffectEntryContract {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum FailureRenderer {
     Never,
-    Show { dictionary_export: String },
+    Show { dictionary: DictionaryImport },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct DictionaryImport {
+    pub(crate) module: String,
+    pub(crate) export: String,
 }

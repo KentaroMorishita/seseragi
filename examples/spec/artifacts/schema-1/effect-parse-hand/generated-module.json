@@ -8,6 +8,8 @@
     "requirements": [
       "core.adt",
       "core.string",
+      "core.show.dictionary",
+      "core.string.show",
       "core.either",
       "core.either.right",
       "core.either.left",
@@ -20,6 +22,18 @@
     "Scissors",
     "UnknownHand",
     "parse"
+  ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "HandInputError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/effect-parse-hand::HandInputError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
   ],
   "outputs": {
     "typescript": "main.ts",

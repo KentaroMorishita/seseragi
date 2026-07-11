@@ -6,7 +6,7 @@
     "seseragi://artifact/effect-parse-hand"
   ],
   "sourcesContent": [
-    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type HandInputError =\n  | UnknownHand String\n\nfn parseHand input: String -> Either<HandInputError, Hand> =\n  match input {\n    \"rock\" -> Right Rock\n    \"paper\" -> Right Paper\n    \"scissors\" -> Right Scissors\n    other -> Left (UnknownHand other)\n  }\n\npub effect fn parse input: String =\n  fromEither (parseHand input)\n"
+    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type HandInputError deriving Show =\n  | UnknownHand String\n\nfn parseHand input: String -> Either<HandInputError, Hand> =\n  match input {\n    \"rock\" -> Right Rock\n    \"paper\" -> Right Paper\n    \"scissors\" -> Right Scissors\n    other -> Left (UnknownHand other)\n  }\n\npub effect fn parse input: String =\n  fromEither (parseHand input)\n"
   ],
   "names": [
     "Hand",
@@ -15,6 +15,7 @@
     "Scissors",
     "HandInputError",
     "UnknownHand",
+    "__ssrg$instance$Show$0",
     "parseHand",
     "Right",
     "Right",
@@ -26,5 +27,5 @@
     "fromEither",
     "parseHand"
   ],
-  "mappings": ";;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AAEJC;AAQAO"
+  "mappings": ";;;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;AACIC;AADJC;AAGAC;AAQAO"
 }

@@ -1,33 +1,10 @@
 use seseragi_semantics::TypedModuleInterface;
 use seseragi_syntax::{InterfaceInstance, InterfaceType};
 
-#[cfg(test)]
-use super::model::{EffectEntryContract, FailureRenderer};
+use super::model::{DictionaryImport, EffectEntryContract, FailureRenderer};
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(super) enum FailureEvidence {
-    Never,
-    Concrete {
-        type_identity: Option<String>,
-        selected_show_count: usize,
-    },
-}
+const RUNTIME_SHOW_MODULE: &str = "@seseragi/runtime/show";
 
-pub(super) fn analyze_failure_evidence(
-    interface: &TypedModuleInterface,
-    failure: &InterfaceType,
-) -> FailureEvidence {
-    if is_never(failure) {
-        return FailureEvidence::Never;
-    }
-
-    FailureEvidence::Concrete {
-        type_identity: local_type_identity(interface, failure),
-        selected_show_count: selected_show_instances(interface, failure).count(),
-    }
-}
-
-#[cfg(test)]
 pub(crate) fn resolve_effect_entry_contract(
     interface: &TypedModuleInterface,
     failure: &InterfaceType,
@@ -39,6 +16,31 @@ pub(crate) fn resolve_effect_entry_contract(
         });
     }
 
+    // A public local type owns its spelling. Resolve it before considering the
+    // standard prelude names so `type ConsoleError ...` cannot silently pick
+    // the host ConsoleError dictionary.
+    if let Some(type_identity) = local_type_identity(interface, failure) {
+        return resolve_local_show_dictionary(interface, failure, generated_module, type_identity);
+    }
+
+    if let Some(dictionary) = standard_show_dictionary(failure) {
+        return Ok(EffectEntryContract {
+            failure_renderer: FailureRenderer::Show { dictionary },
+        });
+    }
+
+    Err(format!(
+        "execution Effect failure {} does not resolve to a concrete local or standard Show type",
+        canonical_type_spelling(failure)
+    ))
+}
+
+fn resolve_local_show_dictionary(
+    interface: &TypedModuleInterface,
+    failure: &InterfaceType,
+    generated_module: &serde_json::Value,
+    type_identity: String,
+) -> Result<EffectEntryContract, String> {
     let selected = selected_show_instances(interface, failure).collect::<Vec<_>>();
     match selected.len() {
         1 => {}
@@ -56,12 +58,6 @@ pub(crate) fn resolve_effect_entry_contract(
         }
     }
 
-    let type_identity = local_type_identity(interface, failure).ok_or_else(|| {
-        format!(
-            "execution Effect failure {} does not resolve to a concrete local type identity",
-            canonical_type_spelling(failure)
-        )
-    })?;
     let generated_instances = generated_module
         .get("instances")
         .and_then(serde_json::Value::as_array)
@@ -109,8 +105,30 @@ pub(crate) fn resolve_effect_entry_contract(
 
     Ok(EffectEntryContract {
         failure_renderer: FailureRenderer::Show {
-            dictionary_export: dictionary_export.to_owned(),
+            dictionary: DictionaryImport {
+                module: "./main.ts".to_owned(),
+                export: dictionary_export.to_owned(),
+            },
         },
+    })
+}
+
+fn standard_show_dictionary(failure: &InterfaceType) -> Option<DictionaryImport> {
+    let InterfaceType::Named { name, arguments } = failure else {
+        return None;
+    };
+    if !arguments.is_empty() {
+        return None;
+    }
+    let export = match name.as_str() {
+        "String" => "stringShow",
+        "ConsoleError" => "consoleErrorShow",
+        "StdinError" => "stdinErrorShow",
+        _ => return None,
+    };
+    Some(DictionaryImport {
+        module: RUNTIME_SHOW_MODULE.to_owned(),
+        export: export.to_owned(),
     })
 }
 
@@ -157,7 +175,6 @@ fn is_never(type_ref: &InterfaceType) -> bool {
     )
 }
 
-#[cfg(test)]
 fn canonical_type_spelling(type_ref: &InterfaceType) -> String {
     match type_ref {
         InterfaceType::Named { name, arguments }
@@ -193,7 +210,6 @@ fn canonical_type_spelling(type_ref: &InterfaceType) -> String {
     }
 }
 
-#[cfg(test)]
 fn valid_typescript_identifier(name: &str) -> bool {
     let mut characters = name.chars();
     let Some(first) = characters.next() else {

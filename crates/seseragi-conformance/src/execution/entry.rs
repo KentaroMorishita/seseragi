@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use crate::execution_case::environment::EnvironmentPlan;
+use crate::execution_case::{environment::EnvironmentPlan, FailureRenderer};
 
 mod environment;
 mod observations;
@@ -22,30 +22,32 @@ pub(super) fn write_entry(
     execution_dir: &Path,
     entry_export: &str,
     invocation: Invocation,
+    failure_renderer: Option<&FailureRenderer>,
     environment: &EnvironmentPlan,
 ) -> Result<(), String> {
-    fs::write(
-        execution_dir.join("entry.ts"),
-        entry_source(entry_export, invocation, environment),
-    )
-    .map_err(|error| format!("failed to write execution entry.ts: {error}"))
+    let source = entry_source(entry_export, invocation, failure_renderer, environment)?;
+    fs::write(execution_dir.join("entry.ts"), source)
+        .map_err(|error| format!("failed to write execution entry.ts: {error}"))
 }
 
 fn entry_source(
     entry_export: &str,
     invocation: Invocation,
+    failure_renderer: Option<&FailureRenderer>,
     environment_plan: &EnvironmentPlan,
-) -> String {
-    match invocation {
-        Invocation::Effect { arguments } => {
+) -> Result<String, String> {
+    match (invocation, failure_renderer) {
+        (Invocation::Effect { arguments }, Some(failure_renderer)) => {
             let call = render_entry_call(entry_export, &arguments);
             let environment = environment::render(environment_plan);
+            let (entry_import, dictionary_import) = render_imports(entry_export, failure_renderer);
             let imports = format!(
                 "import {{ writeFileSync }} from \"node:fs\";\n\
                  import {{ run }} from \"@seseragi/runtime/effect\";\n\
                  {}\
-                 import {{ {entry_export} }} from \"./main.ts\";\n",
-                environment.imports
+                 {dictionary_import}\
+                 {entry_import}",
+                environment.imports,
             );
             let execution = format!(
                 "let result: {{ kind: \"success\"; value: unknown }} | {{ kind: \"failure\"; error: unknown }} | undefined = undefined;\n\
@@ -65,20 +67,49 @@ fn entry_source(
             } else {
                 String::new()
             };
-            let completion = observations::render(&environment);
+            let completion = observations::render(&environment, failure_renderer);
             let guarded_host = format!("{}{execution}{cleanup}{completion}", environment.setup);
-            format!(
+            Ok(format!(
                 "{imports}try {{\n{}}} catch (_hostDefect) {{\n  process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;\n}}\n",
                 indent(&guarded_host)
-            )
+            ))
         }
-        Invocation::PureJson { arguments } => {
+        (Invocation::Effect { .. }, None) => {
+            Err("Effect execution is missing its validated failure renderer".to_owned())
+        }
+        (Invocation::PureJson { arguments }, None) => {
             let call = render_entry_call(entry_export, &arguments);
-            format!(
+            Ok(format!(
                 "import {{ {entry_export} }} from \"./main.ts\";\n\
                  process.stdout.write(JSON.stringify({call}) + \"\\n\");\n"
-            )
+            ))
         }
+        (Invocation::PureJson { .. }, Some(_)) => {
+            Err("pure execution must not receive an Effect failure renderer".to_owned())
+        }
+    }
+}
+
+fn render_imports(entry_export: &str, failure_renderer: &FailureRenderer) -> (String, String) {
+    match failure_renderer {
+        FailureRenderer::Never => (
+            format!("import {{ {entry_export} }} from \"./main.ts\";\n"),
+            String::new(),
+        ),
+        FailureRenderer::Show { dictionary } if dictionary.module == "./main.ts" => (
+            format!(
+                "import {{ {entry_export}, {} as _ssrg_failureShow }} from \"./main.ts\";\n",
+                dictionary.export
+            ),
+            String::new(),
+        ),
+        FailureRenderer::Show { dictionary } => (
+            format!("import {{ {entry_export} }} from \"./main.ts\";\n"),
+            format!(
+                "import {{ {} as _ssrg_failureShow }} from \"{}\";\n",
+                dictionary.export, dictionary.module
+            ),
+        ),
     }
 }
 
@@ -105,12 +136,24 @@ fn render_argument(argument: &InvocationArgument) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{entry_source, Invocation, InvocationArgument};
-    use crate::execution_case::environment::parse_environment_plan;
+    use super::{entry_source as render_entry_source, Invocation, InvocationArgument};
+    use crate::execution_case::{
+        environment::parse_environment_plan, DictionaryImport, FailureRenderer,
+    };
     use serde_json::json;
 
     fn empty_environment() -> crate::execution_case::environment::EnvironmentPlan {
         parse_environment_plan(&json!({}), false).unwrap()
+    }
+
+    fn entry_source(
+        entry_export: &str,
+        invocation: Invocation,
+        environment: &crate::execution_case::environment::EnvironmentPlan,
+    ) -> String {
+        let never = FailureRenderer::Never;
+        let failure_renderer = matches!(&invocation, Invocation::Effect { .. }).then_some(&never);
+        render_entry_source(entry_export, invocation, failure_renderer, environment).unwrap()
     }
 
     #[test]
@@ -229,5 +272,92 @@ mod tests {
         assert!(source.contains("catch (_runtimeDefect)"));
         assert!(source.contains("catch (_observationDefect)"));
         assert!(!source.contains("String(result.error)"));
+    }
+
+    #[test]
+    fn imports_and_uses_only_the_validated_show_dictionary_for_typed_failures() {
+        let renderer = FailureRenderer::Show {
+            dictionary: DictionaryImport {
+                module: "./main.ts".to_owned(),
+                export: "__ssrg$instance$Show$0".to_owned(),
+            },
+        };
+        let source = render_entry_source(
+            "main",
+            Invocation::Effect {
+                arguments: vec![InvocationArgument::Unit],
+            },
+            Some(&renderer),
+            &empty_environment(),
+        )
+        .unwrap();
+
+        assert!(source.contains(
+            "import { main, __ssrg$instance$Show$0 as _ssrg_failureShow } from \"./main.ts\";"
+        ));
+        assert!(source.contains("_ssrg_failureShow.show(result.error)"));
+        assert!(source.contains("typeof renderedFailure !== \"string\""));
+        assert!(source.contains("renderedFailure.endsWith(\"\\n\")"));
+        assert!(source.contains("catch (_hostDefect)"));
+        assert!(source.contains("process.exitCode = 70"));
+        assert!(
+            source.find("JSON.stringify(observation)").unwrap()
+                < source.find("_ssrg_failureShow.show").unwrap()
+        );
+        assert!(
+            source.find("_ssrg_failureShow.show").unwrap()
+                < source.find("catch (_hostDefect)").unwrap()
+        );
+    }
+
+    #[test]
+    fn imports_standard_show_dictionaries_from_the_runtime_module() {
+        let renderer = FailureRenderer::Show {
+            dictionary: DictionaryImport {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: "stdinErrorShow".to_owned(),
+            },
+        };
+        let source = render_entry_source(
+            "main",
+            Invocation::Effect {
+                arguments: vec![InvocationArgument::Unit],
+            },
+            Some(&renderer),
+            &empty_environment(),
+        )
+        .unwrap();
+
+        assert!(source.contains(
+            "import { stdinErrorShow as _ssrg_failureShow } from \"@seseragi/runtime/show\";"
+        ));
+        assert!(source.contains("import { main } from \"./main.ts\";"));
+        assert!(!source.contains("stdinErrorShow as _ssrg_failureShow } from \"./main.ts\""));
+    }
+
+    #[test]
+    fn rejects_invocation_and_failure_renderer_mode_mismatches() {
+        let effect_error = render_entry_source(
+            "main",
+            Invocation::Effect {
+                arguments: vec![InvocationArgument::Unit],
+            },
+            None,
+            &empty_environment(),
+        )
+        .unwrap_err();
+        assert!(effect_error.contains("missing its validated failure renderer"));
+
+        let never = FailureRenderer::Never;
+        let pure_error = render_entry_source(
+            "main",
+            Invocation::PureJson {
+                arguments: vec![InvocationArgument::Unit],
+            },
+            Some(&never),
+            &empty_environment(),
+        )
+        .unwrap_err();
+        assert!(pure_error.contains("pure execution"));
     }
 }

@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 136,
+    "endToken": 140,
     "children": [
       {
         "kind": "top-decl",
@@ -48,7 +48,7 @@
       {
         "kind": "top-decl",
         "startToken": 24,
-        "endToken": 40,
+        "endToken": 44,
         "children": [
           {
             "kind": "decl-modifiers",
@@ -59,17 +59,17 @@
           {
             "kind": "type-decl",
             "startToken": 26,
-            "endToken": 40,
+            "endToken": 44,
             "children": [
               {
                 "kind": "variant-decl",
-                "startToken": 33,
-                "endToken": 40,
+                "startToken": 37,
+                "endToken": 44,
                 "children": [
                   {
                     "kind": "variant-payload",
-                    "startToken": 37,
-                    "endToken": 40,
+                    "startToken": 41,
+                    "endToken": 44,
                     "children": []
                   }
                 ]
@@ -80,37 +80,37 @@
       },
       {
         "kind": "top-decl",
-        "startToken": 40,
-        "endToken": 112,
+        "startToken": 44,
+        "endToken": 116,
         "children": [
           {
             "kind": "fn-decl",
-            "startToken": 40,
-            "endToken": 112,
+            "startToken": 44,
+            "endToken": 116,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 112,
-        "endToken": 136,
+        "startToken": 116,
+        "endToken": 140,
         "children": [
           {
             "kind": "decl-modifiers",
-            "startToken": 112,
-            "endToken": 113,
+            "startToken": 116,
+            "endToken": 117,
             "children": []
           },
           {
             "kind": "effect-fn-decl",
-            "startToken": 114,
-            "endToken": 136,
+            "startToken": 118,
+            "endToken": 140,
             "children": [
               {
                 "kind": "effect-signature",
-                "startToken": 114,
-                "endToken": 136,
+                "startToken": 118,
+                "endToken": 140,
                 "children": []
               }
             ]

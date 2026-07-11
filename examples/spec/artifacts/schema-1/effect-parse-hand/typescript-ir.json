@@ -5,12 +5,18 @@
   "runtimeRequirements": [
     "core.adt",
     "core.string",
+    "core.show.dictionary",
+    "core.string.show",
     "core.either",
     "core.either.right",
     "core.either.left",
     "effect.core.fromEither"
   ],
   "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
     {
       "feature": "core.either.right",
       "local": "_ssrg_either_Right"
@@ -22,6 +28,12 @@
     {
       "feature": "effect.core.fromEither",
       "local": "_ssrg_effect_fromEither"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
     }
   ],
   "adts": [
@@ -81,15 +93,52 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 79,
-            "end": 90
+            "start": 93,
+            "end": 104
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 49,
-        "end": 97
+        "end": 111
+      }
+    }
+  ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "HandInputError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/effect-parse-hand::HandInputError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 111
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "HandInputError",
+        "variants": [
+          {
+            "name": "UnknownHand",
+            "tag": "UnknownHand",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "feature": "core.string.show",
+                "local": "_ssrg_show_stringShow"
+              }
+            }
+          }
+        ]
       }
     }
   ],
@@ -217,8 +266,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 99,
-        "end": 302
+        "start": 113,
+        "end": 316
       }
     },
     {
@@ -250,8 +299,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 304,
-        "end": 370
+        "start": 318,
+        "end": 384
       }
     }
   ]

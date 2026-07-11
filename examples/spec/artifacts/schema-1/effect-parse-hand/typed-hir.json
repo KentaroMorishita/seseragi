@@ -3,6 +3,26 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "artifact/effect-parse-hand",
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "HandInputError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/effect-parse-hand::HandInputError",
+      "constraints": [],
+      "origin": {
+        "start": 49,
+        "end": 111
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/effect-parse-hand::HandInputError"
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "adt",
@@ -103,14 +123,14 @@
             }
           },
           "origin": {
-            "start": 79,
-            "end": 90
+            "start": 93,
+            "end": 104
           }
         }
       ],
       "origin": {
         "start": 49,
-        "end": 97
+        "end": 111
       }
     },
     {
@@ -118,8 +138,8 @@
       "symbol": "artifact/effect-parse-hand::parseHand",
       "visibility": "private",
       "origin": {
-        "start": 99,
-        "end": 302
+        "start": 113,
+        "end": 316
       },
       "scheme": {
         "typeParameters": [],
@@ -151,8 +171,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 112,
-            "end": 117
+            "start": 126,
+            "end": 131
           }
         }
       ],
@@ -167,8 +187,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 168,
-            "end": 173
+            "start": 182,
+            "end": 187
           }
         },
         "arms": [
@@ -182,8 +202,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 180,
-                "end": 186
+                "start": 194,
+                "end": 200
               }
             },
             "body": {
@@ -199,8 +219,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 196,
-                    "end": 200
+                    "start": 210,
+                    "end": 214
                   }
                 }
               ],
@@ -221,13 +241,13 @@
                 ]
               },
               "origin": {
-                "start": 190,
-                "end": 200
+                "start": 204,
+                "end": 214
               }
             },
             "origin": {
-              "start": 180,
-              "end": 200
+              "start": 194,
+              "end": 214
             }
           },
           {
@@ -240,8 +260,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 205,
-                "end": 212
+                "start": 219,
+                "end": 226
               }
             },
             "body": {
@@ -257,8 +277,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 222,
-                    "end": 227
+                    "start": 236,
+                    "end": 241
                   }
                 }
               ],
@@ -279,13 +299,13 @@
                 ]
               },
               "origin": {
-                "start": 216,
-                "end": 227
+                "start": 230,
+                "end": 241
               }
             },
             "origin": {
-              "start": 205,
-              "end": 227
+              "start": 219,
+              "end": 241
             }
           },
           {
@@ -298,8 +318,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 232,
-                "end": 242
+                "start": 246,
+                "end": 256
               }
             },
             "body": {
@@ -315,8 +335,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 252,
-                    "end": 260
+                    "start": 266,
+                    "end": 274
                   }
                 }
               ],
@@ -337,13 +357,13 @@
                 ]
               },
               "origin": {
-                "start": 246,
-                "end": 260
+                "start": 260,
+                "end": 274
               }
             },
             "origin": {
-              "start": 232,
-              "end": 260
+              "start": 246,
+              "end": 274
             }
           },
           {
@@ -357,8 +377,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 265,
-                "end": 270
+                "start": 279,
+                "end": 284
               }
             },
             "body": {
@@ -378,8 +398,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 292,
-                        "end": 297
+                        "start": 306,
+                        "end": 311
                       }
                     }
                   ],
@@ -389,8 +409,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 280,
-                    "end": 297
+                    "start": 294,
+                    "end": 311
                   }
                 }
               ],
@@ -411,13 +431,13 @@
                 ]
               },
               "origin": {
-                "start": 274,
-                "end": 298
+                "start": 288,
+                "end": 312
               }
             },
             "origin": {
-              "start": 265,
-              "end": 298
+              "start": 279,
+              "end": 312
             }
           }
         ],
@@ -439,8 +459,8 @@
           ]
         },
         "origin": {
-          "start": 162,
-          "end": 302
+          "start": 176,
+          "end": 316
         }
       }
     },
@@ -449,8 +469,8 @@
       "symbol": "artifact/effect-parse-hand::parse",
       "visibility": "public",
       "origin": {
-        "start": 304,
-        "end": 370
+        "start": 318,
+        "end": 384
       },
       "inferredContract": true,
       "parameters": [
@@ -463,8 +483,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 324,
-            "end": 329
+            "start": 338,
+            "end": 343
           }
         }
       ],
@@ -519,8 +539,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 364,
-                  "end": 369
+                  "start": 378,
+                  "end": 383
                 }
               }
             ],
@@ -541,14 +561,14 @@
               ]
             },
             "origin": {
-              "start": 354,
-              "end": 369
+              "start": 368,
+              "end": 383
             }
           }
         ],
         "origin": {
-          "start": 342,
-          "end": 370
+          "start": 356,
+          "end": 384
         }
       }
     }
