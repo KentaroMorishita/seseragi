@@ -8,6 +8,7 @@ use crate::runtime_stage::stage_runtime;
 
 mod entry;
 mod exit;
+mod trace;
 
 pub(crate) use entry::{Invocation, InvocationArgument};
 
@@ -16,6 +17,7 @@ pub(crate) struct ExecutionOutput {
     pub(crate) stdout: String,
     pub(crate) stderr: String,
     pub(crate) effect_exit: Option<serde_json::Value>,
+    pub(crate) operation_trace: Option<serde_json::Value>,
 }
 
 pub(crate) fn resolve_compiled_typescript(
@@ -111,6 +113,7 @@ pub(crate) fn run_generated_typescript(
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
     stage_runtime(root, &execution_dir)?;
     let observes_effect_exit = matches!(&invocation, Invocation::Effect { .. });
+    let observes_operation_trace = observes_effect_exit && environment.captures_console();
     entry::write_entry(&execution_dir, entry_export, invocation, environment)?;
 
     let mut child = Command::new("bun")
@@ -137,6 +140,9 @@ pub(crate) fn run_generated_typescript(
     let effect_exit = observes_effect_exit
         .then(|| exit::read_observation(&execution_dir))
         .transpose()?;
+    let operation_trace = observes_operation_trace
+        .then(|| trace::read_observation(&execution_dir))
+        .transpose()?;
     let exit_code = output
         .status
         .code()
@@ -146,6 +152,7 @@ pub(crate) fn run_generated_typescript(
         stdout: String::from_utf8_lossy(&output.stdout).into_owned(),
         stderr: String::from_utf8_lossy(&output.stderr).into_owned(),
         effect_exit,
+        operation_trace,
     })
 }
 

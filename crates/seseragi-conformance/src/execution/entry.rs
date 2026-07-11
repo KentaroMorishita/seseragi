@@ -3,9 +3,8 @@ use std::path::Path;
 
 use crate::execution_case::environment::EnvironmentPlan;
 
-use super::exit::OBSERVATION_FILE;
-
 mod environment;
+mod observations;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum Invocation {
@@ -66,27 +65,7 @@ fn entry_source(
             } else {
                 String::new()
             };
-            // The conformance host cannot resolve a generated Show dictionary yet.
-            // Preserve the structured failure in the private observation and use a
-            // deterministic process status without leaking Bun's raw thrown-value text.
-            let completion = format!(
-                "if (!hasRuntimeDefect && result !== undefined) {{\n\
-                   try {{\n\
-                     const observation = result.kind === \"success\"\n\
-                       ? {{ kind: \"success\", value: result.value === undefined ? \"Unit\" : result.value }}\n\
-                       : {{ kind: \"failure\", error: result.error }};\n\
-                     writeFileSync(new URL(\"./{OBSERVATION_FILE}\", import.meta.url), JSON.stringify(observation));\n\
-                   }} catch (_observationDefect) {{\n\
-                     hasRuntimeDefect = true;\n\
-                   }}\n\
-                 }}\n\
-                 if (hasRuntimeDefect) {{\n\
-                   process.stderr.write(\"seseragi: runtime defect\\n\");\n\
-                   process.exitCode = 70;\n\
-                 }} else if (result?.kind === \"failure\") {{\n\
-                   process.exitCode = 1;\n\
-                 }}\n"
-            );
+            let completion = observations::render(&environment);
             let guarded_host = format!("{}{execution}{cleanup}{completion}", environment.setup);
             format!(
                 "{imports}try {{\n{}}} catch (_hostDefect) {{\n  process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;\n}}\n",
@@ -226,6 +205,11 @@ mod tests {
             source.find("stdinAdapter.close").unwrap()
                 < source.find("writeFileSync(new URL").unwrap()
         );
+        assert!(
+            source.find("stdinAdapter.close").unwrap()
+                < source.find(".seseragi-operation-trace.json").unwrap()
+        );
+        assert!(source.contains("JSON.stringify(operationTrace)"));
         assert!(source.contains("catch (_cleanupDefect)"));
     }
 

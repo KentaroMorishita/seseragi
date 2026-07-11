@@ -1,10 +1,13 @@
 use crate::execution_case::environment::{EnvironmentPlan, HostAdapter};
 
+mod console;
+
 pub(super) struct RenderedEnvironment {
     pub(super) imports: String,
     pub(super) setup: String,
     pub(super) expression: String,
     pub(super) cleanup: String,
+    pub(super) trace_expression: Option<String>,
 }
 
 impl RenderedEnvironment {
@@ -20,31 +23,31 @@ pub(super) fn render(plan: &EnvironmentPlan) -> RenderedEnvironment {
             setup: String::new(),
             expression: "{}".to_owned(),
             cleanup: String::new(),
+            trace_expression: None,
         };
     }
 
-    let imports_console = plan
-        .bindings()
-        .iter()
-        .any(|binding| binding.adapter() == HostAdapter::CaptureConsole);
+    let console = console::render(plan.bindings());
     let imports_stdin = plan
         .bindings()
         .iter()
         .any(|binding| binding.adapter() == HostAdapter::ProcessStdin);
     let mut imports = String::new();
-    if imports_console {
-        imports.push_str("import { liveConsole } from \"@seseragi/runtime/console\";\n");
-    }
+    imports.push_str(&console.imports);
     if imports_stdin {
         imports.push_str("import { createProcessStdin } from \"@seseragi/runtime/stdin\";\n");
     }
 
     let mut setup = String::new();
+    setup.push_str(&console.setup);
     let mut properties = Vec::with_capacity(plan.bindings().len());
     let mut stdin_bindings = Vec::new();
     for binding in plan.bindings() {
         let value = match binding.adapter() {
-            HostAdapter::CaptureConsole => "liveConsole".to_owned(),
+            HostAdapter::CaptureConsole => console
+                .adapter_for(binding.field())
+                .expect("every capture-console binding has a rendered adapter")
+                .to_owned(),
             HostAdapter::ProcessStdin => {
                 let ordinal = stdin_bindings.len();
                 let local = if ordinal == 0 {
@@ -76,6 +79,7 @@ pub(super) fn render(plan: &EnvironmentPlan) -> RenderedEnvironment {
         setup,
         expression: "environment".to_owned(),
         cleanup,
+        trace_expression: console.trace_expression,
     }
 }
 
@@ -122,13 +126,20 @@ mod tests {
 
         assert!(environment.imports.contains("liveConsole"));
         assert!(environment.imports.contains("createProcessStdin"));
+        assert!(environment.setup.contains("const operationTrace"));
+        assert!(environment.setup.contains("liveConsole.print(value)"));
+        assert!(environment.setup.contains("liveConsole.println(value)"));
         assert!(environment
             .setup
             .contains("const stdinAdapter = createProcessStdin();"));
         assert!(environment
             .setup
-            .contains("\"console\": liveConsole, \"stdin\": stdinAdapter"));
+            .contains("\"console\": consoleAdapter, \"stdin\": stdinAdapter"));
         assert_eq!(environment.expression, "environment");
         assert_eq!(environment.cleanup, "  stdinAdapter.close();\n");
+        assert_eq!(
+            environment.trace_expression.as_deref(),
+            Some("operationTrace")
+        );
     }
 }

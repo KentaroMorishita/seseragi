@@ -17,6 +17,12 @@ impl EnvironmentPlan {
     pub(crate) fn bindings(&self) -> &[EnvironmentBinding] {
         &self.bindings
     }
+
+    pub(crate) fn captures_console(&self) -> bool {
+        self.bindings
+            .iter()
+            .any(|binding| binding.adapter == HostAdapter::CaptureConsole)
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
