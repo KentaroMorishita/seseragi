@@ -594,6 +594,10 @@ fails ConsoleError =
         ));
 
         let typescript = lower_core_module_to_typescript_ir(core);
+        assert_eq!(
+            typescript.runtime_requirements,
+            vec!["core.unit", "effect.console.println", "core.string"]
+        );
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
@@ -629,6 +633,15 @@ fails ConsoleError =
         );
 
         let typescript = lower_core_module_to_typescript_ir(core);
+        assert_eq!(
+            typescript.runtime_requirements,
+            vec![
+                "core.unit",
+                "effect.stdin.readLine",
+                "core.maybe",
+                "core.string"
+            ]
+        );
         assert!(matches!(
             &typescript.functions[0],
             TypeScriptFunction::ConstFunction {
@@ -703,7 +716,7 @@ fails ConsoleError =
             .any(|requirement| requirement == "effect.core.flatMap"));
         let bundle = emit_typescript_module(typescript, source);
         assert!(bundle.typescript.contains(
-            "_ssrg_effect_flatMap(_ssrg_stdin_readLine(), (line: string | undefined) => (() => { const copy: string | undefined = line; return _ssrg_effect_succeed(copy); })())"
+            "_ssrg_effect_flatMap(_ssrg_stdin_readLine(), (line: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }) => (() => { const copy: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string } = line; return _ssrg_effect_succeed(copy); })())"
         ));
     }
 
@@ -782,11 +795,13 @@ fails ConsoleError =
                 "core.unit",
                 "effect.core.flatMap",
                 "effect.stdin.readLine",
+                "core.maybe",
+                "core.string",
                 "effect.core.succeed"
             ]
         );
         assert!(bundle.typescript.contains(
-            "export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_stdin_readLine(), (first: string | undefined) => _ssrg_effect_flatMap(_ssrg_stdin_readLine(), (second: string | undefined) => _ssrg_effect_succeed(undefined)))"
+            "export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_stdin_readLine(), (first: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }) => _ssrg_effect_flatMap(_ssrg_stdin_readLine(), (second: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }) => _ssrg_effect_succeed(undefined)))"
         ));
     }
 

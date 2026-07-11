@@ -5,7 +5,11 @@
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
-    "requirements": ["core.string", "effect.console.println"]
+    "requirements": [
+      "core.string",
+      "effect.console.println",
+      "core.unit"
+    ]
   },
   "exports": [],
   "outputs": {

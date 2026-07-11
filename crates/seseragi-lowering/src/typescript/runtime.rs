@@ -92,11 +92,17 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::EffectOperation {
             operation,
             arguments,
+            requirements: environment,
+            failure,
+            success,
             ..
         } => {
             if let Some(operation) = runtime_effect_operation(operation) {
                 push_unique(requirements, operation.runtime_feature);
             }
+            collect_type_runtime_requirement(environment, requirements);
+            collect_type_runtime_requirement(failure, requirements);
+            collect_type_runtime_requirement(success, requirements);
             for argument in arguments {
                 collect_expr_runtime_requirements(argument, requirements);
             }
@@ -266,6 +272,8 @@ pub(super) fn collect_type_runtime_requirement(
                 "String" => push_unique(requirements, "core.string"),
                 "Bool" => push_unique(requirements, "core.bool"),
                 "Unit" => push_unique(requirements, "core.unit"),
+                "Maybe" => push_unique(requirements, "core.maybe"),
+                "Either" => push_unique(requirements, "core.either"),
                 _ => {}
             }
             for argument in arguments {
@@ -287,5 +295,39 @@ pub(super) fn collect_type_runtime_requirement(
             collect_type_runtime_requirement(result, requirements);
         }
         CoreType::Hole => {}
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::collect_type_runtime_requirement;
+    use crate::CoreType;
+
+    #[test]
+    fn collects_standard_sum_and_nested_payload_requirements() {
+        let type_ref = CoreType::Named {
+            name: "Either".to_owned(),
+            arguments: vec![
+                CoreType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                },
+                CoreType::Named {
+                    name: "Maybe".to_owned(),
+                    arguments: vec![CoreType::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                    }],
+                },
+            ],
+        };
+        let mut requirements = Vec::new();
+
+        collect_type_runtime_requirement(&type_ref, &mut requirements);
+
+        assert_eq!(
+            requirements,
+            vec!["core.either", "core.string", "core.maybe", "core.int64"]
+        );
     }
 }

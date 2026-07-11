@@ -128,6 +128,10 @@ pub enum TypeScriptType {
     Maybe {
         element: Box<TypeScriptType>,
     },
+    Either {
+        error: Box<TypeScriptType>,
+        value: Box<TypeScriptType>,
+    },
     Tuple {
         elements: Vec<TypeScriptType>,
     },

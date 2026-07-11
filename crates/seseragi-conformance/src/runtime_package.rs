@@ -161,11 +161,12 @@ fn check_typescript_runtime_read_line(root: &Path) -> Result<(), String> {
         .arg(
             "import { run } from \"./src/effect.ts\";\n\
              import { readLine } from \"./src/stdin.ts\";\n\
+             import { Nothing } from \"./src/sum.ts\";\n\
              const effects = [readLine(), readLine(), readLine()];\n\
              const results = [];\n\
              for (const effect of effects) results.push(await run(effect, {}));\n\
              const values = results.map((result) => result.kind === \"success\" ? result.value : null);\n\
-             process.stdout.write(JSON.stringify(values));\n",
+             process.stdout.write(JSON.stringify({ values, eofSingleton: values[2] === Nothing }));\n",
         )
         .current_dir(root.join("runtime/ts"))
         .stdin(Stdio::piped())
@@ -192,7 +193,9 @@ fn check_typescript_runtime_read_line(root: &Path) -> Result<(), String> {
             String::from_utf8_lossy(&output.stderr)
         ));
     }
-    if output.stdout != b"[\"first\",\"second\",null]" {
+    if output.stdout
+        != b"{\"values\":[{\"tag\":\"Just\",\"value\":\"first\"},{\"tag\":\"Just\",\"value\":\"second\"},{\"tag\":\"Nothing\"}],\"eofSingleton\":true}"
+    {
         return Err(format!(
             "TypeScript stdin runtime probe returned unexpected values: {}",
             String::from_utf8_lossy(&output.stdout)
@@ -269,7 +272,7 @@ mod tests {
     #[test]
     fn recognizes_async_function_exports() {
         assert!(source_exports_name(
-            "export async function readLine(): Promise<string | undefined> { return undefined; }",
+            "export function readLine(): Effect<StdinEnvironment, StdinError, Maybe<string>> { return effect; }",
             "readLine"
         ));
     }

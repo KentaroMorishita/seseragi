@@ -51,6 +51,12 @@ pub(super) fn type_ref_from_core_type(type_ref: &CoreType) -> TypeScriptType {
                 element: Box::new(type_ref_from_core_type(&arguments[0])),
             }
         }
+        CoreType::Named { name, arguments } if name == "Either" && arguments.len() == 2 => {
+            TypeScriptType::Either {
+                error: Box::new(type_ref_from_core_type(&arguments[0])),
+                value: Box::new(type_ref_from_core_type(&arguments[1])),
+            }
+        }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
             name: local_name(name),
             arguments: arguments.iter().map(type_ref_from_core_type).collect(),
@@ -85,7 +91,17 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                 .join(", ")
         ),
         TypeScriptType::Maybe { element } => {
-            format!("{} | undefined", render_typescript_type(element))
+            format!(
+                "{{ readonly tag: \"Nothing\" }} | {{ readonly tag: \"Just\"; readonly value: {} }}",
+                render_typescript_type(element)
+            )
+        }
+        TypeScriptType::Either { error, value } => {
+            format!(
+                "{{ readonly tag: \"Left\"; readonly value: {} }} | {{ readonly tag: \"Right\"; readonly value: {} }}",
+                render_typescript_type(error),
+                render_typescript_type(value)
+            )
         }
         TypeScriptType::Tuple { elements } => format!(
             "readonly [{}]",
@@ -100,7 +116,8 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{render_core_type, CoreType};
+    use super::{render_core_type, type_ref_from_core_type, CoreType};
+    use crate::TypeScriptType;
 
     #[test]
     fn renders_qualified_nominal_types_with_local_backend_names() {
@@ -110,5 +127,59 @@ mod tests {
         };
 
         assert_eq!(render_core_type(&type_ref), "Hand");
+    }
+
+    #[test]
+    fn renders_maybe_as_a_tagged_union() {
+        let type_ref = CoreType::Named {
+            name: "Maybe".to_owned(),
+            arguments: vec![CoreType::Named {
+                name: "String".to_owned(),
+                arguments: Vec::new(),
+            }],
+        };
+
+        assert_eq!(
+            type_ref_from_core_type(&type_ref),
+            TypeScriptType::Maybe {
+                element: Box::new(TypeScriptType::String),
+            }
+        );
+        assert_eq!(
+            render_core_type(&type_ref),
+            "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }"
+        );
+    }
+
+    #[test]
+    fn renders_either_as_a_tagged_union() {
+        let type_ref = CoreType::Named {
+            name: "Either".to_owned(),
+            arguments: vec![
+                CoreType::Named {
+                    name: "InputError".to_owned(),
+                    arguments: Vec::new(),
+                },
+                CoreType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                },
+            ],
+        };
+
+        assert_eq!(
+            type_ref_from_core_type(&type_ref),
+            TypeScriptType::Either {
+                error: Box::new(TypeScriptType::Reference {
+                    name: "InputError".to_owned(),
+                    arguments: Vec::new(),
+                }),
+                value: Box::new(TypeScriptType::String),
+            }
+        );
+        assert_eq!(
+            render_core_type(&type_ref),
+            "{ readonly tag: \"Left\"; readonly value: InputError } | { readonly tag: \"Right\"; readonly value: string }"
+        );
     }
 }

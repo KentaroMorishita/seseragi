@@ -100,6 +100,20 @@
       "import": null
     },
     {
+      "id": "core.maybe",
+      "kind": "value-representation",
+      "typescript": "readonly tagged union",
+      "boundary": "Nothing { readonly tag: Nothing } | Just { readonly tag: Just, readonly value: A }",
+      "import": null
+    },
+    {
+      "id": "core.either",
+      "kind": "value-representation",
+      "typescript": "readonly tagged union",
+      "boundary": "Left { readonly tag: Left, readonly value: E } | Right { readonly tag: Right, readonly value: A }",
+      "import": null
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",

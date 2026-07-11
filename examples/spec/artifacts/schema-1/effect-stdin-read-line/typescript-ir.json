@@ -6,6 +6,8 @@
     "core.unit",
     "effect.core.flatMap",
     "effect.stdin.readLine",
+    "core.maybe",
+    "core.string",
     "effect.core.succeed"
   ],
   "imports": [

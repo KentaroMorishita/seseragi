@@ -4,7 +4,8 @@
   "module": "artifact/effect-compact-greet",
   "runtimeRequirements": [
     "core.string",
-    "effect.console.println"
+    "effect.console.println",
+    "core.unit"
   ],
   "imports": [
     {

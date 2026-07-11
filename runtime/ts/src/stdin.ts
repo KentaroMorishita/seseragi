@@ -1,6 +1,7 @@
 import { stdin } from "node:process";
 import { createInterface } from "node:readline";
 import type { Effect } from "./effect";
+import { Just, type Maybe, Nothing } from "./sum";
 
 export type StdinEnvironment = Record<string, never>;
 
@@ -26,11 +27,11 @@ function lineIterator(): AsyncIterator<string> {
  * Reads one line from the process-wide standard-input cursor.
  *
  * This is intentionally the narrow first runtime slice: calls must be made
- * sequentially, and EOF is represented by `undefined`.
+ * sequentially, and EOF is represented by `Nothing`.
  */
-export function readLine(): Effect<StdinEnvironment, StdinError, string | undefined> {
+export function readLine(): Effect<StdinEnvironment, StdinError, Maybe<string>> {
   return async () => {
     const next = await lineIterator().next();
-    return next.done ? undefined : next.value;
+    return next.done ? Nothing : Just(next.value);
   };
 }

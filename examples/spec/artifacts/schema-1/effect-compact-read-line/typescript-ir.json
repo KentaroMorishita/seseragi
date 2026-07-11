@@ -4,7 +4,9 @@
   "module": "artifact/effect-compact-read-line",
   "runtimeRequirements": [
     "core.unit",
-    "effect.stdin.readLine"
+    "effect.stdin.readLine",
+    "core.maybe",
+    "core.string"
   ],
   "imports": [
     {
