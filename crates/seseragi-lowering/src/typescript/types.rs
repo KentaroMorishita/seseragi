@@ -13,7 +13,8 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         | CoreExpr::Call { type_ref, .. }
         | CoreExpr::Tuple { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
-        | CoreExpr::If { type_ref, .. } => type_ref_from_core_type(type_ref),
+        | CoreExpr::If { type_ref, .. }
+        | CoreExpr::Decision { type_ref, .. } => type_ref_from_core_type(type_ref),
         CoreExpr::EffectOperation { success, .. } => type_ref_from_core_type(success),
         CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),
     }

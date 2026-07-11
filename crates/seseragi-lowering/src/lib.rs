@@ -6,8 +6,9 @@ mod span;
 mod typescript;
 
 pub use core::{
-    lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreExpr, CoreFunction, CoreModule,
-    CoreParameter, CoreRecordField, CoreStatement, CoreType,
+    lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreDecisionBinding,
+    CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreFunction,
+    CoreModule, CoreParameter, CoreRecordField, CoreStatement, CoreType,
 };
 pub use emit::{
     emit_typescript_module, GeneratedBundle, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
@@ -17,8 +18,9 @@ pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
     lower_core_module_to_typescript_ir, TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding,
-    TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptModule, TypeScriptParameter,
-    TypeScriptStatement, TypeScriptType,
+    TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
+    TypeScriptDecisionTest, TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptModule,
+    TypeScriptParameter, TypeScriptStatement, TypeScriptType,
 };
 
 #[cfg(test)]

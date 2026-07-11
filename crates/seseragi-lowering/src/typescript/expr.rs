@@ -2,6 +2,7 @@ use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation;
 use crate::{CoreExpr, CoreStatement, CoreType};
 
+use super::decision::lower_core_decision;
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{TypeScriptExpr, TypeScriptStatement};
@@ -41,6 +42,13 @@ pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             then_branch: Box::new(lower_core_expr_to_typescript(*then_branch)),
             else_branch: Box::new(lower_core_expr_to_typescript(*else_branch)),
         },
+        CoreExpr::Decision {
+            scrutinee,
+            scrutinee_type,
+            branches,
+            type_ref,
+            ..
+        } => lower_core_decision(*scrutinee, scrutinee_type, branches, type_ref),
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -73,6 +81,20 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
             typescript_expr_contains_await(condition)
                 || typescript_expr_contains_await(then_branch)
                 || typescript_expr_contains_await(else_branch)
+        }
+        TypeScriptExpr::Decision {
+            scrutinee,
+            branches,
+            ..
+        } => {
+            typescript_expr_contains_await(scrutinee)
+                || branches.iter().any(|branch| {
+                    branch
+                        .guard
+                        .as_ref()
+                        .is_some_and(typescript_expr_contains_await)
+                        || typescript_expr_contains_await(&branch.value)
+                })
         }
         TypeScriptExpr::Call { arguments, .. } | TypeScriptExpr::RuntimeCall { arguments, .. } => {
             arguments.iter().any(typescript_expr_contains_await)

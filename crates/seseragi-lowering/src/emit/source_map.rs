@@ -1,7 +1,7 @@
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    SourceSpan, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
-    TypeScriptStatement,
+    SourceSpan, TypeScriptBinding, TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -215,6 +215,16 @@ fn collect_expr_names(
             collect_expr_names(then_branch, helper_names, names);
             collect_expr_names(else_branch, helper_names, names);
         }
+        TypeScriptExpr::Decision {
+            scrutinee,
+            branches,
+            ..
+        } => {
+            collect_expr_names(scrutinee, helper_names, names);
+            for branch in branches {
+                collect_decision_branch_names(branch, helper_names, names);
+            }
+        }
         TypeScriptExpr::Sequence { statements, result } => {
             for statement in statements {
                 collect_statement_names(statement, helper_names, names);
@@ -227,6 +237,20 @@ fn collect_expr_names(
         | TypeScriptExpr::Identifier { .. }
         | TypeScriptExpr::String { .. } => {}
     }
+}
+
+fn collect_decision_branch_names(
+    branch: &TypeScriptDecisionBranch,
+    helper_names: &BTreeMap<String, String>,
+    names: &mut Vec<String>,
+) {
+    for binding in &branch.bindings {
+        names.push(binding.name.clone());
+    }
+    if let Some(guard) = &branch.guard {
+        collect_expr_names(guard, helper_names, names);
+    }
+    collect_expr_names(&branch.value, helper_names, names);
 }
 
 fn collect_statement_names(

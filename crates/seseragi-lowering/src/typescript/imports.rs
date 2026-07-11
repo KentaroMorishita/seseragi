@@ -91,6 +91,19 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             rewrite_expr(then_branch, renames);
             rewrite_expr(else_branch, renames);
         }
+        TypeScriptExpr::Decision {
+            scrutinee,
+            branches,
+            ..
+        } => {
+            rewrite_expr(scrutinee, renames);
+            for branch in branches {
+                if let Some(guard) = &mut branch.guard {
+                    rewrite_expr(guard, renames);
+                }
+                rewrite_expr(&mut branch.value, renames);
+            }
+        }
         TypeScriptExpr::Await { value } => rewrite_expr(value, renames),
         TypeScriptExpr::Sequence { statements, result } => {
             for statement in statements {

@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
 
 mod adt;
+mod decision;
 mod expr;
 mod imports;
 mod names;
@@ -165,6 +166,13 @@ pub enum TypeScriptExpr {
         then_branch: Box<TypeScriptExpr>,
         else_branch: Box<TypeScriptExpr>,
     },
+    Decision {
+        scrutinee: Box<TypeScriptExpr>,
+        scrutinee_type: TypeScriptType,
+        branches: Vec<TypeScriptDecisionBranch>,
+        #[serde(rename = "type")]
+        type_ref: TypeScriptType,
+    },
     Call {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
@@ -180,6 +188,51 @@ pub enum TypeScriptExpr {
         statements: Vec<TypeScriptStatement>,
         result: Box<TypeScriptExpr>,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptDecisionBranch {
+    pub tests: Vec<TypeScriptDecisionTest>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub bindings: Vec<TypeScriptDecisionBinding>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guard: Option<TypeScriptExpr>,
+    pub value: TypeScriptExpr,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptDecisionBinding {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub type_ref: TypeScriptType,
+    pub path: Vec<TypeScriptDecisionProjection>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypeScriptDecisionTest {
+    TagEquals {
+        path: Vec<TypeScriptDecisionProjection>,
+        tag: String,
+    },
+    Invalid,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypeScriptDecisionProjection {
+    TupleElement { index: usize },
+    AdtPayload,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

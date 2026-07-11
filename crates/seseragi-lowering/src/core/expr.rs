@@ -3,6 +3,7 @@ use seseragi_semantics::{
     known_effect_operation_by_semantic, TypedDoStatement, TypedEffect, TypedExpr, TypedParameter,
 };
 
+use super::decision::lower_match;
 use super::types::lower_typed_type;
 use super::{CoreExpr, CoreParameter, CoreRecordField, CoreStatement, CoreType};
 
@@ -125,6 +126,13 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::Match {
+            scrutinee,
+            arms,
+            exhaustive,
+            type_ref,
+            origin,
+        } => lower_match(source, *scrutinee, arms, exhaustive, type_ref, origin),
         TypedExpr::EffectCall {
             operation,
             arguments,

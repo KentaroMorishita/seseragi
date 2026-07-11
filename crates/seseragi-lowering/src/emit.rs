@@ -6,6 +6,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 
+mod decision;
 mod source_map;
 
 use source_map::source_map_for_module;
@@ -306,6 +307,12 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             render_typescript_expr(then_branch),
             render_typescript_expr(else_branch)
         ),
+        TypeScriptExpr::Decision {
+            scrutinee,
+            scrutinee_type,
+            branches,
+            type_ref,
+        } => decision::render_decision(scrutinee, scrutinee_type, branches, type_ref),
         TypeScriptExpr::Call { callee, arguments } => {
             if arguments.is_empty() {
                 return format!("{callee}()");

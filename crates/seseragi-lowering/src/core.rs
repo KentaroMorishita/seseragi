@@ -4,11 +4,15 @@ use seseragi_semantics::{TypedDecl, TypedModule};
 use seseragi_syntax::Visibility;
 
 mod adt;
+mod decision;
 mod expr;
 mod types;
 
 use adt::{lower_adt, AdtDeclInput};
 pub use adt::{CoreAdt, CoreAdtVariant};
+pub use decision::{
+    CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest,
+};
 use expr::{lower_effect_body, lower_expr, lower_parameter};
 pub use types::{CoreRecordField, CoreType};
 
@@ -107,6 +111,15 @@ pub enum CoreExpr {
         condition: Box<CoreExpr>,
         then_branch: Box<CoreExpr>,
         else_branch: Box<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Decision {
+        scrutinee: Box<CoreExpr>,
+        scrutinee_type: CoreType,
+        branches: Vec<CoreDecisionBranch>,
+        exhaustive: bool,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,

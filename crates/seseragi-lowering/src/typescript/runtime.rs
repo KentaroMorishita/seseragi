@@ -62,6 +62,33 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             collect_expr_runtime_requirements(then_branch, requirements);
             collect_expr_runtime_requirements(else_branch, requirements);
         }
+        CoreExpr::Decision {
+            scrutinee,
+            scrutinee_type,
+            branches,
+            type_ref,
+            ..
+        } => {
+            collect_type_runtime_requirement(scrutinee_type, requirements);
+            collect_type_runtime_requirement(type_ref, requirements);
+            collect_expr_runtime_requirements(scrutinee, requirements);
+            for branch in branches {
+                if branch
+                    .tests
+                    .iter()
+                    .any(|test| matches!(test, crate::CoreDecisionTest::Constructor { .. }))
+                {
+                    push_unique(requirements, "core.adt");
+                }
+                for binding in &branch.bindings {
+                    collect_type_runtime_requirement(&binding.type_ref, requirements);
+                }
+                if let Some(guard) = &branch.guard {
+                    collect_expr_runtime_requirements(guard, requirements);
+                }
+                collect_expr_runtime_requirements(&branch.value, requirements);
+            }
+        }
         CoreExpr::EffectOperation {
             operation,
             arguments,
@@ -166,6 +193,19 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             collect_expr_runtime_imports(condition, imports);
             collect_expr_runtime_imports(then_branch, imports);
             collect_expr_runtime_imports(else_branch, imports);
+        }
+        CoreExpr::Decision {
+            scrutinee,
+            branches,
+            ..
+        } => {
+            collect_expr_runtime_imports(scrutinee, imports);
+            for branch in branches {
+                if let Some(guard) = &branch.guard {
+                    collect_expr_runtime_imports(guard, imports);
+                }
+                collect_expr_runtime_imports(&branch.value, imports);
+            }
         }
         CoreExpr::Sequence {
             statements, result, ..

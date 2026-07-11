@@ -1,0 +1,64 @@
+use crate::{
+    CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr,
+    CoreType,
+};
+
+use super::expr::lower_core_expr_to_typescript;
+use super::names::{local_name, safe_identifier};
+use super::types::type_ref_from_core_type;
+use super::{
+    TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
+    TypeScriptDecisionTest, TypeScriptExpr,
+};
+
+pub(super) fn lower_core_decision(
+    scrutinee: CoreExpr,
+    scrutinee_type: CoreType,
+    branches: Vec<CoreDecisionBranch>,
+    type_ref: CoreType,
+) -> TypeScriptExpr {
+    TypeScriptExpr::Decision {
+        scrutinee: Box::new(lower_core_expr_to_typescript(scrutinee)),
+        scrutinee_type: type_ref_from_core_type(&scrutinee_type),
+        branches: branches.into_iter().map(lower_branch).collect(),
+        type_ref: type_ref_from_core_type(&type_ref),
+    }
+}
+
+fn lower_branch(branch: CoreDecisionBranch) -> TypeScriptDecisionBranch {
+    TypeScriptDecisionBranch {
+        tests: branch.tests.into_iter().map(lower_test).collect(),
+        bindings: branch.bindings.into_iter().map(lower_binding).collect(),
+        guard: branch.guard.map(lower_core_expr_to_typescript),
+        value: lower_core_expr_to_typescript(branch.value),
+    }
+}
+
+fn lower_binding(binding: CoreDecisionBinding) -> TypeScriptDecisionBinding {
+    TypeScriptDecisionBinding {
+        name: safe_identifier(&binding.name),
+        type_ref: type_ref_from_core_type(&binding.type_ref),
+        path: binding.path.into_iter().map(lower_projection).collect(),
+    }
+}
+
+fn lower_test(test: CoreDecisionTest) -> TypeScriptDecisionTest {
+    match test {
+        CoreDecisionTest::Constructor {
+            path, constructor, ..
+        } => TypeScriptDecisionTest::TagEquals {
+            path: path.into_iter().map(lower_projection).collect(),
+            tag: local_name(&constructor),
+        },
+        CoreDecisionTest::Invalid { .. } => TypeScriptDecisionTest::Invalid,
+    }
+}
+
+fn lower_projection(projection: CoreDecisionProjection) -> TypeScriptDecisionProjection {
+    match projection {
+        CoreDecisionProjection::TupleElement { index } => {
+            TypeScriptDecisionProjection::TupleElement { index }
+        }
+        CoreDecisionProjection::AdtPayload => TypeScriptDecisionProjection::AdtPayload,
+    }
+}
