@@ -7,6 +7,10 @@
     "effect.console.error",
     "core.adt",
     "core.string",
+    "core.show.dictionary",
+    "effect.stdin.error.show",
+    "core.string.show",
+    "effect.console.error.show",
     "core.either",
     "core.either.right",
     "core.either.left",
@@ -19,6 +23,18 @@
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "effect.stdin.error.show",
+      "local": "_ssrg_show_stdinErrorShow"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "effect.console.error.show",
+      "local": "_ssrg_show_consoleErrorShow"
+    },
     {
       "feature": "core.either.right",
       "local": "_ssrg_either_Right"
@@ -56,6 +72,10 @@
     {
       "feature": "effect.console.error",
       "local": "ConsoleError"
+    },
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
     }
   ],
   "adts": [
@@ -159,8 +179,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 134,
-            "end": 146
+            "start": 148,
+            "end": 160
           }
         },
         {
@@ -169,8 +189,8 @@
           "tag": "EndOfInput",
           "origin": {
             "source": "main.ssrg",
-            "start": 162,
-            "end": 172
+            "start": 176,
+            "end": 186
           }
         },
         {
@@ -182,8 +202,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 177,
-            "end": 188
+            "start": 191,
+            "end": 202
           }
         },
         {
@@ -197,15 +217,88 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 200,
-            "end": 214
+            "start": 214,
+            "end": 228
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 110,
-        "end": 227
+        "end": 241
+      }
+    }
+  ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 241
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "AppError",
+        "variants": [
+          {
+            "name": "StdinFailure",
+            "tag": "StdinFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "StdinError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "feature": "effect.stdin.error.show",
+                "local": "_ssrg_show_stdinErrorShow"
+              }
+            }
+          },
+          {
+            "name": "EndOfInput",
+            "tag": "EndOfInput"
+          },
+          {
+            "name": "UnknownHand",
+            "tag": "UnknownHand",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "feature": "core.string.show",
+                "local": "_ssrg_show_stringShow"
+              }
+            }
+          },
+          {
+            "name": "ConsoleFailure",
+            "tag": "ConsoleFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "feature": "effect.console.error.show",
+                "local": "_ssrg_show_consoleErrorShow"
+              }
+            }
+          }
+        ]
       }
     }
   ],
@@ -333,8 +426,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 229,
-        "end": 426
+        "start": 243,
+        "end": 440
       }
     },
     {
@@ -429,8 +522,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 428,
-        "end": 573
+        "start": 442,
+        "end": 587
       }
     },
     {
@@ -664,8 +757,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 575,
-        "end": 867
+        "start": 589,
+        "end": 881
       }
     },
     {
@@ -731,8 +824,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 869,
-        "end": 1028
+        "start": 883,
+        "end": 1042
       }
     },
     {
@@ -775,8 +868,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1062,
-              "end": 1111
+              "start": 1076,
+              "end": 1125
             }
           },
           {
@@ -805,8 +898,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1116,
-              "end": 1159
+              "start": 1130,
+              "end": 1173
             }
           },
           {
@@ -835,8 +928,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1164,
-              "end": 1214
+              "start": 1178,
+              "end": 1228
             }
           },
           {
@@ -865,8 +958,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1219,
-              "end": 1264
+              "start": 1233,
+              "end": 1278
             }
           },
           {
@@ -893,8 +986,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1269,
-              "end": 1302
+              "start": 1283,
+              "end": 1316
             }
           }
         ],
@@ -927,8 +1020,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1030,
-        "end": 1368
+        "start": 1044,
+        "end": 1382
       }
     }
   ]

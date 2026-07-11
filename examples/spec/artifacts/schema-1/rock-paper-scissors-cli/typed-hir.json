@@ -13,6 +13,26 @@
       "canonical": "std/prelude::ConsoleError"
     }
   ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
+      "constraints": [],
+      "origin": {
+        "start": 110,
+        "end": 241
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/rock-paper-scissors-cli::AppError"
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "adt",
@@ -178,8 +198,8 @@
             }
           },
           "origin": {
-            "start": 134,
-            "end": 146
+            "start": 148,
+            "end": 160
           }
         },
         {
@@ -195,8 +215,8 @@
             }
           },
           "origin": {
-            "start": 162,
-            "end": 172
+            "start": 176,
+            "end": 186
           }
         },
         {
@@ -225,8 +245,8 @@
             }
           },
           "origin": {
-            "start": 177,
-            "end": 188
+            "start": 191,
+            "end": 202
           }
         },
         {
@@ -255,14 +275,14 @@
             }
           },
           "origin": {
-            "start": 200,
-            "end": 214
+            "start": 214,
+            "end": 228
           }
         }
       ],
       "origin": {
         "start": 110,
-        "end": 227
+        "end": 241
       }
     },
     {
@@ -270,8 +290,8 @@
       "symbol": "artifact/rock-paper-scissors-cli::parseHand",
       "visibility": "private",
       "origin": {
-        "start": 229,
-        "end": 426
+        "start": 243,
+        "end": 440
       },
       "scheme": {
         "typeParameters": [],
@@ -303,8 +323,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 242,
-            "end": 247
+            "start": 256,
+            "end": 261
           }
         }
       ],
@@ -319,8 +339,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 292,
-            "end": 297
+            "start": 306,
+            "end": 311
           }
         },
         "arms": [
@@ -334,8 +354,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 304,
-                "end": 310
+                "start": 318,
+                "end": 324
               }
             },
             "body": {
@@ -351,8 +371,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 320,
-                    "end": 324
+                    "start": 334,
+                    "end": 338
                   }
                 }
               ],
@@ -373,13 +393,13 @@
                 ]
               },
               "origin": {
-                "start": 314,
-                "end": 324
+                "start": 328,
+                "end": 338
               }
             },
             "origin": {
-              "start": 304,
-              "end": 324
+              "start": 318,
+              "end": 338
             }
           },
           {
@@ -392,8 +412,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 329,
-                "end": 336
+                "start": 343,
+                "end": 350
               }
             },
             "body": {
@@ -409,8 +429,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 346,
-                    "end": 351
+                    "start": 360,
+                    "end": 365
                   }
                 }
               ],
@@ -431,13 +451,13 @@
                 ]
               },
               "origin": {
-                "start": 340,
-                "end": 351
+                "start": 354,
+                "end": 365
               }
             },
             "origin": {
-              "start": 329,
-              "end": 351
+              "start": 343,
+              "end": 365
             }
           },
           {
@@ -450,8 +470,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 356,
-                "end": 366
+                "start": 370,
+                "end": 380
               }
             },
             "body": {
@@ -467,8 +487,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 376,
-                    "end": 384
+                    "start": 390,
+                    "end": 398
                   }
                 }
               ],
@@ -489,13 +509,13 @@
                 ]
               },
               "origin": {
-                "start": 370,
-                "end": 384
+                "start": 384,
+                "end": 398
               }
             },
             "origin": {
-              "start": 356,
-              "end": 384
+              "start": 370,
+              "end": 398
             }
           },
           {
@@ -509,8 +529,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 389,
-                "end": 394
+                "start": 403,
+                "end": 408
               }
             },
             "body": {
@@ -530,8 +550,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 416,
-                        "end": 421
+                        "start": 430,
+                        "end": 435
                       }
                     }
                   ],
@@ -541,8 +561,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 404,
-                    "end": 421
+                    "start": 418,
+                    "end": 435
                   }
                 }
               ],
@@ -563,13 +583,13 @@
                 ]
               },
               "origin": {
-                "start": 398,
-                "end": 422
+                "start": 412,
+                "end": 436
               }
             },
             "origin": {
-              "start": 389,
-              "end": 422
+              "start": 403,
+              "end": 436
             }
           }
         ],
@@ -591,8 +611,8 @@
           ]
         },
         "origin": {
-          "start": 286,
-          "end": 426
+          "start": 300,
+          "end": 440
         }
       }
     },
@@ -601,8 +621,8 @@
       "symbol": "artifact/rock-paper-scissors-cli::parseInput",
       "visibility": "private",
       "origin": {
-        "start": 428,
-        "end": 573
+        "start": 442,
+        "end": 587
       },
       "scheme": {
         "typeParameters": [],
@@ -640,8 +660,8 @@
             ]
           },
           "origin": {
-            "start": 442,
-            "end": 447
+            "start": 456,
+            "end": 461
           }
         }
       ],
@@ -662,8 +682,8 @@
             ]
           },
           "origin": {
-            "start": 499,
-            "end": 504
+            "start": 513,
+            "end": 518
           }
         },
         "arms": [
@@ -683,8 +703,8 @@
                 ]
               },
               "origin": {
-                "start": 511,
-                "end": 518
+                "start": 525,
+                "end": 532
               }
             },
             "body": {
@@ -700,8 +720,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 527,
-                    "end": 537
+                    "start": 541,
+                    "end": 551
                   }
                 }
               ],
@@ -722,13 +742,13 @@
                 ]
               },
               "origin": {
-                "start": 522,
-                "end": 537
+                "start": 536,
+                "end": 551
               }
             },
             "origin": {
-              "start": 511,
-              "end": 537
+              "start": 525,
+              "end": 551
             }
           },
           {
@@ -745,8 +765,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 547,
-                  "end": 551
+                  "start": 561,
+                  "end": 565
                 }
               },
               "type": {
@@ -761,8 +781,8 @@
                 ]
               },
               "origin": {
-                "start": 542,
-                "end": 551
+                "start": 556,
+                "end": 565
               }
             },
             "body": {
@@ -778,8 +798,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 565,
-                    "end": 569
+                    "start": 579,
+                    "end": 583
                   }
                 }
               ],
@@ -800,13 +820,13 @@
                 ]
               },
               "origin": {
-                "start": 555,
-                "end": 569
+                "start": 569,
+                "end": 583
               }
             },
             "origin": {
-              "start": 542,
-              "end": 569
+              "start": 556,
+              "end": 583
             }
           }
         ],
@@ -828,8 +848,8 @@
           ]
         },
         "origin": {
-          "start": 493,
-          "end": 573
+          "start": 507,
+          "end": 587
         }
       }
     },
@@ -838,8 +858,8 @@
       "symbol": "artifact/rock-paper-scissors-cli::decide",
       "visibility": "private",
       "origin": {
-        "start": 575,
-        "end": 867
+        "start": 589,
+        "end": 881
       },
       "scheme": {
         "typeParameters": [],
@@ -860,8 +880,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 585,
-            "end": 590
+            "start": 599,
+            "end": 604
           }
         },
         {
@@ -873,8 +893,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 600,
-            "end": 606
+            "start": 614,
+            "end": 620
           }
         }
       ],
@@ -892,8 +912,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 635,
-                "end": 640
+                "start": 649,
+                "end": 654
               }
             },
             {
@@ -905,8 +925,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 642,
-                "end": 648
+                "start": 656,
+                "end": 662
               }
             }
           ],
@@ -926,8 +946,8 @@
             ]
           },
           "origin": {
-            "start": 634,
-            "end": 649
+            "start": 648,
+            "end": 663
           }
         },
         "arms": [
@@ -944,8 +964,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 657,
-                    "end": 661
+                    "start": 671,
+                    "end": 675
                   }
                 },
                 {
@@ -957,8 +977,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 663,
-                    "end": 667
+                    "start": 677,
+                    "end": 681
                   }
                 }
               ],
@@ -978,8 +998,8 @@
                 ]
               },
               "origin": {
-                "start": 656,
-                "end": 668
+                "start": 670,
+                "end": 682
               }
             },
             "body": {
@@ -991,13 +1011,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 672,
-                "end": 676
+                "start": 686,
+                "end": 690
               }
             },
             "origin": {
-              "start": 656,
-              "end": 676
+              "start": 670,
+              "end": 690
             }
           },
           {
@@ -1013,8 +1033,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 682,
-                    "end": 687
+                    "start": 696,
+                    "end": 701
                   }
                 },
                 {
@@ -1026,8 +1046,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 689,
-                    "end": 694
+                    "start": 703,
+                    "end": 708
                   }
                 }
               ],
@@ -1047,8 +1067,8 @@
                 ]
               },
               "origin": {
-                "start": 681,
-                "end": 695
+                "start": 695,
+                "end": 709
               }
             },
             "body": {
@@ -1060,13 +1080,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 699,
-                "end": 703
+                "start": 713,
+                "end": 717
               }
             },
             "origin": {
-              "start": 681,
-              "end": 703
+              "start": 695,
+              "end": 717
             }
           },
           {
@@ -1082,8 +1102,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 709,
-                    "end": 717
+                    "start": 723,
+                    "end": 731
                   }
                 },
                 {
@@ -1095,8 +1115,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 719,
-                    "end": 727
+                    "start": 733,
+                    "end": 741
                   }
                 }
               ],
@@ -1116,8 +1136,8 @@
                 ]
               },
               "origin": {
-                "start": 708,
-                "end": 728
+                "start": 722,
+                "end": 742
               }
             },
             "body": {
@@ -1129,13 +1149,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 732,
-                "end": 736
+                "start": 746,
+                "end": 750
               }
             },
             "origin": {
-              "start": 708,
-              "end": 736
+              "start": 722,
+              "end": 750
             }
           },
           {
@@ -1151,8 +1171,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 742,
-                    "end": 746
+                    "start": 756,
+                    "end": 760
                   }
                 },
                 {
@@ -1164,8 +1184,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 748,
-                    "end": 756
+                    "start": 762,
+                    "end": 770
                   }
                 }
               ],
@@ -1185,8 +1205,8 @@
                 ]
               },
               "origin": {
-                "start": 741,
-                "end": 757
+                "start": 755,
+                "end": 771
               }
             },
             "body": {
@@ -1198,13 +1218,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 761,
-                "end": 772
+                "start": 775,
+                "end": 786
               }
             },
             "origin": {
-              "start": 741,
-              "end": 772
+              "start": 755,
+              "end": 786
             }
           },
           {
@@ -1220,8 +1240,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 778,
-                    "end": 783
+                    "start": 792,
+                    "end": 797
                   }
                 },
                 {
@@ -1233,8 +1253,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 785,
-                    "end": 789
+                    "start": 799,
+                    "end": 803
                   }
                 }
               ],
@@ -1254,8 +1274,8 @@
                 ]
               },
               "origin": {
-                "start": 777,
-                "end": 790
+                "start": 791,
+                "end": 804
               }
             },
             "body": {
@@ -1267,13 +1287,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 794,
-                "end": 805
+                "start": 808,
+                "end": 819
               }
             },
             "origin": {
-              "start": 777,
-              "end": 805
+              "start": 791,
+              "end": 819
             }
           },
           {
@@ -1289,8 +1309,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 811,
-                    "end": 819
+                    "start": 825,
+                    "end": 833
                   }
                 },
                 {
@@ -1302,8 +1322,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 821,
-                    "end": 826
+                    "start": 835,
+                    "end": 840
                   }
                 }
               ],
@@ -1323,8 +1343,8 @@
                 ]
               },
               "origin": {
-                "start": 810,
-                "end": 827
+                "start": 824,
+                "end": 841
               }
             },
             "body": {
@@ -1336,13 +1356,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 831,
-                "end": 842
+                "start": 845,
+                "end": 856
               }
             },
             "origin": {
-              "start": 810,
-              "end": 842
+              "start": 824,
+              "end": 856
             }
           },
           {
@@ -1364,8 +1384,8 @@
                 ]
               },
               "origin": {
-                "start": 847,
-                "end": 848
+                "start": 861,
+                "end": 862
               }
             },
             "body": {
@@ -1377,13 +1397,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 852,
-                "end": 863
+                "start": 866,
+                "end": 877
               }
             },
             "origin": {
-              "start": 847,
-              "end": 863
+              "start": 861,
+              "end": 877
             }
           }
         ],
@@ -1394,8 +1414,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 628,
-          "end": 867
+          "start": 642,
+          "end": 881
         }
       }
     },
@@ -1404,8 +1424,8 @@
       "symbol": "artifact/rock-paper-scissors-cli::renderOutcome",
       "visibility": "private",
       "origin": {
-        "start": 869,
-        "end": 1028
+        "start": 883,
+        "end": 1042
       },
       "scheme": {
         "typeParameters": [],
@@ -1426,8 +1446,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 886,
-            "end": 893
+            "start": 900,
+            "end": 907
           }
         }
       ],
@@ -1442,8 +1462,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 923,
-            "end": 930
+            "start": 937,
+            "end": 944
           }
         },
         "arms": [
@@ -1457,8 +1477,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 937,
-                "end": 948
+                "start": 951,
+                "end": 962
               }
             },
             "body": {
@@ -1470,13 +1490,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 952,
-                "end": 968
+                "start": 966,
+                "end": 982
               }
             },
             "origin": {
-              "start": 937,
-              "end": 968
+              "start": 951,
+              "end": 982
             }
           },
           {
@@ -1489,8 +1509,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 973,
-                "end": 984
+                "start": 987,
+                "end": 998
               }
             },
             "body": {
@@ -1502,13 +1522,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 988,
-                "end": 1004
+                "start": 1002,
+                "end": 1018
               }
             },
             "origin": {
-              "start": 973,
-              "end": 1004
+              "start": 987,
+              "end": 1018
             }
           },
           {
@@ -1521,8 +1541,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1009,
-                "end": 1013
+                "start": 1023,
+                "end": 1027
               }
             },
             "body": {
@@ -1534,13 +1554,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1017,
-                "end": 1024
+                "start": 1031,
+                "end": 1038
               }
             },
             "origin": {
-              "start": 1009,
-              "end": 1024
+              "start": 1023,
+              "end": 1038
             }
           }
         ],
@@ -1551,8 +1571,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 917,
-          "end": 1028
+          "start": 931,
+          "end": 1042
         }
       }
     },
@@ -1561,8 +1581,8 @@
       "symbol": "artifact/rock-paper-scissors-cli::main",
       "visibility": "public",
       "origin": {
-        "start": 1030,
-        "end": 1368
+        "start": 1044,
+        "end": 1382
       },
       "inferredContract": true,
       "parameters": [
@@ -1679,8 +1699,8 @@
                     }
                   },
                   "origin": {
-                    "start": 1085,
-                    "end": 1097
+                    "start": 1099,
+                    "end": 1111
                   }
                 },
                 {
@@ -1720,19 +1740,19 @@
                   },
                   "arguments": [],
                   "origin": {
-                    "start": 1099,
-                    "end": 1110
+                    "start": 1113,
+                    "end": 1124
                   }
                 }
               ],
               "origin": {
-                "start": 1076,
-                "end": 1111
+                "start": 1090,
+                "end": 1125
               }
             },
             "origin": {
-              "start": 1062,
-              "end": 1111
+              "start": 1076,
+              "end": 1125
             }
           },
           {
@@ -1783,8 +1803,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1148,
-                        "end": 1158
+                        "start": 1162,
+                        "end": 1172
                       }
                     }
                   ],
@@ -1805,19 +1825,19 @@
                     ]
                   },
                   "origin": {
-                    "start": 1137,
-                    "end": 1158
+                    "start": 1151,
+                    "end": 1172
                   }
                 }
               ],
               "origin": {
-                "start": 1125,
-                "end": 1159
+                "start": 1139,
+                "end": 1173
               }
             },
             "origin": {
-              "start": 1116,
-              "end": 1159
+              "start": 1130,
+              "end": 1173
             }
           },
           {
@@ -1887,8 +1907,8 @@
                     }
                   },
                   "origin": {
-                    "start": 1188,
-                    "end": 1200
+                    "start": 1202,
+                    "end": 1214
                   }
                 },
                 {
@@ -1928,19 +1948,19 @@
                   },
                   "arguments": [],
                   "origin": {
-                    "start": 1202,
-                    "end": 1213
+                    "start": 1216,
+                    "end": 1227
                   }
                 }
               ],
               "origin": {
-                "start": 1179,
-                "end": 1214
+                "start": 1193,
+                "end": 1228
               }
             },
             "origin": {
-              "start": 1164,
-              "end": 1214
+              "start": 1178,
+              "end": 1228
             }
           },
           {
@@ -1991,8 +2011,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1252,
-                        "end": 1263
+                        "start": 1266,
+                        "end": 1277
                       }
                     }
                   ],
@@ -2013,19 +2033,19 @@
                     ]
                   },
                   "origin": {
-                    "start": 1241,
-                    "end": 1263
+                    "start": 1255,
+                    "end": 1277
                   }
                 }
               ],
               "origin": {
-                "start": 1229,
-                "end": 1264
+                "start": 1243,
+                "end": 1278
               }
             },
             "origin": {
-              "start": 1219,
-              "end": 1264
+              "start": 1233,
+              "end": 1278
             }
           },
           {
@@ -2049,8 +2069,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1290,
-                    "end": 1295
+                    "start": 1304,
+                    "end": 1309
                   }
                 },
                 {
@@ -2062,8 +2082,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1296,
-                    "end": 1302
+                    "start": 1310,
+                    "end": 1316
                   }
                 }
               ],
@@ -2073,13 +2093,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1283,
-                "end": 1302
+                "start": 1297,
+                "end": 1316
               }
             },
             "origin": {
-              "start": 1269,
-              "end": 1302
+              "start": 1283,
+              "end": 1316
             }
           }
         ],
@@ -2130,8 +2150,8 @@
                 }
               },
               "origin": {
-                "start": 1316,
-                "end": 1330
+                "start": 1330,
+                "end": 1344
               }
             },
             {
@@ -2177,8 +2197,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1355,
-                        "end": 1362
+                        "start": 1369,
+                        "end": 1376
                       }
                     }
                   ],
@@ -2188,25 +2208,25 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1341,
-                    "end": 1362
+                    "start": 1355,
+                    "end": 1376
                   }
                 }
               ],
               "origin": {
-                "start": 1332,
-                "end": 1363
+                "start": 1346,
+                "end": 1377
               }
             }
           ],
           "origin": {
-            "start": 1307,
-            "end": 1364
+            "start": 1321,
+            "end": 1378
           }
         },
         "origin": {
-          "start": 1053,
-          "end": 1368
+          "start": 1067,
+          "end": 1382
         }
       }
     }

@@ -8,7 +8,7 @@ pub type Outcome =
   | Player2Wins
   | Draw
 
-pub type AppError =
+pub type AppError deriving Show =
   | StdinFailure StdinError
   | EndOfInput
   | UnknownHand String

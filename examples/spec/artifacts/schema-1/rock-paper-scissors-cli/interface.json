@@ -178,7 +178,7 @@
       "declarationKind": "type",
       "declaration": {
         "start": 110,
-        "end": 227
+        "end": 241
       },
       "scheme": {
         "typeParameters": [],
@@ -198,8 +198,8 @@
       "visibility": "public",
       "declarationKind": "constructor",
       "declaration": {
-        "start": 134,
-        "end": 146
+        "start": 148,
+        "end": 160
       },
       "scheme": {
         "typeParameters": [],
@@ -227,8 +227,8 @@
       "visibility": "public",
       "declarationKind": "constructor",
       "declaration": {
-        "start": 162,
-        "end": 172
+        "start": 176,
+        "end": 186
       },
       "scheme": {
         "typeParameters": [],
@@ -248,8 +248,8 @@
       "visibility": "public",
       "declarationKind": "constructor",
       "declaration": {
-        "start": 177,
-        "end": 188
+        "start": 191,
+        "end": 202
       },
       "scheme": {
         "typeParameters": [],
@@ -277,8 +277,8 @@
       "visibility": "public",
       "declarationKind": "constructor",
       "declaration": {
-        "start": 200,
-        "end": 214
+        "start": 214,
+        "end": 228
       },
       "scheme": {
         "typeParameters": [],

@@ -10,6 +10,10 @@
       "effect.console.error",
       "core.adt",
       "core.string",
+      "core.show.dictionary",
+      "effect.stdin.error.show",
+      "core.string.show",
+      "effect.console.error.show",
       "core.either",
       "core.either.right",
       "core.either.left",
@@ -34,6 +38,18 @@
     "UnknownHand",
     "ConsoleFailure",
     "main"
+  ],
+  "instances": [
+    {
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
   ],
   "outputs": {
     "typescript": "main.ts",
