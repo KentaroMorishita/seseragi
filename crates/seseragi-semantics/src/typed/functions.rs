@@ -1,6 +1,7 @@
 use crate::TypedType;
 use seseragi_syntax::SurfaceParameter;
 
+use super::semantic_types::{SemanticTypeKey, SemanticValueType};
 use super::type_ref::typed_type_from_type_ref;
 
 mod generic;
@@ -12,7 +13,24 @@ pub(crate) struct TopLevelPureFunction {
     pub(crate) symbol: String,
     pub(crate) type_parameters: Vec<String>,
     pub(crate) parameters: Vec<TypedType>,
+    pub(crate) semantic_parameters: Vec<SemanticTypeKey>,
     pub(crate) result: TypedType,
+    pub(crate) semantic_result: SemanticTypeKey,
+}
+
+pub(crate) fn instantiated_semantic_result(
+    signature: &TopLevelPureFunction,
+    arguments: &[SemanticValueType],
+) -> SemanticTypeKey {
+    super::semantic_types::instantiate_callable_result(
+        &signature.semantic_parameters,
+        arguments,
+        &SemanticValueType {
+            type_ref: signature.result.clone(),
+            key: signature.semantic_result.clone(),
+        },
+    )
+    .key
 }
 
 pub(crate) fn typed_parameters_from_surface(

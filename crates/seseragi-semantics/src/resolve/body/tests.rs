@@ -152,6 +152,63 @@ fn resolves_do_bindings_in_a_child_scope() {
     assert!(resolved.issues.is_empty());
 }
 
+#[test]
+fn resolves_match_patterns_and_bodies_in_sibling_arm_scopes() {
+    let resolved = resolve_module(
+        "artifact/match-scope/main.ssrg",
+        "type Label = | Missing | Present String\nfn render value: Label -> String = match value { Present item -> item; Missing -> \"missing\" }\n",
+    );
+
+    let arm_scopes = resolved
+        .scopes
+        .iter()
+        .filter(|scope| scope.kind == ScopeKind::MatchArm)
+        .collect::<Vec<_>>();
+    assert_eq!(arm_scopes.len(), 2);
+    assert_eq!(arm_scopes[0].parent, arm_scopes[1].parent);
+    let binding = resolved
+        .symbols
+        .iter()
+        .find(|symbol| symbol.kind == SymbolKind::PatternBinding)
+        .expect("payload binding");
+    assert_eq!(binding.spelling, "item");
+    assert_eq!(binding.scope, arm_scopes[0].id);
+    let body_reference = resolved
+        .references
+        .iter()
+        .find(|reference| reference.spelling == "item")
+        .expect("arm body reference");
+    assert_eq!(body_reference.target, Some(binding.id));
+    assert!(resolved.issues.is_empty());
+}
+
+#[test]
+fn exposes_pattern_bindings_to_their_guard_but_not_sibling_arms() {
+    let resolved = resolve_module(
+        "artifact/match-scope-isolation/main.ssrg",
+        "type Label = | Missing | Present String\nfn render value: Label -> String = match value { Present item when item -> item; Missing -> item }\n",
+    );
+
+    let item_references = resolved
+        .references
+        .iter()
+        .filter(|reference| reference.spelling == "item")
+        .collect::<Vec<_>>();
+    assert_eq!(item_references.len(), 3);
+    assert!(item_references[0].target.is_some());
+    assert_eq!(item_references[1].target, item_references[0].target);
+    assert_eq!(item_references[2].target, None);
+
+    for constructor in ["Present", "Missing"] {
+        assert!(resolved
+            .references
+            .iter()
+            .any(|reference| reference.spelling == constructor && reference.target.is_some()));
+    }
+    assert_eq!(resolved.issues.len(), 1);
+    assert_eq!(resolved.issues[0].code, "SES-N0001");
+}
+
 fn symbol(resolved: &ResolvedModule, kind: SymbolKind, spelling: &str) -> SymbolId {
     resolved
         .symbols

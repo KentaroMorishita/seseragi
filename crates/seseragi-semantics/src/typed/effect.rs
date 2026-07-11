@@ -82,6 +82,17 @@ fn collect_effect_contract(
             }
             collect_effect_contract(result, requirements, failure);
         }
+        TypedExpr::Match {
+            scrutinee, arms, ..
+        } => {
+            collect_effect_contract(scrutinee, requirements, failure);
+            for arm in arms {
+                if let Some(guard) = &arm.guard {
+                    collect_effect_contract(guard, requirements, failure);
+                }
+                collect_effect_contract(&arm.body, requirements, failure);
+            }
+        }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
         | TypedExpr::String { .. }

@@ -89,7 +89,8 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         | TypedExpr::Call { type_ref, .. }
         | TypedExpr::Tuple { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
-        | TypedExpr::If { type_ref, .. } => type_ref.clone(),
+        | TypedExpr::If { type_ref, .. }
+        | TypedExpr::Match { type_ref, .. } => type_ref.clone(),
         TypedExpr::EffectCall { operation, .. } => known_effect_operation_by_semantic(operation)
             .map(|operation| TypedType::Named {
                 name: operation.success_type.to_owned(),

@@ -2,8 +2,11 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
-use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
+use crate::typed::functions::{
+    instantiated_application, instantiated_application_result_type, instantiated_semantic_result,
+};
 use crate::typed::pure_issues::PureCallIssue;
+use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
 use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
 pub(super) fn type_application(
@@ -25,9 +28,14 @@ pub(super) fn type_application(
     };
 
     let mut arguments = Vec::with_capacity(argument_nodes.len());
+    let mut semantic_arguments = Vec::with_capacity(argument_nodes.len());
     let mut child_analyses = Vec::with_capacity(argument_nodes.len());
     for argument in &argument_nodes {
         let analysis = type_surface_expression(argument, context);
+        semantic_arguments.push(SemanticValueType {
+            type_ref: inferred_type_from_expr(&analysis.value),
+            key: analysis.semantic_type.clone(),
+        });
         arguments.push(analysis.value.clone());
         child_analyses.push(analysis);
     }
@@ -48,12 +56,22 @@ pub(super) fn type_application(
     } else {
         TypedType::Hole
     };
-    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Call {
-        callee: signature.symbol.clone(),
-        arguments,
-        type_ref,
-        origin: expression.span(),
-    });
+    let semantic_type = if issue.is_some() {
+        SemanticTypeKey::Invalid
+    } else if arguments.len() >= signature.parameters.len() {
+        instantiated_semantic_result(signature, &semantic_arguments)
+    } else {
+        SemanticTypeKey::Other
+    };
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Call {
+            callee: signature.symbol.clone(),
+            arguments,
+            type_ref,
+            origin: expression.span(),
+        },
+        semantic_type,
+    );
     result.pure_call_issue = issue;
     for child in child_analyses {
         result.merge_issues_from(child);
@@ -77,6 +95,7 @@ fn type_unknown_application(
         type_ref: TypedType::Hole,
         origin: span,
     };
+    callee.semantic_type = SemanticTypeKey::Invalid;
     callee
 }
 

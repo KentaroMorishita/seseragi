@@ -3,6 +3,7 @@ use seseragi_syntax::{SurfaceExpr, SurfaceParameter, TypeRef};
 
 use super::function_body::{function_body_issue, FunctionBodyIssue};
 use super::functions::typed_parameters_from_surface;
+use super::pure_issues::MatchIssue;
 use super::pure_issues::{ConditionalIssue, PureCallIssue};
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 
@@ -11,6 +12,7 @@ pub(crate) struct PureFunctionAnalysis {
     pub(crate) conditional_issue: Option<ConditionalIssue>,
     pub(crate) function_body_issue: Option<FunctionBodyIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
+    pub(crate) match_issues: Vec<MatchIssue>,
 }
 
 pub(crate) fn analyze_pure_function(
@@ -24,13 +26,15 @@ pub(crate) fn analyze_pure_function(
             conditional_issue: None,
             function_body_issue: None,
             pure_call_issue: None,
+            match_issues: Vec::new(),
         };
     };
     let typed_parameters = typed_parameters_from_surface(parameters);
     let context = PureExpressionContext::new(&typed_parameters, resolution);
     let expression = analyze_resolved_expression(body, &context);
     let function_body_issue = (expression.conditional_issue.is_none()
-        && expression.pure_call_issue.is_none())
+        && expression.pure_call_issue.is_none()
+        && expression.match_issues.is_empty())
     .then(|| function_body_issue(Some(&expression.value), Some(body.span()), return_type))
     .flatten();
 
@@ -38,5 +42,6 @@ pub(crate) fn analyze_pure_function(
         conditional_issue: expression.conditional_issue,
         function_body_issue,
         pure_call_issue: expression.pure_call_issue,
+        match_issues: expression.match_issues,
     }
 }

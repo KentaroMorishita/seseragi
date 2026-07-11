@@ -11,8 +11,11 @@ mod expr;
 mod function_body;
 mod functions;
 mod interface;
+#[cfg(test)]
+mod match_tests;
 mod pure_issues;
 mod resolution;
+mod semantic_types;
 mod surface;
 mod surface_expr;
 #[cfg(test)]
@@ -23,7 +26,7 @@ pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};
 pub(crate) use effect_analysis::{analyze_effect_function, EffectFunctionIssue};
 pub(crate) use function_body::FunctionBodyIssue;
 use interface::typed_interface_from_modules;
-pub(crate) use pure_issues::{ConditionalIssue, PureCallIssue};
+pub(crate) use pure_issues::{ConditionalIssue, MatchIssue, PureCallIssue};
 pub(crate) use resolution::TypedResolution;
 use surface::typed_decl_from_surface;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};

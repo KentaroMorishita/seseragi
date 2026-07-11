@@ -201,3 +201,99 @@ fn distinguishes_do_bind_let_and_final_result() {
     ));
     assert!(result.is_some());
 }
+
+#[test]
+fn parses_rps_match_with_tuple_constructor_patterns_and_wildcard() {
+    let body = first_body(
+        "fn decide first: Hand -> second: Hand -> Outcome =\n  match (first, second) {\n    (Rock, Rock) -> Draw\n    (Rock, Scissors) -> Player1Wins\n    (Paper, Rock) -> Player1Wins\n    _ -> Player2Wins\n  }\n",
+    );
+
+    let SurfaceExpr::Match {
+        scrutinee, arms, ..
+    } = body
+    else {
+        panic!("expected match expression");
+    };
+    assert!(matches!(*scrutinee, SurfaceExpr::Tuple { ref elements, .. } if elements.len() == 2));
+    assert_eq!(arms.len(), 4);
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::Tuple { elements, .. }
+            if matches!(&elements[0], SurfacePattern::Constructor { name, argument: None, .. } if name == "Rock")
+                && matches!(&elements[1], SurfacePattern::Constructor { name, argument: None, .. } if name == "Rock")
+    ));
+    assert!(matches!(arms[3].pattern, SurfacePattern::Wildcard { .. }));
+    assert!(matches!(arms[3].body, SurfaceExpr::Name { ref name, .. } if name == "Player2Wins"));
+}
+
+#[test]
+fn preserves_match_payload_binding_and_guard() {
+    let body = first_body(
+        "fn render value: Label -> String =\n  match value {\n    Present item when ready -> item\n    Missing -> \"missing\"\n  }\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::Constructor {
+            name,
+            argument: Some(argument),
+            ..
+        } if name == "Present"
+            && matches!(argument.as_ref(), SurfacePattern::Name { name, .. } if name == "item")
+    ));
+    assert!(matches!(
+        arms[0].guard,
+        Some(SurfaceExpr::Name { ref name, .. }) if name == "ready"
+    ));
+    assert!(matches!(arms[0].body, SurfaceExpr::Name { ref name, .. } if name == "item"));
+}
+
+#[test]
+fn keeps_malformed_match_arms_as_explicit_error_nodes() {
+    let body = first_body(
+        "fn recover value: Label -> String = match value {\n  Missing\n  Present item -> item\n  Missing ->;\n  _ -> \"ok\"\n}\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert_eq!(arms.len(), 4);
+    assert!(matches!(arms[0].body, SurfaceExpr::Error { .. }));
+    assert!(matches!(arms[1].body, SurfaceExpr::Name { .. }));
+    assert!(matches!(arms[2].body, SurfaceExpr::Error { .. }));
+    assert!(matches!(arms[3].body, SurfaceExpr::String { .. }));
+}
+
+#[test]
+fn recovers_a_missing_match_arm_body_before_following_arms() {
+    let body = first_body(
+        "fn recover value: Label -> String = match value {\n  Missing ->\n  Present item -> item\n  Missing -> \"missing\"\n}\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert_eq!(arms.len(), 3);
+    assert!(matches!(arms[0].body, SurfaceExpr::Error { .. }));
+    assert!(matches!(arms[1].body, SurfaceExpr::Name { ref name, .. } if name == "item"));
+    assert!(matches!(arms[2].body, SurfaceExpr::String { .. }));
+}
+
+#[test]
+fn keeps_a_leading_pipeline_in_the_previous_match_arm_body() {
+    let body = first_body(
+        "fn render value: Label -> String = match value {\n  Present item -> item\n    |> normalize\n  Missing -> \"missing\"\n}\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert_eq!(arms.len(), 2);
+    assert!(matches!(
+        arms[0].body,
+        SurfaceExpr::Binary { ref operator, .. } if operator == "|>"
+    ));
+}

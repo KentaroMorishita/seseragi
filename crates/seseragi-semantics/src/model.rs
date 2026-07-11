@@ -227,6 +227,15 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Match {
+        scrutinee: Box<TypedExpr>,
+        arms: Vec<TypedMatchArm>,
+        #[serde(default, skip_serializing_if = "is_false")]
+        exhaustive: bool,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     EffectCall {
         operation: String,
         arguments: Vec<TypedExpr>,
@@ -235,6 +244,54 @@ pub enum TypedExpr {
     DoBlock {
         statements: Vec<TypedDoStatement>,
         result: Box<TypedExpr>,
+        origin: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedMatchArm {
+    pub pattern: TypedPattern,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guard: Option<TypedExpr>,
+    pub body: TypedExpr,
+    pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedPattern {
+    Wildcard {
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Binding {
+        symbol: SymbolId,
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Constructor {
+        symbol: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        argument: Option<Box<TypedPattern>>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Tuple {
+        elements: Vec<TypedPattern>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Invalid {
         origin: ByteSpan,
     },
 }

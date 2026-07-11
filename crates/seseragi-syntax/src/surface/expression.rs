@@ -3,6 +3,7 @@ use crate::surface_model::{ByteSpan, SurfaceExpr};
 use crate::token::{Token, TokenKind};
 
 mod do_block;
+mod match_expression;
 mod parenthesized;
 #[cfg(test)]
 mod tests;
@@ -131,6 +132,7 @@ impl ExpressionParser<'_> {
             }),
             TokenKind::IdentifierLower | TokenKind::IdentifierUpper => Some(self.parse_name(index)),
             TokenKind::KeywordIf => self.parse_if(token, stops),
+            TokenKind::KeywordMatch => match_expression::parse(self, token),
             TokenKind::KeywordDo => self.parse_do(token),
             TokenKind::PunctuationParenLeft => parenthesized::parse(self, token),
             TokenKind::Unknown => Some(SurfaceExpr::Error {
@@ -223,6 +225,7 @@ impl ExpressionParser<'_> {
                     | TokenKind::IdentifierLower
                     | TokenKind::IdentifierUpper
                     | TokenKind::KeywordIf
+                    | TokenKind::KeywordMatch
                     | TokenKind::KeywordDo
                     | TokenKind::PunctuationParenLeft
             )

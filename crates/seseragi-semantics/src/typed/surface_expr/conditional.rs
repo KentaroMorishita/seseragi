@@ -5,6 +5,7 @@ use super::{
     named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 use crate::typed::pure_issues::ConditionalIssue;
+use crate::typed::semantic_types::SemanticTypeKey;
 use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
 pub(super) fn type_if(
@@ -51,13 +52,22 @@ pub(super) fn type_if(
     } else {
         TypedType::Hole
     };
-    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::If {
-        condition: Box::new(condition.value.clone()),
-        then_branch: Box::new(then_branch.value.clone()),
-        else_branch: Box::new(else_branch.value.clone()),
-        type_ref,
-        origin: span,
-    });
+    let semantic_type =
+        if conditional_issue.is_none() && then_branch.semantic_type == else_branch.semantic_type {
+            then_branch.semantic_type.clone()
+        } else {
+            SemanticTypeKey::Invalid
+        };
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::If {
+            condition: Box::new(condition.value.clone()),
+            then_branch: Box::new(then_branch.value.clone()),
+            else_branch: Box::new(else_branch.value.clone()),
+            type_ref,
+            origin: span,
+        },
+        semantic_type,
+    );
     result.conditional_issue = conditional_issue;
     result.merge_issues_from(condition);
     result.merge_issues_from(then_branch);

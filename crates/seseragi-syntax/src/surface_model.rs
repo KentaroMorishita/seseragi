@@ -254,6 +254,11 @@ pub enum SurfaceExpr {
         else_branch: Box<SurfaceExpr>,
         span: ByteSpan,
     },
+    Match {
+        scrutinee: Box<SurfaceExpr>,
+        arms: Vec<SurfaceMatchArm>,
+        span: ByteSpan,
+    },
     Do {
         items: Vec<SurfaceDoItem>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -281,11 +286,22 @@ impl SurfaceExpr {
             | Self::Tuple { span, .. }
             | Self::Binary { span, .. }
             | Self::If { span, .. }
+            | Self::Match { span, .. }
             | Self::Do { span, .. }
             | Self::Grouped { span, .. }
             | Self::Error { span } => *span,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceMatchArm {
+    pub pattern: SurfacePattern,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub guard: Option<SurfaceExpr>,
+    pub body: SurfaceExpr,
+    pub span: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

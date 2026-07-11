@@ -23,7 +23,7 @@ pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImport,
-    SurfaceImportItem, SurfaceModule, SurfaceParameter, SurfacePattern, SurfaceRequirement,
-    SurfaceVariant, TypeRef, Visibility,
+    SurfaceImportItem, SurfaceMatchArm, SurfaceModule, SurfaceParameter, SurfacePattern,
+    SurfaceRequirement, SurfaceVariant, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

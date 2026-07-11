@@ -3,6 +3,7 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
+use crate::typed::semantic_types::SemanticTypeKey;
 
 pub(super) fn type_tuple(
     elements: &[SurfaceExpr],
@@ -19,11 +20,20 @@ pub(super) fn type_tuple(
             .map(|child| inferred_type_from_expr(&child.value))
             .collect(),
     };
-    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Tuple {
-        elements: children.iter().map(|child| child.value.clone()).collect(),
-        type_ref,
-        origin: span,
-    });
+    let semantic_type = SemanticTypeKey::Tuple(
+        children
+            .iter()
+            .map(|child| child.semantic_type.clone())
+            .collect(),
+    );
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Tuple {
+            elements: children.iter().map(|child| child.value.clone()).collect(),
+            type_ref,
+            origin: span,
+        },
+        semantic_type,
+    );
     for child in children {
         result.merge_issues_from(child);
     }

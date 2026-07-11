@@ -5,6 +5,7 @@ mod conditional;
 mod effect;
 mod function_body;
 mod let_binding;
+mod match_expression;
 mod pure_call;
 mod resolution;
 mod type_labels;
@@ -88,6 +89,7 @@ fn collect_decl_diagnostics(
             diagnostics,
         );
         pure_call::collect_pure_function_diagnostics(&analysis, *span, diagnostics);
+        match_expression::collect_match_diagnostics(&analysis.match_issues, diagnostics);
         return;
     }
 

@@ -1,18 +1,21 @@
-use crate::{SymbolId, SymbolNamespace, TypedExpr, TypedParameter, TypedType};
+use crate::{SymbolId, SymbolKind, SymbolNamespace, TypedExpr, TypedParameter, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
+use super::pure_issues::MatchIssue;
 use super::pure_issues::{ConditionalIssue, PureCallIssue};
+use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
 
 mod application;
 mod binary;
 mod conditional;
+mod match_expression;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
-    parameters: BTreeMap<SymbolId, TypedType>,
+    parameters: BTreeMap<SymbolId, SemanticValueType>,
     resolution: &'a TypedResolution<'a>,
 }
 
@@ -28,8 +31,27 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.target(origin, SymbolNamespace::Value)
     }
 
+    pub(super) fn binding_symbol(&self, origin: ByteSpan) -> Option<SymbolId> {
+        self.resolution
+            .declaration_symbol(origin, SymbolKind::PatternBinding)
+            .map(|symbol| symbol.id)
+    }
+
     pub(super) fn callable(&self, target: SymbolId) -> Option<&TopLevelPureFunction> {
         self.resolution.callable(target)
+    }
+
+    pub(super) fn semantic_types(&self) -> &SemanticTypeCatalog {
+        self.resolution.semantic_types()
+    }
+
+    pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {
+        let mut parameters = self.parameters.clone();
+        parameters.extend(locals);
+        Self {
+            parameters,
+            resolution: self.resolution,
+        }
     }
 }
 
@@ -38,6 +60,8 @@ pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) conditional_issue: Option<ConditionalIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
+    pub(crate) match_issues: Vec<MatchIssue>,
+    pub(crate) semantic_type: SemanticTypeKey,
 }
 
 impl SurfaceExpressionAnalysis {
@@ -46,12 +70,28 @@ impl SurfaceExpressionAnalysis {
             value,
             conditional_issue: None,
             pure_call_issue: None,
+            match_issues: Vec::new(),
+            semantic_type: SemanticTypeKey::Other,
+        }
+    }
+
+    pub(super) fn valid_with_semantic_type(
+        value: TypedExpr,
+        semantic_type: SemanticTypeKey,
+    ) -> Self {
+        Self {
+            value,
+            conditional_issue: None,
+            pure_call_issue: None,
+            match_issues: Vec::new(),
+            semantic_type,
         }
     }
 
     pub(super) fn merge_issues_from(&mut self, child: Self) {
         self.conditional_issue = self.conditional_issue.take().or(child.conditional_issue);
         self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
+        self.match_issues.extend(child.match_issues);
     }
 }
 
@@ -83,6 +123,9 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             let then_type = surface_expression_type_hint(then_branch)?;
             (surface_expression_type_hint(else_branch)? == then_type).then_some(then_type)
         }
+        SurfaceExpr::Match { arms, .. } => arms
+            .first()
+            .and_then(|arm| surface_expression_type_hint(&arm.body)),
         SurfaceExpr::Name { .. }
         | SurfaceExpr::Application { .. }
         | SurfaceExpr::Binary { .. }
@@ -136,12 +179,20 @@ pub(super) fn type_surface_expression(
             else_branch,
             span,
         } => conditional::type_if(condition, then_branch, else_branch, *span, context),
+        SurfaceExpr::Match {
+            scrutinee,
+            arms,
+            span,
+        } => match_expression::type_match(scrutinee, arms, *span, context),
         SurfaceExpr::Do { span, .. } | SurfaceExpr::Error { span } => {
-            SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-                name: String::new(),
-                type_ref: TypedType::Hole,
-                origin: *span,
-            })
+            SurfaceExpressionAnalysis::valid_with_semantic_type(
+                TypedExpr::Variable {
+                    name: String::new(),
+                    type_ref: TypedType::Hole,
+                    origin: *span,
+                },
+                SemanticTypeKey::Invalid,
+            )
         }
     }
 }
@@ -152,18 +203,24 @@ fn type_name(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let Some(target) = context.target(span) else {
-        return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-            name: name.to_owned(),
-            type_ref: TypedType::Hole,
-            origin: span,
-        });
+        return SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: name.to_owned(),
+                type_ref: TypedType::Hole,
+                origin: span,
+            },
+            SemanticTypeKey::Invalid,
+        );
     };
-    if let Some(type_ref) = context.parameters.get(&target) {
-        return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-            name: name.to_owned(),
-            type_ref: type_ref.clone(),
-            origin: span,
-        });
+    if let Some(value_type) = context.parameters.get(&target) {
+        return SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: name.to_owned(),
+                type_ref: value_type.type_ref.clone(),
+                origin: span,
+            },
+            value_type.key.clone(),
+        );
     }
     if let Some(type_ref) = context.resolution.top_level_value_type(target) {
         let resolved_name = context
@@ -171,25 +228,39 @@ fn type_name(
             .symbol(target)
             .map(|symbol| symbol.spelling.clone())
             .unwrap_or_else(|| name.to_owned());
-        return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-            name: resolved_name,
-            type_ref: type_ref.clone(),
-            origin: span,
-        });
+        return SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: resolved_name,
+                type_ref: type_ref.clone(),
+                origin: span,
+            },
+            context.resolution.semantic_value_key(target),
+        );
     }
     if let Some(function) = context.callable(target) {
-        return SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-            name: function.symbol.clone(),
-            type_ref: application_result_type(function, 0),
-            origin: span,
-        });
+        let semantic_type = if function.parameters.is_empty() {
+            function.semantic_result.clone()
+        } else {
+            SemanticTypeKey::Other
+        };
+        return SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: function.symbol.clone(),
+                type_ref: application_result_type(function, 0),
+                origin: span,
+            },
+            semantic_type,
+        );
     }
 
-    SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
-        name: name.to_owned(),
-        type_ref: TypedType::Hole,
-        origin: span,
-    })
+    SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Variable {
+            name: name.to_owned(),
+            type_ref: TypedType::Hole,
+            origin: span,
+        },
+        SemanticTypeKey::Invalid,
+    )
 }
 
 pub(super) fn named_type(name: &str) -> TypedType {

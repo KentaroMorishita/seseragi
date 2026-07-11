@@ -51,6 +51,19 @@ pub(super) fn resolve_expression(
             resolve_expression(resolver, scope, then_branch);
             resolve_expression(resolver, scope, else_branch);
         }
+        SurfaceExpr::Match {
+            scrutinee, arms, ..
+        } => {
+            resolve_expression(resolver, scope, scrutinee);
+            for arm in arms {
+                let arm_scope = resolver.new_scope(scope, ScopeKind::MatchArm, arm.span);
+                resolve_pattern(resolver, arm_scope, &arm.pattern);
+                if let Some(guard) = &arm.guard {
+                    resolve_expression(resolver, arm_scope, guard);
+                }
+                resolve_expression(resolver, arm_scope, &arm.body);
+            }
+        }
         SurfaceExpr::Do {
             items,
             result,
