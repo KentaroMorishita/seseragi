@@ -6,6 +6,7 @@ use seseragi_syntax::Visibility;
 mod adt;
 mod decision;
 mod expr;
+mod instances;
 mod types;
 
 use adt::{lower_adt, AdtDeclInput};
@@ -14,6 +15,8 @@ pub use decision::{
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest,
 };
 use expr::{lower_effect_body, lower_expr, lower_parameter};
+use instances::lower_instances;
+pub use instances::{CoreInstance, CoreInstanceConstraint, CoreInstanceImplementation};
 pub use types::{CoreRecordField, CoreType};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -26,6 +29,8 @@ pub struct CoreModule {
     pub external_type_bindings: Vec<ExternalTypeBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<CoreAdt>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub instances: Vec<CoreInstance>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<CoreBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -168,6 +173,7 @@ pub enum CoreStatement {
 }
 
 pub fn lower_typed_module(module: TypedModule) -> CoreModule {
+    let instances = lower_instances(&module.source, module.instances);
     let mut adts = Vec::new();
     let mut bindings = Vec::new();
     let mut functions = Vec::new();
@@ -250,6 +256,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         module: module.module,
         external_type_bindings: module.external_type_bindings,
         adts,
+        instances,
         bindings,
         functions,
     }

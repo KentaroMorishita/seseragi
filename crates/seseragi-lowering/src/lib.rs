@@ -10,7 +10,8 @@ mod typescript;
 pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreDecisionBinding,
     CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreFunction,
-    CoreModule, CoreParameter, CoreRecordField, CoreStatement, CoreType,
+    CoreInstance, CoreInstanceConstraint, CoreInstanceImplementation, CoreModule, CoreParameter,
+    CoreRecordField, CoreStatement, CoreType,
 };
 pub use emit::{
     emit_typescript_module, GeneratedBundle, GeneratedModule, GeneratedOutputs, GeneratedRuntime,
@@ -21,8 +22,11 @@ pub use span::SourceSpan;
 pub use typescript::{
     lower_core_module_to_typescript_ir, TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding,
     TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
-    TypeScriptDecisionTest, TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptModule,
-    TypeScriptParameter, TypeScriptStatement, TypeScriptType, TypeScriptTypeImport,
+    TypeScriptDecisionTest, TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant,
+    TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptInstance,
+    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptModule,
+    TypeScriptParameter, TypeScriptShowDictionaryReference, TypeScriptStatement, TypeScriptType,
+    TypeScriptTypeImport,
 };
 
 #[cfg(test)]
@@ -298,6 +302,7 @@ type Internal =
             module: "artifact/calls".to_owned(),
             external_type_bindings: Vec::new(),
             adts: Vec::new(),
+            instances: Vec::new(),
             bindings: Vec::new(),
             functions: vec![CoreFunction {
                 symbol: "artifact/calls::invoke".to_owned(),

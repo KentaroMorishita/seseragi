@@ -6,6 +6,7 @@ mod adt;
 mod decision;
 mod expr;
 mod imports;
+mod instances;
 mod names;
 mod runtime;
 mod type_imports;
@@ -14,6 +15,12 @@ pub(crate) mod types;
 use adt::lower_core_adt_to_typescript;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
 use imports::freshen_runtime_imports;
+use instances::lower_core_instances_to_typescript;
+pub use instances::{
+    TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptInstance,
+    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
+    TypeScriptShowDictionaryReference,
+};
 use names::local_name;
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
@@ -35,6 +42,8 @@ pub struct TypeScriptModule {
     pub type_imports: Vec<TypeScriptTypeImport>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<TypeScriptAdt>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub instances: Vec<TypeScriptInstance>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<TypeScriptBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -298,9 +307,17 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
     collect_module_type_imports(&module, &mut runtime_requirements, &mut type_imports);
     let adts = module
         .adts
-        .into_iter()
+        .iter()
+        .cloned()
         .map(|adt| lower_core_adt_to_typescript(adt, &mut runtime_requirements))
         .collect();
+    let instances = lower_core_instances_to_typescript(
+        &module.instances,
+        &module.adts,
+        &mut runtime_requirements,
+        &mut imports,
+        &mut type_imports,
+    );
     let bindings = module
         .bindings
         .into_iter()
@@ -349,6 +366,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         imports,
         type_imports,
         adts,
+        instances,
         bindings,
         functions,
     };

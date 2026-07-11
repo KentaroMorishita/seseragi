@@ -1,7 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::{
-    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
+    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptInstanceImplementation,
+    TypeScriptModule, TypeScriptShowDictionaryReference, TypeScriptStatement,
 };
 
 pub(super) fn freshen_runtime_imports(module: &mut TypeScriptModule) {
@@ -29,6 +30,9 @@ pub(super) fn freshen_runtime_imports(module: &mut TypeScriptModule) {
             TypeScriptFunction::ConstFunction { body, .. } => rewrite_expr(body, &renames),
         }
     }
+    for instance in &mut module.instances {
+        rewrite_instance_imports(&mut instance.implementation, &renames);
+    }
 }
 
 fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
@@ -45,7 +49,35 @@ fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
         .chain(module.functions.iter().map(|function| match function {
             TypeScriptFunction::ConstFunction { name, .. } => name.clone(),
         }))
+        .chain(
+            module
+                .instances
+                .iter()
+                .map(|instance| instance.dictionary_export.clone()),
+        )
         .collect()
+}
+
+fn rewrite_instance_imports(
+    implementation: &mut TypeScriptInstanceImplementation,
+    renames: &BTreeMap<String, String>,
+) {
+    match implementation {
+        TypeScriptInstanceImplementation::DerivedShow { variants, .. } => {
+            for payload in variants
+                .iter_mut()
+                .filter_map(|variant| variant.payload.as_mut())
+            {
+                if let TypeScriptShowDictionaryReference::Runtime { local, .. } =
+                    &mut payload.dictionary
+                {
+                    if let Some(fresh) = renames.get(local) {
+                        *local = fresh.clone();
+                    }
+                }
+            }
+        }
+    }
 }
 
 fn fresh_name(base: &str, used: &BTreeSet<String>) -> String {
