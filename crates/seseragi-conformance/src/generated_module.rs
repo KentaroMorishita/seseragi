@@ -4,6 +4,7 @@ use std::fs;
 use std::path::Path;
 
 mod imports;
+mod instances;
 mod typecheck;
 
 pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), String> {
@@ -33,6 +34,7 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
         return Err("main.ts artifact mismatch".to_owned());
     }
     check_generated_exports(&actual_metadata_value, &bundle.typescript)?;
+    instances::check_generated_instances(&actual_metadata_value, &bundle.typescript)?;
     let typescript_ir = parse_typescript_ir_json(interface_source_name(case)?, &source)?;
     imports::check_generated_runtime_imports(root, &typescript_ir, &bundle.typescript)?;
     typecheck::check_generated_typescript(root, case, &typescript_ir, &bundle.typescript)?;
