@@ -44,6 +44,7 @@ pub(crate) fn check_typescript_runtime_package(
     }
     check_typescript_runtime_package_typecheck(root)?;
     sum::check_tagged_standard_sums(root)?;
+    effect::check_from_either_boundary(root)?;
     if runtime_helper_is_declared(abi, "effect.stdin.readLine") {
         check_typescript_runtime_read_line(root)?;
     }

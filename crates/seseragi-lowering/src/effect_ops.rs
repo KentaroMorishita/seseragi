@@ -58,6 +58,14 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         source_map_name: "mapError",
     },
     RuntimeEffectOperation {
+        core_name: "effect.fromEither",
+        runtime_feature: "effect.core.fromEither",
+        local_name: "_ssrg_effect_fromEither",
+        module: "@seseragi/runtime/effect",
+        export_name: "fromEither",
+        source_map_name: "fromEither",
+    },
+    RuntimeEffectOperation {
         core_name: "effect.flatMap",
         runtime_feature: "effect.core.flatMap",
         local_name: "_ssrg_effect_flatMap",
@@ -139,5 +147,14 @@ mod tests {
 
         assert_eq!(operation.runtime_feature, "effect.core.mapError");
         assert_eq!(operation.export_name, "mapError");
+    }
+
+    #[test]
+    fn resolves_either_conversion_runtime_abi() {
+        let operation = runtime_effect_operation("effect.fromEither").unwrap();
+
+        assert_eq!(operation.runtime_feature, "effect.core.fromEither");
+        assert_eq!(operation.module, "@seseragi/runtime/effect");
+        assert_eq!(operation.export_name, "fromEither");
     }
 }

@@ -13,10 +13,13 @@ fn collect_intrinsic_issues(expression: &TypedExpr, issues: &mut Vec<EffectFunct
         TypedExpr::EffectCall {
             operation,
             arguments,
+            origin,
             ..
         } => {
             if operation == "std/effect::mapError" {
                 collect_map_error_issues(arguments, issues);
+            } else if operation == "std/effect::fromEither" {
+                collect_from_either_issues(arguments, *origin, issues);
             }
             for argument in arguments {
                 collect_intrinsic_issues(argument, issues);
@@ -76,6 +79,34 @@ fn collect_intrinsic_issues(expression: &TypedExpr, issues: &mut Vec<EffectFunct
         | TypedExpr::String { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => {}
+    }
+}
+
+fn collect_from_either_issues(
+    arguments: &[TypedExpr],
+    origin: seseragi_syntax::ByteSpan,
+    issues: &mut Vec<EffectFunctionIssue>,
+) {
+    let [source] = arguments else {
+        issues.push(EffectFunctionIssue::IntrinsicArityMismatch {
+            primary: origin,
+            expected: 1,
+            actual: arguments.len(),
+        });
+        return;
+    };
+    let actual = super::super::type_ref::inferred_type_from_expr(source);
+    if matches!(actual, TypedType::Hole) {
+        return;
+    }
+    if !matches!(
+        &actual,
+        TypedType::Named { name, arguments } if name == "Either" && arguments.len() == 2
+    ) {
+        issues.push(EffectFunctionIssue::FromEitherSourceNotEither {
+            primary: expression_origin(source),
+            actual,
+        });
     }
 }
 

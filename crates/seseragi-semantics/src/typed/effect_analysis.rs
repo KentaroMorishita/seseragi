@@ -51,6 +51,15 @@ pub(crate) enum EffectFunctionIssue {
         expected: TypedType,
         actual: TypedType,
     },
+    IntrinsicArityMismatch {
+        primary: ByteSpan,
+        expected: usize,
+        actual: usize,
+    },
+    FromEitherSourceNotEither {
+        primary: ByteSpan,
+        actual: TypedType,
+    },
 }
 
 pub(crate) fn analyze_effect_function(

@@ -1,7 +1,6 @@
 use crate::{
     effect_ops::{known_effect_operation_by_surface, KnownEffectOperation},
-    unit_type, SymbolKind, SymbolNamespace, TypedDoStatement, TypedEffect, TypedExpr,
-    TypedParameter, TypedRecordField, TypedType,
+    unit_type, SymbolKind, SymbolNamespace, TypedDoStatement, TypedExpr, TypedParameter,
 };
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
 use std::collections::BTreeMap;
@@ -10,6 +9,10 @@ use super::semantic_types::{SemanticTypeKey, SemanticValueType};
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
 use super::TypedResolution;
+
+mod operation_contract;
+
+use operation_contract::operation_effect;
 
 pub(crate) fn typed_effect_body(
     body: &SurfaceExpr,
@@ -49,91 +52,6 @@ fn type_effect_expression(
     }
 
     analyze_resolved_expression(expression, context).value
-}
-
-fn operation_effect(operation: KnownEffectOperation, arguments: &[TypedExpr]) -> TypedEffect {
-    if operation.surface_name == "mapError" {
-        return map_error_effect(arguments);
-    }
-    let argument_type = || {
-        arguments
-            .first()
-            .map(inferred_type_from_expr)
-            .unwrap_or(TypedType::Hole)
-    };
-    let success = match operation.surface_name {
-        "succeed" => arguments
-            .first()
-            .map(inferred_type_from_expr)
-            .unwrap_or_else(unit_type),
-        _ => operation_success_type(operation),
-    };
-    TypedEffect {
-        environment: TypedType::Record {
-            closed: true,
-            fields: operation
-                .requirement
-                .map(|(name, type_name)| TypedRecordField {
-                    name: name.to_owned(),
-                    optional: false,
-                    type_ref: named_type(type_name),
-                })
-                .into_iter()
-                .collect(),
-        },
-        failure: if operation.surface_name == "fail" {
-            argument_type()
-        } else {
-            named_type(operation.failure_type)
-        },
-        success,
-    }
-}
-
-fn map_error_effect(arguments: &[TypedExpr]) -> TypedEffect {
-    let source = arguments.get(1).and_then(expression_effect);
-    let mapped_failure = arguments
-        .first()
-        .map(inferred_type_from_expr)
-        .and_then(|type_ref| match type_ref {
-            TypedType::Function { result, .. } => Some(*result),
-            _ => None,
-        })
-        .unwrap_or(TypedType::Hole);
-    TypedEffect {
-        environment: source
-            .map(|effect| effect.environment.clone())
-            .unwrap_or(TypedType::Hole),
-        failure: mapped_failure,
-        success: source
-            .map(|effect| effect.success.clone())
-            .unwrap_or(TypedType::Hole),
-    }
-}
-
-fn expression_effect(expression: &TypedExpr) -> Option<&TypedEffect> {
-    match expression {
-        TypedExpr::EffectCall { effect, .. } => Some(effect),
-        _ => None,
-    }
-}
-
-fn operation_success_type(operation: KnownEffectOperation) -> TypedType {
-    TypedType::Named {
-        name: operation.success_type.to_owned(),
-        arguments: operation
-            .success_type_arguments
-            .iter()
-            .map(|name| named_type(name))
-            .collect(),
-    }
-}
-
-fn named_type(name: &str) -> TypedType {
-    TypedType::Named {
-        name: name.to_owned(),
-        arguments: Vec::new(),
-    }
 }
 
 fn effect_application(

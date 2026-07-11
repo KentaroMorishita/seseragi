@@ -184,6 +184,16 @@
       }
     },
     {
+      "id": "effect.core.fromEither",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Either<E, A> -> Effect<R, E, A>",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "fromEither"
+      }
+    },
+    {
       "id": "effect.core.flatMap",
       "kind": "runtime-helper",
       "typescript": "function",

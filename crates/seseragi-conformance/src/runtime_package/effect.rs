@@ -40,3 +40,40 @@ pub(super) fn check_typed_failure_boundary(root: &Path) -> Result<(), String> {
     }
     Ok(())
 }
+
+pub(super) fn check_from_either_boundary(root: &Path) -> Result<(), String> {
+    let output = Command::new("bun")
+        .arg("--eval")
+        .arg(
+            "import { fromEither, run } from \"./src/effect.ts\";\n\
+             import { Left, Right } from \"./src/sum.ts\";\n\
+             let evaluated = 0;\n\
+             const makeRight = () => { evaluated += 1; return Right(7); };\n\
+             const rightEffect = fromEither(makeRight());\n\
+             const cold = evaluated === 1;\n\
+             const rightResult = await run(rightEffect, {});\n\
+             const rightAgain = await run(rightEffect, {});\n\
+             const evaluatedOnce = evaluated === 1;\n\
+             const error = { kind: \"invalid\" };\n\
+             const leftResult = await run(fromEither(Left(error)), {});\n\
+             process.stdout.write(JSON.stringify({ cold, evaluatedOnce, rightResult, rightAgain, leftResult, sameError: leftResult.kind === \"failure\" && leftResult.error === error }));\n",
+        )
+        .current_dir(root.join("runtime/ts"))
+        .output()
+        .map_err(|error| format!("failed to run TypeScript fromEither probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "TypeScript fromEither probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    let expected = b"{\"cold\":true,\"evaluatedOnce\":true,\"rightResult\":{\"kind\":\"success\",\"value\":7},\"rightAgain\":{\"kind\":\"success\",\"value\":7},\"leftResult\":{\"kind\":\"failure\",\"error\":{\"kind\":\"invalid\"}},\"sameError\":true}";
+    if output.stdout != expected {
+        return Err(format!(
+            "TypeScript fromEither probe returned unexpected result: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}

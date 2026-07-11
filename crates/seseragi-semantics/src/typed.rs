@@ -8,6 +8,8 @@ mod analysis;
 mod effect;
 mod effect_analysis;
 mod effect_body;
+#[cfg(test)]
+mod effect_from_either_tests;
 mod function_body;
 mod functions;
 mod interface;

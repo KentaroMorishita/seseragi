@@ -132,6 +132,42 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             )],
             fixes: Vec::new(),
         },
+        EffectFunctionIssue::IntrinsicArityMismatch {
+            primary,
+            expected,
+            actual,
+        } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "call.arity-mismatch".to_owned(),
+            primary: byte_range(primary),
+            related: vec![related(
+                &format!(
+                    "expected {} {}, received {actual}",
+                    expected,
+                    if expected == 1 {
+                        "argument"
+                    } else {
+                        "arguments"
+                    }
+                ),
+                function,
+            )],
+            fixes: Vec::new(),
+        },
+        EffectFunctionIssue::FromEitherSourceNotEither { primary, actual } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.from-either-source-not-either".to_owned(),
+            primary: byte_range(primary),
+            related: vec![related(
+                &format!("expected Either<E, A>, received {}", type_label(&actual)),
+                function,
+            )],
+            fixes: Vec::new(),
+        },
     }
 }
 

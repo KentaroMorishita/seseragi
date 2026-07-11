@@ -57,6 +57,14 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
         success_type: "Never",
         success_type_arguments: &[],
     },
+    KnownEffectOperation {
+        surface_name: "fromEither",
+        semantic_name: "std/effect::fromEither",
+        requirement: None,
+        failure_type: "Never",
+        success_type: "Never",
+        success_type_arguments: &[],
+    },
 ];
 
 pub(crate) fn known_effect_operation_by_surface(
@@ -138,6 +146,18 @@ mod tests {
 
         assert_eq!(operation.semantic_name, "std/effect::mapError");
         assert_eq!(operation.requirement, None);
+    }
+
+    #[test]
+    fn resolves_from_either_as_a_value_conversion() {
+        let operation = known_effect_operation_by_surface("fromEither").unwrap();
+
+        assert_eq!(operation.semantic_name, "std/effect::fromEither");
+        assert_eq!(operation.requirement, None);
+        assert_eq!(
+            known_effect_operation_by_semantic("std/effect::fromEither"),
+            Some(operation)
+        );
     }
 
     #[test]

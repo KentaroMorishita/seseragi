@@ -240,6 +240,20 @@ fn lower_effect_operation(operation: &str) -> String {
         "std/effect::succeed" => "effect.succeed".to_owned(),
         "std/effect::fail" => "effect.fail".to_owned(),
         "std/effect::mapError" => "effect.mapError".to_owned(),
+        "std/effect::fromEither" => "effect.fromEither".to_owned(),
         other => other.to_owned(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::lower_effect_operation;
+
+    #[test]
+    fn lowers_canonical_from_either_operation_name() {
+        assert_eq!(
+            lower_effect_operation("std/effect::fromEither"),
+            "effect.fromEither"
+        );
     }
 }

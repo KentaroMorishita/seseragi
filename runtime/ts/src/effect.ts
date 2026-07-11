@@ -1,3 +1,5 @@
+import type { Either } from "./sum";
+
 export type Unit = undefined;
 
 export type Effect<Environment, Failure, Success> = ((
@@ -50,6 +52,17 @@ export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   return () => {
     throw new TypedFailureSignal(error);
   };
+}
+
+export function fromEither<Failure, Success>(
+  value: Either<Failure, Success>
+): Effect<unknown, Failure, Success> {
+  if (value.tag === "Right") {
+    const success = value.value;
+    return succeed(success);
+  }
+  const failure = value.value;
+  return fail(failure);
 }
 
 export function mapError<Environment, Failure, NextFailure, Success>(
