@@ -21,13 +21,16 @@ pub(crate) fn parse_environment_plan(
         (Some(_), Some(_)) => {}
     }
 
-    let required_by_name = parse_required_environment(required.expect("checked above"))?;
+    let required_by_name = parse_required_environment_fields(run)?;
     parse_host_environment(host.expect("checked above"), &required_by_name)
 }
 
-fn parse_required_environment(
-    value: &serde_json::Value,
+pub(crate) fn parse_required_environment_fields(
+    run: &serde_json::Value,
 ) -> Result<BTreeMap<String, String>, String> {
+    let value = run
+        .get("requiredEnvironment")
+        .ok_or_else(|| "run.json requiredEnvironment is missing".to_owned())?;
     let required = value
         .as_object()
         .ok_or_else(|| "run.json requiredEnvironment must be an object".to_owned())?;

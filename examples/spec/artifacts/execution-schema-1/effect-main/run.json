@@ -5,7 +5,8 @@
   "entry": {
     "module": "artifact/effect-main",
     "export": "main",
-    "compiledModule": "../../stage-schema-1/effect-main/generated-module.json"
+    "compiledModule": "../../stage-schema-1/effect-main/generated-module.json",
+    "typedInterface": "../../typed-interface-schema-1/effect-main/typed-interface.json"
   },
   "invocation": {
     "argument": "Unit",

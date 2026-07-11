@@ -5,7 +5,8 @@
   "entry": {
     "module": "artifact/effect-stdin-read-line",
     "export": "main",
-    "compiledModule": "../../schema-1/effect-stdin-read-line/generated-module.json"
+    "compiledModule": "../../schema-1/effect-stdin-read-line/generated-module.json",
+    "typedInterface": "../../schema-1/effect-stdin-read-line/typed-interface.json"
   },
   "invocation": {
     "argument": "Unit",

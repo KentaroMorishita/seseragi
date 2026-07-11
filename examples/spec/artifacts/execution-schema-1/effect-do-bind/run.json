@@ -5,7 +5,8 @@
   "entry": {
     "module": "artifact/effect-do-bind",
     "export": "main",
-    "compiledModule": "../../schema-1/effect-do-bind/generated-module.json"
+    "compiledModule": "../../schema-1/effect-do-bind/generated-module.json",
+    "typedInterface": "../../schema-1/effect-do-bind/typed-interface.json"
   },
   "invocation": {
     "argument": "Unit",

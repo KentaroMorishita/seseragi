@@ -5,7 +5,8 @@
   "entry": {
     "module": "artifact/effect-compact-console-sequence",
     "export": "announce",
-    "compiledModule": "../../schema-1/effect-compact-console-sequence/generated-module.json"
+    "compiledModule": "../../schema-1/effect-compact-console-sequence/generated-module.json",
+    "typedInterface": "../../schema-1/effect-compact-console-sequence/typed-interface.json"
   },
   "invocation": {
     "argument": "Unit",

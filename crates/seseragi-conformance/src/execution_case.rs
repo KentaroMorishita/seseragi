@@ -2,10 +2,12 @@ use crate::execution;
 use std::fs;
 use std::path::Path;
 
+mod effect_contract;
 pub(crate) mod environment;
 mod exit;
 mod invocation;
 
+use effect_contract::validate_effect_entry_contract;
 use environment::parse_environment_plan;
 use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
@@ -66,6 +68,9 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     }
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
     let invocation = parse_invocation(&run)?;
+    if matches!(&invocation, execution::Invocation::Effect { .. }) {
+        validate_effect_entry_contract(case, &run, entry_export)?;
+    }
     let environment = parse_environment_plan(
         &run,
         matches!(&invocation, execution::Invocation::Effect { .. }),

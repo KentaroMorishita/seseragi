@@ -5,7 +5,8 @@
   "entry": {
     "module": "artifact/effect-parse-hand",
     "export": "parse",
-    "compiledModule": "../../schema-1/effect-parse-hand/generated-module.json"
+    "compiledModule": "../../schema-1/effect-parse-hand/generated-module.json",
+    "typedInterface": "../../schema-1/effect-parse-hand/typed-interface.json"
   },
   "invocation": {
     "arguments": [{ "type": "String", "value": "rock" }],
