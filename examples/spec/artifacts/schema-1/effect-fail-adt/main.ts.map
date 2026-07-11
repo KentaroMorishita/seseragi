@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-fail-adt"
+  ],
+  "sourcesContent": [
+    "pub type AppError =\n  | Invalid\n\npub effect fn reject = fail Invalid\n"
+  ],
+  "names": [
+    "AppError",
+    "Invalid",
+    "reject",
+    "fail"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAEJC"
+}

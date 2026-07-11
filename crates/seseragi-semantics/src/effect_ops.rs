@@ -41,6 +41,14 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
         success_type: "Unit",
         success_type_arguments: &[],
     },
+    KnownEffectOperation {
+        surface_name: "fail",
+        semantic_name: "std/effect::fail",
+        requirement: None,
+        failure_type: "Never",
+        success_type: "Never",
+        success_type_arguments: &[],
+    },
 ];
 
 pub(crate) fn known_effect_operation_by_surface(
@@ -105,6 +113,15 @@ mod tests {
         assert_eq!(operation.requirement, None);
         assert_eq!(operation.failure_type, "Never");
         assert_eq!(operation.success_type, "Unit");
+    }
+
+    #[test]
+    fn resolves_fail_as_a_generic_failure_operation() {
+        let operation = known_effect_operation_by_surface("fail").unwrap();
+
+        assert_eq!(operation.semantic_name, "std/effect::fail");
+        assert_eq!(operation.requirement, None);
+        assert_eq!(operation.success_type, "Never");
     }
 
     #[test]

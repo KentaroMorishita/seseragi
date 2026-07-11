@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-fail-adt",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.unit",
+    "effect.core.fail"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.fail",
+      "local": "_ssrg_effect_fail"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Invalid",
+          "tag": "Invalid",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 24,
+            "end": 31
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 31
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "reject",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_fail",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "Invalid"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 33,
+        "end": 68
+      }
+    }
+  ]
+}

@@ -52,20 +52,18 @@ fn type_effect_expression(
 }
 
 fn operation_effect(operation: KnownEffectOperation, arguments: &[TypedExpr]) -> TypedEffect {
-    let success = if operation.surface_name == "succeed" {
+    let argument_type = || {
         arguments
             .first()
             .map(inferred_type_from_expr)
-            .unwrap_or_else(unit_type)
-    } else {
-        TypedType::Named {
-            name: operation.success_type.to_owned(),
-            arguments: operation
-                .success_type_arguments
-                .iter()
-                .map(|name| named_type(name))
-                .collect(),
-        }
+            .unwrap_or(TypedType::Hole)
+    };
+    let success = match operation.surface_name {
+        "succeed" => arguments
+            .first()
+            .map(inferred_type_from_expr)
+            .unwrap_or_else(unit_type),
+        _ => operation_success_type(operation),
     };
     TypedEffect {
         environment: TypedType::Record {
@@ -80,8 +78,23 @@ fn operation_effect(operation: KnownEffectOperation, arguments: &[TypedExpr]) ->
                 .into_iter()
                 .collect(),
         },
-        failure: named_type(operation.failure_type),
+        failure: if operation.surface_name == "fail" {
+            argument_type()
+        } else {
+            named_type(operation.failure_type)
+        },
         success,
+    }
+}
+
+fn operation_success_type(operation: KnownEffectOperation) -> TypedType {
+    TypedType::Named {
+        name: operation.success_type.to_owned(),
+        arguments: operation
+            .success_type_arguments
+            .iter()
+            .map(|name| named_type(name))
+            .collect(),
     }
 }
 

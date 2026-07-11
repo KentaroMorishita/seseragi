@@ -42,6 +42,14 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         source_map_name: "succeed",
     },
     RuntimeEffectOperation {
+        core_name: "effect.fail",
+        runtime_feature: "effect.core.fail",
+        local_name: "_ssrg_effect_fail",
+        module: "@seseragi/runtime/effect",
+        export_name: "fail",
+        source_map_name: "fail",
+    },
+    RuntimeEffectOperation {
         core_name: "effect.flatMap",
         runtime_feature: "effect.core.flatMap",
         local_name: "_ssrg_effect_flatMap",
@@ -107,5 +115,13 @@ mod tests {
 
         assert_eq!(operation.runtime_feature, "effect.core.flatMap");
         assert_eq!(operation.export_name, "flatMap");
+    }
+
+    #[test]
+    fn resolves_typed_failure_runtime_abi() {
+        let operation = runtime_effect_operation("effect.fail").unwrap();
+
+        assert_eq!(operation.runtime_feature, "effect.core.fail");
+        assert_eq!(operation.export_name, "fail");
     }
 }

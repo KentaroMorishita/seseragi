@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-fail-adt",
+  "adts": [
+    {
+      "symbol": "artifact/effect-fail-adt::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-fail-adt::Invalid",
+          "name": "Invalid",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 24,
+            "end": 31
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 31
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/effect-fail-adt::reject",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 33,
+        "end": 68
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "effect.fail",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/effect-fail-adt::Invalid",
+            "type": {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 61,
+              "end": 68
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 56,
+          "end": 68
+        }
+      }
+    }
+  ]
+}

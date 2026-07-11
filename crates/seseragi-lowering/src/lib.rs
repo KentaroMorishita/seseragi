@@ -489,6 +489,50 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_adt_failure_to_a_cold_runtime_effect() {
+        let source = "pub type AppError = | Invalid\npub effect fn reject = fail Invalid\n";
+        let typed = type_module("artifact/effect-fail-adt/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::EffectOperation {
+            failure, success, ..
+        } = &core.functions[0].body
+        else {
+            panic!("expected effect operation");
+        };
+        assert_eq!(
+            failure,
+            &CoreType::Named {
+                name: "AppError".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert_eq!(
+            success,
+            &CoreType::Named {
+                name: "Never".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(typescript
+            .runtime_requirements
+            .iter()
+            .any(|requirement| requirement == "effect.core.fail"));
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                is_async: false,
+                ..
+            }
+        ));
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle.typescript.contains("_ssrg_effect_fail(Invalid)"));
+        assert!(!bundle.typescript.contains("throw"));
+        assert!(!bundle.typescript.contains("await"));
+    }
+
+    #[test]
     fn lowers_single_sync_effect_as_do_result() {
         let source =
             "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do { println \"hello\" }\n";

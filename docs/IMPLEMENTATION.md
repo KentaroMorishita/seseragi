@@ -373,4 +373,5 @@ Effect方針どおりuser定義error ADTと`mapError`で寄せます。CLI entry
 do内の`let name = pureExpr`はmonadic bindとは別のTyped / Core / TypeScript statementとして保持し、lexical `const`へ
 lowerします。このstatement単独では`flatMap` helperを要求せず、前にEffect bindがある場合だけそのcontinuation内で
 評価されます。EffectCall自身も具体化済み`R / E / A`を保持し、`succeed value`は引数型をsuccess型として
-CoreIrまで渡します。次は`Fail` / `MapError`のfailure型を具体化し、error ADTへ接続します。
+CoreIrまで渡します。`fail error`も引数のADT型から`Effect<{}, E, Never>`へ具体化し、runtimeのprivate
+typed-failure carrierへ接続しました。次は`MapError`でerror ADT同士を明示変換します。

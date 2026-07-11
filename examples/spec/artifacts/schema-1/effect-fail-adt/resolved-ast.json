@@ -1,0 +1,172 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/effect-fail-adt",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "AppError",
+      "nameSpan": {
+        "start": 9,
+        "end": 17
+      },
+      "variants": [
+        {
+          "name": "Invalid",
+          "nameSpan": {
+            "start": 24,
+            "end": 31
+          },
+          "span": {
+            "start": 22,
+            "end": 31
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 31
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "reject",
+      "nameSpan": {
+        "start": 47,
+        "end": 53
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "fail",
+          "span": {
+            "start": 56,
+            "end": 60
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "Invalid",
+          "span": {
+            "start": 61,
+            "end": 68
+          }
+        },
+        "span": {
+          "start": 56,
+          "end": 68
+        }
+      },
+      "span": {
+        "start": 33,
+        "end": 68
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 68
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 31
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 33,
+        "end": 68
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "AppError",
+      "canonical": "artifact/effect-fail-adt::AppError",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 17
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Invalid",
+      "canonical": "artifact/effect-fail-adt::Invalid",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 24,
+        "end": 31
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "reject",
+      "canonical": "artifact/effect-fail-adt::reject",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 47,
+        "end": 53
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "fail",
+      "canonical": "std/prelude::fail",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "fail",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 56,
+        "end": 60
+      }
+    },
+    {
+      "spelling": "Invalid",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 61,
+        "end": 68
+      }
+    }
+  ],
+  "issues": []
+}

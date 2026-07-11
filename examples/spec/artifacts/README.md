@@ -31,6 +31,10 @@ moduleは公開interfaceへ不完全なsymbolを出しません。
 `schema-1/effect-succeed-value/`はgenericな`succeed`を固定します。EffectCall自身が具体化済み`R / E / A`を
 TypedHirに持ち、文字列引数から`Effect<{}, Never, String>`を導出したままCoreIrとruntime callへ渡します。
 
+`schema-1/effect-fail-adt/`はuser定義ADT値をfailure channelへ送るgenericな`fail`を固定します。
+`fail Invalid`は`Effect<{}, AppError, Never>`へ具体化され、生成moduleはcoldなruntime helperを呼ぶだけで
+`throw`や`await`を直接出しません。typed failureとdefectの区別はruntime runner境界が保持します。
+
 SurfaceAstの`let`、`fn`、`effectFn`は有効なsourceでは`body`を必ず持ちます。applicationはcurried
 applicationを保つ一引数nodeとして左へnestし、括弧は`grouped`で保持します。`do`はEffect専用構文として
 扱わず、bind / pure let / expression itemと最後のresultを分離します。item terminatorは規範grammarどおり

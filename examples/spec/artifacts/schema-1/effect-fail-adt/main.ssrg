@@ -1,0 +1,4 @@
+pub type AppError =
+  | Invalid
+
+pub effect fn reject = fail Invalid

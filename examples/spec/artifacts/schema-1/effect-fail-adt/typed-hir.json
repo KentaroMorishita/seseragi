@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-fail-adt",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/effect-fail-adt::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-fail-adt::Invalid",
+          "name": "Invalid",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 24,
+            "end": 31
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 31
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-fail-adt::reject",
+      "visibility": "public",
+      "origin": {
+        "start": 33,
+        "end": 68
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::fail",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/effect-fail-adt::Invalid",
+            "type": {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            "origin": {
+              "start": 61,
+              "end": 68
+            }
+          }
+        ],
+        "origin": {
+          "start": 56,
+          "end": 68
+        }
+      }
+    }
+  ]
+}

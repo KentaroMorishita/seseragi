@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "AppError",
+      "nameSpan": {
+        "start": 9,
+        "end": 17
+      },
+      "variants": [
+        {
+          "name": "Invalid",
+          "nameSpan": {
+            "start": 24,
+            "end": 31
+          },
+          "span": {
+            "start": 22,
+            "end": 31
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 31
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "reject",
+      "nameSpan": {
+        "start": 47,
+        "end": 53
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "fail",
+          "span": {
+            "start": 56,
+            "end": 60
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "Invalid",
+          "span": {
+            "start": 61,
+            "end": 68
+          }
+        },
+        "span": {
+          "start": 56,
+          "end": 68
+        }
+      },
+      "span": {
+        "start": 33,
+        "end": 68
+      }
+    }
+  ]
+}

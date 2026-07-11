@@ -780,6 +780,41 @@ mod tests {
     }
 
     #[test]
+    fn infers_fail_failure_from_an_adt_value() {
+        let typed = type_module(
+            "artifact/effect-fail-adt/main.ssrg",
+            "pub type AppError = | Invalid\npub effect fn reject = fail Invalid\n",
+        );
+
+        let TypedDecl::EffectFn { effect, body, .. } = &typed.declarations[1] else {
+            panic!("expected effect function");
+        };
+        let app_error = TypedType::Named {
+            name: "AppError".to_owned(),
+            arguments: Vec::new(),
+        };
+        let never = TypedType::Named {
+            name: "Never".to_owned(),
+            arguments: Vec::new(),
+        };
+        assert_eq!(effect.failure, app_error);
+        assert_eq!(effect.success, never);
+        assert!(matches!(
+            body,
+            TypedExpr::EffectCall {
+                operation,
+                effect: call_effect,
+                arguments,
+                ..
+            } if operation == "std/effect::fail"
+                && call_effect.failure == app_error
+                && call_effect.success == never
+                && matches!(arguments.as_slice(), [TypedExpr::Variable { name, .. }]
+                    if name == "artifact/effect-fail-adt::Invalid")
+        ));
+    }
+
+    #[test]
     fn type_module_interface_ignores_non_value_exports() {
         let interface = seseragi_syntax::parse_module_interface(
             "artifact/rich/main.ssrg",
