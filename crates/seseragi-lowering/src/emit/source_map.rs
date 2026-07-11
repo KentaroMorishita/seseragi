@@ -1,7 +1,8 @@
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    SourceSpan, TypeScriptBinding, TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptStatement,
+    sum_ops::runtime_sum_constructor_for_feature, SourceSpan, TypeScriptBinding,
+    TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
+    TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -168,6 +169,9 @@ fn runtime_module_for_feature(feature: &str) -> Option<&'static str> {
     runtime_effect_operation_for_feature(feature)
         .map(|operation| operation.module)
         .or_else(|| runtime_int_operation_for_feature(feature).map(|operation| operation.module))
+        .or_else(|| {
+            runtime_sum_constructor_for_feature(feature).map(|constructor| constructor.module)
+        })
 }
 
 fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
@@ -175,6 +179,10 @@ fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
         .map(|operation| operation.source_map_name)
         .or_else(|| {
             runtime_int_operation_for_feature(feature).map(|operation| operation.source_map_name)
+        })
+        .or_else(|| {
+            runtime_sum_constructor_for_feature(feature)
+                .map(|constructor| constructor.source_map_name)
         })
 }
 
@@ -184,6 +192,14 @@ fn collect_expr_names(
     names: &mut Vec<String>,
 ) {
     match expr {
+        TypeScriptExpr::RuntimeReference { name } => {
+            names.push(
+                helper_names
+                    .get(name)
+                    .cloned()
+                    .unwrap_or_else(|| name.clone()),
+            );
+        }
         TypeScriptExpr::Call { callee, arguments }
         | TypeScriptExpr::RuntimeCall { callee, arguments } => {
             names.push(

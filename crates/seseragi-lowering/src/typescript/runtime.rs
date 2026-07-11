@@ -1,3 +1,4 @@
+use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation, CoreExpr, CoreStatement,
     CoreType,
@@ -11,16 +12,21 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
-        CoreExpr::Variable { type_ref, .. } => {
+        CoreExpr::Variable { name, type_ref, .. } => {
+            if let Some(constructor) = runtime_sum_constructor(name) {
+                push_unique(requirements, constructor.runtime_feature);
+            }
             collect_type_runtime_requirement(type_ref, requirements);
         }
         CoreExpr::Call {
+            callee,
             arguments,
             type_ref,
             ..
         } => {
-            // A normal Call is not a runtime operation. Its type and its
-            // argument expressions can still require core representations.
+            if let Some(constructor) = runtime_sum_constructor(callee) {
+                push_unique(requirements, constructor.runtime_feature);
+            }
             collect_type_runtime_requirement(type_ref, requirements);
             for argument in arguments {
                 collect_expr_runtime_requirements(argument, requirements);
@@ -157,11 +163,18 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
-        | CoreExpr::Boolean { .. }
-        | CoreExpr::Variable { .. } => {}
-        CoreExpr::Call { arguments, .. } => {
-            // Calls to user functions are emitted as local TypeScript calls;
-            // only nested effect operations contribute runtime imports.
+        | CoreExpr::Boolean { .. } => {}
+        CoreExpr::Variable { name, .. } => {
+            if let Some(constructor) = runtime_sum_constructor(name) {
+                push_sum_constructor_import(imports, constructor);
+            }
+        }
+        CoreExpr::Call {
+            callee, arguments, ..
+        } => {
+            if let Some(constructor) = runtime_sum_constructor(callee) {
+                push_sum_constructor_import(imports, constructor);
+            }
             for argument in arguments {
                 collect_expr_runtime_imports(argument, imports);
             }
@@ -235,6 +248,19 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             collect_expr_runtime_imports(result, imports);
         }
     }
+}
+
+fn push_sum_constructor_import(
+    imports: &mut Vec<TypeScriptImport>,
+    constructor: crate::sum_ops::RuntimeSumConstructor,
+) {
+    push_import_unique(
+        imports,
+        TypeScriptImport {
+            feature: constructor.runtime_feature.to_owned(),
+            local: constructor.local_name.to_owned(),
+        },
+    );
 }
 
 fn is_int_type(type_ref: &CoreType) -> bool {

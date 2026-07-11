@@ -157,6 +157,9 @@ pub enum TypeScriptExpr {
     Identifier {
         name: String,
     },
+    RuntimeReference {
+        name: String,
+    },
     Tuple {
         elements: Vec<TypeScriptExpr>,
     },
@@ -290,6 +293,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         .into_iter()
         .map(|binding| {
             collect_expr_runtime_requirements(&binding.value, &mut runtime_requirements);
+            collect_expr_runtime_imports(&binding.value, &mut imports);
             TypeScriptBinding::Const {
                 exported: binding.visibility == Visibility::Public,
                 name: local_name(&binding.symbol),

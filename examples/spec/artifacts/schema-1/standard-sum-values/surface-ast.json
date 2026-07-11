@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "HandInputError",
+      "nameSpan": {
+        "start": 35,
+        "end": 49
+      },
+      "variants": [
+        {
+          "name": "InvalidHand",
+          "nameSpan": {
+            "start": 56,
+            "end": 67
+          },
+          "span": {
+            "start": 54,
+            "end": 67
+          }
+        }
+      ],
+      "span": {
+        "start": 26,
+        "end": 67
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "standardSumValues",
+      "nameSpan": {
+        "start": 76,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 94,
+            "end": 98
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 100,
+              "end": 104
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "HandInputError",
+                "span": {
+                  "start": 116,
+                  "end": 130
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 132,
+                  "end": 136
+                }
+              }
+            ],
+            "span": {
+              "start": 109,
+              "end": 137
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "HandInputError",
+                "span": {
+                  "start": 146,
+                  "end": 160
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 162,
+                  "end": 166
+                }
+              }
+            ],
+            "span": {
+              "start": 139,
+              "end": 167
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 175,
+                  "end": 179
+                }
+              }
+            ],
+            "span": {
+              "start": 169,
+              "end": 180
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 188,
+                  "end": 192
+                }
+              }
+            ],
+            "span": {
+              "start": 182,
+              "end": 193
+            }
+          }
+        ],
+        "span": {
+          "start": 108,
+          "end": 194
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Right",
+              "span": {
+                "start": 200,
+                "end": 205
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "Rock",
+              "span": {
+                "start": 206,
+                "end": 210
+              }
+            },
+            "span": {
+              "start": 200,
+              "end": 210
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Left",
+              "span": {
+                "start": 212,
+                "end": 216
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "InvalidHand",
+              "span": {
+                "start": 217,
+                "end": 228
+              }
+            },
+            "span": {
+              "start": 212,
+              "end": 228
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Just",
+              "span": {
+                "start": 230,
+                "end": 234
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "Rock",
+              "span": {
+                "start": 235,
+                "end": 239
+              }
+            },
+            "span": {
+              "start": 230,
+              "end": 239
+            }
+          },
+          {
+            "kind": "name",
+            "name": "Nothing",
+            "span": {
+              "start": 241,
+              "end": 248
+            }
+          }
+        ],
+        "span": {
+          "start": 199,
+          "end": 249
+        }
+      },
+      "span": {
+        "start": 69,
+        "end": 249
+      }
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptStatement,
+    sum_ops::runtime_sum_constructor_for_feature, TypeScriptAdt, TypeScriptAdtVariant,
+    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
@@ -110,6 +110,10 @@ fn render_typescript(module: &TypeScriptModule) -> String {
             .or_else(|| {
                 runtime_int_operation_for_feature(&import.feature)
                     .map(|operation| (operation.module, operation.export_name))
+            })
+            .or_else(|| {
+                runtime_sum_constructor_for_feature(&import.feature)
+                    .map(|constructor| (constructor.module, constructor.export_name))
             });
         if let Some((runtime_module, export_name)) = helper {
             let rendered = format!("{export_name} as {}", import.local);
@@ -280,6 +284,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::String { value } => format!("{value:?}"),
         TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Identifier { name } => name.clone(),
+        TypeScriptExpr::RuntimeReference { name } => name.clone(),
         TypeScriptExpr::Tuple { elements } => format!(
             "[{}] as const",
             elements

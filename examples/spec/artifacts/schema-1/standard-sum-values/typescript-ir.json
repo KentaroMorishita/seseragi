@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/standard-sum-values",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.unit",
+    "core.either",
+    "core.maybe",
+    "core.either.right",
+    "core.either.left",
+    "core.maybe.just",
+    "core.maybe.nothing"
+  ],
+  "imports": [
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Hand",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Rock",
+          "tag": "Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "exported": true,
+      "name": "HandInputError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "InvalidHand",
+          "tag": "InvalidHand",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 56,
+            "end": 67
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 26,
+        "end": 67
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "standardSumValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_either_Right",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "Rock"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_either_Left",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "InvalidHand"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "Rock"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_maybe_Nothing"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 69,
+        "end": 249
+      }
+    }
+  ]
+}

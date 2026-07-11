@@ -1,0 +1,175 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/standard-sum-values",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/standard-sum-values::Hand",
+      "namespace": "type",
+      "name": "Hand",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Hand",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-sum-values::Rock",
+      "namespace": "value",
+      "name": "Rock",
+      "constructorOf": "artifact/standard-sum-values::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-sum-values::HandInputError",
+      "namespace": "type",
+      "name": "HandInputError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 26,
+        "end": 67
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "HandInputError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-sum-values::InvalidHand",
+      "namespace": "value",
+      "name": "InvalidHand",
+      "constructorOf": "artifact/standard-sum-values::HandInputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 56,
+        "end": 67
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "HandInputError",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-sum-values::standardSumValues",
+      "namespace": "value",
+      "name": "standardSumValues",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 69,
+        "end": 249
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "HandInputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

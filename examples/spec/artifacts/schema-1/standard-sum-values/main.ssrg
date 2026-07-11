@@ -1,0 +1,8 @@
+pub type Hand =
+  | Rock
+
+pub type HandInputError =
+  | InvalidHand
+
+pub fn standardSumValues unit: Unit -> (Either<HandInputError, Hand>, Either<HandInputError, Hand>, Maybe<Hand>, Maybe<Hand>) =
+  (Right Rock, Left InvalidHand, Just Rock, Nothing)

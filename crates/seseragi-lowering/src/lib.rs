@@ -3,6 +3,7 @@ mod effect_ops;
 mod emit;
 mod int_ops;
 mod span;
+mod sum_ops;
 mod typescript;
 
 pub use core::{

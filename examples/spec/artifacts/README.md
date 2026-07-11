@@ -59,6 +59,11 @@ ADT constructorと組み合わせて固定します。openなString domainには
 TypeScriptのstrict equalityへlowerします。`HandParse`はstandard `Either`接続前のmonomorphicなdomain resultであり、
 `Maybe` / `Either`のpublic ABIを代用するものではありません。
 
+`schema-1/standard-sum-values/`はstandard `Either` / `Maybe`の4 constructorをlocal ADT値と組み合わせ、
+期待型によるgeneric具体化からTypeScript runtime bindingまでを固定します。`Right` / `Left` / `Just`はimport済みcall、
+`Nothing`はcallしないsingleton referenceです。TypeScriptIrのruntime requirementとsource map名もcanonical registryから
+生成し、localな同名constructorはruntime importへ変換しません。
+
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
 最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。
 

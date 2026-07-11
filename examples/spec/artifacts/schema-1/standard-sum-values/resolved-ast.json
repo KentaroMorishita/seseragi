@@ -1,0 +1,687 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/standard-sum-values",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "HandInputError",
+      "nameSpan": {
+        "start": 35,
+        "end": 49
+      },
+      "variants": [
+        {
+          "name": "InvalidHand",
+          "nameSpan": {
+            "start": 56,
+            "end": 67
+          },
+          "span": {
+            "start": 54,
+            "end": 67
+          }
+        }
+      ],
+      "span": {
+        "start": 26,
+        "end": 67
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "standardSumValues",
+      "nameSpan": {
+        "start": 76,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 94,
+            "end": 98
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 100,
+              "end": 104
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "HandInputError",
+                "span": {
+                  "start": 116,
+                  "end": 130
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 132,
+                  "end": 136
+                }
+              }
+            ],
+            "span": {
+              "start": 109,
+              "end": 137
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "HandInputError",
+                "span": {
+                  "start": 146,
+                  "end": 160
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 162,
+                  "end": 166
+                }
+              }
+            ],
+            "span": {
+              "start": 139,
+              "end": 167
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 175,
+                  "end": 179
+                }
+              }
+            ],
+            "span": {
+              "start": 169,
+              "end": 180
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "span": {
+                  "start": 188,
+                  "end": 192
+                }
+              }
+            ],
+            "span": {
+              "start": 182,
+              "end": 193
+            }
+          }
+        ],
+        "span": {
+          "start": 108,
+          "end": 194
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Right",
+              "span": {
+                "start": 200,
+                "end": 205
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "Rock",
+              "span": {
+                "start": 206,
+                "end": 210
+              }
+            },
+            "span": {
+              "start": 200,
+              "end": 210
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Left",
+              "span": {
+                "start": 212,
+                "end": 216
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "InvalidHand",
+              "span": {
+                "start": 217,
+                "end": 228
+              }
+            },
+            "span": {
+              "start": 212,
+              "end": 228
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Just",
+              "span": {
+                "start": 230,
+                "end": 234
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "Rock",
+              "span": {
+                "start": 235,
+                "end": 239
+              }
+            },
+            "span": {
+              "start": 230,
+              "end": 239
+            }
+          },
+          {
+            "kind": "name",
+            "name": "Nothing",
+            "span": {
+              "start": 241,
+              "end": 248
+            }
+          }
+        ],
+        "span": {
+          "start": 199,
+          "end": 249
+        }
+      },
+      "span": {
+        "start": 69,
+        "end": 249
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 249
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 26,
+        "end": 67
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 69,
+        "end": 249
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Hand",
+      "canonical": "artifact/standard-sum-values::Hand",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Rock",
+      "canonical": "artifact/standard-sum-values::Rock",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 20,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "HandInputError",
+      "canonical": "artifact/standard-sum-values::HandInputError",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 35,
+        "end": 49
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "InvalidHand",
+      "canonical": "artifact/standard-sum-values::InvalidHand",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 56,
+        "end": 67
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "standardSumValues",
+      "canonical": "artifact/standard-sum-values::standardSumValues",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 76,
+        "end": 93
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 94,
+        "end": 98
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Either",
+      "canonical": "std/prelude::Either",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "E",
+      "canonical": "std/prelude::Either::E",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "A",
+      "canonical": "std/prelude::Either::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Left",
+      "canonical": "std/prelude::Left",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "Right",
+      "canonical": "std/prelude::Right",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 100,
+        "end": 104
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 109,
+        "end": 137
+      }
+    },
+    {
+      "spelling": "HandInputError",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 116,
+        "end": 130
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 132,
+        "end": 136
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 139,
+        "end": 167
+      }
+    },
+    {
+      "spelling": "HandInputError",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 146,
+        "end": 160
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 162,
+        "end": 166
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 169,
+        "end": 180
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 175,
+        "end": 179
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 182,
+        "end": 193
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 188,
+        "end": 192
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 200,
+        "end": 205
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 206,
+        "end": 210
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 212,
+        "end": 216
+      }
+    },
+    {
+      "spelling": "InvalidHand",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 217,
+        "end": 228
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 230,
+        "end": 234
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 235,
+        "end": 239
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 241,
+        "end": 248
+      }
+    }
+  ],
+  "issues": []
+}

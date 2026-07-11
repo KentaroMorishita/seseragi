@@ -60,6 +60,11 @@ fn fresh_name(base: &str, used: &BTreeSet<String>) -> String {
 
 fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
     match expr {
+        TypeScriptExpr::RuntimeReference { name } => {
+            if let Some(fresh) = renames.get(name) {
+                *name = fresh.clone();
+            }
+        }
         TypeScriptExpr::RuntimeCall { callee, arguments } => {
             if let Some(fresh) = renames.get(callee) {
                 *callee = fresh.clone();

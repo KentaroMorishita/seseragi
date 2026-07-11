@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/standard-sum-values"
+  ],
+  "sourcesContent": [
+    "pub type Hand =\n  | Rock\n\npub type HandInputError =\n  | InvalidHand\n\npub fn standardSumValues unit: Unit -> (Either<HandInputError, Hand>, Either<HandInputError, Hand>, Maybe<Hand>, Maybe<Hand>) =\n  (Right Rock, Left InvalidHand, Just Rock, Nothing)\n"
+  ],
+  "names": [
+    "Hand",
+    "Rock",
+    "HandInputError",
+    "InvalidHand",
+    "standardSumValues",
+    "Right",
+    "Left",
+    "Just",
+    "Nothing"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAEJC;;AACIC;AAEJC"
+}

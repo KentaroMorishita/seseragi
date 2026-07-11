@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "module": "artifact/standard-sum-values",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.unit",
+      "core.either",
+      "core.maybe",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe.just",
+      "core.maybe.nothing"
+    ]
+  },
+  "exports": [
+    "Rock",
+    "InvalidHand",
+    "standardSumValues"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

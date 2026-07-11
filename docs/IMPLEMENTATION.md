@@ -352,8 +352,10 @@ resolverでlazyにmaterializeし、関数戻り型、注釈付き`let`、`if` / 
 
 P1-5のruntime境界も着手しています。TypeScript ABIは`Maybe`と`Either`をreadonly tagged unionとして表し、
 `readLine`は`Maybe<String>`を返して入力行を`Just`、EOFをsingleton `Nothing`にします。generated moduleは
-`core.maybe` / `core.either` requirementを型から収集します。standard constructor valueをgenerated moduleの
-runtime importへ解決するbackend sliceと、これを使う`parseHand`のEffect接続は引き続き未完了です。
+`core.maybe` / `core.either` requirementを型から収集します。standard constructorはcanonical symbolだけを
+backend registryで`@seseragi/runtime/sum`のimportへ解決し、localな同名ADTは変換しません。`Nothing`は
+singleton identityを保つruntime reference、`Just` / `Left` / `Right`はruntime callとしてTypeScriptIrに残します。
+これを使う`parseHand`のEffect接続は引き続き未完了です。
 
 P1-0は新機能の前提です。SurfaceAstが式を所有しても、TypedHirが再びsource tokenを走査するならmatchやpatternを
 追加するたびに別parserが増えます。したがってpure expression consumerをSurfaceAstへ移してからtupleへ進み、

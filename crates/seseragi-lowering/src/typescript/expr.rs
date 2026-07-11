@@ -1,5 +1,6 @@
 use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation;
+use crate::sum_ops::runtime_sum_constructor;
 use crate::{CoreExpr, CoreStatement, CoreType};
 
 use super::decision::lower_core_decision;
@@ -13,15 +14,29 @@ pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
-        CoreExpr::Variable { name, .. } => TypeScriptExpr::Identifier {
-            name: local_name(&name),
-        },
+        CoreExpr::Variable { name, .. } => runtime_sum_constructor(&name)
+            .map(|constructor| TypeScriptExpr::RuntimeReference {
+                name: constructor.local_name.to_owned(),
+            })
+            .unwrap_or_else(|| TypeScriptExpr::Identifier {
+                name: local_name(&name),
+            }),
         CoreExpr::Call {
             callee, arguments, ..
-        } => TypeScriptExpr::Call {
-            callee: local_name(&callee),
-            arguments: lower_core_expressions(arguments),
-        },
+        } => {
+            let arguments = lower_core_expressions(arguments);
+            if let Some(constructor) = runtime_sum_constructor(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: constructor.local_name.to_owned(),
+                    arguments,
+                }
+            } else {
+                TypeScriptExpr::Call {
+                    callee: local_name(&callee),
+                    arguments,
+                }
+            }
+        }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
             elements: lower_core_expressions(elements),
         },
@@ -107,7 +122,8 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::String { .. }
         | TypeScriptExpr::Boolean { .. }
-        | TypeScriptExpr::Identifier { .. } => false,
+        | TypeScriptExpr::Identifier { .. }
+        | TypeScriptExpr::RuntimeReference { .. } => false,
     }
 }
 
