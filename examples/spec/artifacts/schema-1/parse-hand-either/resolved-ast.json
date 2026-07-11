@@ -1,0 +1,738 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/parse-hand-either",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Hand",
+      "nameSpan": {
+        "start": 9,
+        "end": 13
+      },
+      "variants": [
+        {
+          "name": "Rock",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "span": {
+            "start": 18,
+            "end": 24
+          }
+        },
+        {
+          "name": "Paper",
+          "nameSpan": {
+            "start": 29,
+            "end": 34
+          },
+          "span": {
+            "start": 27,
+            "end": 34
+          }
+        },
+        {
+          "name": "Scissors",
+          "nameSpan": {
+            "start": 39,
+            "end": 47
+          },
+          "span": {
+            "start": 37,
+            "end": 47
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "HandInputError",
+      "nameSpan": {
+        "start": 58,
+        "end": 72
+      },
+      "variants": [
+        {
+          "name": "UnknownHand",
+          "nameSpan": {
+            "start": 79,
+            "end": 90
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 91,
+              "end": 97
+            }
+          },
+          "span": {
+            "start": 77,
+            "end": 97
+          }
+        }
+      ],
+      "span": {
+        "start": 49,
+        "end": 97
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "parseHand",
+      "nameSpan": {
+        "start": 106,
+        "end": 115
+      },
+      "parameters": [
+        {
+          "name": "input",
+          "nameSpan": {
+            "start": 116,
+            "end": 121
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 123,
+              "end": 129
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "HandInputError",
+            "span": {
+              "start": 140,
+              "end": 154
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Hand",
+            "span": {
+              "start": 156,
+              "end": 160
+            }
+          }
+        ],
+        "span": {
+          "start": 133,
+          "end": 161
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "input",
+          "span": {
+            "start": 172,
+            "end": 177
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"rock\"",
+              "span": {
+                "start": 184,
+                "end": 190
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 194,
+                  "end": 199
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Rock",
+                "span": {
+                  "start": 200,
+                  "end": 204
+                }
+              },
+              "span": {
+                "start": 194,
+                "end": 204
+              }
+            },
+            "span": {
+              "start": 184,
+              "end": 204
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"paper\"",
+              "span": {
+                "start": 209,
+                "end": 216
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 220,
+                  "end": 225
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Paper",
+                "span": {
+                  "start": 226,
+                  "end": 231
+                }
+              },
+              "span": {
+                "start": 220,
+                "end": 231
+              }
+            },
+            "span": {
+              "start": 209,
+              "end": 231
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"scissors\"",
+              "span": {
+                "start": 236,
+                "end": 246
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 250,
+                  "end": 255
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Scissors",
+                "span": {
+                  "start": 256,
+                  "end": 264
+                }
+              },
+              "span": {
+                "start": 250,
+                "end": 264
+              }
+            },
+            "span": {
+              "start": 236,
+              "end": 264
+            }
+          },
+          {
+            "pattern": {
+              "kind": "name",
+              "name": "other",
+              "nameSpan": {
+                "start": 269,
+                "end": 274
+              },
+              "span": {
+                "start": 269,
+                "end": 274
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Left",
+                "span": {
+                  "start": 278,
+                  "end": 282
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "UnknownHand",
+                    "span": {
+                      "start": 284,
+                      "end": 295
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "other",
+                    "span": {
+                      "start": 296,
+                      "end": 301
+                    }
+                  },
+                  "span": {
+                    "start": 284,
+                    "end": 301
+                  }
+                },
+                "span": {
+                  "start": 283,
+                  "end": 302
+                }
+              },
+              "span": {
+                "start": 278,
+                "end": 302
+              }
+            },
+            "span": {
+              "start": 269,
+              "end": 302
+            }
+          }
+        ],
+        "span": {
+          "start": 166,
+          "end": 306
+        }
+      },
+      "span": {
+        "start": 99,
+        "end": 306
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 306
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 49,
+        "end": 97
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 99,
+        "end": 306
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 184,
+        "end": 204
+      }
+    },
+    {
+      "id": 6,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 209,
+        "end": 231
+      }
+    },
+    {
+      "id": 7,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 236,
+        "end": 264
+      }
+    },
+    {
+      "id": 8,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 269,
+        "end": 302
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Hand",
+      "canonical": "artifact/parse-hand-either::Hand",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Rock",
+      "canonical": "artifact/parse-hand-either::Rock",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 20,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Paper",
+      "canonical": "artifact/parse-hand-either::Paper",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 29,
+        "end": 34
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Scissors",
+      "canonical": "artifact/parse-hand-either::Scissors",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 39,
+        "end": 47
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "HandInputError",
+      "canonical": "artifact/parse-hand-either::HandInputError",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 58,
+        "end": 72
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "UnknownHand",
+      "canonical": "artifact/parse-hand-either::UnknownHand",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 79,
+        "end": 90
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "parseHand",
+      "canonical": "artifact/parse-hand-either::parseHand",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 106,
+        "end": 115
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "input",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 116,
+        "end": 121
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "Either",
+      "canonical": "std/prelude::Either",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "E",
+      "canonical": "std/prelude::Either::E",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "A",
+      "canonical": "std/prelude::Either::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "Left",
+      "canonical": "std/prelude::Left",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Right",
+      "canonical": "std/prelude::Right",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "other",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 8,
+      "origin": {
+        "start": 269,
+        "end": 274
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 91,
+        "end": 97
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 123,
+        "end": 129
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 133,
+        "end": 161
+      }
+    },
+    {
+      "spelling": "HandInputError",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 140,
+        "end": 154
+      }
+    },
+    {
+      "spelling": "Hand",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 156,
+        "end": 160
+      }
+    },
+    {
+      "spelling": "input",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 172,
+        "end": 177
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 194,
+        "end": 199
+      }
+    },
+    {
+      "spelling": "Rock",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 200,
+        "end": 204
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 220,
+        "end": 225
+      }
+    },
+    {
+      "spelling": "Paper",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 226,
+        "end": 231
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 250,
+        "end": 255
+      }
+    },
+    {
+      "spelling": "Scissors",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 256,
+        "end": 264
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 278,
+        "end": 282
+      }
+    },
+    {
+      "spelling": "UnknownHand",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 284,
+        "end": 295
+      }
+    },
+    {
+      "spelling": "other",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 296,
+        "end": 301
+      }
+    }
+  ],
+  "issues": []
+}

@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/parse-hand-either",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/parse-hand-either::Hand",
+      "namespace": "type",
+      "name": "Hand",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Hand",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/parse-hand-either::Rock",
+      "namespace": "value",
+      "name": "Rock",
+      "constructorOf": "artifact/parse-hand-either::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/parse-hand-either::Paper",
+      "namespace": "value",
+      "name": "Paper",
+      "constructorOf": "artifact/parse-hand-either::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 29,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/parse-hand-either::Scissors",
+      "namespace": "value",
+      "name": "Scissors",
+      "constructorOf": "artifact/parse-hand-either::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 39,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/parse-hand-either::HandInputError",
+      "namespace": "type",
+      "name": "HandInputError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 49,
+        "end": 97
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "HandInputError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/parse-hand-either::UnknownHand",
+      "namespace": "value",
+      "name": "UnknownHand",
+      "constructorOf": "artifact/parse-hand-either::HandInputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 79,
+        "end": 90
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "HandInputError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/parse-hand-either::parseHand",
+      "namespace": "value",
+      "name": "parseHand",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 99,
+        "end": 306
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "HandInputError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

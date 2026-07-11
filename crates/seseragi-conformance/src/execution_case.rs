@@ -2,6 +2,10 @@ use crate::execution;
 use std::fs;
 use std::path::Path;
 
+mod invocation;
+
+use invocation::parse_invocation;
+
 pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), String> {
     let run_path = case.join("run.json");
     let run_raw = fs::read_to_string(&run_path)
@@ -107,42 +111,6 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     Ok(())
 }
 
-fn parse_invocation(run: &serde_json::Value) -> Result<execution::Invocation, String> {
-    if run
-        .pointer("/invocation/argument")
-        .and_then(|value| value.as_str())
-        != Some("Unit")
-    {
-        return Err("run.json invocation.argument must be Unit".to_owned());
-    }
-    let effect = run.pointer("/invocation/effect");
-    let pure = run.pointer("/invocation/pure");
-    match (effect, pure) {
-        (Some(effect), None)
-            if effect.pointer("/cold").and_then(|value| value.as_bool()) == Some(true)
-                && effect
-                    .pointer("/rootScope")
-                    .and_then(|value| value.as_bool())
-                    == Some(true) =>
-        {
-            Ok(execution::Invocation::Effect)
-        }
-        (None, Some(pure))
-            if pure.pointer("/result").and_then(|value| value.as_str()) == Some("json") =>
-        {
-            Ok(execution::Invocation::PureJson)
-        }
-        (Some(_), Some(_)) => {
-            Err("run.json invocation must select exactly one execution mode".to_owned())
-        }
-        (Some(_), None) => {
-            Err("run.json effect invocation must be cold and use the root scope".to_owned())
-        }
-        (None, Some(_)) => Err("run.json pure invocation result must be json".to_owned()),
-        (None, None) => Err("run.json invocation mode is missing".to_owned()),
-    }
-}
-
 fn read_stdin_input(case: &Path, run: &serde_json::Value) -> Result<String, String> {
     let Some(input) = run.get("input") else {
         return Ok(String::new());
@@ -214,8 +182,7 @@ fn expected_string_array(
 
 #[cfg(test)]
 mod tests {
-    use super::{expected_trace_stdout, parse_invocation, read_stdin_input};
-    use crate::execution::Invocation;
+    use super::{expected_trace_stdout, read_stdin_input};
     use serde_json::json;
     use std::path::Path;
 
@@ -244,43 +211,5 @@ mod tests {
         let error = expected_trace_stdout(&json!({ "expected": { "trace": {} } })).unwrap_err();
 
         assert!(error.contains("expected.trace"));
-    }
-
-    #[test]
-    fn accepts_explicit_effect_and_pure_invocations() {
-        assert_eq!(
-            parse_invocation(&json!({
-                "invocation": {
-                    "argument": "Unit",
-                    "effect": { "cold": true, "rootScope": true }
-                }
-            }))
-            .unwrap(),
-            Invocation::Effect
-        );
-        assert_eq!(
-            parse_invocation(&json!({
-                "invocation": {
-                    "argument": "Unit",
-                    "pure": { "result": "json" }
-                }
-            }))
-            .unwrap(),
-            Invocation::PureJson
-        );
-    }
-
-    #[test]
-    fn rejects_ambiguous_execution_invocation() {
-        let error = parse_invocation(&json!({
-            "invocation": {
-                "argument": "Unit",
-                "effect": { "cold": true, "rootScope": true },
-                "pure": { "result": "json" }
-            }
-        }))
-        .unwrap_err();
-
-        assert!(error.contains("exactly one"));
     }
 }

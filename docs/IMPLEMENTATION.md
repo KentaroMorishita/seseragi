@@ -356,7 +356,8 @@ P1-5のruntime境界も着手しています。TypeScript ABIは`Maybe`と`Eithe
 backend registryで`@seseragi/runtime/sum`のimportへ解決し、localな同名ADTは変換しません。`Nothing`は
 singleton identityを保つruntime reference、`Just` / `Left` / `Right`はruntime callとしてTypeScriptIrに残します。
 `standard-sum-values` execution fixtureは生成TypeScriptのpure Unit entryを実際に呼び、4つのtagged valueをJSONで
-比較します。これを使う`parseHand`のEffect接続は引き続き未完了です。
+比較します。`parse-hand-either`はString literal matchを`Either<HandInputError, Hand>`へ載せ替え、typed String引数を
+受けるpure executionで正常入力と不正入力を比較します。これを使う`parseHand`のEffect接続は引き続き未完了です。
 
 P1-0は新機能の前提です。SurfaceAstが式を所有しても、TypedHirが再びsource tokenを走査するならmatchやpatternを
 追加するたびに別parserが増えます。したがってpure expression consumerをSurfaceAstへ移してからtupleへ進み、

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "case": "parse-hand-either-valid",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/parse-hand-either",
+    "export": "parseHand",
+    "compiledModule": "../../schema-1/parse-hand-either/generated-module.json"
+  },
+  "invocation": {
+    "arguments": [{ "type": "String", "value": "rock" }],
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.either.right",
+      "core.either.left"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}
