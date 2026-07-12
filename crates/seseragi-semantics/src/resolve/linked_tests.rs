@@ -6,6 +6,7 @@ use seseragi_project::{link_module, ModuleLinkTarget};
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::BTreeMap;
 
+mod namespace_constructors;
 mod namespace_types;
 
 #[test]
