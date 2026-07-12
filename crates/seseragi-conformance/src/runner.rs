@@ -128,7 +128,7 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
         record_failure(
             "projectCompile",
             case,
-            check_project_compile_case(case),
+            check_project_compile_case(&root, case),
             json,
             &mut failures,
         );

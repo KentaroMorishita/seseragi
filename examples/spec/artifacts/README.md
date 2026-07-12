@@ -134,6 +134,8 @@ cargo run -p seseragi-conformance --bin write_schema1_artifact -- \
 logical module ID、source、generated ESM output、artifact directory、labeled import edge、期待topological orderを明示し、
 single-file schemaの`main.ssrg`規約を流用しません。各moduleは`typed-hir.json`、`typed-interface.json`、`core-ir.json`、
 `typescript-ir.json`、`generated-module.json`、`main.ts`、`main.ts.map`を持ちます。正規更新は専用writerを使います。
+artifact比較後、runnerは各`main.ts`をmetadataのplanned `.ts` output pathへstageし、project全体をTypeScriptで
+type-checkします。生成された`.js` ESM importはこの検証のために書き換えません。
 
 ```sh
 cargo run -p seseragi-conformance --bin write_project_schema1_artifact -- \

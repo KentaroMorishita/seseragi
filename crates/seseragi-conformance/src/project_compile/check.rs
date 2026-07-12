@@ -1,9 +1,10 @@
 use super::compile::compile_project_compile_case;
+use super::typecheck::check_project_typescript;
 use std::fs;
 use std::path::Path;
 
 /// Compares all generated per-module artifacts for one project fixture.
-pub(crate) fn check_project_compile_case(case: &Path) -> Result<(), String> {
+pub(crate) fn check_project_compile_case(root: &Path, case: &Path) -> Result<(), String> {
     let compiled_case = compile_project_compile_case(case)?;
     if compiled_case.compiled.order != compiled_case.descriptor.expected_order {
         return Err(format!(
@@ -38,6 +39,7 @@ pub(crate) fn check_project_compile_case(case: &Path) -> Result<(), String> {
             &compiled.generated.source_map,
         )?;
     }
+    check_project_typescript(root, case, &compiled_case)?;
     Ok(())
 }
 

@@ -7,5 +7,7 @@ mod model;
 #[cfg(test)]
 #[path = "project_compile/tests.rs"]
 mod tests;
+#[path = "project_compile/typecheck.rs"]
+mod typecheck;
 
 pub(crate) use check::check_project_compile_case;
