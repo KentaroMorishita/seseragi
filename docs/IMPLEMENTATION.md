@@ -469,9 +469,11 @@ TypedHirへ接続していないためP2-2は未完了です。
 `(namespace, symbol)`で識別します。non-opaqueな公開newtypeは型schemeと、一引数constructor schemeの両方をinterfaceへ
 出し、一つのnamed importが両namespaceを導入します。opaque newtypeは型だけを公開します。
 
-公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。`SES-N0102`を正しく
-出す前にbodyを公開せずdeclaration name / namespace / visibilityだけを持つheader contractを追加します。この前提を
-後回しにしてmissing exportを一律`SES-N0104`へ変換する経路は作りません。
+公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
+同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ
+`ModuleHeader`も生成します。private宣言と、公開opaque ADT / newtypeのhidden constructorもheaderへ残し、current moduleの
+`LinkedModule`まで保持します。これは公開interface artifactやdependency cacheとして配布しません。dependency targetの
+headerをlink error分類へ接続するまでは`SES-N0102`を出さず、missing exportを一律`SES-N0104`へ変換しません。
 
 P2-1以降では、次の二層を維持します。
 

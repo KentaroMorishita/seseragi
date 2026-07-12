@@ -18,7 +18,7 @@ pub use interface::{
     parse_import_free_module_interface, parse_module_interface, parse_unlinked_module_interface,
     ImportOccurrence, InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport,
     InterfaceInstance, InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType,
-    ModuleInterface, UnlinkedModuleInterface,
+    ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
 };
 pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};

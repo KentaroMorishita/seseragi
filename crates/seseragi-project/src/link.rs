@@ -56,6 +56,7 @@ pub fn link_module(
     }
     unlinked.interface.dependencies = interface_dependencies;
     Ok(LinkedModule {
+        header: unlinked.header,
         interface: unlinked.interface,
         dependencies,
     })

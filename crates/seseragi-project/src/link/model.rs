@@ -1,7 +1,10 @@
-use seseragi_syntax::{ByteSpan, InterfaceExport, InterfaceOperator, ModuleInterface};
+use seseragi_syntax::{
+    ByteSpan, InterfaceExport, InterfaceOperator, ModuleHeader, ModuleInterface,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct LinkedModule {
+    pub header: ModuleHeader,
     pub interface: ModuleInterface,
     pub dependencies: Vec<LinkedDependency>,
 }

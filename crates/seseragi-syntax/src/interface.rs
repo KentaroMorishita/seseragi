@@ -7,11 +7,14 @@ use crate::surface::parse_surface_ast;
 
 mod dependencies;
 mod exports;
+mod header;
 mod instances;
 mod types;
 
 use dependencies::dependency_from_surface_import;
 use exports::{exports_from_surface_decl, operator_from_surface_decl};
+use header::{empty_module_header, module_header_from_surface};
+pub use header::{ModuleHeader, ModuleHeaderName};
 use instances::instance_from_surface_decl;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -22,6 +25,7 @@ pub struct ImportOccurrence {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UnlinkedModuleInterface {
+    pub header: ModuleHeader,
     pub interface: ModuleInterface,
     pub imports: Vec<crate::SurfaceImport>,
 }
@@ -87,6 +91,7 @@ fn parse_unlinked_module_interface_inner(
     let cst = parse_cst(source_file.clone(), source);
     if !cst.errors.is_empty() {
         return UnlinkedModuleInterface {
+            header: empty_module_header(module_name.clone(), cst.source.clone()),
             interface: empty_interface(module_name, cst.source),
             imports: Vec::new(),
         };
@@ -101,11 +106,13 @@ fn parse_unlinked_module_interface_inner(
             .count()
     {
         return UnlinkedModuleInterface {
+            header: empty_module_header(module_name.clone(), cst.source.clone()),
             interface: empty_interface(module_name, cst.source),
             imports: Vec::new(),
         };
     }
 
+    let header = module_header_from_surface(&module_name, &surface_module);
     let imports = surface_module.imports;
     let interface = ModuleInterface {
         schema: 1,
@@ -128,7 +135,11 @@ fn parse_unlinked_module_interface_inner(
             .filter_map(instance_from_surface_decl)
             .collect(),
     };
-    UnlinkedModuleInterface { interface, imports }
+    UnlinkedModuleInterface {
+        header,
+        interface,
+        imports,
+    }
 }
 
 fn empty_interface(module: String, source: String) -> ModuleInterface {
@@ -172,6 +183,8 @@ fn source_file_from_source_name(source_name: &str) -> String {
         .unwrap_or_else(|| source_name.to_owned())
 }
 
+#[cfg(test)]
+mod header_tests;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
