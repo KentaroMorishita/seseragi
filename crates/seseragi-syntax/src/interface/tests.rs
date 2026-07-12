@@ -238,8 +238,12 @@ fn parses_generic_newtype_interface() {
         "pub newtype Box<A> = A\n",
     );
 
-    assert_eq!(interface.exports.len(), 1);
-    let newtype_export = &interface.exports[0];
+    assert_eq!(interface.exports.len(), 2);
+    let newtype_export = interface
+        .exports
+        .iter()
+        .find(|export| export.namespace == "type")
+        .unwrap();
     assert_eq!(newtype_export.name, "Box");
     assert_eq!(newtype_export.scheme.type_parameters, vec!["A".to_owned()]);
     assert_eq!(
@@ -255,6 +259,32 @@ fn parses_generic_newtype_interface() {
             name: "A".to_owned(),
             arguments: Vec::new(),
         })
+    );
+    let constructor = interface
+        .exports
+        .iter()
+        .find(|export| export.namespace == "value")
+        .unwrap();
+    assert_eq!(constructor.symbol, newtype_export.symbol);
+    assert_eq!(
+        constructor.constructor_of.as_deref(),
+        Some("artifact/generic-newtype::Box")
+    );
+    assert_eq!(
+        constructor.scheme.type_ref,
+        InterfaceType::Function {
+            parameter: Box::new(InterfaceType::Named {
+                name: "A".to_owned(),
+                arguments: Vec::new(),
+            }),
+            result: Box::new(InterfaceType::Named {
+                name: "Box".to_owned(),
+                arguments: vec![InterfaceType::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }),
+        }
     );
 }
 

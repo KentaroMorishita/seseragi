@@ -465,10 +465,13 @@ import itemのbyte span付きで保持し、dependency bodyを読みません。
 後続semanticsはfunction / constructor schemeとinstance closureをsourceから再構築しません。まだresolver scopeと
 TypedHirへ接続していないためP2-2は未完了です。
 
+同じcanonical spellingをtype / value namespaceへ持てるため、interface consumerはexportをsymbol文字列だけでkeyにせず、
+`(namespace, symbol)`で識別します。non-opaqueな公開newtypeは型schemeと、一引数constructor schemeの両方をinterfaceへ
+出し、一つのnamed importが両namespaceを導入します。opaque newtypeは型だけを公開します。
+
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。`SES-N0102`を正しく
-出す前にbodyを公開せずdeclaration name / namespace / visibilityだけを持つheader contractを追加します。また
-non-opaque newtypeのnamed importが型とconstructorを同時に導入することも、そのheader / interface gateで固定します。
-これらを後回しにしてmissing exportを一律`SES-N0104`へ変換する経路は作りません。
+出す前にbodyを公開せずdeclaration name / namespace / visibilityだけを持つheader contractを追加します。この前提を
+後回しにしてmissing exportを一律`SES-N0104`へ変換する経路は作りません。
 
 P2-1以降では、次の二層を維持します。
 

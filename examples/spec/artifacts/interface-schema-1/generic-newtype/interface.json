@@ -10,9 +10,14 @@
       "name": "Box",
       "visibility": "public",
       "declarationKind": "newtype",
-      "declaration": { "start": 0, "end": 22 },
+      "declaration": {
+        "start": 0,
+        "end": 22
+      },
       "scheme": {
-        "typeParameters": ["A"],
+        "typeParameters": [
+          "A"
+        ],
         "constraints": [],
         "type": {
           "kind": "type-constructor",
@@ -20,7 +25,48 @@
           "arity": 1
         }
       },
-      "representation": { "kind": "named", "name": "A", "arguments": [] }
+      "representation": {
+        "kind": "named",
+        "name": "A",
+        "arguments": []
+      }
+    },
+    {
+      "symbol": "artifact/generic-newtype::Box",
+      "namespace": "value",
+      "name": "Box",
+      "constructorOf": "artifact/generic-newtype::Box",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 12,
+        "end": 15
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "operators": [],

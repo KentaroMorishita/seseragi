@@ -44,6 +44,33 @@ fn links_named_type_constructor_and_function_exports() {
 }
 
 #[test]
+fn one_named_newtype_import_introduces_type_and_constructor_namespaces() {
+    let domain = interface("fixture/game::domain", "pub newtype UserId = Int\n");
+    let main = parse_unlinked_module_interface(
+        "src/main.ssrg",
+        "fixture/game::main",
+        "import { UserId } from \"./domain\"\npub let answer: Int = 42\n",
+    );
+    let targets = BTreeMap::from([("./domain".to_owned(), domain)]);
+
+    let linked = link_module(main, &targets).unwrap();
+    let imports = &linked.dependencies[0].imports;
+    assert_eq!(imports.len(), 2);
+    assert!(imports.iter().any(|import| matches!(
+        import,
+        LinkedImport::Symbol { local_name, export, .. }
+            if local_name == "UserId" && export.namespace == "type"
+    )));
+    assert!(imports.iter().any(|import| matches!(
+        import,
+        LinkedImport::Symbol { local_name, export, .. }
+            if local_name == "UserId"
+                && export.namespace == "value"
+                && export.constructor_of.as_deref() == Some("fixture/game::domain::UserId")
+    )));
+}
+
+#[test]
 fn links_namespace_and_operator_metadata_without_reading_dependency_bodies() {
     let support = interface(
         "fixture/game::support",

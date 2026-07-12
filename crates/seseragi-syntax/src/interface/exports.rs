@@ -6,6 +6,7 @@ use super::{
 };
 
 mod adt;
+mod newtype;
 
 pub(super) fn exports_from_surface_decl(
     module_name: &str,
@@ -13,6 +14,9 @@ pub(super) fn exports_from_surface_decl(
 ) -> Vec<InterfaceExport> {
     if matches!(declaration, SurfaceDecl::Type { .. }) {
         return adt::exports_from_type_decl(module_name, declaration);
+    }
+    if matches!(declaration, SurfaceDecl::Newtype { .. }) {
+        return newtype::exports_from_newtype_decl(module_name, declaration);
     }
     export_from_surface_decl(module_name, declaration)
         .into_iter()
@@ -81,32 +85,6 @@ fn export_from_surface_decl(
                 type_ref: function_interface_type(parameters, return_type),
             },
             representation: None,
-        }),
-        SurfaceDecl::Newtype {
-            visibility,
-            opaque,
-            name,
-            type_parameters,
-            representation,
-            span,
-            ..
-        } if *visibility == Visibility::Public => Some(InterfaceExport {
-            symbol: format!("{module_name}::{name}"),
-            namespace: "type".to_owned(),
-            name: name.clone(),
-            constructor_of: None,
-            visibility: *visibility,
-            declaration_kind: Some("newtype".to_owned()),
-            declaration: *span,
-            scheme: InterfaceScheme {
-                type_parameters: type_parameters.clone(),
-                constraints: Vec::new(),
-                type_ref: InterfaceType::TypeConstructor {
-                    name: name.clone(),
-                    arity: type_parameters.len() as u32,
-                },
-            },
-            representation: (!opaque).then(|| interface_type_from_type_ref(representation)),
         }),
         SurfaceDecl::Alias {
             visibility,
