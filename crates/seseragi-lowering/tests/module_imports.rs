@@ -1,6 +1,7 @@
 use seseragi_lowering::{
     emit_typescript_module, lower_core_module_to_typescript_ir_with_plan, lower_typed_module,
-    TypeScriptExpr, TypeScriptFunction, TypeScriptLoweringError, TypeScriptOutputPlan,
+    TypeScriptDecisionTest, TypeScriptExpr, TypeScriptFunction, TypeScriptLoweringError,
+    TypeScriptOutputPlan,
 };
 use seseragi_project::{link_module, ModuleLinkTarget};
 use seseragi_semantics::{analyze_linked_module, analyze_module_interface};
@@ -128,6 +129,104 @@ fn lowers_a_namespace_type_member_to_a_selected_type_import() {
     assert!(generated
         .typescript
         .contains("export const keep = (value: domain_Hand) => value"));
+}
+
+#[test]
+fn lowers_namespace_qualified_adt_values_and_patterns_to_selected_imports() {
+    let domain_source = "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n";
+    let main_source = r#"import * as domain from "./domain"
+
+fn domain_Rock unit: Unit -> Unit = ()
+
+pub fn cycle hand: domain.Hand -> domain.Hand =
+  match hand {
+    domain.Rock -> domain.Paper
+    domain.Paper -> domain.Scissors
+    domain.Scissors -> domain.Rock
+  }
+"#;
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    let bindings = &typescript.source_imports[0].bindings;
+    assert!(bindings.iter().any(|binding| {
+        binding.imported == "Hand"
+            && binding.local == "domain_Hand"
+            && binding.source_local == "domain.Hand"
+            && binding.canonical == "fixture/game::domain::Hand"
+            && binding.type_only
+    }));
+    assert!(bindings.iter().any(|binding| {
+        binding.imported == "Rock"
+            && binding.local == "domain_Rock_1"
+            && binding.source_local == "domain.Rock"
+            && binding.canonical == "fixture/game::domain::Rock"
+            && !binding.type_only
+    }));
+    for constructor in ["Paper", "Scissors"] {
+        assert!(bindings.iter().any(|binding| {
+            binding.imported == constructor
+                && binding.local == format!("domain_{constructor}")
+                && binding.source_local == format!("domain.{constructor}")
+                && binding.canonical == format!("fixture/game::domain::{constructor}")
+                && !binding.type_only
+        }));
+    }
+
+    let TypeScriptFunction::ConstFunction { body, .. } = typescript
+        .functions
+        .iter()
+        .find(|function| {
+            matches!(
+                function,
+                TypeScriptFunction::ConstFunction { name, .. } if name == "cycle"
+            )
+        })
+        .unwrap();
+    let TypeScriptExpr::Decision { branches, .. } = body else {
+        panic!("expected the qualified constructor match to lower to a decision");
+    };
+    for (branch, (tag, result)) in branches[..2]
+        .iter()
+        .zip([("Rock", "domain_Paper"), ("Paper", "domain_Scissors")])
+    {
+        assert!(matches!(
+            branch.tests.as_slice(),
+            [TypeScriptDecisionTest::TagEquals { tag: actual, .. }] if actual == tag
+        ));
+        assert!(matches!(
+            &branch.value,
+            TypeScriptExpr::Identifier { name } if name == result
+        ));
+    }
+    assert!(branches[2].tests.is_empty());
+    assert!(matches!(
+        &branches[2].value,
+        TypeScriptExpr::Identifier { name } if name == "domain_Rock_1"
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(
+        generated.typescript.contains(
+            "import { type Hand as domain_Hand, Rock as domain_Rock_1, Paper as domain_Paper, Scissors as domain_Scissors } from \"./domain.js\""
+        ),
+        "{}",
+        generated.typescript
+    );
+    assert!(generated
+        .typescript
+        .contains("const domain_Rock = (unit: undefined) => undefined"));
+    assert!(generated.typescript.contains(
+        "$ssrg_match.tag === \"Rock\" ? domain_Paper : $ssrg_match.tag === \"Paper\" ? domain_Scissors : domain_Rock_1"
+    ));
 }
 
 #[test]
