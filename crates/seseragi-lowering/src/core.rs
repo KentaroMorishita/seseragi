@@ -165,6 +165,14 @@ pub enum CoreExpr {
         arguments: Vec<CoreExpr>,
         origin: SourceSpan,
     },
+    EffectInvoke {
+        callee: String,
+        requirements: CoreType,
+        failure: CoreType,
+        success: CoreType,
+        arguments: Vec<CoreExpr>,
+        origin: SourceSpan,
+    },
     Sequence {
         statements: Vec<CoreStatement>,
         result: Box<CoreExpr>,

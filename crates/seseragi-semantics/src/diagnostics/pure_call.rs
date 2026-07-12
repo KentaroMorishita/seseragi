@@ -9,11 +9,11 @@ pub(super) fn collect_pure_function_diagnostics(
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     if let Some(issue) = &analysis.pure_call_issue {
-        diagnostics.push(pure_call_diagnostic(issue.clone(), span));
+        diagnostics.push(call_diagnostic(issue.clone(), span));
     }
 }
 
-fn pure_call_diagnostic(
+pub(super) fn call_diagnostic(
     issue: PureCallIssue,
     function_span: seseragi_syntax::ByteSpan,
 ) -> Diagnostic {

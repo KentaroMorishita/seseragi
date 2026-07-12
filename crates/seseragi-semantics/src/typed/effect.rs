@@ -64,7 +64,7 @@ fn collect_effect_contract(
     failure: &mut TypedType,
 ) {
     match expr {
-        TypedExpr::EffectCall { effect, .. } => {
+        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
             if let TypedType::Record { fields, .. } = &effect.environment {
                 for field in fields {
                     push_requirement_unique(requirements, field.clone());

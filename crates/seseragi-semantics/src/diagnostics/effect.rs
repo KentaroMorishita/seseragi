@@ -168,6 +168,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             )],
             fixes: Vec::new(),
         },
+        EffectFunctionIssue::Call(issue) => super::pure_call::call_diagnostic(issue, function),
     }
 }
 

@@ -56,6 +56,10 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         | CoreExpr::EffectOperation {
             arguments: elements,
             ..
+        }
+        | CoreExpr::EffectInvoke {
+            arguments: elements,
+            ..
         } => {
             for element in elements {
                 collect_local_expr_names(element, names);

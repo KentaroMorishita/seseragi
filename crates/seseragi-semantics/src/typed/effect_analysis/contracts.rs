@@ -25,7 +25,8 @@ pub(super) fn compact_failure_conflict(body: &TypedExpr) -> Option<EffectFunctio
 
 fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrigin>) {
     match expression {
-        TypedExpr::EffectCall { effect, origin, .. } => {
+        TypedExpr::EffectCall { effect, origin, .. }
+        | TypedExpr::EffectInvoke { effect, origin, .. } => {
             if let TypedType::Named { name, arguments } = &effect.failure {
                 if arguments.is_empty() {
                     failures.push(EffectFailureOrigin {

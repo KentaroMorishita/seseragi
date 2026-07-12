@@ -25,6 +25,11 @@ fn collect_intrinsic_issues(expression: &TypedExpr, issues: &mut Vec<EffectFunct
                 collect_intrinsic_issues(argument, issues);
             }
         }
+        TypedExpr::EffectInvoke { arguments, .. } => {
+            for argument in arguments {
+                collect_intrinsic_issues(argument, issues);
+            }
+        }
         TypedExpr::DoBlock {
             statements, result, ..
         } => {
@@ -127,7 +132,7 @@ fn collect_map_error_issues(arguments: &[TypedExpr], issues: &mut Vec<EffectFunc
         }
     };
     let source_effect = match source {
-        TypedExpr::EffectCall { effect, .. } => effect,
+        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => effect,
         _ if matches!(
             super::super::type_ref::inferred_type_from_expr(source),
             TypedType::Hole

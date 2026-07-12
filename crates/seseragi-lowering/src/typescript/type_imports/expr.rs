@@ -76,6 +76,9 @@ pub(super) fn collect_expr_type_imports(
         }
         CoreExpr::EffectOperation {
             arguments, success, ..
+        }
+        | CoreExpr::EffectInvoke {
+            arguments, success, ..
         } => {
             collect_type_imports(success, bindings, requirements, imports);
             collect_exprs(arguments, bindings, requirements, imports);

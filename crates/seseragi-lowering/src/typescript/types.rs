@@ -15,7 +15,9 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         | CoreExpr::Binary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
         | CoreExpr::Decision { type_ref, .. } => type_ref_from_core_type(type_ref),
-        CoreExpr::EffectOperation { success, .. } => type_ref_from_core_type(success),
+        CoreExpr::EffectOperation { success, .. } | CoreExpr::EffectInvoke { success, .. } => {
+            type_ref_from_core_type(success)
+        }
         CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),
     }
 }

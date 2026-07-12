@@ -1,8 +1,9 @@
 use crate::{TypedDoStatement, TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceExpr, Token, TokenKind};
 
-use super::effect_body::typed_effect_body;
+use super::effect_body::analyze_effect_body;
 use super::functions::typed_parameters_from_surface;
+use super::pure_issues::PureCallIssue;
 use super::TypedResolution;
 
 mod contracts;
@@ -60,6 +61,7 @@ pub(crate) enum EffectFunctionIssue {
         primary: ByteSpan,
         actual: TypedType,
     },
+    Call(PureCallIssue),
 }
 
 pub(crate) fn analyze_effect_function(
@@ -84,7 +86,8 @@ pub(crate) fn analyze_effect_function(
         return Vec::new();
     };
     let typed_parameters = typed_parameters_from_surface(parameters);
-    let typed_body = typed_effect_body(surface_body, &typed_parameters, resolution);
+    let body_analysis = analyze_effect_body(surface_body, &typed_parameters, resolution);
+    let typed_body = body_analysis.value;
 
     let bind_issues = invalid_bind_issues(&typed_body);
     if !bind_issues.is_empty() {
@@ -98,6 +101,14 @@ pub(crate) fn analyze_effect_function(
     {
         let primary = compact_contract_clause(tokens, *span).unwrap_or(*span);
         return vec![EffectFunctionIssue::CompactContractClause { primary }];
+    }
+
+    if !body_analysis.call_issues.is_empty() {
+        return body_analysis
+            .call_issues
+            .into_iter()
+            .map(EffectFunctionIssue::Call)
+            .collect();
     }
 
     let intrinsic_issues = invalid_intrinsic_issues(&typed_body);
@@ -197,7 +208,7 @@ fn missing_result_issue(body: &SurfaceExpr) -> Option<EffectFunctionIssue> {
 fn is_effect_expression(expression: &TypedExpr) -> bool {
     matches!(
         expression,
-        TypedExpr::EffectCall { .. } | TypedExpr::DoBlock { .. }
+        TypedExpr::EffectCall { .. } | TypedExpr::EffectInvoke { .. } | TypedExpr::DoBlock { .. }
     )
 }
 
@@ -226,6 +237,7 @@ pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::If { origin, .. }
         | TypedExpr::Match { origin, .. }
         | TypedExpr::EffectCall { origin, .. }
+        | TypedExpr::EffectInvoke { origin, .. }
         | TypedExpr::DoBlock { origin, .. } => *origin,
     }
 }

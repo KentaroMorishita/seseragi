@@ -97,7 +97,9 @@ fn either_arguments(type_ref: TypedType) -> Option<(TypedType, TypedType)> {
 
 fn expression_effect(expression: &TypedExpr) -> Option<&TypedEffect> {
     match expression {
-        TypedExpr::EffectCall { effect, .. } => Some(effect),
+        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
+            Some(effect)
+        }
         _ => None,
     }
 }

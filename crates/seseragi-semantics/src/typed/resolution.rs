@@ -10,6 +10,7 @@ use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueT
 use super::surface_expr::surface_expression_type_hint;
 use super::type_ref::typed_type_from_type_ref;
 
+mod imported_effects;
 mod imported_types;
 mod imports;
 mod module_dependencies;
@@ -19,6 +20,7 @@ pub(crate) struct TypedResolution<'a> {
     resolved: &'a ResolvedModule,
     top_level_values: BTreeMap<SymbolId, TypedType>,
     callables: BTreeMap<SymbolId, TopLevelPureFunction>,
+    imported_effects: BTreeMap<SymbolId, imported_effects::ImportedEffectFunction>,
     semantic_values: BTreeMap<SymbolId, SemanticTypeKey>,
     semantic_types: SemanticTypeCatalog,
 }
@@ -30,6 +32,7 @@ impl<'a> TypedResolution<'a> {
             resolved,
             top_level_values: collect_top_level_value_types(resolved),
             callables: collect_callables(resolved, &semantic_types),
+            imported_effects: imported_effects::collect_imported_effects(resolved),
             semantic_values: collect_semantic_value_types(resolved, &semantic_types),
             semantic_types,
         }
@@ -64,6 +67,13 @@ impl<'a> TypedResolution<'a> {
 
     pub(crate) fn callable(&self, id: SymbolId) -> Option<&TopLevelPureFunction> {
         self.callables.get(&id)
+    }
+
+    pub(crate) fn imported_effect(
+        &self,
+        id: SymbolId,
+    ) -> Option<&imported_effects::ImportedEffectFunction> {
+        self.imported_effects.get(&id)
     }
 
     pub(crate) fn semantic_value_key(&self, id: SymbolId) -> SemanticTypeKey {

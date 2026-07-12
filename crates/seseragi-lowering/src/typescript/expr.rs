@@ -85,6 +85,15 @@ pub(super) fn lower_core_expr_to_typescript(
             arguments,
             ..
         } => lower_effect_operation(operation, arguments, imported_values),
+        CoreExpr::EffectInvoke {
+            callee, arguments, ..
+        } => TypeScriptExpr::Call {
+            callee: imported_values
+                .get(&callee)
+                .cloned()
+                .unwrap_or_else(|| local_name(&callee)),
+            arguments: lower_core_expressions(arguments, imported_values),
+        },
         CoreExpr::Sequence {
             statements, result, ..
         } => TypeScriptExpr::Sequence {

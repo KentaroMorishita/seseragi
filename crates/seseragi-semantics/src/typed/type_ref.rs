@@ -91,7 +91,9 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. } => type_ref.clone(),
-        TypedExpr::EffectCall { effect, .. } => effect.success.clone(),
+        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
+            effect.success.clone()
+        }
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
     }
 }

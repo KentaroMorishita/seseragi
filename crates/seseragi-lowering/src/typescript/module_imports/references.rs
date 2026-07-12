@@ -59,6 +59,14 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
                 collect_expr_value_symbols(argument, values);
             }
         }
+        CoreExpr::EffectInvoke {
+            callee, arguments, ..
+        } => {
+            values.insert(callee.clone());
+            for argument in arguments {
+                collect_expr_value_symbols(argument, values);
+            }
+        }
         CoreExpr::Sequence {
             statements, result, ..
         } => {
@@ -167,6 +175,13 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             }
         }
         CoreExpr::EffectOperation {
+            requirements,
+            failure,
+            success,
+            arguments,
+            ..
+        }
+        | CoreExpr::EffectInvoke {
             requirements,
             failure,
             success,

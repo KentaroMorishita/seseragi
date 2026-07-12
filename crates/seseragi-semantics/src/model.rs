@@ -336,6 +336,12 @@ pub enum TypedExpr {
         arguments: Vec<TypedExpr>,
         origin: ByteSpan,
     },
+    EffectInvoke {
+        callee: String,
+        effect: TypedEffect,
+        arguments: Vec<TypedExpr>,
+        origin: ByteSpan,
+    },
     DoBlock {
         statements: Vec<TypedDoStatement>,
         result: Box<TypedExpr>,

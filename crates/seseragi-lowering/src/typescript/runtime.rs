@@ -113,6 +113,20 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 collect_expr_runtime_requirements(argument, requirements);
             }
         }
+        CoreExpr::EffectInvoke {
+            arguments,
+            requirements: environment,
+            failure,
+            success,
+            ..
+        } => {
+            collect_type_runtime_requirement(environment, requirements);
+            collect_type_runtime_requirement(failure, requirements);
+            collect_type_runtime_requirement(success, requirements);
+            for argument in arguments {
+                collect_expr_runtime_requirements(argument, requirements);
+            }
+        }
         CoreExpr::Sequence {
             statements, result, ..
         } => {
@@ -156,6 +170,11 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             }
+            for argument in arguments {
+                collect_expr_runtime_imports(argument, imports);
+            }
+        }
+        CoreExpr::EffectInvoke { arguments, .. } => {
             for argument in arguments {
                 collect_expr_runtime_imports(argument, imports);
             }

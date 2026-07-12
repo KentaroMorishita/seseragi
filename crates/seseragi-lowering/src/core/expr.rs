@@ -20,6 +20,19 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             arguments: lower_exprs(source, arguments),
             origin: source_span(source, origin),
         },
+        TypedExpr::EffectInvoke {
+            callee,
+            effect,
+            arguments,
+            origin,
+        } => CoreExpr::EffectInvoke {
+            callee,
+            requirements: lower_typed_type(effect.environment),
+            failure: lower_typed_type(effect.failure),
+            success: lower_typed_type(effect.success),
+            arguments: lower_exprs(source, arguments),
+            origin: source_span(source, origin),
+        },
         TypedExpr::DoBlock {
             statements,
             result,
@@ -129,6 +142,19 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::EffectOperation {
             operation: lower_effect_operation(&operation),
+            requirements: lower_typed_type(effect.environment),
+            failure: lower_typed_type(effect.failure),
+            success: lower_typed_type(effect.success),
+            arguments: lower_exprs(source, arguments),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::EffectInvoke {
+            callee,
+            effect,
+            arguments,
+            origin,
+        } => CoreExpr::EffectInvoke {
+            callee,
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
