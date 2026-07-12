@@ -95,6 +95,42 @@ fn lowers_a_namespace_member_call_to_a_selected_named_import() {
 }
 
 #[test]
+fn lowers_a_namespace_type_member_to_a_selected_type_import() {
+    let domain_source = "pub type Hand =\n  | Rock\n";
+    let main_source = "import * as domain from \"./domain\"\n\npub fn keep value: domain.Hand -> domain.Hand = value\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    let binding = &typescript.source_imports[0].bindings[0];
+    assert_eq!(binding.imported, "Hand");
+    assert_eq!(binding.local, "domain_Hand");
+    assert_eq!(binding.source_local, "domain.Hand");
+    assert_eq!(binding.canonical, "fixture/game::domain::Hand");
+    assert!(binding.type_only);
+    assert!(matches!(
+        &typescript.functions[0],
+        TypeScriptFunction::ConstFunction { parameters, .. }
+            if parameters[0].type_name == "domain_Hand"
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated.typescript.starts_with(
+        "import { type Hand as domain_Hand } from \"./domain.js\"\nimport \"./domain.js\"\n\n"
+    ));
+    assert!(generated
+        .typescript
+        .contains("export const keep = (value: domain_Hand) => value"));
+}
+
+#[test]
 fn keeps_a_namespace_only_edge_as_a_side_effect_import() {
     let domain_source = "pub let answer: Int = 42\n";
     let main_source =
