@@ -18,12 +18,17 @@ pub(super) fn register_linked_imports(
                     let Some(namespace) = namespace(&export.namespace) else {
                         continue;
                     };
-                    let symbol = resolver.register(
-                        resolver.module_scope(),
+                    let symbol = resolver.dependency_symbol(
                         namespace,
                         symbol_kind(namespace, export.declaration_kind.as_deref()),
+                        &export.name,
+                        export.symbol.clone(),
+                    );
+                    let symbol = resolver.bind_alias(
+                        resolver.module_scope(),
+                        namespace,
                         local_name,
-                        Some(export.symbol.clone()),
+                        symbol,
                         *origin,
                     );
                     resolved.push(ResolvedImport {
@@ -64,12 +69,17 @@ pub(super) fn register_linked_imports(
                     export,
                     ..
                 } => {
-                    let symbol = resolver.register(
-                        resolver.module_scope(),
+                    let symbol = resolver.dependency_symbol(
                         SymbolNamespace::Operator,
                         SymbolKind::Operator,
+                        &export.name,
+                        export.symbol.clone(),
+                    );
+                    let symbol = resolver.bind_alias(
+                        resolver.module_scope(),
+                        SymbolNamespace::Operator,
                         spelling,
-                        Some(export.symbol.clone()),
+                        symbol,
                         *origin,
                     );
                     resolved.push(ResolvedImport {

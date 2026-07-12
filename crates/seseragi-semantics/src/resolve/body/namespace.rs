@@ -137,12 +137,17 @@ impl Resolver {
                 });
             }
         };
-        let symbol = self.register(
+        let symbol = self.dependency_symbol(
+            SymbolNamespace::Value,
+            symbol_kind(member.export.declaration_kind.as_deref()),
+            &member.export.name,
+            member.export.symbol.clone(),
+        );
+        let symbol = self.bind_alias(
             self.module_scope(),
             SymbolNamespace::Value,
-            SymbolKind::Imported,
             spelling,
-            Some(member.export.symbol.clone()),
+            symbol,
             member.origin,
         );
         self.namespace_imports.select(ResolvedImport {
@@ -155,5 +160,12 @@ impl Resolver {
             export: member.export,
         });
         Ok(Some(symbol))
+    }
+}
+
+fn symbol_kind(declaration_kind: Option<&str>) -> SymbolKind {
+    match declaration_kind {
+        Some("constructor") => SymbolKind::Constructor,
+        _ => SymbolKind::Imported,
     }
 }

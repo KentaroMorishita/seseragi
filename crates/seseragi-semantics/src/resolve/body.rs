@@ -62,7 +62,7 @@ fn finish_resolved_module(
     mut imports: Vec<crate::ResolvedImport>,
     mut resolver: Resolver,
 ) -> ResolvedModule {
-    imports.extend(resolver.namespace_imports.take_selected());
+    merge_selected_imports(&mut imports, resolver.namespace_imports.take_selected());
     ResolvedModule {
         schema: 2,
         stage: "resolved-ast".to_owned(),
@@ -75,6 +75,35 @@ fn finish_resolved_module(
         symbols: resolver.symbols,
         references: resolver.references,
         issues: resolver.issues,
+    }
+}
+
+fn merge_selected_imports(
+    imports: &mut Vec<crate::ResolvedImport>,
+    selected: Vec<crate::ResolvedImport>,
+) {
+    for selected in selected {
+        let same_binding = |candidate: &crate::ResolvedImport| {
+            candidate.specifier == selected.specifier
+                && candidate.module == selected.module
+                && candidate.export.namespace == selected.export.namespace
+                && candidate.export.symbol == selected.export.symbol
+        };
+        if imports.iter().any(|candidate| {
+            candidate.in_scope
+                && same_binding(candidate)
+                && candidate.local_name == selected.local_name
+        }) {
+            continue;
+        }
+        if let Some(hidden) = imports
+            .iter_mut()
+            .find(|candidate| !candidate.in_scope && same_binding(candidate))
+        {
+            *hidden = selected;
+        } else {
+            imports.push(selected);
+        }
     }
 }
 
@@ -95,6 +124,7 @@ pub(super) struct Resolver {
     references: Vec<ResolvedReference>,
     issues: Vec<ResolveIssue>,
     names: BTreeMap<(ScopeId, SymbolNamespace, String), SymbolId>,
+    dependency_symbols: BTreeMap<(SymbolNamespace, String), SymbolId>,
     prelude_names: BTreeMap<(SymbolNamespace, String), SymbolId>,
     namespace_imports: namespace::NamespaceImports,
 }
@@ -113,6 +143,7 @@ impl Resolver {
             references: Vec::new(),
             issues: Vec::new(),
             names: BTreeMap::new(),
+            dependency_symbols: BTreeMap::new(),
             prelude_names: BTreeMap::new(),
             namespace_imports: namespace::NamespaceImports::default(),
         }
@@ -191,14 +222,41 @@ impl Resolver {
         spelling: &str,
         canonical: String,
     ) -> SymbolId {
-        self.push_symbol(
+        let key = (namespace, canonical.clone());
+        if let Some(symbol) = self.dependency_symbols.get(&key) {
+            return *symbol;
+        }
+        let symbol = self.push_symbol(
             self.module_scope(),
             namespace,
             kind,
             spelling,
             Some(canonical),
             ByteSpan { start: 0, end: 0 },
-        )
+        );
+        self.dependency_symbols.insert(key, symbol);
+        symbol
+    }
+
+    pub(super) fn bind_alias(
+        &mut self,
+        scope: ScopeId,
+        namespace: SymbolNamespace,
+        spelling: &str,
+        target: SymbolId,
+        origin: ByteSpan,
+    ) -> SymbolId {
+        let name = (scope, namespace, spelling.to_owned());
+        if let Some(existing) = self.names.get(&name).copied() {
+            self.issues.push(ResolveIssue {
+                code: "SES-N0002".to_owned(),
+                message_key: "name.duplicate-definition".to_owned(),
+                primary: origin,
+            });
+            return existing;
+        }
+        self.names.insert(name, target);
+        target
     }
 
     pub(super) fn register_module(

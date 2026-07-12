@@ -381,6 +381,80 @@ fn localizes_imported_function_schemes_to_a_type_alias_import() {
 }
 
 #[test]
+fn treats_two_named_aliases_of_one_imported_adt_as_the_same_nominal_type() {
+    let domain_source = "pub type User =\n  | Alice\n";
+    let main_source = "import { User as First, User as Second } from \"./domain\"\n\npub fn relay value: First -> Second = value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked.clone(), main_source);
+    assert!(resolved.issues.is_empty());
+    let first = resolved
+        .imports
+        .iter()
+        .find(|import| import.local_name == "First")
+        .unwrap();
+    let second = resolved
+        .imports
+        .iter()
+        .find(|import| import.local_name == "Second")
+        .unwrap();
+    assert_eq!(first.symbol, second.symbol);
+    assert_eq!(first.export.symbol, "fixture/game::domain::User");
+    assert_eq!(second.export.symbol, "fixture/game::domain::User");
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+    let imports = &analyzed.typed_hir.module_dependencies[0].imports;
+    assert_eq!(imports.len(), 2);
+    assert_eq!(imports[0].local, "First");
+    assert_eq!(imports[1].local, "Second");
+    assert_eq!(imports[0].canonical, imports[1].canonical);
+}
+
+#[test]
+fn namespace_selected_constructor_reuses_the_hidden_dependency_symbol() {
+    let domain_source = "pub type Hand =\n  | Rock\n";
+    let main_source =
+        "import * as domain from \"./domain\"\n\npub fn choose unit: Unit -> Unit = domain.Rock\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked, main_source);
+
+    assert!(resolved.issues.is_empty());
+    let selected = resolved
+        .imports
+        .iter()
+        .find(|import| import.local_name == "domain.Rock")
+        .unwrap();
+    assert!(selected.in_scope);
+    assert_eq!(selected.export.symbol, "fixture/game::domain::Rock");
+    assert_eq!(
+        resolved
+            .symbols
+            .iter()
+            .filter(|symbol| { symbol.canonical.as_deref() == Some("fixture/game::domain::Rock") })
+            .count(),
+        1
+    );
+    assert!(!resolved.imports.iter().any(|import| {
+        !import.in_scope && import.export.symbol == "fixture/game::domain::Rock"
+    }));
+    assert!(resolved.references.iter().any(|reference| {
+        reference.spelling == "domain.Rock" && reference.target == Some(selected.symbol)
+    }));
+}
+
+#[test]
 fn accepts_an_imported_constructor_for_a_function_from_the_same_adt_owner() {
     let domain_source = "pub type User =\n  | Alice\n\npub fn accept user: User -> Unit = ()\n";
     let main_source = "import { Alice, accept } from \"./domain\"\n\npub fn run unit: Unit -> Unit = accept Alice\n";

@@ -5,7 +5,9 @@ use super::function_body::{function_body_issue, FunctionBodyIssue};
 use super::functions::typed_parameters_from_surface;
 use super::pure_issues::MatchIssue;
 use super::pure_issues::{ConditionalIssue, PureCallIssue};
+use super::semantic_types::{semantic_values_are_compatible, SemanticValueType};
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
+use super::type_ref::inferred_type_from_expr;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct PureFunctionAnalysis {
@@ -33,10 +35,23 @@ pub(crate) fn analyze_pure_function(
     let context = PureExpressionContext::new(&typed_parameters, resolution)
         .with_expected(Some(resolution.semantic_value_from_type_ref(return_type)));
     let expression = analyze_resolved_expression(body, &context);
+    let expected = resolution.semantic_value_from_type_ref(return_type);
+    let actual = SemanticValueType {
+        type_ref: inferred_type_from_expr(&expression.value),
+        key: expression.semantic_type.clone(),
+    };
+    let semantically_compatible = semantic_values_are_compatible(&expected, &actual);
     let function_body_issue = (expression.conditional_issue.is_none()
         && expression.pure_call_issue.is_none()
         && expression.match_issues.is_empty())
-    .then(|| function_body_issue(Some(&expression.value), Some(body.span()), return_type))
+    .then(|| {
+        function_body_issue(
+            Some(&expression.value),
+            Some(body.span()),
+            return_type,
+            semantically_compatible,
+        )
+    })
     .flatten();
 
     PureFunctionAnalysis {
