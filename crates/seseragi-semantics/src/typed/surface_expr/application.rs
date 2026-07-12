@@ -4,7 +4,9 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr};
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
 use crate::typed::pure_issues::PureCallIssue;
-use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
+use crate::typed::semantic_types::{
+    semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
+};
 use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
 pub(super) fn type_application(
@@ -52,6 +54,7 @@ pub(super) fn type_application(
         &application.parameters,
         &argument_nodes,
         &arguments,
+        &semantic_arguments,
     );
     let type_ref = if issue.is_none() {
         instantiated_application_result_type(&application, arguments.len())
@@ -108,6 +111,7 @@ fn call_issue(
     parameters: &[SemanticValueType],
     argument_nodes: &[&SurfaceExpr],
     arguments: &[TypedExpr],
+    semantic_arguments: &[SemanticValueType],
 ) -> Option<PureCallIssue> {
     if arguments.len() > parameter_count {
         return Some(PureCallIssue::Arity {
@@ -118,20 +122,23 @@ fn call_issue(
     }
     arguments
         .iter()
+        .zip(semantic_arguments)
         .zip(parameters)
         .zip(argument_nodes)
         .enumerate()
-        .find_map(|(index, ((argument, expected), source))| {
-            let actual = inferred_type_from_expr(argument);
-            (!typed_type_contains_hole(&actual) && actual != expected.type_ref).then(|| {
-                PureCallIssue::ArgumentType {
+        .find_map(
+            |(index, (((argument, actual_semantic), expected), source))| {
+                let actual = inferred_type_from_expr(argument);
+                (!typed_type_contains_hole(&actual)
+                    && !semantic_values_are_compatible(expected, actual_semantic))
+                .then(|| PureCallIssue::ArgumentType {
                     argument: source.span(),
                     index,
                     expected: expected.type_ref.clone(),
                     actual,
-                }
-            })
-        })
+                })
+            },
+        )
 }
 
 fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceExpr>) {

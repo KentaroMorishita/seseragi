@@ -29,6 +29,69 @@ pub(crate) struct SemanticValueType {
     pub(crate) key: SemanticTypeKey,
 }
 
+pub(crate) fn semantic_values_are_compatible(
+    expected: &SemanticValueType,
+    actual: &SemanticValueType,
+) -> bool {
+    match (&expected.key, &actual.key) {
+        (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => true,
+        (
+            SemanticTypeKey::Adt {
+                owner: expected_owner,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::Adt {
+                owner: actual_owner,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_owner == actual_owner
+                && expected_arguments.len() == actual_arguments.len()
+                && expected_arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+        }
+        (SemanticTypeKey::Adt { .. }, _) | (_, SemanticTypeKey::Adt { .. }) => false,
+        (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
+            let (
+                TypedType::Tuple {
+                    elements: expected_types,
+                },
+                TypedType::Tuple {
+                    elements: actual_types,
+                },
+            ) = (&expected.type_ref, &actual.type_ref)
+            else {
+                return false;
+            };
+            expected_keys.len() == actual_keys.len()
+                && expected_types.len() == actual_types.len()
+                && expected_keys.len() == expected_types.len()
+                && expected_keys
+                    .iter()
+                    .zip(actual_keys)
+                    .zip(expected_types.iter().zip(actual_types))
+                    .all(
+                        |((expected_key, actual_key), (expected_type, actual_type))| {
+                            semantic_values_are_compatible(
+                                &SemanticValueType {
+                                    type_ref: expected_type.clone(),
+                                    key: expected_key.clone(),
+                                },
+                                &SemanticValueType {
+                                    type_ref: actual_type.clone(),
+                                    key: actual_key.clone(),
+                                },
+                            )
+                        },
+                    )
+        }
+        (SemanticTypeKey::Tuple(_), _) | (_, SemanticTypeKey::Tuple(_)) => false,
+        _ => expected.type_ref == actual.type_ref,
+    }
+}
+
 #[derive(Clone, Debug)]
 pub(crate) struct SemanticAdt {
     pub(crate) name: String,

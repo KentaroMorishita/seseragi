@@ -21,6 +21,20 @@ pub(super) fn collect_imported_callables(
             )
         })
         .collect::<BTreeMap<_, _>>();
+    let type_owners = resolved
+        .imports
+        .iter()
+        .filter(|import| {
+            import.export.namespace == "type"
+                && import.export.declaration_kind.as_deref() == Some("type")
+        })
+        .map(|import| {
+            (
+                (import.module.clone(), import.export.name.clone()),
+                import.symbol,
+            )
+        })
+        .collect::<BTreeMap<_, _>>();
     resolved
         .imports
         .iter()
@@ -35,23 +49,41 @@ pub(super) fn collect_imported_callables(
             {
                 return None;
             }
-            let (parameter_types, result_type) = flatten_function(export.scheme.type_ref.clone())?;
-            let parameter_types = parameter_types
+            let (parameter_interfaces, result_interface) =
+                flatten_function(export.scheme.type_ref.clone())?;
+            let parameters = parameter_interfaces
                 .into_iter()
-                .map(|type_ref| localize_type(type_ref, &import.module, &type_names))
+                .map(|type_ref| {
+                    semantic_value_from_interface_type(
+                        type_ref,
+                        &import.module,
+                        &type_names,
+                        &type_owners,
+                    )
+                })
+                .collect::<Option<Vec<_>>>()?;
+            let result = semantic_value_from_interface_type(
+                result_interface,
+                &import.module,
+                &type_names,
+                &type_owners,
+            )?;
+            let parameter_types = parameters
+                .iter()
+                .map(|parameter| parameter.type_ref.clone())
                 .collect::<Vec<_>>();
-            let result_type = localize_type(result_type, &import.module, &type_names);
+            let result_type = result.type_ref.clone();
             if parameter_types.is_empty()
                 || parameter_types.iter().any(contains_function_type)
                 || contains_function_type(&result_type)
             {
                 return None;
             }
-            let semantic_parameters = parameter_types
-                .iter()
-                .map(semantic_key_from_typed_type)
+            let semantic_parameters = parameters
+                .into_iter()
+                .map(|parameter| parameter.key)
                 .collect();
-            let semantic_result = semantic_key_from_typed_type(&result_type);
+            let semantic_result = result.key;
             Some((
                 import.symbol,
                 TopLevelPureFunction {
@@ -108,27 +140,66 @@ fn localize_type(
     }
 }
 
-fn flatten_function(type_ref: InterfaceType) -> Option<(Vec<TypedType>, TypedType)> {
+fn semantic_value_from_interface_type(
+    type_ref: InterfaceType,
+    module: &str,
+    names: &BTreeMap<(String, String), String>,
+    owners: &BTreeMap<(String, String), SymbolId>,
+) -> Option<super::super::semantic_types::SemanticValueType> {
+    let key = semantic_key_from_interface_type(&type_ref, module, names, owners)?;
+    let type_ref = typed_type_from_interface_type(type_ref)?;
+    Some(super::super::semantic_types::SemanticValueType {
+        type_ref: localize_type(type_ref, module, names),
+        key,
+    })
+}
+
+fn semantic_key_from_interface_type(
+    type_ref: &InterfaceType,
+    module: &str,
+    names: &BTreeMap<(String, String), String>,
+    owners: &BTreeMap<(String, String), SymbolId>,
+) -> Option<SemanticTypeKey> {
+    match type_ref {
+        InterfaceType::Named { name, arguments } => {
+            let Some(owner) = owners.get(&(module.to_owned(), name.clone())) else {
+                return Some(SemanticTypeKey::Other);
+            };
+            let arguments = arguments
+                .iter()
+                .cloned()
+                .map(|argument| semantic_value_from_interface_type(argument, module, names, owners))
+                .collect::<Option<Vec<_>>>()?;
+            Some(SemanticTypeKey::Adt {
+                owner: *owner,
+                arguments,
+            })
+        }
+        InterfaceType::Tuple { elements } => Some(SemanticTypeKey::Tuple(
+            elements
+                .iter()
+                .map(|element| semantic_key_from_interface_type(element, module, names, owners))
+                .collect::<Option<Vec<_>>>()?,
+        )),
+        InterfaceType::Hole => Some(SemanticTypeKey::Invalid),
+        InterfaceType::Function { .. }
+        | InterfaceType::TypeConstructor { .. }
+        | InterfaceType::Apply { .. }
+        | InterfaceType::Record { .. } => Some(SemanticTypeKey::Other),
+    }
+}
+
+fn flatten_function(type_ref: InterfaceType) -> Option<(Vec<InterfaceType>, InterfaceType)> {
     let mut parameters = Vec::new();
     let mut cursor = type_ref;
     loop {
         match cursor {
             InterfaceType::Function { parameter, result } => {
-                parameters.push(typed_type_from_interface_type(*parameter)?);
+                parameters.push(*parameter);
                 cursor = *result;
             }
-            result => return Some((parameters, typed_type_from_interface_type(result)?)),
+            result => return Some((parameters, result)),
         }
-    }
-}
-
-fn semantic_key_from_typed_type(type_ref: &TypedType) -> SemanticTypeKey {
-    match type_ref {
-        TypedType::Tuple { elements } => {
-            SemanticTypeKey::Tuple(elements.iter().map(semantic_key_from_typed_type).collect())
-        }
-        TypedType::Hole => SemanticTypeKey::Invalid,
-        _ => SemanticTypeKey::Other,
     }
 }
 
@@ -147,19 +218,12 @@ mod tests {
         })
         .unwrap();
 
-        assert_eq!(parameters, vec![typed_named("Int"), typed_named("Int")]);
-        assert_eq!(result, typed_named("Int"));
+        assert_eq!(parameters, vec![named("Int"), named("Int")]);
+        assert_eq!(result, named("Int"));
     }
 
     fn named(name: &str) -> InterfaceType {
         InterfaceType::Named {
-            name: name.to_owned(),
-            arguments: Vec::new(),
-        }
-    }
-
-    fn typed_named(name: &str) -> TypedType {
-        TypedType::Named {
             name: name.to_owned(),
             arguments: Vec::new(),
         }

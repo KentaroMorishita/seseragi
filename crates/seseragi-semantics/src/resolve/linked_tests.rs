@@ -152,6 +152,59 @@ fn localizes_imported_function_schemes_to_a_type_alias_import() {
     ));
 }
 
+#[test]
+fn accepts_an_imported_constructor_for_a_function_from_the_same_adt_owner() {
+    let domain_source = "pub type User =\n  | Alice\n\npub fn accept user: User -> Unit = ()\n";
+    let main_source = "import { Alice, accept } from \"./domain\"\n\npub fn run unit: Unit -> Unit = accept Alice\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    assert!(matches!(
+        &analyzed.typed_hir.declarations[0],
+        TypedDecl::Fn {
+            body: TypedExpr::Call { type_ref, .. },
+            ..
+        } if *type_ref == TypedType::Named {
+            name: "Unit".to_owned(),
+            arguments: Vec::new(),
+        }
+    ));
+}
+
+#[test]
+fn rejects_same_spelling_adts_from_different_dependency_owners() {
+    let first_source = "pub type User =\n  | Alice\n";
+    let second_source = "pub type User =\n  | Bob\n\npub fn accept user: User -> Unit = ()\n";
+    let main_source = "import { Alice } from \"./first\"\nimport { accept } from \"./second\"\n\npub fn run unit: Unit -> Unit = accept Alice\n";
+    let linked = linked_program(
+        main_source,
+        [
+            ("./first", "fixture/game::first", first_source),
+            ("./second", "fixture/game::second", second_source),
+        ],
+    );
+
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0101" && diagnostic.message_key == "call.argument-type-mismatch"
+    }));
+}
+
 fn linked_function_program(main_source: &str) -> seseragi_project::LinkedModule {
     let domain_source = "pub fn increment value: Int -> Int = value + 1\n";
     let domain =
@@ -184,4 +237,30 @@ fn linked_adt_program(main_source: &str) -> seseragi_project::LinkedModule {
     let target = ModuleLinkTarget::same_package(domain.header, domain_interface).unwrap();
     let main = parse_unlinked_module_interface("main.ssrg", "fixture/game::main", main_source);
     link_module(main, &BTreeMap::from([("./domain".to_owned(), target)])).unwrap()
+}
+
+fn linked_program<const N: usize>(
+    main_source: &str,
+    dependencies: [(&str, &str, &str); N],
+) -> seseragi_project::LinkedModule {
+    let targets = dependencies
+        .into_iter()
+        .map(|(specifier, module, source)| {
+            let unlinked = parse_unlinked_module_interface("dependency.ssrg", module, source);
+            let interface = analyze_module_interface(
+                seseragi_syntax::parse_diagnostics("dependency.ssrg", source),
+                unlinked.interface.clone(),
+                source,
+            )
+            .unwrap()
+            .typed_interface
+            .into_link_interface();
+            (
+                specifier.to_owned(),
+                ModuleLinkTarget::same_package(unlinked.header, interface).unwrap(),
+            )
+        })
+        .collect::<BTreeMap<_, _>>();
+    let main = parse_unlinked_module_interface("main.ssrg", "fixture/game::main", main_source);
+    link_module(main, &targets).unwrap()
 }
