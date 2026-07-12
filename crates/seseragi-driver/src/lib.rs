@@ -18,8 +18,8 @@ pub use compile::{
 pub use input::CompileInput;
 pub use output::CompiledModule;
 pub use output_plan::{
-    generated_output_paths, plan_typescript_outputs, TypeScriptModuleOutput,
-    TypeScriptOutputPlanError,
+    generated_output_paths, plan_typescript_outputs, TypeScriptInstanceOutput,
+    TypeScriptModuleOutput, TypeScriptOutputPlanError,
 };
 pub use project_compile::{
     compile_project, CompiledProject, ProjectCompileError, ProjectModuleInput,

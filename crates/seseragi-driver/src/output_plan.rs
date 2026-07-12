@@ -5,6 +5,27 @@ use std::collections::{BTreeMap, BTreeSet};
 pub struct TypeScriptModuleOutput {
     module: String,
     path: String,
+    instance_exports: Vec<TypeScriptInstanceOutput>,
+}
+
+/// A compiler-produced dictionary export available from one generated module.
+///
+/// `identity` is a semantic instance identity, not a trait or type-name
+/// fallback. The driver carries it from dependency metadata to the backend
+/// output plan without deriving a dictionary name.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TypeScriptInstanceOutput {
+    identity: String,
+    dictionary_export: String,
+}
+
+impl TypeScriptInstanceOutput {
+    pub fn new(identity: impl Into<String>, dictionary_export: impl Into<String>) -> Self {
+        Self {
+            identity: identity.into(),
+            dictionary_export: dictionary_export.into(),
+        }
+    }
 }
 
 impl TypeScriptModuleOutput {
@@ -12,17 +33,45 @@ impl TypeScriptModuleOutput {
         Self {
             module: module.into(),
             path: path.into(),
+            instance_exports: Vec::new(),
         }
+    }
+
+    pub fn with_instance_exports(
+        mut self,
+        instance_exports: impl IntoIterator<Item = TypeScriptInstanceOutput>,
+    ) -> Self {
+        self.instance_exports.extend(instance_exports);
+        self
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TypeScriptOutputPlanError {
-    InvalidImporterPath { path: String },
-    InvalidDependencyPath { module: String, path: String },
-    InvalidGeneratedOutputPath { path: String },
-    DuplicateModule { module: String },
-    DuplicateOutputPath { path: String },
+    InvalidImporterPath {
+        path: String,
+    },
+    InvalidDependencyPath {
+        module: String,
+        path: String,
+    },
+    InvalidGeneratedOutputPath {
+        path: String,
+    },
+    DuplicateModule {
+        module: String,
+    },
+    DuplicateOutputPath {
+        path: String,
+    },
+    DuplicateInstanceIdentity {
+        module: String,
+        identity: String,
+    },
+    DuplicateInstanceExport {
+        module: String,
+        dictionary_export: String,
+    },
 }
 
 /// Converts a project-owned ESM `.js` output path to the TypeScript artifact
@@ -65,6 +114,7 @@ pub fn plan_typescript_outputs(
     let mut modules = BTreeSet::new();
     let mut paths = BTreeSet::from([importer_path.to_owned()]);
     let mut specifiers = BTreeMap::new();
+    let mut instance_exports = Vec::new();
 
     for dependency in dependencies {
         if !modules.insert(dependency.module.clone()) {
@@ -84,12 +134,33 @@ pub fn plan_typescript_outputs(
             });
         }
         specifiers.insert(
-            dependency.module,
+            dependency.module.clone(),
             relative_specifier(importer_directory, &target),
         );
+
+        let mut identities = BTreeSet::new();
+        let mut dictionary_exports = BTreeSet::new();
+        for instance in dependency.instance_exports {
+            if !identities.insert(instance.identity.clone()) {
+                return Err(TypeScriptOutputPlanError::DuplicateInstanceIdentity {
+                    module: dependency.module.clone(),
+                    identity: instance.identity,
+                });
+            }
+            if !dictionary_exports.insert(instance.dictionary_export.clone()) {
+                return Err(TypeScriptOutputPlanError::DuplicateInstanceExport {
+                    module: dependency.module.clone(),
+                    dictionary_export: instance.dictionary_export,
+                });
+            }
+            instance_exports.push((
+                (dependency.module.clone(), instance.identity),
+                instance.dictionary_export,
+            ));
+        }
     }
 
-    Ok(TypeScriptOutputPlan::new(specifiers))
+    Ok(TypeScriptOutputPlan::new(specifiers).with_instance_exports(instance_exports))
 }
 
 fn path_segments(path: &str) -> Option<Vec<&str>> {
@@ -136,6 +207,89 @@ mod tests {
 
         assert_eq!(plan.specifier_for("game/domain"), Some("./domain.js"));
         assert_eq!(plan.specifier_for("shared/text"), Some("../shared/text.js"));
+    }
+
+    #[test]
+    fn carries_semantic_instance_exports_from_each_provider() {
+        let plan = plan_typescript_outputs(
+            "dist/game/main.js",
+            [
+                TypeScriptModuleOutput::new("fixture/game::domain", "dist/game/domain.js")
+                    .with_instance_exports([TypeScriptInstanceOutput::new(
+                        "Show<fixture/game::domain::ImportedError>",
+                        "__ssrg$instance$Show$0",
+                    )]),
+            ],
+        )
+        .unwrap();
+
+        assert_eq!(
+            plan.instance_export_for(
+                "fixture/game::domain",
+                "Show<fixture/game::domain::ImportedError>"
+            ),
+            Some("__ssrg$instance$Show$0")
+        );
+        assert_eq!(
+            plan.instance_export_for(
+                "fixture/game::domain",
+                "Show<fixture/game::domain::OtherError>"
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn rejects_duplicate_instance_identity_or_export_within_one_provider() {
+        let duplicate_identity = plan_typescript_outputs(
+            "dist/game/main.js",
+            [
+                TypeScriptModuleOutput::new("fixture/game::domain", "dist/game/domain.js")
+                    .with_instance_exports([
+                        TypeScriptInstanceOutput::new(
+                            "Show<fixture/game::domain::ImportedError>",
+                            "__ssrg$instance$Show$0",
+                        ),
+                        TypeScriptInstanceOutput::new(
+                            "Show<fixture/game::domain::ImportedError>",
+                            "__ssrg$instance$Show$1",
+                        ),
+                    ]),
+            ],
+        )
+        .unwrap_err();
+        assert_eq!(
+            duplicate_identity,
+            TypeScriptOutputPlanError::DuplicateInstanceIdentity {
+                module: "fixture/game::domain".to_owned(),
+                identity: "Show<fixture/game::domain::ImportedError>".to_owned(),
+            }
+        );
+
+        let duplicate_export = plan_typescript_outputs(
+            "dist/game/main.js",
+            [
+                TypeScriptModuleOutput::new("fixture/game::domain", "dist/game/domain.js")
+                    .with_instance_exports([
+                        TypeScriptInstanceOutput::new(
+                            "Show<fixture/game::domain::ImportedError>",
+                            "__ssrg$instance$Show$0",
+                        ),
+                        TypeScriptInstanceOutput::new(
+                            "Show<fixture/game::domain::OtherError>",
+                            "__ssrg$instance$Show$0",
+                        ),
+                    ]),
+            ],
+        )
+        .unwrap_err();
+        assert_eq!(
+            duplicate_export,
+            TypeScriptOutputPlanError::DuplicateInstanceExport {
+                module: "fixture/game::domain".to_owned(),
+                dictionary_export: "__ssrg$instance$Show$0".to_owned(),
+            }
+        );
     }
 
     #[test]

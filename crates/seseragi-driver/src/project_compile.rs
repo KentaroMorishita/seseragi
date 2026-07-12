@@ -158,9 +158,25 @@ pub fn compile_project(
             let dependency_input = inputs
                 .get(&dependency.interface.module)
                 .expect("linked dependency must exist in the graph input");
+            let dependency_compiled = compiled
+                .get(&dependency.interface.module)
+                .expect("topological order compiles dependencies first");
             crate::TypeScriptModuleOutput::new(
                 dependency.interface.module.clone(),
                 dependency_input.output_path.clone(),
+            )
+            .with_instance_exports(
+                dependency_compiled
+                    .generated
+                    .metadata
+                    .instances
+                    .iter()
+                    .map(|instance| {
+                        crate::TypeScriptInstanceOutput::new(
+                            instance.identity.clone(),
+                            instance.dictionary_export.clone(),
+                        )
+                    }),
             )
         });
         let output_plan = crate::plan_typescript_outputs(&input.output_path, dependency_outputs)
@@ -335,5 +351,63 @@ mod tests {
         assert_eq!(main.typed_hir.module_dependencies.len(), 1);
         assert!(main.generated.typescript.contains("from \"./domain.js\""));
         assert!(main.generated.typescript.contains("export const isRock"));
+    }
+
+    #[test]
+    fn imports_a_direct_dependency_show_dictionary_from_generated_metadata() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/game::main".to_owned(),
+                [("./domain".to_owned(), "fixture/game::domain".to_owned())],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/game::domain".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "fixture/game::domain",
+                    "type InternalError deriving Show =\n  | Internal\n\npub type ImportedError deriving Show =\n  | Message String\n",
+                    "dist/game/domain.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/game::main",
+                    "import { ImportedError } from \"./domain\"\n\npub type AppError deriving Show =\n  | Invalid ImportedError\n",
+                    "dist/game/main.js",
+                ),
+            ],
+        )
+        .unwrap();
+
+        let domain = project.modules.get("fixture/game::domain").unwrap();
+        let main = project.modules.get("fixture/game::main").unwrap();
+        let domain_instance = domain
+            .generated
+            .metadata
+            .instances
+            .iter()
+            .find(|instance| instance.identity == "Show<fixture/game::domain::ImportedError>")
+            .unwrap();
+        let main_instance = &main.generated.metadata.instances[0];
+        assert_eq!(
+            domain_instance.identity,
+            "Show<fixture/game::domain::ImportedError>"
+        );
+        assert_eq!(main_instance.identity, "Show<fixture/game::main::AppError>");
+        assert_ne!(domain_instance.identity, main_instance.identity);
+        assert_eq!(domain_instance.dictionary_export, "__ssrg$instance$Show$1");
+        assert!(main.generated.typescript.contains(
+            "import { type ImportedError, __ssrg$instance$Show$1 } from \"./domain.js\""
+        ));
+        assert!(main
+            .generated
+            .typescript
+            .contains("__ssrg$instance$Show$1.show(value.value)"));
     }
 }
