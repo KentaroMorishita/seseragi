@@ -570,6 +570,17 @@ dependency-firstの全moduleから重複なしで集めます。`imported-effect
 success exitを比較します。これは単一のpositive Console caseです。分割RPSの正常・不正・EOF、Stdin / Console host failure、
 typed failure renderer、manifest経由のpackage entryを含むP2-5全体は後続sliceです。
 
+`project-schema-1/imported-effect-failure`は、dependencyの`InputError deriving Show`とcompact `reject` Effectをmainがimportし、
+local `AppError`へ`mapError`する組み合わせを固定します。generated mainはdriver output planが渡したexact dictionary exportを
+source importし、staged executionはnested typed failure、derived stderr、process exit 1を比較します。これによりdirect
+dependency evidenceはsnapshotだけでなくruntimeまで証明されますが、transitive provider chainはまだ対象外です。
+
+project executionはdescriptorのargumentをfinal TypedInterfaceのcurried parameterへ照合し、arity、`Unit` / `String`、pure / Effect
+modeをrunner起動前に検査します。Effect R / Eとhost adapterも同じfinal interfaceを正とし、local / importedな同名
+`Effect`、`Console`、`Stdin`、standard failure型をruntime builtinへ誤分類しません。`capture-console`を選んだproject caseは
+expected traceを必須にし、stdoutだけ一致してoperation / argument / orderが未検証になる経路を閉じています。nested JSONの
+未知fieldを完全に拒否するschema key-set検証は、複数execution case harnessと同時に回収できるtooling gateとして残します。
+
 P2-1以降では、次の二層を維持します。
 
 - 小さいfixture: identity normalization、named / namespace import、private access、cycle、ambiguous import、

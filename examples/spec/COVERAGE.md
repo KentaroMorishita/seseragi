@@ -26,7 +26,7 @@
 | generic struct / alias / impl                 | Lesson 11         | nested generic / kind / inference fixtures     | partial |
 | rank-1 generic pure function / module import  | Lesson 11         | `project-schema-1/rock-paper-scissors-domain-split` | partial |
 | comprehension、Array / record pattern         | Lesson 12         | parse / pattern diagnostics                    | partial |
-| custom trait / instance / custom operator     | Lesson 13         | instance syntax / orphan / fixity fixtures     | partial |
+| custom trait / instance / custom operator     | Lesson 13         | instance syntax / orphan / fixity / `project-schema-1/imported-effect-failure` | partial |
 | Semigroup / Monoid                            | Lesson 14         | law fixtures                                   | partial |
 | generic ADT、local / mutual recursion、spread | Lesson 19         | local recursion / forward reference fixtures   | partial |
 | monad transformer                             | Lesson 20         | transformer order fixtures                     | partial |

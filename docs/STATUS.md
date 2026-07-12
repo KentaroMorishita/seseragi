@@ -78,6 +78,8 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
   exit code 1まで比較するexecution artifact
 - cross-module ADT / pure callを実行する`project-schema-1/rock-paper-scissors-domain-split`、namespace constructorと
   generic callを実行する`namespace-generic-call`、imported cold EffectとConsole traceを実行する`imported-effect-console`
+- imported typed failureをmainのADTへmapし、dependencyのderived `Show` dictionary import、stderr、exit 1まで実行する
+  `project-schema-1/imported-effect-failure`
 - 物理source pathと論理module identityを分離し、Phase 1の累積programをTokenStreamからgenerated
   TypeScriptまで一つのcompile結果として返すpublic Rust driver
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
@@ -137,7 +139,9 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    execution結果を保つ。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。
-5. trait / nested namespace、higher-order callable、generic imported ADTは、それぞれ一般機構を証明する独立gateで回収する。
+5. 分割RPSのexecution matrixを一つのcompile artifact setへ結ぶ前に、projectごとの複数execution case discoveryとnested
+   descriptorのunknown-field拒否を追加する。
+6. trait / nested namespace、higher-order callable、generic imported ADTは、それぞれ一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと
 `project-schema-1/namespace-generic-call`の実行経路まで接続済みです。このため次の累積goalではnamespace機能を増やすこと自体を
