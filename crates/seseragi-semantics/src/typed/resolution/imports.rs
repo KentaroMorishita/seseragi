@@ -10,6 +10,17 @@ use super::contains_function_type;
 pub(super) fn collect_imported_callables(
     resolved: &ResolvedModule,
 ) -> BTreeMap<SymbolId, TopLevelPureFunction> {
+    let type_names = resolved
+        .imports
+        .iter()
+        .filter(|import| import.in_scope && import.export.namespace == "type")
+        .map(|import| {
+            (
+                (import.module.clone(), import.export.name.clone()),
+                import.local_name.clone(),
+            )
+        })
+        .collect::<BTreeMap<_, _>>();
     resolved
         .imports
         .iter()
@@ -25,6 +36,11 @@ pub(super) fn collect_imported_callables(
                 return None;
             }
             let (parameter_types, result_type) = flatten_function(export.scheme.type_ref.clone())?;
+            let parameter_types = parameter_types
+                .into_iter()
+                .map(|type_ref| localize_type(type_ref, &import.module, &type_names))
+                .collect::<Vec<_>>();
+            let result_type = localize_type(result_type, &import.module, &type_names);
             if parameter_types.is_empty()
                 || parameter_types.iter().any(contains_function_type)
                 || contains_function_type(&result_type)
@@ -49,6 +65,47 @@ pub(super) fn collect_imported_callables(
             ))
         })
         .collect()
+}
+
+fn localize_type(
+    type_ref: TypedType,
+    module: &str,
+    names: &BTreeMap<(String, String), String>,
+) -> TypedType {
+    match type_ref {
+        TypedType::Named { name, arguments } => TypedType::Named {
+            name: names
+                .get(&(module.to_owned(), name.clone()))
+                .cloned()
+                .unwrap_or(name),
+            arguments: arguments
+                .into_iter()
+                .map(|argument| localize_type(argument, module, names))
+                .collect(),
+        },
+        TypedType::Record { closed, fields } => TypedType::Record {
+            closed,
+            fields: fields
+                .into_iter()
+                .map(|field| crate::TypedRecordField {
+                    name: field.name,
+                    optional: field.optional,
+                    type_ref: localize_type(field.type_ref, module, names),
+                })
+                .collect(),
+        },
+        TypedType::Tuple { elements } => TypedType::Tuple {
+            elements: elements
+                .into_iter()
+                .map(|element| localize_type(element, module, names))
+                .collect(),
+        },
+        TypedType::Function { parameter, result } => TypedType::Function {
+            parameter: Box::new(localize_type(*parameter, module, names)),
+            result: Box::new(localize_type(*result, module, names)),
+        },
+        TypedType::Hole => TypedType::Hole,
+    }
 }
 
 fn flatten_function(type_ref: InterfaceType) -> Option<(Vec<TypedType>, TypedType)> {

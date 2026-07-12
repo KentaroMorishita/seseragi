@@ -495,9 +495,10 @@ TypedHirへ残せます。さらにnon-genericな公開ADTはdependency interfac
 importしていないvariantもscopeへ名前登録せずexhaustiveness witnessには残します。これにより選択importだけでmatchを
 誤ってtotalと判定しません。generic / higher-order callable、generic imported ADTは後続gateです。
 
-現在の`TypedType::Named`表示はsource spelling中心なので、異なるdependencyの同名nominal型やtype alias importをfunction
-scheme境界でcanonical identityにより比較するgateがP2-2に残っています。semantic catalogのowner SymbolIdはすでにmodule
-ごとに分離されるため、ASTを作り直さずcall boundaryのsemantic comparisonとscheme表示のlocalizationを追加できます。
+imported function scheme内のnominal typeは、同じdependencyから明示importされたtype aliasのlocal spellingへ再表示します。
+このため`Hand as LocalHand`をparameter / resultに使うcall boundaryは通ります。type自体をimportせず値のflowだけで渡す場合や、
+異なるdependencyの同名nominal型をcanonical identityで比較するgateはP2-2に残っています。semantic catalogのowner SymbolIdは
+すでにmoduleごとに分離されるため、ASTを作り直さずcall boundaryのsemantic comparisonを追加できます。
 
 P2-1以降では、次の二層を維持します。
 
