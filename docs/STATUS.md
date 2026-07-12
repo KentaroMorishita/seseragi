@@ -39,7 +39,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin最小slice |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | 未着手             |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | single-module driver、linking未実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
@@ -66,7 +66,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - artifact runner skeleton: `scripts/conformance-artifacts.ts`
-- Rust compiler crates: syntax、source、diagnostic、semantics、lowering、runtime / conformance boundary
+- Rust compiler crates: syntax、source、diagnostic、semantics、lowering、single-module driver、runtime / conformance boundary
 - TokenStreamからgenerated TypeScriptまでのschema-1 artifact producer / conformance比較
 - cold Effect valueをversioned TypeScript runtimeで実行するConsole / Stdin execution fixture
 - typed ADT、tuple、match、exhaustivenessを通す`rock-paper-scissors-domain` artifact
@@ -74,6 +74,10 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - pure `parseHand`をcold typed Effectへ変換し、success payloadを実行比較する`effect-parse-hand` artifact
 - ADT / match / typed failure / Stdin / Consoleを統合し、正常・不正・EOFを実行比較する
   `rock-paper-scissors-cli` artifact
+- 同じCLIでConsole operation trace、Stdin / Console host failureのtyped変換、derived `Show`によるstderrと
+  exit code 1まで比較するexecution artifact
+- 物理source pathと論理module identityを分離し、Phase 1の累積programをTokenStreamからgenerated
+  TypeScriptまで一つのcompile結果として返すpublic Rust driver
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
@@ -116,11 +120,14 @@ semantics、TypeScript境界、cost contract、lesson、compile fixtureへ移し
 
 ## 次の進行順
 
-当面は仕様機能を横へ増やさず、次の順で進めます。
+Phase 1のsingle-file累積programは完了gateを満たしました。次は同じprogramを捨てず、module / packageの
+一般機構を加える順で進めます。
 
-1. `Show<AppError>` dictionaryをentry contractへ接続し、未処理typed failureのstderr表示を仕様どおり固定する。
-2. `capture-console`のactual operation traceとConsole / Stdin host failureのtyped変換を実装する。
-3. じゃんけん縦sliceで不足したdiagnosticとfrontend recoveryを一般機能として補う。
+1. project resolverがpackage rootとsource rootからcanonical module identityを決め、driverへ物理pathとは別に渡す。
+2. linked `ModuleInterface`からimportした型・値・constructorをresolver scopeへ導入し、missing / private / duplicate
+   importをstructured diagnosticで固定する。
+3. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、execution結果を保つ。
+4. imported instance evidenceとgenerated module importを接続し、標準型名のhardcodeだけで完了できないgateを置く。
 
 ## 完了と呼ぶ条件
 

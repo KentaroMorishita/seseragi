@@ -350,7 +350,7 @@ generic payload substitutionは独立sliceで完成させます。nullary constr
 resolverでlazyにmaterializeし、関数戻り型、注釈付き`let`、`if` / `match` branch、tuple要素から期待型を渡して
 `Nothing` / `Just` / `Left` / `Right`の型引数を具体化するところまで接続済みです。
 
-P1-5のruntime境界も着手しています。TypeScript ABIは`Maybe`と`Either`をreadonly tagged unionとして表し、
+P1-5のruntime境界も通しています。TypeScript ABIは`Maybe`と`Either`をreadonly tagged unionとして表し、
 `readLine`は`Maybe<String>`を返して入力行を`Just`、EOFをsingleton `Nothing`にします。generated moduleは
 `core.maybe` / `core.either` requirementを型から収集します。standard constructorはcanonical symbolだけを
 backend registryで`@seseragi/runtime/sum`のimportへ解決し、localな同名ADTは変換しません。`Nothing`は
@@ -363,7 +363,7 @@ runtimeは入力caseを構築時に一度だけ保持し、Effectのrun時にRig
 conformance runnerはEffectのsuccess / failure payloadをprivate sidecarで観測し、`effect-parse-hand-valid`で
 `Rock` successまで比較します。
 
-P1-6の最初のend-to-end sliceとして、`schema-1/rock-paper-scissors-cli/`は`readLine`、`Maybe`、
+P1-6のend-to-end sliceとして、`schema-1/rock-paper-scissors-cli/`は`readLine`、`Maybe`、
 `Either`、`fromEither`、`mapError`、do内pure binding、Console出力を一つの通常pipelineへ接続しました。
 resolverが確定したexternal nominal typeだけをTypedHir / CoreIrのmodule import setへ残し、backendは
 runtime ABIの`typeIdentity` / `typeImport`から`StdinError`と`ConsoleError`のtype-only importを生成します。
@@ -379,8 +379,8 @@ runnerはrun.jsonのrequired environmentをgenerated typed interfaceの`Effect<R
 非`Never`のfailure `E`には一意な`Show<E>`を要求し、local ADTはtype identityでgenerated dictionary metadataを、
 standard `String` / `ConsoleError` / `StdinError`はruntime dictionaryを選択します。typed failureはJavaScript throwへ
 変換せず、辞書でrenderした一行をstderrへ出してexit code 1に分類します。rendererまたはhost runtimeのdefectだけを
-exit code 70に分類します。`capture-console`の実operation traceはexecution fixtureで、Console / Stdin host failureの
-typed channel変換はruntime probeで検査します。
+exit code 70に分類します。`capture-console`の実operation traceとConsole / Stdin host failureのtyped channel変換は、
+いずれも同じgenerated CLIを実行するexecution fixtureで検査します。
 
 P1-0は新機能の前提です。SurfaceAstが式を所有しても、TypedHirが再びsource tokenを走査するならmatchやpatternを
 追加するたびに別parserが増えます。したがってpure expression consumerをSurfaceAstへ移してからtupleへ進み、
@@ -403,7 +403,7 @@ P1-5とP1-6はpure domainがgreenになってから進めました。typed failu
 Effect方針どおりuser定義error ADTと`mapError`で寄せます。CLI entryはcold Effect valueを返し、runner境界だけが
 実行します。
 
-2026-07-11時点でP1-5の前半として、Effect bodyとEffect diagnosticsもresolver済み`SurfaceExpr`へ移行しました。
+P1-5ではEffect bodyとEffect diagnosticsもresolver済み`SurfaceExpr`へ移行しました。
 do内の`let name = pureExpr`はmonadic bindとは別のTyped / Core / TypeScript statementとして保持し、lexical `const`へ
 lowerします。このstatement単独では`flatMap` helperを要求せず、前にEffect bindがある場合だけそのcontinuation内で
 評価されます。EffectCall自身も具体化済み`R / E / A`を保持し、`succeed value`は引数型をsuccess型として
@@ -419,3 +419,44 @@ matchのliteral patternもInt / String / BoolをSurfaceAstからTypeScript生成
 bindingやname referenceを生成せず、scrutinee型との一致をsemanticsで検査します。String / Intのようなopen domainは
 catch-allがなければnon-exhaustive、重複literalはunreachableです。Boolは`True` / `False`を有限domainとして証明します。
 CoreIrは比較対象とprojectionを保持し、TypeScript backendだけがbigintを含むstrict equalityへlowerします。
+
+2026-07-12にP1-0からP1-6のsingle-file gateを閉じました。正常入力、不正入力、EOFに加え、host Stdin / Console
+failureをtyped channelへ変換するexecution case、captured Console operationのactual trace、matchのnon-exhaustive /
+unreachable / pattern type mismatch、欠けたarm bodyから後続armを保持するrecoveryを固定しています。
+
+## 11. フェーズ2: moduleへ分割した型付きじゃんけんCLI
+
+フェーズ2の累積goal programは、フェーズ1の機能を別sampleへ置き換えるのではなく、同じじゃんけんCLIを
+`domain.ssrg`、`input.ssrg`、`main.ssrg`へ分割したpackageです。ADT、tuple / literal match、Maybe / Either、
+typed failure、do内pure binding、Stdin / Console、derived `Show`、正常・不正・EOF / host failure executionを残します。
+
+このgoalから逆算した実装順は次です。
+
+| 順序 | slice | 完了条件 |
+| ---- | ----- | -------- |
+| P2-0 | compiler driver | callerが物理source labelと論理module identityを別々に渡し、single moduleを全stageへ一度のanalysis結果からcompileする |
+| P2-1 | project identity | manifest / root / relative pathを仕様どおりcanonicalizeし、同じfileの二重identity、root escape、case / NFC衝突を拒否する |
+| P2-2 | linked imports | dependency `ModuleInterface`からnamed / alias / namespace importの型・値・constructorをresolverへ導入し、private / missing / duplicateを診断する |
+| P2-3 | cross-module backend | imported symbol identityをCoreIrへ保持し、TypeScript module importとsource mapを生成する |
+| P2-4 | instance closure | transitive import closureのinstance evidenceを選択し、imported derived `Show` dictionaryをgenerated module間で接続する |
+| P2-5 | package execution | manifest entryからmodule graphをtopological compileし、分割RPSの全execution caseをフェーズ1と同じ結果で比較する |
+
+P2-0は実装済みです。`seseragi-driver`はfilesystemやmanifestを読まず、project layerが確定したopaqueなmodule IDを
+受け取ります。importを物理pathから推測して仮のcanonical symbolへ変換せず、project resolver未接続の間は
+`SES-N0104`で停止します。Phase 1累積sourceが既存のTypedInterface、generated metadata、TypeScriptと一致する
+regression testを持ち、conformanceのTypedHir以降もこのdriver経由です。
+
+P2-1以降では、次の二層を維持します。
+
+- 小さいfixture: identity normalization、named / namespace import、private access、cycle、ambiguous import、
+  imported constructor pattern、imported instance選択を個別に検査する。
+- 累積integration package: 分割RPSをparse、resolve、type、CoreIr、TypeScriptIr、generated code、runtime executionまで通す。
+
+現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。これを一般trait /
+instance機構の完了とは呼びません。ただしModuleInterfaceとTypedInterfaceはinstance head / selected evidenceを保持して
+いるため、P2-2までを止める破壊的欠陥ではありません。P2-4ではcompiler内部の標準型名分岐だけでgreenにできないよう、
+user moduleが公開したinstanceとdictionaryを別moduleから実際に選択・importするfixtureを必須gateにします。
+
+project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
+dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、
+TypedHir、CoreIr、runtime ABIを一斉に作り直す経路を避けます。
