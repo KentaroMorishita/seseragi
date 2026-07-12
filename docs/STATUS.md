@@ -39,7 +39,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin最小slice |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | module path + interface/header linker contract、semantic linking未実装 |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | module path + interface/header linker + import resolution、typed linking未実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |

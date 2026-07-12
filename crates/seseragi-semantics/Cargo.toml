@@ -7,6 +7,7 @@ repository.workspace = true
 
 [dependencies]
 serde.workspace = true
+seseragi-project = { path = "../seseragi-project" }
 seseragi-syntax = { path = "../seseragi-syntax" }
 
 [dev-dependencies]

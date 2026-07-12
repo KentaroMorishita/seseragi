@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use seseragi_syntax::{InterfaceDependency, SurfaceDecl};
+use seseragi_syntax::{InterfaceDependency, InterfaceExport, SurfaceDecl};
 
 mod interface;
 mod names;
@@ -22,9 +22,20 @@ pub struct ResolvedModule {
     pub source: String,
     pub module: String,
     pub dependencies: Vec<InterfaceDependency>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub imports: Vec<ResolvedImport>,
     pub declarations: Vec<SurfaceDecl>,
     pub scopes: Vec<ResolvedScope>,
     pub symbols: Vec<ResolvedSymbol>,
     pub references: Vec<ResolvedReference>,
     pub issues: Vec<ResolveIssue>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResolvedImport {
+    pub symbol: SymbolId,
+    pub local_name: String,
+    pub origin: seseragi_syntax::ByteSpan,
+    pub export: InterfaceExport,
 }

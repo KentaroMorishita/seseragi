@@ -10,6 +10,7 @@ use std::collections::BTreeMap;
 
 mod declarations;
 mod expression;
+mod imports;
 mod pattern;
 #[cfg(test)]
 mod tests;
@@ -25,22 +26,48 @@ pub(crate) fn resolve_module_from_interface(
     source: &str,
 ) -> ResolvedModule {
     let surface = parse_surface_ast(interface.source.clone(), source);
-    resolve_surface_module(interface, surface)
+    resolve_surface_module(interface, surface, Vec::new())
 }
 
-fn resolve_surface_module(interface: ModuleInterface, surface: SurfaceModule) -> ResolvedModule {
+pub fn resolve_linked_module(
+    linked: seseragi_project::LinkedModule,
+    source: &str,
+) -> ResolvedModule {
+    let surface = parse_surface_ast(linked.interface.source.clone(), source);
+    let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
+    declarations::register_module_declarations(&mut resolver, &surface.declarations);
+    let imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
+    declarations::resolve_declarations(&mut resolver, &surface.declarations);
+    finish_resolved_module(linked.interface, surface, imports, resolver)
+}
+
+fn resolve_surface_module(
+    interface: ModuleInterface,
+    surface: SurfaceModule,
+    imports: Vec<crate::ResolvedImport>,
+) -> ResolvedModule {
     let module_origin = module_origin(&surface);
     let mut resolver = Resolver::new(&interface.module, module_origin);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     declarations::register_imports(&mut resolver, &interface, &surface);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
 
+    finish_resolved_module(interface, surface, imports, resolver)
+}
+
+fn finish_resolved_module(
+    interface: ModuleInterface,
+    surface: SurfaceModule,
+    imports: Vec<crate::ResolvedImport>,
+    resolver: Resolver,
+) -> ResolvedModule {
     ResolvedModule {
         schema: 2,
         stage: "resolved-ast".to_owned(),
         source: surface.source,
         module: interface.module,
         dependencies: interface.dependencies,
+        imports,
         declarations: surface.declarations,
         scopes: resolver.scopes,
         symbols: resolver.symbols,

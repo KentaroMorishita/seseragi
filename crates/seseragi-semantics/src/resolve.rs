@@ -3,6 +3,7 @@ use seseragi_syntax::{InterfaceExport, InterfaceInstance, InterfaceOperator, Mod
 
 mod body;
 
+pub use body::resolve_linked_module;
 pub use body::resolve_module;
 pub(crate) use body::resolve_module_from_interface;
 
@@ -96,6 +97,8 @@ fn resolved_instance(symbol: SymbolId, instance: InterfaceInstance) -> ResolvedI
     }
 }
 
+#[cfg(test)]
+mod linked_tests;
 #[cfg(test)]
 mod tests {
     use super::*;
