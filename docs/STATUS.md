@@ -132,7 +132,9 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    stageしたmodule setのTypeScript type-checkも行う。同じfixtureのpure entryはBunで分割moduleを実行する。filesystem discovery、
    manifest解決、Effect / imported instanceを含むpackage executionへの接続は未実装。
 3. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、execution結果を保つ。
-4. imported instance evidenceとgenerated module importを接続し、標準型名のhardcodeだけで完了できないgateを置く。
+4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIrまで保持済みで、
+   payloadごとにLocal / Imported / Standardを選べる。次は生成moduleのdictionary source importを接続し、標準型名の
+   hardcodeだけで完了できない実行gateを置く。
 5. trait / nested namespace、higher-order callable、generic imported ADTは、それぞれ一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと
