@@ -1,8 +1,10 @@
 use crate::{CompileInput, CompiledModule};
 use seseragi_lowering::{
-    emit_typescript_module, lower_core_module_to_typescript_ir, lower_typed_module,
+    emit_typescript_module, lower_core_module_to_typescript_ir,
+    lower_core_module_to_typescript_ir_with_plan, lower_typed_module, TypeScriptLoweringError,
+    TypeScriptOutputPlan,
 };
-use seseragi_semantics::analyze_module_interface;
+use seseragi_semantics::{analyze_linked_module, analyze_module_interface};
 use seseragi_syntax::{
     parse_diagnostics, parse_import_free_module_interface, DiagnosticArtifact, DiagnosticSeverity,
 };
@@ -34,6 +36,37 @@ pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, Diagnos
         analyzed.typed_interface,
         input.source(),
     ))
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum LinkedCompileError {
+    Diagnostics(DiagnosticArtifact),
+    TypeScriptPlan(TypeScriptLoweringError),
+}
+
+/// Compiles a module after the project layer has fixed its dependency graph,
+/// public dependency interfaces, and generated TypeScript output specifiers.
+pub fn compile_linked_module(
+    linked: seseragi_project::LinkedModule,
+    source: &str,
+    output_plan: &TypeScriptOutputPlan,
+) -> Result<CompiledModule, LinkedCompileError> {
+    let diagnostics = parse_diagnostics(linked.interface.source.clone(), source);
+    let analyzed = analyze_linked_module(diagnostics, linked, source)
+        .map_err(LinkedCompileError::Diagnostics)?;
+    let core_ir = lower_typed_module(analyzed.typed_hir.clone());
+    let typescript_ir = lower_core_module_to_typescript_ir_with_plan(core_ir.clone(), output_plan)
+        .map_err(LinkedCompileError::TypeScriptPlan)?;
+    let generated = emit_typescript_module(typescript_ir.clone(), source);
+
+    Ok(CompiledModule {
+        diagnostics: analyzed.diagnostics,
+        typed_hir: analyzed.typed_hir,
+        typed_interface: analyzed.typed_interface,
+        core_ir,
+        typescript_ir,
+        generated,
+    })
 }
 
 fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {

@@ -512,8 +512,10 @@ specifierを受け取ります。TypeScriptIrはsource module importをruntime A
 value symbolからalias済みbackend localを選びます。異なるmoduleの同名exportもcanonical identityで分離し、明示type
 aliasはtype-only bindingを生成します。type-onlyまたはnamespace-only edgeはside-effect importも残すため、TypeScriptの
 type erasureでdependency初期化が消えません。emitterとsource mapは共通のimport render planを使い、追加行数を同じ方法で
-数えます。project driverからoutput planを構築するAPI、namespace memberのvalue lowering、imported instance dictionaryは
-まだ未接続のため、P2-3全体およびpackage executionの完了とは扱いません。
+数えます。public driverはlink済みmoduleと`TypeScriptOutputPlan`を受け、同じanalysis結果からTypedHir、CoreIr、
+TypeScriptIr、generated moduleまで通します。module graph全体のoutput path計画とdependency自身のtopological compile、
+namespace memberのvalue lowering、imported instance dictionaryはまだ未接続のため、P2-3全体およびpackage executionの
+完了とは扱いません。
 
 P2-1以降では、次の二層を維持します。
 

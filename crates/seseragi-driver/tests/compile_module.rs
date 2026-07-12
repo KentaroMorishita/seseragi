@@ -1,6 +1,9 @@
-use seseragi_driver::{compile_module, CompileInput};
-use seseragi_lowering::GeneratedModule;
-use seseragi_semantics::TypedModuleInterface;
+use seseragi_driver::{compile_linked_module, compile_module, CompileInput, LinkedCompileError};
+use seseragi_lowering::{GeneratedModule, TypeScriptLoweringError, TypeScriptOutputPlan};
+use seseragi_project::{link_module, ModuleLinkTarget};
+use seseragi_semantics::{analyze_module_interface, TypedModuleInterface};
+use seseragi_syntax::{parse_diagnostics, parse_unlinked_module_interface};
+use std::collections::BTreeMap;
 
 fn input<'source>(
     source_name: &'source str,
@@ -196,4 +199,64 @@ fn compiles_the_cumulative_phase_one_program_to_canonical_outputs() {
     assert_eq!(compiled.typed_interface, expected_typed_interface);
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
     assert_eq!(compiled.generated.metadata, expected_metadata);
+}
+
+#[test]
+fn compiles_a_linked_module_through_planned_typescript_output() {
+    let domain_source = "pub fn increment value: Int -> Int = value + 1\n";
+    let main_source =
+        "import { increment as next } from \"./domain\"\n\npub fn run value: Int -> Int = next value\n";
+    let linked = linked_module(main_source, domain_source);
+    let plan =
+        TypeScriptOutputPlan::new([("fixture/game::domain".to_owned(), "./domain.js".to_owned())]);
+
+    let compiled = compile_linked_module(linked, main_source, &plan)
+        .expect("linked module and complete output plan should compile");
+
+    assert_eq!(compiled.typed_hir.module_dependencies.len(), 1);
+    assert_eq!(compiled.core_ir.module_dependencies.len(), 1);
+    assert_eq!(compiled.typescript_ir.source_imports.len(), 1);
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("import { increment as next } from \"./domain.js\""));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("export const run = (value: bigint) => next(value)"));
+}
+
+#[test]
+fn classifies_a_missing_linked_output_specifier_as_a_plan_error() {
+    let domain_source = "pub fn increment value: Int -> Int = value + 1\n";
+    let main_source =
+        "import { increment } from \"./domain\"\n\npub fn run value: Int -> Int = increment value\n";
+    let linked = linked_module(main_source, domain_source);
+
+    let error = compile_linked_module(linked, main_source, &TypeScriptOutputPlan::default())
+        .expect_err("linked emission requires one output specifier per dependency module");
+
+    assert_eq!(
+        error,
+        LinkedCompileError::TypeScriptPlan(TypeScriptLoweringError::MissingOutputSpecifier {
+            module: "fixture/game::domain".to_owned(),
+            source_specifier: "./domain".to_owned(),
+        })
+    );
+}
+
+fn linked_module(main_source: &str, domain_source: &str) -> seseragi_project::LinkedModule {
+    let domain =
+        parse_unlinked_module_interface("domain.ssrg", "fixture/game::domain", domain_source);
+    let interface = analyze_module_interface(
+        parse_diagnostics("domain.ssrg", domain_source),
+        domain.interface.clone(),
+        domain_source,
+    )
+    .unwrap()
+    .typed_interface
+    .into_link_interface();
+    let target = ModuleLinkTarget::same_package(domain.header, interface).unwrap();
+    let main = parse_unlinked_module_interface("main.ssrg", "fixture/game::main", main_source);
+    link_module(main, &BTreeMap::from([("./domain".to_owned(), target)])).unwrap()
 }

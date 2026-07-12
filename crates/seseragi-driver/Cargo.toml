@@ -7,6 +7,7 @@ repository.workspace = true
 
 [dependencies]
 seseragi-lowering = { path = "../seseragi-lowering" }
+seseragi-project = { path = "../seseragi-project" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }
 

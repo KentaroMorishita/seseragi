@@ -9,6 +9,6 @@ mod dependencies;
 mod input;
 mod output;
 
-pub use compile::compile_module;
+pub use compile::{compile_linked_module, compile_module, LinkedCompileError};
 pub use input::CompileInput;
 pub use output::CompiledModule;

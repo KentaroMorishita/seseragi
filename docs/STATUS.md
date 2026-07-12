@@ -124,8 +124,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
 一般機構を加える順で進めます。
 
 1. project resolverがpackage rootとsource rootからcanonical module identityを決め、driverへ物理pathとは別に渡す。
-2. project / driverがmodule graphのgenerated output pathから`TypeScriptOutputPlan`を構築し、linked moduleを通常compile APIへ
-   接続する。backend側のalias、同名export、type-only edge、source map contractは固定済み。
+2. project layerがmodule graphのgenerated output pathから`TypeScriptOutputPlan`を構築し、dependencyをtopological orderで
+   compileする。driverのlinked compile APIとbackend側のalias、同名export、type-only edge、source map contractは固定済み。
 3. namespace member accessと未対応generic importを小さいfixtureで閉じ、P2-2の残gateを解消する。
 4. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、execution結果を保つ。
 5. imported instance evidenceとgenerated module importを接続し、標準型名のhardcodeだけで完了できないgateを置く。
