@@ -46,7 +46,7 @@
 | child process streaming / termination         | process guide     | `projects/child-process-captured`              | partial |
 | HTTP streaming / connection lifetime          | HTTP guide        | `projects/http-*`                              | partial |
 | module、visibility、re-export、cycle          | module guide      | `fixtures/projects/modules-*`                  | covered |
-| namespace-qualified value / type import       | module guide      | `project-schema-1/namespace-generic-call`      | partial |
+| namespace-qualified value / type / constructor import | module guide | `project-schema-1/namespace-generic-call` | partial |
 | TypeScript foreign blockとABI                 | interop guide     | `projects/foreign-*`, `typescript-abi-*`       | partial |
 | `.d.ts`変換                                   | converter guide   | `projects/dts-*`                               | partial |
 | generic TS ABI / callback lifetime            | interop guide     | `projects/{typescript-abi,dts-callback}-*`     | partial |
