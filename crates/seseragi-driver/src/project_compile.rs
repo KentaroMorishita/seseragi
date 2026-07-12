@@ -249,4 +249,42 @@ mod tests {
         .unwrap_err();
         assert!(matches!(error, ProjectCompileError::Diagnostics { .. }));
     }
+
+    #[test]
+    fn compiles_an_imported_adt_pattern_through_the_same_project_pipeline() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/rps::main".to_owned(),
+                [("./domain".to_owned(), "fixture/rps::domain".to_owned())],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/rps::domain".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "fixture/rps::domain",
+                    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n",
+                    "dist/rps/domain.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/rps::main",
+                    "import { Hand, Rock } from \"./domain\"\npub fn isRock hand: Hand -> Bool =\n  match hand {\n    Rock -> True\n    _ -> False\n  }\n",
+                    "dist/rps/main.js",
+                ),
+            ],
+        )
+        .unwrap();
+
+        let main = project.modules.get("fixture/rps::main").unwrap();
+        assert_eq!(main.typed_hir.module_dependencies.len(), 1);
+        assert!(main.generated.typescript.contains("from \"./domain.js\""));
+        assert!(main.generated.typescript.contains("export const isRock"));
+    }
 }
