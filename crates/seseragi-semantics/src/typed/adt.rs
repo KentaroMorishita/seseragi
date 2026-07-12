@@ -88,11 +88,9 @@ fn typed_variant(
 fn type_ref_is_resolved(resolution: &TypedResolution<'_>, type_ref: &TypeRef) -> bool {
     match type_ref {
         TypeRef::Named {
-            name,
-            arguments,
-            span,
+            arguments, span, ..
         } => {
-            (name.contains('.') || resolution.target(*span, SymbolNamespace::Type).is_some())
+            resolution.target(*span, SymbolNamespace::Type).is_some()
                 && arguments
                     .iter()
                     .all(|argument| type_ref_is_resolved(resolution, argument))

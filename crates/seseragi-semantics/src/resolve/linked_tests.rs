@@ -6,6 +6,8 @@ use seseragi_project::{link_module, ModuleLinkTarget};
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::BTreeMap;
 
+mod namespace_types;
+
 #[test]
 fn resolves_an_imported_function_to_its_canonical_dependency_symbol() {
     let main_source =

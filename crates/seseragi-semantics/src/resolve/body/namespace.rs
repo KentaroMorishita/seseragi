@@ -13,8 +13,8 @@ struct NamespaceImport {
     specifier: String,
     module: String,
     origin: ByteSpan,
-    values: BTreeMap<String, InterfaceExport>,
-    private_values: BTreeSet<String>,
+    exports: BTreeMap<(String, String), InterfaceExport>,
+    private_names: BTreeSet<(String, String)>,
 }
 
 struct NamespaceMember {
@@ -40,16 +40,24 @@ impl NamespaceImports {
         exports: &[InterfaceExport],
         header: Option<&ModuleHeader>,
     ) {
-        let values = exports
+        let exports = exports
             .iter()
-            .filter(|export| export.namespace == "value")
-            .map(|export| (export.name.clone(), export.clone()))
+            .filter(|export| matches!(export.namespace.as_str(), "type" | "value"))
+            .map(|export| {
+                (
+                    (export.namespace.clone(), export.name.clone()),
+                    export.clone(),
+                )
+            })
             .collect::<BTreeMap<_, _>>();
-        let private_values = header
+        let private_names = header
             .into_iter()
             .flat_map(|header| &header.names)
-            .filter(|name| name.namespace == "value" && name.visibility == Visibility::Private)
-            .map(|name| name.name.clone())
+            .filter(|name| {
+                matches!(name.namespace.as_str(), "type" | "value")
+                    && name.visibility == Visibility::Private
+            })
+            .map(|name| (name.namespace.clone(), name.name.clone()))
             .collect();
         self.bindings.insert(
             local_name.to_owned(),
@@ -57,15 +65,22 @@ impl NamespaceImports {
                 specifier: specifier.to_owned(),
                 module: module.to_owned(),
                 origin,
-                values,
-                private_values,
+                exports,
+                private_names,
             },
         );
     }
 
-    fn member(&self, alias: &str, member: &str) -> Option<NamespaceMemberLookup> {
+    fn member(
+        &self,
+        alias: &str,
+        namespace: SymbolNamespace,
+        member: &str,
+    ) -> Option<NamespaceMemberLookup> {
         let binding = self.bindings.get(alias)?;
-        if let Some(export) = binding.values.get(member) {
+        let namespace = namespace_name(namespace)?;
+        let key = (namespace.to_owned(), member.to_owned());
+        if let Some(export) = binding.exports.get(&key) {
             return Some(NamespaceMemberLookup::Member(Box::new(NamespaceMember {
                 specifier: binding.specifier.clone(),
                 module: binding.module.clone(),
@@ -73,7 +88,7 @@ impl NamespaceImports {
                 export: export.clone(),
             })));
         }
-        if binding.private_values.contains(member) {
+        if binding.private_names.contains(&key) {
             return Some(NamespaceMemberLookup::Private);
         }
         Some(NamespaceMemberLookup::Missing)
@@ -102,9 +117,10 @@ impl Resolver {
             .register(local_name, specifier, module, origin, exports, header);
     }
 
-    pub(super) fn resolve_namespace_value(
+    pub(super) fn resolve_namespace_member(
         &mut self,
         scope: ScopeId,
+        namespace: SymbolNamespace,
         spelling: &str,
         reference_origin: ByteSpan,
     ) -> Result<Option<SymbolId>, ResolveIssue> {
@@ -117,7 +133,7 @@ impl Resolver {
         if self.lookup(scope, SymbolNamespace::Module, alias).is_none() {
             return Ok(None);
         }
-        let Some(member) = self.namespace_imports.member(alias, member) else {
+        let Some(member) = self.namespace_imports.member(alias, namespace, member) else {
             return Ok(None);
         };
         let member = match member {
@@ -138,14 +154,14 @@ impl Resolver {
             }
         };
         let symbol = self.dependency_symbol(
-            SymbolNamespace::Value,
-            symbol_kind(member.export.declaration_kind.as_deref()),
+            namespace,
+            symbol_kind(namespace, member.export.declaration_kind.as_deref()),
             &member.export.name,
             member.export.symbol.clone(),
         );
         let symbol = self.bind_alias(
             self.module_scope(),
-            SymbolNamespace::Value,
+            namespace,
             spelling,
             symbol,
             member.origin,
@@ -163,9 +179,18 @@ impl Resolver {
     }
 }
 
-fn symbol_kind(declaration_kind: Option<&str>) -> SymbolKind {
-    match declaration_kind {
-        Some("constructor") => SymbolKind::Constructor,
+fn namespace_name(namespace: SymbolNamespace) -> Option<&'static str> {
+    match namespace {
+        SymbolNamespace::Type => Some("type"),
+        SymbolNamespace::Value => Some("value"),
+        _ => None,
+    }
+}
+
+fn symbol_kind(namespace: SymbolNamespace, declaration_kind: Option<&str>) -> SymbolKind {
+    match (namespace, declaration_kind) {
+        (SymbolNamespace::Type, _) => SymbolKind::Type,
+        (SymbolNamespace::Value, Some("constructor")) => SymbolKind::Constructor,
         _ => SymbolKind::Imported,
     }
 }

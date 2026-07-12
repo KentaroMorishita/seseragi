@@ -286,8 +286,8 @@ impl Resolver {
     ) -> Option<SymbolId> {
         let mut target = self.lookup(scope, namespace, spelling);
         let mut namespace_issue = None;
-        if target.is_none() && namespace == SymbolNamespace::Value {
-            match self.resolve_namespace_value(scope, spelling, origin) {
+        if target.is_none() && matches!(namespace, SymbolNamespace::Type | SymbolNamespace::Value) {
+            match self.resolve_namespace_member(scope, namespace, spelling, origin) {
                 Ok(resolved) => target = resolved,
                 Err(issue) => namespace_issue = Some(issue),
             }
