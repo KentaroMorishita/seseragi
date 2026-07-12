@@ -1,16 +1,18 @@
 use seseragi_syntax::{
-    InterfaceDependency, InterfaceExport, InterfaceImport, ModuleInterface, SurfaceImportItem,
+    InterfaceDependency, InterfaceExport, InterfaceImport, SurfaceImportItem,
     UnlinkedModuleInterface,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
+mod target;
 
-pub use model::{LinkError, LinkedDependency, LinkedImport, LinkedModule};
+pub use model::{LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule};
+pub use target::ModuleLinkTarget;
 
 pub fn link_module(
     mut unlinked: UnlinkedModuleInterface,
-    targets: &BTreeMap<String, ModuleInterface>,
+    targets: &BTreeMap<String, ModuleLinkTarget>,
 ) -> Result<LinkedModule, Vec<LinkError>> {
     let mut dependencies = Vec::with_capacity(unlinked.imports.len());
     let mut interface_dependencies = Vec::with_capacity(unlinked.imports.len());
@@ -39,14 +41,14 @@ pub fn link_module(
         }
         interface_dependencies.push(InterfaceDependency {
             specifier: import.specifier.clone(),
-            module: target.module.clone(),
+            module: target.interface().module.clone(),
             origin: import.span,
             imports: interface_imports,
         });
         dependencies.push(LinkedDependency {
             specifier: import.specifier,
             origin: import.span,
-            interface: target.clone(),
+            interface: target.interface().clone(),
             imports: linked_imports,
         });
     }
@@ -63,7 +65,7 @@ pub fn link_module(
 }
 
 fn link_item(
-    target: &ModuleInterface,
+    target: &ModuleLinkTarget,
     item: &SurfaceImportItem,
     names: &mut BTreeSet<(String, String)>,
     linked: &mut Vec<LinkedImport>,
@@ -82,13 +84,14 @@ fn link_item(
 }
 
 fn link_namespace(
-    target: &ModuleInterface,
+    target: &ModuleLinkTarget,
     item: &SurfaceImportItem,
     names: &mut BTreeSet<(String, String)>,
     linked: &mut Vec<LinkedImport>,
     interface: &mut Vec<InterfaceImport>,
     errors: &mut Vec<LinkError>,
 ) {
+    let target_interface = target.interface();
     let Some(local_name) = item.alias.clone() else {
         errors.push(LinkError::MissingNamespaceAlias {
             origin: item.name_span,
@@ -102,34 +105,35 @@ fn link_namespace(
     linked.push(LinkedImport::Namespace {
         local_name: local_name.clone(),
         origin,
-        module: target.module.clone(),
+        module: target_interface.module.clone(),
     });
     interface.push(InterfaceImport {
         namespace: "namespace".to_owned(),
         name: "*".to_owned(),
-        symbol: format!("{}::*", target.module),
+        symbol: format!("{}::*", target_interface.module),
         local_name: Some(local_name),
     });
 }
 
 fn link_operator(
-    target: &ModuleInterface,
+    target: &ModuleLinkTarget,
     item: &SurfaceImportItem,
     names: &mut BTreeSet<(String, String)>,
     linked: &mut Vec<LinkedImport>,
     interface: &mut Vec<InterfaceImport>,
     errors: &mut Vec<LinkError>,
 ) {
-    let export = target
+    let target_interface = target.interface();
+    let export = target_interface
         .exports
         .iter()
         .find(|export| export.namespace == "operator" && export.name == item.name);
-    let operator = target
+    let operator = target_interface
         .operators
         .iter()
         .find(|operator| operator.spelling == item.name);
     let Some((export, operator)) = export.zip(operator) else {
-        errors.push(missing_export(target, item));
+        errors.push(missing_export(target, item, Some("operator")));
         return;
     };
     if !register_name("operator", &item.name, item.name_span, names, errors) {
@@ -145,7 +149,7 @@ fn link_operator(
 }
 
 fn link_named(
-    target: &ModuleInterface,
+    target: &ModuleLinkTarget,
     item: &SurfaceImportItem,
     names: &mut BTreeSet<(String, String)>,
     linked: &mut Vec<LinkedImport>,
@@ -153,12 +157,13 @@ fn link_named(
     errors: &mut Vec<LinkError>,
 ) {
     let exports = target
+        .interface()
         .exports
         .iter()
         .filter(|export| export.name == item.name && export.namespace != "operator")
         .collect::<Vec<_>>();
     if exports.is_empty() {
-        errors.push(missing_export(target, item));
+        errors.push(missing_export(target, item, None));
         return;
     }
     let local_name = item.alias.as_deref().unwrap_or(&item.name);
@@ -211,9 +216,30 @@ fn register_name(
     false
 }
 
-fn missing_export(target: &ModuleInterface, item: &SurfaceImportItem) -> LinkError {
+fn missing_export(
+    target: &ModuleLinkTarget,
+    item: &SurfaceImportItem,
+    namespace: Option<&str>,
+) -> LinkError {
+    let private = target.private_names(&item.name, namespace);
+    if !private.is_empty() {
+        let header = target
+            .header()
+            .expect("private names require a same-package header");
+        return LinkError::PrivateExport {
+            module: target.interface().module.clone(),
+            source: header.source.clone(),
+            name: item.name.clone(),
+            namespaces: private
+                .iter()
+                .map(|entry| entry.namespace.clone())
+                .collect(),
+            origin: item.name_span,
+            declarations: private.iter().map(|entry| entry.declaration).collect(),
+        };
+    }
     LinkError::MissingExport {
-        module: target.module.clone(),
+        module: target.interface().module.clone(),
         name: item.name.clone(),
         origin: item.name_span,
     }

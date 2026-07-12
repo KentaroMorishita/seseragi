@@ -477,8 +477,13 @@ artifact用に残し、public contractの最終値として扱いません。
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ
 `ModuleHeader`も生成します。private宣言と、公開opaque ADT / newtypeのhidden constructorもheaderへ残し、current moduleの
-`LinkedModule`まで保持します。これは公開interface artifactやdependency cacheとして配布しません。dependency targetの
-headerをlink error分類へ接続するまでは`SES-N0102`を出さず、missing exportを一律`SES-N0104`へ変換しません。
+`LinkedModule`まで保持します。これは公開interface artifactやdependency cacheとして配布しません。同一packageの
+`ModuleLinkTarget`だけがheaderを持ち、private nameを`PrivateExport`、存在しないnameを`MissingExport`へ分けます。外部package
+targetは公開interfaceだけを持ち、private declarationの存在を漏らしません。これらを`SES-N0102` / `SES-N0104`へ変換する
+project diagnostic adapterはまだ未実装です。
+
+`ModuleLinkTarget::same_package`はheaderの全public nameがfinal interfaceに存在することを検証します。したがってcompact
+inferred effectのexportが欠けるshallow interfaceを誤ってlink inputへ使うと、semantic linking前に失敗します。
 
 P2-1以降では、次の二層を維持します。
 

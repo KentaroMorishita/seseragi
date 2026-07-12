@@ -1,13 +1,14 @@
 use super::*;
 use seseragi_syntax::parse_unlinked_module_interface;
 
-fn interface(module: &str, source: &str) -> ModuleInterface {
-    parse_unlinked_module_interface(format!("{module}.ssrg"), module, source).interface
+fn target(module: &str, source: &str) -> ModuleLinkTarget {
+    let unlinked = parse_unlinked_module_interface(format!("{module}.ssrg"), module, source);
+    ModuleLinkTarget::same_package(unlinked.header, unlinked.interface).unwrap()
 }
 
 #[test]
 fn links_named_type_constructor_and_function_exports() {
-    let domain = interface(
+    let domain = target(
         "fixture/game::domain",
         "pub type Hand =\n  | Rock\n  | Paper\n\npub fn decide first: Hand -> second: Hand -> Hand = first\n",
     );
@@ -45,7 +46,7 @@ fn links_named_type_constructor_and_function_exports() {
 
 #[test]
 fn one_named_newtype_import_introduces_type_and_constructor_namespaces() {
-    let domain = interface("fixture/game::domain", "pub newtype UserId = Int\n");
+    let domain = target("fixture/game::domain", "pub newtype UserId = Int\n");
     let main = parse_unlinked_module_interface(
         "src/main.ssrg",
         "fixture/game::main",
@@ -72,7 +73,7 @@ fn one_named_newtype_import_introduces_type_and_constructor_namespaces() {
 
 #[test]
 fn links_namespace_and_operator_metadata_without_reading_dependency_bodies() {
-    let support = interface(
+    let support = target(
         "fixture/game::support",
         "pub operator infixl 6 <+>\n  left: Int -> right: Int -> Int =\n  left\n",
     );
@@ -98,7 +99,7 @@ fn links_namespace_and_operator_metadata_without_reading_dependency_bodies() {
 
 #[test]
 fn reports_missing_targets_exports_and_duplicates_at_import_item_spans() {
-    let domain = interface(
+    let domain = target(
         "fixture/game::domain",
         "pub fn decide value: Int -> Int = value\n",
     );
@@ -128,4 +129,87 @@ fn reports_missing_targets_exports_and_duplicates_at_import_item_spans() {
         LinkError::UnresolvedSpecifier { specifier, origin }
             if specifier == "./absent" && *origin == unresolved_span
     )));
+}
+
+#[test]
+fn distinguishes_same_package_private_exports_from_missing_names() {
+    let domain = target(
+        "fixture/game::domain",
+        "fn hidden value: Int -> Int = value\n",
+    );
+    let main = parse_unlinked_module_interface(
+        "src/main.ssrg",
+        "fixture/game::main",
+        "import { hidden, typo } from \"./domain\"\npub let answer: Int = 42\n",
+    );
+    let hidden_span = main.imports[0].items[0].name_span;
+    let hidden_declaration = domain
+        .header()
+        .unwrap()
+        .names
+        .iter()
+        .find(|entry| entry.name == "hidden")
+        .unwrap()
+        .declaration;
+    let targets = BTreeMap::from([("./domain".to_owned(), domain)]);
+
+    let errors = link_module(main, &targets).unwrap_err();
+    assert!(errors.iter().any(|error| matches!(
+        error,
+        LinkError::PrivateExport {
+            source,
+            name,
+            namespaces,
+            origin,
+            declarations,
+            ..
+        } if source == "game::domain.ssrg"
+            && name == "hidden"
+            && namespaces == &["value"]
+            && *origin == hidden_span
+            && declarations == &[hidden_declaration]
+    )));
+    assert!(errors.iter().any(|error| matches!(
+        error,
+        LinkError::MissingExport { name, .. } if name == "typo"
+    )));
+}
+
+#[test]
+fn external_interfaces_do_not_reveal_private_declaration_names() {
+    let unlinked = parse_unlinked_module_interface(
+        "dependency/domain.ssrg",
+        "dependency/game::domain",
+        "fn hidden value: Int -> Int = value\n",
+    );
+    let target = ModuleLinkTarget::external(unlinked.interface);
+    let main = parse_unlinked_module_interface(
+        "src/main.ssrg",
+        "fixture/game::main",
+        "import { hidden } from \"dependency/game\"\npub let answer: Int = 42\n",
+    );
+    let targets = BTreeMap::from([("dependency/game".to_owned(), target)]);
+
+    assert!(matches!(
+        link_module(main, &targets).unwrap_err().as_slice(),
+        [LinkError::MissingExport { name, .. }] if name == "hidden"
+    ));
+}
+
+#[test]
+fn rejects_a_shallow_target_that_omits_a_public_inferred_contract() {
+    let unlinked = parse_unlinked_module_interface(
+        "src/support.ssrg",
+        "fixture/game::support",
+        "pub effect fn greet name: String =\n  println \"hello\"\n",
+    );
+
+    assert!(matches!(
+        ModuleLinkTarget::same_package(unlinked.header, unlinked.interface),
+        Err(LinkTargetError::MissingPublicExport {
+            namespace,
+            name,
+            ..
+        }) if namespace == "value" && name == "greet"
+    ));
 }

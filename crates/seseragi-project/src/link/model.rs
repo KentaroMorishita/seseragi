@@ -48,6 +48,14 @@ pub enum LinkError {
         name: String,
         origin: ByteSpan,
     },
+    PrivateExport {
+        module: String,
+        source: String,
+        name: String,
+        namespaces: Vec<String>,
+        origin: ByteSpan,
+        declarations: Vec<ByteSpan>,
+    },
     DuplicateImport {
         namespace: String,
         local_name: String,
@@ -67,9 +75,28 @@ impl LinkError {
         match self {
             Self::UnresolvedSpecifier { origin, .. }
             | Self::MissingExport { origin, .. }
+            | Self::PrivateExport { origin, .. }
             | Self::DuplicateImport { origin, .. }
             | Self::MissingNamespaceAlias { origin }
             | Self::UnsupportedImportNamespace { origin, .. } => *origin,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum LinkTargetError {
+    ModuleMismatch {
+        header: String,
+        interface: String,
+    },
+    SourceMismatch {
+        header: String,
+        interface: String,
+    },
+    MissingPublicExport {
+        module: String,
+        namespace: String,
+        name: String,
+        declaration: ByteSpan,
+    },
 }

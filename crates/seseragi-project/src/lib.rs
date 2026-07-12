@@ -12,7 +12,10 @@ mod specifier;
 pub use identity::{
     ModuleIdentity, ModuleRoot, PackageIdentity, PackageSourceIdentity, SourceIdentityError,
 };
-pub use link::{link_module, LinkError, LinkedDependency, LinkedImport, LinkedModule};
+pub use link::{
+    link_module, LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule,
+    ModuleLinkTarget,
+};
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};
 pub use specifier::{
