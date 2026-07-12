@@ -148,6 +148,80 @@ fn distinguishes_constructor_patterns_from_bindings() {
 }
 
 #[test]
+fn parses_namespace_qualified_constructor_patterns() {
+    let source = "fn render value: Label -> String = match value {\n  domain.Rock -> \"rock\"\n  domain.Just item -> item\n  (domain.Rock, domain.Just value) -> value\n}\n";
+    let body = first_body(source);
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    let SurfacePattern::Constructor {
+        name,
+        name_span,
+        argument,
+        ..
+    } = &arms[0].pattern
+    else {
+        panic!("expected qualified constructor pattern");
+    };
+    assert_eq!(name, "domain.Rock");
+    assert_eq!(&source[name_span.start..name_span.end], "domain.Rock");
+    assert!(argument.is_none());
+    assert!(matches!(
+        &arms[1].pattern,
+        SurfacePattern::Constructor {
+            name,
+            argument: Some(argument),
+            ..
+        } if name == "domain.Just"
+            && matches!(argument.as_ref(), SurfacePattern::Name { name, .. } if name == "item")
+    ));
+    assert!(matches!(
+        &arms[2].pattern,
+        SurfacePattern::Tuple { elements, .. }
+            if matches!(
+                &elements[0],
+                SurfacePattern::Constructor { name, argument: None, .. }
+                    if name == "domain.Rock"
+            ) && matches!(
+                &elements[1],
+                SurfacePattern::Constructor {
+                    name,
+                    argument: Some(argument),
+                    ..
+                } if name == "domain.Just"
+                    && matches!(
+                        argument.as_ref(),
+                        SurfacePattern::Name { name, .. } if name == "value"
+                    )
+            )
+    ));
+}
+
+#[test]
+fn recovers_malformed_qualified_constructor_patterns() {
+    let body = first_body(
+        "fn recover value: Label -> String = match value {\n  domain. -> \"missing\"\n  domain.rock -> \"lower\"\n  domain.Rock.More -> \"nested\"\n  Domain.Rock -> \"upper alias\"\n  domain.Rock -> \"ok\"\n}\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert_eq!(arms.len(), 5);
+    assert!(arms[..4]
+        .iter()
+        .all(|arm| matches!(arm.pattern, SurfacePattern::Error { .. })));
+    assert!(matches!(
+        &arms[4].pattern,
+        SurfacePattern::Constructor {
+            name,
+            argument: None,
+            ..
+        } if name == "domain.Rock"
+    ));
+}
+
+#[test]
 fn permits_a_line_break_after_low_precedence_application() {
     let body = first_body("effect fn greet = println $\n  \"hello\"\n");
 

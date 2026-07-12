@@ -20,14 +20,41 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
     {
         return parse_parenthesized_pattern(tokens, first, last, span);
     }
-    if tokens[first].kind == TokenKind::IdentifierUpper {
-        let name_span = ByteSpan {
-            start: tokens[first].start,
-            end: tokens[first].end,
-        };
-        let argument = (significant.len() > 1)
-            .then(|| parse_pattern_range(tokens, first + 1, end))
-            .map(Box::new);
+    let constructor = if tokens[first].kind == TokenKind::IdentifierUpper {
+        Some((
+            tokens[first].raw.clone(),
+            ByteSpan {
+                start: tokens[first].start,
+                end: tokens[first].end,
+            },
+            first + 1,
+        ))
+    } else if tokens[first].kind == TokenKind::IdentifierLower
+        && significant
+            .get(1)
+            .is_some_and(|index| tokens[*index].kind == TokenKind::PunctuationDot)
+        && significant
+            .get(2)
+            .is_some_and(|index| tokens[*index].kind == TokenKind::IdentifierUpper)
+    {
+        let constructor_name = significant[2];
+        Some((
+            format!("{}.{}", tokens[first].raw, tokens[constructor_name].raw),
+            ByteSpan {
+                start: tokens[first].start,
+                end: tokens[constructor_name].end,
+            },
+            constructor_name + 1,
+        ))
+    } else {
+        None
+    };
+    if let Some((name, name_span, argument_start)) = constructor {
+        let argument = (significant
+            .last()
+            .is_some_and(|last| *last >= argument_start))
+        .then(|| parse_pattern_range(tokens, argument_start, end))
+        .map(Box::new);
         if argument
             .as_deref()
             .is_some_and(|argument| matches!(argument, SurfacePattern::Error { .. }))
@@ -35,7 +62,7 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
             return SurfacePattern::Error { span };
         }
         return SurfacePattern::Constructor {
-            name: tokens[first].raw.clone(),
+            name,
             name_span,
             argument,
             span,
