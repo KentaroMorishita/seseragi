@@ -90,14 +90,71 @@ where
         }
 
         if order.len() != pending.len() {
-            let modules = pending
-                .into_iter()
-                .filter_map(|(module, dependencies)| (!dependencies.is_empty()).then_some(module))
-                .collect();
+            let modules = cycle_witness(&pending)
+                .expect("a closed graph with no complete topological ordering has a cycle");
             return Err(ModuleGraphError::Cycle { modules });
         }
         Ok(order)
     }
+}
+
+/// Finds one deterministic cycle in the dependency graph.
+///
+/// `topological_order` calls this only after Kahn's algorithm has left at
+/// least one edge behind. That remainder can include modules which merely
+/// depend on a cycle, so reporting all remaining modules would make the
+/// diagnostic misleading. The DFS stack gives us just the back-edge witness.
+fn cycle_witness<T>(dependencies: &BTreeMap<T, BTreeMap<String, T>>) -> Option<Vec<T>>
+where
+    T: Clone + Ord,
+{
+    fn visit<T>(
+        module: &T,
+        dependencies: &BTreeMap<T, BTreeMap<String, T>>,
+        completed: &mut BTreeSet<T>,
+        stack: &mut Vec<T>,
+        stack_positions: &mut BTreeMap<T, usize>,
+    ) -> Option<Vec<T>>
+    where
+        T: Clone + Ord,
+    {
+        if let Some(start) = stack_positions.get(module) {
+            return Some(stack[*start..].to_vec());
+        }
+        if completed.contains(module) {
+            return None;
+        }
+
+        stack_positions.insert(module.clone(), stack.len());
+        stack.push(module.clone());
+        for dependency in dependencies.get(module)?.values() {
+            if let Some(witness) =
+                visit(dependency, dependencies, completed, stack, stack_positions)
+            {
+                return Some(witness);
+            }
+        }
+        stack_positions.remove(module);
+        stack.pop();
+        completed.insert(module.clone());
+        None
+    }
+
+    let mut completed = BTreeSet::new();
+    let mut stack = Vec::new();
+    let mut stack_positions = BTreeMap::new();
+    for module in dependencies.keys() {
+        if let Some(witness) = visit(
+            module,
+            dependencies,
+            &mut completed,
+            &mut stack,
+            &mut stack_positions,
+        ) {
+            return Some(witness);
+        }
+    }
+    None
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -168,6 +225,21 @@ mod tests {
             graph.topological_order().unwrap_err(),
             ModuleGraphError::Cycle {
                 modules: vec!["domain", "main"]
+            }
+        );
+    }
+
+    #[test]
+    fn reports_a_cycle_witness_without_downstream_blocked_modules() {
+        let mut graph = ModuleGraph::new();
+        graph.add_module("C", [("./a".to_owned(), "A")]).unwrap();
+        graph.add_module("A", [("./b".to_owned(), "B")]).unwrap();
+        graph.add_module("B", [("./a".to_owned(), "A")]).unwrap();
+
+        assert_eq!(
+            graph.topological_order().unwrap_err(),
+            ModuleGraphError::Cycle {
+                modules: vec!["A", "B"]
             }
         );
     }
