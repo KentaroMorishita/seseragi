@@ -20,11 +20,37 @@ pub struct ImportOccurrence {
     pub origin: crate::ByteSpan,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnlinkedModuleInterface {
+    pub interface: ModuleInterface,
+    pub imports: Vec<crate::SurfaceImport>,
+}
+
 pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> ModuleInterface {
     let source_name = source_name.into();
     let module_name = module_name_from_source_name(&source_name);
-    parse_module_interface_inner(source_name, module_name, false, source)
-        .expect("the compatibility interface parser accepts unresolved imports")
+    let mut unlinked = parse_unlinked_module_interface(&source_name, module_name, source);
+    unlinked.interface.dependencies = unlinked
+        .imports
+        .into_iter()
+        .map(|import| {
+            dependency_from_surface_import(&unlinked.interface.module, &source_name, import)
+        })
+        .collect();
+    unlinked.interface
+}
+
+/// Produces local public interface data without inventing dependency module or
+/// symbol identities. A project resolver links `imports` to canonical module
+/// interfaces before semantic analysis.
+pub fn parse_unlinked_module_interface(
+    source_name: impl Into<String>,
+    module_id: impl Into<String>,
+    source: &str,
+) -> UnlinkedModuleInterface {
+    let source_name = source_name.into();
+    let module_id = module_id.into();
+    parse_unlinked_module_interface_inner(source_name, module_id, source)
 }
 
 /// Parses an import-free module with a caller-provided logical identity.
@@ -38,21 +64,32 @@ pub fn parse_import_free_module_interface(
     module_id: impl Into<String>,
     source: &str,
 ) -> Result<ModuleInterface, Vec<ImportOccurrence>> {
-    let source_name = source_name.into();
-    let module_id = module_id.into();
-    parse_module_interface_inner(source_name, module_id, true, source)
+    let unlinked = parse_unlinked_module_interface(source_name, module_id, source);
+    if unlinked.imports.is_empty() {
+        return Ok(unlinked.interface);
+    }
+    Err(unlinked
+        .imports
+        .into_iter()
+        .map(|import| ImportOccurrence {
+            specifier: import.specifier,
+            origin: import.span,
+        })
+        .collect())
 }
 
-fn parse_module_interface_inner(
+fn parse_unlinked_module_interface_inner(
     source_name: String,
     module_name: String,
-    reject_imports: bool,
     source: &str,
-) -> Result<ModuleInterface, Vec<ImportOccurrence>> {
+) -> UnlinkedModuleInterface {
     let source_file = source_file_from_source_name(&source_name);
     let cst = parse_cst(source_file.clone(), source);
     if !cst.errors.is_empty() {
-        return Ok(empty_interface(module_name, cst.source));
+        return UnlinkedModuleInterface {
+            interface: empty_interface(module_name, cst.source),
+            imports: Vec::new(),
+        };
     }
 
     let surface_module = parse_surface_ast(source_file.clone(), source);
@@ -63,29 +100,18 @@ fn parse_module_interface_inner(
             .filter(|declaration| matches!(declaration, crate::SurfaceDecl::Type { .. }))
             .count()
     {
-        return Ok(empty_interface(module_name, cst.source));
+        return UnlinkedModuleInterface {
+            interface: empty_interface(module_name, cst.source),
+            imports: Vec::new(),
+        };
     }
 
-    if reject_imports && !surface_module.imports.is_empty() {
-        return Err(surface_module
-            .imports
-            .iter()
-            .map(|import| ImportOccurrence {
-                specifier: import.specifier.clone(),
-                origin: import.span,
-            })
-            .collect());
-    }
-
+    let imports = surface_module.imports;
     let interface = ModuleInterface {
         schema: 1,
         module: module_name.clone(),
         source: surface_module.source.clone(),
-        dependencies: surface_module
-            .imports
-            .into_iter()
-            .map(|import| dependency_from_surface_import(&module_name, &source_name, import))
-            .collect(),
+        dependencies: Vec::new(),
         exports: surface_module
             .declarations
             .iter()
@@ -102,7 +128,7 @@ fn parse_module_interface_inner(
             .filter_map(instance_from_surface_decl)
             .collect(),
     };
-    Ok(interface)
+    UnlinkedModuleInterface { interface, imports }
 }
 
 fn empty_interface(module: String, source: String) -> ModuleInterface {

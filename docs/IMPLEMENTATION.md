@@ -454,6 +454,11 @@ SemVer、registry content digestまたはcanonical absolute pathのsource identi
 lockfileからこの値を構築する検証、canonical filesystem pathの取得、case / symlink衝突はまだ実装していないため、
 P2-1全体の完了とは扱いません。
 
+P2-2の入力contractとして、syntax frontendは明示module identityを受け取る`UnlinkedModuleInterface`を返します。
+これは現在moduleのpublic exports / operators / instancesとraw import occurrenceを保持しますが、dependency moduleや
+imported symbolのcanonical IDをsource spellingから作りません。従来artifact互換の推測は旧producer内だけに隔離し、
+project linkerとpublic driverはこの推測へ依存しません。
+
 P2-1以降では、次の二層を維持します。
 
 - 小さいfixture: identity normalization、named / namespace import、private access、cycle、ambiguous import、

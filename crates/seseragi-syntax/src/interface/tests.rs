@@ -70,6 +70,26 @@ fn reports_imports_instead_of_manufacturing_dependency_identities() {
 }
 
 #[test]
+fn exposes_local_exports_without_fabricating_import_identities() {
+    let unlinked = parse_unlinked_module_interface(
+        "/tmp/project/src/main.ssrg",
+        "locked-package::main",
+        "import { answer } from \"./support\"\npub let local: Int = 42\n",
+    );
+
+    assert_eq!(unlinked.interface.module, "locked-package::main");
+    assert!(unlinked.interface.dependencies.is_empty());
+    assert_eq!(unlinked.interface.exports.len(), 1);
+    assert_eq!(
+        unlinked.interface.exports[0].symbol,
+        "locked-package::main::local"
+    );
+    assert_eq!(unlinked.imports.len(), 1);
+    assert_eq!(unlinked.imports[0].specifier, "./support");
+    assert_eq!(unlinked.imports[0].items[0].name, "answer");
+}
+
+#[test]
 fn omits_private_lets_from_interface() {
     let interface = parse_module_interface(
         "artifact/multiple-lets/main.ssrg",
