@@ -1,6 +1,7 @@
 mod analysis;
 mod diagnostics;
 mod effect_ops;
+mod instance_identity;
 mod model;
 mod prelude;
 mod resolve;

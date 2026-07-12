@@ -1,4 +1,7 @@
-use crate::{type_module, type_module_public_interface, TypedInstanceImplementation, TypedType};
+use crate::{
+    type_module, type_module_public_interface, TypedInstanceEvidence, TypedInstanceImplementation,
+    TypedType,
+};
 use seseragi_syntax::InterfaceType;
 
 #[test]
@@ -10,16 +13,24 @@ fn selects_non_generic_derived_show_as_typed_evidence() {
 
     assert_eq!(typed.instances.len(), 1);
     let instance = &typed.instances[0];
+    assert_eq!(instance.identity, "Show<artifact/derived-show::AppError>");
     assert_eq!(instance.trait_name, "Show");
     assert_eq!(instance.head, named("AppError"));
     assert_eq!(instance.type_identity, "artifact/derived-show::AppError");
     assert!(instance.constraints.is_empty());
-    assert_eq!(
-        instance.implementation,
+    assert!(matches!(
+        &instance.implementation,
         TypedInstanceImplementation::DerivedShow {
-            adt_symbol: "artifact/derived-show::AppError".to_owned(),
+            adt_symbol,
+            payload_evidence,
         }
-    );
+            if adt_symbol == "artifact/derived-show::AppError"
+                && payload_evidence.len() == 3
+                && payload_evidence.iter().all(|evidence| matches!(
+                    evidence.evidence,
+                    TypedInstanceEvidence::Standard { .. }
+                ))
+    ));
 
     let json = serde_json::to_value(&typed).expect("typed module serializes");
     assert_eq!(json["instances"][0]["trait"], "Show");
@@ -45,6 +56,20 @@ fn accepts_payload_with_a_local_derived_show_instance() {
         typed.instances[1].type_identity,
         "artifact/nested-derived-show::Detail"
     );
+    assert!(matches!(
+        &typed.instances[0].implementation,
+        TypedInstanceImplementation::DerivedShow {
+            payload_evidence,
+            ..
+        } if matches!(
+            payload_evidence.as_slice(),
+            [evidence] if matches!(
+                &evidence.evidence,
+                TypedInstanceEvidence::Local { identity }
+                    if identity == "Show<artifact/nested-derived-show::Detail>"
+            )
+        )
+    ));
 }
 
 #[test]

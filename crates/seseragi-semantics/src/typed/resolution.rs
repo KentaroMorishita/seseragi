@@ -77,6 +77,16 @@ impl<'a> TypedResolution<'a> {
         &self.semantic_types
     }
 
+    pub(crate) fn dependency_instance(
+        &self,
+        trait_name: &str,
+        type_identity: &str,
+    ) -> Option<&crate::ResolvedDependencyInstance> {
+        self.resolved.dependency_instances.iter().find(|instance| {
+            instance.trait_name == trait_name && instance.type_identity == type_identity
+        })
+    }
+
     pub(crate) fn external_type_bindings(&self) -> Vec<ExternalTypeBinding> {
         type_bindings::collect_external_type_bindings(self.resolved)
     }

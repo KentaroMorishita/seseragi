@@ -52,7 +52,7 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
             .collect(),
         origin: source_span(source, instance.origin),
         implementation: match instance.implementation {
-            TypedInstanceImplementation::DerivedShow { adt_symbol } => {
+            TypedInstanceImplementation::DerivedShow { adt_symbol, .. } => {
                 CoreInstanceImplementation::DerivedShow { adt_symbol }
             }
         },

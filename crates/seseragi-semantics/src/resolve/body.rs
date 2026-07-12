@@ -11,6 +11,7 @@ use std::collections::BTreeMap;
 mod declarations;
 mod expression;
 mod imports;
+mod instances;
 mod namespace;
 mod pattern;
 #[cfg(test)]
@@ -35,11 +36,18 @@ pub fn resolve_linked_module(
     source: &str,
 ) -> ResolvedModule {
     let surface = parse_surface_ast(linked.interface.source.clone(), source);
+    let dependency_instances = instances::resolve_dependency_instances(&linked.dependencies);
     let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     let imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
-    finish_resolved_module(linked.interface, surface, imports, resolver)
+    finish_resolved_module(
+        linked.interface,
+        surface,
+        imports,
+        dependency_instances,
+        resolver,
+    )
 }
 
 fn resolve_surface_module(
@@ -53,13 +61,14 @@ fn resolve_surface_module(
     declarations::register_imports(&mut resolver, &interface, &surface);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
 
-    finish_resolved_module(interface, surface, imports, resolver)
+    finish_resolved_module(interface, surface, imports, Vec::new(), resolver)
 }
 
 fn finish_resolved_module(
     interface: ModuleInterface,
     surface: SurfaceModule,
     mut imports: Vec<crate::ResolvedImport>,
+    dependency_instances: Vec<crate::ResolvedDependencyInstance>,
     mut resolver: Resolver,
 ) -> ResolvedModule {
     merge_selected_imports(&mut imports, resolver.namespace_imports.take_selected());
@@ -70,6 +79,7 @@ fn finish_resolved_module(
         module: interface.module,
         dependencies: interface.dependencies,
         imports,
+        dependency_instances,
         declarations: surface.declarations,
         scopes: resolver.scopes,
         symbols: resolver.symbols,

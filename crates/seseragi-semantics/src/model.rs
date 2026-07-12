@@ -144,6 +144,7 @@ pub struct TypedConstraint {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedInstance {
+    pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
     pub head: TypedType,
@@ -160,7 +161,37 @@ pub struct TypedInstance {
     rename_all_fields = "camelCase"
 )]
 pub enum TypedInstanceImplementation {
-    DerivedShow { adt_symbol: String },
+    DerivedShow {
+        adt_symbol: String,
+        payload_evidence: Vec<TypedShowPayloadEvidence>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedShowPayloadEvidence {
+    pub variant_symbol: String,
+    pub type_identity: String,
+    pub evidence: TypedInstanceEvidence,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedInstanceEvidence {
+    Local {
+        identity: String,
+    },
+    Imported {
+        identity: String,
+        provider_module: String,
+    },
+    Standard {
+        identity: String,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

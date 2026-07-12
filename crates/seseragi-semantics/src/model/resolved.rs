@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::{InterfaceDependency, InterfaceExport, SurfaceDecl};
 
+mod instances;
 mod interface;
 mod names;
 
+pub use instances::ResolvedDependencyInstance;
 pub use interface::{ResolvedInterface, ResolvedInterfaceDecl};
 pub use names::{
     ResolveIssue, ResolvedReference, ResolvedScope, ResolvedSymbol, ScopeId, ScopeKind, SymbolKind,
@@ -24,6 +26,8 @@ pub struct ResolvedModule {
     pub dependencies: Vec<InterfaceDependency>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub imports: Vec<ResolvedImport>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub dependency_instances: Vec<ResolvedDependencyInstance>,
     pub declarations: Vec<SurfaceDecl>,
     pub scopes: Vec<ResolvedScope>,
     pub symbols: Vec<ResolvedSymbol>,

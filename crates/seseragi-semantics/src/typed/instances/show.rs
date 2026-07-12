@@ -1,17 +1,12 @@
-use crate::{
-    ResolvedModule, SymbolKind, SymbolNamespace, TypedInstance, TypedInstanceImplementation,
-    TypedType,
-};
+use crate::{ResolvedModule, SymbolKind, TypedInstance, TypedInstanceImplementation, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceDecl, TypeRef};
 use std::collections::BTreeSet;
 
-use super::{DerivedInstanceIssue, TypedResolution};
+use super::{canonical_instance_identity, DerivedInstanceIssue, TypedResolution};
 
-const SHOW_PAYLOAD_IDENTITIES: &[&str] = &[
-    "std/prelude::String",
-    "std/prelude::ConsoleError",
-    "std/prelude::StdinError",
-];
+mod evidence;
+
+use evidence::{payload_evidence, PayloadSupport};
 
 pub(super) struct DerivedShowAnalysis {
     pub(super) instances: Vec<TypedInstance>,
@@ -22,7 +17,12 @@ struct ShowCandidate {
     name: String,
     symbol: String,
     origin: ByteSpan,
-    payloads: Vec<TypeRef>,
+    payloads: Vec<ShowPayload>,
+}
+
+pub(super) struct ShowPayload {
+    variant_symbol: String,
+    type_ref: TypeRef,
 }
 
 pub(super) fn analyze_derived_show(
@@ -35,7 +35,7 @@ pub(super) fn analyze_derived_show(
     let instances = candidates
         .into_iter()
         .filter(|candidate| valid.contains(&candidate.symbol))
-        .map(typed_instance)
+        .map(|candidate| typed_instance(candidate, resolution, &valid))
         .collect();
     DerivedShowAnalysis { instances, issues }
 }
@@ -82,7 +82,17 @@ fn collect_candidates(
             origin: *span,
             payloads: variants
                 .iter()
-                .filter_map(|variant| variant.payload.clone())
+                .filter_map(|variant| {
+                    let type_ref = variant.payload.clone()?;
+                    let variant_symbol = resolution
+                        .declaration_symbol(variant.name_span, SymbolKind::Constructor)?
+                        .canonical
+                        .clone()?;
+                    Some(ShowPayload {
+                        variant_symbol,
+                        type_ref,
+                    })
+                })
                 .collect(),
         });
     }
@@ -103,7 +113,10 @@ fn valid_candidate_symbols(
             .filter(|candidate| valid.contains(&candidate.symbol))
             .filter(|candidate| {
                 candidate.payloads.iter().any(|payload| {
-                    payload_support(resolution, payload, &valid) != PayloadSupport::Supported
+                    !matches!(
+                        payload_evidence(resolution, payload, &valid),
+                        PayloadSupport::Supported(_)
+                    )
                 })
             })
             .map(|candidate| candidate.symbol.clone())
@@ -128,20 +141,39 @@ fn collect_payload_issues(
             continue;
         }
         if let Some((payload, label)) = candidate.payloads.iter().find_map(|payload| {
-            (payload_support(resolution, payload, valid) == PayloadSupport::Unsupported)
-                .then(|| (payload, type_ref_label(payload)))
+            matches!(
+                payload_evidence(resolution, payload, valid),
+                PayloadSupport::Unsupported
+            )
+            .then(|| (payload, type_ref_label(&payload.type_ref)))
         }) {
             issues.push(DerivedInstanceIssue::UnsupportedShowPayload {
                 payload_name: label,
-                primary: type_ref_span(payload),
+                primary: type_ref_span(&payload.type_ref),
                 declaration: candidate.origin,
             });
         }
     }
 }
 
-fn typed_instance(candidate: ShowCandidate) -> TypedInstance {
+fn typed_instance(
+    candidate: ShowCandidate,
+    resolution: &TypedResolution<'_>,
+    valid: &BTreeSet<String>,
+) -> TypedInstance {
+    let identity = canonical_instance_identity("Show", &candidate.symbol);
+    let payload_evidence = candidate
+        .payloads
+        .iter()
+        .filter_map(
+            |payload| match payload_evidence(resolution, payload, valid) {
+                PayloadSupport::Supported(evidence) => Some(evidence),
+                PayloadSupport::Unsupported | PayloadSupport::Unresolved => None,
+            },
+        )
+        .collect();
     TypedInstance {
+        identity,
         trait_name: "Show".to_owned(),
         head: TypedType::Named {
             name: candidate.name,
@@ -152,42 +184,8 @@ fn typed_instance(candidate: ShowCandidate) -> TypedInstance {
         origin: candidate.origin,
         implementation: TypedInstanceImplementation::DerivedShow {
             adt_symbol: candidate.symbol,
+            payload_evidence,
         },
-    }
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum PayloadSupport {
-    Supported,
-    Unsupported,
-    Unresolved,
-}
-
-fn payload_support(
-    resolution: &TypedResolution<'_>,
-    payload: &TypeRef,
-    local_show_instances: &BTreeSet<String>,
-) -> PayloadSupport {
-    let TypeRef::Named {
-        arguments, span, ..
-    } = payload
-    else {
-        return PayloadSupport::Unsupported;
-    };
-    if !arguments.is_empty() {
-        return PayloadSupport::Unsupported;
-    }
-    let Some(symbol) = resolution
-        .target(*span, SymbolNamespace::Type)
-        .and_then(|target| resolution.symbol(target))
-        .and_then(|symbol| symbol.canonical.as_deref())
-    else {
-        return PayloadSupport::Unresolved;
-    };
-    if SHOW_PAYLOAD_IDENTITIES.contains(&symbol) || local_show_instances.contains(symbol) {
-        PayloadSupport::Supported
-    } else {
-        PayloadSupport::Unsupported
     }
 }
 

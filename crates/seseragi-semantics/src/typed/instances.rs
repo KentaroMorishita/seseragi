@@ -8,6 +8,8 @@ mod show;
 mod tests;
 mod traits;
 
+pub(crate) use crate::instance_identity::canonical_instance_identity;
+
 pub(crate) struct DerivedInstanceAnalysis {
     pub(crate) instances: Vec<TypedInstance>,
     pub(crate) issues: Vec<DerivedInstanceIssue>,
