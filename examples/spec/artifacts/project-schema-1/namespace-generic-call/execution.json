@@ -7,7 +7,7 @@
     "export": "run"
   },
   "invocation": {
-    "arguments": [{ "type": "String", "value": "seseragi" }],
+    "arguments": [{ "type": "String", "value": "paper" }],
     "pure": { "result": "json" }
   },
   "expected": {

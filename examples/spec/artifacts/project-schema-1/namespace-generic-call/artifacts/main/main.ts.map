@@ -6,12 +6,17 @@
     "seseragi://fixture/namespace-call::main"
   ],
   "sourcesContent": [
-    "import * as domain from \"./domain\"\n\npub fn keep value: domain.Hand -> domain.Hand = value\n\npub fn run value: String -> String =\n  domain.identity value\n"
+    "import * as domain from \"./domain\"\n\npub fn keep value: domain.Hand -> domain.Hand = value\n\npub fn choose value: String -> domain.Hand =\n  match value {\n    \"paper\" -> domain.Paper\n    \"scissors\" -> domain.Scissors\n    _ -> domain.Rock\n  }\n\npub fn render hand: domain.Hand -> String =\n  match hand {\n    domain.Rock -> \"rock\"\n    domain.Paper -> \"paper\"\n    domain.Scissors -> \"scissors\"\n  }\n\npub fn run value: String -> String =\n  domain.identity (render (domain.identity (choose value)))\n"
   ],
   "names": [
     "keep",
+    "choose",
+    "render",
     "run",
-    "domain.identity"
+    "domain.identity",
+    "render",
+    "domain.identity",
+    "choose"
   ],
-  "mappings": ";;AAEAA;AAEAC"
+  "mappings": ";;AAEAA;AAEAC;AAOAC;AAOAC"
 }

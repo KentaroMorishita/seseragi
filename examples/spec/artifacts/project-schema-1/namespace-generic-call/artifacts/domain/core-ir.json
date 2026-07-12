@@ -18,12 +18,30 @@
             "start": 20,
             "end": 24
           }
+        },
+        {
+          "symbol": "fixture/namespace-call::domain::Paper",
+          "name": "Paper",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "symbol": "fixture/namespace-call::domain::Scissors",
+          "name": "Scissors",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 39,
+            "end": 47
+          }
         }
       ],
       "origin": {
         "source": "domain.ssrg",
         "start": 0,
-        "end": 24
+        "end": 47
       }
     }
   ],
@@ -33,8 +51,8 @@
       "visibility": "public",
       "origin": {
         "source": "domain.ssrg",
-        "start": 26,
-        "end": 66
+        "start": 49,
+        "end": 89
       },
       "typeParameters": [
         "A"
@@ -60,8 +78,8 @@
         },
         "origin": {
           "source": "domain.ssrg",
-          "start": 61,
-          "end": 66
+          "start": 84,
+          "end": 89
         }
       }
     }

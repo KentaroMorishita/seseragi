@@ -6,12 +6,14 @@
     "seseragi://fixture/namespace-call::domain"
   ],
   "sourcesContent": [
-    "pub type Hand =\n  | Rock\n\npub fn identity<A> value: A -> A = value\n"
+    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub fn identity<A> value: A -> A = value\n"
   ],
   "names": [
     "Hand",
     "Rock",
+    "Paper",
+    "Scissors",
     "identity"
   ],
-  "mappings": "AAAAA;;AACIC;AAEJC"
+  "mappings": "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC"
 }

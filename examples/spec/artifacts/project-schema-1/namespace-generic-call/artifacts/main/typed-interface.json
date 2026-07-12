@@ -51,14 +51,70 @@
       }
     },
     {
+      "symbol": "fixture/namespace-call::main::choose",
+      "namespace": "value",
+      "name": "choose",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 91,
+        "end": 238
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/namespace-call::main::render",
+      "namespace": "value",
+      "name": "render",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 240,
+        "end": 390
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
       "symbol": "fixture/namespace-call::main::run",
       "namespace": "value",
       "name": "run",
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 91,
-        "end": 151
+        "start": 392,
+        "end": 488
       },
       "scheme": {
         "typeParameters": [],

@@ -11,6 +11,8 @@
   },
   "exports": [
     "Rock",
+    "Paper",
+    "Scissors",
     "identity"
   ],
   "outputs": {

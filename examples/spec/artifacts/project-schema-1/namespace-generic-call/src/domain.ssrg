@@ -1,4 +1,6 @@
 pub type Hand =
   | Rock
+  | Paper
+  | Scissors
 
 pub fn identity<A> value: A -> A = value

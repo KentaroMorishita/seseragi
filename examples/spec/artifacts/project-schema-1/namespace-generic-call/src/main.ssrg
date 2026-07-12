@@ -2,5 +2,19 @@ import * as domain from "./domain"
 
 pub fn keep value: domain.Hand -> domain.Hand = value
 
+pub fn choose value: String -> domain.Hand =
+  match value {
+    "paper" -> domain.Paper
+    "scissors" -> domain.Scissors
+    _ -> domain.Rock
+  }
+
+pub fn render hand: domain.Hand -> String =
+  match hand {
+    domain.Rock -> "rock"
+    domain.Paper -> "paper"
+    domain.Scissors -> "scissors"
+  }
+
 pub fn run value: String -> String =
-  domain.identity value
+  domain.identity (render (domain.identity (choose value)))

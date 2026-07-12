@@ -3,7 +3,8 @@
   "stage": "typescript-ir",
   "module": "fixture/namespace-call::main",
   "runtimeRequirements": [
-    "core.string"
+    "core.string",
+    "core.adt"
   ],
   "sourceImports": [
     {
@@ -16,6 +17,42 @@
           "sourceLocal": "domain.Hand",
           "canonical": "fixture/namespace-call::domain::Hand",
           "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "imported": "Rock",
+          "local": "domain_Rock",
+          "sourceLocal": "domain.Rock",
+          "canonical": "fixture/namespace-call::domain::Rock",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "imported": "Paper",
+          "local": "domain_Paper",
+          "sourceLocal": "domain.Paper",
+          "canonical": "fixture/namespace-call::domain::Paper",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "imported": "Scissors",
+          "local": "domain_Scissors",
+          "sourceLocal": "domain.Scissors",
+          "canonical": "fixture/namespace-call::domain::Scissors",
+          "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
             "start": 12,
@@ -67,6 +104,140 @@
     {
       "kind": "const-function",
       "exported": true,
+      "name": "choose",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "string"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "paper"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "domain_Paper"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "scissors"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "domain_Scissors"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "identifier",
+              "name": "domain_Rock"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "domain_Hand",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 238
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "hand",
+          "type": "domain_Hand",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "hand"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "domain_Hand",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Rock"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "rock"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Paper"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "paper"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "scissors"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 240,
+        "end": 390
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
       "name": "run",
       "parameters": [
         {
@@ -80,15 +251,33 @@
         "callee": "domain_identity",
         "arguments": [
           {
-            "kind": "identifier",
-            "name": "value"
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "domain_identity",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "choose",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 91,
-        "end": 151
+        "start": 392,
+        "end": 488
       }
     }
   ]

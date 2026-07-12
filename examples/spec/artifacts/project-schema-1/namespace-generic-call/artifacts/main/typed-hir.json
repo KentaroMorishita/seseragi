@@ -24,6 +24,36 @@
         },
         {
           "namespace": "value",
+          "imported": "Rock",
+          "local": "domain.Rock",
+          "canonical": "fixture/namespace-call::domain::Rock",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Paper",
+          "local": "domain.Paper",
+          "canonical": "fixture/namespace-call::domain::Paper",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Scissors",
+          "local": "domain.Scissors",
+          "canonical": "fixture/namespace-call::domain::Scissors",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
           "imported": "identity",
           "local": "domain.identity",
           "canonical": "fixture/namespace-call::domain::identity",
@@ -84,11 +114,324 @@
     },
     {
       "kind": "fn",
-      "symbol": "fixture/namespace-call::main::run",
+      "symbol": "fixture/namespace-call::main::choose",
       "visibility": "public",
       "origin": {
         "start": 91,
-        "end": 151
+        "end": 238
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 105,
+            "end": 110
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 144,
+            "end": 149
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "paper",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 156,
+                "end": 163
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/namespace-call::domain::Paper",
+              "type": {
+                "kind": "named",
+                "name": "domain.Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 167,
+                "end": 179
+              }
+            },
+            "origin": {
+              "start": 156,
+              "end": 179
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "scissors",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 184,
+                "end": 194
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/namespace-call::domain::Scissors",
+              "type": {
+                "kind": "named",
+                "name": "domain.Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 198,
+                "end": 213
+              }
+            },
+            "origin": {
+              "start": 184,
+              "end": 213
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 218,
+                "end": 219
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/namespace-call::domain::Rock",
+              "type": {
+                "kind": "named",
+                "name": "domain.Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 223,
+                "end": 234
+              }
+            },
+            "origin": {
+              "start": 218,
+              "end": 234
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        },
+        "origin": {
+          "start": 138,
+          "end": 238
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/namespace-call::main::render",
+      "visibility": "public",
+      "origin": {
+        "start": 240,
+        "end": 390
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "hand",
+          "type": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 254,
+            "end": 258
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "hand",
+          "type": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 292,
+            "end": 296
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/namespace-call::domain::Rock",
+              "type": {
+                "kind": "named",
+                "name": "domain.Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 303,
+                "end": 314
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "rock",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 318,
+                "end": 324
+              }
+            },
+            "origin": {
+              "start": 303,
+              "end": 324
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/namespace-call::domain::Paper",
+              "type": {
+                "kind": "named",
+                "name": "domain.Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 329,
+                "end": 341
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "paper",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 345,
+                "end": 352
+              }
+            },
+            "origin": {
+              "start": 329,
+              "end": 352
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/namespace-call::domain::Scissors",
+              "type": {
+                "kind": "named",
+                "name": "domain.Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 357,
+                "end": 372
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "scissors",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 376,
+                "end": 386
+              }
+            },
+            "origin": {
+              "start": 357,
+              "end": 386
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 286,
+          "end": 390
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/namespace-call::main::run",
+      "visibility": "public",
+      "origin": {
+        "start": 392,
+        "end": 488
       },
       "scheme": {
         "typeParameters": [],
@@ -109,8 +452,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 102,
-            "end": 107
+            "start": 403,
+            "end": 408
           }
         }
       ],
@@ -119,16 +462,61 @@
         "callee": "fixture/namespace-call::domain::identity",
         "arguments": [
           {
-            "kind": "variable",
-            "name": "value",
+            "kind": "call",
+            "callee": "fixture/namespace-call::main::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/namespace-call::domain::identity",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/namespace-call::main::choose",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 480,
+                          "end": 485
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "domain.Hand",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 473,
+                      "end": 485
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "domain.Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 456,
+                  "end": 486
+                }
+              }
+            ],
             "type": {
               "kind": "named",
               "name": "String",
               "arguments": []
             },
             "origin": {
-              "start": 146,
-              "end": 151
+              "start": 448,
+              "end": 487
             }
           }
         ],
@@ -138,8 +526,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 130,
-          "end": 151
+          "start": 431,
+          "end": 488
         }
       }
     }

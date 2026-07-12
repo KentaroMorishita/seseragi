@@ -13,7 +13,7 @@
       "declarationKind": "type",
       "declaration": {
         "start": 0,
-        "end": 24
+        "end": 47
       },
       "scheme": {
         "typeParameters": [],
@@ -47,14 +47,56 @@
       }
     },
     {
+      "symbol": "fixture/namespace-call::domain::Paper",
+      "namespace": "value",
+      "name": "Paper",
+      "constructorOf": "fixture/namespace-call::domain::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 29,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/namespace-call::domain::Scissors",
+      "namespace": "value",
+      "name": "Scissors",
+      "constructorOf": "fixture/namespace-call::domain::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 39,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
       "symbol": "fixture/namespace-call::domain::identity",
       "namespace": "value",
       "name": "identity",
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 26,
-        "end": 66
+        "start": 49,
+        "end": 89
       },
       "scheme": {
         "typeParameters": [

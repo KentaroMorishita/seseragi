@@ -20,12 +20,32 @@
             "start": 20,
             "end": 24
           }
+        },
+        {
+          "exported": true,
+          "name": "Paper",
+          "tag": "Paper",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 29,
+            "end": 34
+          }
+        },
+        {
+          "exported": true,
+          "name": "Scissors",
+          "tag": "Scissors",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 39,
+            "end": 47
+          }
         }
       ],
       "origin": {
         "source": "domain.ssrg",
         "start": 0,
-        "end": 24
+        "end": 47
       }
     }
   ],
@@ -50,8 +70,8 @@
       },
       "origin": {
         "source": "domain.ssrg",
-        "start": 26,
-        "end": 66
+        "start": 49,
+        "end": 89
       }
     }
   ]

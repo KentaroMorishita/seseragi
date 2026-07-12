@@ -6,11 +6,14 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.string"
+      "core.string",
+      "core.adt"
     ]
   },
   "exports": [
     "keep",
+    "choose",
+    "render",
     "run"
   ],
   "outputs": {
