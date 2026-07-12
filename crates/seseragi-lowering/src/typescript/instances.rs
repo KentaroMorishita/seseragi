@@ -132,7 +132,7 @@ fn lower_instance(
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstance {
     let implementation = match &instance.implementation {
-        CoreInstanceImplementation::DerivedShow { adt_symbol } => {
+        CoreInstanceImplementation::DerivedShow { adt_symbol, .. } => {
             let adt = adts
                 .iter()
                 .find(|adt| adt.symbol == *adt_symbol)
@@ -230,7 +230,7 @@ fn resolve_show_dictionary(
 
 fn implementation_adt_symbol(implementation: &CoreInstanceImplementation) -> &str {
     match implementation {
-        CoreInstanceImplementation::DerivedShow { adt_symbol } => adt_symbol,
+        CoreInstanceImplementation::DerivedShow { adt_symbol, .. } => adt_symbol,
     }
 }
 

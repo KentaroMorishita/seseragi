@@ -11,9 +11,9 @@ mod typescript;
 pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreDecisionBinding,
     CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreFunction,
-    CoreInstance, CoreInstanceConstraint, CoreInstanceImplementation, CoreModule,
-    CoreModuleDependency, CoreModuleImport, CoreParameter, CoreRecordField, CoreStatement,
-    CoreType,
+    CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation,
+    CoreModule, CoreModuleDependency, CoreModuleImport, CoreParameter, CoreRecordField,
+    CoreShowPayloadEvidence, CoreStatement, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,

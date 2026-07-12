@@ -1,12 +1,16 @@
 use crate::{source_span, CoreType, SourceSpan};
 use serde::{Deserialize, Serialize};
-use seseragi_semantics::{TypedConstraint, TypedInstance, TypedInstanceImplementation};
+use seseragi_semantics::{
+    TypedConstraint, TypedInstance, TypedInstanceEvidence, TypedInstanceImplementation,
+    TypedShowPayloadEvidence,
+};
 
 use super::types::lower_typed_type;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CoreInstance {
+    pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
     pub head: CoreType,
@@ -30,7 +34,37 @@ pub struct CoreInstanceConstraint {
     rename_all_fields = "camelCase"
 )]
 pub enum CoreInstanceImplementation {
-    DerivedShow { adt_symbol: String },
+    DerivedShow {
+        adt_symbol: String,
+        payload_evidence: Vec<CoreShowPayloadEvidence>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreShowPayloadEvidence {
+    pub variant_symbol: String,
+    pub type_identity: String,
+    pub evidence: CoreInstanceEvidence,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum CoreInstanceEvidence {
+    Local {
+        identity: String,
+    },
+    Imported {
+        identity: String,
+        provider_module: String,
+    },
+    Standard {
+        identity: String,
+    },
 }
 
 pub(super) fn lower_instances(source: &str, instances: Vec<TypedInstance>) -> Vec<CoreInstance> {
@@ -42,6 +76,7 @@ pub(super) fn lower_instances(source: &str, instances: Vec<TypedInstance>) -> Ve
 
 fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
     CoreInstance {
+        identity: instance.identity,
         trait_name: instance.trait_name,
         head: lower_typed_type(instance.head),
         type_identity: instance.type_identity,
@@ -52,8 +87,35 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
             .collect(),
         origin: source_span(source, instance.origin),
         implementation: match instance.implementation {
-            TypedInstanceImplementation::DerivedShow { adt_symbol, .. } => {
-                CoreInstanceImplementation::DerivedShow { adt_symbol }
+            TypedInstanceImplementation::DerivedShow {
+                adt_symbol,
+                payload_evidence,
+            } => CoreInstanceImplementation::DerivedShow {
+                adt_symbol,
+                payload_evidence: payload_evidence
+                    .into_iter()
+                    .map(lower_show_payload_evidence)
+                    .collect(),
+            },
+        },
+    }
+}
+
+fn lower_show_payload_evidence(evidence: TypedShowPayloadEvidence) -> CoreShowPayloadEvidence {
+    CoreShowPayloadEvidence {
+        variant_symbol: evidence.variant_symbol,
+        type_identity: evidence.type_identity,
+        evidence: match evidence.evidence {
+            TypedInstanceEvidence::Local { identity } => CoreInstanceEvidence::Local { identity },
+            TypedInstanceEvidence::Imported {
+                identity,
+                provider_module,
+            } => CoreInstanceEvidence::Imported {
+                identity,
+                provider_module,
+            },
+            TypedInstanceEvidence::Standard { identity } => {
+                CoreInstanceEvidence::Standard { identity }
             }
         },
     }

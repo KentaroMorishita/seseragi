@@ -163,6 +163,7 @@
   ],
   "instances": [
     {
+      "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
       "trait": "Show",
       "head": {
         "kind": "named",
@@ -177,7 +178,33 @@
       },
       "implementation": {
         "kind": "derived-show",
-        "adtSymbol": "artifact/rock-paper-scissors-cli::AppError"
+        "adtSymbol": "artifact/rock-paper-scissors-cli::AppError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/rock-paper-scissors-cli::StdinFailure",
+            "typeIdentity": "std/prelude::StdinError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::StdinError>"
+            }
+          },
+          {
+            "variantSymbol": "artifact/rock-paper-scissors-cli::UnknownHand",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          },
+          {
+            "variantSymbol": "artifact/rock-paper-scissors-cli::ConsoleFailure",
+            "typeIdentity": "std/prelude::ConsoleError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::ConsoleError>"
+            }
+          }
+        ]
       }
     }
   ],

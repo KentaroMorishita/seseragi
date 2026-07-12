@@ -75,6 +75,7 @@
   ],
   "instances": [
     {
+      "identity": "Show<artifact/effect-parse-hand::HandInputError>",
       "trait": "Show",
       "head": {
         "kind": "named",
@@ -89,7 +90,17 @@
       },
       "implementation": {
         "kind": "derived-show",
-        "adtSymbol": "artifact/effect-parse-hand::HandInputError"
+        "adtSymbol": "artifact/effect-parse-hand::HandInputError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/effect-parse-hand::UnknownHand",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ]
       }
     }
   ],
