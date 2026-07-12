@@ -117,6 +117,7 @@ name = "seseragi-project"
 version = "0.0.0"
 dependencies = [
  "semver",
+ "seseragi-syntax",
  "unicode-normalization",
 ]
 

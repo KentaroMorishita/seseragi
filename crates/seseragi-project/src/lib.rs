@@ -4,6 +4,7 @@
 //! from diagnostic source labels or process working directories.
 
 mod identity;
+mod link;
 mod module_path;
 mod package_name;
 mod specifier;
@@ -11,6 +12,7 @@ mod specifier;
 pub use identity::{
     ModuleIdentity, ModuleRoot, PackageIdentity, PackageSourceIdentity, SourceIdentityError,
 };
+pub use link::{link_module, LinkError, LinkedDependency, LinkedImport, LinkedModule};
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};
 pub use specifier::{
