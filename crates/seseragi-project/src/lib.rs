@@ -3,12 +3,14 @@
 //! Compiler stages consume identities produced here; they do not infer them
 //! from diagnostic source labels or process working directories.
 
+mod graph;
 mod identity;
 mod link;
 mod module_path;
 mod package_name;
 mod specifier;
 
+pub use graph::{ModuleGraph, ModuleGraphError};
 pub use identity::{
     ModuleIdentity, ModuleRoot, PackageIdentity, PackageSourceIdentity, SourceIdentityError,
 };
