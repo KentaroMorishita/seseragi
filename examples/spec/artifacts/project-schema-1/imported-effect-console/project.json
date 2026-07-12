@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-effect-console::effects",
+    "fixture/imported-effect-console::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-effect-console::effects",
+      "source": "src/effects.ssrg",
+      "output": "dist/imported-effect-console/effects.js",
+      "artifacts": "artifacts/effects",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-effect-console::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-effect-console/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./effects",
+          "module": "fixture/imported-effect-console::effects"
+        }
+      ]
+    }
+  ]
+}

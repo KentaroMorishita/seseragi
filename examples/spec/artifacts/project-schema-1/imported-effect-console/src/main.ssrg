@@ -1,0 +1,4 @@
+import { announce } from "./effects"
+
+pub effect fn main =
+  announce "hello"

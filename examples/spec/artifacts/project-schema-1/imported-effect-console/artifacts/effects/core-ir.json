@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-effect-console::effects",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-effect-console::effects::announce",
+      "visibility": "public",
+      "origin": {
+        "source": "effects.ssrg",
+        "start": 0,
+        "end": 98
+      },
+      "parameters": [
+        {
+          "id": "message",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "message",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "effects.ssrg",
+              "start": 91,
+              "end": 98
+            }
+          }
+        ],
+        "origin": {
+          "source": "effects.ssrg",
+          "start": 83,
+          "end": 98
+        }
+      }
+    }
+  ]
+}

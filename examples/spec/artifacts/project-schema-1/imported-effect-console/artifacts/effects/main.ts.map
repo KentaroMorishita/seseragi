@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/imported-effect-console/effects.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-effect-console::effects"
+  ],
+  "sourcesContent": [
+    "pub effect fn announce message: String -> Unit\nwith Console\nfails ConsoleError =\n  println message\n"
+  ],
+  "names": [
+    "announce",
+    "println"
+  ],
+  "mappings": ";;AAAAA"
+}

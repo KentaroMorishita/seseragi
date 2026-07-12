@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-effect-console::effects",
+  "runtimeRequirements": [
+    "core.string",
+    "effect.console.println",
+    "core.unit"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "announce",
+      "parameters": [
+        {
+          "name": "message",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "message"
+          }
+        ]
+      },
+      "origin": {
+        "source": "effects.ssrg",
+        "start": 0,
+        "end": 98
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/imported-effect-console/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-effect-console::main"
+  ],
+  "sourcesContent": [
+    "import { announce } from \"./effects\"\n\npub effect fn main =\n  announce \"hello\"\n"
+  ],
+  "names": [
+    "main",
+    "announce"
+  ],
+  "mappings": ";;AAEAA"
+}

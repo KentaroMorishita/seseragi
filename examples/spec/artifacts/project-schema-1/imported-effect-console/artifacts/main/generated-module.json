@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-effect-console::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-effect-console/main.ts",
+    "sourceMap": "dist/imported-effect-console/main.ts.map"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-effect-console::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-effect-console::effects",
+      "specifier": "./effects.js",
+      "bindings": [
+        {
+          "imported": "announce",
+          "local": "announce",
+          "sourceLocal": "announce",
+          "canonical": "fixture/imported-effect-console::effects::announce",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 17
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "announce",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "hello"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 77
+      }
+    }
+  ]
+}

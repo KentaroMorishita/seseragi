@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-effect-console::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./effects",
+      "module": "fixture/imported-effect-console::effects",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "announce",
+          "local": "announce",
+          "canonical": "fixture/imported-effect-console::effects::announce",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 17
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-effect-console::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 77
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-invoke",
+        "callee": "fixture/imported-effect-console::effects::announce",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "hello",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 70,
+              "end": 77
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 61,
+          "end": 77
+        }
+      }
+    }
+  ]
+}

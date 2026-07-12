@@ -1,0 +1,4 @@
+pub effect fn announce message: String -> Unit
+with Console
+fails ConsoleError =
+  println message
