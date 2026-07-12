@@ -20,17 +20,25 @@ pub(crate) enum InvocationArgument {
 
 pub(super) fn write_entry(
     execution_dir: &Path,
+    entry_module_specifier: &str,
     entry_export: &str,
     invocation: Invocation,
     failure_renderer: Option<&FailureRenderer>,
     environment: &EnvironmentPlan,
 ) -> Result<(), String> {
-    let source = entry_source(entry_export, invocation, failure_renderer, environment)?;
+    let source = entry_source(
+        entry_module_specifier,
+        entry_export,
+        invocation,
+        failure_renderer,
+        environment,
+    )?;
     fs::write(execution_dir.join("entry.ts"), source)
         .map_err(|error| format!("failed to write execution entry.ts: {error}"))
 }
 
 fn entry_source(
+    entry_module_specifier: &str,
     entry_export: &str,
     invocation: Invocation,
     failure_renderer: Option<&FailureRenderer>,
@@ -40,7 +48,8 @@ fn entry_source(
         (Invocation::Effect { arguments }, Some(failure_renderer)) => {
             let call = render_entry_call(entry_export, &arguments);
             let environment = environment::render(environment_plan);
-            let (entry_import, dictionary_import) = render_imports(entry_export, failure_renderer);
+            let (entry_import, dictionary_import) =
+                render_imports(entry_module_specifier, entry_export, failure_renderer);
             let imports = format!(
                 "import {{ writeFileSync }} from \"node:fs\";\n\
                  import {{ run }} from \"@seseragi/runtime/effect\";\n\
@@ -80,7 +89,7 @@ fn entry_source(
         (Invocation::PureJson { arguments }, None) => {
             let call = render_entry_call(entry_export, &arguments);
             Ok(format!(
-                "import {{ {entry_export} }} from \"./main.ts\";\n\
+                "import {{ {entry_export} }} from \"{entry_module_specifier}\";\n\
                  process.stdout.write(JSON.stringify({call}) + \"\\n\");\n"
             ))
         }
@@ -90,21 +99,25 @@ fn entry_source(
     }
 }
 
-fn render_imports(entry_export: &str, failure_renderer: &FailureRenderer) -> (String, String) {
+fn render_imports(
+    entry_module_specifier: &str,
+    entry_export: &str,
+    failure_renderer: &FailureRenderer,
+) -> (String, String) {
     match failure_renderer {
         FailureRenderer::Never => (
-            format!("import {{ {entry_export} }} from \"./main.ts\";\n"),
+            format!("import {{ {entry_export} }} from \"{entry_module_specifier}\";\n"),
             String::new(),
         ),
-        FailureRenderer::Show { dictionary } if dictionary.module == "./main.ts" => (
+        FailureRenderer::Show { dictionary } if dictionary.module == entry_module_specifier => (
             format!(
-                "import {{ {entry_export}, {} as _ssrg_failureShow }} from \"./main.ts\";\n",
-                dictionary.export
+                "import {{ {entry_export}, {} as _ssrg_failureShow }} from \"{entry_module_specifier}\";\n",
+                dictionary.export,
             ),
             String::new(),
         ),
         FailureRenderer::Show { dictionary } => (
-            format!("import {{ {entry_export} }} from \"./main.ts\";\n"),
+            format!("import {{ {entry_export} }} from \"{entry_module_specifier}\";\n"),
             format!(
                 "import {{ {} as _ssrg_failureShow }} from \"{}\";\n",
                 dictionary.export, dictionary.module
@@ -153,7 +166,14 @@ mod tests {
     ) -> String {
         let never = FailureRenderer::Never;
         let failure_renderer = matches!(&invocation, Invocation::Effect { .. }).then_some(&never);
-        render_entry_source(entry_export, invocation, failure_renderer, environment).unwrap()
+        render_entry_source(
+            "./main.ts",
+            entry_export,
+            invocation,
+            failure_renderer,
+            environment,
+        )
+        .unwrap()
     }
 
     #[test]
@@ -206,6 +226,23 @@ mod tests {
         );
 
         assert!(source.contains("parse(\"rock\\n\\\"quoted\\\"\")(undefined)"));
+    }
+
+    #[test]
+    fn imports_a_project_entry_through_its_generated_esm_specifier() {
+        let source = render_entry_source(
+            "./dist/rps/main.js",
+            "openingMessage",
+            Invocation::PureJson {
+                arguments: vec![InvocationArgument::Unit],
+            },
+            None,
+            &empty_environment(),
+        )
+        .unwrap();
+
+        assert!(source.contains("from \"./dist/rps/main.js\""));
+        assert!(source.contains("JSON.stringify(openingMessage(undefined))"));
     }
 
     #[test]
@@ -283,6 +320,7 @@ mod tests {
             },
         };
         let source = render_entry_source(
+            "./main.ts",
             "main",
             Invocation::Effect {
                 arguments: vec![InvocationArgument::Unit],
@@ -319,6 +357,7 @@ mod tests {
             },
         };
         let source = render_entry_source(
+            "./main.ts",
             "main",
             Invocation::Effect {
                 arguments: vec![InvocationArgument::Unit],
@@ -338,6 +377,7 @@ mod tests {
     #[test]
     fn rejects_invocation_and_failure_renderer_mode_mismatches() {
         let effect_error = render_entry_source(
+            "./main.ts",
             "main",
             Invocation::Effect {
                 arguments: vec![InvocationArgument::Unit],
@@ -350,6 +390,7 @@ mod tests {
 
         let never = FailureRenderer::Never;
         let pure_error = render_entry_source(
+            "./main.ts",
             "main",
             Invocation::PureJson {
                 arguments: vec![InvocationArgument::Unit],

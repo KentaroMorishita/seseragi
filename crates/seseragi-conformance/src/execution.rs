@@ -29,6 +29,18 @@ pub(crate) struct ExecutionRequest<'a> {
     pub(crate) stdin: &'a str,
 }
 
+/// Invocation data for generated TypeScript that has already been staged by
+/// a caller. The caller also chooses the ESM module specifier imported by the
+/// entry wrapper.
+pub(crate) struct StagedExecutionRequest<'a> {
+    pub(crate) entry_module_specifier: &'a str,
+    pub(crate) entry_export: &'a str,
+    pub(crate) invocation: Invocation,
+    pub(crate) failure_renderer: Option<&'a FailureRenderer>,
+    pub(crate) environment: &'a EnvironmentPlan,
+    pub(crate) stdin: &'a str,
+}
+
 pub(crate) fn resolve_compiled_typescript(
     case: &Path,
     compiled_module: &str,
@@ -116,11 +128,33 @@ pub(crate) fn run_generated_typescript(
     let execution_dir = prepare_execution_dir(root, case)?;
     fs::copy(request.compiled_typescript, execution_dir.join("main.ts"))
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
-    stage_runtime(root, &execution_dir)?;
+    run_staged_typescript(
+        root,
+        &execution_dir,
+        StagedExecutionRequest {
+            entry_module_specifier: "./main.ts",
+            entry_export: request.entry_export,
+            invocation: request.invocation,
+            failure_renderer: request.failure_renderer,
+            environment: request.environment,
+            stdin: request.stdin,
+        },
+    )
+}
+
+/// Executes already-staged generated TypeScript through the normal entry
+/// runner. The caller owns the staged module layout and entry import path.
+pub(crate) fn run_staged_typescript(
+    root: &Path,
+    execution_dir: &Path,
+    request: StagedExecutionRequest<'_>,
+) -> Result<ExecutionOutput, String> {
+    stage_runtime(root, execution_dir)?;
     let observes_effect_exit = matches!(&request.invocation, Invocation::Effect { .. });
     let observes_operation_trace = observes_effect_exit && request.environment.captures_console();
     entry::write_entry(
-        &execution_dir,
+        execution_dir,
+        request.entry_module_specifier,
         request.entry_export,
         request.invocation,
         request.failure_renderer,
@@ -149,10 +183,10 @@ pub(crate) fn run_generated_typescript(
         .wait_with_output()
         .map_err(|error| format!("failed to wait for bun: {error}"))?;
     let effect_exit = observes_effect_exit
-        .then(|| exit::read_observation(&execution_dir))
+        .then(|| exit::read_observation(execution_dir))
         .transpose()?;
     let operation_trace = observes_operation_trace
-        .then(|| trace::read_observation(&execution_dir))
+        .then(|| trace::read_observation(execution_dir))
         .transpose()?;
     let exit_code = output
         .status
