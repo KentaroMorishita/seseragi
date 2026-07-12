@@ -1,12 +1,13 @@
 use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    runtime_types::runtime_type_import_for_feature, show_ops::runtime_show_dictionary_for_feature,
-    sum_ops::runtime_sum_constructor_for_feature, SourceSpan, TypeScriptBinding,
-    TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction, TypeScriptModule,
-    TypeScriptStatement,
+    show_ops::runtime_show_dictionary_for_feature, sum_ops::runtime_sum_constructor_for_feature,
+    SourceSpan, TypeScriptBinding, TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
+
+use super::imports::render_import_lines;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -152,18 +153,10 @@ fn push_declaration_mapping(
 }
 
 fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
-    let import_lines = module
-        .imports
-        .iter()
-        .filter_map(|import| runtime_module_for_feature(&import.feature))
-        .chain(module.type_imports.iter().filter_map(|import| {
-            runtime_type_import_for_feature(&import.feature).map(|type_import| type_import.module)
-        }))
-        .collect::<BTreeSet<_>>()
-        .len();
+    let import_lines = render_import_lines(module).len();
     import_lines
         + usize::from(
-            (!module.imports.is_empty() || !module.type_imports.is_empty())
+            import_lines > 0
                 && (!module.adts.is_empty()
                     || !module.instances.is_empty()
                     || !module.bindings.is_empty()
@@ -172,27 +165,22 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
 }
 
 fn runtime_helper_names(module: &TypeScriptModule) -> BTreeMap<String, String> {
-    module
+    let mut names = module
         .imports
         .iter()
         .filter_map(|import| {
             runtime_source_name_for_feature(&import.feature)
                 .map(|name| (import.local.clone(), name.to_owned()))
         })
-        .collect()
-}
-
-fn runtime_module_for_feature(feature: &str) -> Option<&'static str> {
-    runtime_effect_operation_for_feature(feature)
-        .map(|operation| operation.module)
-        .or_else(|| runtime_int_operation_for_feature(feature).map(|operation| operation.module))
-        .or_else(|| {
-            runtime_sum_constructor_for_feature(feature).map(|constructor| constructor.module)
-        })
-        .or_else(|| {
-            runtime_show_dictionary_for_feature(feature).map(|dictionary| dictionary.module)
-        })
-        .or_else(|| runtime_type_import_for_feature(feature).map(|type_import| type_import.module))
+        .collect::<BTreeMap<_, _>>();
+    for binding in module
+        .source_imports
+        .iter()
+        .flat_map(|import| import.bindings.iter())
+    {
+        names.insert(binding.local.clone(), binding.source_local.clone());
+    }
+    names
 }
 
 fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
@@ -383,6 +371,7 @@ fn encode_vlq(value: i64) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{TypeScriptSourceImport, TypeScriptSourceImportBinding};
 
     #[test]
     fn encodes_signed_source_map_vlq_values() {
@@ -417,5 +406,53 @@ mod tests {
     fn counts_original_columns_as_utf16_code_units() {
         assert_eq!(source_position("// 🌊\npub let", 8), (1, 0));
         assert_eq!(source_position("// 🌊pub let", 7), (0, 5));
+    }
+
+    #[test]
+    fn counts_type_only_and_side_effect_source_import_lines_before_declarations() {
+        let origin = SourceSpan {
+            source: "main.ssrg".to_owned(),
+            start: 0,
+            end: 20,
+        };
+        let module = TypeScriptModule {
+            schema: 1,
+            stage: "typescript-ir".to_owned(),
+            module: "fixture/game::main".to_owned(),
+            runtime_requirements: Vec::new(),
+            imports: Vec::new(),
+            type_imports: Vec::new(),
+            source_imports: vec![TypeScriptSourceImport {
+                module: "fixture/game::domain".to_owned(),
+                specifier: "./domain.js".to_owned(),
+                bindings: vec![TypeScriptSourceImportBinding {
+                    imported: "Hand".to_owned(),
+                    local: "LocalHand".to_owned(),
+                    source_local: "LocalHand".to_owned(),
+                    canonical: "fixture/game::domain::Hand".to_owned(),
+                    type_only: true,
+                    origin: origin.clone(),
+                }],
+                origin,
+            }],
+            adts: Vec::new(),
+            instances: Vec::new(),
+            bindings: Vec::new(),
+            functions: vec![TypeScriptFunction::ConstFunction {
+                exported: true,
+                is_async: false,
+                name: "run".to_owned(),
+                parameters: Vec::new(),
+                body: TypeScriptExpr::Undefined,
+                origin: SourceSpan {
+                    source: "main.ssrg".to_owned(),
+                    start: 21,
+                    end: 24,
+                },
+            }],
+        };
+
+        assert_eq!(render_import_lines(&module).len(), 2);
+        assert_eq!(generated_declaration_start_line(&module), 3);
     }
 }

@@ -22,12 +22,14 @@ pub use emit::{
 pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
-    lower_core_module_to_typescript_ir, TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding,
-    TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
-    TypeScriptDecisionTest, TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant,
-    TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptInstance,
-    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptModule,
-    TypeScriptParameter, TypeScriptShowDictionaryReference, TypeScriptStatement, TypeScriptType,
+    lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptDecisionBinding,
+    TypeScriptDecisionBranch, TypeScriptDecisionProjection, TypeScriptDecisionTest,
+    TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
+    TypeScriptInstanceImplementation, TypeScriptLoweringError, TypeScriptModule,
+    TypeScriptOutputPlan, TypeScriptParameter, TypeScriptShowDictionaryReference,
+    TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptType,
     TypeScriptTypeImport,
 };
 

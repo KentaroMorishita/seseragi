@@ -2,13 +2,17 @@ use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{CoreExpr, CoreStatement, CoreType};
+use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{TypeScriptExpr, TypeScriptStatement};
 
-pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
+pub(super) fn lower_core_expr_to_typescript(
+    expr: CoreExpr,
+    imported_values: &BTreeMap<String, String>,
+) -> TypeScriptExpr {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
@@ -19,12 +23,15 @@ pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
                 name: constructor.local_name.to_owned(),
             })
             .unwrap_or_else(|| TypeScriptExpr::Identifier {
-                name: local_name(&name),
+                name: imported_values
+                    .get(&name)
+                    .cloned()
+                    .unwrap_or_else(|| local_name(&name)),
             }),
         CoreExpr::Call {
             callee, arguments, ..
         } => {
-            let arguments = lower_core_expressions(arguments);
+            let arguments = lower_core_expressions(arguments, imported_values);
             if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: constructor.local_name.to_owned(),
@@ -32,13 +39,16 @@ pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
                 }
             } else {
                 TypeScriptExpr::Call {
-                    callee: local_name(&callee),
+                    callee: imported_values
+                        .get(&callee)
+                        .cloned()
+                        .unwrap_or_else(|| local_name(&callee)),
                     arguments,
                 }
             }
         }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
-            elements: lower_core_expressions(elements),
+            elements: lower_core_expressions(elements, imported_values),
         },
         CoreExpr::Binary {
             operator,
@@ -46,16 +56,16 @@ pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             right,
             type_ref,
             ..
-        } => lower_binary(operator, *left, *right, type_ref),
+        } => lower_binary(operator, *left, *right, type_ref, imported_values),
         CoreExpr::If {
             condition,
             then_branch,
             else_branch,
             ..
         } => TypeScriptExpr::Conditional {
-            condition: Box::new(lower_core_expr_to_typescript(*condition)),
-            then_branch: Box::new(lower_core_expr_to_typescript(*then_branch)),
-            else_branch: Box::new(lower_core_expr_to_typescript(*else_branch)),
+            condition: Box::new(lower_core_expr_to_typescript(*condition, imported_values)),
+            then_branch: Box::new(lower_core_expr_to_typescript(*then_branch, imported_values)),
+            else_branch: Box::new(lower_core_expr_to_typescript(*else_branch, imported_values)),
         },
         CoreExpr::Decision {
             scrutinee,
@@ -63,20 +73,26 @@ pub(super) fn lower_core_expr_to_typescript(expr: CoreExpr) -> TypeScriptExpr {
             branches,
             type_ref,
             ..
-        } => lower_core_decision(*scrutinee, scrutinee_type, branches, type_ref),
+        } => lower_core_decision(
+            *scrutinee,
+            scrutinee_type,
+            branches,
+            type_ref,
+            imported_values,
+        ),
         CoreExpr::EffectOperation {
             operation,
             arguments,
             ..
-        } => lower_effect_operation(operation, arguments),
+        } => lower_effect_operation(operation, arguments, imported_values),
         CoreExpr::Sequence {
             statements, result, ..
         } => TypeScriptExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(lower_core_statement_to_typescript)
+                .map(|statement| lower_core_statement_to_typescript(statement, imported_values))
                 .collect(),
-            result: Box::new(lower_core_expr_to_typescript(*result)),
+            result: Box::new(lower_core_expr_to_typescript(*result, imported_values)),
         },
     }
 }
@@ -127,10 +143,13 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
     }
 }
 
-fn lower_core_expressions(expressions: Vec<CoreExpr>) -> Vec<TypeScriptExpr> {
+fn lower_core_expressions(
+    expressions: Vec<CoreExpr>,
+    imported_values: &BTreeMap<String, String>,
+) -> Vec<TypeScriptExpr> {
     expressions
         .into_iter()
-        .map(lower_core_expr_to_typescript)
+        .map(|expression| lower_core_expr_to_typescript(expression, imported_values))
         .collect()
 }
 
@@ -139,9 +158,10 @@ fn lower_binary(
     left: CoreExpr,
     right: CoreExpr,
     type_ref: CoreType,
+    imported_values: &BTreeMap<String, String>,
 ) -> TypeScriptExpr {
-    let left = lower_core_expr_to_typescript(left);
-    let right = lower_core_expr_to_typescript(right);
+    let left = lower_core_expr_to_typescript(left, imported_values);
+    let right = lower_core_expr_to_typescript(right, imported_values);
     if is_int_type(&type_ref) {
         if let Some(operation) = runtime_int_operation(&operator) {
             return TypeScriptExpr::RuntimeCall {
@@ -157,9 +177,13 @@ fn lower_binary(
     }
 }
 
-fn lower_effect_operation(operation: String, arguments: Vec<CoreExpr>) -> TypeScriptExpr {
+fn lower_effect_operation(
+    operation: String,
+    arguments: Vec<CoreExpr>,
+    imported_values: &BTreeMap<String, String>,
+) -> TypeScriptExpr {
     let runtime_operation = runtime_effect_operation(&operation);
-    let mut arguments = lower_core_expressions(arguments);
+    let mut arguments = lower_core_expressions(arguments, imported_values);
     if operation == "effect.succeed" && arguments.is_empty() {
         arguments.push(TypeScriptExpr::Undefined);
     }
@@ -171,10 +195,13 @@ fn lower_effect_operation(operation: String, arguments: Vec<CoreExpr>) -> TypeSc
     }
 }
 
-fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptStatement {
+fn lower_core_statement_to_typescript(
+    statement: CoreStatement,
+    imported_values: &BTreeMap<String, String>,
+) -> TypeScriptStatement {
     match statement {
         CoreStatement::Effect { value } => TypeScriptStatement::Effect {
-            value: lower_core_expr_to_typescript(value),
+            value: lower_core_expr_to_typescript(value, imported_values),
         },
         CoreStatement::PureLet {
             name,
@@ -184,7 +211,7 @@ fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptSta
         } => TypeScriptStatement::PureLet {
             name: safe_identifier(&name),
             type_ref: type_ref_from_core_type(&type_ref),
-            initializer: lower_core_expr_to_typescript(value),
+            initializer: lower_core_expr_to_typescript(value, imported_values),
             origin,
         },
         CoreStatement::Bind {
@@ -195,7 +222,7 @@ fn lower_core_statement_to_typescript(statement: CoreStatement) -> TypeScriptSta
         } => TypeScriptStatement::Const {
             name: safe_identifier(&name),
             type_ref: type_ref_from_core_type(&type_ref),
-            initializer: lower_core_expr_to_typescript(value),
+            initializer: lower_core_expr_to_typescript(value, imported_values),
             origin,
         },
     }

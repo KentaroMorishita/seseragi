@@ -55,6 +55,13 @@ fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
                 .iter()
                 .map(|instance| instance.dictionary_export.clone()),
         )
+        .chain(module.source_imports.iter().flat_map(|import| {
+            import
+                .bindings
+                .iter()
+                .filter(|binding| !binding.type_only)
+                .map(|binding| binding.local.clone())
+        }))
         .collect()
 }
 

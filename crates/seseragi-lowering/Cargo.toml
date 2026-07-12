@@ -12,3 +12,4 @@ seseragi-syntax = { path = "../seseragi-syntax" }
 
 [dev-dependencies]
 serde_json.workspace = true
+seseragi-project = { path = "../seseragi-project" }

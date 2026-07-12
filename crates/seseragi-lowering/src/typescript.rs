@@ -1,12 +1,14 @@
 use crate::{CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::Visibility;
+use std::collections::BTreeMap;
 
 mod adt;
 mod decision;
 mod expr;
 mod imports;
 mod instances;
+mod module_imports;
 mod names;
 mod runtime;
 mod type_imports;
@@ -21,6 +23,7 @@ pub use instances::{
     TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
     TypeScriptShowDictionaryReference,
 };
+use module_imports::lower_module_imports;
 use names::local_name;
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
@@ -40,6 +43,8 @@ pub struct TypeScriptModule {
     pub imports: Vec<TypeScriptImport>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub type_imports: Vec<TypeScriptTypeImport>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub source_imports: Vec<TypeScriptSourceImport>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<TypeScriptAdt>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -83,6 +88,56 @@ pub struct TypeScriptImport {
 pub struct TypeScriptTypeImport {
     pub feature: String,
     pub local: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptSourceImport {
+    pub module: String,
+    pub specifier: String,
+    pub bindings: Vec<TypeScriptSourceImportBinding>,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptSourceImportBinding {
+    pub imported: String,
+    pub local: String,
+    pub source_local: String,
+    pub canonical: String,
+    pub type_only: bool,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct TypeScriptOutputPlan {
+    module_specifiers: BTreeMap<String, String>,
+}
+
+impl TypeScriptOutputPlan {
+    pub fn new(
+        module_specifiers: impl IntoIterator<Item = (String, String)>,
+    ) -> TypeScriptOutputPlan {
+        Self {
+            module_specifiers: module_specifiers.into_iter().collect(),
+        }
+    }
+
+    fn specifier_for(&self, module: &str) -> Option<&str> {
+        self.module_specifiers.get(module).map(String::as_str)
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum TypeScriptLoweringError {
+    MissingOutputSpecifier {
+        module: String,
+        source_specifier: String,
+    },
+    ImportNameCollision {
+        local: String,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -301,6 +356,15 @@ pub enum TypeScriptStatement {
 }
 
 pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {
+    lower_core_module_to_typescript_ir_with_plan(module, &TypeScriptOutputPlan::default())
+        .expect("import-free lowering requires no linked module dependencies")
+}
+
+pub fn lower_core_module_to_typescript_ir_with_plan(
+    module: CoreModule,
+    plan: &TypeScriptOutputPlan,
+) -> Result<TypeScriptModule, TypeScriptLoweringError> {
+    let module_imports = lower_module_imports(&module, plan)?;
     let mut runtime_requirements = Vec::new();
     let mut imports = Vec::new();
     let mut type_imports = Vec::new();
@@ -328,7 +392,10 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
                 exported: binding.visibility == Visibility::Public,
                 name: local_name(&binding.symbol),
                 type_ref: type_ref_from_core_expr(&binding.value),
-                initializer: lower_core_expr_to_typescript(binding.value),
+                initializer: lower_core_expr_to_typescript(
+                    binding.value,
+                    &module_imports.value_names,
+                ),
                 origin: binding.origin,
             }
         })
@@ -342,7 +409,7 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
             }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
             collect_expr_runtime_imports(&function.body, &mut imports);
-            let body = lower_core_expr_to_typescript(function.body);
+            let body = lower_core_expr_to_typescript(function.body, &module_imports.value_names);
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
@@ -365,13 +432,14 @@ pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModul
         runtime_requirements,
         imports,
         type_imports,
+        source_imports: module_imports.imports,
         adts,
         instances,
         bindings,
         functions,
     };
     freshen_runtime_imports(&mut typescript);
-    typescript
+    Ok(typescript)
 }
 
 pub(super) fn push_unique(values: &mut Vec<String>, value: &str) {

@@ -1,17 +1,17 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
-    effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
-    runtime_types::runtime_type_import_for_feature, show_ops::runtime_show_dictionary_for_feature,
-    sum_ops::runtime_sum_constructor_for_feature, TypeScriptAdt, TypeScriptAdtVariant,
-    TypeScriptBinding, TypeScriptExpr, TypeScriptFunction, TypeScriptModule, TypeScriptStatement,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
+    TypeScriptModule, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
 mod decision;
+mod imports;
 mod instances;
 mod metadata;
 mod source_map;
 
+use imports::render_import_lines;
 use instances::render_typescript_instances;
 use metadata::generated_module_for;
 pub use metadata::{GeneratedInstance, GeneratedModule, GeneratedOutputs, GeneratedRuntime};
@@ -40,54 +40,12 @@ pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> Ge
 
 fn render_typescript(module: &TypeScriptModule) -> String {
     let mut output = String::new();
-    let mut import_groups: Vec<(&str, Vec<String>)> = Vec::new();
-    for import in &module.imports {
-        let helper = runtime_effect_operation_for_feature(&import.feature)
-            .map(|operation| (operation.module, operation.export_name))
-            .or_else(|| {
-                runtime_int_operation_for_feature(&import.feature)
-                    .map(|operation| (operation.module, operation.export_name))
-            })
-            .or_else(|| {
-                runtime_sum_constructor_for_feature(&import.feature)
-                    .map(|constructor| (constructor.module, constructor.export_name))
-            })
-            .or_else(|| {
-                runtime_show_dictionary_for_feature(&import.feature)
-                    .map(|dictionary| (dictionary.module, dictionary.export_name))
-            });
-        if let Some((runtime_module, export_name)) = helper {
-            let rendered = format!("{export_name} as {}", import.local);
-            if let Some((_, specifiers)) = import_groups
-                .iter_mut()
-                .find(|(module, _)| *module == runtime_module)
-            {
-                specifiers.push(rendered);
-            } else {
-                import_groups.push((runtime_module, vec![rendered]));
-            }
-        }
+    let import_lines = render_import_lines(module);
+    for line in &import_lines {
+        output.push_str(line);
+        output.push('\n');
     }
-    for import in &module.type_imports {
-        if let Some(type_import) = runtime_type_import_for_feature(&import.feature) {
-            let rendered = format!("type {} as {}", type_import.export_name, import.local);
-            if let Some((_, specifiers)) = import_groups
-                .iter_mut()
-                .find(|(module, _)| *module == type_import.module)
-            {
-                specifiers.push(rendered);
-            } else {
-                import_groups.push((type_import.module, vec![rendered]));
-            }
-        }
-    }
-    for (module, specifiers) in import_groups {
-        output.push_str(&format!(
-            "import {{ {} }} from \"{module}\"\n",
-            specifiers.join(", ")
-        ));
-    }
-    if (!module.imports.is_empty() || !module.type_imports.is_empty())
+    if !import_lines.is_empty()
         && (!module.adts.is_empty()
             || !module.instances.is_empty()
             || !module.bindings.is_empty()
