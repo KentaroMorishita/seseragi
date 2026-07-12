@@ -49,6 +49,14 @@ pub(super) fn register_linked_imports(
                         Some(format!("{module}::*")),
                         *origin,
                     );
+                    resolver.register_namespace_import(
+                        local_name,
+                        &dependency.specifier,
+                        &dependency.interface.module,
+                        *origin,
+                        &dependency.interface.exports,
+                        dependency.header.as_ref(),
+                    );
                 }
                 LinkedImport::Operator {
                     spelling,

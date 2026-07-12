@@ -67,6 +67,128 @@ fn types_a_call_from_an_imported_pure_function_scheme() {
 }
 
 #[test]
+fn resolves_a_namespace_qualified_pure_function_call() {
+    let main_source = "import * as domain from \"./domain\"\npub fn run value: Int -> Int = domain.increment value\n";
+    let linked = linked_function_program(main_source);
+
+    let resolved = resolve_linked_module(linked, main_source);
+
+    assert!(resolved.issues.is_empty());
+    assert_eq!(resolved.imports.len(), 1);
+    let imported = &resolved.imports[0];
+    assert_eq!(imported.local_name, "domain.increment");
+    assert_eq!(imported.export.name, "increment");
+    assert_eq!(imported.export.symbol, "fixture/game::domain::increment");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.spelling == "domain.increment"
+            && reference.namespace == SymbolNamespace::Value
+            && reference.target == Some(imported.symbol)
+    }));
+    assert!(resolved.symbols.iter().any(|symbol| {
+        symbol.id == imported.symbol
+            && symbol.kind == SymbolKind::Imported
+            && symbol.canonical.as_deref() == Some("fixture/game::domain::increment")
+    }));
+}
+
+#[test]
+fn types_a_namespace_qualified_pure_function_call() {
+    let main_source = "import * as domain from \"./domain\"\npub fn run value: Int -> Int = domain.increment value\n";
+    let linked = linked_function_program(main_source);
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[0] else {
+        panic!("expected typed function");
+    };
+    let dependency = &analyzed.typed_hir.module_dependencies[0];
+    assert_eq!(dependency.imports.len(), 1);
+    assert_eq!(dependency.imports[0].imported, "increment");
+    assert_eq!(dependency.imports[0].local, "domain.increment");
+    assert_eq!(
+        dependency.imports[0].canonical,
+        "fixture/game::domain::increment"
+    );
+    assert!(matches!(
+        body,
+        TypedExpr::Call { callee, type_ref, .. }
+            if callee == "fixture/game::domain::increment"
+                && *type_ref == TypedType::Named {
+                    name: "Int".to_owned(),
+                    arguments: Vec::new(),
+                }
+    ));
+}
+
+#[test]
+fn reports_a_missing_namespace_value_member_as_unresolved() {
+    let main_source = "import * as domain from \"./domain\"\npub fn run value: Int -> Int = domain.missing value\n";
+    let linked = linked_function_program(main_source);
+
+    let resolved = resolve_linked_module(linked.clone(), main_source);
+
+    assert!(resolved.imports.is_empty());
+    assert!(resolved.issues.iter().any(|issue| {
+        issue.code == "SES-N0104" && issue.message_key == "module.export-unresolved"
+    }));
+    assert!(resolved
+        .issues
+        .iter()
+        .all(|issue| issue.code != "SES-N0001"));
+    assert!(resolved.references.iter().any(|reference| {
+        reference.spelling == "domain.missing"
+            && reference.namespace == SymbolNamespace::Value
+            && reference.target.is_none()
+    }));
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "SES-N0104"));
+}
+
+#[test]
+fn reports_a_private_namespace_value_member() {
+    let domain_source = "fn hidden value: Int -> Int = value\n";
+    let main_source = "import * as domain from \"./domain\"\npub fn run value: Int -> Int = domain.hidden value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked.clone(), main_source);
+
+    assert!(resolved.imports.is_empty());
+    assert!(resolved.issues.iter().any(|issue| {
+        issue.code == "SES-N0102" && issue.message_key == "module.private-symbol"
+    }));
+    assert!(resolved
+        .issues
+        .iter()
+        .all(|issue| issue.code != "SES-N0001"));
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "SES-N0102"));
+}
+
+#[test]
 fn reports_an_imported_function_argument_type_mismatch() {
     let main_source =
         "import { increment } from \"./domain\"\npub fn run value: String -> Int = increment value\n";

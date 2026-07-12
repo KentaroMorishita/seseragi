@@ -11,6 +11,7 @@ use std::collections::BTreeMap;
 mod declarations;
 mod expression;
 mod imports;
+mod namespace;
 mod pattern;
 #[cfg(test)]
 mod tests;
@@ -58,9 +59,10 @@ fn resolve_surface_module(
 fn finish_resolved_module(
     interface: ModuleInterface,
     surface: SurfaceModule,
-    imports: Vec<crate::ResolvedImport>,
-    resolver: Resolver,
+    mut imports: Vec<crate::ResolvedImport>,
+    mut resolver: Resolver,
 ) -> ResolvedModule {
+    imports.extend(resolver.namespace_imports.take_selected());
     ResolvedModule {
         schema: 2,
         stage: "resolved-ast".to_owned(),
@@ -94,6 +96,7 @@ pub(super) struct Resolver {
     issues: Vec<ResolveIssue>,
     names: BTreeMap<(ScopeId, SymbolNamespace, String), SymbolId>,
     prelude_names: BTreeMap<(SymbolNamespace, String), SymbolId>,
+    namespace_imports: namespace::NamespaceImports,
 }
 
 impl Resolver {
@@ -111,6 +114,7 @@ impl Resolver {
             issues: Vec::new(),
             names: BTreeMap::new(),
             prelude_names: BTreeMap::new(),
+            namespace_imports: namespace::NamespaceImports::default(),
         }
     }
 
@@ -222,16 +226,26 @@ impl Resolver {
         origin: ByteSpan,
         report_unresolved: bool,
     ) -> Option<SymbolId> {
-        let target = self
-            .lookup(scope, namespace, spelling)
-            .or_else(|| self.ensure_prelude(namespace, spelling));
+        let mut target = self.lookup(scope, namespace, spelling);
+        let mut namespace_issue = None;
+        if target.is_none() && namespace == SymbolNamespace::Value {
+            match self.resolve_namespace_value(scope, spelling, origin) {
+                Ok(resolved) => target = resolved,
+                Err(issue) => namespace_issue = Some(issue),
+            }
+        }
+        if target.is_none() {
+            target = self.ensure_prelude(namespace, spelling);
+        }
         self.references.push(ResolvedReference {
             spelling: spelling.to_owned(),
             namespace,
             target,
             origin,
         });
-        if target.is_none() && report_unresolved {
+        if let Some(issue) = namespace_issue {
+            self.issues.push(issue);
+        } else if target.is_none() && report_unresolved {
             self.issues.push(ResolveIssue {
                 code: "SES-N0001".to_owned(),
                 message_key: "name.unresolved".to_owned(),
