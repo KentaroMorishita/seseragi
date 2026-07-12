@@ -118,6 +118,17 @@ artifactのJSONは人が手で実装する入力ではありません。新compi
 schema fieldを変更するときはproducerとconsumerを同じ巨大changeへ混ぜず、schema fixture、producer、consumerの
 順に移行します。schema majorが異なるartifactを黙って読み替えません。
 
+schema 1 artifactの正規更新はRust writerを使います。`--only`を省略した場合はcase内にすでに存在するartifactだけを
+更新し、新しいstageを追加する場合は明示します。TypedHir以降はpublic driverの同一compile結果から書き、compile
+error時にfrontend artifactだけを部分更新しません。
+
+```sh
+cargo run -p seseragi-conformance --bin write_schema1_artifact -- \
+  examples/spec/artifacts/schema-1/basic
+cargo run -p seseragi-conformance --bin write_schema1_artifact -- \
+  examples/spec/artifacts/schema-1/new-case --only=tokens,cst,diagnostics
+```
+
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する
 必要はありません。backend loweringやTypeScript emitterまで固定するcaseだけが`core-ir.json`、
