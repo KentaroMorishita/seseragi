@@ -4,6 +4,9 @@ use crate::execution_case::environment::HostAdapter;
 use std::fs;
 use std::path::PathBuf;
 
+#[path = "tests/discovery.rs"]
+mod discovery;
+
 #[test]
 fn loads_a_pure_project_execution_envelope() {
     let case = temp_case("valid");

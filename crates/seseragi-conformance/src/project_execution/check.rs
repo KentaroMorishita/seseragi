@@ -1,4 +1,6 @@
-use super::model::{load_project_execution_case, ProjectExecutionKind};
+use super::model::{
+    load_project_execution_cases, LoadedProjectExecutionCase, ProjectExecutionKind,
+};
 use crate::execution::{self, StagedExecutionRequest};
 use crate::execution_case::{
     compare_observation, compare_trace, trace_stdout, validate_effect_entry_contract_in_memory,
@@ -13,8 +15,36 @@ use std::path::Path;
 
 /// Compiles, stages, and runs one entry from a closed project fixture.
 pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(), String> {
-    let execution_case = load_project_execution_case(case)?;
+    let execution_cases = load_project_execution_cases(case)?;
     let compiled_case = compile_project_compile_case(case)?;
+    let runtime_requirements = project_runtime_requirements(&compiled_case)?;
+    let project_id = case
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| "project execution directory has no valid name".to_owned())?;
+    for execution_case in &execution_cases {
+        check_compiled_project_execution(
+            root,
+            case,
+            project_id,
+            &compiled_case,
+            &runtime_requirements,
+            execution_case,
+        )
+        .map_err(|error| format!("project execution case {}: {error}", execution_case.id))?;
+    }
+    Ok(())
+}
+
+fn check_compiled_project_execution(
+    root: &Path,
+    project_root: &Path,
+    project_id: &str,
+    compiled_case: &CompiledProjectCompileCase,
+    runtime_requirements: &[String],
+    loaded: &LoadedProjectExecutionCase,
+) -> Result<(), String> {
+    let execution_case = &loaded.case;
     let compiled = compiled_case
         .compiled
         .modules
@@ -45,7 +75,6 @@ pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(
             execution_case.entry_export
         ));
     }
-    let runtime_requirements = project_runtime_requirements(&compiled_case)?;
     if runtime_requirements != execution_case.runtime_requirements {
         return Err(format!(
             "project execution runtime requirements mismatch: expected {:?}, got {:?}",
@@ -64,8 +93,9 @@ pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(
             )
         })
         .transpose()?;
-    let execution_dir = execution::prepare_execution_dir(root, "project", case)?;
-    stage_project_typescript(&execution_dir, &compiled_case)?;
+    let execution_kind = format!("project/{project_id}");
+    let execution_dir = execution::prepare_execution_dir(root, &execution_kind, &loaded.directory)?;
+    stage_project_typescript(&execution_dir, compiled_case)?;
     let actual = execution::run_staged_typescript(
         root,
         &execution_dir,
@@ -80,7 +110,8 @@ pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(
             stdin: &execution_case.stdin,
         },
     )?;
-    compare_process_output(case, &execution_case, actual)
+    compare_process_output(&loaded.directory, execution_case, actual)
+        .map_err(|error| format!("{} in project {}", error, project_root.display()))
 }
 
 fn project_runtime_requirements(

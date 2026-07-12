@@ -7,3 +7,4 @@ mod model;
 mod tests;
 
 pub(crate) use check::check_project_execution_case;
+pub(crate) use model::has_project_execution_layout;

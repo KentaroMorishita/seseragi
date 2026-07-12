@@ -10,6 +10,13 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
+#[path = "model/discovery.rs"]
+mod discovery;
+
+pub(crate) use discovery::{
+    has_project_execution_layout, load_project_execution_cases, LoadedProjectExecutionCase,
+};
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum ProjectExecutionKind {
     Pure,

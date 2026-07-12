@@ -1,6 +1,7 @@
 use crate::discovery::{
     discover_artifact_cases, discover_cases, discover_interface_cases, discover_resolved_ast_cases,
 };
+use crate::project_execution::has_project_execution_layout;
 use std::path::{Path, PathBuf};
 
 pub(crate) struct Suite {
@@ -90,7 +91,7 @@ impl Suite {
             project_execution_cases: discover_cases(&artifacts.join("project-schema-1"))
                 .into_iter()
                 .filter(|case| {
-                    case.join("project.json").is_file() && case.join("execution.json").is_file()
+                    case.join("project.json").is_file() && has_project_execution_layout(case)
                 })
                 .collect(),
             execution_cases: discover_single_module_artifact_cases(artifacts, "run.json"),
@@ -132,6 +133,35 @@ mod tests {
         assert_eq!(
             discover_single_module_artifact_cases(&root, "typed-hir.json"),
             vec![single]
+        );
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn discovers_root_and_nested_project_execution_layouts_once_per_project() {
+        let root = std::env::temp_dir().join(format!(
+            "seseragi-suite-project-execution-{}",
+            std::process::id()
+        ));
+        let _ = fs::remove_dir_all(&root);
+        let projects = root.join("project-schema-1");
+        let singleton = projects.join("singleton");
+        let nested = projects.join("nested/executions/success");
+        let compile_only = projects.join("compile-only");
+        fs::create_dir_all(&singleton).unwrap();
+        fs::create_dir_all(&nested).unwrap();
+        fs::create_dir_all(&compile_only).unwrap();
+        for project in [&singleton, &projects.join("nested"), &compile_only] {
+            fs::write(project.join("project.json"), "{}\n").unwrap();
+        }
+        fs::write(singleton.join("execution.json"), "{}\n").unwrap();
+        fs::write(nested.join("execution.json"), "{}\n").unwrap();
+
+        let suite = Suite::discover(&root);
+
+        assert_eq!(
+            suite.project_execution_cases,
+            vec![projects.join("nested"), singleton]
         );
         fs::remove_dir_all(root).unwrap();
     }
