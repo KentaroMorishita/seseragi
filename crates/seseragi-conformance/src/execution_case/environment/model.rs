@@ -48,6 +48,8 @@ impl EnvironmentBinding {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum HostAdapter {
     CaptureConsole,
+    FailConsole,
+    FailStdin,
     ProcessStdin,
 }
 
@@ -55,6 +57,8 @@ impl HostAdapter {
     pub(super) fn parse(value: &str) -> Result<Self, String> {
         match value {
             "capture-console" => Ok(Self::CaptureConsole),
+            "fail-console" => Ok(Self::FailConsole),
+            "fail-stdin" => Ok(Self::FailStdin),
             "process-stdin" => Ok(Self::ProcessStdin),
             other => Err(format!(
                 "run.json hostEnvironment adapter {other} is not supported"
@@ -64,8 +68,8 @@ impl HostAdapter {
 
     pub(super) fn service_type(self) -> &'static str {
         match self {
-            Self::CaptureConsole => "Console",
-            Self::ProcessStdin => "Stdin",
+            Self::CaptureConsole | Self::FailConsole => "Console",
+            Self::FailStdin | Self::ProcessStdin => "Stdin",
         }
     }
 }

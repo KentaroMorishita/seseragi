@@ -53,6 +53,27 @@ fn creates_typed_bindings_for_known_host_adapters() {
 }
 
 #[test]
+fn creates_typed_bindings_for_deterministic_failure_adapters() {
+    let plan = parse_environment_plan(
+        &environment(
+            json!([
+                { "name": "console", "type": "Console" },
+                { "name": "stdin", "type": "Stdin" }
+            ]),
+            json!([
+                { "field": "console", "type": "Console", "adapter": "fail-console" },
+                { "field": "stdin", "type": "Stdin", "adapter": "fail-stdin" }
+            ]),
+        ),
+        true,
+    )
+    .unwrap();
+
+    assert_eq!(plan.bindings()[0].adapter(), HostAdapter::FailConsole);
+    assert_eq!(plan.bindings()[1].adapter(), HostAdapter::FailStdin);
+}
+
+#[test]
 fn requires_a_closed_record_and_unique_required_fields() {
     let mut open = environment(json!([]), json!([]));
     open["requiredEnvironment"]["closed"] = json!(false);
@@ -128,6 +149,18 @@ fn rejects_unknown_or_type_incompatible_adapters() {
     assert!(parse_environment_plan(&incompatible, true)
         .unwrap_err()
         .contains("expected Stdin"));
+
+    let failing_incompatible = environment(
+        json!([{ "name": "stdin", "type": "Stdin" }]),
+        json!([{
+            "field": "stdin",
+            "type": "Stdin",
+            "adapter": "fail-console"
+        }]),
+    );
+    assert!(parse_environment_plan(&failing_incompatible, true)
+        .unwrap_err()
+        .contains("expected Console"));
 }
 
 #[test]

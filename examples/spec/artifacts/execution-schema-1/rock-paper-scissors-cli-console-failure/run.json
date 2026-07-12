@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "case": "rock-paper-scissors-cli-valid",
+  "case": "rock-paper-scissors-cli-console-failure",
   "target": "node-process",
   "entry": {
     "module": "artifact/rock-paper-scissors-cli",
@@ -43,14 +43,20 @@
       {
         "field": "console",
         "type": "Console",
-        "adapter": "capture-console"
+        "adapter": "fail-console"
       }
     ]
   },
   "expected": {
     "exit": {
-      "kind": "success",
-      "value": "Unit"
+      "kind": "failure",
+      "error": {
+        "tag": "ConsoleFailure",
+        "value": {
+          "kind": "console-error",
+          "message": "injected console failure"
+        }
+      }
     },
     "runtimeRequirements": [
       "effect.stdin.error",
@@ -73,17 +79,9 @@
       "effect.console.println"
     ],
     "process": {
-      "exitCode": 0
+      "exitCode": 1
     },
     "stdout": "stdout.txt",
-    "stderr": "stderr.txt",
-    "trace": [
-      {
-        "service": "console",
-        "operation": "println",
-        "arguments": ["Player 1 wins!"],
-        "stdout": "Player 1 wins!\n"
-      }
-    ]
+    "stderr": "stderr.txt"
   }
 }

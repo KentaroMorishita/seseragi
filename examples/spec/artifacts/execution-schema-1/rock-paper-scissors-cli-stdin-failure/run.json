@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "case": "rock-paper-scissors-cli-valid",
+  "case": "rock-paper-scissors-cli-stdin-failure",
   "target": "node-process",
   "entry": {
     "module": "artifact/rock-paper-scissors-cli",
@@ -14,9 +14,6 @@
       "cold": true,
       "rootScope": true
     }
-  },
-  "input": {
-    "stdin": "stdin.txt"
   },
   "requiredEnvironment": {
     "kind": "record",
@@ -38,7 +35,7 @@
       {
         "field": "stdin",
         "type": "Stdin",
-        "adapter": "process-stdin"
+        "adapter": "fail-stdin"
       },
       {
         "field": "console",
@@ -49,8 +46,13 @@
   },
   "expected": {
     "exit": {
-      "kind": "success",
-      "value": "Unit"
+      "kind": "failure",
+      "error": {
+        "tag": "StdinFailure",
+        "value": {
+          "tag": "StdinUnavailable"
+        }
+      }
     },
     "runtimeRequirements": [
       "effect.stdin.error",
@@ -73,17 +75,10 @@
       "effect.console.println"
     ],
     "process": {
-      "exitCode": 0
+      "exitCode": 1
     },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",
-    "trace": [
-      {
-        "service": "console",
-        "operation": "println",
-        "arguments": ["Player 1 wins!"],
-        "stdout": "Player 1 wins!\n"
-      }
-    ]
+    "trace": []
   }
 }

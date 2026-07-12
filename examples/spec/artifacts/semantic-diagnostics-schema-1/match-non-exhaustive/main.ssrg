@@ -1,0 +1,8 @@
+pub type Choice =
+  | One
+  | Two
+
+pub fn choose value: Choice -> Int =
+  match value {
+    One -> 1
+  }

@@ -87,6 +87,16 @@ environmentとfailure contractを読み、`Show<E>`に対応するgenerated dict
 選択します。typed failureはdictionaryでrenderしたstderrとexit code 1、runtime defectはexit code 70として区別し、
 Consoleのactual operation traceもsnapshotと比較します。
 
+`execution-schema-1/rock-paper-scissors-cli-stdin-failure/`と`-console-failure/`は、host serviceの
+失敗をruntime defectへ逃がさず、宣言済みのtyped failureへ変換してから`mapError`、`AppError`のderived
+`Show`、stderr、exit code 1まで通します。成功caseはcaptured Console operationの引数・stdoutを比較し、
+入力失敗caseは副作用が発生していない空traceを比較します。
+
+`semantic-diagnostics-schema-1/match-non-exhaustive/`、`match-unreachable-arm/`、
+`match-pattern-type-mismatch/`はmatchのcoverageとpattern typingをregistry code付きで固定します。
+`schema-1/match-missing-arm-body-recovery/`は欠けたarm bodyを`SES-P0001`へ写しつつ、後続armをSurfaceAstの
+unit testで保持するfrontend recoveryを固定します。
+
 `schema-1/multiple-lets/`は複数top-level declarationのCST分割と、public declarationだけをinterfaceへ出す
 最小contractです。TypedHirではprivate declarationも同一compiler run内のbodyとして保持します。
 

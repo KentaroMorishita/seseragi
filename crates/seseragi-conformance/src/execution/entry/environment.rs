@@ -1,6 +1,7 @@
 use crate::execution_case::environment::{EnvironmentPlan, HostAdapter};
 
 mod console;
+mod failing;
 
 pub(super) struct RenderedEnvironment {
     pub(super) imports: String,
@@ -28,18 +29,21 @@ pub(super) fn render(plan: &EnvironmentPlan) -> RenderedEnvironment {
     }
 
     let console = console::render(plan.bindings());
+    let failing = failing::render(plan.bindings());
     let imports_stdin = plan
         .bindings()
         .iter()
         .any(|binding| binding.adapter() == HostAdapter::ProcessStdin);
     let mut imports = String::new();
     imports.push_str(&console.imports);
+    imports.push_str(&failing.imports);
     if imports_stdin {
         imports.push_str("import { createProcessStdin } from \"@seseragi/runtime/stdin\";\n");
     }
 
     let mut setup = String::new();
     setup.push_str(&console.setup);
+    setup.push_str(&failing.setup);
     let mut properties = Vec::with_capacity(plan.bindings().len());
     let mut stdin_bindings = Vec::new();
     for binding in plan.bindings() {
@@ -47,6 +51,10 @@ pub(super) fn render(plan: &EnvironmentPlan) -> RenderedEnvironment {
             HostAdapter::CaptureConsole => console
                 .adapter_for(binding.field())
                 .expect("every capture-console binding has a rendered adapter")
+                .to_owned(),
+            HostAdapter::FailConsole | HostAdapter::FailStdin => failing
+                .adapter_for(binding.adapter())
+                .expect("every failing binding has a rendered adapter")
                 .to_owned(),
             HostAdapter::ProcessStdin => {
                 let ordinal = stdin_bindings.len();
@@ -141,5 +149,45 @@ mod tests {
             environment.trace_expression.as_deref(),
             Some("operationTrace")
         );
+    }
+
+    #[test]
+    fn renders_deterministic_typed_failure_adapters() {
+        let plan = parse_environment_plan(
+            &json!({
+                "requiredEnvironment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                        { "name": "console", "type": "Console" },
+                        { "name": "stdin", "type": "Stdin" }
+                    ]
+                },
+                "hostEnvironment": {
+                    "closed": false,
+                    "services": [
+                        { "field": "console", "type": "Console", "adapter": "fail-console" },
+                        { "field": "stdin", "type": "Stdin", "adapter": "fail-stdin" }
+                    ]
+                }
+            }),
+            true,
+        )
+        .unwrap();
+        let environment = render(&plan);
+
+        assert_eq!(
+            environment.imports,
+            "import { serviceFailure } from \"@seseragi/runtime/service\";\n"
+        );
+        assert!(environment.setup.contains("const failingConsoleAdapter"));
+        assert!(environment.setup.contains("injected console failure"));
+        assert!(environment.setup.contains("const failingStdinAdapter"));
+        assert!(environment.setup.contains("StdinUnavailable"));
+        assert!(environment
+            .setup
+            .contains("\"console\": failingConsoleAdapter, \"stdin\": failingStdinAdapter"));
+        assert!(!environment.requires_cleanup());
+        assert_eq!(environment.trace_expression, None);
     }
 }

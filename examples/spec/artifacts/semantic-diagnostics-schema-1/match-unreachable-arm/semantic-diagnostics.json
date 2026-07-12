@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0302",
+      "severity": "Error",
+      "messageKey": "match.unreachable-arm",
+      "primary": {
+        "start": 103,
+        "end": 111
+      },
+      "related": [],
+      "fixes": []
+    }
+  ]
+}

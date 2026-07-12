@@ -78,6 +78,7 @@
       "exitCode": 1
     },
     "stdout": "stdout.txt",
-    "stderr": "stderr.txt"
+    "stderr": "stderr.txt",
+    "trace": []
   }
 }
