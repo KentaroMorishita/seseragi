@@ -85,6 +85,7 @@ fn links_namespace_and_operator_metadata_without_reading_dependency_bodies() {
     let targets = BTreeMap::from([("./support".to_owned(), support)]);
 
     let linked = link_module(main, &targets).unwrap();
+    assert!(linked.dependencies[0].header.is_some());
     assert!(matches!(
         &linked.dependencies[0].imports[0],
         LinkedImport::Namespace { local_name, module, .. }
@@ -218,6 +219,25 @@ fn external_interfaces_do_not_reveal_private_declaration_names() {
         link_module(main, &targets).unwrap_err().as_slice(),
         [LinkError::MissingExport { name, .. }] if name == "hidden"
     ));
+}
+
+#[test]
+fn external_namespace_dependencies_do_not_retain_a_private_header() {
+    let unlinked = parse_unlinked_module_interface(
+        "dependency/domain.ssrg",
+        "dependency/game::domain",
+        "pub fn visible value: Int -> Int = value\n",
+    );
+    let target = ModuleLinkTarget::external(unlinked.interface);
+    let main = parse_unlinked_module_interface(
+        "src/main.ssrg",
+        "fixture/game::main",
+        "import * as domain from \"dependency/game\"\npub let answer: Int = 42\n",
+    );
+    let targets = BTreeMap::from([("dependency/game".to_owned(), target)]);
+
+    let linked = link_module(main, &targets).unwrap();
+    assert!(linked.dependencies[0].header.is_none());
 }
 
 #[test]

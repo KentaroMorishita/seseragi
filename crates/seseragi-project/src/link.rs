@@ -54,6 +54,7 @@ pub fn link_module(
             specifier: import.specifier,
             origin: import.span,
             interface: target.interface().clone(),
+            header: target.header().cloned(),
             imports: linked_imports,
         });
     }

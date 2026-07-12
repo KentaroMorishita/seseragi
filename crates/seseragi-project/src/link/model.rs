@@ -14,6 +14,9 @@ pub struct LinkedDependency {
     pub specifier: String,
     pub origin: ByteSpan,
     pub interface: ModuleInterface,
+    /// Same-package declaration names retained for namespace-member privacy
+    /// diagnostics. External dependencies expose only their public interface.
+    pub header: Option<ModuleHeader>,
     pub imports: Vec<LinkedImport>,
 }
 
