@@ -16,7 +16,12 @@ pub fn link_module(
 ) -> Result<LinkedModule, Vec<LinkError>> {
     let mut dependencies = Vec::with_capacity(unlinked.imports.len());
     let mut interface_dependencies = Vec::with_capacity(unlinked.imports.len());
-    let mut names = BTreeSet::new();
+    let mut names = unlinked
+        .header
+        .names
+        .iter()
+        .map(|entry| (entry.namespace.clone(), entry.name.clone()))
+        .collect::<BTreeSet<_>>();
     let mut errors = Vec::new();
 
     for import in unlinked.imports {

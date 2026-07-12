@@ -484,6 +484,8 @@ project diagnostic adapterはまだ未実装です。
 
 `ModuleLinkTarget::same_package`はheaderの全public nameがfinal interfaceに存在することを検証します。したがってcompact
 inferred effectのexportが欠けるshallow interfaceを誤ってlink inputへ使うと、semantic linking前に失敗します。
+current module headerのnameもlink scopeへ先に予約するため、同じnamespaceのlocal declarationとimportが衝突した状態で
+dependency schemeをlocal SymbolIdへ誤結合する経路はありません。
 
 `resolve_linked_module`はlinkerが確定したnamed / alias / operator importをmodule scopeへ登録し、canonical dependency
 symbolと完全な`InterfaceExport` schemeを`ResolvedImport`へ保持します。source itemを再解釈してcanonical IDを作らず、

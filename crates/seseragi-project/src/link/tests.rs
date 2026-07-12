@@ -132,6 +132,30 @@ fn reports_missing_targets_exports_and_duplicates_at_import_item_spans() {
 }
 
 #[test]
+fn rejects_an_import_that_collides_with_a_local_declaration_namespace() {
+    let domain = target(
+        "fixture/game::domain",
+        "pub fn decide value: Int -> Int = value\n",
+    );
+    let main = parse_unlinked_module_interface(
+        "src/main.ssrg",
+        "fixture/game::main",
+        "import { decide } from \"./domain\"\nfn decide value: Int -> Int = value\n",
+    );
+    let import_span = main.imports[0].items[0].name_span;
+    let targets = BTreeMap::from([("./domain".to_owned(), domain)]);
+
+    assert!(matches!(
+        link_module(main, &targets).unwrap_err().as_slice(),
+        [LinkError::DuplicateImport {
+            namespace,
+            local_name,
+            origin,
+        }] if namespace == "value" && local_name == "decide" && *origin == import_span
+    ));
+}
+
+#[test]
 fn distinguishes_same_package_private_exports_from_missing_names() {
     let domain = target(
         "fixture/game::domain",
