@@ -1,8 +1,11 @@
-use seseragi_driver::{compile_linked_module, compile_module, CompileInput, LinkedCompileError};
+use seseragi_driver::{
+    compile_linked_module, compile_module, plan_typescript_outputs, CompileInput,
+    LinkedCompileError, TypeScriptModuleOutput,
+};
 use seseragi_lowering::{GeneratedModule, TypeScriptLoweringError, TypeScriptOutputPlan};
 use seseragi_project::{link_module, ModuleLinkTarget};
-use seseragi_semantics::{analyze_module_interface, TypedModuleInterface};
-use seseragi_syntax::{parse_diagnostics, parse_unlinked_module_interface};
+use seseragi_semantics::TypedModuleInterface;
+use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::BTreeMap;
 
 fn input<'source>(
@@ -207,8 +210,14 @@ fn compiles_a_linked_module_through_planned_typescript_output() {
     let main_source =
         "import { increment as next } from \"./domain\"\n\npub fn run value: Int -> Int = next value\n";
     let linked = linked_module(main_source, domain_source);
-    let plan =
-        TypeScriptOutputPlan::new([("fixture/game::domain".to_owned(), "./domain.js".to_owned())]);
+    let plan = plan_typescript_outputs(
+        "dist/game/main.js",
+        [TypeScriptModuleOutput::new(
+            "fixture/game::domain",
+            "dist/game/domain.js",
+        )],
+    )
+    .unwrap();
 
     let compiled = compile_linked_module(linked, main_source, &plan)
         .expect("linked module and complete output plan should compile");
@@ -248,14 +257,10 @@ fn classifies_a_missing_linked_output_specifier_as_a_plan_error() {
 fn linked_module(main_source: &str, domain_source: &str) -> seseragi_project::LinkedModule {
     let domain =
         parse_unlinked_module_interface("domain.ssrg", "fixture/game::domain", domain_source);
-    let interface = analyze_module_interface(
-        parse_diagnostics("domain.ssrg", domain_source),
-        domain.interface.clone(),
-        domain_source,
-    )
-    .unwrap()
-    .typed_interface
-    .into_link_interface();
+    let interface = compile_module(input("domain.ssrg", "fixture/game::domain", domain_source))
+        .expect("dependency module should compile through the public driver")
+        .typed_interface
+        .into_link_interface();
     let target = ModuleLinkTarget::same_package(domain.header, interface).unwrap();
     let main = parse_unlinked_module_interface("main.ssrg", "fixture/game::main", main_source);
     link_module(main, &BTreeMap::from([("./domain".to_owned(), target)])).unwrap()

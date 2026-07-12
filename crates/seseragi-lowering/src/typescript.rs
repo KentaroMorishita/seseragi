@@ -124,7 +124,7 @@ impl TypeScriptOutputPlan {
         }
     }
 
-    fn specifier_for(&self, module: &str) -> Option<&str> {
+    pub fn specifier_for(&self, module: &str) -> Option<&str> {
         self.module_specifiers.get(module).map(String::as_str)
     }
 }
