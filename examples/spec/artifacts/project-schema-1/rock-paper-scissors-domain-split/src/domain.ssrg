@@ -8,6 +8,8 @@ pub type Outcome =
   | Player2Wins
   | Draw
 
+pub fn identity<A> value: A -> A = value
+
 pub fn decide first: Hand -> second: Hand -> Outcome =
   match (first, second) {
     (Rock, Rock) -> Draw

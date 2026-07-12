@@ -148,8 +148,10 @@ cargo run -p seseragi-conformance --bin write_project_schema1_artifact -- \
   examples/spec/artifacts/project-schema-1/rock-paper-scissors-domain-split
 ```
 
-最初の`rock-paper-scissors-domain-split`は、domain moduleのADT / tuple matchと、main moduleからのtype import / value import、
-constructor pattern、imported pure callを固定します。これはfull CLI executionではなく、分割moduleのcompiler artifact gateです。
+最初の`rock-paper-scissors-domain-split`は、domain moduleのADT / tuple match / unconstrained rank-1 generic functionと、main moduleからの
+type import / value import、constructor pattern、imported pure callを固定します。同じgeneric functionをuser ADTと`String`へ独立して
+具体化し、generated module setをTypeScript type-checkしたうえでpure entryを実行します。これはfull CLI executionではなく、
+分割moduleのcompiler artifact gateです。
 
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する

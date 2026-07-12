@@ -34,12 +34,12 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 領域                                       | 仕様          | example / fixture                          | 新仕様実装         |
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
-| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sumまで部分実装 |
+| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | lessonあり、law fixture不足                | 未着手             |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin最小slice |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | linker + imported pure-call / ADT match typing、generic/backend linking未実装 |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | linked rank-1 pure-call / ADT match + backend project executionまで部分実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
@@ -131,7 +131,7 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    拒否する。`project-schema-1`のconformance/writerで分割RPS domainを全IR・生成artifactまで固定し、planned output pathへ
    stageしたmodule setのTypeScript type-checkも行う。同じfixtureのpure entryはBunで分割moduleを実行する。filesystem discovery、
    manifest解決、Effect / imported instanceを含むpackage executionへの接続は未実装。
-3. namespace member accessと未対応generic importを小さいfixtureで閉じ、P2-2の残gateを解消する。
+3. namespace member accessを小さいfixtureで閉じ、higher-order callable / generic imported ADTを別gateとしてP2-2の残作業へ送る。
 4. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、execution結果を保つ。
 5. imported instance evidenceとgenerated module importを接続し、標準型名のhardcodeだけで完了できないgateを置く。
 

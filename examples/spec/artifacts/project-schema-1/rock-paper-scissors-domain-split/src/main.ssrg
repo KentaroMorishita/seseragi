@@ -1,4 +1,4 @@
-import { Hand, Rock, Scissors, decide, renderOutcome } from "./domain"
+import { Hand, Rock, Scissors, identity, decide, renderOutcome } from "./domain"
 
 pub fn isOpeningDraw first: Hand -> second: Hand -> Bool =
   match (first, second) {
@@ -10,4 +10,4 @@ pub fn play first: Hand -> second: Hand -> String =
   renderOutcome (decide first second)
 
 pub fn openingMessage unit: Unit -> String =
-  renderOutcome (decide Rock Scissors)
+  identity (renderOutcome (identity (decide Rock Scissors)))

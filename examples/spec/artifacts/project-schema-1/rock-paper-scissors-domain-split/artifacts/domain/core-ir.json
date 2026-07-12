@@ -88,12 +88,49 @@
   ],
   "functions": [
     {
-      "symbol": "fixture/rps-domain-split::domain::decide",
+      "symbol": "fixture/rps-domain-split::domain::identity",
       "visibility": "public",
       "origin": {
         "source": "domain.ssrg",
         "start": 110,
-        "end": 406
+        "end": 150
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 145,
+          "end": 150
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-domain-split::domain::decide",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 152,
+        "end": 448
       },
       "parameters": [
         {
@@ -130,8 +167,8 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 174,
-                "end": 179
+                "start": 216,
+                "end": 221
               }
             },
             {
@@ -144,8 +181,8 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 181,
-                "end": 187
+                "start": 223,
+                "end": 229
               }
             }
           ],
@@ -166,8 +203,8 @@
           },
           "origin": {
             "source": "domain.ssrg",
-            "start": 173,
-            "end": 188
+            "start": 215,
+            "end": 230
           }
         },
         "scrutineeType": {
@@ -199,8 +236,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Rock",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 196,
-                  "end": 200
+                  "start": 238,
+                  "end": 242
                 }
               },
               {
@@ -214,8 +251,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Rock",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 202,
-                  "end": 206
+                  "start": 244,
+                  "end": 248
                 }
               }
             ],
@@ -229,14 +266,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 211,
-                "end": 215
+                "start": 253,
+                "end": 257
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 195,
-              "end": 215
+              "start": 237,
+              "end": 257
             }
           },
           {
@@ -252,8 +289,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Paper",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 221,
-                  "end": 226
+                  "start": 263,
+                  "end": 268
                 }
               },
               {
@@ -267,8 +304,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Paper",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 228,
-                  "end": 233
+                  "start": 270,
+                  "end": 275
                 }
               }
             ],
@@ -282,14 +319,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 238,
-                "end": 242
+                "start": 280,
+                "end": 284
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 220,
-              "end": 242
+              "start": 262,
+              "end": 284
             }
           },
           {
@@ -305,8 +342,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Scissors",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 248,
-                  "end": 256
+                  "start": 290,
+                  "end": 298
                 }
               },
               {
@@ -320,8 +357,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Scissors",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 258,
-                  "end": 266
+                  "start": 300,
+                  "end": 308
                 }
               }
             ],
@@ -335,14 +372,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 271,
-                "end": 275
+                "start": 313,
+                "end": 317
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 247,
-              "end": 275
+              "start": 289,
+              "end": 317
             }
           },
           {
@@ -358,8 +395,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Rock",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 281,
-                  "end": 285
+                  "start": 323,
+                  "end": 327
                 }
               },
               {
@@ -373,8 +410,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Scissors",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 287,
-                  "end": 295
+                  "start": 329,
+                  "end": 337
                 }
               }
             ],
@@ -388,14 +425,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 300,
-                "end": 311
+                "start": 342,
+                "end": 353
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 280,
-              "end": 311
+              "start": 322,
+              "end": 353
             }
           },
           {
@@ -411,8 +448,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Paper",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 317,
-                  "end": 322
+                  "start": 359,
+                  "end": 364
                 }
               },
               {
@@ -426,8 +463,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Rock",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 324,
-                  "end": 328
+                  "start": 366,
+                  "end": 370
                 }
               }
             ],
@@ -441,14 +478,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 333,
-                "end": 344
+                "start": 375,
+                "end": 386
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 316,
-              "end": 344
+              "start": 358,
+              "end": 386
             }
           },
           {
@@ -464,8 +501,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Scissors",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 350,
-                  "end": 358
+                  "start": 392,
+                  "end": 400
                 }
               },
               {
@@ -479,8 +516,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Paper",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 360,
-                  "end": 365
+                  "start": 402,
+                  "end": 407
                 }
               }
             ],
@@ -494,14 +531,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 370,
-                "end": 381
+                "start": 412,
+                "end": 423
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 349,
-              "end": 381
+              "start": 391,
+              "end": 423
             }
           },
           {
@@ -516,14 +553,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 391,
-                "end": 402
+                "start": 433,
+                "end": 444
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 386,
-              "end": 402
+              "start": 428,
+              "end": 444
             }
           }
         ],
@@ -535,8 +572,8 @@
         },
         "origin": {
           "source": "domain.ssrg",
-          "start": 167,
-          "end": 406
+          "start": 209,
+          "end": 448
         }
       }
     },
@@ -545,8 +582,8 @@
       "visibility": "public",
       "origin": {
         "source": "domain.ssrg",
-        "start": 408,
-        "end": 571
+        "start": 450,
+        "end": 613
       },
       "parameters": [
         {
@@ -571,8 +608,8 @@
           },
           "origin": {
             "source": "domain.ssrg",
-            "start": 466,
-            "end": 473
+            "start": 508,
+            "end": 515
           }
         },
         "scrutineeType": {
@@ -589,8 +626,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Player1Wins",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 480,
-                  "end": 491
+                  "start": 522,
+                  "end": 533
                 }
               }
             ],
@@ -599,14 +636,14 @@
               "value": "Player 1 wins!",
               "origin": {
                 "source": "domain.ssrg",
-                "start": 495,
-                "end": 511
+                "start": 537,
+                "end": 553
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 480,
-              "end": 511
+              "start": 522,
+              "end": 553
             }
           },
           {
@@ -617,8 +654,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Player2Wins",
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 516,
-                  "end": 527
+                  "start": 558,
+                  "end": 569
                 }
               }
             ],
@@ -627,14 +664,14 @@
               "value": "Player 2 wins!",
               "origin": {
                 "source": "domain.ssrg",
-                "start": 531,
-                "end": 547
+                "start": 573,
+                "end": 589
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 516,
-              "end": 547
+              "start": 558,
+              "end": 589
             }
           },
           {
@@ -644,14 +681,14 @@
               "value": "Draw!",
               "origin": {
                 "source": "domain.ssrg",
-                "start": 560,
-                "end": 567
+                "start": 602,
+                "end": 609
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 552,
-              "end": 567
+              "start": 594,
+              "end": 609
             }
           }
         ],
@@ -663,8 +700,8 @@
         },
         "origin": {
           "source": "domain.ssrg",
-          "start": 460,
-          "end": 571
+          "start": 502,
+          "end": 613
         }
       }
     }

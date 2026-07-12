@@ -96,6 +96,30 @@
     {
       "kind": "const-function",
       "exported": true,
+      "name": "identity",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 110,
+        "end": 150
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
       "name": "decide",
       "parameters": [
         {
@@ -324,8 +348,8 @@
       },
       "origin": {
         "source": "domain.ssrg",
-        "start": 110,
-        "end": 406
+        "start": 152,
+        "end": 448
       }
     },
     {
@@ -391,8 +415,8 @@
       },
       "origin": {
         "source": "domain.ssrg",
-        "start": 408,
-        "end": 571
+        "start": 450,
+        "end": 613
       }
     }
   ]

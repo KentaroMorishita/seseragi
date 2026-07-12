@@ -9,7 +9,7 @@
       "module": "fixture/rps-domain-split::domain",
       "origin": {
         "start": 0,
-        "end": 70
+        "end": 80
       },
       "imports": [
         {
@@ -26,6 +26,11 @@
           "namespace": "value",
           "name": "Scissors",
           "symbol": "fixture/rps-domain-split::domain::Scissors"
+        },
+        {
+          "namespace": "value",
+          "name": "identity",
+          "symbol": "fixture/rps-domain-split::domain::identity"
         },
         {
           "namespace": "value",
@@ -48,8 +53,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 72,
-        "end": 200
+        "start": 82,
+        "end": 210
       },
       "scheme": {
         "typeParameters": [],
@@ -84,8 +89,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 202,
-        "end": 291
+        "start": 212,
+        "end": 301
       },
       "scheme": {
         "typeParameters": [],
@@ -120,8 +125,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 293,
-        "end": 376
+        "start": 303,
+        "end": 408
       },
       "scheme": {
         "typeParameters": [],

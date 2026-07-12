@@ -470,8 +470,8 @@ project linkerは、project resolverがspecifierごとに確定した`ModuleInte
 trait namespaceへ展開します。alias、namespace import、operatorのscheme / fixity、duplicate import、missing exportを
 import itemのbyte span付きで保持し、dependency bodyを読みません。`LinkedDependency`はtarget interface全体を持つため、
 後続semanticsはfunction / constructor schemeとinstance closureをsourceから再構築しません。named type / value /
-constructorとoperatorはresolver scopeへ入り、non-generic pure function schemeとADT familyをTypedHirへ接続済みです。
-namespace member access、generic / higher-order callable、generic imported ADTは後続の小さいgateに残るため、P2-2全体を
+constructorとoperatorはresolver scopeへ入り、pure function schemeとADT familyをTypedHirへ接続済みです。
+namespace member access、higher-order callable、generic imported ADTは後続の小さいgateに残るため、P2-2全体を
 完了とは扱いません。
 
 実compileでlinkerへ渡すのはshallow interfaceの推測値ではなく、dependencyをtopological orderで型検査した後の
@@ -499,10 +499,16 @@ dependency schemeをlocal SymbolIdへ誤結合する経路はありません。
 `resolve_linked_module`はlinkerが確定したnamed / alias / operator importをmodule scopeへ登録し、canonical dependency
 symbolと完全な`InterfaceExport` schemeを`ResolvedImport`へ保持します。source itemを再解釈してcanonical IDを作らず、
 同じnamed importからtype / value namespaceへ入るnewtypeも別symbolとして保持できます。現時点ではこのcontractを
-TypedResolutionのnon-generic pure callableへ接続し、alias経由のimported function callを型検査してcanonical calleeを
+TypedResolutionのpure callableへ接続し、alias経由のimported function callを型検査してcanonical calleeを
 TypedHirへ残せます。さらにnon-genericな公開ADTはdependency interfaceの全constructorからsemantic familyを構築し、
 importしていないvariantもscopeへ名前登録せずexhaustiveness witnessには残します。これにより選択importだけでmatchを
-誤ってtotalと判定しません。generic / higher-order callable、generic imported ADTは後続gateです。
+誤ってtotalと判定しません。higher-order callable、generic imported ADTは後続gateです。
+
+unconstrained rank-1 generic pure functionはlocal / named importの同じcallable pathへ接続済みです。scheme parameterを
+semantic type identityとして保持するため、`Int`や`String`だけでなくuser-defined ADTでもcallごとに独立して具体化されます。
+型引数binderはTypedHirからCoreIr、TypeScriptIr、generated functionの最外arrowまで保持し、分割RPS projectはdependencyの
+generic functionを異なる型で利用したgenerated module setをTypeScript type-checkして実行します。constraint付きfunction、
+higher-order parameter / result、generic imported ADTはこのsliceへ混ぜず、個別gateのままです。
 
 imported function scheme内のnominal typeは、同じdependencyから明示importされたtype aliasのlocal spellingへ再表示します。
 このため`Hand as LocalHand`をparameter / resultに使うcall boundaryは通ります。type自体をimportせず値のflowだけで渡す場合も、

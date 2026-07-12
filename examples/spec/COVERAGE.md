@@ -23,6 +23,7 @@
 | Streamとbackpressure                          | Lesson 17         | `projects/stream-*`, `effect-stream-*`         | partial |
 | resource scopeとfinalizer                     | Lesson 18         | exit / defect ordering fixtures                | partial |
 | generic struct / alias / impl                 | Lesson 11         | nested generic / kind / inference fixtures     | partial |
+| rank-1 generic pure function / module import  | Lesson 11         | `project-schema-1/rock-paper-scissors-domain-split` | partial |
 | comprehension、Array / record pattern         | Lesson 12         | parse / pattern diagnostics                    | partial |
 | custom trait / instance / custom operator     | Lesson 13         | instance syntax / orphan / fixity fixtures     | partial |
 | Semigroup / Monoid                            | Lesson 14         | law fixtures                                   | partial |

@@ -172,14 +172,44 @@
       }
     },
     {
+      "symbol": "fixture/rps-domain-split::domain::identity",
+      "namespace": "value",
+      "name": "identity",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 110,
+        "end": 150
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
       "symbol": "fixture/rps-domain-split::domain::decide",
       "namespace": "value",
       "name": "decide",
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 110,
-        "end": 406
+        "start": 152,
+        "end": 448
       },
       "scheme": {
         "typeParameters": [],
@@ -214,8 +244,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 408,
-        "end": 571
+        "start": 450,
+        "end": 613
       },
       "scheme": {
         "typeParameters": [],

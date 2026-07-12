@@ -50,6 +50,18 @@
           }
         },
         {
+          "imported": "identity",
+          "local": "identity",
+          "sourceLocal": "identity",
+          "canonical": "fixture/rps-domain-split::domain::identity",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 31,
+            "end": 39
+          }
+        },
+        {
           "imported": "decide",
           "local": "decide",
           "sourceLocal": "decide",
@@ -57,8 +69,8 @@
           "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
-            "start": 31,
-            "end": 37
+            "start": 41,
+            "end": 47
           }
         },
         {
@@ -69,15 +81,15 @@
           "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
-            "start": 39,
-            "end": 52
+            "start": 49,
+            "end": 62
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 70
+        "end": 80
       }
     }
   ],
@@ -171,8 +183,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 72,
-        "end": 200
+        "start": 82,
+        "end": 210
       }
     },
     {
@@ -213,8 +225,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 202,
-        "end": 291
+        "start": 212,
+        "end": 301
       }
     },
     {
@@ -230,19 +242,31 @@
       ],
       "body": {
         "kind": "call",
-        "callee": "renderOutcome",
+        "callee": "identity",
         "arguments": [
           {
             "kind": "call",
-            "callee": "decide",
+            "callee": "renderOutcome",
             "arguments": [
               {
-                "kind": "identifier",
-                "name": "Rock"
-              },
-              {
-                "kind": "identifier",
-                "name": "Scissors"
+                "kind": "call",
+                "callee": "identity",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "decide",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Rock"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Scissors"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }
@@ -250,8 +274,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 293,
-        "end": 376
+        "start": 303,
+        "end": 408
       }
     }
   ]

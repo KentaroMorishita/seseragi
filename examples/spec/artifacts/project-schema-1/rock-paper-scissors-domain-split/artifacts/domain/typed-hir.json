@@ -136,11 +136,59 @@
     },
     {
       "kind": "fn",
-      "symbol": "fixture/rps-domain-split::domain::decide",
+      "symbol": "fixture/rps-domain-split::domain::identity",
       "visibility": "public",
       "origin": {
         "start": 110,
-        "end": 406
+        "end": 150
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 129,
+            "end": 134
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 145,
+          "end": 150
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/rps-domain-split::domain::decide",
+      "visibility": "public",
+      "origin": {
+        "start": 152,
+        "end": 448
       },
       "scheme": {
         "typeParameters": [],
@@ -161,8 +209,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 124,
-            "end": 129
+            "start": 166,
+            "end": 171
           }
         },
         {
@@ -174,8 +222,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 139,
-            "end": 145
+            "start": 181,
+            "end": 187
           }
         }
       ],
@@ -193,8 +241,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 174,
-                "end": 179
+                "start": 216,
+                "end": 221
               }
             },
             {
@@ -206,8 +254,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 181,
-                "end": 187
+                "start": 223,
+                "end": 229
               }
             }
           ],
@@ -227,8 +275,8 @@
             ]
           },
           "origin": {
-            "start": 173,
-            "end": 188
+            "start": 215,
+            "end": 230
           }
         },
         "arms": [
@@ -245,8 +293,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 196,
-                    "end": 200
+                    "start": 238,
+                    "end": 242
                   }
                 },
                 {
@@ -258,8 +306,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 202,
-                    "end": 206
+                    "start": 244,
+                    "end": 248
                   }
                 }
               ],
@@ -279,8 +327,8 @@
                 ]
               },
               "origin": {
-                "start": 195,
-                "end": 207
+                "start": 237,
+                "end": 249
               }
             },
             "body": {
@@ -292,13 +340,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 211,
-                "end": 215
+                "start": 253,
+                "end": 257
               }
             },
             "origin": {
-              "start": 195,
-              "end": 215
+              "start": 237,
+              "end": 257
             }
           },
           {
@@ -314,8 +362,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 221,
-                    "end": 226
+                    "start": 263,
+                    "end": 268
                   }
                 },
                 {
@@ -327,8 +375,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 228,
-                    "end": 233
+                    "start": 270,
+                    "end": 275
                   }
                 }
               ],
@@ -348,8 +396,8 @@
                 ]
               },
               "origin": {
-                "start": 220,
-                "end": 234
+                "start": 262,
+                "end": 276
               }
             },
             "body": {
@@ -359,222 +407,15 @@
                 "kind": "named",
                 "name": "Outcome",
                 "arguments": []
-              },
-              "origin": {
-                "start": 238,
-                "end": 242
-              }
-            },
-            "origin": {
-              "start": 220,
-              "end": 242
-            }
-          },
-          {
-            "pattern": {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Scissors",
-                  "type": {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 248,
-                    "end": 256
-                  }
-                },
-                {
-                  "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Scissors",
-                  "type": {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 258,
-                    "end": 266
-                  }
-                }
-              ],
-              "type": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  }
-                ]
-              },
-              "origin": {
-                "start": 247,
-                "end": 267
-              }
-            },
-            "body": {
-              "kind": "variable",
-              "name": "fixture/rps-domain-split::domain::Draw",
-              "type": {
-                "kind": "named",
-                "name": "Outcome",
-                "arguments": []
-              },
-              "origin": {
-                "start": 271,
-                "end": 275
-              }
-            },
-            "origin": {
-              "start": 247,
-              "end": 275
-            }
-          },
-          {
-            "pattern": {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Rock",
-                  "type": {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 281,
-                    "end": 285
-                  }
-                },
-                {
-                  "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Scissors",
-                  "type": {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 287,
-                    "end": 295
-                  }
-                }
-              ],
-              "type": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  }
-                ]
               },
               "origin": {
                 "start": 280,
-                "end": 296
-              }
-            },
-            "body": {
-              "kind": "variable",
-              "name": "fixture/rps-domain-split::domain::Player1Wins",
-              "type": {
-                "kind": "named",
-                "name": "Outcome",
-                "arguments": []
-              },
-              "origin": {
-                "start": 300,
-                "end": 311
+                "end": 284
               }
             },
             "origin": {
-              "start": 280,
-              "end": 311
-            }
-          },
-          {
-            "pattern": {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Paper",
-                  "type": {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 317,
-                    "end": 322
-                  }
-                },
-                {
-                  "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Rock",
-                  "type": {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 324,
-                    "end": 328
-                  }
-                }
-              ],
-              "type": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Hand",
-                    "arguments": []
-                  }
-                ]
-              },
-              "origin": {
-                "start": 316,
-                "end": 329
-              }
-            },
-            "body": {
-              "kind": "variable",
-              "name": "fixture/rps-domain-split::domain::Player1Wins",
-              "type": {
-                "kind": "named",
-                "name": "Outcome",
-                "arguments": []
-              },
-              "origin": {
-                "start": 333,
-                "end": 344
-              }
-            },
-            "origin": {
-              "start": 316,
-              "end": 344
+              "start": 262,
+              "end": 284
             }
           },
           {
@@ -590,21 +431,21 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 350,
-                    "end": 358
+                    "start": 290,
+                    "end": 298
                   }
                 },
                 {
                   "kind": "constructor",
-                  "symbol": "fixture/rps-domain-split::domain::Paper",
+                  "symbol": "fixture/rps-domain-split::domain::Scissors",
                   "type": {
                     "kind": "named",
                     "name": "Hand",
                     "arguments": []
                   },
                   "origin": {
-                    "start": 360,
-                    "end": 365
+                    "start": 300,
+                    "end": 308
                   }
                 }
               ],
@@ -624,8 +465,77 @@
                 ]
               },
               "origin": {
-                "start": 349,
-                "end": 366
+                "start": 289,
+                "end": 309
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/rps-domain-split::domain::Draw",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "start": 313,
+                "end": 317
+              }
+            },
+            "origin": {
+              "start": 289,
+              "end": 317
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 323,
+                    "end": 327
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Scissors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 329,
+                    "end": 337
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 322,
+                "end": 338
               }
             },
             "body": {
@@ -637,13 +547,151 @@
                 "arguments": []
               },
               "origin": {
-                "start": 370,
-                "end": 381
+                "start": 342,
+                "end": 353
               }
             },
             "origin": {
-              "start": 349,
-              "end": 381
+              "start": 322,
+              "end": 353
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Paper",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 359,
+                    "end": 364
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 366,
+                    "end": 370
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 358,
+                "end": 371
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/rps-domain-split::domain::Player1Wins",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "start": 375,
+                "end": 386
+              }
+            },
+            "origin": {
+              "start": 358,
+              "end": 386
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Scissors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 392,
+                    "end": 400
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Paper",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 402,
+                    "end": 407
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 391,
+                "end": 408
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/rps-domain-split::domain::Player1Wins",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "start": 412,
+                "end": 423
+              }
+            },
+            "origin": {
+              "start": 391,
+              "end": 423
             }
           },
           {
@@ -665,8 +713,8 @@
                 ]
               },
               "origin": {
-                "start": 386,
-                "end": 387
+                "start": 428,
+                "end": 429
               }
             },
             "body": {
@@ -678,13 +726,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 391,
-                "end": 402
+                "start": 433,
+                "end": 444
               }
             },
             "origin": {
-              "start": 386,
-              "end": 402
+              "start": 428,
+              "end": 444
             }
           }
         ],
@@ -695,8 +743,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 167,
-          "end": 406
+          "start": 209,
+          "end": 448
         }
       }
     },
@@ -705,8 +753,8 @@
       "symbol": "fixture/rps-domain-split::domain::renderOutcome",
       "visibility": "public",
       "origin": {
-        "start": 408,
-        "end": 571
+        "start": 450,
+        "end": 613
       },
       "scheme": {
         "typeParameters": [],
@@ -727,8 +775,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 429,
-            "end": 436
+            "start": 471,
+            "end": 478
           }
         }
       ],
@@ -743,8 +791,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 466,
-            "end": 473
+            "start": 508,
+            "end": 515
           }
         },
         "arms": [
@@ -758,8 +806,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 480,
-                "end": 491
+                "start": 522,
+                "end": 533
               }
             },
             "body": {
@@ -771,13 +819,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 495,
-                "end": 511
+                "start": 537,
+                "end": 553
               }
             },
             "origin": {
-              "start": 480,
-              "end": 511
+              "start": 522,
+              "end": 553
             }
           },
           {
@@ -790,8 +838,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 516,
-                "end": 527
+                "start": 558,
+                "end": 569
               }
             },
             "body": {
@@ -803,13 +851,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 531,
-                "end": 547
+                "start": 573,
+                "end": 589
               }
             },
             "origin": {
-              "start": 516,
-              "end": 547
+              "start": 558,
+              "end": 589
             }
           },
           {
@@ -822,8 +870,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 552,
-                "end": 556
+                "start": 594,
+                "end": 598
               }
             },
             "body": {
@@ -835,13 +883,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 560,
-                "end": 567
+                "start": 602,
+                "end": 609
               }
             },
             "origin": {
-              "start": 552,
-              "end": 567
+              "start": 594,
+              "end": 609
             }
           }
         ],
@@ -852,8 +900,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 460,
-          "end": 571
+          "start": 502,
+          "end": 613
         }
       }
     }

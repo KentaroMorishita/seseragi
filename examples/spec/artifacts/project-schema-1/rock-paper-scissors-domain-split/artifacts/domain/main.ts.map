@@ -6,7 +6,7 @@
     "seseragi://fixture/rps-domain-split::domain"
   ],
   "sourcesContent": [
-    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type Outcome =\n  | Player1Wins\n  | Player2Wins\n  | Draw\n\npub fn decide first: Hand -> second: Hand -> Outcome =\n  match (first, second) {\n    (Rock, Rock) -> Draw\n    (Paper, Paper) -> Draw\n    (Scissors, Scissors) -> Draw\n    (Rock, Scissors) -> Player1Wins\n    (Paper, Rock) -> Player1Wins\n    (Scissors, Paper) -> Player1Wins\n    _ -> Player2Wins\n  }\n\npub fn renderOutcome outcome: Outcome -> String =\n  match outcome {\n    Player1Wins -> \"Player 1 wins!\"\n    Player2Wins -> \"Player 2 wins!\"\n    Draw -> \"Draw!\"\n  }\n"
+    "pub type Hand =\n  | Rock\n  | Paper\n  | Scissors\n\npub type Outcome =\n  | Player1Wins\n  | Player2Wins\n  | Draw\n\npub fn identity<A> value: A -> A = value\n\npub fn decide first: Hand -> second: Hand -> Outcome =\n  match (first, second) {\n    (Rock, Rock) -> Draw\n    (Paper, Paper) -> Draw\n    (Scissors, Scissors) -> Draw\n    (Rock, Scissors) -> Player1Wins\n    (Paper, Rock) -> Player1Wins\n    (Scissors, Paper) -> Player1Wins\n    _ -> Player2Wins\n  }\n\npub fn renderOutcome outcome: Outcome -> String =\n  match outcome {\n    Player1Wins -> \"Player 1 wins!\"\n    Player2Wins -> \"Player 2 wins!\"\n    Draw -> \"Draw!\"\n  }\n"
   ],
   "names": [
     "Hand",
@@ -17,8 +17,9 @@
     "Player1Wins",
     "Player2Wins",
     "Draw",
+    "identity",
     "decide",
     "renderOutcome"
   ],
-  "mappings": "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;;AACIC;AACAC;AACAC;AAEJC;AAWAC"
+  "mappings": "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;;AACIC;AACAC;AACAC;AAEJC;AAEAC;AAWAC"
 }
