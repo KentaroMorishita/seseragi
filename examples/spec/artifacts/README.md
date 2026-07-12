@@ -42,7 +42,8 @@ sourceのenvironmentとsuccess型は保持し、生成moduleもcoldな`mapError(
 SurfaceAstの`let`、`fn`、`effectFn`は有効なsourceでは`body`を必ず持ちます。applicationはcurried
 applicationを保つ一引数nodeとして左へnestし、括弧は`grouped`で保持します。`do`はEffect専用構文として
 扱わず、bind / pure let / expression itemと最後のresultを分離します。item terminatorは規範grammarどおり
-改行または`;`であり、既知operation名やarityを使って同一行を暗黙分割しません。
+改行または`;`であり、既知operation名やarityを使って同一行を暗黙分割しません。import itemは元名とaliasの
+UTF-8 byte spanを保持し、project linkerのmissing / duplicate / private access diagnosticがimport文全体へ退化しません。
 
 `schema-1/tuple-value/`は2要素以上のtuple valueをSurfaceAst、TypedHir、CoreIr、TypeScriptIr、生成TSまで
 固定します。TypeScript backendはtuple用runtime helperを要求せず、同じ長さのreadonly tupleとして出力します。

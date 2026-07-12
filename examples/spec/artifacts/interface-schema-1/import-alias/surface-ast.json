@@ -8,7 +8,15 @@
         {
           "namespace": "value",
           "name": "parse",
-          "alias": "parseJson"
+          "nameSpan": {
+            "start": 9,
+            "end": 14
+          },
+          "alias": "parseJson",
+          "aliasSpan": {
+            "start": 18,
+            "end": 27
+          }
         }
       ],
       "span": {

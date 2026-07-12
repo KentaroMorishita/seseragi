@@ -323,7 +323,9 @@ fn parses_rich_interface_surface_declarations() {
             items: vec![SurfaceImportItem {
                 namespace: "value".to_owned(),
                 name: "identity".to_owned(),
+                name_span: ByteSpan { start: 9, end: 17 },
                 alias: None,
+                alias_span: None,
             }],
             span: ByteSpan { start: 0, end: 32 },
         }]

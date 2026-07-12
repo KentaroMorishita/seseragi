@@ -4,8 +4,20 @@
   "imports": [
     {
       "specifier": "./dep",
-      "items": [{ "namespace": "value", "name": "identity" }],
-      "span": { "start": 0, "end": 32 }
+      "items": [
+        {
+          "namespace": "value",
+          "name": "identity",
+          "nameSpan": {
+            "start": 9,
+            "end": 17
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 32
+      }
     }
   ],
   "declarations": [
@@ -13,13 +25,22 @@
       "kind": "newtype",
       "visibility": "public",
       "name": "Score",
-      "nameSpan": { "start": 46, "end": 51 },
+      "nameSpan": {
+        "start": 46,
+        "end": 51
+      },
       "representation": {
         "kind": "named",
         "name": "Int",
-        "span": { "start": 54, "end": 57 }
+        "span": {
+          "start": 54,
+          "end": 57
+        }
       },
-      "span": { "start": 34, "end": 57 }
+      "span": {
+        "start": 34,
+        "end": 57
+      }
     },
     {
       "kind": "operator",
@@ -30,29 +51,47 @@
       "parameters": [
         {
           "name": "left",
-          "nameSpan": { "start": 87, "end": 91 },
+          "nameSpan": {
+            "start": 87,
+            "end": 91
+          },
           "type": {
             "kind": "named",
             "name": "Score",
-            "span": { "start": 93, "end": 98 }
+            "span": {
+              "start": 93,
+              "end": 98
+            }
           }
         },
         {
           "name": "right",
-          "nameSpan": { "start": 102, "end": 107 },
+          "nameSpan": {
+            "start": 102,
+            "end": 107
+          },
           "type": {
             "kind": "named",
             "name": "Score",
-            "span": { "start": 109, "end": 114 }
+            "span": {
+              "start": 109,
+              "end": 114
+            }
           }
         }
       ],
       "returnType": {
         "kind": "named",
         "name": "Score",
-        "span": { "start": 118, "end": 123 }
+        "span": {
+          "start": 118,
+          "end": 123
+        }
       },
-      "span": { "start": 59, "end": 141 }
+      "span": {
+        "start": 59,
+        "end": 141
+      }
     },
     {
       "kind": "instance",
@@ -61,10 +100,16 @@
         {
           "kind": "named",
           "name": "Score",
-          "span": { "start": 157, "end": 162 }
+          "span": {
+            "start": 157,
+            "end": 162
+          }
         }
       ],
-      "span": { "start": 143, "end": 210 }
+      "span": {
+        "start": 143,
+        "end": 210
+      }
     }
   ]
 }

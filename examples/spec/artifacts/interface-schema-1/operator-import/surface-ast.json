@@ -7,11 +7,19 @@
       "items": [
         {
           "namespace": "value",
-          "name": "identity"
+          "name": "identity",
+          "nameSpan": {
+            "start": 9,
+            "end": 17
+          }
         },
         {
           "namespace": "operator",
-          "name": "<+>"
+          "name": "<+>",
+          "nameSpan": {
+            "start": 28,
+            "end": 31
+          }
         }
       ],
       "span": {

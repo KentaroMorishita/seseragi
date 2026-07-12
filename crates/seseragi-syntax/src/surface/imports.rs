@@ -44,11 +44,17 @@ impl SurfaceParser<'_> {
         while let Some(index) = self.next_significant_token(cursor, end) {
             if self.raw_at(index) == Some("*") {
                 let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end);
-                if let Some(alias) = alias {
+                if let Some((alias, alias_span)) = alias {
+                    let Some(name_span) = self.byte_span(index) else {
+                        cursor = after_alias;
+                        continue;
+                    };
                     items.push(SurfaceImportItem {
                         namespace: "namespace".to_owned(),
                         name: "*".to_owned(),
+                        name_span,
                         alias: Some(alias),
+                        alias_span: Some(alias_span),
                     });
                     cursor = after_alias;
                     continue;
@@ -59,10 +65,23 @@ impl SurfaceParser<'_> {
                     break;
                 };
                 if let Some((name, after_operator)) = self.operator_spelling(operator_start) {
+                    let Some((first, final_token)) = self.tokens.get(operator_start).zip(
+                        after_operator
+                            .checked_sub(1)
+                            .and_then(|index| self.tokens.get(index)),
+                    ) else {
+                        cursor = after_operator;
+                        continue;
+                    };
                     items.push(SurfaceImportItem {
                         namespace: "operator".to_owned(),
                         name,
+                        name_span: ByteSpan {
+                            start: first.start,
+                            end: final_token.end,
+                        },
                         alias: None,
+                        alias_span: None,
                     });
                     cursor = after_operator;
                     continue;
@@ -74,10 +93,16 @@ impl SurfaceParser<'_> {
             ) {
                 if let Some(token) = self.tokens.get(index) {
                     let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end);
+                    let (alias, alias_span) = alias.unzip();
                     items.push(SurfaceImportItem {
                         namespace: "value".to_owned(),
                         name: token.raw.clone(),
+                        name_span: ByteSpan {
+                            start: token.start,
+                            end: token.end,
+                        },
                         alias,
+                        alias_span,
                     });
                     cursor = after_alias;
                     continue;
@@ -88,7 +113,11 @@ impl SurfaceParser<'_> {
         items
     }
 
-    fn parse_optional_import_alias(&self, start: usize, end: usize) -> (Option<String>, usize) {
+    fn parse_optional_import_alias(
+        &self,
+        start: usize,
+        end: usize,
+    ) -> (Option<(String, ByteSpan)>, usize) {
         let Some(as_index) = self.next_significant_token(start, end) else {
             return (None, start);
         };
@@ -101,6 +130,9 @@ impl SurfaceParser<'_> {
         let Some(alias) = self.identifier_name_at(alias_index) else {
             return (None, start);
         };
-        (Some(alias), alias_index + 1)
+        (
+            self.byte_span(alias_index).map(|span| (alias, span)),
+            alias_index + 1,
+        )
     }
 }
