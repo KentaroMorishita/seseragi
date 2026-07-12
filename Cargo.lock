@@ -81,6 +81,7 @@ version = "0.0.0"
 dependencies = [
  "serde",
  "serde_json",
+ "seseragi-driver",
  "seseragi-lowering",
  "seseragi-semantics",
  "seseragi-syntax",

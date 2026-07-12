@@ -1,11 +1,39 @@
 use std::path::Path;
 
-pub(crate) fn interface_source_name(case: &Path) -> Result<String, String> {
+pub(crate) fn artifact_module_id(case: &Path) -> Result<String, String> {
     let name = case
         .file_name()
         .and_then(|name| name.to_str())
-        .ok_or_else(|| "interface case has no directory name".to_owned())?;
-    Ok(format!("artifact/{name}/main.ssrg"))
+        .ok_or_else(|| "artifact case has no directory name".to_owned())?;
+    Ok(format!("artifact/{name}"))
+}
+
+pub(crate) fn interface_source_name(case: &Path) -> Result<String, String> {
+    Ok(format!("{}/main.ssrg", artifact_module_id(case)?))
+}
+
+pub(crate) fn compile_artifact_module(
+    case: &Path,
+    source: &str,
+) -> Result<seseragi_driver::CompiledModule, String> {
+    let source_name = interface_source_name(case)?;
+    let module_id = artifact_module_id(case)?;
+    seseragi_driver::compile_module(seseragi_driver::CompileInput::new(
+        &source_name,
+        &module_id,
+        source,
+    ))
+    .map_err(|diagnostics| format_compiler_rejection(&diagnostics))
+}
+
+fn format_compiler_rejection(diagnostics: &seseragi_syntax::DiagnosticArtifact) -> String {
+    let summary = diagnostics
+        .diagnostics
+        .iter()
+        .map(|diagnostic| format!("{} {}", diagnostic.id, diagnostic.code))
+        .collect::<Vec<_>>()
+        .join(", ");
+    format!("compiler rejected conformance case: {summary}")
 }
 
 pub(crate) fn parse_module_interface_json(
@@ -44,14 +72,6 @@ pub(crate) fn parse_resolved_ast_json(
         .map_err(|error| format!("failed to encode ResolvedAst: {error}"))
 }
 
-pub(crate) fn parse_typed_hir_json(
-    source_name: impl Into<String>,
-    source: &str,
-) -> Result<serde_json::Value, String> {
-    let typed_hir = seseragi_semantics::type_module(source_name, source);
-    serde_json::to_value(&typed_hir).map_err(|error| format!("failed to encode TypedHir: {error}"))
-}
-
 pub(crate) fn parse_typed_interface_json(
     source_name: impl Into<String>,
     source: &str,
@@ -59,37 +79,4 @@ pub(crate) fn parse_typed_interface_json(
     let typed_interface = seseragi_semantics::type_module_public_interface(source_name, source);
     serde_json::to_value(&typed_interface)
         .map_err(|error| format!("failed to encode TypedModuleInterface: {error}"))
-}
-
-pub(crate) fn parse_core_ir_json(
-    source_name: impl Into<String>,
-    source: &str,
-) -> Result<serde_json::Value, String> {
-    let typed_hir = seseragi_semantics::type_module(source_name, source);
-    let core_ir = seseragi_lowering::lower_typed_module(typed_hir);
-    serde_json::to_value(&core_ir).map_err(|error| format!("failed to encode CoreIr: {error}"))
-}
-
-pub(crate) fn parse_typescript_ir_json(
-    source_name: impl Into<String>,
-    source: &str,
-) -> Result<serde_json::Value, String> {
-    let typed_hir = seseragi_semantics::type_module(source_name, source);
-    let core_ir = seseragi_lowering::lower_typed_module(typed_hir);
-    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir(core_ir);
-    serde_json::to_value(&typescript_ir)
-        .map_err(|error| format!("failed to encode TypeScriptIr: {error}"))
-}
-
-pub(crate) fn emit_generated_module(
-    source_name: impl Into<String>,
-    source: &str,
-) -> Result<seseragi_lowering::GeneratedBundle, String> {
-    let typed_hir = seseragi_semantics::type_module(source_name, source);
-    let core_ir = seseragi_lowering::lower_typed_module(typed_hir);
-    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir(core_ir);
-    Ok(seseragi_lowering::emit_typescript_module(
-        typescript_ir,
-        source,
-    ))
 }

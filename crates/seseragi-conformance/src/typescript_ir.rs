@@ -1,4 +1,4 @@
-use crate::pipeline::{interface_source_name, parse_typescript_ir_json};
+use crate::pipeline::compile_artifact_module;
 use crate::runtime_abi::runtime_feature_ids;
 use serde_json::Value;
 use std::collections::BTreeSet;
@@ -12,7 +12,9 @@ pub(crate) fn check_typescript_ir_json(root: &Path, case: &Path) -> Result<(), S
         .map_err(|error| format!("failed to read source: {error}"))?;
     let expected = fs::read_to_string(&expected_path)
         .map_err(|error| format!("failed to read expected TypeScriptIr: {error}"))?;
-    let actual_value = parse_typescript_ir_json(interface_source_name(case)?, &source)?;
+    let compiled = compile_artifact_module(case, &source)?;
+    let actual_value = serde_json::to_value(&compiled.typescript_ir)
+        .map_err(|error| format!("failed to encode TypeScriptIr: {error}"))?;
     let expected_value: Value = serde_json::from_str(&expected)
         .map_err(|error| format!("failed to parse expected TypeScriptIr: {error}"))?;
 

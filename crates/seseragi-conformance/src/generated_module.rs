@@ -1,4 +1,4 @@
-use crate::pipeline::{emit_generated_module, interface_source_name, parse_typescript_ir_json};
+use crate::pipeline::compile_artifact_module;
 use crate::runtime_abi::runtime_feature_ids;
 use std::fs;
 use std::path::Path;
@@ -20,7 +20,10 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
         .map_err(|error| format!("failed to read expected main.ts: {error}"))?;
     let expected_source_map = fs::read_to_string(&expected_source_map_path)
         .map_err(|error| format!("failed to read expected main.ts.map: {error}"))?;
-    let bundle = emit_generated_module(interface_source_name(case)?, &source)?;
+    let compiled = compile_artifact_module(case, &source)?;
+    let typescript_ir = serde_json::to_value(&compiled.typescript_ir)
+        .map_err(|error| format!("failed to encode TypeScriptIr: {error}"))?;
+    let bundle = compiled.generated;
 
     let actual_metadata_value = serde_json::to_value(&bundle.metadata)
         .map_err(|error| format!("failed to encode GeneratedModule: {error}"))?;
@@ -35,7 +38,6 @@ pub(crate) fn check_generated_module(root: &Path, case: &Path) -> Result<(), Str
     }
     check_generated_exports(&actual_metadata_value, &bundle.typescript)?;
     instances::check_generated_instances(&actual_metadata_value, &bundle.typescript)?;
-    let typescript_ir = parse_typescript_ir_json(interface_source_name(case)?, &source)?;
     imports::check_generated_runtime_imports(root, &typescript_ir, &bundle.typescript)?;
     typecheck::check_generated_typescript(root, case, &typescript_ir, &bundle.typescript)?;
 
