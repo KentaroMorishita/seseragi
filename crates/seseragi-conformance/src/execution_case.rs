@@ -6,6 +6,7 @@ mod effect_contract;
 pub(crate) mod environment;
 mod exit;
 mod invocation;
+mod invocation_contract;
 mod trace;
 
 use effect_contract::validate_effect_entry_contract;
@@ -16,6 +17,7 @@ use environment::parse_environment_plan;
 pub(crate) use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
 pub(crate) use invocation::parse_invocation_document;
+pub(crate) use invocation_contract::validate_final_interface_invocation;
 pub(crate) use trace::{compare_trace, expected_trace, trace_stdout};
 
 pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), String> {

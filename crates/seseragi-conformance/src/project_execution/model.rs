@@ -119,6 +119,11 @@ pub(crate) fn load_project_execution_case(case: &Path) -> Result<ProjectExecutio
     };
     let expected_effect_exit = expected_observation(&document, &invocation)?;
     let expected_operation_trace = expected_trace(&document)?;
+    if environment.captures_console() && expected_operation_trace.is_none() {
+        return Err(
+            "effect-project-execution with capture-console requires expected.trace".to_owned(),
+        );
+    }
     let stdin = read_stdin(case, descriptor.input.as_ref())?;
 
     validate_fixture_path("expected.stdout", &descriptor.expected.stdout)?;

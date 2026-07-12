@@ -111,6 +111,50 @@ fn loads_an_effect_project_execution_envelope_with_shared_observations() {
 }
 
 #[test]
+fn requires_trace_when_effect_project_captures_console() {
+    let case = temp_case("missing-trace");
+    fs::write(
+        case.join("execution.json"),
+        r#"{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": { "module": "fixture/main", "export": "main" },
+  "invocation": {
+    "argument": "Unit",
+    "effect": { "cold": true, "rootScope": true }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [{
+      "field": "console",
+      "type": "Console",
+      "adapter": "capture-console"
+    }]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": ["effect.console.println"],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}"#,
+    )
+    .unwrap();
+
+    assert!(load_project_execution_case(&case)
+        .unwrap_err()
+        .contains("capture-console requires expected.trace"));
+    fs::remove_dir_all(case).unwrap();
+}
+
+#[test]
 fn rejects_effect_invocations_in_the_pure_schema() {
     let case = temp_case("invalid");
     fs::write(

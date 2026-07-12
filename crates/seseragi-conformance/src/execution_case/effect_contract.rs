@@ -10,6 +10,7 @@ use super::environment::parse_required_environment_fields;
 
 mod failure;
 mod model;
+pub(super) mod standard_types;
 
 #[cfg(test)]
 pub(crate) use model::DictionaryImport;
@@ -85,7 +86,13 @@ pub(crate) fn validate_effect_entry_contract_in_memory(
         .ok_or_else(|| {
             format!("execution entry export {entry_export} is missing from entry.typedInterface")
         })?;
+    standard_types::reject_shadowed_effect_constructor(
+        interface,
+        &export.scheme.type_ref,
+        entry_export,
+    )?;
     let effect = effect_type(&export.scheme.type_ref, entry_export)?;
+    standard_types::reject_shadowed_environment_types(interface, effect.environment, entry_export)?;
     let environment = environment_fields(effect.environment, entry_export)?;
     compare_required_environment(&environment, required_environment, entry_export)?;
     failure::resolve_effect_entry_contract(

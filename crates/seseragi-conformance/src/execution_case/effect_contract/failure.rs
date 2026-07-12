@@ -3,6 +3,7 @@ use seseragi_semantics::TypedModuleInterface;
 use seseragi_syntax::{InterfaceInstance, InterfaceType};
 
 use super::model::{DictionaryImport, EffectEntryContract, FailureRenderer};
+use super::standard_types::reject_shadowed_standard_failure;
 
 const RUNTIME_SHOW_MODULE: &str = "@seseragi/runtime/show";
 
@@ -12,12 +13,6 @@ pub(crate) fn resolve_effect_entry_contract(
     generated_module: &GeneratedModule,
     entry_module_specifier: &str,
 ) -> Result<EffectEntryContract, String> {
-    if is_never(failure) {
-        return Ok(EffectEntryContract {
-            failure_renderer: FailureRenderer::Never,
-        });
-    }
-
     // A public local type owns its spelling. Resolve it before considering the
     // standard prelude names so `type ConsoleError ...` cannot silently pick
     // the host ConsoleError dictionary.
@@ -29,6 +24,14 @@ pub(crate) fn resolve_effect_entry_contract(
             type_identity,
             entry_module_specifier,
         );
+    }
+
+    reject_shadowed_standard_failure(interface, failure)?;
+
+    if is_never(failure) {
+        return Ok(EffectEntryContract {
+            failure_renderer: FailureRenderer::Never,
+        });
     }
 
     if let Some(dictionary) = standard_show_dictionary(failure) {

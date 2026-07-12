@@ -2,6 +2,7 @@ use super::model::{load_project_execution_case, ProjectExecutionKind};
 use crate::execution::{self, StagedExecutionRequest};
 use crate::execution_case::{
     compare_observation, compare_trace, trace_stdout, validate_effect_entry_contract_in_memory,
+    validate_final_interface_invocation,
 };
 use crate::project_compile::{
     compile_project_compile_case, stage_project_typescript, CompiledProjectCompileCase,
@@ -27,6 +28,11 @@ pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(
     if compiled.generated.metadata.module != execution_case.entry_module {
         return Err("project execution entry module metadata does not match descriptor".to_owned());
     }
+    validate_final_interface_invocation(
+        &compiled.typed_interface,
+        &execution_case.entry_export,
+        &execution_case.invocation,
+    )?;
     if !compiled
         .generated
         .metadata

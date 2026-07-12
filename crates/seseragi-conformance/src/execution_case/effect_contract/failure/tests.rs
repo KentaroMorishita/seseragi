@@ -2,7 +2,8 @@ use serde_json::json;
 use seseragi_lowering::GeneratedModule;
 use seseragi_semantics::TypedModuleInterface;
 use seseragi_syntax::{
-    ByteSpan, InterfaceExport, InterfaceInstance, InterfaceScheme, InterfaceType, Visibility,
+    ByteSpan, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
+    InterfaceScheme, InterfaceType, Visibility,
 };
 
 use crate::execution_case::effect_contract::model::{
@@ -69,6 +70,22 @@ fn interface_with_exports(
 
 fn interface(instances: Vec<InterfaceInstance>) -> TypedModuleInterface {
     interface_with_exports(vec![type_export("AppError")], instances)
+}
+
+fn interface_with_imported_type(name: &str) -> TypedModuleInterface {
+    let mut interface = interface_with_exports(Vec::new(), Vec::new());
+    interface.dependencies = vec![InterfaceDependency {
+        specifier: "./domain".to_owned(),
+        module: "artifact/domain".to_owned(),
+        origin: ByteSpan { start: 0, end: 20 },
+        imports: vec![InterfaceImport {
+            namespace: "type".to_owned(),
+            name: name.to_owned(),
+            symbol: format!("artifact/domain::{name}"),
+            local_name: None,
+        }],
+    }];
+    interface
 }
 
 fn generated_instances(instances: serde_json::Value) -> GeneratedModule {
@@ -166,14 +183,30 @@ fn resolves_standard_show_dictionaries_without_local_instance_metadata() {
 
 #[test]
 fn local_export_shadows_a_standard_failure_type_spelling() {
-    let local = interface_with_exports(vec![type_export("ConsoleError")], Vec::new());
     let generated = generated_instances(json!([]));
 
-    let error =
-        resolve_effect_entry_contract(&local, &named("ConsoleError"), &generated).unwrap_err();
+    for failure in ["Never", "String", "ConsoleError", "StdinError"] {
+        let local = interface_with_exports(vec![type_export(failure)], Vec::new());
+        let error = resolve_effect_entry_contract(&local, &named(failure), &generated).unwrap_err();
 
-    assert!(error.contains("requires a selected Show instance"));
-    assert!(!error.contains("@seseragi/runtime/show"));
+        assert!(error.contains("requires a selected Show instance"));
+        assert!(!error.contains("@seseragi/runtime/show"));
+    }
+}
+
+#[test]
+fn imported_user_type_shadows_a_standard_failure_type_spelling() {
+    let generated = generated_instances(json!([]));
+
+    for failure in ["Never", "String", "ConsoleError", "StdinError"] {
+        let imported = interface_with_imported_type(failure);
+        let error =
+            resolve_effect_entry_contract(&imported, &named(failure), &generated).unwrap_err();
+
+        assert!(error.contains("resolves to user type artifact/domain"));
+        assert!(error.contains("not standard runtime type"));
+        assert!(!error.contains("@seseragi/runtime/show"));
+    }
 }
 
 #[test]
