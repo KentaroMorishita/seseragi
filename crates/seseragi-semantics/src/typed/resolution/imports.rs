@@ -14,6 +14,9 @@ pub(super) fn collect_imported_callables(
         .imports
         .iter()
         .filter_map(|import| {
+            if !import.in_scope {
+                return None;
+            }
             let export = &import.export;
             if export.declaration_kind.as_deref() != Some("function")
                 || !export.scheme.type_parameters.is_empty()

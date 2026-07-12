@@ -74,8 +74,66 @@ fn reports_an_imported_function_argument_type_mismatch() {
         .any(|diagnostic| diagnostic.code == "SES-T0101"));
 }
 
+#[test]
+fn types_an_exhaustive_match_over_an_imported_adt_family() {
+    let main_source = "import { Outcome, Player1Wins, Player2Wins, Draw } from \"./domain\"\n\npub fn render outcome: Outcome -> String =\n  match outcome {\n    Player1Wins -> \"Player 1 wins!\"\n    Player2Wins -> \"Player 2 wins!\"\n    Draw -> \"Draw!\"\n  }\n";
+    let linked = linked_adt_program(main_source);
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[0] else {
+        panic!("expected typed function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Match {
+            exhaustive: true,
+            arms,
+            ..
+        } if arms.len() == 3
+    ));
+}
+
+#[test]
+fn reports_a_missing_imported_adt_constructor_arm() {
+    let main_source = "import { Outcome, Player1Wins, Player2Wins } from \"./domain\"\n\npub fn render outcome: Outcome -> String =\n  match outcome {\n    Player1Wins -> \"Player 1 wins!\"\n    Player2Wins -> \"Player 2 wins!\"\n  }\n";
+    let linked = linked_adt_program(main_source);
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "SES-T0301"));
+}
+
 fn linked_function_program(main_source: &str) -> seseragi_project::LinkedModule {
     let domain_source = "pub fn increment value: Int -> Int = value + 1\n";
+    let domain =
+        parse_unlinked_module_interface("domain.ssrg", "fixture/game::domain", domain_source);
+    let domain_interface = analyze_module_interface(
+        seseragi_syntax::parse_diagnostics("domain.ssrg", domain_source),
+        domain.interface.clone(),
+        domain_source,
+    )
+    .unwrap()
+    .typed_interface
+    .into_link_interface();
+    let target = ModuleLinkTarget::same_package(domain.header, domain_interface).unwrap();
+    let main = parse_unlinked_module_interface("main.ssrg", "fixture/game::main", main_source);
+    link_module(main, &BTreeMap::from([("./domain".to_owned(), target)])).unwrap()
+}
+
+fn linked_adt_program(main_source: &str) -> seseragi_project::LinkedModule {
+    let domain_source = "pub type Outcome =\n  | Player1Wins\n  | Player2Wins\n  | Draw\n";
     let domain =
         parse_unlinked_module_interface("domain.ssrg", "fixture/game::domain", domain_source);
     let domain_interface = analyze_module_interface(

@@ -5,6 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use super::type_ref::typed_type_from_type_ref;
 
 mod constructors;
+mod imports;
 mod prelude;
 mod substitution;
 
@@ -161,6 +162,7 @@ impl SemanticTypeCatalog {
                 adt.variants = semantic_variants;
             }
         }
+        catalog.collect_imported_adts(resolved);
         catalog.collect_prelude_sum_types(resolved);
         catalog
     }

@@ -491,7 +491,13 @@ dependency schemeをlocal SymbolIdへ誤結合する経路はありません。
 symbolと完全な`InterfaceExport` schemeを`ResolvedImport`へ保持します。source itemを再解釈してcanonical IDを作らず、
 同じnamed importからtype / value namespaceへ入るnewtypeも別symbolとして保持できます。現時点ではこのcontractを
 TypedResolutionのnon-generic pure callableへ接続し、alias経由のimported function callを型検査してcanonical calleeを
-TypedHirへ残せます。generic / higher-order callable、imported ADT catalogとexhaustivenessは後続gateです。
+TypedHirへ残せます。さらにnon-genericな公開ADTはdependency interfaceの全constructorからsemantic familyを構築し、
+importしていないvariantもscopeへ名前登録せずexhaustiveness witnessには残します。これにより選択importだけでmatchを
+誤ってtotalと判定しません。generic / higher-order callable、generic imported ADTは後続gateです。
+
+現在の`TypedType::Named`表示はsource spelling中心なので、異なるdependencyの同名nominal型やtype alias importをfunction
+scheme境界でcanonical identityにより比較するgateがP2-2に残っています。semantic catalogのowner SymbolIdはすでにmodule
+ごとに分離されるため、ASTを作り直さずcall boundaryのsemantic comparisonとscheme表示のlocalizationを追加できます。
 
 P2-1以降では、次の二層を維持します。
 

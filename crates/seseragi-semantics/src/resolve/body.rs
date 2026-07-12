@@ -180,6 +180,23 @@ impl Resolver {
         id
     }
 
+    pub(super) fn dependency_symbol(
+        &mut self,
+        namespace: SymbolNamespace,
+        kind: SymbolKind,
+        spelling: &str,
+        canonical: String,
+    ) -> SymbolId {
+        self.push_symbol(
+            self.module_scope(),
+            namespace,
+            kind,
+            spelling,
+            Some(canonical),
+            ByteSpan { start: 0, end: 0 },
+        )
+    }
+
     pub(super) fn register_module(
         &mut self,
         namespace: SymbolNamespace,

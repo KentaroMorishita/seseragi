@@ -28,8 +28,10 @@ pub(super) fn register_linked_imports(
                     );
                     resolved.push(ResolvedImport {
                         symbol,
+                        module: dependency.interface.module.clone(),
                         local_name: local_name.clone(),
                         origin: *origin,
+                        in_scope: true,
                         export: export.clone(),
                     });
                 }
@@ -63,15 +65,68 @@ pub(super) fn register_linked_imports(
                     );
                     resolved.push(ResolvedImport {
                         symbol,
+                        module: dependency.interface.module.clone(),
                         local_name: spelling.clone(),
                         origin: *origin,
+                        in_scope: true,
                         export: export.clone(),
                     });
                 }
             }
         }
+        add_dependency_adt_members(resolver, dependency, &mut resolved);
     }
     resolved
+}
+
+fn add_dependency_adt_members(
+    resolver: &mut Resolver,
+    dependency: &LinkedDependency,
+    resolved: &mut Vec<ResolvedImport>,
+) {
+    for owner in dependency.interface.exports.iter().filter(|export| {
+        export.namespace == "type" && export.declaration_kind.as_deref() == Some("type")
+    }) {
+        ensure_dependency_member(resolver, dependency, owner, resolved);
+        for constructor in dependency
+            .interface
+            .exports
+            .iter()
+            .filter(|export| export.constructor_of.as_ref() == Some(&owner.symbol))
+        {
+            ensure_dependency_member(resolver, dependency, constructor, resolved);
+        }
+    }
+}
+
+fn ensure_dependency_member(
+    resolver: &mut Resolver,
+    dependency: &LinkedDependency,
+    export: &seseragi_syntax::InterfaceExport,
+    resolved: &mut Vec<ResolvedImport>,
+) {
+    if resolved.iter().any(|import| {
+        import.export.namespace == export.namespace && import.export.symbol == export.symbol
+    }) {
+        return;
+    }
+    let Some(namespace) = namespace(&export.namespace) else {
+        return;
+    };
+    let symbol = resolver.dependency_symbol(
+        namespace,
+        symbol_kind(namespace, export.declaration_kind.as_deref()),
+        &export.name,
+        export.symbol.clone(),
+    );
+    resolved.push(ResolvedImport {
+        symbol,
+        module: dependency.interface.module.clone(),
+        local_name: export.name.clone(),
+        origin: seseragi_syntax::ByteSpan { start: 0, end: 0 },
+        in_scope: false,
+        export: export.clone(),
+    });
 }
 
 fn namespace(namespace: &str) -> Option<SymbolNamespace> {
