@@ -1,16 +1,15 @@
 use std::collections::BTreeMap;
 
-use crate::{
-    show_ops::runtime_show_dictionary_for_feature, CoreAdt, CoreInstance,
-    CoreInstanceImplementation, CoreType, SourceSpan,
-};
+use crate::{CoreAdt, CoreInstance, CoreInstanceImplementation, SourceSpan};
 use serde::{Deserialize, Serialize};
 
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
-use super::{
-    push_import_unique, push_unique, TypeScriptImport, TypeScriptType, TypeScriptTypeImport,
-};
+use super::{push_unique, TypeScriptImport, TypeScriptType, TypeScriptTypeImport};
+
+mod evidence;
+
+use evidence::resolve_show_dictionary;
 
 const SHOW_DICTIONARY_FEATURE: &str = "core.show.dictionary";
 const SHOW_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_show_Show";
@@ -18,6 +17,7 @@ const SHOW_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_show_Show";
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptInstance {
+    pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
     pub head: TypeScriptType,
@@ -72,13 +72,26 @@ pub struct TypeScriptDerivedShowPayload {
     rename_all_fields = "camelCase"
 )]
 pub enum TypeScriptShowDictionaryReference {
-    Runtime { feature: String, local: String },
-    SelectedInstance { dictionary_export: String },
+    Runtime {
+        identity: String,
+        feature: String,
+        local: String,
+    },
+    Local {
+        identity: String,
+        dictionary_export: String,
+    },
+    Imported {
+        identity: String,
+        provider_module: String,
+        local: String,
+    },
 }
 
 pub(super) fn lower_core_instances_to_typescript(
     instances: &[CoreInstance],
     adts: &[CoreAdt],
+    imported_instance_names: &BTreeMap<(String, String), String>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
     type_imports: &mut Vec<TypeScriptTypeImport>,
@@ -101,7 +114,7 @@ pub(super) fn lower_core_instances_to_typescript(
         .enumerate()
         .map(|(index, instance)| {
             (
-                implementation_adt_symbol(&instance.implementation),
+                instance.identity.as_str(),
                 dictionary_export_name(&instance.trait_name, index),
             )
         })
@@ -116,6 +129,7 @@ pub(super) fn lower_core_instances_to_typescript(
                 instance,
                 adts,
                 &dictionary_exports,
+                imported_instance_names,
                 runtime_requirements,
                 imports,
             )
@@ -128,11 +142,15 @@ fn lower_instance(
     instance: &CoreInstance,
     adts: &[CoreAdt],
     dictionary_exports: &BTreeMap<&str, String>,
+    imported_instance_names: &BTreeMap<(String, String), String>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstance {
     let implementation = match &instance.implementation {
-        CoreInstanceImplementation::DerivedShow { adt_symbol, .. } => {
+        CoreInstanceImplementation::DerivedShow {
+            adt_symbol,
+            payload_evidence,
+        } => {
             let adt = adts
                 .iter()
                 .find(|adt| adt.symbol == *adt_symbol)
@@ -146,12 +164,16 @@ fn lower_instance(
                         name: local_name(&variant.symbol),
                         tag: variant.name.clone(),
                         payload: variant.payload.as_ref().map(|payload| {
+                            let evidence = payload_evidence
+                                .iter()
+                                .find(|evidence| evidence.variant_symbol == variant.symbol)
+                                .expect("selected DerivedShow payload must retain typed evidence");
                             TypeScriptDerivedShowPayload {
                                 type_ref: type_ref_from_core_type(payload),
                                 dictionary: resolve_show_dictionary(
-                                    payload,
-                                    adts,
+                                    &evidence.evidence,
                                     dictionary_exports,
+                                    imported_instance_names,
                                     runtime_requirements,
                                     imports,
                                 ),
@@ -164,6 +186,7 @@ fn lower_instance(
     };
 
     TypeScriptInstance {
+        identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
         head: type_ref_from_core_type(&instance.head),
         type_identity: instance.type_identity.clone(),
@@ -177,60 +200,6 @@ fn lower_instance(
         origin: instance.origin.clone(),
         dictionary_export: dictionary_export_name(&instance.trait_name, index),
         implementation,
-    }
-}
-
-fn resolve_show_dictionary(
-    payload: &CoreType,
-    adts: &[CoreAdt],
-    dictionary_exports: &BTreeMap<&str, String>,
-    runtime_requirements: &mut Vec<String>,
-    imports: &mut Vec<TypeScriptImport>,
-) -> TypeScriptShowDictionaryReference {
-    let CoreType::Named { name, arguments } = payload else {
-        unreachable!("selected DerivedShow payloads have named types")
-    };
-    assert!(
-        arguments.is_empty(),
-        "selected DerivedShow payloads do not have type arguments"
-    );
-
-    if let Some(dictionary_export) = adts
-        .iter()
-        .find(|adt| adt.name == *name || adt.symbol == *name)
-        .and_then(|adt| dictionary_exports.get(adt.symbol.as_str()))
-    {
-        return TypeScriptShowDictionaryReference::SelectedInstance {
-            dictionary_export: dictionary_export.clone(),
-        };
-    }
-
-    let feature = match name.as_str() {
-        "String" | "std/prelude::String" => "core.string.show",
-        "ConsoleError" | "std/prelude::ConsoleError" => "effect.console.error.show",
-        "StdinError" | "std/prelude::StdinError" => "effect.stdin.error.show",
-        _ => unreachable!("selected DerivedShow payload must have a selected dictionary"),
-    };
-    let dictionary = runtime_show_dictionary_for_feature(feature)
-        .expect("selected standard Show dictionary must be registered");
-    let local = dictionary.local_name;
-    push_unique(runtime_requirements, feature);
-    push_import_unique(
-        imports,
-        TypeScriptImport {
-            feature: feature.to_owned(),
-            local: local.to_owned(),
-        },
-    );
-    TypeScriptShowDictionaryReference::Runtime {
-        feature: feature.to_owned(),
-        local: local.to_owned(),
-    }
-}
-
-fn implementation_adt_symbol(implementation: &CoreInstanceImplementation) -> &str {
-    match implementation {
-        CoreInstanceImplementation::DerivedShow { adt_symbol, .. } => adt_symbol,
     }
 }
 

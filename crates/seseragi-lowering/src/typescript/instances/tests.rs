@@ -43,6 +43,7 @@ pub type AppError deriving Show =
     );
 
     let detail = &typescript.instances[0];
+    assert_eq!(detail.identity, "Show<artifact/derived-show::Detail>");
     assert_eq!(detail.trait_name, "Show");
     assert_eq!(detail.dictionary_export, "__ssrg$instance$Show$0");
     assert_eq!(
@@ -60,6 +61,7 @@ pub type AppError deriving Show =
     assert_eq!(
         payload.dictionary,
         TypeScriptShowDictionaryReference::Runtime {
+            identity: "Show<std/prelude::String>".to_owned(),
             feature: "core.string.show".to_owned(),
             local: "_ssrg_show_stringShow".to_owned(),
         }
@@ -74,7 +76,8 @@ pub type AppError deriving Show =
     assert_eq!(variants[0].tag, "Wrapped");
     assert_eq!(
         variants[0].payload.as_ref().unwrap().dictionary,
-        TypeScriptShowDictionaryReference::SelectedInstance {
+        TypeScriptShowDictionaryReference::Local {
+            identity: "Show<artifact/derived-show::Detail>".to_owned(),
             dictionary_export: "__ssrg$instance$Show$0".to_owned(),
         }
     );
@@ -122,6 +125,7 @@ pub type Detail deriving Show =
     assert_eq!(
         variants[0].payload.as_ref().unwrap().dictionary,
         TypeScriptShowDictionaryReference::Runtime {
+            identity: "Show<std/prelude::String>".to_owned(),
             feature: "core.string.show".to_owned(),
             local: "_ssrg_show_stringShow_1".to_owned(),
         }

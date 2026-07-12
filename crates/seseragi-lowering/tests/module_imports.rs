@@ -1,7 +1,7 @@
 use seseragi_lowering::{
     emit_typescript_module, lower_core_module_to_typescript_ir_with_plan, lower_typed_module,
-    TypeScriptDecisionTest, TypeScriptExpr, TypeScriptFunction, TypeScriptLoweringError,
-    TypeScriptOutputPlan,
+    TypeScriptDecisionTest, TypeScriptExpr, TypeScriptFunction, TypeScriptInstanceImplementation,
+    TypeScriptLoweringError, TypeScriptOutputPlan, TypeScriptShowDictionaryReference,
 };
 use seseragi_project::{link_module, ModuleLinkTarget};
 use seseragi_semantics::{analyze_linked_module, analyze_module_interface};
@@ -227,6 +227,81 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
     assert!(generated.typescript.contains(
         "$ssrg_match.tag === \"Rock\" ? domain_Paper : $ssrg_match.tag === \"Paper\" ? domain_Scissors : domain_Rock_1"
     ));
+}
+
+#[test]
+fn imports_selected_derived_show_evidence_by_semantic_identity() {
+    let domain_source = "pub type ImportedError deriving Show =\n  | Message String\n";
+    let main_source = "import { ImportedError } from \"./domain\"\n\npub type AppError deriving Show =\n  | Invalid ImportedError\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+    let output_plan = plan([("fixture/game::domain", "./domain.js")]).with_instance_exports([(
+        (
+            "fixture/game::domain".to_owned(),
+            "Show<fixture/game::domain::ImportedError>".to_owned(),
+        ),
+        "__ssrg$instance$Show$0".to_owned(),
+    )]);
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(core, &output_plan).unwrap();
+
+    let binding = typescript.source_imports[0]
+        .bindings
+        .iter()
+        .find(|binding| binding.canonical == "Show<fixture/game::domain::ImportedError>")
+        .unwrap();
+    assert_eq!(binding.imported, "__ssrg$instance$Show$0");
+    assert_eq!(binding.local, "__ssrg$instance$Show$0_1");
+    assert_eq!(
+        binding.source_local,
+        "Show<fixture/game::domain::ImportedError>"
+    );
+    let TypeScriptInstanceImplementation::DerivedShow { variants, .. } =
+        &typescript.instances[0].implementation;
+    assert!(matches!(
+        &variants[0].payload.as_ref().unwrap().dictionary,
+        TypeScriptShowDictionaryReference::Imported {
+            identity,
+            provider_module,
+            local,
+        } if identity == "Show<fixture/game::domain::ImportedError>"
+            && provider_module == "fixture/game::domain"
+            && local == "__ssrg$instance$Show$0_1"
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated.typescript.contains(
+        "import { type ImportedError, __ssrg$instance$Show$0 as __ssrg$instance$Show$0_1 } from \"./domain.js\""
+    ));
+    assert!(generated.typescript.contains(
+        "case \"Invalid\": return \"Invalid\" + \" \" + __ssrg$instance$Show$0_1.show(value.value);"
+    ));
+}
+
+#[test]
+fn rejects_imported_show_evidence_without_a_planned_dictionary_export() {
+    let domain_source = "pub type ImportedError deriving Show =\n  | Message String\n";
+    let main_source = "import { ImportedError } from \"./domain\"\n\npub type AppError deriving Show =\n  | Invalid ImportedError\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let error = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap_err();
+
+    assert_eq!(
+        error,
+        TypeScriptLoweringError::MissingInstanceOutput {
+            module: "fixture/game::domain".to_owned(),
+            identity: "Show<fixture/game::domain::ImportedError>".to_owned(),
+        }
+    );
 }
 
 #[test]

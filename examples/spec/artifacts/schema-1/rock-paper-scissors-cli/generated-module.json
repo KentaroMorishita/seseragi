@@ -41,6 +41,7 @@
   ],
   "instances": [
     {
+      "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
       "trait": "Show",
       "head": {
         "kind": "reference",

@@ -70,9 +70,10 @@ fn render_derived_show_variant(variant: &TypeScriptDerivedShowVariant) -> String
 fn render_dictionary_reference(reference: &TypeScriptShowDictionaryReference) -> &str {
     match reference {
         TypeScriptShowDictionaryReference::Runtime { local, .. } => local,
-        TypeScriptShowDictionaryReference::SelectedInstance { dictionary_export } => {
-            dictionary_export
-        }
+        TypeScriptShowDictionaryReference::Local {
+            dictionary_export, ..
+        } => dictionary_export,
+        TypeScriptShowDictionaryReference::Imported { local, .. } => local,
     }
 }
 

@@ -107,6 +107,7 @@
   ],
   "instances": [
     {
+      "identity": "Show<artifact/effect-parse-hand::HandInputError>",
       "trait": "Show",
       "head": {
         "kind": "reference",
@@ -133,6 +134,7 @@
               },
               "dictionary": {
                 "kind": "runtime",
+                "identity": "Show<std/prelude::String>",
                 "feature": "core.string.show",
                 "local": "_ssrg_show_stringShow"
               }

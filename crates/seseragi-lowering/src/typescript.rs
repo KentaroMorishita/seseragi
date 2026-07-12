@@ -113,6 +113,7 @@ pub struct TypeScriptSourceImportBinding {
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct TypeScriptOutputPlan {
     module_specifiers: BTreeMap<String, String>,
+    instance_exports: BTreeMap<(String, String), String>,
 }
 
 impl TypeScriptOutputPlan {
@@ -121,11 +122,26 @@ impl TypeScriptOutputPlan {
     ) -> TypeScriptOutputPlan {
         Self {
             module_specifiers: module_specifiers.into_iter().collect(),
+            instance_exports: BTreeMap::new(),
         }
+    }
+
+    pub fn with_instance_exports(
+        mut self,
+        instance_exports: impl IntoIterator<Item = ((String, String), String)>,
+    ) -> Self {
+        self.instance_exports.extend(instance_exports);
+        self
     }
 
     pub fn specifier_for(&self, module: &str) -> Option<&str> {
         self.module_specifiers.get(module).map(String::as_str)
+    }
+
+    pub fn instance_export_for(&self, module: &str, identity: &str) -> Option<&str> {
+        self.instance_exports
+            .get(&(module.to_owned(), identity.to_owned()))
+            .map(String::as_str)
     }
 }
 
@@ -134,6 +150,10 @@ pub enum TypeScriptLoweringError {
     MissingOutputSpecifier {
         module: String,
         source_specifier: String,
+    },
+    MissingInstanceOutput {
+        module: String,
+        identity: String,
     },
     ImportNameCollision {
         local: String,
@@ -380,6 +400,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
     let instances = lower_core_instances_to_typescript(
         &module.instances,
         &module.adts,
+        &module_imports.instance_names,
         &mut runtime_requirements,
         &mut imports,
         &mut type_imports,

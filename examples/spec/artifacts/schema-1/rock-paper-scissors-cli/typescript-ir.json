@@ -231,6 +231,7 @@
   ],
   "instances": [
     {
+      "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
       "trait": "Show",
       "head": {
         "kind": "reference",
@@ -259,6 +260,7 @@
               },
               "dictionary": {
                 "kind": "runtime",
+                "identity": "Show<std/prelude::StdinError>",
                 "feature": "effect.stdin.error.show",
                 "local": "_ssrg_show_stdinErrorShow"
               }
@@ -277,6 +279,7 @@
               },
               "dictionary": {
                 "kind": "runtime",
+                "identity": "Show<std/prelude::String>",
                 "feature": "core.string.show",
                 "local": "_ssrg_show_stringShow"
               }
@@ -293,6 +296,7 @@
               },
               "dictionary": {
                 "kind": "runtime",
+                "identity": "Show<std/prelude::ConsoleError>",
                 "feature": "effect.console.error.show",
                 "local": "_ssrg_show_consoleErrorShow"
               }

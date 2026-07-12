@@ -20,6 +20,7 @@ pub struct GeneratedModule {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GeneratedInstance {
+    pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
     pub head: TypeScriptType,
@@ -72,6 +73,7 @@ pub(super) fn generated_module_for(
 
 fn generated_instance_from_typescript(instance: &TypeScriptInstance) -> GeneratedInstance {
     GeneratedInstance {
+        identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
         head: instance.head.clone(),
         type_identity: instance.type_identity.clone(),
@@ -128,6 +130,10 @@ mod tests {
 
         assert_eq!(metadata.exports, vec!["EndOfInput"]);
         assert_eq!(metadata.instances.len(), 1);
+        assert_eq!(
+            metadata.instances[0].identity,
+            "Show<artifact/generated-show::AppError>"
+        );
         assert_eq!(metadata.instances[0].trait_name, "Show");
         assert_eq!(
             metadata.instances[0].head,
