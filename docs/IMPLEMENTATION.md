@@ -481,6 +481,11 @@ unreachable armを検査します。trait / nested namespace、higher-order call
 public schemeも、dependency bodyをlinkerで再読せずimportできます。shallow interfaceはgraph discoveryとfrontend
 artifact用に残し、public contractの最終値として扱いません。
 
+final interfaceの非generic・constraintなし`effect-function` schemeはimport先のEffect bodyでも利用できます。saturated
+applicationは`TypedExpr::EffectInvoke` / `CoreExpr::EffectInvoke`としてintrinsic operationと分離し、TypeScriptではcoldな
+通常のsource module callへlowerします。部分適用は通常のcurried `Call`として残します。genericまたはconstraint付きの
+imported effect functionは、このcatalogを一般化する後続gateです。
+
 同じcanonical spellingをtype / value namespaceへ持てるため、interface consumerはexportをsymbol文字列だけでkeyにせず、
 `(namespace, symbol)`で識別します。non-opaqueな公開newtypeは型schemeと、一引数constructor schemeの両方をinterfaceへ
 出し、一つのnamed importが両namespaceを導入します。opaque newtypeは型だけを公開します。
@@ -529,8 +534,9 @@ aliasはtype-only bindingを生成します。type-onlyまたはnamespace-only e
 type erasureでdependency初期化が消えません。emitterとsource mapは共通のimport render planを使い、追加行数を同じ方法で
 数えます。public driverはlink済みmoduleと`TypeScriptOutputPlan`を受け、同じanalysis結果からTypedHir、CoreIr、
 TypeScriptIr、generated moduleまで通します。module graph全体のoutput path計画、dependency-firstのtopological compile、
-namespace-qualified value call / type reference / constructor expression / constructor patternは接続済みです。trait namespaceと
-TypeScript backendのimported instance dictionary source importはまだ未接続のため、P2-3全体およびpackage executionの完了とは扱いません。projectが選んだPOSIX形式の生成先pathから
+namespace-qualified value call / type reference / constructor expression / constructor patternは接続済みです。direct dependencyで
+選択したimported `Show` evidenceはdictionary export metadataとTypeScript source importまで接続済みです。一方、trait namespaceと
+transitive instance closureは未接続のため、P2-3 / P2-4全体およびpackage executionの完了とは扱いません。projectが選んだPOSIX形式の生成先pathから
 importer相対specifierを作る小さなdriver helperも追加
 しました。pathのcanonical性、依存module / 出力pathの重複、entry自身との衝突をdriver境界で検証し、backendは確定済み
 specifierを描画するだけにします。これによりsourceの`.ssrg` specifierやcwdをbackendが再解釈する経路を作りません。
@@ -547,20 +553,22 @@ conformance側にはsingle-module artifactと別の`project-schema-1` laneを置
 graphとsource / output / artifact directoryを明示し、runnerは`compile_project`を一度だけ呼んで全moduleのTypedHir、
 TypedInterface、CoreIr、TypeScriptIr、generated metadata、TS、source mapを比較します。専用writerが同じproducerから
 artifactを更新するため、snapshotを手で合わせてproject linkerを通ったように見せる経路はありません。最初のdomain-split
-じゃんけんfixtureはcross-module ADT、constructor pattern、type importとvalue import、pure callを証明し、Effect / instance
-closureは後続gateへ残します。
+じゃんけんfixtureはcross-module ADT、constructor pattern、type importとvalue import、pure callを証明します。別の
+`project-schema-1/imported-effect-console`はimported effect callを全stageへ固定します。transitive instance closureは後続gateです。
 
 artifact比較後には、各moduleをmetadataのplanned `.ts` output pathへstageし、生成済みの`.js` ESM specifierを変えずに
 project全体を`tsc --moduleResolution bundler`でtype-checkします。これにより、単一module artifactがgreenなだけで
 dependency importの型・path解決が壊れている状態はproject compiler gateを通りません。これはcompile artifactの検証であり、
 hostでの実行やpackage manifest解決はまだ行いません。
 
-同じfixtureの`execution.json`は、project compilerから再度生成したすべてのTypeScript moduleをplanned pathへstageし、
-entry wrapperが元の`./dist/rps/main.js`をimportするpure execution gateです。`openingMessage Unit -> String`がdomainの
+project fixtureの`execution.json`は、project compilerから再度生成したすべてのTypeScript moduleをplanned pathへstageし、
+entry wrapperがgenerated metadataの`./dist/.../main.ts`をimportします。pure gateでは`openingMessage Unit -> String`がdomainの
 `Rock` / `Scissors` constructorと`decide` / `renderOutcome`を越境して使い、Bun実行のstdoutまで比較します。したがって
 artifactだけでcross-module importがgreenに見える状態は避けられます。runtime requirementはentryだけでなく
-dependency-firstの全moduleから重複なしで集めます。Effect execution、typed failure renderer、imported instance dictionary
-closure、manifest経由のpackage entryはこのpure gateへ混ぜず、後続sliceで扱います。
+dependency-firstの全moduleから重複なしで集めます。`imported-effect-console`ではfinal in-memory TypedInterfaceのEffect契約を
+検証し、Console environmentを構築してordinary ESM import経由のcold EffectをBunで実行し、stdout、actual operation trace、
+success exitを比較します。これは単一のpositive Console caseです。分割RPSの正常・不正・EOF、Stdin / Console host failure、
+typed failure renderer、manifest経由のpackage entryを含むP2-5全体は後続sliceです。
 
 P2-1以降では、次の二層を維持します。
 
@@ -571,10 +579,11 @@ P2-1以降では、次の二層を維持します。
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがtraitとcanonical type identityから
 canonical semantic identityを確定します。direct dependencyのinstanceはResolvedAstに保持され、derived `Show`の各variant
-payloadはcanonical type identityでLocal / Imported / Standard evidenceを選び、その選択結果はTypedHirからCoreIrまで残ります。
+payloadはcanonical type identityでLocal / Imported / Standard evidenceを選び、その選択結果はTypedHir、CoreIr、TypeScriptの
+dictionary source importとdriver output planまで残ります。
 これはdirect dependency範囲のevidence transportであり、一般trait / instance solverやtransitive instance closureの完了とは
-呼びません。P2-4ではcompiler内部の標準型名分岐だけでgreenにできないよう、user moduleが公開したinstanceとdictionaryを
-別moduleから実際に選択・TypeScript source importするfixtureを必須gateにします。
+呼びません。P2-4の完了には、user moduleが公開したinstanceとdictionaryを別moduleから選択するだけでなく、transitiveな
+provider chainを実行まで通すgateが必要です。
 
 project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
 dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、

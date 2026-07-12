@@ -37,9 +37,9 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | lessonあり、law fixture不足                | 未着手             |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
-| Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin最小slice |
+| Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | linked rank-1 / namespace value・type・constructor + backend project executionまで部分実装 |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | linked rank-1 / namespace value・type・constructor / direct Show dictionary import + Effect project executionまで部分実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
@@ -76,6 +76,8 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
   `rock-paper-scissors-cli` artifact
 - 同じCLIでConsole operation trace、Stdin / Console host failureのtyped変換、derived `Show`によるstderrと
   exit code 1まで比較するexecution artifact
+- cross-module ADT / pure callを実行する`project-schema-1/rock-paper-scissors-domain-split`、namespace constructorと
+  generic callを実行する`namespace-generic-call`、imported cold EffectとConsole traceを実行する`imported-effect-console`
 - 物理source pathと論理module identityを分離し、Phase 1の累積programをTokenStreamからgenerated
   TypeScriptまで一つのcompile結果として返すpublic Rust driver
 - 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
@@ -129,12 +131,12 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    specifierへ変換するhelper、閉じたgraphをcompileする`compile_project`、backend側のalias、同名export、type-only edge、source
    map contractは固定済み。graphは実cycle witnessを返し、driverはgraph/source edge不一致、extra input、global output path衝突を
    拒否する。`project-schema-1`のconformance/writerで分割RPS domainを全IR・生成artifactまで固定し、planned output pathへ
-   stageしたmodule setのTypeScript type-checkも行う。同じfixtureのpure entryはBunで分割moduleを実行する。filesystem discovery、
-   manifest解決、Effect / imported instanceを含むpackage executionへの接続は未実装。
-3. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、execution結果を保つ。
-4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIrまで保持済みで、
-   payloadごとにLocal / Imported / Standardを選べる。次は生成moduleのdictionary source importを接続し、標準型名の
-   hardcodeだけで完了できない実行gateを置く。
+   stageしたmodule setのTypeScript type-checkも行う。pure entryと単一positiveのimported Effect / Console entryはBunで実行済み。
+   filesystem discovery、manifest解決、複数execution caseを持つpackage executionは未実装。
+3. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、正常・不正・EOF / host failureの
+   execution結果を保つ。
+4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
+   import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。
 5. trait / nested namespace、higher-order callable、generic imported ADTは、それぞれ一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと
