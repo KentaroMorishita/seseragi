@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "fixture/rps-domain-split::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.bool",
+      "core.adt",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "isOpeningDraw",
+    "play"
+  ],
+  "outputs": {
+    "typescript": "dist/rps/main.ts",
+    "sourceMap": "dist/rps/main.ts.map"
+  }
+}

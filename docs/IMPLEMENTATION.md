@@ -534,6 +534,13 @@ project全体でgenerated ESM output pathの重複を拒否し、`.js` ESM outpu
 generated metadataとsource mapの`file`へ固定します。このAPIはfilesystem discovery、manifest解決、artifact書き出し、host
 executionを行わず、project/conformance runnerがそれらを所有できる境界を保ちます。
 
+conformance側にはsingle-module artifactと別の`project-schema-1` laneを置きました。strictな`project.json`が閉じた
+graphとsource / output / artifact directoryを明示し、runnerは`compile_project`を一度だけ呼んで全moduleのTypedHir、
+TypedInterface、CoreIr、TypeScriptIr、generated metadata、TS、source mapを比較します。専用writerが同じproducerから
+artifactを更新するため、snapshotを手で合わせてproject linkerを通ったように見せる経路はありません。最初のdomain-split
+じゃんけんfixtureはcross-module ADT、constructor pattern、type importとvalue import、pure callを証明し、Effect / instance
+closure / multi-module executionは後続gateへ残します。
+
 P2-1以降では、次の二層を維持します。
 
 - 小さいfixture: identity normalization、named / namespace import、private access、cycle、ambiguous import、

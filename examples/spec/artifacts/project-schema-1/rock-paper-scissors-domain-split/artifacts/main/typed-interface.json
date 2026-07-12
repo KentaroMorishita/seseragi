@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/rps-domain-split::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-domain-split::domain",
+      "origin": {
+        "start": 0,
+        "end": 60
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Hand",
+          "symbol": "fixture/rps-domain-split::domain::Hand"
+        },
+        {
+          "namespace": "value",
+          "name": "Rock",
+          "symbol": "fixture/rps-domain-split::domain::Rock"
+        },
+        {
+          "namespace": "value",
+          "name": "decide",
+          "symbol": "fixture/rps-domain-split::domain::decide"
+        },
+        {
+          "namespace": "value",
+          "name": "renderOutcome",
+          "symbol": "fixture/rps-domain-split::domain::renderOutcome"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/rps-domain-split::main::isOpeningDraw",
+      "namespace": "value",
+      "name": "isOpeningDraw",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 62,
+        "end": 190
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-domain-split::main::play",
+      "namespace": "value",
+      "name": "play",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 192,
+        "end": 281
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

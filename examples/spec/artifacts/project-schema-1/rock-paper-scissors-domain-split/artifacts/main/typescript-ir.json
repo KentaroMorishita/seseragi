@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/rps-domain-split::main",
+  "runtimeRequirements": [
+    "core.bool",
+    "core.adt",
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/rps-domain-split::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Hand",
+          "local": "Hand",
+          "sourceLocal": "Hand",
+          "canonical": "fixture/rps-domain-split::domain::Hand",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "imported": "decide",
+          "local": "decide",
+          "sourceLocal": "decide",
+          "canonical": "fixture/rps-domain-split::domain::decide",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "imported": "renderOutcome",
+          "local": "renderOutcome",
+          "sourceLocal": "renderOutcome",
+          "canonical": "fixture/rps-domain-split::domain::renderOutcome",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 42
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 60
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "isOpeningDraw",
+      "parameters": [
+        {
+          "name": "first",
+          "type": "Hand",
+          "implicit": false
+        },
+        {
+          "name": "second",
+          "type": "Hand",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "identifier",
+              "name": "first"
+            },
+            {
+              "kind": "identifier",
+              "name": "second"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Rock"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Rock"
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "boolean",
+              "value": false
+            }
+          }
+        ],
+        "type": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 62,
+        "end": 190
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "play",
+      "parameters": [
+        {
+          "name": "first",
+          "type": "Hand",
+          "implicit": false
+        },
+        {
+          "name": "second",
+          "type": "Hand",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "renderOutcome",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "decide",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "first"
+              },
+              {
+                "kind": "identifier",
+                "name": "second"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 192,
+        "end": 281
+      }
+    }
+  ]
+}

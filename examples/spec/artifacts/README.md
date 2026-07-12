@@ -130,6 +130,19 @@ cargo run -p seseragi-conformance --bin write_schema1_artifact -- \
   examples/spec/artifacts/schema-1/new-case --only=tokens,cst,diagnostics
 ```
 
+複数sourceを通常のproject pipelineでcompileするfixtureは`project-schema-1/`へ分離します。`project.json`が
+logical module ID、source、generated ESM output、artifact directory、labeled import edge、期待topological orderを明示し、
+single-file schemaの`main.ssrg`規約を流用しません。各moduleは`typed-hir.json`、`typed-interface.json`、`core-ir.json`、
+`typescript-ir.json`、`generated-module.json`、`main.ts`、`main.ts.map`を持ちます。正規更新は専用writerを使います。
+
+```sh
+cargo run -p seseragi-conformance --bin write_project_schema1_artifact -- \
+  examples/spec/artifacts/project-schema-1/rock-paper-scissors-domain-split
+```
+
+最初の`rock-paper-scissors-domain-split`は、domain moduleのADT / tuple matchと、main moduleからのtype import / value import、
+constructor pattern、imported pure callを固定します。これはfull CLI executionではなく、分割moduleのcompiler artifact gateです。
+
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する
 必要はありません。backend loweringやTypeScript emitterまで固定するcaseだけが`core-ir.json`、

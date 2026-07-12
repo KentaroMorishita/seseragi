@@ -1,0 +1,331 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/rps-domain-split::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-domain-split::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 60
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Hand",
+          "local": "Hand",
+          "canonical": "fixture/rps-domain-split::domain::Hand",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Rock",
+          "local": "Rock",
+          "canonical": "fixture/rps-domain-split::domain::Rock",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 15,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decide",
+          "local": "decide",
+          "canonical": "fixture/rps-domain-split::domain::decide",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "renderOutcome",
+          "local": "renderOutcome",
+          "canonical": "fixture/rps-domain-split::domain::renderOutcome",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 29,
+            "end": 42
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/rps-domain-split::main::isOpeningDraw",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 62,
+        "end": 190
+      },
+      "parameters": [
+        {
+          "id": "first",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          }
+        },
+        {
+          "id": "second",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "variable",
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 130,
+                "end": 135
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 137,
+                "end": 143
+              }
+            }
+          ],
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 129,
+            "end": 144
+          }
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "fixture/rps-domain-split::domain::Rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 152,
+                  "end": 156
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "constructor": "fixture/rps-domain-split::domain::Rock",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 158,
+                  "end": 162
+                }
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": true,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 167,
+                "end": 171
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 151,
+              "end": 171
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 181,
+                "end": 186
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 176,
+              "end": 186
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 123,
+          "end": 190
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-domain-split::main::play",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 192,
+        "end": 281
+      },
+      "parameters": [
+        {
+          "id": "first",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          }
+        },
+        {
+          "id": "second",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/rps-domain-split::domain::renderOutcome",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/rps-domain-split::domain::decide",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "first",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 268,
+                  "end": 273
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "second",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 274,
+                  "end": 280
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 261,
+              "end": 280
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 246,
+          "end": 281
+        }
+      }
+    }
+  ]
+}

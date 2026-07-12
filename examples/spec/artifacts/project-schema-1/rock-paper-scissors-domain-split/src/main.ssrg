@@ -1,0 +1,10 @@
+import { Hand, Rock, decide, renderOutcome } from "./domain"
+
+pub fn isOpeningDraw first: Hand -> second: Hand -> Bool =
+  match (first, second) {
+    (Rock, Rock) -> True
+    _ -> False
+  }
+
+pub fn play first: Hand -> second: Hand -> String =
+  renderOutcome (decide first second)

@@ -1,0 +1,383 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/rps-domain-split::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-domain-split::domain",
+      "origin": {
+        "start": 0,
+        "end": 60
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Hand",
+          "local": "Hand",
+          "canonical": "fixture/rps-domain-split::domain::Hand",
+          "origin": {
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Rock",
+          "local": "Rock",
+          "canonical": "fixture/rps-domain-split::domain::Rock",
+          "origin": {
+            "start": 15,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decide",
+          "local": "decide",
+          "canonical": "fixture/rps-domain-split::domain::decide",
+          "origin": {
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "renderOutcome",
+          "local": "renderOutcome",
+          "canonical": "fixture/rps-domain-split::domain::renderOutcome",
+          "origin": {
+            "start": 29,
+            "end": 42
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/rps-domain-split::main::isOpeningDraw",
+      "visibility": "public",
+      "origin": {
+        "start": 62,
+        "end": 190
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "first",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 83,
+            "end": 88
+          }
+        },
+        {
+          "kind": "named",
+          "name": "second",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 98,
+            "end": 104
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "variable",
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 130,
+                "end": 135
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 137,
+                "end": 143
+              }
+            }
+          ],
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 129,
+            "end": 144
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 152,
+                    "end": 156
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "symbol": "fixture/rps-domain-split::domain::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 158,
+                    "end": 162
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 151,
+                "end": 163
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 167,
+                "end": 171
+              }
+            },
+            "origin": {
+              "start": 151,
+              "end": 171
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 176,
+                "end": 177
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": false,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 181,
+                "end": 186
+              }
+            },
+            "origin": {
+              "start": 176,
+              "end": 186
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 123,
+          "end": 190
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/rps-domain-split::main::play",
+      "visibility": "public",
+      "origin": {
+        "start": 192,
+        "end": 281
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "first",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 204,
+            "end": 209
+          }
+        },
+        {
+          "kind": "named",
+          "name": "second",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 219,
+            "end": 225
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/rps-domain-split::domain::renderOutcome",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/rps-domain-split::domain::decide",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "first",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 268,
+                  "end": 273
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "second",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 274,
+                  "end": 280
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "origin": {
+              "start": 261,
+              "end": 280
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 246,
+          "end": 281
+        }
+      }
+    }
+  ]
+}
