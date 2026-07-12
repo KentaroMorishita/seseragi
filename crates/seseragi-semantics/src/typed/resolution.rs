@@ -10,6 +10,7 @@ use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueT
 use super::surface_expr::surface_expression_type_hint;
 use super::type_ref::typed_type_from_type_ref;
 
+mod imported_types;
 mod imports;
 mod module_dependencies;
 mod type_bindings;
