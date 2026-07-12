@@ -5,6 +5,7 @@ use seseragi_syntax::{
 };
 
 mod resolved;
+mod typed_interface;
 
 pub use resolved::*;
 

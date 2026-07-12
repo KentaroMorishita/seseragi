@@ -45,6 +45,7 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         .exports
         .into_iter()
         .filter(|export| export.namespace == "value")
+        .filter(|export| export.declaration_kind.as_deref() != Some("constructor"))
         .filter_map(|export| {
             let type_ref = typed_type_from_interface_type(export.scheme.type_ref)?;
             Some(TypedDecl::Let {
@@ -891,7 +892,7 @@ mod tests {
     }
 
     #[test]
-    fn type_module_interface_ignores_non_value_exports() {
+    fn type_module_interface_ignores_type_operator_and_constructor_exports() {
         let interface = seseragi_syntax::parse_module_interface(
             "artifact/rich/main.ssrg",
             include_str!("../../../examples/spec/artifacts/interface-schema-1/rich/main.ssrg"),

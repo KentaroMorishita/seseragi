@@ -465,6 +465,11 @@ import itemのbyte span付きで保持し、dependency bodyを読みません。
 後続semanticsはfunction / constructor schemeとinstance closureをsourceから再構築しません。まだresolver scopeと
 TypedHirへ接続していないためP2-2は未完了です。
 
+実compileでlinkerへ渡すのはshallow interfaceの推測値ではなく、dependencyをtopological orderで型検査した後の
+`TypedModuleInterface::into_link_interface`です。これによりcompact inferred `effect fn`のR / E / Aをbodyから確定した
+public schemeも、dependency bodyをlinkerで再読せずimportできます。shallow interfaceはgraph discoveryとfrontend
+artifact用に残し、public contractの最終値として扱いません。
+
 同じcanonical spellingをtype / value namespaceへ持てるため、interface consumerはexportをsymbol文字列だけでkeyにせず、
 `(namespace, symbol)`で識別します。non-opaqueな公開newtypeは型schemeと、一引数constructor schemeの両方をinterfaceへ
 出し、一つのnamed importが両namespaceを導入します。opaque newtypeは型だけを公開します。

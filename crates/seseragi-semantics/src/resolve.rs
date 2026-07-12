@@ -174,8 +174,29 @@ mod tests {
                         arguments: Vec::new(),
                     }),
                 },
-                ResolvedInterfaceDecl::Operator {
+                ResolvedInterfaceDecl::Constructor {
                     symbol: SymbolId(1),
+                    name: "Score".to_owned(),
+                    owner: "artifact/rich::Score".to_owned(),
+                    visibility: Visibility::Public,
+                    scheme: InterfaceScheme {
+                        type_parameters: Vec::new(),
+                        constraints: Vec::new(),
+                        type_ref: InterfaceType::Function {
+                            parameter: Box::new(InterfaceType::Named {
+                                name: "Int".to_owned(),
+                                arguments: Vec::new(),
+                            }),
+                            result: Box::new(InterfaceType::Named {
+                                name: "Score".to_owned(),
+                                arguments: Vec::new(),
+                            }),
+                        },
+                    },
+                    declaration: ByteSpan { start: 46, end: 51 },
+                },
+                ResolvedInterfaceDecl::Operator {
+                    symbol: SymbolId(2),
                     name: "<+>".to_owned(),
                     visibility: Visibility::Public,
                     fixity: Some("infixl".to_owned()),
@@ -186,7 +207,7 @@ mod tests {
                     },
                 },
                 ResolvedInterfaceDecl::Instance {
-                    symbol: SymbolId(2),
+                    symbol: SymbolId(3),
                     trait_name: "Show".to_owned(),
                     head: InterfaceType::Apply {
                         constructor: "Show".to_owned(),
