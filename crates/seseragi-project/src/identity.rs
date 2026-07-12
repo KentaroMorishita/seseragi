@@ -1,22 +1,65 @@
-use crate::ModulePath;
+use crate::{ModulePath, PackageName};
+use semver::Version;
 use std::fmt;
+use std::path::{Path, PathBuf};
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
-pub struct PackageIdentity(String);
+pub struct PackageIdentity {
+    name: PackageName,
+    version: Version,
+    source: PackageSourceIdentity,
+}
 
 impl PackageIdentity {
-    /// Stores an identity already resolved from manifest, lockfile, and source.
-    /// Its internal grammar remains owned by the package resolver.
-    pub fn from_canonical(value: impl Into<String>) -> Result<Self, PackageIdentityError> {
-        let value = value.into();
-        if value.is_empty() {
-            return Err(PackageIdentityError::Empty);
+    pub const fn new(name: PackageName, version: Version, source: PackageSourceIdentity) -> Self {
+        Self {
+            name,
+            version,
+            source,
         }
-        Ok(Self(value))
     }
 
-    pub fn as_str(&self) -> &str {
-        &self.0
+    pub const fn name(&self) -> &PackageName {
+        &self.name
+    }
+
+    pub const fn version(&self) -> &Version {
+        &self.version
+    }
+
+    pub const fn source(&self) -> &PackageSourceIdentity {
+        &self.source
+    }
+}
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum PackageSourceIdentity {
+    RegistryArtifact { content_digest: String },
+    Path { canonical_path: PathBuf },
+}
+
+impl PackageSourceIdentity {
+    pub fn registry(content_digest: impl Into<String>) -> Result<Self, SourceIdentityError> {
+        let content_digest = content_digest.into();
+        if content_digest.is_empty() {
+            return Err(SourceIdentityError::EmptyRegistryDigest);
+        }
+        Ok(Self::RegistryArtifact { content_digest })
+    }
+
+    pub fn path(canonical_path: impl Into<PathBuf>) -> Result<Self, SourceIdentityError> {
+        let canonical_path = canonical_path.into();
+        if !canonical_path.is_absolute() {
+            return Err(SourceIdentityError::PathNotAbsolute);
+        }
+        Ok(Self::Path { canonical_path })
+    }
+
+    pub fn canonical_path(&self) -> Option<&Path> {
+        match self {
+            Self::Path { canonical_path } => Some(canonical_path),
+            Self::RegistryArtifact { .. } => None,
+        }
     }
 }
 
@@ -58,19 +101,25 @@ impl ModuleIdentity {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum PackageIdentityError {
-    Empty,
+pub enum SourceIdentityError {
+    EmptyRegistryDigest,
+    PathNotAbsolute,
 }
 
-impl fmt::Display for PackageIdentityError {
+impl fmt::Display for SourceIdentityError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Empty => formatter.write_str("package identity must not be empty"),
+            Self::EmptyRegistryDigest => {
+                formatter.write_str("registry source identity requires a content digest")
+            }
+            Self::PathNotAbsolute => {
+                formatter.write_str("path source identity must be canonical and absolute")
+            }
         }
     }
 }
 
-impl std::error::Error for PackageIdentityError {}
+impl std::error::Error for SourceIdentityError {}
 
 #[cfg(test)]
 mod tests {
@@ -78,7 +127,11 @@ mod tests {
 
     #[test]
     fn keeps_root_kind_in_structural_module_identity() {
-        let package = PackageIdentity::from_canonical("locked-package-identity").unwrap();
+        let package = PackageIdentity::new(
+            PackageName::parse("acme/game").unwrap(),
+            Version::parse("1.2.3").unwrap(),
+            PackageSourceIdentity::registry("sha256:fixture").unwrap(),
+        );
         let path = ModulePath::parse("game/main").unwrap();
         let source = ModuleIdentity::new(package.clone(), ModuleRoot::Source, path.clone());
         let test = ModuleIdentity::new(package, ModuleRoot::Test, path);
@@ -89,10 +142,18 @@ mod tests {
     }
 
     #[test]
-    fn rejects_only_an_absent_canonical_package_identity_at_this_boundary() {
+    fn keeps_source_identity_structural_and_validated() {
         assert_eq!(
-            PackageIdentity::from_canonical("").unwrap_err(),
-            PackageIdentityError::Empty
+            PackageSourceIdentity::registry("").unwrap_err(),
+            SourceIdentityError::EmptyRegistryDigest
         );
+        assert_eq!(
+            PackageSourceIdentity::path("relative/vendor").unwrap_err(),
+            SourceIdentityError::PathNotAbsolute
+        );
+        assert!(PackageSourceIdentity::path(std::env::temp_dir())
+            .unwrap()
+            .canonical_path()
+            .is_some());
     }
 }
