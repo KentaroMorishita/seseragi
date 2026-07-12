@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/namespace-call::main",
+  "runtimeRequirements": [
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/namespace-call::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "identity",
+          "local": "domain_identity",
+          "sourceLocal": "domain.identity",
+          "canonical": "fixture/namespace-call::domain::identity",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 34
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "run",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "domain_identity",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 36,
+        "end": 96
+      }
+    }
+  ]
+}

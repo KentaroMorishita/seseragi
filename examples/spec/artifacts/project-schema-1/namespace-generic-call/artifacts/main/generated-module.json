@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "module": "fixture/namespace-call::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string"
+    ]
+  },
+  "exports": [
+    "run"
+  ],
+  "outputs": {
+    "typescript": "dist/namespace-call/main.ts",
+    "sourceMap": "dist/namespace-call/main.ts.map"
+  }
+}

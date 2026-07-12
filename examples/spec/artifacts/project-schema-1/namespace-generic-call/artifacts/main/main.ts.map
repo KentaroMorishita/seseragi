@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/namespace-call/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/namespace-call::main"
+  ],
+  "sourcesContent": [
+    "import * as domain from \"./domain\"\n\npub fn run value: String -> String =\n  domain.identity value\n"
+  ],
+  "names": [
+    "run",
+    "domain.identity"
+  ],
+  "mappings": ";;AAEAA"
+}

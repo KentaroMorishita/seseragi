@@ -1,0 +1,4 @@
+import * as domain from "./domain"
+
+pub fn run value: String -> String =
+  domain.identity value

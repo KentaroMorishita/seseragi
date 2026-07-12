@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/namespace-call::domain",
+  "runtimeRequirements": [],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "identity",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 40
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "kind": "pure-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/namespace-call::main",
+    "export": "run"
+  },
+  "invocation": {
+    "arguments": [{ "type": "String", "value": "seseragi" }],
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": ["core.string"],
+    "process": { "exitCode": 0 },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt"
+  }
+}

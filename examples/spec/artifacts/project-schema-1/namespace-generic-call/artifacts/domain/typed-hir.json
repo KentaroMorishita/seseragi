@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/namespace-call::domain",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/namespace-call::domain::identity",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 40
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 19,
+            "end": 24
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 35,
+          "end": 40
+        }
+      }
+    }
+  ]
+}

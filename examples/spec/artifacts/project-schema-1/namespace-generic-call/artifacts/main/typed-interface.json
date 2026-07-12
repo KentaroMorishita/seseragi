@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/namespace-call::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/namespace-call::domain",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "fixture/namespace-call::domain::*",
+          "localName": "domain"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/namespace-call::main::run",
+      "namespace": "value",
+      "name": "run",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 36,
+        "end": 96
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

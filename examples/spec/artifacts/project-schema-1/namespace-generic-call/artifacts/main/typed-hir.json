@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/namespace-call::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/namespace-call::domain",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "identity",
+          "local": "domain.identity",
+          "canonical": "fixture/namespace-call::domain::identity",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/namespace-call::main::run",
+      "visibility": "public",
+      "origin": {
+        "start": 36,
+        "end": 96
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 47,
+            "end": 52
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/namespace-call::domain::identity",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 91,
+              "end": 96
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 75,
+          "end": 96
+        }
+      }
+    }
+  ]
+}
