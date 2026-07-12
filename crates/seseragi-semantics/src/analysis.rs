@@ -40,6 +40,34 @@ pub fn analyze_module_interface(
     })
 }
 
+/// Resolves and types a module whose dependency identities and public
+/// contracts were already fixed by the project linker.
+pub fn analyze_linked_module(
+    diagnostics: DiagnosticArtifact,
+    linked: seseragi_project::LinkedModule,
+    source: &str,
+) -> Result<AnalyzedModule, DiagnosticArtifact> {
+    if has_errors(&diagnostics) {
+        return Err(diagnostics);
+    }
+
+    let shallow = linked.interface.clone();
+    let resolved = resolve::resolve_linked_module(linked, source);
+    let diagnostics =
+        diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
+    if has_errors(&diagnostics) {
+        return Err(diagnostics);
+    }
+
+    let (typed_hir, typed_interface) =
+        typed::type_resolved_module_with_public_interface(shallow, resolved);
+    Ok(AnalyzedModule {
+        diagnostics,
+        typed_hir,
+        typed_interface,
+    })
+}
+
 fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
     diagnostics
         .diagnostics

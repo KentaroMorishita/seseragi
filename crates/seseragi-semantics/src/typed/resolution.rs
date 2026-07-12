@@ -10,6 +10,7 @@ use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueT
 use super::surface_expr::surface_expression_type_hint;
 use super::type_ref::typed_type_from_type_ref;
 
+mod imports;
 mod type_bindings;
 
 pub(crate) struct TypedResolution<'a> {
@@ -214,6 +215,7 @@ fn collect_callables(
             },
         );
     }
+    callables.extend(imports::collect_imported_callables(resolved));
     callables
 }
 
@@ -274,7 +276,7 @@ fn collect_semantic_value_types(
     values
 }
 
-fn contains_function_type(type_ref: &TypedType) -> bool {
+pub(super) fn contains_function_type(type_ref: &TypedType) -> bool {
     match type_ref {
         TypedType::Function { .. } => true,
         TypedType::Named { arguments, .. } => arguments.iter().any(contains_function_type),

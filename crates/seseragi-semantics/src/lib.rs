@@ -6,7 +6,7 @@ mod prelude;
 mod resolve;
 mod typed;
 
-pub use analysis::{analyze_module_interface, AnalyzedModule};
+pub use analysis::{analyze_linked_module, analyze_module_interface, AnalyzedModule};
 pub use diagnostics::semantic_diagnostics;
 pub use effect_ops::{known_effect_operation_by_semantic, KnownEffectOperation};
 pub use model::*;
