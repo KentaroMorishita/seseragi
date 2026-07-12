@@ -39,7 +39,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin最小slice |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | single-module driver、linking未実装 |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | module path基盤 + single-module driver、linking未実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
@@ -66,7 +66,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - 横断監査記録: `docs/SPEC_AUDIT.md`
 - 構造checker: `scripts/check-spec-examples.ts`
 - artifact runner skeleton: `scripts/conformance-artifacts.ts`
-- Rust compiler crates: syntax、source、diagnostic、semantics、lowering、single-module driver、runtime / conformance boundary
+- Rust compiler crates: syntax、source、project identity、diagnostic、semantics、lowering、single-module driver、runtime / conformance boundary
 - TokenStreamからgenerated TypeScriptまでのschema-1 artifact producer / conformance比較
 - cold Effect valueをversioned TypeScript runtimeで実行するConsole / Stdin execution fixture
 - typed ADT、tuple、match、exhaustivenessを通す`rock-paper-scissors-domain` artifact
