@@ -6,11 +6,12 @@
     "seseragi://fixture/namespace-call::main"
   ],
   "sourcesContent": [
-    "import * as domain from \"./domain\"\n\npub fn run value: String -> String =\n  domain.identity value\n"
+    "import * as domain from \"./domain\"\n\npub fn keep value: domain.Hand -> domain.Hand = value\n\npub fn run value: String -> String =\n  domain.identity value\n"
   ],
   "names": [
+    "keep",
     "run",
     "domain.identity"
   ],
-  "mappings": ";;AAEAA"
+  "mappings": ";;AAEAA;AAEAC"
 }

@@ -5,12 +5,43 @@
   "module": "fixture/namespace-call::domain",
   "declarations": [
     {
+      "kind": "adt",
+      "symbol": "fixture/namespace-call::domain::Hand",
+      "name": "Hand",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/namespace-call::domain::Rock",
+          "name": "Rock",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 20,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
       "kind": "fn",
       "symbol": "fixture/namespace-call::domain::identity",
       "visibility": "public",
       "origin": {
-        "start": 0,
-        "end": 40
+        "start": 26,
+        "end": 66
       },
       "scheme": {
         "typeParameters": [
@@ -33,8 +64,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 19,
-            "end": 24
+            "start": 45,
+            "end": 50
           }
         }
       ],
@@ -47,8 +78,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 35,
-          "end": 40
+          "start": 61,
+          "end": 66
         }
       }
     }

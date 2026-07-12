@@ -13,6 +13,16 @@
       },
       "imports": [
         {
+          "namespace": "type",
+          "imported": "Hand",
+          "local": "domain.Hand",
+          "canonical": "fixture/namespace-call::domain::Hand",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
           "namespace": "value",
           "imported": "identity",
           "local": "domain.identity",
@@ -28,11 +38,57 @@
   "declarations": [
     {
       "kind": "fn",
-      "symbol": "fixture/namespace-call::main::run",
+      "symbol": "fixture/namespace-call::main::keep",
       "visibility": "public",
       "origin": {
         "start": 36,
-        "end": 96
+        "end": 89
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        },
+        "origin": {
+          "start": 84,
+          "end": 89
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/namespace-call::main::run",
+      "visibility": "public",
+      "origin": {
+        "start": 91,
+        "end": 151
       },
       "scheme": {
         "typeParameters": [],
@@ -53,8 +109,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 47,
-            "end": 52
+            "start": 102,
+            "end": 107
           }
         }
       ],
@@ -71,8 +127,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 91,
-              "end": 96
+              "start": 146,
+              "end": 151
             }
           }
         ],
@@ -82,8 +138,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 75,
-          "end": 96
+          "start": 130,
+          "end": 151
         }
       }
     }

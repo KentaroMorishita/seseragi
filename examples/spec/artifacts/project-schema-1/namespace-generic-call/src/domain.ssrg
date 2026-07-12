@@ -1,1 +1,4 @@
+pub type Hand =
+  | Rock
+
 pub fn identity<A> value: A -> A = value

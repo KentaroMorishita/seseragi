@@ -2,14 +2,39 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/namespace-call::domain",
+  "adts": [
+    {
+      "symbol": "fixture/namespace-call::domain::Hand",
+      "name": "Hand",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/namespace-call::domain::Rock",
+          "name": "Rock",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 24
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/namespace-call::domain::identity",
       "visibility": "public",
       "origin": {
         "source": "domain.ssrg",
-        "start": 0,
-        "end": 40
+        "start": 26,
+        "end": 66
       },
       "typeParameters": [
         "A"
@@ -35,8 +60,8 @@
         },
         "origin": {
           "source": "domain.ssrg",
-          "start": 35,
-          "end": 40
+          "start": 61,
+          "end": 66
         }
       }
     }

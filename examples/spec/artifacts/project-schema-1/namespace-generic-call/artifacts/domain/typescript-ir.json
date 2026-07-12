@@ -2,7 +2,33 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "fixture/namespace-call::domain",
-  "runtimeRequirements": [],
+  "runtimeRequirements": [
+    "core.adt"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Hand",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Rock",
+          "tag": "Rock",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 20,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 24
+      }
+    }
+  ],
   "functions": [
     {
       "kind": "const-function",
@@ -24,8 +50,8 @@
       },
       "origin": {
         "source": "domain.ssrg",
-        "start": 0,
-        "end": 40
+        "start": 26,
+        "end": 66
       }
     }
   ]

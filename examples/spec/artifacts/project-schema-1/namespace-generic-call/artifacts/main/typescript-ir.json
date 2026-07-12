@@ -11,6 +11,18 @@
       "specifier": "./domain.js",
       "bindings": [
         {
+          "imported": "Hand",
+          "local": "domain_Hand",
+          "sourceLocal": "domain.Hand",
+          "canonical": "fixture/namespace-call::domain::Hand",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
           "imported": "identity",
           "local": "domain_identity",
           "sourceLocal": "domain.identity",
@@ -34,6 +46,27 @@
     {
       "kind": "const-function",
       "exported": true,
+      "name": "keep",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "domain_Hand",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 36,
+        "end": 89
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
       "name": "run",
       "parameters": [
         {
@@ -54,8 +87,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 36,
-        "end": 96
+        "start": 91,
+        "end": 151
       }
     }
   ]

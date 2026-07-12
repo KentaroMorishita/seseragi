@@ -5,9 +5,12 @@
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
-    "requirements": []
+    "requirements": [
+      "core.adt"
+    ]
   },
   "exports": [
+    "Rock",
     "identity"
   ],
   "outputs": {

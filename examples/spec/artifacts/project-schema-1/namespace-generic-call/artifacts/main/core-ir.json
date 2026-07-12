@@ -13,6 +13,17 @@
       },
       "imports": [
         {
+          "namespace": "type",
+          "imported": "Hand",
+          "local": "domain.Hand",
+          "canonical": "fixture/namespace-call::domain::Hand",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
           "namespace": "value",
           "imported": "identity",
           "local": "domain.identity",
@@ -28,12 +39,46 @@
   ],
   "functions": [
     {
-      "symbol": "fixture/namespace-call::main::run",
+      "symbol": "fixture/namespace-call::main::keep",
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
         "start": 36,
-        "end": 96
+        "end": 89
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 84,
+          "end": 89
+        }
+      }
+    },
+    {
+      "symbol": "fixture/namespace-call::main::run",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 151
       },
       "parameters": [
         {
@@ -60,8 +105,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 91,
-              "end": 96
+              "start": 146,
+              "end": 151
             }
           }
         ],
@@ -72,8 +117,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 75,
-          "end": 96
+          "start": 130,
+          "end": 151
         }
       }
     }

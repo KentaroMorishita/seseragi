@@ -471,8 +471,8 @@ trait namespaceへ展開します。alias、namespace import、operatorのscheme
 import itemのbyte span付きで保持し、dependency bodyを読みません。`LinkedDependency`はtarget interface全体を持つため、
 後続semanticsはfunction / constructor schemeとinstance closureをsourceから再構築しません。named type / value /
 constructorとoperatorはresolver scopeへ入り、pure function schemeとADT familyをTypedHirへ接続済みです。
-namespace-qualified pure callableは選択されたvalue exportだけをcanonical importへ変換します。qualified type / constructor
-pattern / trait / nested namespace、higher-order callable、generic imported ADTは後続の小さいgateに残るため、P2-2全体を
+namespace-qualified pure callableとtype referenceは選択されたexportだけをcanonical importへ変換します。constructor pattern /
+trait / nested namespace、higher-order callable、generic imported ADTは後続の小さいgateに残るため、P2-2全体を
 完了とは扱いません。
 
 実compileでlinkerへ渡すのはshallow interfaceの推測値ではなく、dependencyをtopological orderで型検査した後の
@@ -528,7 +528,7 @@ aliasはtype-only bindingを生成します。type-onlyまたはnamespace-only e
 type erasureでdependency初期化が消えません。emitterとsource mapは共通のimport render planを使い、追加行数を同じ方法で
 数えます。public driverはlink済みmoduleと`TypeScriptOutputPlan`を受け、同じanalysis結果からTypedHir、CoreIr、
 TypeScriptIr、generated moduleまで通します。module graph全体のoutput path計画、dependency-firstのtopological compile、
-namespace-qualified value callは接続済みです。qualified type / constructor / trait namespaceとimported instance dictionaryは
+namespace-qualified value call / type referenceは接続済みです。constructor / trait namespaceとimported instance dictionaryは
 まだ未接続のため、P2-3全体およびpackage executionの完了とは扱いません。projectが選んだPOSIX形式の生成先pathから
 importer相対specifierを作る小さなdriver helperも追加
 しました。pathのcanonical性、依存module / 出力pathの重複、entry自身との衝突をdriver境界で検証し、backendは確定済み

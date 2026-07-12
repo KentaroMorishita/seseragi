@@ -23,14 +23,42 @@
   ],
   "exports": [
     {
+      "symbol": "fixture/namespace-call::main::keep",
+      "namespace": "value",
+      "name": "keep",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 36,
+        "end": 89
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "domain.Hand",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
       "symbol": "fixture/namespace-call::main::run",
       "namespace": "value",
       "name": "run",
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 36,
-        "end": 96
+        "start": 91,
+        "end": 151
       },
       "scheme": {
         "typeParameters": [],

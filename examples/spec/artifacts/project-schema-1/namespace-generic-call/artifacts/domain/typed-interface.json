@@ -6,14 +6,55 @@
   "dependencies": [],
   "exports": [
     {
+      "symbol": "fixture/namespace-call::domain::Hand",
+      "namespace": "type",
+      "name": "Hand",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Hand",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/namespace-call::domain::Rock",
+      "namespace": "value",
+      "name": "Rock",
+      "constructorOf": "fixture/namespace-call::domain::Hand",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      }
+    },
+    {
       "symbol": "fixture/namespace-call::domain::identity",
       "namespace": "value",
       "name": "identity",
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 0,
-        "end": 40
+        "start": 26,
+        "end": 66
       },
       "scheme": {
         "typeParameters": [
