@@ -1,6 +1,6 @@
 use crate::execution::Invocation;
 
-pub(super) fn expected_observation(
+pub(crate) fn expected_observation(
     run: &serde_json::Value,
     invocation: &Invocation,
 ) -> Result<Option<serde_json::Value>, String> {
@@ -15,7 +15,7 @@ pub(super) fn expected_observation(
     Ok(Some(expected.clone()))
 }
 
-pub(super) fn compare_observation(
+pub(crate) fn compare_observation(
     expected: Option<&serde_json::Value>,
     actual: Option<&serde_json::Value>,
 ) -> Result<(), String> {

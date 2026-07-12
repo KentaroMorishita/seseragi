@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
 
+use seseragi_lowering::GeneratedModule;
 use seseragi_semantics::TypedModuleInterface;
 use seseragi_syntax::{InterfaceRecordField, InterfaceType};
 
@@ -18,6 +19,7 @@ pub(super) fn validate_effect_entry_contract(
     case: &Path,
     run: &serde_json::Value,
     entry_export: &str,
+    entry_module_specifier: &str,
 ) -> Result<EffectEntryContract, String> {
     let relative_path = run
         .pointer("/entry/typedInterface")
@@ -31,12 +33,6 @@ pub(super) fn validate_effect_entry_contract(
         .map_err(|error| format!("failed to read execution typed interface: {error}"))?;
     let interface: TypedModuleInterface = serde_json::from_str(&raw)
         .map_err(|error| format!("failed to parse execution typed interface: {error}"))?;
-    if interface.schema != 1 || interface.stage != "typed-interface" {
-        return Err(
-            "execution entry.typedInterface must reference a schema 1 typed-interface artifact"
-                .to_owned(),
-        );
-    }
     let entry_module = run
         .pointer("/entry/module")
         .and_then(serde_json::Value::as_str)
@@ -44,6 +40,40 @@ pub(super) fn validate_effect_entry_contract(
     if interface.module != entry_module {
         return Err(format!(
             "execution typed interface module mismatch: expected {entry_module}, got {}",
+            interface.module
+        ));
+    }
+
+    let required = parse_required_environment_fields(run)?;
+    let compiled_module = read_compiled_module(case, run)?;
+    validate_effect_entry_contract_in_memory(
+        &interface,
+        &compiled_module,
+        entry_export,
+        entry_module_specifier,
+        &required,
+    )
+}
+
+pub(crate) fn validate_effect_entry_contract_in_memory(
+    interface: &TypedModuleInterface,
+    generated_module: &GeneratedModule,
+    entry_export: &str,
+    entry_module_specifier: &str,
+    required_environment: &BTreeMap<String, String>,
+) -> Result<EffectEntryContract, String> {
+    if interface.schema != 1 || interface.stage != "typed-interface" {
+        return Err(
+            "execution entry.typedInterface must reference a schema 1 typed-interface artifact"
+                .to_owned(),
+        );
+    }
+    if generated_module.schema != 1 {
+        return Err("execution generated module must use schema 1".to_owned());
+    }
+    if generated_module.module != interface.module {
+        return Err(format!(
+            "execution compiled module does not match typed interface module {}",
             interface.module
         ));
     }
@@ -57,23 +87,16 @@ pub(super) fn validate_effect_entry_contract(
         })?;
     let effect = effect_type(&export.scheme.type_ref, entry_export)?;
     let environment = environment_fields(effect.environment, entry_export)?;
-    let required = parse_required_environment_fields(run)?;
-    compare_required_environment(&environment, &required, entry_export)?;
-
-    let compiled_module = read_compiled_module(case, run)?;
-    if compiled_module
-        .get("module")
-        .and_then(serde_json::Value::as_str)
-        != Some(entry_module)
-    {
-        return Err(format!(
-            "execution compiled module does not match typed interface module {entry_module}"
-        ));
-    }
-    failure::resolve_effect_entry_contract(&interface, effect.failure, &compiled_module)
+    compare_required_environment(&environment, required_environment, entry_export)?;
+    failure::resolve_effect_entry_contract(
+        interface,
+        effect.failure,
+        generated_module,
+        entry_module_specifier,
+    )
 }
 
-fn read_compiled_module(case: &Path, run: &serde_json::Value) -> Result<serde_json::Value, String> {
+fn read_compiled_module(case: &Path, run: &serde_json::Value) -> Result<GeneratedModule, String> {
     let relative_path = run
         .pointer("/entry/compiledModule")
         .and_then(serde_json::Value::as_str)

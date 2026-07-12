@@ -11,12 +11,12 @@ mod trace;
 use effect_contract::validate_effect_entry_contract;
 #[cfg(test)]
 pub(crate) use effect_contract::DictionaryImport;
-pub(crate) use effect_contract::FailureRenderer;
+pub(crate) use effect_contract::{validate_effect_entry_contract_in_memory, FailureRenderer};
 use environment::parse_environment_plan;
-use exit::{compare_observation, expected_observation};
+pub(crate) use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
 pub(crate) use invocation::parse_invocation_document;
-use trace::{compare_trace, expected_trace, trace_stdout};
+pub(crate) use trace::{compare_trace, expected_trace, trace_stdout};
 
 pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), String> {
     let run_path = case.join("run.json");
@@ -75,7 +75,7 @@ pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), Strin
     let compiled_typescript = execution::resolve_compiled_typescript(case, compiled_module)?;
     let invocation = parse_invocation(&run)?;
     let effect_contract = matches!(&invocation, execution::Invocation::Effect { .. })
-        .then(|| validate_effect_entry_contract(case, &run, entry_export))
+        .then(|| validate_effect_entry_contract(case, &run, entry_export, "./main.ts"))
         .transpose()?;
     let environment = parse_environment_plan(
         &run,

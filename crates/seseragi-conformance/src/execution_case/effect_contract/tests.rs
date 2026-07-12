@@ -1,8 +1,16 @@
 use std::collections::BTreeMap;
 
-use seseragi_syntax::InterfaceType;
+use seseragi_lowering::GeneratedModule;
+use seseragi_semantics::TypedModuleInterface;
+use seseragi_syntax::{
+    ByteSpan, InterfaceExport, InterfaceInstance, InterfaceScheme, InterfaceType, Visibility,
+};
 
-use super::{compare_required_environment, effect_environment, validate_effect_entry_contract};
+use super::{
+    compare_required_environment, effect_environment, validate_effect_entry_contract,
+    validate_effect_entry_contract_in_memory, DictionaryImport, EffectEntryContract,
+    FailureRenderer,
+};
 
 fn named(name: &str) -> InterfaceType {
     InterfaceType::Named {
@@ -131,8 +139,123 @@ fn requires_a_typed_interface_reference_for_effect_execution() {
         std::path::Path::new("."),
         &serde_json::json!({ "entry": { "module": "example", "export": "main" } }),
         "main",
+        "./main.ts",
     )
     .unwrap_err();
 
     assert!(error.contains("entry.typedInterface is required"));
+}
+
+#[test]
+fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
+    let app_error = named("AppError");
+    let entry_type = InterfaceType::Function {
+        parameter: Box::new(named("Unit")),
+        result: Box::new(InterfaceType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![
+                InterfaceType::Record {
+                    closed: true,
+                    fields: Vec::new(),
+                },
+                app_error.clone(),
+                named("Unit"),
+            ],
+        }),
+    };
+    let interface = TypedModuleInterface {
+        schema: 1,
+        stage: "typed-interface".to_owned(),
+        module: "fixture/game::main".to_owned(),
+        source: "src/main.ssrg".to_owned(),
+        dependencies: Vec::new(),
+        exports: vec![
+            InterfaceExport {
+                symbol: "fixture/game::main::AppError".to_owned(),
+                namespace: "type".to_owned(),
+                name: "AppError".to_owned(),
+                constructor_of: None,
+                visibility: Visibility::Public,
+                declaration_kind: Some("type".to_owned()),
+                declaration: ByteSpan { start: 0, end: 8 },
+                scheme: InterfaceScheme {
+                    type_parameters: Vec::new(),
+                    constraints: Vec::new(),
+                    type_ref: InterfaceType::TypeConstructor {
+                        name: "AppError".to_owned(),
+                        arity: 0,
+                    },
+                },
+                representation: None,
+            },
+            InterfaceExport {
+                symbol: "fixture/game::main::main".to_owned(),
+                namespace: "value".to_owned(),
+                name: "main".to_owned(),
+                constructor_of: None,
+                visibility: Visibility::Public,
+                declaration_kind: Some("effect-function".to_owned()),
+                declaration: ByteSpan { start: 9, end: 20 },
+                scheme: InterfaceScheme {
+                    type_parameters: Vec::new(),
+                    constraints: Vec::new(),
+                    type_ref: entry_type,
+                },
+                representation: None,
+            },
+        ],
+        operators: Vec::new(),
+        instances: vec![InterfaceInstance {
+            identity: Some("Show<fixture/game::main::AppError>".to_owned()),
+            trait_name: "Show".to_owned(),
+            type_parameters: Vec::new(),
+            head: InterfaceType::Apply {
+                constructor: "Show".to_owned(),
+                arguments: vec![app_error],
+            },
+            constraints: Vec::new(),
+            origin: ByteSpan { start: 0, end: 8 },
+        }],
+    };
+    let generated: GeneratedModule = serde_json::from_value(serde_json::json!({
+        "schema": 1,
+        "module": "fixture/game::main",
+        "target": "typescript-es2022",
+        "runtime": {
+            "identity": "@seseragi/runtime",
+            "abiMajor": 1,
+            "requirements": []
+        },
+        "exports": ["main"],
+        "instances": [{
+            "identity": "Show<fixture/game::main::AppError>",
+            "trait": "Show",
+            "head": { "kind": "reference", "name": "AppError", "arguments": [] },
+            "typeIdentity": "fixture/game::main::AppError",
+            "dictionaryExport": "__ssrg$instance$Show$0"
+        }],
+        "outputs": { "typescript": "main.js", "sourceMap": "main.js.map" }
+    }))
+    .unwrap();
+
+    let contract = validate_effect_entry_contract_in_memory(
+        &interface,
+        &generated,
+        "main",
+        "./dist/game/main.js",
+        &BTreeMap::new(),
+    )
+    .unwrap();
+
+    assert_eq!(
+        contract,
+        EffectEntryContract {
+            failure_renderer: FailureRenderer::Show {
+                dictionary: DictionaryImport {
+                    module: "./dist/game/main.js".to_owned(),
+                    export: "__ssrg$instance$Show$0".to_owned(),
+                },
+            },
+        }
+    );
 }

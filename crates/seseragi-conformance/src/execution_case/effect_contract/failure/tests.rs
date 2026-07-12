@@ -1,10 +1,10 @@
 use serde_json::json;
+use seseragi_lowering::GeneratedModule;
 use seseragi_semantics::TypedModuleInterface;
 use seseragi_syntax::{
     ByteSpan, InterfaceExport, InterfaceInstance, InterfaceScheme, InterfaceType, Visibility,
 };
 
-use super::resolve_effect_entry_contract;
 use crate::execution_case::effect_contract::model::{
     DictionaryImport, EffectEntryContract, FailureRenderer,
 };
@@ -39,6 +39,7 @@ fn type_export(name: &str) -> InterfaceExport {
 
 fn show_instance(type_ref: InterfaceType) -> InterfaceInstance {
     InterfaceInstance {
+        identity: Some("Show<artifact/example::AppError>".to_owned()),
         trait_name: "Show".to_owned(),
         type_parameters: Vec::new(),
         head: InterfaceType::Apply {
@@ -70,21 +71,42 @@ fn interface(instances: Vec<InterfaceInstance>) -> TypedModuleInterface {
     interface_with_exports(vec![type_export("AppError")], instances)
 }
 
-fn generated_instances(instances: serde_json::Value) -> serde_json::Value {
-    json!({
+fn generated_instances(instances: serde_json::Value) -> GeneratedModule {
+    serde_json::from_value(json!({
         "schema": 1,
         "module": "artifact/example",
+        "target": "typescript-es2022",
+        "runtime": {
+            "identity": "@seseragi/runtime",
+            "abiMajor": 1,
+            "requirements": []
+        },
+        "exports": [],
         "instances": instances,
-    })
+        "outputs": {
+            "typescript": "main.ts",
+            "sourceMap": "main.ts.map"
+        }
+    }))
+    .unwrap()
 }
 
 fn generated_show(dictionary_export: &str) -> serde_json::Value {
     json!({
+        "identity": "Show<artifact/example::AppError>",
         "trait": "Show",
         "head": { "kind": "reference", "name": "AppError", "arguments": [] },
         "typeIdentity": "artifact/example::AppError",
         "dictionaryExport": dictionary_export,
     })
+}
+
+fn resolve_effect_entry_contract(
+    interface: &TypedModuleInterface,
+    failure: &InterfaceType,
+    generated_module: &GeneratedModule,
+) -> Result<EffectEntryContract, String> {
+    super::resolve_effect_entry_contract(interface, failure, generated_module, "./main.ts")
 }
 
 #[test]

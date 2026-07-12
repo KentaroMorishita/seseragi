@@ -1,6 +1,8 @@
-use super::model::load_project_execution_case;
+use super::model::{load_project_execution_case, ProjectExecutionKind};
 use crate::execution::{self, StagedExecutionRequest};
-use crate::execution_case::environment::EnvironmentPlan;
+use crate::execution_case::{
+    compare_observation, compare_trace, trace_stdout, validate_effect_entry_contract_in_memory,
+};
 use crate::project_compile::{
     compile_project_compile_case, stage_project_typescript, CompiledProjectCompileCase,
 };
@@ -8,7 +10,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 
-/// Compiles, stages, and runs one pure entry from a closed project fixture.
+/// Compiles, stages, and runs one entry from a closed project fixture.
 pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(), String> {
     let execution_case = load_project_execution_case(case)?;
     let compiled_case = compile_project_compile_case(case)?;
@@ -44,16 +46,20 @@ pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(
             execution_case.runtime_requirements, runtime_requirements
         ));
     }
-    let entry_output = compiled_case
-        .descriptor
-        .modules
-        .iter()
-        .find(|module| module.id == execution_case.entry_module)
-        .expect("compiled project entry must have a declared descriptor module");
+    let entry_module_specifier = format!("./{}", compiled.generated.metadata.outputs.typescript);
+    let effect_contract = (execution_case.kind == ProjectExecutionKind::Effect)
+        .then(|| {
+            validate_effect_entry_contract_in_memory(
+                &compiled.typed_interface,
+                &compiled.generated.metadata,
+                &execution_case.entry_export,
+                &entry_module_specifier,
+                &execution_case.required_environment,
+            )
+        })
+        .transpose()?;
     let execution_dir = execution::prepare_execution_dir(root, "project", case)?;
     stage_project_typescript(&execution_dir, &compiled_case)?;
-    let environment = EnvironmentPlan::empty();
-    let entry_module_specifier = format!("./{}", entry_output.output);
     let actual = execution::run_staged_typescript(
         root,
         &execution_dir,
@@ -61,9 +67,11 @@ pub(crate) fn check_project_execution_case(root: &Path, case: &Path) -> Result<(
             entry_module_specifier: &entry_module_specifier,
             entry_export: &execution_case.entry_export,
             invocation: execution_case.invocation.clone(),
-            failure_renderer: None,
-            environment: &environment,
-            stdin: "",
+            failure_renderer: effect_contract
+                .as_ref()
+                .map(|contract| &contract.failure_renderer),
+            environment: &execution_case.environment,
+            stdin: &execution_case.stdin,
         },
     )?;
     compare_process_output(case, &execution_case, actual)
@@ -98,6 +106,11 @@ fn compare_process_output(
         .map_err(|error| format!("failed to read project expected stdout: {error}"))?;
     let stderr = fs::read_to_string(case.join(&expected.stderr))
         .map_err(|error| format!("failed to read project expected stderr: {error}"))?;
+    if let Some(trace_stdout) = trace_stdout(expected.expected_operation_trace.as_ref())? {
+        if trace_stdout != stdout {
+            return Err("project execution stdout trace does not match stdout snapshot".to_owned());
+        }
+    }
     if actual.exit_code != expected.exit_code {
         return Err(format!(
             "project execution exit code mismatch: expected {}, got {}",
@@ -110,8 +123,13 @@ fn compare_process_output(
     if actual.stderr != stderr {
         return Err("project execution stderr mismatch".to_owned());
     }
-    if actual.effect_exit.is_some() || actual.operation_trace.is_some() {
-        return Err("pure project execution unexpectedly produced Effect observations".to_owned());
-    }
+    compare_observation(
+        expected.expected_effect_exit.as_ref(),
+        actual.effect_exit.as_ref(),
+    )?;
+    compare_trace(
+        expected.expected_operation_trace.as_ref(),
+        actual.operation_trace.as_ref(),
+    )?;
     Ok(())
 }

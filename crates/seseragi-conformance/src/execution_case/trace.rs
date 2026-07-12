@@ -1,4 +1,4 @@
-pub(super) fn expected_trace(run: &serde_json::Value) -> Result<Option<serde_json::Value>, String> {
+pub(crate) fn expected_trace(run: &serde_json::Value) -> Result<Option<serde_json::Value>, String> {
     let Some(trace) = run.pointer("/expected/trace") else {
         return Ok(None);
     };
@@ -6,7 +6,7 @@ pub(super) fn expected_trace(run: &serde_json::Value) -> Result<Option<serde_jso
     Ok(Some(trace.clone()))
 }
 
-pub(super) fn trace_stdout(trace: Option<&serde_json::Value>) -> Result<Option<String>, String> {
+pub(crate) fn trace_stdout(trace: Option<&serde_json::Value>) -> Result<Option<String>, String> {
     let Some(trace) = trace else {
         return Ok(None);
     };
@@ -19,7 +19,7 @@ pub(super) fn trace_stdout(trace: Option<&serde_json::Value>) -> Result<Option<S
     ))
 }
 
-pub(super) fn compare_trace(
+pub(crate) fn compare_trace(
     expected: Option<&serde_json::Value>,
     actual: Option<&serde_json::Value>,
 ) -> Result<(), String> {

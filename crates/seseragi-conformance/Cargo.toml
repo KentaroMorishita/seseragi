@@ -10,6 +10,7 @@ default-run = "seseragi-conformance"
 serde.workspace = true
 serde_json.workspace = true
 seseragi-driver = { path = "../seseragi-driver" }
+seseragi-lowering = { path = "../seseragi-lowering" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }

@@ -1,3 +1,4 @@
+use seseragi_lowering::GeneratedModule;
 use seseragi_semantics::TypedModuleInterface;
 use seseragi_syntax::{InterfaceInstance, InterfaceType};
 
@@ -8,7 +9,8 @@ const RUNTIME_SHOW_MODULE: &str = "@seseragi/runtime/show";
 pub(crate) fn resolve_effect_entry_contract(
     interface: &TypedModuleInterface,
     failure: &InterfaceType,
-    generated_module: &serde_json::Value,
+    generated_module: &GeneratedModule,
+    entry_module_specifier: &str,
 ) -> Result<EffectEntryContract, String> {
     if is_never(failure) {
         return Ok(EffectEntryContract {
@@ -20,7 +22,13 @@ pub(crate) fn resolve_effect_entry_contract(
     // standard prelude names so `type ConsoleError ...` cannot silently pick
     // the host ConsoleError dictionary.
     if let Some(type_identity) = local_type_identity(interface, failure) {
-        return resolve_local_show_dictionary(interface, failure, generated_module, type_identity);
+        return resolve_local_show_dictionary(
+            interface,
+            failure,
+            generated_module,
+            type_identity,
+            entry_module_specifier,
+        );
     }
 
     if let Some(dictionary) = standard_show_dictionary(failure) {
@@ -38,8 +46,9 @@ pub(crate) fn resolve_effect_entry_contract(
 fn resolve_local_show_dictionary(
     interface: &TypedModuleInterface,
     failure: &InterfaceType,
-    generated_module: &serde_json::Value,
+    generated_module: &GeneratedModule,
     type_identity: String,
+    entry_module_specifier: &str,
 ) -> Result<EffectEntryContract, String> {
     let selected = selected_show_instances(interface, failure).collect::<Vec<_>>();
     match selected.len() {
@@ -58,19 +67,10 @@ fn resolve_local_show_dictionary(
         }
     }
 
-    let generated_instances = generated_module
-        .get("instances")
-        .and_then(serde_json::Value::as_array)
-        .ok_or_else(|| "compiled generated-module.json instances is missing".to_owned())?;
-    let matching = generated_instances
+    let matching = generated_module
+        .instances
         .iter()
-        .filter(|instance| {
-            instance.get("trait").and_then(serde_json::Value::as_str) == Some("Show")
-                && instance
-                    .get("typeIdentity")
-                    .and_then(serde_json::Value::as_str)
-                    == Some(type_identity.as_str())
-        })
+        .filter(|instance| instance.trait_name == "Show" && instance.type_identity == type_identity)
         .collect::<Vec<_>>();
     let metadata = match matching.as_slice() {
         [metadata] => *metadata,
@@ -85,28 +85,19 @@ fn resolve_local_show_dictionary(
             ));
         }
     };
-    if !metadata
-        .get("head")
-        .is_some_and(serde_json::Value::is_object)
-    {
-        return Err(format!(
-            "compiled generated-module.json Show dictionary for {type_identity} has no type head"
-        ));
-    }
-    let dictionary_export = metadata
-        .get("dictionaryExport")
-        .and_then(serde_json::Value::as_str)
-        .filter(|name| valid_typescript_identifier(name))
-        .ok_or_else(|| {
+    let dictionary_export = metadata.dictionary_export.as_str();
+    if !valid_typescript_identifier(dictionary_export) {
+        return Err(
             format!(
                 "compiled generated-module.json Show dictionary for {type_identity} has an invalid dictionaryExport"
-            )
-        })?;
+            ),
+        );
+    }
 
     Ok(EffectEntryContract {
         failure_renderer: FailureRenderer::Show {
             dictionary: DictionaryImport {
-                module: "./main.ts".to_owned(),
+                module: entry_module_specifier.to_owned(),
                 export: dictionary_export.to_owned(),
             },
         },
