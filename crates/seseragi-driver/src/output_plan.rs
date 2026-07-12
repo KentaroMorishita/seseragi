@@ -1,4 +1,4 @@
-use seseragi_lowering::TypeScriptOutputPlan;
+use seseragi_lowering::{GeneratedOutputPaths, TypeScriptOutputPlan};
 use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -20,8 +20,34 @@ impl TypeScriptModuleOutput {
 pub enum TypeScriptOutputPlanError {
     InvalidImporterPath { path: String },
     InvalidDependencyPath { module: String, path: String },
+    InvalidGeneratedOutputPath { path: String },
     DuplicateModule { module: String },
     DuplicateOutputPath { path: String },
+}
+
+/// Converts a project-owned ESM `.js` output path to the TypeScript artifact
+/// paths written by a development/compiler host. The emitted ESM import stays
+/// `.js`; Bun and TypeScript resolve the staged `.ts` implementation.
+pub fn generated_output_paths(
+    output_path: &str,
+) -> Result<GeneratedOutputPaths, TypeScriptOutputPlanError> {
+    if path_segments(output_path).is_none() || !output_path.ends_with(".js") {
+        return Err(TypeScriptOutputPlanError::InvalidGeneratedOutputPath {
+            path: output_path.to_owned(),
+        });
+    }
+    let stem = output_path
+        .strip_suffix(".js")
+        .expect("the suffix was checked");
+    if stem.is_empty() {
+        return Err(TypeScriptOutputPlanError::InvalidGeneratedOutputPath {
+            path: output_path.to_owned(),
+        });
+    }
+    Ok(GeneratedOutputPaths::new(
+        format!("{stem}.ts"),
+        format!("{stem}.ts.map"),
+    ))
 }
 
 /// Converts project-owned generated output paths into importer-relative ESM
@@ -130,6 +156,18 @@ mod tests {
         assert!(matches!(
             plan_typescript_outputs("../main.js", std::iter::empty::<TypeScriptModuleOutput>()),
             Err(TypeScriptOutputPlanError::InvalidImporterPath { .. })
+        ));
+    }
+
+    #[test]
+    fn derives_typescript_artifact_paths_without_rewriting_esm_specifiers() {
+        assert_eq!(
+            generated_output_paths("dist/game/main.js").unwrap(),
+            GeneratedOutputPaths::new("dist/game/main.ts", "dist/game/main.ts.map")
+        );
+        assert!(matches!(
+            generated_output_paths("dist/game/main.ts"),
+            Err(TypeScriptOutputPlanError::InvalidGeneratedOutputPath { .. })
         ));
     }
 }

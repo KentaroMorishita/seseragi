@@ -1,8 +1,8 @@
 use crate::{CompileInput, CompiledModule};
 use seseragi_lowering::{
-    emit_typescript_module, lower_core_module_to_typescript_ir,
-    lower_core_module_to_typescript_ir_with_plan, lower_typed_module, TypeScriptLoweringError,
-    TypeScriptOutputPlan,
+    emit_typescript_module, emit_typescript_module_with_output_paths,
+    lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
+    lower_typed_module, GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
 };
 use seseragi_semantics::{analyze_linked_module, analyze_module_interface};
 use seseragi_syntax::{
@@ -51,13 +51,30 @@ pub fn compile_linked_module(
     source: &str,
     output_plan: &TypeScriptOutputPlan,
 ) -> Result<CompiledModule, LinkedCompileError> {
+    compile_linked_module_with_output_paths(
+        linked,
+        source,
+        output_plan,
+        GeneratedOutputPaths::default(),
+    )
+}
+
+/// Like [`compile_linked_module`], while preserving project-selected generated
+/// artifact paths in metadata and source maps.
+pub fn compile_linked_module_with_output_paths(
+    linked: seseragi_project::LinkedModule,
+    source: &str,
+    output_plan: &TypeScriptOutputPlan,
+    output_paths: GeneratedOutputPaths,
+) -> Result<CompiledModule, LinkedCompileError> {
     let diagnostics = parse_diagnostics(linked.interface.source.clone(), source);
     let analyzed = analyze_linked_module(diagnostics, linked, source)
         .map_err(LinkedCompileError::Diagnostics)?;
     let core_ir = lower_typed_module(analyzed.typed_hir.clone());
     let typescript_ir = lower_core_module_to_typescript_ir_with_plan(core_ir.clone(), output_plan)
         .map_err(LinkedCompileError::TypeScriptPlan)?;
-    let generated = emit_typescript_module(typescript_ir.clone(), source);
+    let generated =
+        emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
 
     Ok(CompiledModule {
         diagnostics: analyzed.diagnostics,

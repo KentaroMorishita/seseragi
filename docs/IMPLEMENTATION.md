@@ -456,7 +456,8 @@ P2-1全体の完了とは扱いません。
 
 module graphの最小contractとして、`seseragi-project::ModuleGraph`はlogical module identityだけをノードに持ち、
 dependencyをimporterからdependencyへのedgeとして登録します。topological orderは依存を先に、独立nodeはcanonical
-順に返し、未登録dependencyと循環は専用errorで返します。これはsourceの読み込み、interfaceのlink、generated output
+順に返し、未登録dependencyと循環は専用errorで返します。循環errorはcycleに到達する下流node全体ではなく、実際の
+back-edge witnessだけを返します。これはsourceの読み込み、interfaceのlink、generated output
 pathの選択を行わない純粋な順序付け層です。project loaderがidentityとedgeを確定した後、同じ順序を使ってinterface compileと
 output planを組み立てるための基盤であり、graph全体のfilesystem discoveryやpackage executionを完了扱いにはしません。
 
@@ -528,8 +529,10 @@ specifierを描画するだけにします。これによりsourceの`.ssrg` spe
 さらに、閉じた`ModuleGraph<String>`とsource / generated output pathの入力を受ける`compile_project`をdriverへ追加しました。
 graphのlabeled edgeをsource specifierとしてlinkへ渡し、topological orderでdependencyのtyped public interfaceを確定してから
 entryをlinked compileします。各nodeは同じ通常pipelineを通り、依存のTypeScript output pathからそのnode専用のoutput planを作ります。
-このAPIはfilesystem discovery、manifest解決、artifact書き出し、host executionを行わず、project/conformance runnerがそれらを
-所有できる境界を保ちます。
+input集合はgraph node集合と完全に一致し、source import specifier集合もgraphのlabeled edge集合と一致しなければ失敗します。
+project全体でgenerated ESM output pathの重複を拒否し、`.js` ESM outputから対応する`.ts` / `.ts.map` artifact pathを導出して
+generated metadataとsource mapの`file`へ固定します。このAPIはfilesystem discovery、manifest解決、artifact書き出し、host
+executionを行わず、project/conformance runnerがそれらを所有できる境界を保ちます。
 
 P2-1以降では、次の二層を維持します。
 

@@ -127,8 +127,9 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
 2. project layerが`ModuleGraph`のtopological orderでdependency interfaceをcompileし、generated output pathから
    `TypeScriptOutputPlan`を構築する。driverのlinked compile APIと、projectのentry / dependency output pathからimporter相対
    specifierへ変換するhelper、閉じたgraphをcompileする`compile_project`、backend側のalias、同名export、type-only edge、source
-   map contractは固定済み。graphの順序付けとsupplied sourceのlinked compileは実装済みだが、filesystem discovery、manifest解決、
-   artifact書き出し、package executionへの接続は未実装。
+   map contractは固定済み。graphは実cycle witnessを返し、driverはgraph/source edge不一致、extra input、global output path衝突を
+   拒否する。supplied sourceのlinked compileとmoduleごとの`.ts` / source-map metadataは実装済みだが、filesystem discovery、
+   manifest解決、project artifact書き出し、package executionへの接続は未実装。
 3. namespace member accessと未対応generic importを小さいfixtureで閉じ、P2-2の残gateを解消する。
 4. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、execution結果を保つ。
 5. imported instance evidenceとgenerated module importを接続し、標準型名のhardcodeだけで完了できないgateを置く。

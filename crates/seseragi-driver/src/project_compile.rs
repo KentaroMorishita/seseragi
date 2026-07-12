@@ -1,4 +1,7 @@
-use crate::{compile_linked_module, CompiledModule, LinkedCompileError};
+use crate::{
+    compile_linked_module_with_output_paths, generated_output_paths, CompiledModule,
+    LinkedCompileError,
+};
 use seseragi_project::{
     link_module, LinkError, LinkTargetError, ModuleGraph, ModuleGraphError, ModuleLinkTarget,
 };
@@ -6,6 +9,8 @@ use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
 };
 use std::collections::BTreeMap;
+
+mod validation;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProjectModuleInput {
@@ -43,8 +48,21 @@ pub enum ProjectCompileError {
     DuplicateInput {
         module: String,
     },
+    UnexpectedInput {
+        module: String,
+    },
     MissingInput {
         module: String,
+    },
+    DuplicateOutputPath {
+        path: String,
+        first_module: String,
+        second_module: String,
+    },
+    GraphImportMismatch {
+        module: String,
+        graph_specifiers: Vec<String>,
+        source_specifiers: Vec<String>,
     },
     Diagnostics {
         module: String,
@@ -81,22 +99,7 @@ pub fn compile_project(
     let order = graph
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
-    let mut inputs = BTreeMap::new();
-    for input in input_iter {
-        let module = input.module_id.clone();
-        if inputs.contains_key(&module) {
-            return Err(ProjectCompileError::DuplicateInput { module });
-        }
-        inputs.insert(module, input);
-    }
-
-    for module in &order {
-        if !inputs.contains_key(module) {
-            return Err(ProjectCompileError::MissingInput {
-                module: module.clone(),
-            });
-        }
-    }
+    let inputs = validation::index_project_inputs(&order, input_iter)?;
 
     let mut compiled: BTreeMap<String, CompiledModule> = BTreeMap::new();
     for module in &order {
@@ -113,6 +116,13 @@ pub fn compile_project(
             input.module_id.clone(),
             &input.source,
         );
+        validation::ensure_graph_imports_match(
+            module,
+            graph
+                .dependencies_for(module)
+                .expect("graph order contains only registered modules"),
+            &unlinked,
+        )?;
         let mut targets = BTreeMap::new();
         for (specifier, dependency) in graph
             .dependencies_for(module)
@@ -158,13 +168,22 @@ pub fn compile_project(
                 module: module.clone(),
                 error,
             })?;
-        let compiled_module =
-            compile_linked_module(linked, &input.source, &output_plan).map_err(|error| {
-                ProjectCompileError::Compile {
-                    module: module.clone(),
-                    error,
-                }
-            })?;
+        let output_paths = generated_output_paths(&input.output_path).map_err(|error| {
+            ProjectCompileError::OutputPlan {
+                module: module.clone(),
+                error,
+            }
+        })?;
+        let compiled_module = compile_linked_module_with_output_paths(
+            linked,
+            &input.source,
+            &output_plan,
+            output_paths,
+        )
+        .map_err(|error| ProjectCompileError::Compile {
+            module: module.clone(),
+            error,
+        })?;
         compiled.insert(module.clone(), compiled_module);
     }
 
@@ -221,13 +240,17 @@ mod tests {
             project.order,
             ["fixture/game::domain", "fixture/game::main"]
         );
-        assert!(project
-            .modules
-            .get("fixture/game::main")
-            .unwrap()
-            .generated
-            .typescript
-            .contains("from \"./domain.js\""));
+        let main = project.modules.get("fixture/game::main").unwrap();
+        assert!(main.generated.typescript.contains("from \"./domain.js\""));
+        assert_eq!(
+            main.generated.metadata.outputs.typescript,
+            "dist/game/main.ts"
+        );
+        assert_eq!(
+            main.generated.metadata.outputs.source_map,
+            "dist/game/main.ts.map"
+        );
+        assert_eq!(main.generated.source_map.file, "dist/game/main.ts");
     }
 
     #[test]
@@ -248,6 +271,32 @@ mod tests {
         )
         .unwrap_err();
         assert!(matches!(error, ProjectCompileError::Diagnostics { .. }));
+    }
+
+    #[test]
+    fn requires_an_esm_javascript_output_path_for_each_project_module() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module("fixture/game::main".to_owned(), [])
+            .unwrap();
+
+        let error = compile_project(
+            graph,
+            [ProjectModuleInput::new(
+                "main.ssrg",
+                "fixture/game::main",
+                "pub let answer: Int = 42\n",
+                "dist/main.ts",
+            )],
+        )
+        .unwrap_err();
+        assert!(matches!(
+            error,
+            ProjectCompileError::OutputPlan {
+                error: crate::TypeScriptOutputPlanError::InvalidGeneratedOutputPath { .. },
+                ..
+            }
+        ));
     }
 
     #[test]
