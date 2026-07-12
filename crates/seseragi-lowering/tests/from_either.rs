@@ -30,6 +30,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
         stage: "core-ir".to_owned(),
         module: "artifact/from-either".to_owned(),
         external_type_bindings: Vec::new(),
+        module_dependencies: Vec::new(),
         adts: Vec::new(),
         instances: Vec::new(),
         bindings: Vec::new(),

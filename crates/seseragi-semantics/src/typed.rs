@@ -82,6 +82,7 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         source: interface.source,
         module: interface.module,
         external_type_bindings: Vec::new(),
+        module_dependencies: Vec::new(),
         instances: Vec::new(),
         declarations,
     }
@@ -102,6 +103,7 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         .filter_map(|declaration| typed_decl_from_surface(declaration, &resolution))
         .collect();
     let external_type_bindings = resolution.external_type_bindings();
+    let module_dependencies = resolution.module_dependencies();
     let instances = instances::analyze_derived_instances(&resolved, &resolution).instances;
 
     TypedModule {
@@ -110,6 +112,7 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         source: resolved.source,
         module: resolved.module,
         external_type_bindings,
+        module_dependencies,
         instances,
         declarations,
     }

@@ -21,6 +21,11 @@ pub struct TypedModule {
     /// occurrence-level replacement for resolved type symbols.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub external_type_bindings: Vec<ExternalTypeBinding>,
+    /// Source-module dependency edges whose identities were fixed by project
+    /// linking. Edges remain present even when they contain no runtime value
+    /// binding, while individual imports retain canonical symbol identity.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub module_dependencies: Vec<TypedModuleDependency>,
     /// Trait instances selected by semantic analysis. Later stages consume
     /// this evidence instead of rediscovering instances from ADT shape.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -33,6 +38,25 @@ pub struct TypedModule {
 pub struct ExternalTypeBinding {
     pub spelling: String,
     pub canonical: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedModuleDependency {
+    pub specifier: String,
+    pub module: String,
+    pub origin: ByteSpan,
+    pub imports: Vec<TypedModuleImport>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedModuleImport {
+    pub namespace: String,
+    pub imported: String,
+    pub local: String,
+    pub canonical: String,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

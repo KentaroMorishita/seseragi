@@ -1,6 +1,6 @@
 use crate::{
     ExternalTypeBinding, ResolvedModule, ResolvedSymbol, SymbolId, SymbolKind, SymbolNamespace,
-    TypedParameter, TypedType,
+    TypedModuleDependency, TypedParameter, TypedType,
 };
 use seseragi_syntax::{ByteSpan, SurfaceDecl, TypeRef};
 use std::collections::BTreeMap;
@@ -11,6 +11,7 @@ use super::surface_expr::surface_expression_type_hint;
 use super::type_ref::typed_type_from_type_ref;
 
 mod imports;
+mod module_dependencies;
 mod type_bindings;
 
 pub(crate) struct TypedResolution<'a> {
@@ -77,6 +78,10 @@ impl<'a> TypedResolution<'a> {
 
     pub(crate) fn external_type_bindings(&self) -> Vec<ExternalTypeBinding> {
         type_bindings::collect_external_type_bindings(self.resolved)
+    }
+
+    pub(crate) fn module_dependencies(&self) -> Vec<TypedModuleDependency> {
+        module_dependencies::collect_module_dependencies(self.resolved)
     }
 
     pub(crate) fn semantic_value_from_type_ref(&self, type_ref: &TypeRef) -> SemanticValueType {

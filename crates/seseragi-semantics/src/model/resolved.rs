@@ -35,6 +35,7 @@ pub struct ResolvedModule {
 #[serde(rename_all = "camelCase")]
 pub struct ResolvedImport {
     pub symbol: SymbolId,
+    pub specifier: String,
     pub module: String,
     pub local_name: String,
     pub origin: seseragi_syntax::ByteSpan,

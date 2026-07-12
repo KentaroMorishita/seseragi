@@ -27,6 +27,8 @@ pub struct CoreModule {
     pub module: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub external_type_bindings: Vec<ExternalTypeBinding>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub module_dependencies: Vec<CoreModuleDependency>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<CoreAdt>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -35,6 +37,25 @@ pub struct CoreModule {
     pub bindings: Vec<CoreBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub functions: Vec<CoreFunction>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreModuleDependency {
+    pub specifier: String,
+    pub module: String,
+    pub origin: SourceSpan,
+    pub imports: Vec<CoreModuleImport>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreModuleImport {
+    pub namespace: String,
+    pub imported: String,
+    pub local: String,
+    pub canonical: String,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -173,6 +194,26 @@ pub enum CoreStatement {
 }
 
 pub fn lower_typed_module(module: TypedModule) -> CoreModule {
+    let module_dependencies = module
+        .module_dependencies
+        .into_iter()
+        .map(|dependency| CoreModuleDependency {
+            specifier: dependency.specifier,
+            module: dependency.module,
+            origin: source_span(&module.source, dependency.origin),
+            imports: dependency
+                .imports
+                .into_iter()
+                .map(|import| CoreModuleImport {
+                    namespace: import.namespace,
+                    imported: import.imported,
+                    local: import.local,
+                    canonical: import.canonical,
+                    origin: source_span(&module.source, import.origin),
+                })
+                .collect(),
+        })
+        .collect();
     let instances = lower_instances(&module.source, module.instances);
     let mut adts = Vec::new();
     let mut bindings = Vec::new();
@@ -255,6 +296,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         stage: "core-ir".to_owned(),
         module: module.module,
         external_type_bindings: module.external_type_bindings,
+        module_dependencies,
         adts,
         instances,
         bindings,

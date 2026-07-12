@@ -45,6 +45,16 @@ fn types_a_call_from_an_imported_pure_function_scheme() {
     let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[0] else {
         panic!("expected typed function");
     };
+    assert_eq!(analyzed.typed_hir.module_dependencies.len(), 1);
+    let dependency = &analyzed.typed_hir.module_dependencies[0];
+    assert_eq!(dependency.specifier, "./domain");
+    assert_eq!(dependency.module, "fixture/game::domain");
+    assert_eq!(dependency.imports.len(), 1);
+    assert_eq!(dependency.imports[0].local, "next");
+    assert_eq!(
+        dependency.imports[0].canonical,
+        "fixture/game::domain::increment"
+    );
     assert!(matches!(
         body,
         TypedExpr::Call { callee, type_ref, .. }
@@ -203,6 +213,31 @@ fn rejects_same_spelling_adts_from_different_dependency_owners() {
     assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "SES-T0101" && diagnostic.message_key == "call.argument-type-mismatch"
     }));
+}
+
+#[test]
+fn preserves_a_namespace_only_dependency_edge_without_inventing_named_bindings() {
+    let domain_source = "pub let answer: Int = 42\n";
+    let main_source =
+        "import * as domain from \"./domain\"\n\npub fn run unit: Unit -> Unit = ()\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    assert_eq!(analyzed.typed_hir.module_dependencies.len(), 1);
+    assert_eq!(
+        analyzed.typed_hir.module_dependencies[0].module,
+        "fixture/game::domain"
+    );
+    assert!(analyzed.typed_hir.module_dependencies[0].imports.is_empty());
 }
 
 fn linked_function_program(main_source: &str) -> seseragi_project::LinkedModule {

@@ -11,8 +11,9 @@ mod typescript;
 pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreDecisionBinding,
     CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreFunction,
-    CoreInstance, CoreInstanceConstraint, CoreInstanceImplementation, CoreModule, CoreParameter,
-    CoreRecordField, CoreStatement, CoreType,
+    CoreInstance, CoreInstanceConstraint, CoreInstanceImplementation, CoreModule,
+    CoreModuleDependency, CoreModuleImport, CoreParameter, CoreRecordField, CoreStatement,
+    CoreType,
 };
 pub use emit::{
     emit_typescript_module, GeneratedBundle, GeneratedInstance, GeneratedModule, GeneratedOutputs,
@@ -33,8 +34,8 @@ pub use typescript::{
 #[cfg(test)]
 mod tests {
     use super::*;
-    use seseragi_semantics::type_module;
-    use seseragi_syntax::Visibility;
+    use seseragi_semantics::{type_module, TypedModule, TypedModuleDependency, TypedModuleImport};
+    use seseragi_syntax::{ByteSpan, Visibility};
 
     #[test]
     fn lowers_public_let_to_core_binding() {
@@ -46,6 +47,46 @@ mod tests {
         assert_eq!(core.bindings.len(), 1);
         assert!(matches!(core.bindings[0].value, CoreExpr::Int64 { .. }));
         assert!(core.functions.is_empty());
+    }
+
+    #[test]
+    fn preserves_linked_dependency_edges_and_canonical_imports_in_core_ir() {
+        let source = "import { increment as next } from \"./domain\"\n";
+        let typed = TypedModule {
+            schema: 1,
+            stage: "typed-hir".to_owned(),
+            source: source.to_owned(),
+            module: "fixture/game::main".to_owned(),
+            external_type_bindings: Vec::new(),
+            module_dependencies: vec![TypedModuleDependency {
+                specifier: "./domain".to_owned(),
+                module: "fixture/game::domain".to_owned(),
+                origin: ByteSpan {
+                    start: 0,
+                    end: source.len(),
+                },
+                imports: vec![TypedModuleImport {
+                    namespace: "value".to_owned(),
+                    imported: "increment".to_owned(),
+                    local: "next".to_owned(),
+                    canonical: "fixture/game::domain::increment".to_owned(),
+                    origin: ByteSpan { start: 22, end: 26 },
+                }],
+            }],
+            instances: Vec::new(),
+            declarations: Vec::new(),
+        };
+
+        let core = lower_typed_module(typed);
+
+        assert_eq!(core.module_dependencies.len(), 1);
+        assert_eq!(core.module_dependencies[0].specifier, "./domain");
+        assert_eq!(core.module_dependencies[0].imports.len(), 1);
+        assert_eq!(
+            core.module_dependencies[0].imports[0].canonical,
+            "fixture/game::domain::increment"
+        );
+        assert_eq!(core.module_dependencies[0].origin.source, source);
     }
 
     #[test]
@@ -302,6 +343,7 @@ type Internal =
             stage: "core-ir".to_owned(),
             module: "artifact/calls".to_owned(),
             external_type_bindings: Vec::new(),
+            module_dependencies: Vec::new(),
             adts: Vec::new(),
             instances: Vec::new(),
             bindings: Vec::new(),

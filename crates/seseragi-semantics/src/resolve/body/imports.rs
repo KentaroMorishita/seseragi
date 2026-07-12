@@ -28,6 +28,7 @@ pub(super) fn register_linked_imports(
                     );
                     resolved.push(ResolvedImport {
                         symbol,
+                        specifier: dependency.specifier.clone(),
                         module: dependency.interface.module.clone(),
                         local_name: local_name.clone(),
                         origin: *origin,
@@ -65,6 +66,7 @@ pub(super) fn register_linked_imports(
                     );
                     resolved.push(ResolvedImport {
                         symbol,
+                        specifier: dependency.specifier.clone(),
                         module: dependency.interface.module.clone(),
                         local_name: spelling.clone(),
                         origin: *origin,
@@ -121,6 +123,7 @@ fn ensure_dependency_member(
     );
     resolved.push(ResolvedImport {
         symbol,
+        specifier: dependency.specifier.clone(),
         module: dependency.interface.module.clone(),
         local_name: export.name.clone(),
         origin: seseragi_syntax::ByteSpan { start: 0, end: 0 },
