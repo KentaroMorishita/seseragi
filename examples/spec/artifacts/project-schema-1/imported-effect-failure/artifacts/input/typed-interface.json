@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-effect-failure::input",
+  "source": "input.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-effect-failure::input::InputError",
+      "namespace": "type",
+      "name": "InputError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 59
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "InputError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-effect-failure::input::InvalidInput",
+      "namespace": "value",
+      "name": "InvalidInput",
+      "constructorOf": "fixture/imported-effect-failure::input::InputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 40,
+        "end": 52
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-effect-failure::input::reject",
+      "namespace": "value",
+      "name": "reject",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 61,
+        "end": 125
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 59
+      }
+    }
+  ]
+}

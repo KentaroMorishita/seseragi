@@ -1,0 +1,7 @@
+import { InputError, reject } from "./input"
+
+pub type AppError deriving Show =
+  | InputFailure InputError
+
+pub effect fn main =
+  mapError InputFailure (reject "lizard")

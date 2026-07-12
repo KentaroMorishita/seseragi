@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-effect-failure::input",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.show.dictionary",
+    "core.string.show",
+    "effect.core.fail"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "effect.core.fail",
+      "local": "_ssrg_effect_fail"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "InputError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "InvalidInput",
+          "tag": "InvalidInput",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "input.ssrg",
+            "start": 40,
+            "end": 52
+          }
+        }
+      ],
+      "origin": {
+        "source": "input.ssrg",
+        "start": 0,
+        "end": 59
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/imported-effect-failure::input::InputError",
+      "origin": {
+        "source": "input.ssrg",
+        "start": 0,
+        "end": 59
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "InputError",
+        "variants": [
+          {
+            "name": "InvalidInput",
+            "tag": "InvalidInput",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/prelude::String>",
+                "feature": "core.string.show",
+                "local": "_ssrg_show_stringShow"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "reject",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_fail",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "InvalidInput",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "input"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "input.ssrg",
+        "start": 61,
+        "end": 125
+      }
+    }
+  ]
+}

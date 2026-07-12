@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-effect-failure::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./input",
+      "module": "fixture/imported-effect-failure::input",
+      "origin": {
+        "start": 0,
+        "end": 44
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "InputError",
+          "symbol": "fixture/imported-effect-failure::input::InputError"
+        },
+        {
+          "namespace": "value",
+          "name": "reject",
+          "symbol": "fixture/imported-effect-failure::input::reject"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-effect-failure::main::AppError",
+      "namespace": "type",
+      "name": "AppError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 46,
+        "end": 107
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "AppError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-effect-failure::main::InputFailure",
+      "namespace": "value",
+      "name": "InputFailure",
+      "constructorOf": "fixture/imported-effect-failure::main::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 84,
+        "end": 96
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-effect-failure::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 109,
+        "end": 171
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::main::AppError>",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 46,
+        "end": 107
+      }
+    }
+  ]
+}

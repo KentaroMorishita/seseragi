@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-effect-failure::main",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.show.dictionary",
+    "core.unit",
+    "effect.core.mapError",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-effect-failure::input",
+      "specifier": "./input.js",
+      "bindings": [
+        {
+          "imported": "InputError",
+          "local": "InputError",
+          "sourceLocal": "InputError",
+          "canonical": "fixture/imported-effect-failure::input::InputError",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 19
+          }
+        },
+        {
+          "imported": "reject",
+          "local": "reject",
+          "sourceLocal": "reject",
+          "canonical": "fixture/imported-effect-failure::input::reject",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Show$0",
+          "local": "__ssrg$instance$Show$0_1",
+          "sourceLocal": "Show<fixture/imported-effect-failure::input::InputError>",
+          "canonical": "Show<fixture/imported-effect-failure::input::InputError>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 44
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 44
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "InputFailure",
+          "tag": "InputFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "InputError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 84,
+            "end": 96
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 46,
+        "end": 107
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::main::AppError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/imported-effect-failure::main::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 46,
+        "end": 107
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "AppError",
+        "variants": [
+          {
+            "name": "InputFailure",
+            "tag": "InputFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "InputError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "imported",
+                "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+                "providerModule": "fixture/imported-effect-failure::input",
+                "local": "__ssrg$instance$Show$0_1"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_mapError",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "InputFailure"
+          },
+          {
+            "kind": "call",
+            "callee": "reject",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "lizard"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 109,
+        "end": 171
+      }
+    }
+  ]
+}

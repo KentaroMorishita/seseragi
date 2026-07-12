@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-effect-failure::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.show.dictionary",
+      "core.unit",
+      "effect.core.mapError",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "InputFailure",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::main::AppError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/imported-effect-failure::main::AppError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-effect-failure/main.ts",
+    "sourceMap": "dist/imported-effect-failure/main.ts.map"
+  }
+}

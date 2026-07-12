@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "input.ssrg",
+  "module": "fixture/imported-effect-failure::input",
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/imported-effect-failure::input::InputError",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 59
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-effect-failure::input::InputError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-effect-failure::input::InvalidInput",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-effect-failure::input::InputError",
+      "name": "InputError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-effect-failure::input::InvalidInput",
+          "name": "InvalidInput",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 40,
+            "end": 52
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 59
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-effect-failure::input::reject",
+      "visibility": "public",
+      "origin": {
+        "start": 61,
+        "end": 125
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 82,
+            "end": 87
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "InputError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::fail",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-effect-failure::input::InvalidInput",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "input",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 119,
+                  "end": 124
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            "origin": {
+              "start": 106,
+              "end": 124
+            }
+          }
+        ],
+        "origin": {
+          "start": 100,
+          "end": 125
+        }
+      }
+    }
+  ]
+}

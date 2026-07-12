@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "file": "dist/imported-effect-failure/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-effect-failure::main"
+  ],
+  "sourcesContent": [
+    "import { InputError, reject } from \"./input\"\n\npub type AppError deriving Show =\n  | InputFailure InputError\n\npub effect fn main =\n  mapError InputFailure (reject \"lizard\")\n"
+  ],
+  "names": [
+    "AppError",
+    "InputFailure",
+    "__ssrg$instance$Show$0",
+    "main",
+    "mapError",
+    "reject"
+  ],
+  "mappings": ";;;;AAEAA;;AACIC;AADJC;AAGAC"
+}

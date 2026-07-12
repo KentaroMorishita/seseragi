@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-effect-failure::input",
+    "fixture/imported-effect-failure::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-effect-failure::input",
+      "source": "src/input.ssrg",
+      "output": "dist/imported-effect-failure/input.js",
+      "artifacts": "artifacts/input",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-effect-failure::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-effect-failure/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./input",
+          "module": "fixture/imported-effect-failure::input"
+        }
+      ]
+    }
+  ]
+}

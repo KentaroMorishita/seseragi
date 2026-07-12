@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/imported-effect-failure::main",
+    "export": "main"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": []
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": []
+  },
+  "expected": {
+    "exit": {
+      "kind": "failure",
+      "error": {
+        "tag": "InputFailure",
+        "value": {
+          "tag": "InvalidInput",
+          "value": "lizard"
+        }
+      }
+    },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.show.dictionary",
+      "core.string.show",
+      "effect.core.fail",
+      "core.unit",
+      "effect.core.mapError"
+    ],
+    "process": { "exitCode": 1 },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt"
+  }
+}

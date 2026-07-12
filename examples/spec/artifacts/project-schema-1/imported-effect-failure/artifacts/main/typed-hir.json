@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-effect-failure::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./input",
+      "module": "fixture/imported-effect-failure::input",
+      "origin": {
+        "start": 0,
+        "end": 44
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "InputError",
+          "local": "InputError",
+          "canonical": "fixture/imported-effect-failure::input::InputError",
+          "origin": {
+            "start": 9,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "reject",
+          "local": "reject",
+          "canonical": "fixture/imported-effect-failure::input::reject",
+          "origin": {
+            "start": 21,
+            "end": 27
+          }
+        }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::main::AppError>",
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/imported-effect-failure::main::AppError",
+      "constraints": [],
+      "origin": {
+        "start": 46,
+        "end": 107
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-effect-failure::main::AppError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-effect-failure::main::InputFailure",
+            "typeIdentity": "fixture/imported-effect-failure::input::InputError",
+            "evidence": {
+              "kind": "imported",
+              "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+              "providerModule": "fixture/imported-effect-failure::input"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-effect-failure::main::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-effect-failure::main::InputFailure",
+          "name": "InputFailure",
+          "payload": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 84,
+            "end": 96
+          }
+        }
+      ],
+      "origin": {
+        "start": 46,
+        "end": 107
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-effect-failure::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 109,
+        "end": 171
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::mapError",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "fixture/imported-effect-failure::main::InputFailure",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 141,
+              "end": 153
+            }
+          },
+          {
+            "kind": "effect-invoke",
+            "callee": "fixture/imported-effect-failure::input::reject",
+            "effect": {
+              "environment": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            },
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "lizard",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 162,
+                  "end": 170
+                }
+              }
+            ],
+            "origin": {
+              "start": 155,
+              "end": 170
+            }
+          }
+        ],
+        "origin": {
+          "start": 132,
+          "end": 171
+        }
+      }
+    }
+  ]
+}

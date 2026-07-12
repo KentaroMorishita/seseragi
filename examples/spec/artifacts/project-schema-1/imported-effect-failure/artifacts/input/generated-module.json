@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-effect-failure::input",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.show.dictionary",
+      "core.string.show",
+      "effect.core.fail"
+    ]
+  },
+  "exports": [
+    "InvalidInput",
+    "reject"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/imported-effect-failure::input::InputError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-effect-failure/input.ts",
+    "sourceMap": "dist/imported-effect-failure/input.ts.map"
+  }
+}
