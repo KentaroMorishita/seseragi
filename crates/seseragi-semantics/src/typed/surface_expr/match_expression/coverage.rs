@@ -111,7 +111,9 @@ fn witnesses(
 ) -> Option<Vec<Witness>> {
     match key {
         SemanticTypeKey::Invalid => None,
-        SemanticTypeKey::Other | SemanticTypeKey::TypeParameter(_) => Some(vec![Witness {
+        SemanticTypeKey::Other
+        | SemanticTypeKey::TypeParameter(_)
+        | SemanticTypeKey::SchemeParameter(_) => Some(vec![Witness {
             pattern: CoveragePattern::Any,
             label: "_".to_owned(),
         }]),

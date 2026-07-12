@@ -278,6 +278,33 @@ type Internal =
     }
 
     #[test]
+    fn preserves_generic_function_binders_through_typescript_emission() {
+        let source = "pub fn first<A, B> left: A -> right: B -> A = left\n";
+        let typed = type_module("artifact/generic-first/main.ssrg", source);
+        let core = lower_typed_module(typed);
+
+        assert_eq!(core.functions[0].type_parameters, vec!["A", "B"]);
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                type_parameters,
+                parameters,
+                ..
+            } if type_parameters == &["A", "B"]
+                && parameters[0].type_name == "A"
+                && parameters[1].type_name == "B"
+        ));
+
+        let bundle = emit_typescript_module(typescript, source);
+        assert_eq!(
+            bundle.typescript,
+            "export const first = <A, B,>(left: A) => (right: B) => left\n"
+        );
+    }
+
+    #[test]
     fn lowers_multi_parameter_function_to_typescript_arrow_function() {
         let source = "pub fn first left: Int -> right: Int -> Int = left\n";
         let typed = type_module("artifact/first-fn/main.ssrg", source);
@@ -354,6 +381,7 @@ type Internal =
                 symbol: "artifact/calls::invoke".to_owned(),
                 visibility: Visibility::Public,
                 origin: origin.clone(),
+                type_parameters: Vec::new(),
                 parameters: vec![CoreParameter {
                     id: "value".to_owned(),
                     kind: "named".to_owned(),

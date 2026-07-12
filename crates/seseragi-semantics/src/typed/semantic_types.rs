@@ -18,6 +18,7 @@ pub(crate) enum SemanticTypeKey {
         arguments: Vec<SemanticValueType>,
     },
     TypeParameter(SymbolId),
+    SchemeParameter(String),
     Tuple(Vec<SemanticTypeKey>),
     Other,
     Invalid,

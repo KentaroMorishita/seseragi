@@ -2,13 +2,37 @@ use super::{SemanticTypeKey, SemanticValueType};
 use crate::{SymbolId, TypedType};
 use std::collections::BTreeMap;
 
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+enum TypeParameterKey {
+    Resolved(SymbolId),
+    Scheme(String),
+}
+
 pub(super) fn substitute_type_parameters(
     value: &SemanticValueType,
     substitutions: &BTreeMap<SymbolId, SemanticValueType>,
 ) -> SemanticValueType {
-    if let SemanticTypeKey::TypeParameter(parameter) = &value.key {
+    let substitutions = substitutions
+        .iter()
+        .map(|(parameter, value)| (TypeParameterKey::Resolved(*parameter), value.clone()))
+        .collect();
+    substitute_semantic_type_parameters(value, &substitutions)
+}
+
+fn substitute_semantic_type_parameters(
+    value: &SemanticValueType,
+    substitutions: &BTreeMap<TypeParameterKey, SemanticValueType>,
+) -> SemanticValueType {
+    let parameter = match &value.key {
+        SemanticTypeKey::TypeParameter(parameter) => Some(TypeParameterKey::Resolved(*parameter)),
+        SemanticTypeKey::SchemeParameter(parameter) => {
+            Some(TypeParameterKey::Scheme(parameter.clone()))
+        }
+        _ => None,
+    };
+    if let Some(parameter) = parameter {
         return substitutions
-            .get(parameter)
+            .get(&parameter)
             .cloned()
             .unwrap_or_else(|| value.clone());
     }
@@ -17,7 +41,7 @@ pub(super) fn substitute_type_parameters(
         (TypedType::Named { name, .. }, SemanticTypeKey::Adt { owner, arguments }) => {
             let arguments = arguments
                 .iter()
-                .map(|argument| substitute_type_parameters(argument, substitutions))
+                .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
                 .collect::<Vec<_>>();
             SemanticValueType {
                 type_ref: TypedType::Named {
@@ -38,7 +62,7 @@ pub(super) fn substitute_type_parameters(
                 .iter()
                 .zip(keys)
                 .map(|(type_ref, key)| {
-                    substitute_type_parameters(
+                    substitute_semantic_type_parameters(
                         &SemanticValueType {
                             type_ref: type_ref.clone(),
                             key: key.clone(),
@@ -85,21 +109,26 @@ pub(crate) fn instantiate_callable(
     InstantiatedSemanticCallable {
         parameters: parameter_templates
             .iter()
-            .map(|parameter| substitute_type_parameters(parameter, &substitutions))
+            .map(|parameter| substitute_semantic_type_parameters(parameter, &substitutions))
             .collect(),
-        result: substitute_type_parameters(result_template, &substitutions),
+        result: substitute_semantic_type_parameters(result_template, &substitutions),
     }
 }
 
 fn collect_substitutions(
     template: &SemanticTypeKey,
     actual: &SemanticValueType,
-    substitutions: &mut BTreeMap<SymbolId, SemanticValueType>,
+    substitutions: &mut BTreeMap<TypeParameterKey, SemanticValueType>,
 ) {
     match (template, &actual.key) {
         (SemanticTypeKey::TypeParameter(parameter), _) => {
             substitutions
-                .entry(*parameter)
+                .entry(TypeParameterKey::Resolved(*parameter))
+                .or_insert_with(|| actual.clone());
+        }
+        (SemanticTypeKey::SchemeParameter(parameter), _) => {
+            substitutions
+                .entry(TypeParameterKey::Scheme(parameter.clone()))
                 .or_insert_with(|| actual.clone());
         }
         (

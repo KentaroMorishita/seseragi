@@ -169,6 +169,8 @@ pub enum TypeScriptFunction {
         #[serde(default, skip_serializing_if = "is_false")]
         is_async: bool,
         name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
         parameters: Vec<TypeScriptParameter>,
         body: TypeScriptExpr,
         origin: SourceSpan,
@@ -414,6 +416,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
                 name: local_name(&function.symbol),
+                type_parameters: function.type_parameters,
                 parameters: function
                     .parameters
                     .into_iter()

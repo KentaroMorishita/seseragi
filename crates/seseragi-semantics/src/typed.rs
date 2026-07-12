@@ -1006,6 +1006,32 @@ mod tests {
     }
 
     #[test]
+    fn instantiates_a_local_generic_function_independently_per_call() {
+        let typed = type_module(
+            "artifact/generic-pure-calls/main.ssrg",
+            "pub fn identity<A> value: A -> A = value\npub fn keepInt value: Int -> Int = identity value\npub fn keepString value: String -> String = identity value\n",
+        );
+
+        let [TypedDecl::Fn { .. }, TypedDecl::Fn { body: int_body, .. }, TypedDecl::Fn {
+            body: string_body, ..
+        }] = typed.declarations.as_slice()
+        else {
+            panic!("expected generic identity and two typed callers");
+        };
+        assert!(matches!(
+            int_body,
+            TypedExpr::Call { type_ref, .. } if type_ref == &int_type()
+        ));
+        assert!(matches!(
+            string_body,
+            TypedExpr::Call {
+                type_ref: TypedType::Named { name, arguments },
+                ..
+            } if name == "String" && arguments.is_empty()
+        ));
+    }
+
+    #[test]
     fn types_partial_top_level_application_as_remaining_function() {
         let typed = type_module(
             "artifact/partial-call/main.ssrg",

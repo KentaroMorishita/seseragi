@@ -85,6 +85,102 @@ fn reports_an_imported_function_argument_type_mismatch() {
 }
 
 #[test]
+fn instantiates_an_imported_generic_function_independently_per_call() {
+    let domain_source = "pub fn identity<A> value: A -> A = value\n";
+    let main_source = "import { identity } from \"./domain\"\n\npub fn keepInt value: Int -> Int = identity value\npub fn keepString value: String -> String = identity value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let [TypedDecl::Fn { body: int_body, .. }, TypedDecl::Fn {
+        body: string_body, ..
+    }] = analyzed.typed_hir.declarations.as_slice()
+    else {
+        panic!("expected two imported generic callers");
+    };
+    assert!(matches!(
+        int_body,
+        TypedExpr::Call {
+            callee,
+            type_ref: TypedType::Named { name, arguments },
+            ..
+        } if callee == "fixture/game::domain::identity" && name == "Int" && arguments.is_empty()
+    ));
+    assert!(matches!(
+        string_body,
+        TypedExpr::Call {
+            callee,
+            type_ref: TypedType::Named { name, arguments },
+            ..
+        } if callee == "fixture/game::domain::identity" && name == "String" && arguments.is_empty()
+    ));
+}
+
+#[test]
+fn instantiates_an_imported_generic_function_with_a_user_defined_adt() {
+    let domain_source = "pub type Hand =\n  | Rock\n\npub fn identity<A> value: A -> A = value\n";
+    let main_source = "import { Hand, Rock, identity } from \"./domain\"\n\npub fn keep unit: Unit -> Hand = identity Rock\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    assert!(matches!(
+        &analyzed.typed_hir.declarations[0],
+        TypedDecl::Fn {
+            body: TypedExpr::Call {
+                callee,
+                type_ref: TypedType::Named { name, arguments },
+                ..
+            },
+            ..
+        } if callee == "fixture/game::domain::identity" && name == "Hand" && arguments.is_empty()
+    ));
+}
+
+#[test]
+fn reports_inconsistent_imported_generic_arguments_as_a_type_mismatch() {
+    let domain_source = "pub fn same<A> first: A -> second: A -> A = first\n";
+    let main_source = "import { same } from \"./domain\"\n\npub fn invalid unit: Unit -> Int = same 1 \"wrong\"\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "call.argument-type-mismatch"
+    );
+    assert_eq!(
+        diagnostics.diagnostics[0].related[0].message,
+        "argument 2 expected Int, received String"
+    );
+}
+
+#[test]
 fn types_an_exhaustive_match_over_an_imported_adt_family() {
     let main_source = "import { Outcome, Player1Wins, Player2Wins, Draw } from \"./domain\"\n\npub fn render outcome: Outcome -> String =\n  match outcome {\n    Player1Wins -> \"Player 1 wins!\"\n    Player2Wins -> \"Player 2 wins!\"\n    Draw -> \"Draw!\"\n  }\n";
     let linked = linked_adt_program(main_source);

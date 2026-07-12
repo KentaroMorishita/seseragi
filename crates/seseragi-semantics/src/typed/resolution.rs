@@ -169,7 +169,7 @@ fn collect_callables(
                 return_type,
                 constraints,
                 ..
-            } if type_parameters.is_empty() && constraints.is_empty() && !parameters.is_empty() => {
+            } if constraints.is_empty() && !parameters.is_empty() => {
                 let Some(symbol) = resolved.symbols.iter().find(|symbol| {
                     symbol.kind == SymbolKind::Function && symbol.origin == *name_span
                 }) else {
@@ -197,7 +197,7 @@ fn collect_callables(
                     symbol.id,
                     TopLevelPureFunction {
                         symbol: canonical,
-                        type_parameters: Vec::new(),
+                        type_parameters: type_parameters.clone(),
                         parameters,
                         semantic_parameters,
                         result,
@@ -307,13 +307,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn excludes_generic_and_higher_order_functions_from_direct_call_signatures() {
+    fn includes_unconstrained_generics_but_excludes_constrained_and_higher_order_functions() {
         let resolved = crate::resolve_module(
             "artifact/functions/main.ssrg",
-            "fn identity<A> value: A -> A = value\nfn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
+            "fn identity<A> value: A -> A = value\nfn constrained<A> value: A -> A\nwhere Eq<A> = value\nfn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
         );
 
         let semantic_types = SemanticTypeCatalog::new(&resolved);
-        assert!(collect_callables(&resolved, &semantic_types).is_empty());
+        let callables = collect_callables(&resolved, &semantic_types);
+        assert_eq!(callables.len(), 1);
+        assert_eq!(
+            callables.values().next().unwrap().symbol,
+            "artifact/functions::identity"
+        );
+        assert_eq!(callables.values().next().unwrap().type_parameters, ["A"]);
     }
 }

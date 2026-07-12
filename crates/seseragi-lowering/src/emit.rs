@@ -123,6 +123,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 exported,
                 is_async,
                 name,
+                type_parameters,
                 parameters,
                 body,
                 ..
@@ -130,7 +131,8 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 if *exported {
                     output.push_str("export ");
                 }
-                let rendered_body = render_function_body(parameters, body, *is_async);
+                let rendered_body =
+                    render_function_body(type_parameters, parameters, body, *is_async);
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
             }
         }
@@ -215,6 +217,7 @@ fn render_type_arguments(parameters: &[String]) -> String {
 }
 
 fn render_function_body(
+    type_parameters: &[String],
     parameters: &[crate::TypeScriptParameter],
     body: &TypeScriptExpr,
     is_async: bool,
@@ -224,13 +227,32 @@ fn render_function_body(
         return rendered_body;
     };
     let async_prefix = if is_async { "async " } else { "" };
+    let generic_prefix = render_arrow_type_parameters(type_parameters);
+    let final_generic_prefix = if leading.is_empty() {
+        generic_prefix.as_str()
+    } else {
+        ""
+    };
     let final_arrow = format!(
-        "{async_prefix}({}: {}) => {rendered_body}",
+        "{async_prefix}{final_generic_prefix}({}: {}) => {rendered_body}",
         last.name, last.type_name
     );
-    leading.iter().rev().fold(final_arrow, |result, parameter| {
+    let rendered = leading.iter().rev().fold(final_arrow, |result, parameter| {
         format!("({}: {}) => {result}", parameter.name, parameter.type_name)
-    })
+    });
+    if leading.is_empty() || generic_prefix.is_empty() {
+        rendered
+    } else {
+        format!("{generic_prefix}{rendered}")
+    }
+}
+
+fn render_arrow_type_parameters(parameters: &[String]) -> String {
+    match parameters {
+        [] => String::new(),
+        [parameter] => format!("<{parameter},>"),
+        _ => format!("<{},>", parameters.join(", ")),
+    }
 }
 
 fn render_typescript_expr(expr: &TypeScriptExpr) -> String {

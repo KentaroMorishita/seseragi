@@ -353,6 +353,24 @@ mod tests {
     }
 
     #[test]
+    fn reports_inconsistent_local_generic_arguments_as_a_type_mismatch() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/generic-call-type-mismatch/main.ssrg",
+            "fn same<A> first: A -> second: A -> A = first\nfn invalid unit: Unit -> Int = same 1 \"wrong\"\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "argument 2 expected Int, received String"
+        );
+    }
+
+    #[test]
     fn reports_payload_constructor_argument_type_mismatch() {
         let diagnostics = semantic_diagnostics(
             "artifact/constructor-type-mismatch/main.ssrg",

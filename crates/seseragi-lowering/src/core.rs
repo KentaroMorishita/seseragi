@@ -73,6 +73,8 @@ pub struct CoreFunction {
     pub symbol: String,
     pub visibility: Visibility,
     pub origin: SourceSpan,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<String>,
     pub parameters: Vec<CoreParameter>,
     pub body: CoreExpr,
 }
@@ -257,13 +259,14 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 symbol,
                 visibility,
                 origin,
+                scheme,
                 parameters,
                 body,
-                ..
             } => functions.push(CoreFunction {
                 symbol,
                 visibility,
                 origin: source_span(&module.source, origin),
+                type_parameters: scheme.type_parameters,
                 parameters: parameters
                     .into_iter()
                     .map(|parameter| lower_parameter(&parameter))
@@ -282,6 +285,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 symbol,
                 visibility,
                 origin: source_span(&module.source, origin),
+                type_parameters: Vec::new(),
                 parameters: parameters
                     .into_iter()
                     .map(|parameter| lower_parameter(&parameter))
