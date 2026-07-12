@@ -194,8 +194,12 @@ fn parses_instance_type_parameters_and_constraints_in_interface() {
     );
 
     assert_eq!(interface.instances.len(), 1);
+    assert_eq!(interface.instances[0].identity, None);
     assert_eq!(interface.instances[0].type_parameters, vec!["A".to_owned()]);
     assert_eq!(interface.instances[0].constraints[0].name, "Show");
+
+    let json = serde_json::to_value(&interface).expect("shallow interface serializes");
+    assert!(json["instances"][0].get("identity").is_none());
 }
 
 #[test]

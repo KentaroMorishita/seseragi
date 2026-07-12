@@ -20,6 +20,7 @@ impl TypedModuleInterface {
 
 #[cfg(test)]
 mod tests {
+    use crate::ResolvedInterfaceDecl;
     use seseragi_syntax::InterfaceType;
 
     #[test]
@@ -41,6 +42,35 @@ mod tests {
             InterfaceType::Function { result, .. }
                 if matches!(result.as_ref(), InterfaceType::Named { name, arguments }
                     if name == "Effect" && arguments.len() == 3)
+        ));
+    }
+
+    #[test]
+    fn preserves_final_instance_identity_through_linking_and_resolution() {
+        let typed = crate::type_module_public_interface(
+            "fixture/errors/main.ssrg",
+            "pub type AppError deriving Show = | Failed String\n",
+        );
+
+        let linked = typed.into_link_interface();
+        assert_eq!(
+            linked.instances[0].identity.as_deref(),
+            Some("Show<fixture/errors::AppError>")
+        );
+
+        let resolved = crate::resolve_module_interface(linked);
+        let instance = resolved
+            .declarations
+            .iter()
+            .find(|declaration| matches!(declaration, ResolvedInterfaceDecl::Instance { .. }))
+            .expect("resolved interface contains its typed instance");
+        assert!(matches!(
+            instance,
+            ResolvedInterfaceDecl::Instance {
+                identity: Some(identity),
+                trait_name,
+                ..
+            } if identity == "Show<fixture/errors::AppError>" && trait_name == "Show"
         ));
     }
 }

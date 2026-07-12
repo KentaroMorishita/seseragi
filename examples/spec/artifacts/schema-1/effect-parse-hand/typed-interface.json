@@ -185,6 +185,7 @@
   "operators": [],
   "instances": [
     {
+      "identity": "Show<artifact/effect-parse-hand::HandInputError>",
       "trait": "Show",
       "typeParameters": [],
       "head": {

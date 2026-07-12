@@ -65,6 +65,10 @@ fn projects_selected_evidence_as_show_adt_interface_instance() {
     );
 
     assert_eq!(interface.instances.len(), 1);
+    assert_eq!(
+        interface.instances[0].identity.as_deref(),
+        Some("Show<artifact/public-derived-show::AppError>")
+    );
     assert_eq!(interface.instances[0].trait_name, "Show");
     assert_eq!(
         interface.instances[0].head,
@@ -77,6 +81,29 @@ fn projects_selected_evidence_as_show_adt_interface_instance() {
         }
     );
     assert!(interface.instances[0].constraints.is_empty());
+
+    let json = serde_json::to_value(&interface).expect("typed interface serializes");
+    assert_eq!(
+        json["instances"][0]["identity"],
+        "Show<artifact/public-derived-show::AppError>"
+    );
+}
+
+#[test]
+fn assigns_distinct_identities_to_same_spelling_in_different_modules() {
+    let source = "pub type AppError deriving Show = | Failed String\n";
+    let left = type_module_public_interface("fixture/left/main.ssrg", source);
+    let right = type_module_public_interface("fixture/right/main.ssrg", source);
+
+    assert_eq!(
+        left.instances[0].identity.as_deref(),
+        Some("Show<fixture/left::AppError>")
+    );
+    assert_eq!(
+        right.instances[0].identity.as_deref(),
+        Some("Show<fixture/right::AppError>")
+    );
+    assert_ne!(left.instances[0].identity, right.instances[0].identity);
 }
 
 fn named(name: &str) -> TypedType {

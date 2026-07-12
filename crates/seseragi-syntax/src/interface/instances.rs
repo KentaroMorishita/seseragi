@@ -12,6 +12,7 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
             constraints,
             span,
         } => Some(InterfaceInstance {
+            identity: None,
             trait_name: trait_name.clone(),
             type_parameters,
             head: InterfaceType::Apply {

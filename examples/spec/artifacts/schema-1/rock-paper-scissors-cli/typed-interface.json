@@ -364,6 +364,7 @@
   "operators": [],
   "instances": [
     {
+      "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
       "trait": "Show",
       "typeParameters": [],
       "head": {

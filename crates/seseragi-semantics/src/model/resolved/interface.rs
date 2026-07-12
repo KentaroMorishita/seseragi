@@ -54,6 +54,8 @@ pub enum ResolvedInterfaceDecl {
     },
     Instance {
         symbol: SymbolId,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        identity: Option<String>,
         trait_name: String,
         head: InterfaceType,
         declaration: ByteSpan,

@@ -120,6 +120,11 @@ pub struct InterfaceOperator {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InterfaceInstance {
+    /// A canonical semantic identity is available after typing has selected
+    /// concrete evidence. Shallow syntax interfaces intentionally leave this
+    /// absent because they cannot resolve every type in an instance head.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub identity: Option<String>,
     #[serde(rename = "trait")]
     pub trait_name: String,
     pub type_parameters: Vec<String>,

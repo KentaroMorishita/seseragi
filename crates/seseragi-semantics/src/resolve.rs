@@ -91,6 +91,7 @@ fn resolved_export(
 fn resolved_instance(symbol: SymbolId, instance: InterfaceInstance) -> ResolvedInterfaceDecl {
     ResolvedInterfaceDecl::Instance {
         symbol,
+        identity: instance.identity,
         trait_name: instance.trait_name,
         head: instance.head,
         declaration: instance.origin,
@@ -211,6 +212,7 @@ mod tests {
                 },
                 ResolvedInterfaceDecl::Instance {
                     symbol: SymbolId(3),
+                    identity: None,
                     trait_name: "Show".to_owned(),
                     head: InterfaceType::Apply {
                         constructor: "Show".to_owned(),

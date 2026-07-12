@@ -43,6 +43,10 @@ pub(crate) fn typed_interface_from_modules(
 
 fn interface_instance_from_typed(instance: &TypedInstance) -> InterfaceInstance {
     InterfaceInstance {
+        identity: Some(canonical_instance_identity(
+            &instance.trait_name,
+            &instance.type_identity,
+        )),
         trait_name: instance.trait_name.clone(),
         type_parameters: Vec::new(),
         head: InterfaceType::Apply {
@@ -58,6 +62,16 @@ fn interface_instance_from_typed(instance: &TypedInstance) -> InterfaceInstance 
             .collect(),
         origin: instance.origin,
     }
+}
+
+/// Stable semantic identity for evidence selected by typing.
+///
+/// The type identity is canonical (for example,
+/// `fixture/errors::AppError`), so two modules may use the same local type
+/// spelling without making their selected instances interchangeable. This is
+/// deliberately independent of a backend dictionary export name.
+fn canonical_instance_identity(trait_name: &str, type_identity: &str) -> String {
+    format!("{trait_name}<{type_identity}>")
 }
 
 fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
