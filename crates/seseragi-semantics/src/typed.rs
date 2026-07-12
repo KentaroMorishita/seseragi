@@ -89,6 +89,10 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
 pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule {
     let source_name = source_name.into();
     let resolved = crate::resolve_module(source_name, source);
+    typed_module_from_resolved(resolved)
+}
+
+pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> TypedModule {
     let resolution = TypedResolution::new(&resolved);
     let declarations = resolved
         .declarations
@@ -110,6 +114,23 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
     }
 }
 
+fn type_module_with_interface(
+    source: &str,
+    shallow: ModuleInterface,
+) -> (TypedModule, crate::TypedModuleInterface) {
+    let resolved = crate::resolve::resolve_module_from_interface(shallow.clone(), source);
+    type_resolved_module_with_public_interface(shallow, resolved)
+}
+
+pub(crate) fn type_resolved_module_with_public_interface(
+    shallow: ModuleInterface,
+    resolved: crate::ResolvedModule,
+) -> (TypedModule, crate::TypedModuleInterface) {
+    let typed = typed_module_from_resolved(resolved);
+    let typed_interface = typed_interface_from_modules(shallow, &typed);
+    (typed, typed_interface)
+}
+
 pub fn type_module_public_interface(
     source_name: impl Into<String>,
     source: &str,
@@ -129,8 +150,8 @@ pub fn type_module_public_interface(
             instances: Vec::new(),
         };
     }
-    let typed = type_module(source_name, source);
-    typed_interface_from_modules(shallow, typed)
+    let (_, typed_interface) = type_module_with_interface(source, shallow);
+    typed_interface
 }
 
 #[cfg(test)]

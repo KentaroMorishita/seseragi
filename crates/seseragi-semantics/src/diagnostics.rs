@@ -13,12 +13,20 @@ mod type_labels;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
-    let mut artifact = parse_diagnostics(source_name.clone(), source);
+    let artifact = parse_diagnostics(source_name.clone(), source);
     if !artifact.diagnostics.is_empty() {
         return artifact;
     }
 
     let resolved = crate::resolve_module(source_name, source);
+    semantic_diagnostics_from_resolved(artifact, &resolved, source)
+}
+
+pub(crate) fn semantic_diagnostics_from_resolved(
+    mut artifact: DiagnosticArtifact,
+    resolved: &crate::ResolvedModule,
+    source: &str,
+) -> DiagnosticArtifact {
     let has_effect_functions = resolved
         .declarations
         .iter()
@@ -28,14 +36,14 @@ pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> Dia
     } else {
         Vec::new()
     };
-    let resolution = TypedResolution::new(&resolved);
+    let resolution = TypedResolution::new(resolved);
     let mut diagnostics = Vec::new();
 
     for declaration in &resolved.declarations {
         collect_decl_diagnostics(declaration, &tokens, &resolution, &mut diagnostics);
     }
-    traits::collect_trait_diagnostics(&resolved, &resolution, &mut diagnostics);
-    resolution::collect_resolution_diagnostics(&resolved, &mut diagnostics);
+    traits::collect_trait_diagnostics(resolved, &resolution, &mut diagnostics);
+    resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
 
     artifact.diagnostics = diagnostics
         .into_iter()

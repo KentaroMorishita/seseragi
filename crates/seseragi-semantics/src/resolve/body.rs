@@ -17,6 +17,13 @@ mod tests;
 pub fn resolve_module(source_name: impl Into<String>, source: &str) -> ResolvedModule {
     let source_name = source_name.into();
     let interface = parse_module_interface(source_name, source);
+    resolve_module_from_interface(interface, source)
+}
+
+pub(crate) fn resolve_module_from_interface(
+    interface: ModuleInterface,
+    source: &str,
+) -> ResolvedModule {
     let surface = parse_surface_ast(interface.source.clone(), source);
     resolve_surface_module(interface, surface)
 }

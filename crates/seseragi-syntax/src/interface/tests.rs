@@ -39,6 +39,37 @@ fn parses_basic_public_let_interface() {
 }
 
 #[test]
+fn keeps_physical_source_label_separate_from_explicit_module_identity() {
+    let interface = parse_import_free_module_interface(
+        "/tmp/seseragi-cache/entry.ssrg",
+        "game/domain",
+        "pub let answer: Int = 42\n",
+    )
+    .expect("import-free source should produce an interface");
+
+    assert_eq!(interface.module, "game/domain");
+    assert_eq!(interface.source, "entry.ssrg");
+    assert!(interface.dependencies.is_empty());
+    assert_eq!(interface.exports[0].symbol, "game/domain::answer");
+}
+
+#[test]
+fn reports_imports_instead_of_manufacturing_dependency_identities() {
+    let imports = parse_import_free_module_interface(
+        "entry.ssrg",
+        "game/domain",
+        "import * as support from \"./support\"\nimport * as text from \"std/text\"\npub let answer: Int = 42\n",
+    )
+    .expect_err("a project resolver must link imported modules");
+
+    assert_eq!(imports.len(), 2);
+    assert_eq!(imports[0].specifier, "./support");
+    assert_eq!(imports[0].origin, ByteSpan { start: 0, end: 36 });
+    assert_eq!(imports[1].specifier, "std/text");
+    assert_eq!(imports[1].origin, ByteSpan { start: 37, end: 69 });
+}
+
+#[test]
 fn omits_private_lets_from_interface() {
     let interface = parse_module_interface(
         "artifact/multiple-lets/main.ssrg",

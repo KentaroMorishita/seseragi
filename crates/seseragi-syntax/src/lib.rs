@@ -15,9 +15,9 @@ pub use diagnostics::{
     DiagnosticSeverity, RelatedDiagnostic,
 };
 pub use interface::{
-    parse_module_interface, InterfaceConstraint, InterfaceDependency, InterfaceExport,
-    InterfaceImport, InterfaceInstance, InterfaceOperator, InterfaceRecordField, InterfaceScheme,
-    InterfaceType, ModuleInterface,
+    parse_import_free_module_interface, parse_module_interface, ImportOccurrence,
+    InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceInstance,
+    InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType, ModuleInterface,
 };
 pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};

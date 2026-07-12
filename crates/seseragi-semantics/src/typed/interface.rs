@@ -9,7 +9,7 @@ use seseragi_syntax::{
 
 pub(crate) fn typed_interface_from_modules(
     shallow: ModuleInterface,
-    typed: TypedModule,
+    typed: &TypedModule,
 ) -> TypedModuleInterface {
     let mut exports = shallow
         .exports

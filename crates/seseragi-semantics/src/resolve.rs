@@ -4,6 +4,7 @@ use seseragi_syntax::{InterfaceExport, InterfaceInstance, InterfaceOperator, Mod
 mod body;
 
 pub use body::resolve_module;
+pub(crate) use body::resolve_module_from_interface;
 
 pub fn resolve_module_interface(interface: ModuleInterface) -> ResolvedInterface {
     let ModuleInterface {

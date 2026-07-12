@@ -14,13 +14,45 @@ use dependencies::dependency_from_surface_import;
 use exports::{exports_from_surface_decl, operator_from_surface_decl};
 use instances::instance_from_surface_decl;
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ImportOccurrence {
+    pub specifier: String,
+    pub origin: crate::ByteSpan,
+}
+
 pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> ModuleInterface {
     let source_name = source_name.into();
     let module_name = module_name_from_source_name(&source_name);
+    parse_module_interface_inner(source_name, module_name, false, source)
+        .expect("the compatibility interface parser accepts unresolved imports")
+}
+
+/// Parses an import-free module with a caller-provided logical identity.
+///
+/// `source_name` remains a physical diagnostic/source label and does not
+/// participate in symbol identity. Imported module identities must come from
+/// a project resolver, so this entrypoint reports import occurrences instead
+/// of manufacturing canonical dependency symbols from source spellings.
+pub fn parse_import_free_module_interface(
+    source_name: impl Into<String>,
+    module_id: impl Into<String>,
+    source: &str,
+) -> Result<ModuleInterface, Vec<ImportOccurrence>> {
+    let source_name = source_name.into();
+    let module_id = module_id.into();
+    parse_module_interface_inner(source_name, module_id, true, source)
+}
+
+fn parse_module_interface_inner(
+    source_name: String,
+    module_name: String,
+    reject_imports: bool,
+    source: &str,
+) -> Result<ModuleInterface, Vec<ImportOccurrence>> {
     let source_file = source_file_from_source_name(&source_name);
     let cst = parse_cst(source_file.clone(), source);
     if !cst.errors.is_empty() {
-        return empty_interface(module_name, cst.source);
+        return Ok(empty_interface(module_name, cst.source));
     }
 
     let surface_module = parse_surface_ast(source_file.clone(), source);
@@ -31,7 +63,18 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
             .filter(|declaration| matches!(declaration, crate::SurfaceDecl::Type { .. }))
             .count()
     {
-        return empty_interface(module_name, cst.source);
+        return Ok(empty_interface(module_name, cst.source));
+    }
+
+    if reject_imports && !surface_module.imports.is_empty() {
+        return Err(surface_module
+            .imports
+            .iter()
+            .map(|import| ImportOccurrence {
+                specifier: import.specifier.clone(),
+                origin: import.span,
+            })
+            .collect());
     }
 
     let interface = ModuleInterface {
@@ -59,7 +102,7 @@ pub fn parse_module_interface(source_name: impl Into<String>, source: &str) -> M
             .filter_map(instance_from_surface_decl)
             .collect(),
     };
-    interface
+    Ok(interface)
 }
 
 fn empty_interface(module: String, source: String) -> ModuleInterface {
