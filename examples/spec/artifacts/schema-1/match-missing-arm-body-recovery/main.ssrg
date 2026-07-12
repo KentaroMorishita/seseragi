@@ -1,0 +1,10 @@
+type Label =
+  | Missing
+  | Present String
+
+fn recover value: Label -> String =
+  match value {
+    Missing ->
+    Present item -> item
+    Missing -> "missing"
+  }

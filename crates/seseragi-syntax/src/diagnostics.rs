@@ -5,6 +5,8 @@ use crate::surface_model::SurfaceDecl;
 use crate::{CstArtifact, CstError, CstMissing, CstNode, Token, TokenKind};
 use serde::Serialize;
 
+mod surface_errors;
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DiagnosticArtifact {
@@ -81,6 +83,9 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
         &artifact.diagnostics,
     );
     append_diagnostics(&mut artifact, surface_diagnostics);
+    let nested_surface_diagnostics =
+        surface_errors::diagnostics(&surface.declarations, &artifact.diagnostics);
+    append_diagnostics(&mut artifact, nested_surface_diagnostics);
     append_diagnostics(&mut artifact, literal_diagnostics);
     artifact
 }
@@ -417,6 +422,38 @@ mod tests {
                 diagnostics.diagnostics[0].primary.start < diagnostics.diagnostics[0].primary.end
             );
         }
+    }
+
+    #[test]
+    fn reports_and_recovers_a_missing_match_arm_expression() {
+        let source = "type Label =\n  | Missing\n  | Present String\n\nfn recover value: Label -> String =\n  match value {\n    Missing ->\n    Present item -> item\n    Missing -> \"missing\"\n  }\n";
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+        let missing_body = source.find("->\n").expect("fixture has a missing arm body") + 2;
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "parser.expected-expression"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange {
+                start: missing_body,
+                end: missing_body,
+            }
+        );
+
+        let surface = parse_surface_ast("main.ssrg", source);
+        let SurfaceDecl::Fn {
+            body: Some(crate::SurfaceExpr::Match { arms, .. }),
+            ..
+        } = &surface.declarations[1]
+        else {
+            panic!("recovery must preserve the surrounding match")
+        };
+        assert_eq!(arms.len(), 3);
+        assert!(matches!(arms[0].body, crate::SurfaceExpr::Error { .. }));
     }
 
     #[test]

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 65,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 19,
+        "children": [
+          {
+            "kind": "type-decl",
+            "startToken": 0,
+            "endToken": 19,
+            "children": [
+              {
+                "kind": "variant-decl",
+                "startToken": 7,
+                "endToken": 12,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 12,
+                "endToken": 19,
+                "children": [
+                  {
+                    "kind": "variant-payload",
+                    "startToken": 16,
+                    "endToken": 19,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 19,
+        "endToken": 65,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 19,
+            "endToken": 65,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}
