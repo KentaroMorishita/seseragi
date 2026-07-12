@@ -5,7 +5,7 @@ use crate::{
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
 use std::collections::BTreeMap;
 
-use super::semantic_types::{SemanticTypeKey, SemanticValueType};
+use super::semantic_types::SemanticValueType;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
 use super::TypedResolution;
@@ -117,13 +117,7 @@ fn type_do_block(
                 let value = type_effect_expression(value, &context, resolution);
                 let type_ref = inferred_type_from_expr(&value);
                 if let Some((symbol, name)) = binding(pattern, resolution) {
-                    locals.insert(
-                        symbol,
-                        SemanticValueType {
-                            type_ref: type_ref.clone(),
-                            key: SemanticTypeKey::Other,
-                        },
-                    );
+                    locals.insert(symbol, resolution.semantic_value_from_typed_type(&type_ref));
                     statements.push(TypedDoStatement::Bind {
                         name,
                         type_ref,
@@ -139,20 +133,20 @@ fn type_do_block(
                 value,
                 span,
             } => {
-                let value = analyze_resolved_expression(value, &context).value;
-                let type_ref = inferred_type_from_expr(&value);
+                let analysis = analyze_resolved_expression(value, &context);
+                let type_ref = inferred_type_from_expr(&analysis.value);
                 if let Some((symbol, name)) = binding(pattern, resolution) {
                     locals.insert(
                         symbol,
                         SemanticValueType {
                             type_ref: type_ref.clone(),
-                            key: SemanticTypeKey::Other,
+                            key: analysis.semantic_type,
                         },
                     );
                     statements.push(TypedDoStatement::PureLet {
                         name,
                         type_ref,
-                        value,
+                        value: analysis.value,
                         origin: *span,
                     });
                 }

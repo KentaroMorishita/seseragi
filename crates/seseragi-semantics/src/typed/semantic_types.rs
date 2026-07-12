@@ -239,6 +239,45 @@ impl SemanticTypeCatalog {
         semantic_key_from_type_ref(resolved, &owners, type_ref)
     }
 
+    pub(crate) fn key_from_typed_type(
+        &self,
+        resolved: &ResolvedModule,
+        type_ref: &TypedType,
+    ) -> SemanticTypeKey {
+        match type_ref {
+            TypedType::Named { name, arguments } => {
+                let mut owners = resolved
+                    .symbols
+                    .iter()
+                    .filter(|symbol| {
+                        symbol.kind == SymbolKind::Type
+                            && symbol.spelling == *name
+                            && self.adts.contains_key(&symbol.id)
+                    })
+                    .map(|symbol| symbol.id);
+                let owner = owners.next().filter(|_| owners.next().is_none());
+                owner.map_or(SemanticTypeKey::Other, |owner| SemanticTypeKey::Adt {
+                    owner,
+                    arguments: arguments
+                        .iter()
+                        .map(|argument| SemanticValueType {
+                            type_ref: argument.clone(),
+                            key: self.key_from_typed_type(resolved, argument),
+                        })
+                        .collect(),
+                })
+            }
+            TypedType::Tuple { elements } => SemanticTypeKey::Tuple(
+                elements
+                    .iter()
+                    .map(|element| self.key_from_typed_type(resolved, element))
+                    .collect(),
+            ),
+            TypedType::Hole => SemanticTypeKey::Invalid,
+            TypedType::Record { .. } | TypedType::Function { .. } => SemanticTypeKey::Other,
+        }
+    }
+
     pub(crate) fn adt(&self, owner: SymbolId) -> Option<&SemanticAdt> {
         self.adts.get(&owner)
     }

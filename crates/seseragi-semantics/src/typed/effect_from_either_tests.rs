@@ -1,5 +1,5 @@
 use super::type_module;
-use crate::{semantic_diagnostics, TypedDecl, TypedExpr, TypedType};
+use crate::{semantic_diagnostics, TypedDecl, TypedDoStatement, TypedExpr, TypedType};
 
 #[test]
 fn derives_from_either_failure_and_success_from_a_concrete_parameter() {
@@ -73,6 +73,42 @@ fn derives_from_either_contract_from_a_typed_pure_call() {
                         "Either",
                         vec![named("InputError"), named("Hand")]
                     ))
+    ));
+}
+
+#[test]
+fn preserves_the_sum_owner_for_a_do_bind_used_by_a_later_pure_call() {
+    let typed = type_module(
+        "artifact/effect-from-either-do-bind/main.ssrg",
+        "type Hand = | Rock\n\
+         type InputError = | Invalid\n\
+         fn accepted hand: Hand -> Either<InputError, Hand> = Right hand\n\
+         fn keep hand: Hand -> Hand = hand\n\
+         pub effect fn main =\n\
+           do {\n\
+             hand <- fromEither (accepted Rock)\n\
+             succeed (keep hand)\n\
+           }\n",
+    );
+
+    let TypedDecl::EffectFn { body, .. } = &typed.declarations[4] else {
+        panic!("expected effect function");
+    };
+    let TypedExpr::DoBlock {
+        statements, result, ..
+    } = body
+    else {
+        panic!("expected typed do block");
+    };
+    assert!(matches!(
+        statements.as_slice(),
+        [TypedDoStatement::Bind { type_ref, .. }] if type_ref == &named("Hand")
+    ));
+    assert!(matches!(
+        result.as_ref(),
+        TypedExpr::EffectCall { arguments, .. }
+            if matches!(arguments.as_slice(), [TypedExpr::Call { type_ref, .. }]
+                if type_ref == &named("Hand"))
     ));
 }
 

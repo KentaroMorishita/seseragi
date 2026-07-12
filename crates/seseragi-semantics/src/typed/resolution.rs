@@ -93,6 +93,15 @@ impl<'a> TypedResolution<'a> {
         }
     }
 
+    pub(crate) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
+        SemanticValueType {
+            type_ref: type_ref.clone(),
+            key: self
+                .semantic_types
+                .key_from_typed_type(self.resolved, type_ref),
+        }
+    }
+
     pub(crate) fn parameter_types(
         &self,
         parameters: &[TypedParameter],
