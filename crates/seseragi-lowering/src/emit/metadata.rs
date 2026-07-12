@@ -1,5 +1,6 @@
 use crate::{
-    TypeScriptBinding, TypeScriptFunction, TypeScriptInstance, TypeScriptModule, TypeScriptType,
+    GeneratedOutputPaths, TypeScriptBinding, TypeScriptFunction, TypeScriptInstance,
+    TypeScriptModule, TypeScriptType,
 };
 use serde::{Deserialize, Serialize};
 
@@ -41,7 +42,10 @@ pub struct GeneratedOutputs {
     pub source_map: String,
 }
 
-pub(super) fn generated_module_for(module: TypeScriptModule) -> GeneratedModule {
+pub(super) fn generated_module_for(
+    module: TypeScriptModule,
+    output_paths: GeneratedOutputPaths,
+) -> GeneratedModule {
     let exports = module_exports(&module);
     let instances = module
         .instances
@@ -60,8 +64,8 @@ pub(super) fn generated_module_for(module: TypeScriptModule) -> GeneratedModule 
         exports,
         instances,
         outputs: GeneratedOutputs {
-            typescript: "main.ts".to_owned(),
-            source_map: "main.ts.map".to_owned(),
+            typescript: output_paths.typescript,
+            source_map: output_paths.source_map,
         },
     }
 }
@@ -106,7 +110,10 @@ fn module_exports(module: &TypeScriptModule) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::generated_module_for;
-    use crate::{lower_core_module_to_typescript_ir, lower_typed_module, TypeScriptType};
+    use crate::{
+        lower_core_module_to_typescript_ir, lower_typed_module, GeneratedOutputPaths,
+        TypeScriptType,
+    };
     use seseragi_semantics::type_module;
 
     #[test]
@@ -114,7 +121,10 @@ mod tests {
         let source = "pub type AppError deriving Show =\n  | EndOfInput\n";
         let typed = type_module("artifact/generated-show/main.ssrg", source);
         let core = lower_typed_module(typed);
-        let metadata = generated_module_for(lower_core_module_to_typescript_ir(core));
+        let metadata = generated_module_for(
+            lower_core_module_to_typescript_ir(core),
+            GeneratedOutputPaths::default(),
+        );
 
         assert_eq!(metadata.exports, vec!["EndOfInput"]);
         assert_eq!(metadata.instances.len(), 1);
@@ -141,7 +151,10 @@ mod tests {
         let source = "pub let answer: Int = 42\n";
         let typed = type_module("artifact/no-generated-show/main.ssrg", source);
         let core = lower_typed_module(typed);
-        let metadata = generated_module_for(lower_core_module_to_typescript_ir(core));
+        let metadata = generated_module_for(
+            lower_core_module_to_typescript_ir(core),
+            GeneratedOutputPaths::default(),
+        );
         let json = serde_json::to_value(metadata).unwrap();
 
         assert!(json.get("instances").is_none());

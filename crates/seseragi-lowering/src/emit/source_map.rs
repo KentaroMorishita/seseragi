@@ -29,12 +29,16 @@ struct Mapping {
     name_index: usize,
 }
 
-pub(super) fn source_map_for_module(module: &TypeScriptModule, source_text: &str) -> SourceMap {
+pub(super) fn source_map_for_module(
+    module: &TypeScriptModule,
+    source_text: &str,
+    generated_typescript_path: &str,
+) -> SourceMap {
     let helper_names = runtime_helper_names(module);
     let (names, mappings) = module_names_and_mappings(module, source_text, &helper_names);
     SourceMap {
         version: 3,
-        file: "main.ts".to_owned(),
+        file: generated_typescript_path.to_owned(),
         source_root: String::new(),
         sources: vec![format!("seseragi://{}", module.module)],
         sources_content: vec![source_text.to_owned()],

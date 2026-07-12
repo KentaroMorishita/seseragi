@@ -16,8 +16,9 @@ pub use core::{
     CoreType,
 };
 pub use emit::{
-    emit_typescript_module, GeneratedBundle, GeneratedInstance, GeneratedModule, GeneratedOutputs,
-    GeneratedRuntime, SourceMap,
+    emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
+    GeneratedInstance, GeneratedModule, GeneratedOutputPaths, GeneratedOutputs, GeneratedRuntime,
+    SourceMap,
 };
 pub(crate) use span::source_span;
 pub use span::SourceSpan;
@@ -867,9 +868,33 @@ fails ConsoleError =
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
         assert_eq!(bundle.metadata.exports, vec!["answer"]);
+        assert_eq!(bundle.metadata.outputs.typescript, "main.ts");
+        assert_eq!(bundle.metadata.outputs.source_map, "main.ts.map");
         assert_eq!(bundle.typescript, "export const answer: bigint = 42n;\n");
+        assert_eq!(bundle.source_map.file, "main.ts");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
         assert_eq!(bundle.source_map.mappings, "AAAAA");
+    }
+
+    #[test]
+    fn emits_project_selected_output_paths_into_metadata_and_source_map() {
+        let source = "pub let answer: Int = 42\n";
+        let typed = type_module("artifact/output-paths/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module_with_output_paths(
+            typescript,
+            source,
+            GeneratedOutputPaths::new("dist/game/main.ts", "dist/game/main.ts.map"),
+        );
+
+        assert_eq!(bundle.metadata.outputs.typescript, "dist/game/main.ts");
+        assert_eq!(bundle.metadata.outputs.source_map, "dist/game/main.ts.map");
+        assert_eq!(bundle.source_map.file, "dist/game/main.ts");
+        assert_eq!(
+            bundle.source_map.sources,
+            vec!["seseragi://artifact/output-paths"]
+        );
     }
 
     #[test]

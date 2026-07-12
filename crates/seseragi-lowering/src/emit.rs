@@ -18,6 +18,33 @@ pub use metadata::{GeneratedInstance, GeneratedModule, GeneratedOutputs, Generat
 use source_map::source_map_for_module;
 pub use source_map::SourceMap;
 
+/// Locations chosen by the project for a generated TypeScript module and its
+/// source map.
+///
+/// The lowering crate preserves these paths in generated metadata and uses the
+/// TypeScript path as the `file` field of the source map. It does not interpret
+/// or normalize paths: project output planning owns that policy.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct GeneratedOutputPaths {
+    pub typescript: String,
+    pub source_map: String,
+}
+
+impl GeneratedOutputPaths {
+    pub fn new(typescript: impl Into<String>, source_map: impl Into<String>) -> Self {
+        Self {
+            typescript: typescript.into(),
+            source_map: source_map.into(),
+        }
+    }
+}
+
+impl Default for GeneratedOutputPaths {
+    fn default() -> Self {
+        Self::new("main.ts", "main.ts.map")
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GeneratedBundle {
@@ -27,9 +54,22 @@ pub struct GeneratedBundle {
 }
 
 pub fn emit_typescript_module(module: TypeScriptModule, source_text: &str) -> GeneratedBundle {
+    emit_typescript_module_with_output_paths(module, source_text, GeneratedOutputPaths::default())
+}
+
+/// Emits a module using caller-selected generated artifact paths.
+///
+/// This keeps TypeScript path selection at the project boundary while making
+/// the selected paths observable through both generated module metadata and
+/// the source map's `file` field.
+pub fn emit_typescript_module_with_output_paths(
+    module: TypeScriptModule,
+    source_text: &str,
+    output_paths: GeneratedOutputPaths,
+) -> GeneratedBundle {
     let typescript = render_typescript(&module);
-    let source_map = source_map_for_module(&module, source_text);
-    let metadata = generated_module_for(module);
+    let source_map = source_map_for_module(&module, source_text, &output_paths.typescript);
+    let metadata = generated_module_for(module, output_paths);
 
     GeneratedBundle {
         metadata,
