@@ -1,7 +1,15 @@
 use crate::execution::{Invocation, InvocationArgument};
 
 pub(super) fn parse_invocation(run: &serde_json::Value) -> Result<Invocation, String> {
-    let arguments = parse_invocation_arguments(run)?;
+    parse_invocation_document("run.json", run)
+}
+
+/// Parses the shared invocation shape for a named execution descriptor.
+pub(crate) fn parse_invocation_document(
+    document: &str,
+    run: &serde_json::Value,
+) -> Result<Invocation, String> {
+    let arguments = parse_invocation_arguments(document, run)?;
     let effect = run.pointer("/invocation/effect");
     let pure = run.pointer("/invocation/pure");
     match (effect, pure) {
@@ -19,46 +27,54 @@ pub(super) fn parse_invocation(run: &serde_json::Value) -> Result<Invocation, St
         {
             Ok(Invocation::PureJson { arguments })
         }
-        (Some(_), Some(_)) => {
-            Err("run.json invocation must select exactly one execution mode".to_owned())
-        }
-        (Some(_), None) => {
-            Err("run.json effect invocation must be cold and use the root scope".to_owned())
-        }
-        (None, Some(_)) => Err("run.json pure invocation result must be json".to_owned()),
-        (None, None) => Err("run.json invocation mode is missing".to_owned()),
+        (Some(_), Some(_)) => Err(format!(
+            "{document} invocation must select exactly one execution mode"
+        )),
+        (Some(_), None) => Err(format!(
+            "{document} effect invocation must be cold and use the root scope"
+        )),
+        (None, Some(_)) => Err(format!("{document} pure invocation result must be json")),
+        (None, None) => Err(format!("{document} invocation mode is missing")),
     }
 }
 
-fn parse_invocation_arguments(run: &serde_json::Value) -> Result<Vec<InvocationArgument>, String> {
+fn parse_invocation_arguments(
+    document: &str,
+    run: &serde_json::Value,
+) -> Result<Vec<InvocationArgument>, String> {
     let legacy = run.pointer("/invocation/argument");
     let typed = run.pointer("/invocation/arguments");
     match (legacy, typed) {
         (Some(_), Some(_)) => {
-            return Err("run.json invocation must not mix argument and arguments".to_owned());
+            return Err(format!(
+                "{document} invocation must not mix argument and arguments"
+            ));
         }
         (_, Some(arguments)) => {
             let arguments = arguments
                 .as_array()
-                .ok_or_else(|| "run.json invocation.arguments must be an array".to_owned())?;
+                .ok_or_else(|| format!("{document} invocation.arguments must be an array"))?;
             if arguments.is_empty() {
-                return Err("run.json invocation.arguments must not be empty".to_owned());
+                return Err(format!("{document} invocation.arguments must not be empty"));
             }
             return arguments
                 .iter()
                 .enumerate()
-                .map(|(index, argument)| parse_invocation_argument(argument, index))
+                .map(|(index, argument)| parse_invocation_argument(document, argument, index))
                 .collect();
         }
         _ => {}
     }
     match legacy.and_then(|value| value.as_str()) {
         Some("Unit") => Ok(vec![InvocationArgument::Unit]),
-        _ => Err("run.json invocation must provide typed arguments".to_owned()),
+        _ => Err(format!(
+            "{document} invocation must provide typed arguments"
+        )),
     }
 }
 
 fn parse_invocation_argument(
+    document: &str,
     argument: &serde_json::Value,
     index: usize,
 ) -> Result<InvocationArgument, String> {
@@ -69,13 +85,13 @@ fn parse_invocation_argument(
             .and_then(|value| value.as_str())
             .map(|value| InvocationArgument::String(value.to_owned()))
             .ok_or_else(|| {
-                format!("run.json invocation.arguments[{index}] String value is missing")
+                format!("{document} invocation.arguments[{index}] String value is missing")
             }),
         Some(other) => Err(format!(
-            "run.json invocation.arguments[{index}] type {other} is not supported"
+            "{document} invocation.arguments[{index}] type {other} is not supported"
         )),
         None => Err(format!(
-            "run.json invocation.arguments[{index}] type is missing"
+            "{document} invocation.arguments[{index}] type is missing"
         )),
     }
 }

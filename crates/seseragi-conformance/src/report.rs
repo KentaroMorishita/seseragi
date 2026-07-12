@@ -150,6 +150,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.project_compile_cases,
         },
         Category {
+            json_key: "projectExecution",
+            text_label: "ProjectExecution",
+            cases: &suite.project_execution_cases,
+        },
+        Category {
             json_key: "execution",
             text_label: "Execution",
             cases: &suite.execution_cases,

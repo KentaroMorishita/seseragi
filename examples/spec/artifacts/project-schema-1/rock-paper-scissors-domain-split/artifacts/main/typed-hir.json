@@ -9,7 +9,7 @@
       "module": "fixture/rps-domain-split::domain",
       "origin": {
         "start": 0,
-        "end": 60
+        "end": 70
       },
       "imports": [
         {
@@ -34,12 +34,22 @@
         },
         {
           "namespace": "value",
+          "imported": "Scissors",
+          "local": "Scissors",
+          "canonical": "fixture/rps-domain-split::domain::Scissors",
+          "origin": {
+            "start": 21,
+            "end": 29
+          }
+        },
+        {
+          "namespace": "value",
           "imported": "decide",
           "local": "decide",
           "canonical": "fixture/rps-domain-split::domain::decide",
           "origin": {
-            "start": 21,
-            "end": 27
+            "start": 31,
+            "end": 37
           }
         },
         {
@@ -48,8 +58,8 @@
           "local": "renderOutcome",
           "canonical": "fixture/rps-domain-split::domain::renderOutcome",
           "origin": {
-            "start": 29,
-            "end": 42
+            "start": 39,
+            "end": 52
           }
         }
       ]
@@ -61,8 +71,8 @@
       "symbol": "fixture/rps-domain-split::main::isOpeningDraw",
       "visibility": "public",
       "origin": {
-        "start": 62,
-        "end": 190
+        "start": 72,
+        "end": 200
       },
       "scheme": {
         "typeParameters": [],
@@ -83,8 +93,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 83,
-            "end": 88
+            "start": 93,
+            "end": 98
           }
         },
         {
@@ -96,8 +106,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 98,
-            "end": 104
+            "start": 108,
+            "end": 114
           }
         }
       ],
@@ -115,8 +125,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 130,
-                "end": 135
+                "start": 140,
+                "end": 145
               }
             },
             {
@@ -128,8 +138,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 137,
-                "end": 143
+                "start": 147,
+                "end": 153
               }
             }
           ],
@@ -149,8 +159,8 @@
             ]
           },
           "origin": {
-            "start": 129,
-            "end": 144
+            "start": 139,
+            "end": 154
           }
         },
         "arms": [
@@ -167,8 +177,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 152,
-                    "end": 156
+                    "start": 162,
+                    "end": 166
                   }
                 },
                 {
@@ -180,8 +190,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 158,
-                    "end": 162
+                    "start": 168,
+                    "end": 172
                   }
                 }
               ],
@@ -201,8 +211,8 @@
                 ]
               },
               "origin": {
-                "start": 151,
-                "end": 163
+                "start": 161,
+                "end": 173
               }
             },
             "body": {
@@ -214,13 +224,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 167,
-                "end": 171
+                "start": 177,
+                "end": 181
               }
             },
             "origin": {
-              "start": 151,
-              "end": 171
+              "start": 161,
+              "end": 181
             }
           },
           {
@@ -242,8 +252,8 @@
                 ]
               },
               "origin": {
-                "start": 176,
-                "end": 177
+                "start": 186,
+                "end": 187
               }
             },
             "body": {
@@ -255,13 +265,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 181,
-                "end": 186
+                "start": 191,
+                "end": 196
               }
             },
             "origin": {
-              "start": 176,
-              "end": 186
+              "start": 186,
+              "end": 196
             }
           }
         ],
@@ -272,8 +282,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 123,
-          "end": 190
+          "start": 133,
+          "end": 200
         }
       }
     },
@@ -282,8 +292,8 @@
       "symbol": "fixture/rps-domain-split::main::play",
       "visibility": "public",
       "origin": {
-        "start": 192,
-        "end": 281
+        "start": 202,
+        "end": 291
       },
       "scheme": {
         "typeParameters": [],
@@ -304,8 +314,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 204,
-            "end": 209
+            "start": 214,
+            "end": 219
           }
         },
         {
@@ -317,8 +327,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 219,
-            "end": 225
+            "start": 229,
+            "end": 235
           }
         }
       ],
@@ -339,8 +349,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 268,
-                  "end": 273
+                  "start": 278,
+                  "end": 283
                 }
               },
               {
@@ -352,8 +362,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 274,
-                  "end": 280
+                  "start": 284,
+                  "end": 290
                 }
               }
             ],
@@ -363,8 +373,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 261,
-              "end": 280
+              "start": 271,
+              "end": 290
             }
           }
         ],
@@ -374,8 +384,97 @@
           "arguments": []
         },
         "origin": {
-          "start": 246,
-          "end": 281
+          "start": 256,
+          "end": 291
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/rps-domain-split::main::openingMessage",
+      "visibility": "public",
+      "origin": {
+        "start": 293,
+        "end": 376
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 315,
+            "end": 319
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/rps-domain-split::domain::renderOutcome",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/rps-domain-split::domain::decide",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "fixture/rps-domain-split::domain::Rock",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 362,
+                  "end": 366
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "fixture/rps-domain-split::domain::Scissors",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 367,
+                  "end": 375
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "origin": {
+              "start": 355,
+              "end": 375
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 340,
+          "end": 376
         }
       }
     }

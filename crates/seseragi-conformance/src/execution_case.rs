@@ -15,6 +15,7 @@ pub(crate) use effect_contract::FailureRenderer;
 use environment::parse_environment_plan;
 use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;
+pub(crate) use invocation::parse_invocation_document;
 use trace::{compare_trace, expected_trace, trace_stdout};
 
 pub(crate) fn check_execution_case(root: &Path, case: &Path) -> Result<(), String> {

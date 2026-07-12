@@ -125,7 +125,7 @@ pub(crate) fn run_generated_typescript(
     case: &Path,
     request: ExecutionRequest<'_>,
 ) -> Result<ExecutionOutput, String> {
-    let execution_dir = prepare_execution_dir(root, case)?;
+    let execution_dir = prepare_execution_dir(root, "single", case)?;
     fs::copy(request.compiled_typescript, execution_dir.join("main.ts"))
         .map_err(|error| format!("failed to stage compiled main.ts: {error}"))?;
     run_staged_typescript(
@@ -201,13 +201,18 @@ pub(crate) fn run_staged_typescript(
     })
 }
 
-fn prepare_execution_dir(root: &Path, case: &Path) -> Result<PathBuf, String> {
+pub(crate) fn prepare_execution_dir(
+    root: &Path,
+    kind: &str,
+    case: &Path,
+) -> Result<PathBuf, String> {
     let case_name = case
         .file_name()
         .and_then(|name| name.to_str())
         .ok_or_else(|| "execution case has no directory name".to_owned())?;
     let execution_dir = root
         .join("target/seseragi-conformance/execution")
+        .join(kind)
         .join(case_name);
     if execution_dir.exists() {
         fs::remove_dir_all(&execution_dir)

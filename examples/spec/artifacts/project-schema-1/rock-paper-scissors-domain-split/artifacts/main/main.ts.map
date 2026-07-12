@@ -6,13 +6,16 @@
     "seseragi://fixture/rps-domain-split::main"
   ],
   "sourcesContent": [
-    "import { Hand, Rock, decide, renderOutcome } from \"./domain\"\n\npub fn isOpeningDraw first: Hand -> second: Hand -> Bool =\n  match (first, second) {\n    (Rock, Rock) -> True\n    _ -> False\n  }\n\npub fn play first: Hand -> second: Hand -> String =\n  renderOutcome (decide first second)\n"
+    "import { Hand, Rock, Scissors, decide, renderOutcome } from \"./domain\"\n\npub fn isOpeningDraw first: Hand -> second: Hand -> Bool =\n  match (first, second) {\n    (Rock, Rock) -> True\n    _ -> False\n  }\n\npub fn play first: Hand -> second: Hand -> String =\n  renderOutcome (decide first second)\n\npub fn openingMessage unit: Unit -> String =\n  renderOutcome (decide Rock Scissors)\n"
   ],
   "names": [
     "isOpeningDraw",
     "play",
     "renderOutcome",
+    "decide",
+    "openingMessage",
+    "renderOutcome",
     "decide"
   ],
-  "mappings": ";;AAEAA;AAMAC"
+  "mappings": ";;AAEAA;AAMAC;AAGAG"
 }

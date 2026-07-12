@@ -9,7 +9,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 60
+        "end": 70
       },
       "imports": [
         {
@@ -36,13 +36,24 @@
         },
         {
           "namespace": "value",
+          "imported": "Scissors",
+          "local": "Scissors",
+          "canonical": "fixture/rps-domain-split::domain::Scissors",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 29
+          }
+        },
+        {
+          "namespace": "value",
           "imported": "decide",
           "local": "decide",
           "canonical": "fixture/rps-domain-split::domain::decide",
           "origin": {
             "source": "main.ssrg",
-            "start": 21,
-            "end": 27
+            "start": 31,
+            "end": 37
           }
         },
         {
@@ -52,8 +63,8 @@
           "canonical": "fixture/rps-domain-split::domain::renderOutcome",
           "origin": {
             "source": "main.ssrg",
-            "start": 29,
-            "end": 42
+            "start": 39,
+            "end": 52
           }
         }
       ]
@@ -65,8 +76,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 62,
-        "end": 190
+        "start": 72,
+        "end": 200
       },
       "parameters": [
         {
@@ -103,8 +114,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 130,
-                "end": 135
+                "start": 140,
+                "end": 145
               }
             },
             {
@@ -117,8 +128,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 137,
-                "end": 143
+                "start": 147,
+                "end": 153
               }
             }
           ],
@@ -139,8 +150,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 129,
-            "end": 144
+            "start": 139,
+            "end": 154
           }
         },
         "scrutineeType": {
@@ -172,8 +183,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Rock",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 152,
-                  "end": 156
+                  "start": 162,
+                  "end": 166
                 }
               },
               {
@@ -187,8 +198,8 @@
                 "constructor": "fixture/rps-domain-split::domain::Rock",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 158,
-                  "end": 162
+                  "start": 168,
+                  "end": 172
                 }
               }
             ],
@@ -197,14 +208,14 @@
               "value": true,
               "origin": {
                 "source": "main.ssrg",
-                "start": 167,
-                "end": 171
+                "start": 177,
+                "end": 181
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 151,
-              "end": 171
+              "start": 161,
+              "end": 181
             }
           },
           {
@@ -214,14 +225,14 @@
               "value": false,
               "origin": {
                 "source": "main.ssrg",
-                "start": 181,
-                "end": 186
+                "start": 191,
+                "end": 196
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 176,
-              "end": 186
+              "start": 186,
+              "end": 196
             }
           }
         ],
@@ -233,8 +244,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 123,
-          "end": 190
+          "start": 133,
+          "end": 200
         }
       }
     },
@@ -243,8 +254,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 192,
-        "end": 281
+        "start": 202,
+        "end": 291
       },
       "parameters": [
         {
@@ -284,8 +295,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 268,
-                  "end": 273
+                  "start": 278,
+                  "end": 283
                 }
               },
               {
@@ -298,8 +309,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 274,
-                  "end": 280
+                  "start": 284,
+                  "end": 290
                 }
               }
             ],
@@ -310,8 +321,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 261,
-              "end": 280
+              "start": 271,
+              "end": 290
             }
           }
         ],
@@ -322,8 +333,88 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 246,
-          "end": 281
+          "start": 256,
+          "end": 291
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-domain-split::main::openingMessage",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 293,
+        "end": 376
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/rps-domain-split::domain::renderOutcome",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/rps-domain-split::domain::decide",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "fixture/rps-domain-split::domain::Rock",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 362,
+                  "end": 366
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "fixture/rps-domain-split::domain::Scissors",
+                "type": {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 367,
+                  "end": 375
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 355,
+              "end": 375
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 340,
+          "end": 376
         }
       }
     }

@@ -539,12 +539,19 @@ graphとsource / output / artifact directoryを明示し、runnerは`compile_pro
 TypedInterface、CoreIr、TypeScriptIr、generated metadata、TS、source mapを比較します。専用writerが同じproducerから
 artifactを更新するため、snapshotを手で合わせてproject linkerを通ったように見せる経路はありません。最初のdomain-split
 じゃんけんfixtureはcross-module ADT、constructor pattern、type importとvalue import、pure callを証明し、Effect / instance
-closure / multi-module executionは後続gateへ残します。
+closureは後続gateへ残します。
 
 artifact比較後には、各moduleをmetadataのplanned `.ts` output pathへstageし、生成済みの`.js` ESM specifierを変えずに
 project全体を`tsc --moduleResolution bundler`でtype-checkします。これにより、単一module artifactがgreenなだけで
 dependency importの型・path解決が壊れている状態はproject compiler gateを通りません。これはcompile artifactの検証であり、
 hostでの実行やpackage manifest解決はまだ行いません。
+
+同じfixtureの`execution.json`は、project compilerから再度生成したすべてのTypeScript moduleをplanned pathへstageし、
+entry wrapperが元の`./dist/rps/main.js`をimportするpure execution gateです。`openingMessage Unit -> String`がdomainの
+`Rock` / `Scissors` constructorと`decide` / `renderOutcome`を越境して使い、Bun実行のstdoutまで比較します。したがって
+artifactだけでcross-module importがgreenに見える状態は避けられます。runtime requirementはentryだけでなく
+dependency-firstの全moduleから重複なしで集めます。Effect execution、typed failure renderer、imported instance dictionary
+closure、manifest経由のpackage entryはこのpure gateへ混ぜず、後続sliceで扱います。
 
 P2-1以降では、次の二層を維持します。
 

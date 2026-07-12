@@ -5,6 +5,7 @@ mod execution_case;
 mod generated_module;
 mod pipeline;
 mod project_compile;
+mod project_execution;
 mod report;
 mod runner;
 mod runtime_abi;

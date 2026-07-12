@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "kind": "pure-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/rps-domain-split::main",
+    "export": "openingMessage"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.bool",
+      "core.unit"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt"
+  }
+}

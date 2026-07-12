@@ -137,6 +137,12 @@ single-file schemaの`main.ssrg`規約を流用しません。各moduleは`typed
 artifact比較後、runnerは各`main.ts`をmetadataのplanned `.ts` output pathへstageし、project全体をTypeScriptで
 type-checkします。生成された`.js` ESM importはこの検証のために書き換えません。
 
+同じproject fixtureが`execution.json`を持つ場合、`ProjectExecution` runnerはsourceを通常のclosed project pipelineで
+再compileし、すべてのgenerated TypeScriptをplanned pathへstageしてから、entry wrapperが指定entry moduleの元の`.js`
+specifierをimportします。schema 1の最初の形はpure JSON invocationだけを許可し、process exit、stdout、stderrを比較します。
+期待runtime requirementはdependency-firstのclosed project全moduleからstableに集めます。Effect runner、typed failure
+rendering、imported instance dictionary、manifest/package loaderはこのschemaのscope外です。
+
 ```sh
 cargo run -p seseragi-conformance --bin write_project_schema1_artifact -- \
   examples/spec/artifacts/project-schema-1/rock-paper-scissors-domain-split

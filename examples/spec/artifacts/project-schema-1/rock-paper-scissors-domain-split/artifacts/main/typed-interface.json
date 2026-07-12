@@ -9,7 +9,7 @@
       "module": "fixture/rps-domain-split::domain",
       "origin": {
         "start": 0,
-        "end": 60
+        "end": 70
       },
       "imports": [
         {
@@ -21,6 +21,11 @@
           "namespace": "value",
           "name": "Rock",
           "symbol": "fixture/rps-domain-split::domain::Rock"
+        },
+        {
+          "namespace": "value",
+          "name": "Scissors",
+          "symbol": "fixture/rps-domain-split::domain::Scissors"
         },
         {
           "namespace": "value",
@@ -43,8 +48,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 62,
-        "end": 190
+        "start": 72,
+        "end": 200
       },
       "scheme": {
         "typeParameters": [],
@@ -79,8 +84,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 192,
-        "end": 281
+        "start": 202,
+        "end": 291
       },
       "scheme": {
         "typeParameters": [],
@@ -104,6 +109,34 @@
               "name": "String",
               "arguments": []
             }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-domain-split::main::openingMessage",
+      "namespace": "value",
+      "name": "openingMessage",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 293,
+        "end": 376
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
           }
         }
       }

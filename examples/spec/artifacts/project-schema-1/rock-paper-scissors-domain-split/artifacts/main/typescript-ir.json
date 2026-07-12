@@ -5,7 +5,8 @@
   "runtimeRequirements": [
     "core.bool",
     "core.adt",
-    "core.string"
+    "core.string",
+    "core.unit"
   ],
   "sourceImports": [
     {
@@ -25,6 +26,30 @@
           }
         },
         {
+          "imported": "Rock",
+          "local": "Rock",
+          "sourceLocal": "Rock",
+          "canonical": "fixture/rps-domain-split::domain::Rock",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 15,
+            "end": 19
+          }
+        },
+        {
+          "imported": "Scissors",
+          "local": "Scissors",
+          "sourceLocal": "Scissors",
+          "canonical": "fixture/rps-domain-split::domain::Scissors",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 29
+          }
+        },
+        {
           "imported": "decide",
           "local": "decide",
           "sourceLocal": "decide",
@@ -32,8 +57,8 @@
           "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
-            "start": 21,
-            "end": 27
+            "start": 31,
+            "end": 37
           }
         },
         {
@@ -44,15 +69,15 @@
           "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
-            "start": 29,
-            "end": 42
+            "start": 39,
+            "end": 52
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 60
+        "end": 70
       }
     }
   ],
@@ -146,8 +171,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 62,
-        "end": 190
+        "start": 72,
+        "end": 200
       }
     },
     {
@@ -188,8 +213,45 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 192,
-        "end": 281
+        "start": 202,
+        "end": 291
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "openingMessage",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "renderOutcome",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "decide",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "Rock"
+              },
+              {
+                "kind": "identifier",
+                "name": "Scissors"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 293,
+        "end": 376
       }
     }
   ]

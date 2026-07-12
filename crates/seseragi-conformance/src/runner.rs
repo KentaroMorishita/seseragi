@@ -6,6 +6,7 @@ use crate::checks::{
 use crate::execution_case::check_execution_case;
 use crate::generated_module::check_generated_module;
 use crate::project_compile::check_project_compile_case;
+use crate::project_execution::check_project_execution_case;
 use crate::report::{
     print_list_json, print_list_text, print_run_json, print_success_text, Failure,
 };
@@ -129,6 +130,15 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
             "projectCompile",
             case,
             check_project_compile_case(&root, case),
+            json,
+            &mut failures,
+        );
+    }
+    for case in &suite.project_execution_cases {
+        record_failure(
+            "projectExecution",
+            case,
+            check_project_execution_case(&root, case),
             json,
             &mut failures,
         );

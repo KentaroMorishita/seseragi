@@ -4,6 +4,8 @@ mod check;
 mod compile;
 #[path = "project_compile/model.rs"]
 mod model;
+#[path = "project_compile/stage.rs"]
+mod stage;
 #[cfg(test)]
 #[path = "project_compile/tests.rs"]
 mod tests;
@@ -11,3 +13,5 @@ mod tests;
 mod typecheck;
 
 pub(crate) use check::check_project_compile_case;
+pub(crate) use compile::{compile_project_compile_case, CompiledProjectCompileCase};
+pub(crate) use stage::stage_project_typescript;

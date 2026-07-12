@@ -8,12 +8,14 @@
     "requirements": [
       "core.bool",
       "core.adt",
-      "core.string"
+      "core.string",
+      "core.unit"
     ]
   },
   "exports": [
     "isOpeningDraw",
-    "play"
+    "play",
+    "openingMessage"
   ],
   "outputs": {
     "typescript": "dist/rps/main.ts",

@@ -17,6 +17,7 @@ pub(crate) struct Suite {
     pub(crate) typescript_ir_cases: Vec<PathBuf>,
     pub(crate) generated_module_cases: Vec<PathBuf>,
     pub(crate) project_compile_cases: Vec<PathBuf>,
+    pub(crate) project_execution_cases: Vec<PathBuf>,
     pub(crate) execution_cases: Vec<PathBuf>,
     pub(crate) runtime_abi_cases: Vec<PathBuf>,
 }
@@ -85,6 +86,12 @@ impl Suite {
             project_compile_cases: discover_cases(&artifacts.join("project-schema-1"))
                 .into_iter()
                 .filter(|case| case.join("project.json").is_file())
+                .collect(),
+            project_execution_cases: discover_cases(&artifacts.join("project-schema-1"))
+                .into_iter()
+                .filter(|case| {
+                    case.join("project.json").is_file() && case.join("execution.json").is_file()
+                })
                 .collect(),
             execution_cases: discover_single_module_artifact_cases(artifacts, "run.json"),
             runtime_abi_cases: discover_artifact_cases(
