@@ -58,6 +58,43 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
 }
 
 #[test]
+fn lowers_a_namespace_member_call_to_a_selected_named_import() {
+    let domain_source = "pub fn identity<A> value: A -> A = value\n";
+    let main_source = "import * as domain from \"./domain\"\n\npub fn run value: String -> String = domain.identity value\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    let binding = &typescript.source_imports[0].bindings[0];
+    assert_eq!(binding.imported, "identity");
+    assert_eq!(binding.local, "domain_identity");
+    assert_eq!(binding.source_local, "domain.identity");
+    assert_eq!(binding.canonical, "fixture/game::domain::identity");
+    assert!(matches!(
+        &typescript.functions[0],
+        TypeScriptFunction::ConstFunction {
+            body: TypeScriptExpr::Call { callee, .. },
+            ..
+        } if callee == "domain_identity"
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated
+        .typescript
+        .starts_with("import { identity as domain_identity } from \"./domain.js\"\n\n"));
+    assert!(generated
+        .typescript
+        .contains("export const run = (value: string) => domain_identity(value)"));
+}
+
+#[test]
 fn keeps_a_namespace_only_edge_as_a_side_effect_import() {
     let domain_source = "pub let answer: Int = 42\n";
     let main_source =
