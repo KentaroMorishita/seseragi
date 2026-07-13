@@ -7,7 +7,7 @@
 
 | 仕様領域                                      | 学習用target      | 機械検証target                                 | 状態    |
 | --------------------------------------------- | ----------------- | ---------------------------------------------- | ------- |
-| program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics / `project-schema-1/imported-effect-console` | partial |
+| program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics / `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | partial |
 | literal、application、`$`、pipeline           | Lessons 01-05     | literal / diagnostic / precedence fixtures     | partial |
 | optional record field / presence              | Lesson 27         | `compile/optional-record-field.ssrg`           | partial |
 | match、tuple、range、effectful for            | Lessons 03 and 05 | exhaustiveness diagnostics                     | partial |
@@ -19,7 +19,9 @@
 | Monad、`>>=`、do desugar                      | Lesson 10         | Monad law / invalid bind pattern fixtures      | partial |
 | Signalとtransaction                           | Lesson 15         | `projects/signal-transaction-lifetime`         | covered |
 | Effect / Stream requirement merge             | none              | compile / invalid-position fixtures            | partial |
-| cross-module Effect function / cold invocation | module guide      | `project-schema-1/imported-effect-console`      | covered |
+| cross-module Effect function / cold invocation | module guide      | `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | covered |
+| imported public scheme nominal provenance     | module guide      | direct / transitive / namespace / same-spelling compiler tests | covered |
+| multi-case project execution / closed descriptor | module guide   | `project-schema-1/rock-paper-scissors-cli-split/executions/*` | covered |
 | Fiber、Deferred、cancellation                 | Lesson 16         | `projects/effect-stream-simultaneous-failure`  | partial |
 | Streamとbackpressure                          | Lesson 17         | `projects/stream-*`, `effect-stream-*`         | partial |
 | resource scopeとfinalizer                     | Lesson 18         | exit / defect ordering fixtures                | partial |

@@ -133,14 +133,14 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    specifierへ変換するhelper、閉じたgraphをcompileする`compile_project`、backend側のalias、同名export、type-only edge、source
    map contractは固定済み。graphは実cycle witnessを返し、driverはgraph/source edge不一致、extra input、global output path衝突を
    拒否する。`project-schema-1`のconformance/writerで分割RPS domainを全IR・生成artifactまで固定し、planned output pathへ
-   stageしたmodule setのTypeScript type-checkも行う。pure entryと単一positiveのimported Effect / Console entryはBunで実行済み。
-   filesystem discovery、manifest解決、複数execution caseを持つpackage executionは未実装。
-3. じゃんけんCLIをdomain / input / mainへ分割し、single-file版と同じtyped failure、Effect、正常・不正・EOF / host failureの
-   execution結果を保つ。
+   stageしたmodule setのTypeScript type-checkも行う。pure entry、imported Effect / Console entryに加え、domain / input / mainへ
+   分割したじゃんけんCLIの正常・不正・EOF・Stdin host failure・Console host failureを同じ生成module setからBunで実行済み。
+   project descriptorの複数case discoveryは実装済みだが、filesystem discoveryとmanifest entry解決は未実装。
+3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。
-5. projectごとの複数execution case discoveryとnested descriptorのclosed key-set検証は追加済み。次は分割RPSの
-   execution matrixを一つのcompile artifact setへ結び、各caseが同じ生成module setを実行するgateを閉じる。
+5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
+   canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. trait / nested namespace、higher-order callable、generic imported ADTは、それぞれ一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと
