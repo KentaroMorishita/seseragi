@@ -1,4 +1,4 @@
-use super::{parse_manifest, ManifestError, RunSeed};
+use super::{parse_manifest, ManifestDependency, ManifestError, RunSeed};
 use semver::Version;
 
 #[test]
@@ -74,16 +74,78 @@ fn rejects_noncanonical_entry_target_and_run_policy() {
 }
 
 #[test]
-fn preserves_deferred_dependency_tables_without_assigning_identity() {
+fn parses_path_dependencies_without_assigning_resolved_identity() {
     let manifest = parse_manifest(include_str!(
         "../../../../examples/spec/fixtures/projects/package-path-dependency/seseragi.toml"
     ))
     .unwrap();
 
-    assert_eq!(manifest.deferred.dependencies.len(), 1);
-    assert!(manifest.deferred.dependencies.contains_key("math"));
+    assert_eq!(manifest.dependencies.len(), 1);
+    let (key, dependency) = manifest.dependencies.first_key_value().unwrap();
+    assert_eq!(key.as_str(), "math");
+    assert!(matches!(
+        dependency,
+        ManifestDependency::Path { package, path }
+            if package.as_str() == "fixture/math" && path.as_str() == "vendor/math"
+    ));
     assert!(manifest.deferred.foreign.is_none());
     assert!(manifest.deferred.test.is_none());
     assert!(manifest.deferred.benchmark.is_none());
     assert!(manifest.deferred.tool.is_none());
+}
+
+#[test]
+fn parses_short_and_aliased_registry_dependencies() {
+    let manifest = parse_manifest(
+        "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[dependencies]\n\"acme/json\" = \"~1.4.2\"\nhttp = { package = \"acme/http\", version = \"^2.1.0\" }\n",
+    )
+    .unwrap();
+
+    assert!(matches!(
+        manifest.dependencies.get("acme/json").unwrap(),
+        ManifestDependency::Registry { package, version }
+            if package.as_str() == "acme/json" && version.as_str() == "~1.4.2"
+    ));
+    assert!(matches!(
+        manifest.dependencies.get("http").unwrap(),
+        ManifestDependency::Registry { package, version }
+            if package.as_str() == "acme/http" && version.as_str() == "^2.1.0"
+    ));
+}
+
+#[test]
+fn rejects_ambiguous_or_invalid_dependency_contracts() {
+    for (dependency, expected) in [
+        ("std = \"^1.0.0\"", "invalid dependency key"),
+        (
+            "\"acme/app\" = \"^1.0.0\"",
+            "conflicts with the current package",
+        ),
+        (
+            "http = { package = \"Acme/http\", version = \"^1.0.0\" }",
+            "invalid package name",
+        ),
+        (
+            "http = { package = \"acme/http\", version = \"1.*\" }",
+            "invalid version requirement",
+        ),
+        (
+            "http = { package = \"acme/http\" }",
+            "must specify exactly one",
+        ),
+        (
+            "http = { package = \"acme/http\", version = \"^1.0.0\", path = \"../http\" }",
+            "cannot specify both",
+        ),
+        (
+            "http = { package = \"acme/http\", path = \"/tmp/http\" }",
+            "not package-relative",
+        ),
+    ] {
+        let source = format!(
+            "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[dependencies]\n{dependency}\n"
+        );
+        let error = parse_manifest(&source).unwrap_err();
+        assert!(error.to_string().contains(expected), "{error}");
+    }
 }

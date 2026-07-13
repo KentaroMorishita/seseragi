@@ -1,3 +1,4 @@
+use super::dependency::{parse_dependencies, RawDependency};
 use super::model::{
     DeferredTables, LanguageRequirement, LayoutPath, Manifest, ManifestLayout, ManifestPackage,
     ManifestRun, RunSeed, SignalMode, TargetId,
@@ -14,15 +15,16 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
     let package = parse_package(raw.package)?;
     let layout = parse_layout(raw.layout.unwrap_or_default())?;
     let exports = parse_exports(raw.exports)?;
+    let dependencies = parse_dependencies(&package.name, raw.dependencies)?;
     let run = raw.run.map(parse_run).transpose()?;
 
     Ok(Manifest {
         package,
         layout,
         exports,
+        dependencies,
         run,
         deferred: DeferredTables {
-            dependencies: raw.dependencies,
             foreign: raw.foreign,
             test: raw.test,
             benchmark: raw.benchmark,
@@ -40,7 +42,7 @@ struct RawManifest {
     #[serde(default)]
     exports: BTreeMap<String, String>,
     #[serde(default)]
-    dependencies: BTreeMap<String, toml::Value>,
+    dependencies: BTreeMap<String, RawDependency>,
     #[serde(default)]
     foreign: Option<toml::Table>,
     #[serde(default)]

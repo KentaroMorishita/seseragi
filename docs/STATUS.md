@@ -163,8 +163,9 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    拒否する。`project-schema-1`のconformance/writerで分割RPS domainを全IR・生成artifactまで固定し、planned output pathへ
    stageしたmodule setのTypeScript type-checkも行う。pure entry、imported Effect / Console entryに加え、domain / input / mainへ
    分割したじゃんけんCLIの正常・不正・EOF・Stdin host failure・Console host failureを同じ生成module setからBunで実行済み。
-   project descriptorの複数case discoveryは実装済み。core manifestのpackage / layout / exports / runはtyped modelへ
-   parseできるが、dependency schema、canonical filesystem discovery、manifest entryからgraphを構築するloaderは未実装。
+   project descriptorの複数case discoveryは実装済み。core manifestのpackage / layout / exports / runに加え、short registry、
+   alias付きregistry、local path dependencyをtyped modelへparseできる。canonical local module discoveryとmanifest entryから
+   一package graphを構築するloaderも接続済みで、次はpath dependencyを複数package graphへ展開する。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。

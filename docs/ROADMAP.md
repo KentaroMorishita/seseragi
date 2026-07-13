@@ -37,8 +37,8 @@ language semanticsをtarget adapterへ委譲しません。
 - Phase 1: 型付きじゃんけんprogramのcompiler / runtime fixtureに加え、fixture metadataなしの
   `seseragi run path/to/app.ssrg`を接続済み。
 - Phase 2: linked compileとproject executionは進行中です。strict manifest、canonical local discovery、shared project driver、
-  multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。dependency schemaと複数package
-  graphとsource root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つ
+  multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。registry / alias / path dependencyの
+  typed manifest contractは接続済みです。複数package graphとsource root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つ
   relative / `self/` importだけのpackageを対象にします。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
@@ -60,3 +60,7 @@ language semanticsをtarget adapterへ委譲しません。
 compile、diagnostics、CoreIr、TypeScriptIr、generated code、該当runtime executionまで通して完了とします。
 標準型の名前やcompiler-private helperだけをhardcodeしてuser-defined programへ同等の表現力が渡らない経路は、
 完了条件に含めません。
+
+single-fileとbrowser runtimeで実行可能な言語機能は、compiler縦sliceが安定した時点でPlaygroundへ学習・実行用sampleを
+追加します。module / package機能はsingle-file sourceへ擬似的に埋め込まず、Playgroundがshared driverのmodule inputを
+受け取れるgateで累積sampleへ接続します。

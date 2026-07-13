@@ -506,17 +506,19 @@ P2-1のmanifest sliceでは`seseragi-project::parse_manifest`を追加し、TOML
 default / explicit layout、export map、executable entryとhost policyをtyped modelへ変換します。未知core table、重複key、
 型違いは`SES-K0101`相当のsource range付き`ManifestError`になり、package名、exact SemVer、language range spelling、
 module path、target ID、seed、signal / shutdown組合せ、layout root overlapをfilesystemへ触れる前に検証します。
-dependencies、foreign、test、benchmark、tool tableはtyped TOML valueで保持しますが、このsliceではpackage identityや
-runtime semanticsを推測しません。dependency schemaとcanonical root / symlink / case / NFC filesystem discoveryを
-接続するまで、このmanifest sliceだけではP2-1全体および`seseragi run .`は未完了です。
+dependencyはshort registry、alias付きregistry、local path formを区別するtyped modelへ昇格しました。dependency key、
+package name、SemVer range、path spellingとsource指定の排他性をfilesystemへ触れる前に検証します。path formはまだ
+resolved package identityを持たず、canonicalizeした対象manifestのname / version / language照合は次のpackage graph sliceが
+所有します。foreign、test、benchmark、tool tableは引き続きdeferred TOML valueであり、この段階ではruntime semanticsを
+推測しません。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。
 package root、source root、各module fileはfilesystemでcanonicalizeし、root外へ向くsymlink、case違い、非NFC spelling、
 複数logical moduleが同じphysical fileへ収束する状態をproject errorとして拒否します。読み込んだmoduleはcanonical pathを
 source labelに、`PackageIdentity + ModuleRoot::Source + ModulePath`をstructural identityに保持します。package / `std/` /
-`gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。dependency schema、package graph、
-entryから到達しないsourceも含むroot全体のcollision auditを接続するまでP2-1全体は引き続き未完了です。
+`gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。typed dependencyをpackage graphへ
+解決する処理と、entryから到達しないsourceも含むroot全体のcollision auditを接続するまでP2-1全体は引き続き未完了です。
 
 `package.language`はsource discoveryより先に実装言語version `0.1.0`へ照合します。exact、比較、intersection、`||`、
 caret、tildeを仕様の上限規則で評価し、prereleaseは同じmajor / minor / patchのprerelease comparatorがrangeへ明記された
@@ -645,7 +647,8 @@ typed failure payload、derived stderr、stdout、actual trace、process exitを
 compositionを未検証にする経路はありません。strict `project.json`から始まるP2-5 execution gateに加え、local Package CLIは
 同じsourceへ置いた`seseragi.toml`からentryとmodule graphを発見し、shared driverでcompileした全generated moduleを
 `seseragi-runtime`がplanned pathへstageします。CLI integration testはfixture descriptorなしの`seseragi run .`で正常入力と
-typed failure / exit 1を比較します。dependency package graphは引き続き未実装です。
+typed failure / exit 1を比較します。dependency manifest contractはtyped modelへ接続済みですが、dependency package graphは
+引き続き未実装です。
 
 local driver adapterがcompilerへ渡すopaque IDは、現在の閉じた一package graphでは`<package name>::<module path>`です。
 これはstructural `PackageIdentity`の一般serialization規則ではありません。同名・同version・別sourceの混在を扱う

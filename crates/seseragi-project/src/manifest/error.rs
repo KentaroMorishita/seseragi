@@ -11,6 +11,23 @@ pub enum ManifestError {
     PackageName(PackageNameError),
     InvalidVersion(String),
     InvalidLanguageRequirement(String),
+    InvalidDependencyKey(String, PackageNameError),
+    SelfDependencyKey(String),
+    InvalidDependencyPackage {
+        key: String,
+        package: String,
+        error: PackageNameError,
+    },
+    InvalidDependencyVersion {
+        key: String,
+        value: String,
+    },
+    InvalidDependencyPath {
+        key: String,
+        value: String,
+    },
+    MissingDependencySource(String),
+    ConflictingDependencySources(String),
     InvalidLayoutPath {
         field: &'static str,
         value: String,
@@ -73,6 +90,37 @@ impl fmt::Display for ManifestError {
             Self::InvalidLanguageRequirement(value) => {
                 write!(formatter, "invalid language version requirement `{value}`")
             }
+            Self::InvalidDependencyKey(value, error) => {
+                write!(formatter, "invalid dependency key `{value}`: {error}")
+            }
+            Self::SelfDependencyKey(value) => write!(
+                formatter,
+                "dependency key `{value}` conflicts with the current package name"
+            ),
+            Self::InvalidDependencyPackage {
+                key,
+                package,
+                error,
+            } => write!(
+                formatter,
+                "dependency `{key}` has invalid package name `{package}`: {error}"
+            ),
+            Self::InvalidDependencyVersion { key, value } => write!(
+                formatter,
+                "dependency `{key}` has invalid version requirement `{value}`"
+            ),
+            Self::InvalidDependencyPath { key, value } => write!(
+                formatter,
+                "dependency `{key}` path is not package-relative: `{value}`"
+            ),
+            Self::MissingDependencySource(key) => write!(
+                formatter,
+                "dependency `{key}` must specify exactly one of `version` or `path`"
+            ),
+            Self::ConflictingDependencySources(key) => write!(
+                formatter,
+                "dependency `{key}` cannot specify both `version` and `path`"
+            ),
             Self::InvalidLayoutPath { field, value } => {
                 write!(
                     formatter,

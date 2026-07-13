@@ -76,5 +76,5 @@
 3. erasure、tail call、specialization、fusionをIR shape fixtureで固定する。
 4. formatter-0はshared lossless frontendとdriverへ接続済み。resolved fixityを使うcanonical spacing / wrappingと
    range formatを追加し、grammar coverageのformatter targetを実行snapshotへ昇格する。
-5. local Package CLIはsplit RPSをfixture descriptorなしの`seseragi run .`で実行済み。dependency package graphを
-   同じdriver境界へ追加する。
+5. local Package CLIはsplit RPSをfixture descriptorなしの`seseragi run .`で実行済み。registry / alias / path dependencyの
+   typed manifest contractも固定した。次はpath dependency package graphを同じdriver境界へ追加する。

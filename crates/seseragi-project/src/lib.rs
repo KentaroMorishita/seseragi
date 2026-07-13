@@ -24,7 +24,8 @@ pub use loader::{
     load_package, LoadedModule, LoadedPackage, PackageLoadError, IMPLEMENTED_LANGUAGE_VERSION,
 };
 pub use manifest::{
-    parse_manifest, LanguageRequirement, LayoutPath, Manifest, ManifestError, ManifestLayout,
+    parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
+    LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestLayout,
     ManifestPackage, ManifestRun, RunSeed, SignalMode, TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};

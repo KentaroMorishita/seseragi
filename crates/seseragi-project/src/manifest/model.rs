@@ -7,8 +7,78 @@ pub struct Manifest {
     pub package: ManifestPackage,
     pub layout: ManifestLayout,
     pub exports: BTreeMap<String, ModulePath>,
+    pub dependencies: BTreeMap<DependencyKey, ManifestDependency>,
     pub run: Option<ManifestRun>,
     pub(crate) deferred: DeferredTables,
+}
+
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub struct DependencyKey(String);
+
+impl DependencyKey {
+    pub(crate) fn new(value: String) -> Self {
+        Self(value)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl std::borrow::Borrow<str> for DependencyKey {
+    fn borrow(&self) -> &str {
+        self.as_str()
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum ManifestDependency {
+    Registry {
+        package: PackageName,
+        version: DependencyVersionRequirement,
+    },
+    Path {
+        package: PackageName,
+        path: DependencyPath,
+    },
+}
+
+impl ManifestDependency {
+    pub const fn package(&self) -> &PackageName {
+        match self {
+            Self::Registry { package, .. } | Self::Path { package, .. } => package,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DependencyVersionRequirement(String);
+
+impl DependencyVersionRequirement {
+    pub(crate) fn new(value: String) -> Self {
+        Self(value)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+
+    pub fn matches(&self, version: &Version) -> bool {
+        super::requirement::matches(&self.0, version)
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DependencyPath(String);
+
+impl DependencyPath {
+    pub(crate) fn new(value: String) -> Self {
+        Self(value)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -97,7 +167,6 @@ pub enum RunSeed {
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub(crate) struct DeferredTables {
-    pub dependencies: BTreeMap<String, toml::Value>,
     pub foreign: Option<toml::Table>,
     pub test: Option<toml::Table>,
     pub benchmark: Option<toml::Table>,
