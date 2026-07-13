@@ -128,8 +128,9 @@ browser host実行しています。formatter-0はlossless token / CST、shared 
 累積programのround-tripを固定しました。resolved fixity依存の整形とrange / stdin formatは独立した後続surface
 gateとして進め、Phase 2完了後へ一括延期しません。
 package directoryの`seseragi run .`はlocal filesystem discovery、shared project driver、multi-module runtimeへ接続済みです。
-manifestのlanguage rangeもsource読込前に実装versionへ照合します。dependency package graphとsource root全体のcollision
-auditは後続Phase 2 gateとして残します。
+manifestのlanguage rangeもsource読込前に実装versionへ照合します。path dependencyはcanonical rootとtyped manifestから
+structural package graphへ解決し、dependency name不一致、cycle、同名同versionの別source混入を拒否します。各dependencyの
+source module discovery / linkとsource root全体のcollision auditは後続Phase 2 gateとして残します。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -165,7 +166,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    分割したじゃんけんCLIの正常・不正・EOF・Stdin host failure・Console host failureを同じ生成module setからBunで実行済み。
    project descriptorの複数case discoveryは実装済み。core manifestのpackage / layout / exports / runに加え、short registry、
    alias付きregistry、local path dependencyをtyped modelへparseできる。canonical local module discoveryとmanifest entryから
-   一package graphを構築するloaderも接続済みで、次はpath dependencyを複数package graphへ展開する。
+   一package graphを構築するloaderに加え、path dependency manifestを再帰解決する複数package identity graphも接続済み。
+   次はそのgraphへ各packageのsource module / export subpath edgeを載せ、shared project driverでcompileする。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。

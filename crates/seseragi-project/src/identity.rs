@@ -3,7 +3,7 @@ use semver::Version;
 use std::fmt;
 use std::path::{Path, PathBuf};
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct PackageIdentity {
     name: PackageName,
     version: Version,
@@ -32,7 +32,7 @@ impl PackageIdentity {
     }
 }
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum PackageSourceIdentity {
     RegistryArtifact { content_digest: String },
     Path { canonical_path: PathBuf },
@@ -59,6 +59,19 @@ impl PackageSourceIdentity {
         match self {
             Self::Path { canonical_path } => Some(canonical_path),
             Self::RegistryArtifact { .. } => None,
+        }
+    }
+}
+
+impl fmt::Display for PackageSourceIdentity {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::RegistryArtifact { content_digest } => {
+                write!(formatter, "registry:{content_digest}")
+            }
+            Self::Path { canonical_path } => {
+                write!(formatter, "path:{}", canonical_path.display())
+            }
         }
     }
 }

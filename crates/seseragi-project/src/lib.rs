@@ -7,6 +7,7 @@ mod graph;
 mod identity;
 mod link;
 mod loader;
+mod local_graph;
 mod manifest;
 mod module_path;
 mod package_name;
@@ -22,6 +23,9 @@ pub use link::{
 };
 pub use loader::{
     load_package, LoadedModule, LoadedPackage, PackageLoadError, IMPLEMENTED_LANGUAGE_VERSION,
+};
+pub use local_graph::{
+    discover_local_package_graph, LocalPackageGraph, LocalPackageGraphError, LocalPackageManifest,
 };
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,

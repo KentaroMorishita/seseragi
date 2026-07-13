@@ -56,7 +56,7 @@
 | generated naming / declaration merge          | converter guide   | `projects/dts-{generated*,*merge,namespace*}`  | partial |
 | foreign module load mode / single-flight      | interop guide     | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
-| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (core manifest + local source loader) |
+| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (typed dependency + canonical local package graph) |
 | parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots + Phase 1 format round-trip   | partial |
 | shared-driver playground / browser host       | Lesson 01         | `tests/playground-wasm.integration.ts`         | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
@@ -77,4 +77,5 @@
 4. formatter-0はshared lossless frontendとdriverへ接続済み。resolved fixityを使うcanonical spacing / wrappingと
    range formatを追加し、grammar coverageのformatter targetを実行snapshotへ昇格する。
 5. local Package CLIはsplit RPSをfixture descriptorなしの`seseragi run .`で実行済み。registry / alias / path dependencyの
-   typed manifest contractも固定した。次はpath dependency package graphを同じdriver境界へ追加する。
+   typed manifest contractとcanonical local package identity graphも固定した。次はdependency packageのsource module / export
+   subpathをgraphへ載せ、同じdriver境界からcompileする。

@@ -499,8 +499,9 @@ structural identityで区別し、manifest module pathをUnicode NFCへ正規化
 directoryから同じroot内だけを解決し、`.ssrg`の有無を同じmoduleへ寄せ、root escape、absolute path、backslash、
 dot / empty segmentを拒否します。package identityは独自の表示文字列へ潰さず、仕様どおりASCII package name、exact
 SemVer、registry content digestまたはcanonical absolute pathのsource identityをstructuralに保持します。manifest /
-lockfileからこの値を構築する検証、canonical filesystem pathの取得、case / symlink衝突はまだ実装していないため、
-P2-1全体の完了とは扱いません。
+lockfileからregistry identityを構築する検証はまだ実装していません。local path identityはfilesystem canonical pathから
+構築し、source module discoveryでcase / symlink衝突を拒否しますが、全source root監査は未完了なためP2-1全体の完了とは
+扱いません。
 
 P2-1のmanifest sliceでは`seseragi-project::parse_manifest`を追加し、TOML 1.0 decoderから必須package identity input、
 default / explicit layout、export map、executable entryとhost policyをtyped modelへ変換します。未知core table、重複key、
@@ -508,9 +509,12 @@ default / explicit layout、export map、executable entryとhost policyをtyped 
 module path、target ID、seed、signal / shutdown組合せ、layout root overlapをfilesystemへ触れる前に検証します。
 dependencyはshort registry、alias付きregistry、local path formを区別するtyped modelへ昇格しました。dependency key、
 package name、SemVer range、path spellingとsource指定の排他性をfilesystemへ触れる前に検証します。path formはまだ
-resolved package identityを持たず、canonicalizeした対象manifestのname / version / language照合は次のpackage graph sliceが
-所有します。foreign、test、benchmark、tool tableは引き続きdeferred TOML valueであり、この段階ではruntime semanticsを
-推測しません。
+manifest単体ではresolved identityを持ちません。`discover_local_package_graph`がpackage rootをcanonicalizeして対象manifestの
+name / version / languageを照合し、`PackageIdentity`をnode、dependency keyをedgeにした閉じたgraphへ解決します。同じ
+name / exact versionが異なるcanonical sourceから入る状態、declared package name不一致、cycleをcompile前に拒否します。
+registry dependencyはlockfile resolverへ意味を委譲し、local graphがversionを選択しません。各nodeのsource module / export
+subpath discoveryとdriver compileは次のsliceが所有します。foreign、test、benchmark、tool tableは引き続きdeferred TOML
+valueであり、この段階ではruntime semanticsを推測しません。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。
@@ -518,7 +522,8 @@ package root、source root、各module fileはfilesystemでcanonicalizeし、roo
 複数logical moduleが同じphysical fileへ収束する状態をproject errorとして拒否します。読み込んだmoduleはcanonical pathを
 source labelに、`PackageIdentity + ModuleRoot::Source + ModulePath`をstructural identityに保持します。package / `std/` /
 `gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。typed dependencyをpackage graphへ
-解決する処理と、entryから到達しないsourceも含むroot全体のcollision auditを接続するまでP2-1全体は引き続き未完了です。
+解決するmanifest-level処理は接続済みですが、package importをdependencyのexport / source moduleへ結ぶ処理と、entryから
+到達しないsourceも含むroot全体のcollision auditを接続するまでP2-1全体は引き続き未完了です。
 
 `package.language`はsource discoveryより先に実装言語version `0.1.0`へ照合します。exact、比較、intersection、`||`、
 caret、tildeを仕様の上限規則で評価し、prereleaseは同じmajor / minor / patchのprerelease comparatorがrangeへ明記された

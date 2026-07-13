@@ -38,8 +38,10 @@ language semanticsをtarget adapterへ委譲しません。
   `seseragi run path/to/app.ssrg`を接続済み。
 - Phase 2: linked compileとproject executionは進行中です。strict manifest、canonical local discovery、shared project driver、
   multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。registry / alias / path dependencyの
-  typed manifest contractは接続済みです。複数package graphとsource root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つ
-  relative / `self/` importだけのpackageを対象にします。
+  typed manifest contractに加え、canonical path dependencyを再帰発見するlocal package graphを接続済みです。依存先manifestの
+  name / language照合、cycle、同名同versionの別source混入をproject layerで拒否します。複数packageのsource module linkと
+  source root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つrelative / `self/`
+  importだけの一package executionを対象にします。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS
