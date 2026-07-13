@@ -113,7 +113,8 @@ fn witnesses(
         SemanticTypeKey::Invalid => None,
         SemanticTypeKey::Other
         | SemanticTypeKey::TypeParameter(_)
-        | SemanticTypeKey::SchemeParameter(_) => Some(vec![Witness {
+        | SemanticTypeKey::SchemeParameter(_)
+        | SemanticTypeKey::ExternalNominal { .. } => Some(vec![Witness {
             pattern: CoveragePattern::Any,
             label: "_".to_owned(),
         }]),

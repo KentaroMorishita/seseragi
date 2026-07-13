@@ -128,6 +128,13 @@ pub(super) fn local_type_names(module: &CoreModule) -> BTreeSet<String> {
         .adts
         .iter()
         .map(|adt| safe_identifier(&adt.name))
+        .chain(
+            module
+                .functions
+                .iter()
+                .flat_map(|function| function.type_parameters.iter())
+                .map(|parameter| safe_identifier(parameter)),
+        )
         .collect()
 }
 

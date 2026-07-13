@@ -6,6 +6,7 @@ fn resolves_only_canonical_runtime_binding() {
     let bindings = vec![ExternalTypeBinding {
         spelling: "StdinError".to_owned(),
         canonical: "std/prelude::StdinError".to_owned(),
+        provider: None,
     }];
 
     assert_eq!(
@@ -20,6 +21,7 @@ fn rejects_local_shadow_and_ambiguous_bindings() {
     let local = vec![ExternalTypeBinding {
         spelling: "StdinError".to_owned(),
         canonical: "artifact/domain::StdinError".to_owned(),
+        provider: None,
     }];
     assert!(unambiguous_runtime_type("StdinError", &local).is_none());
 
@@ -27,10 +29,12 @@ fn rejects_local_shadow_and_ambiguous_bindings() {
         ExternalTypeBinding {
             spelling: "StdinError".to_owned(),
             canonical: "std/prelude::StdinError".to_owned(),
+            provider: None,
         },
         ExternalTypeBinding {
             spelling: "StdinError".to_owned(),
             canonical: "artifact/domain::StdinError".to_owned(),
+            provider: None,
         },
     ];
     assert!(unambiguous_runtime_type("StdinError", &ambiguous).is_none());

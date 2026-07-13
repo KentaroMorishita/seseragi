@@ -18,36 +18,49 @@ pub(super) fn lower_core_decision(
     branches: Vec<CoreDecisionBranch>,
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptExpr {
     TypeScriptExpr::Decision {
-        scrutinee: Box::new(lower_core_expr_to_typescript(scrutinee, imported_values)),
-        scrutinee_type: type_ref_from_core_type(&scrutinee_type),
+        scrutinee: Box::new(lower_core_expr_to_typescript(
+            scrutinee,
+            imported_values,
+            imported_types,
+        )),
+        scrutinee_type: type_ref_from_core_type(&scrutinee_type, imported_types),
         branches: branches
             .into_iter()
-            .map(|branch| lower_branch(branch, imported_values))
+            .map(|branch| lower_branch(branch, imported_values, imported_types))
             .collect(),
-        type_ref: type_ref_from_core_type(&type_ref),
+        type_ref: type_ref_from_core_type(&type_ref, imported_types),
     }
 }
 
 fn lower_branch(
     branch: CoreDecisionBranch,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptDecisionBranch {
     TypeScriptDecisionBranch {
         tests: branch.tests.into_iter().map(lower_test).collect(),
-        bindings: branch.bindings.into_iter().map(lower_binding).collect(),
+        bindings: branch
+            .bindings
+            .into_iter()
+            .map(|binding| lower_binding(binding, imported_types))
+            .collect(),
         guard: branch
             .guard
-            .map(|guard| lower_core_expr_to_typescript(guard, imported_values)),
-        value: lower_core_expr_to_typescript(branch.value, imported_values),
+            .map(|guard| lower_core_expr_to_typescript(guard, imported_values, imported_types)),
+        value: lower_core_expr_to_typescript(branch.value, imported_values, imported_types),
     }
 }
 
-fn lower_binding(binding: CoreDecisionBinding) -> TypeScriptDecisionBinding {
+fn lower_binding(
+    binding: CoreDecisionBinding,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptDecisionBinding {
     TypeScriptDecisionBinding {
         name: safe_identifier(&binding.name),
-        type_ref: type_ref_from_core_type(&binding.type_ref),
+        type_ref: type_ref_from_core_type(&binding.type_ref, imported_types),
         path: binding.path.into_iter().map(lower_projection).collect(),
     }
 }

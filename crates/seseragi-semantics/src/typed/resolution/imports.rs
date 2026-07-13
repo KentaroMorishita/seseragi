@@ -17,6 +17,7 @@ pub(super) fn collect_imported_callables(
                 return None;
             }
             let export = &import.export;
+            let scheme_type_bindings = import.scheme_type_bindings.as_deref()?;
             if export.declaration_kind.as_deref() != Some("function")
                 || !export.scheme.constraints.is_empty()
             {
@@ -32,10 +33,21 @@ pub(super) fn collect_imported_callables(
                 .collect::<BTreeSet<_>>();
             let parameters = parameter_interfaces
                 .into_iter()
-                .map(|type_ref| types.semantic_value(type_ref, &import.module, &type_parameters))
+                .map(|type_ref| {
+                    types.semantic_value(
+                        type_ref,
+                        &import.module,
+                        &type_parameters,
+                        scheme_type_bindings,
+                    )
+                })
                 .collect::<Option<Vec<_>>>()?;
-            let result =
-                types.semantic_value(result_interface, &import.module, &type_parameters)?;
+            let result = types.semantic_value(
+                result_interface,
+                &import.module,
+                &type_parameters,
+                scheme_type_bindings,
+            )?;
             let parameter_types = parameters
                 .iter()
                 .map(|parameter| parameter.type_ref.clone())

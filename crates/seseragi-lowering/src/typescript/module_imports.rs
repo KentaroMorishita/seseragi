@@ -10,14 +10,17 @@ use super::{
 mod instances;
 mod names;
 mod references;
+mod types;
 
 use instances::imported_instance_evidence;
 use names::{fresh_name, local_type_names, local_value_names};
-use references::{referenced_type_names, referenced_value_symbols};
+use references::{referenced_types, referenced_value_symbols};
+use types::lower_external_type_imports;
 
 pub(super) struct LoweredModuleImports {
     pub(super) imports: Vec<TypeScriptSourceImport>,
     pub(super) value_names: BTreeMap<String, String>,
+    pub(super) type_names: BTreeMap<String, String>,
     pub(super) instance_names: BTreeMap<(String, String), String>,
 }
 
@@ -26,7 +29,7 @@ pub(super) fn lower_module_imports(
     plan: &TypeScriptOutputPlan,
 ) -> Result<LoweredModuleImports, TypeScriptLoweringError> {
     let referenced_values = referenced_value_symbols(module);
-    let referenced_types = referenced_type_names(module);
+    let referenced_types = referenced_types(module);
     let imported_instances = imported_instance_evidence(module);
     let mut used_values = local_value_names(module);
     let mut used_types = local_type_names(module);
@@ -77,7 +80,7 @@ pub(super) fn lower_module_imports(
                         },
                     );
                 }
-                "type" if referenced_types.contains(&import.local) => {
+                "type" if referenced_types.names.contains(&import.local) => {
                     let local = safe_identifier(&import.local);
                     if !used_types.insert(local.clone())
                         && !group.bindings.iter().any(|binding| {
@@ -133,9 +136,18 @@ pub(super) fn lower_module_imports(
         }
     }
 
+    let type_names = lower_external_type_imports(
+        module,
+        &referenced_types.external,
+        plan,
+        &mut imports,
+        &mut used_types,
+    )?;
+
     Ok(LoweredModuleImports {
         imports,
         value_names,
+        type_names,
         instance_names,
     })
 }

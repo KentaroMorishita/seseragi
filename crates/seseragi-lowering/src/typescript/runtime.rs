@@ -325,6 +325,11 @@ pub(super) fn collect_type_runtime_requirement(
                 collect_type_runtime_requirement(argument, requirements);
             }
         }
+        CoreType::ExternalNamed { arguments, .. } => {
+            for argument in arguments {
+                collect_type_runtime_requirement(argument, requirements);
+            }
+        }
         CoreType::Record { fields, .. } => {
             for field in fields {
                 collect_type_runtime_requirement(&field.type_ref, requirements);

@@ -177,7 +177,10 @@ fn effect_interface_type(effect: &TypedEffect) -> InterfaceType {
 
 fn interface_type_from_typed_type(type_ref: &TypedType) -> InterfaceType {
     match type_ref {
-        TypedType::Named { name, arguments } => InterfaceType::Named {
+        TypedType::Named { name, arguments }
+        | TypedType::ExternalNamed {
+            name, arguments, ..
+        } => InterfaceType::Named {
             name: name.clone(),
             arguments: arguments
                 .iter()

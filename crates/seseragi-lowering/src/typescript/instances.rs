@@ -92,6 +92,7 @@ pub(super) fn lower_core_instances_to_typescript(
     instances: &[CoreInstance],
     adts: &[CoreAdt],
     imported_instance_names: &BTreeMap<(String, String), String>,
+    imported_type_names: &BTreeMap<String, String>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
     type_imports: &mut Vec<TypeScriptTypeImport>,
@@ -119,30 +120,33 @@ pub(super) fn lower_core_instances_to_typescript(
             )
         })
         .collect::<BTreeMap<_, _>>();
+    let context = InstanceLoweringContext {
+        adts,
+        dictionary_exports: &dictionary_exports,
+        imported_instance_names,
+        imported_type_names,
+    };
 
     instances
         .iter()
         .enumerate()
         .map(|(index, instance)| {
-            lower_instance(
-                index,
-                instance,
-                adts,
-                &dictionary_exports,
-                imported_instance_names,
-                runtime_requirements,
-                imports,
-            )
+            lower_instance(index, instance, &context, runtime_requirements, imports)
         })
         .collect()
+}
+
+struct InstanceLoweringContext<'a> {
+    adts: &'a [CoreAdt],
+    dictionary_exports: &'a BTreeMap<&'a str, String>,
+    imported_instance_names: &'a BTreeMap<(String, String), String>,
+    imported_type_names: &'a BTreeMap<String, String>,
 }
 
 fn lower_instance(
     index: usize,
     instance: &CoreInstance,
-    adts: &[CoreAdt],
-    dictionary_exports: &BTreeMap<&str, String>,
-    imported_instance_names: &BTreeMap<(String, String), String>,
+    context: &InstanceLoweringContext<'_>,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstance {
@@ -151,7 +155,8 @@ fn lower_instance(
             adt_symbol,
             payload_evidence,
         } => {
-            let adt = adts
+            let adt = context
+                .adts
                 .iter()
                 .find(|adt| adt.symbol == *adt_symbol)
                 .expect("selected DerivedShow instance must reference a lowered ADT");
@@ -169,11 +174,14 @@ fn lower_instance(
                                 .find(|evidence| evidence.variant_symbol == variant.symbol)
                                 .expect("selected DerivedShow payload must retain typed evidence");
                             TypeScriptDerivedShowPayload {
-                                type_ref: type_ref_from_core_type(payload),
+                                type_ref: type_ref_from_core_type(
+                                    payload,
+                                    context.imported_type_names,
+                                ),
                                 dictionary: resolve_show_dictionary(
                                     &evidence.evidence,
-                                    dictionary_exports,
-                                    imported_instance_names,
+                                    context.dictionary_exports,
+                                    context.imported_instance_names,
                                     runtime_requirements,
                                     imports,
                                 ),
@@ -188,7 +196,7 @@ fn lower_instance(
     TypeScriptInstance {
         identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
-        head: type_ref_from_core_type(&instance.head),
+        head: type_ref_from_core_type(&instance.head, context.imported_type_names),
         type_identity: instance.type_identity.clone(),
         constraints: instance
             .constraints

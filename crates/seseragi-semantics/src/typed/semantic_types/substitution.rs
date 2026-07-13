@@ -57,6 +57,59 @@ fn substitute_semantic_type_parameters(
                 },
             }
         }
+        (
+            TypedType::ExternalNamed {
+                name, canonical, ..
+            },
+            SemanticTypeKey::Adt { owner, arguments },
+        ) => {
+            let arguments = arguments
+                .iter()
+                .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
+                .collect::<Vec<_>>();
+            SemanticValueType {
+                type_ref: TypedType::ExternalNamed {
+                    name: name.clone(),
+                    canonical: canonical.clone(),
+                    arguments: arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect(),
+                },
+                key: SemanticTypeKey::Adt {
+                    owner: *owner,
+                    arguments,
+                },
+            }
+        }
+        (
+            TypedType::ExternalNamed {
+                name, canonical, ..
+            },
+            SemanticTypeKey::ExternalNominal {
+                canonical: key_canonical,
+                arguments,
+            },
+        ) if canonical == key_canonical => {
+            let arguments = arguments
+                .iter()
+                .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
+                .collect::<Vec<_>>();
+            SemanticValueType {
+                type_ref: TypedType::ExternalNamed {
+                    name: name.clone(),
+                    canonical: canonical.clone(),
+                    arguments: arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect(),
+                },
+                key: SemanticTypeKey::ExternalNominal {
+                    canonical: key_canonical.clone(),
+                    arguments,
+                },
+            }
+        }
         (TypedType::Tuple { elements: types }, SemanticTypeKey::Tuple(keys)) => {
             let elements = types
                 .iter()
@@ -141,6 +194,20 @@ fn collect_substitutions(
                 arguments,
             },
         ) if template_owner == actual_owner && templates.len() == arguments.len() => {
+            for (template, argument) in templates.iter().zip(arguments) {
+                collect_substitutions(&template.key, argument, substitutions);
+            }
+        }
+        (
+            SemanticTypeKey::ExternalNominal {
+                canonical: template_canonical,
+                arguments: templates,
+            },
+            SemanticTypeKey::ExternalNominal {
+                canonical: actual_canonical,
+                arguments,
+            },
+        ) if template_canonical == actual_canonical && templates.len() == arguments.len() => {
             for (template, argument) in templates.iter().zip(arguments) {
                 collect_substitutions(&template.key, argument, substitutions);
             }

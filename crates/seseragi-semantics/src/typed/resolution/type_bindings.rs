@@ -24,9 +24,28 @@ pub(super) fn collect_external_type_bindings(
         let binding = ExternalTypeBinding {
             spelling: reference.spelling.clone(),
             canonical: canonical.clone(),
+            provider: None,
         };
         if !bindings.contains(&binding) {
             bindings.push(binding);
+        }
+    }
+    for import in resolved.imports.iter().filter(|import| import.in_scope) {
+        let Some(scheme_bindings) = &import.scheme_type_bindings else {
+            continue;
+        };
+        for scheme_binding in scheme_bindings {
+            let mut binding = scheme_binding.clone();
+            if let Some(explicit) = resolved.imports.iter().find(|candidate| {
+                candidate.in_scope
+                    && candidate.export.namespace == "type"
+                    && candidate.export.symbol == binding.canonical
+            }) {
+                binding.spelling = explicit.local_name.clone();
+            }
+            if !bindings.contains(&binding) {
+                bindings.push(binding);
+            }
         }
     }
     bindings

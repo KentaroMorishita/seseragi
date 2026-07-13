@@ -1,6 +1,6 @@
-use super::Resolver;
+use super::{scheme_types::callable_scheme_type_bindings, Resolver};
 use crate::{ResolveIssue, ResolvedImport, ScopeId, SymbolId, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{ByteSpan, InterfaceExport, ModuleHeader, Visibility};
+use seseragi_syntax::{ByteSpan, InterfaceExport, ModuleHeader, ModuleInterface, Visibility};
 use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Default)]
@@ -14,6 +14,7 @@ struct NamespaceImport {
     module: String,
     origin: ByteSpan,
     exports: BTreeMap<(String, String), InterfaceExport>,
+    scheme_type_bindings: BTreeMap<(String, String), Option<Vec<crate::ExternalTypeBinding>>>,
     private_names: BTreeSet<(String, String)>,
 }
 
@@ -22,6 +23,7 @@ struct NamespaceMember {
     module: String,
     origin: ByteSpan,
     export: InterfaceExport,
+    scheme_type_bindings: Option<Vec<crate::ExternalTypeBinding>>,
 }
 
 enum NamespaceMemberLookup {
@@ -37,10 +39,11 @@ impl NamespaceImports {
         specifier: &str,
         module: &str,
         origin: ByteSpan,
-        exports: &[InterfaceExport],
+        interface: &ModuleInterface,
         header: Option<&ModuleHeader>,
     ) {
-        let exports = exports
+        let exports = interface
+            .exports
             .iter()
             .filter(|export| matches!(export.namespace.as_str(), "type" | "value"))
             .map(|export| {
@@ -50,6 +53,16 @@ impl NamespaceImports {
                 )
             })
             .collect::<BTreeMap<_, _>>();
+        let scheme_type_bindings = interface
+            .exports
+            .iter()
+            .map(|export| {
+                (
+                    (export.namespace.clone(), export.name.clone()),
+                    callable_scheme_type_bindings(interface, export),
+                )
+            })
+            .collect();
         let private_names = header
             .into_iter()
             .flat_map(|header| &header.names)
@@ -66,6 +79,7 @@ impl NamespaceImports {
                 module: module.to_owned(),
                 origin,
                 exports,
+                scheme_type_bindings,
                 private_names,
             },
         );
@@ -86,6 +100,7 @@ impl NamespaceImports {
                 module: binding.module.clone(),
                 origin: binding.origin,
                 export: export.clone(),
+                scheme_type_bindings: binding.scheme_type_bindings.get(&key).cloned().flatten(),
             })));
         }
         if binding.private_names.contains(&key) {
@@ -110,11 +125,11 @@ impl Resolver {
         specifier: &str,
         module: &str,
         origin: ByteSpan,
-        exports: &[InterfaceExport],
+        interface: &ModuleInterface,
         header: Option<&ModuleHeader>,
     ) {
         self.namespace_imports
-            .register(local_name, specifier, module, origin, exports, header);
+            .register(local_name, specifier, module, origin, interface, header);
     }
 
     pub(super) fn resolve_namespace_member(
@@ -174,6 +189,7 @@ impl Resolver {
             origin: member.origin,
             in_scope: true,
             export: member.export,
+            scheme_type_bindings: member.scheme_type_bindings,
         });
         Ok(Some(symbol))
     }

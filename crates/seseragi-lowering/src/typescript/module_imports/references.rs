@@ -95,41 +95,49 @@ fn collect_branch_value_symbols(branch: &CoreDecisionBranch, values: &mut BTreeS
     collect_expr_value_symbols(&branch.value, values);
 }
 
-pub(super) fn referenced_type_names(module: &CoreModule) -> BTreeSet<String> {
-    let mut names = BTreeSet::new();
+pub(super) struct ReferencedTypes {
+    pub(super) names: BTreeSet<String>,
+    pub(super) external: BTreeSet<String>,
+}
+
+pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
+    let mut references = ReferencedTypes {
+        names: BTreeSet::new(),
+        external: BTreeSet::new(),
+    };
     for adt in &module.adts {
         for variant in &adt.variants {
             if let Some(payload) = &variant.payload {
-                collect_type_names(payload, &mut names);
+                collect_type_names(payload, &mut references);
             }
         }
     }
     for instance in &module.instances {
-        collect_type_names(&instance.head, &mut names);
+        collect_type_names(&instance.head, &mut references);
     }
     for binding in &module.bindings {
-        collect_expr_type_names(&binding.value, &mut names);
+        collect_expr_type_names(&binding.value, &mut references);
     }
     for function in &module.functions {
         for parameter in &function.parameters {
-            collect_type_names(&parameter.type_ref, &mut names);
+            collect_type_names(&parameter.type_ref, &mut references);
         }
-        collect_expr_type_names(&function.body, &mut names);
+        collect_expr_type_names(&function.body, &mut references);
     }
-    names
+    references
 }
 
-fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
+fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
     match expr {
         CoreExpr::Variable { type_ref, .. } | CoreExpr::Call { type_ref, .. } => {
-            collect_type_names(type_ref, names);
+            collect_type_names(type_ref, references);
         }
         CoreExpr::Tuple {
             elements, type_ref, ..
         } => {
-            collect_type_names(type_ref, names);
+            collect_type_names(type_ref, references);
             for element in elements {
-                collect_expr_type_names(element, names);
+                collect_expr_type_names(element, references);
             }
         }
         CoreExpr::Binary {
@@ -138,9 +146,9 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             type_ref,
             ..
         } => {
-            collect_type_names(type_ref, names);
-            collect_expr_type_names(left, names);
-            collect_expr_type_names(right, names);
+            collect_type_names(type_ref, references);
+            collect_expr_type_names(left, references);
+            collect_expr_type_names(right, references);
         }
         CoreExpr::If {
             condition,
@@ -149,10 +157,10 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             type_ref,
             ..
         } => {
-            collect_type_names(type_ref, names);
-            collect_expr_type_names(condition, names);
-            collect_expr_type_names(then_branch, names);
-            collect_expr_type_names(else_branch, names);
+            collect_type_names(type_ref, references);
+            collect_expr_type_names(condition, references);
+            collect_expr_type_names(then_branch, references);
+            collect_expr_type_names(else_branch, references);
         }
         CoreExpr::Decision {
             scrutinee,
@@ -161,17 +169,17 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             type_ref,
             ..
         } => {
-            collect_type_names(scrutinee_type, names);
-            collect_type_names(type_ref, names);
-            collect_expr_type_names(scrutinee, names);
+            collect_type_names(scrutinee_type, references);
+            collect_type_names(type_ref, references);
+            collect_expr_type_names(scrutinee, references);
             for branch in branches {
                 for binding in &branch.bindings {
-                    collect_type_names(&binding.type_ref, names);
+                    collect_type_names(&binding.type_ref, references);
                 }
                 if let Some(guard) = &branch.guard {
-                    collect_expr_type_names(guard, names);
+                    collect_expr_type_names(guard, references);
                 }
-                collect_expr_type_names(&branch.value, names);
+                collect_expr_type_names(&branch.value, references);
             }
         }
         CoreExpr::EffectOperation {
@@ -188,11 +196,11 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             arguments,
             ..
         } => {
-            collect_type_names(requirements, names);
-            collect_type_names(failure, names);
-            collect_type_names(success, names);
+            collect_type_names(requirements, references);
+            collect_type_names(failure, references);
+            collect_type_names(success, references);
             for argument in arguments {
-                collect_expr_type_names(argument, names);
+                collect_expr_type_names(argument, references);
             }
         }
         CoreExpr::Sequence {
@@ -200,19 +208,19 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         } => {
             for statement in statements {
                 match statement {
-                    CoreStatement::Effect { value } => collect_expr_type_names(value, names),
+                    CoreStatement::Effect { value } => collect_expr_type_names(value, references),
                     CoreStatement::PureLet {
                         type_ref, value, ..
                     }
                     | CoreStatement::Bind {
                         type_ref, value, ..
                     } => {
-                        collect_type_names(type_ref, names);
-                        collect_expr_type_names(value, names);
+                        collect_type_names(type_ref, references);
+                        collect_expr_type_names(value, references);
                     }
                 }
             }
-            collect_expr_type_names(result, names);
+            collect_expr_type_names(result, references);
         }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
@@ -221,27 +229,37 @@ fn collect_expr_type_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
     }
 }
 
-fn collect_type_names(type_ref: &CoreType, names: &mut BTreeSet<String>) {
+fn collect_type_names(type_ref: &CoreType, references: &mut ReferencedTypes) {
     match type_ref {
         CoreType::Named { name, arguments } => {
-            names.insert(name.clone());
+            references.names.insert(name.clone());
             for argument in arguments {
-                collect_type_names(argument, names);
+                collect_type_names(argument, references);
+            }
+        }
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => {
+            references.external.insert(canonical.clone());
+            for argument in arguments {
+                collect_type_names(argument, references);
             }
         }
         CoreType::Record { fields, .. } => {
             for field in fields {
-                collect_type_names(&field.type_ref, names);
+                collect_type_names(&field.type_ref, references);
             }
         }
         CoreType::Tuple { elements } => {
             for element in elements {
-                collect_type_names(element, names);
+                collect_type_names(element, references);
             }
         }
         CoreType::Function { parameter, result } => {
-            collect_type_names(parameter, names);
-            collect_type_names(result, names);
+            collect_type_names(parameter, references);
+            collect_type_names(result, references);
         }
         CoreType::Hole => {}
     }

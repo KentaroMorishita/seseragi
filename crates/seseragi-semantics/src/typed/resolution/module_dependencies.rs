@@ -102,6 +102,7 @@ mod tests {
                 },
                 representation: None,
             },
+            scheme_type_bindings: None,
         }
     }
 }

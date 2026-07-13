@@ -12,6 +12,7 @@ use super::{TypeScriptExpr, TypeScriptStatement};
 pub(super) fn lower_core_expr_to_typescript(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptExpr {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
@@ -31,7 +32,7 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Call {
             callee, arguments, ..
         } => {
-            let arguments = lower_core_expressions(arguments, imported_values);
+            let arguments = lower_core_expressions(arguments, imported_values, imported_types);
             if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: constructor.local_name.to_owned(),
@@ -48,7 +49,7 @@ pub(super) fn lower_core_expr_to_typescript(
             }
         }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
-            elements: lower_core_expressions(elements, imported_values),
+            elements: lower_core_expressions(elements, imported_values, imported_types),
         },
         CoreExpr::Binary {
             operator,
@@ -56,16 +57,35 @@ pub(super) fn lower_core_expr_to_typescript(
             right,
             type_ref,
             ..
-        } => lower_binary(operator, *left, *right, type_ref, imported_values),
+        } => lower_binary(
+            operator,
+            *left,
+            *right,
+            type_ref,
+            imported_values,
+            imported_types,
+        ),
         CoreExpr::If {
             condition,
             then_branch,
             else_branch,
             ..
         } => TypeScriptExpr::Conditional {
-            condition: Box::new(lower_core_expr_to_typescript(*condition, imported_values)),
-            then_branch: Box::new(lower_core_expr_to_typescript(*then_branch, imported_values)),
-            else_branch: Box::new(lower_core_expr_to_typescript(*else_branch, imported_values)),
+            condition: Box::new(lower_core_expr_to_typescript(
+                *condition,
+                imported_values,
+                imported_types,
+            )),
+            then_branch: Box::new(lower_core_expr_to_typescript(
+                *then_branch,
+                imported_values,
+                imported_types,
+            )),
+            else_branch: Box::new(lower_core_expr_to_typescript(
+                *else_branch,
+                imported_values,
+                imported_types,
+            )),
         },
         CoreExpr::Decision {
             scrutinee,
@@ -79,12 +99,13 @@ pub(super) fn lower_core_expr_to_typescript(
             branches,
             type_ref,
             imported_values,
+            imported_types,
         ),
         CoreExpr::EffectOperation {
             operation,
             arguments,
             ..
-        } => lower_effect_operation(operation, arguments, imported_values),
+        } => lower_effect_operation(operation, arguments, imported_values, imported_types),
         CoreExpr::EffectInvoke {
             callee, arguments, ..
         } => TypeScriptExpr::Call {
@@ -92,16 +113,22 @@ pub(super) fn lower_core_expr_to_typescript(
                 .get(&callee)
                 .cloned()
                 .unwrap_or_else(|| local_name(&callee)),
-            arguments: lower_core_expressions(arguments, imported_values),
+            arguments: lower_core_expressions(arguments, imported_values, imported_types),
         },
         CoreExpr::Sequence {
             statements, result, ..
         } => TypeScriptExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(|statement| lower_core_statement_to_typescript(statement, imported_values))
+                .map(|statement| {
+                    lower_core_statement_to_typescript(statement, imported_values, imported_types)
+                })
                 .collect(),
-            result: Box::new(lower_core_expr_to_typescript(*result, imported_values)),
+            result: Box::new(lower_core_expr_to_typescript(
+                *result,
+                imported_values,
+                imported_types,
+            )),
         },
     }
 }
@@ -155,10 +182,13 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
 fn lower_core_expressions(
     expressions: Vec<CoreExpr>,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> Vec<TypeScriptExpr> {
     expressions
         .into_iter()
-        .map(|expression| lower_core_expr_to_typescript(expression, imported_values))
+        .map(|expression| {
+            lower_core_expr_to_typescript(expression, imported_values, imported_types)
+        })
         .collect()
 }
 
@@ -168,9 +198,10 @@ fn lower_binary(
     right: CoreExpr,
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptExpr {
-    let left = lower_core_expr_to_typescript(left, imported_values);
-    let right = lower_core_expr_to_typescript(right, imported_values);
+    let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
+    let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
     if is_int_type(&type_ref) {
         if let Some(operation) = runtime_int_operation(&operator) {
             return TypeScriptExpr::RuntimeCall {
@@ -190,9 +221,10 @@ fn lower_effect_operation(
     operation: String,
     arguments: Vec<CoreExpr>,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptExpr {
     let runtime_operation = runtime_effect_operation(&operation);
-    let mut arguments = lower_core_expressions(arguments, imported_values);
+    let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
     if operation == "effect.succeed" && arguments.is_empty() {
         arguments.push(TypeScriptExpr::Undefined);
     }
@@ -207,10 +239,11 @@ fn lower_effect_operation(
 fn lower_core_statement_to_typescript(
     statement: CoreStatement,
     imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptStatement {
     match statement {
         CoreStatement::Effect { value } => TypeScriptStatement::Effect {
-            value: lower_core_expr_to_typescript(value, imported_values),
+            value: lower_core_expr_to_typescript(value, imported_values, imported_types),
         },
         CoreStatement::PureLet {
             name,
@@ -219,8 +252,8 @@ fn lower_core_statement_to_typescript(
             origin,
         } => TypeScriptStatement::PureLet {
             name: safe_identifier(&name),
-            type_ref: type_ref_from_core_type(&type_ref),
-            initializer: lower_core_expr_to_typescript(value, imported_values),
+            type_ref: type_ref_from_core_type(&type_ref, imported_types),
+            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
             origin,
         },
         CoreStatement::Bind {
@@ -230,8 +263,8 @@ fn lower_core_statement_to_typescript(
             origin,
         } => TypeScriptStatement::Const {
             name: safe_identifier(&name),
-            type_ref: type_ref_from_core_type(&type_ref),
-            initializer: lower_core_expr_to_typescript(value, imported_values),
+            type_ref: type_ref_from_core_type(&type_ref, imported_types),
+            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
             origin,
         },
     }

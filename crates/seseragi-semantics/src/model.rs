@@ -38,6 +38,15 @@ pub struct TypedModule {
 pub struct ExternalTypeBinding {
     pub spelling: String,
     pub canonical: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider: Option<ExternalTypeProvider>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExternalTypeProvider {
+    pub module: String,
+    pub export: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -203,6 +212,11 @@ pub enum TypedInstanceEvidence {
 pub enum TypedType {
     Named {
         name: String,
+        arguments: Vec<TypedType>,
+    },
+    ExternalNamed {
+        name: String,
+        canonical: String,
         arguments: Vec<TypedType>,
     },
     Hole,

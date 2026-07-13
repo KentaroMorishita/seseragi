@@ -12,6 +12,11 @@ pub enum CoreType {
         name: String,
         arguments: Vec<CoreType>,
     },
+    ExternalNamed {
+        name: String,
+        canonical: String,
+        arguments: Vec<CoreType>,
+    },
     Hole,
     Record {
         closed: bool,
@@ -40,6 +45,15 @@ pub(crate) fn lower_typed_type(type_ref: TypedType) -> CoreType {
     match type_ref {
         TypedType::Named { name, arguments } => CoreType::Named {
             name,
+            arguments: arguments.into_iter().map(lower_typed_type).collect(),
+        },
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => CoreType::ExternalNamed {
+            name,
+            canonical,
             arguments: arguments.into_iter().map(lower_typed_type).collect(),
         },
         TypedType::Hole => CoreType::Hole,

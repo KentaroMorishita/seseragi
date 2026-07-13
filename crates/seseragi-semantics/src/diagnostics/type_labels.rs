@@ -1,7 +1,13 @@
 pub(super) fn type_label(type_ref: &crate::TypedType) -> String {
     match type_ref {
-        crate::TypedType::Named { name, arguments } if arguments.is_empty() => name.clone(),
-        crate::TypedType::Named { name, arguments } => format!(
+        crate::TypedType::Named { name, arguments }
+        | crate::TypedType::ExternalNamed {
+            name, arguments, ..
+        } if arguments.is_empty() => name.clone(),
+        crate::TypedType::Named { name, arguments }
+        | crate::TypedType::ExternalNamed {
+            name, arguments, ..
+        } => format!(
             "{}<{}>",
             name,
             arguments

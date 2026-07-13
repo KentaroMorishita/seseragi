@@ -1,9 +1,13 @@
 use crate::{CoreExpr, CoreParameter, CoreType};
+use std::collections::BTreeMap;
 
 use super::names::{local_name, safe_identifier};
 use super::{TypeScriptParameter, TypeScriptType};
 
-pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
+pub(super) fn type_ref_from_core_expr(
+    expr: &CoreExpr,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptType {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
         CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
@@ -14,27 +18,33 @@ pub(super) fn type_ref_from_core_expr(expr: &CoreExpr) -> TypeScriptType {
         | CoreExpr::Tuple { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
-        | CoreExpr::Decision { type_ref, .. } => type_ref_from_core_type(type_ref),
+        | CoreExpr::Decision { type_ref, .. } => type_ref_from_core_type(type_ref, imported_types),
         CoreExpr::EffectOperation { success, .. } | CoreExpr::EffectInvoke { success, .. } => {
-            type_ref_from_core_type(success)
+            type_ref_from_core_type(success, imported_types)
         }
-        CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result),
+        CoreExpr::Sequence { result, .. } => type_ref_from_core_expr(result, imported_types),
     }
 }
 
-pub(super) fn lower_core_parameter_to_typescript(parameter: CoreParameter) -> TypeScriptParameter {
+pub(super) fn lower_core_parameter_to_typescript(
+    parameter: CoreParameter,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptParameter {
     TypeScriptParameter {
         name: if parameter.kind == "implicit" {
             "_unit".to_owned()
         } else {
             safe_identifier(&parameter.id)
         },
-        type_name: render_core_type(&parameter.type_ref),
+        type_name: render_core_type(&parameter.type_ref, imported_types),
         implicit: parameter.kind == "implicit",
     }
 }
 
-pub(super) fn type_ref_from_core_type(type_ref: &CoreType) -> TypeScriptType {
+pub(super) fn type_ref_from_core_type(
+    type_ref: &CoreType,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptType {
     match type_ref {
         CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty() => {
             TypeScriptType::Bigint
@@ -50,21 +60,45 @@ pub(super) fn type_ref_from_core_type(type_ref: &CoreType) -> TypeScriptType {
         }
         CoreType::Named { name, arguments } if name == "Maybe" && arguments.len() == 1 => {
             TypeScriptType::Maybe {
-                element: Box::new(type_ref_from_core_type(&arguments[0])),
+                element: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
             }
         }
         CoreType::Named { name, arguments } if name == "Either" && arguments.len() == 2 => {
             TypeScriptType::Either {
-                error: Box::new(type_ref_from_core_type(&arguments[0])),
-                value: Box::new(type_ref_from_core_type(&arguments[1])),
+                error: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
+                value: Box::new(type_ref_from_core_type(&arguments[1], imported_types)),
             }
         }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
             name: local_name(name),
-            arguments: arguments.iter().map(type_ref_from_core_type).collect(),
+            arguments: arguments
+                .iter()
+                .map(|argument| type_ref_from_core_type(argument, imported_types))
+                .collect(),
+        },
+        CoreType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => TypeScriptType::Reference {
+            name: imported_types
+                .get(canonical)
+                .cloned()
+                .unwrap_or_else(|| {
+                    panic!(
+                        "external type {canonical} ({name}) was not validated by module import planning"
+                    )
+                }),
+            arguments: arguments
+                .iter()
+                .map(|argument| type_ref_from_core_type(argument, imported_types))
+                .collect(),
         },
         CoreType::Tuple { elements } => TypeScriptType::Tuple {
-            elements: elements.iter().map(type_ref_from_core_type).collect(),
+            elements: elements
+                .iter()
+                .map(|element| type_ref_from_core_type(element, imported_types))
+                .collect(),
         },
         CoreType::Hole | CoreType::Record { .. } | CoreType::Function { .. } => {
             TypeScriptType::Unknown
@@ -72,8 +106,11 @@ pub(super) fn type_ref_from_core_type(type_ref: &CoreType) -> TypeScriptType {
     }
 }
 
-pub(super) fn render_core_type(type_ref: &CoreType) -> String {
-    render_typescript_type(&type_ref_from_core_type(type_ref))
+pub(super) fn render_core_type(
+    type_ref: &CoreType,
+    imported_types: &BTreeMap<String, String>,
+) -> String {
+    render_typescript_type(&type_ref_from_core_type(type_ref, imported_types))
 }
 
 pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
@@ -128,7 +165,7 @@ mod tests {
             arguments: Vec::new(),
         };
 
-        assert_eq!(render_core_type(&type_ref), "Hand");
+        assert_eq!(render_core_type(&type_ref, &Default::default()), "Hand");
     }
 
     #[test]
@@ -142,13 +179,13 @@ mod tests {
         };
 
         assert_eq!(
-            type_ref_from_core_type(&type_ref),
+            type_ref_from_core_type(&type_ref, &Default::default()),
             TypeScriptType::Maybe {
                 element: Box::new(TypeScriptType::String),
             }
         );
         assert_eq!(
-            render_core_type(&type_ref),
+            render_core_type(&type_ref, &Default::default()),
             "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }"
         );
     }
@@ -170,7 +207,7 @@ mod tests {
         };
 
         assert_eq!(
-            type_ref_from_core_type(&type_ref),
+            type_ref_from_core_type(&type_ref, &Default::default()),
             TypeScriptType::Either {
                 error: Box::new(TypeScriptType::Reference {
                     name: "InputError".to_owned(),
@@ -180,7 +217,7 @@ mod tests {
             }
         );
         assert_eq!(
-            render_core_type(&type_ref),
+            render_core_type(&type_ref, &Default::default()),
             "{ readonly tag: \"Left\"; readonly value: InputError } | { readonly tag: \"Right\"; readonly value: string }"
         );
     }

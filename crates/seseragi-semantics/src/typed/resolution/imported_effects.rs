@@ -22,6 +22,7 @@ pub(super) fn collect_imported_effects(
         .iter()
         .filter_map(|import| {
             let export = &import.export;
+            let scheme_type_bindings = import.scheme_type_bindings.as_deref()?;
             if !import.in_scope
                 || export.declaration_kind.as_deref() != Some("effect-function")
                 || !export.scheme.type_parameters.is_empty()
@@ -32,7 +33,14 @@ pub(super) fn collect_imported_effects(
             let (parameter_types, result) = flatten_function(export.scheme.type_ref.clone());
             let parameters = parameter_types
                 .into_iter()
-                .map(|type_ref| types.semantic_value(type_ref, &import.module, &no_type_parameters))
+                .map(|type_ref| {
+                    types.semantic_value(
+                        type_ref,
+                        &import.module,
+                        &no_type_parameters,
+                        scheme_type_bindings,
+                    )
+                })
                 .collect::<Option<Vec<_>>>()?;
             let InterfaceType::Named { name, arguments } = result else {
                 return None;
@@ -45,7 +53,12 @@ pub(super) fn collect_imported_effects(
             }
             let typed = |type_ref: &InterfaceType| {
                 types
-                    .semantic_value(type_ref.clone(), &import.module, &no_type_parameters)
+                    .semantic_value(
+                        type_ref.clone(),
+                        &import.module,
+                        &no_type_parameters,
+                        scheme_type_bindings,
+                    )
                     .map(|value| value.type_ref)
             };
             Some((

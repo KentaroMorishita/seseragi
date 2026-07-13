@@ -198,6 +198,18 @@ fn substitute_type_parameters(
                 .map(|argument| substitute_type_parameters(argument, substitutions))
                 .collect(),
         },
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => TypedType::ExternalNamed {
+            name: name.clone(),
+            canonical: canonical.clone(),
+            arguments: arguments
+                .iter()
+                .map(|argument| substitute_type_parameters(argument, substitutions))
+                .collect(),
+        },
         TypedType::Hole => TypedType::Hole,
         TypedType::Record { closed, fields } => TypedType::Record {
             closed: *closed,

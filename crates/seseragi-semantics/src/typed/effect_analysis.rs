@@ -15,6 +15,7 @@ use intrinsics::invalid_intrinsic_issues;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct EffectFailureOrigin {
     pub(crate) failure_type: String,
+    pub(crate) failure_identity: String,
     pub(crate) origin: ByteSpan,
 }
 
@@ -111,7 +112,7 @@ pub(crate) fn analyze_effect_function(
             .collect();
     }
 
-    let intrinsic_issues = invalid_intrinsic_issues(&typed_body);
+    let intrinsic_issues = invalid_intrinsic_issues(&typed_body, resolution);
     if !intrinsic_issues.is_empty() {
         return intrinsic_issues;
     }

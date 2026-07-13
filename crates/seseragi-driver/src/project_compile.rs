@@ -10,6 +10,7 @@ use seseragi_syntax::{
 };
 use std::collections::BTreeMap;
 
+mod outputs;
 mod validation;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -154,32 +155,14 @@ pub fn compile_project(
                 module: module.clone(),
                 errors,
             })?;
-        let dependency_outputs = linked.dependencies.iter().map(|dependency| {
-            let dependency_input = inputs
-                .get(&dependency.interface.module)
-                .expect("linked dependency must exist in the graph input");
-            let dependency_compiled = compiled
-                .get(&dependency.interface.module)
-                .expect("topological order compiles dependencies first");
-            crate::TypeScriptModuleOutput::new(
-                dependency.interface.module.clone(),
-                dependency_input.output_path.clone(),
-            )
-            .with_instance_exports(
-                dependency_compiled
-                    .generated
-                    .metadata
-                    .instances
-                    .iter()
-                    .map(|instance| {
-                        crate::TypeScriptInstanceOutput::new(
-                            instance.identity.clone(),
-                            instance.dictionary_export.clone(),
-                        )
-                    }),
-            )
-        });
-        let output_plan = crate::plan_typescript_outputs(&input.output_path, dependency_outputs)
+        // Inferred public contracts can carry a nominal type from a transitive
+        // source provider without inventing a direct Seseragi import edge.
+        // Every reachable provider compiled earlier in the closed graph is
+        // therefore available under its project-owned output path. Unrelated
+        // predecessor modules do not become implicit import edges.
+        let provider_outputs =
+            outputs::reachable_compiled_module_outputs(module, &graph, &inputs, &compiled);
+        let output_plan = crate::plan_typescript_outputs(&input.output_path, provider_outputs)
             .map_err(|error| ProjectCompileError::OutputPlan {
                 module: module.clone(),
                 error,
@@ -411,3 +394,7 @@ mod tests {
             .contains("__ssrg$instance$Show$1.show(value.value)"));
     }
 }
+
+#[cfg(test)]
+#[path = "project_compile/provider_tests.rs"]
+mod provider_tests;

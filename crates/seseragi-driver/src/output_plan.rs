@@ -325,3 +325,7 @@ mod tests {
         ));
     }
 }
+
+#[cfg(test)]
+#[path = "output_plan/provider_tests.rs"]
+mod provider_tests;

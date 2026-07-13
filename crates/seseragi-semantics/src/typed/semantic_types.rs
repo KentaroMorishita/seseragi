@@ -19,6 +19,10 @@ pub(crate) enum SemanticTypeKey {
     },
     TypeParameter(SymbolId),
     SchemeParameter(String),
+    ExternalNominal {
+        canonical: String,
+        arguments: Vec<SemanticValueType>,
+    },
     Tuple(Vec<SemanticTypeKey>),
     Other,
     Invalid,
@@ -54,6 +58,25 @@ pub(crate) fn semantic_values_are_compatible(
                     .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
         }
         (SemanticTypeKey::Adt { .. }, _) | (_, SemanticTypeKey::Adt { .. }) => false,
+        (
+            SemanticTypeKey::ExternalNominal {
+                canonical: expected_canonical,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::ExternalNominal {
+                canonical: actual_canonical,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_canonical == actual_canonical
+                && expected_arguments.len() == actual_arguments.len()
+                && expected_arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+        }
+        (SemanticTypeKey::ExternalNominal { .. }, _)
+        | (_, SemanticTypeKey::ExternalNominal { .. }) => false,
         (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
             let (
                 TypedType::Tuple {
@@ -267,6 +290,36 @@ impl SemanticTypeCatalog {
                         })
                         .collect(),
                 })
+            }
+            TypedType::ExternalNamed {
+                canonical,
+                arguments,
+                ..
+            } => {
+                let arguments = arguments
+                    .iter()
+                    .map(|argument| SemanticValueType {
+                        type_ref: argument.clone(),
+                        key: self.key_from_typed_type(resolved, argument),
+                    })
+                    .collect::<Vec<_>>();
+                let mut owners = resolved
+                    .symbols
+                    .iter()
+                    .filter(|symbol| {
+                        symbol.kind == SymbolKind::Type
+                            && symbol.canonical.as_deref() == Some(canonical.as_str())
+                            && self.adts.contains_key(&symbol.id)
+                    })
+                    .map(|symbol| symbol.id);
+                let owner = owners.next().filter(|_| owners.next().is_none());
+                match owner {
+                    Some(owner) => SemanticTypeKey::Adt { owner, arguments },
+                    None => SemanticTypeKey::ExternalNominal {
+                        canonical: canonical.clone(),
+                        arguments,
+                    },
+                }
             }
             TypedType::Tuple { elements } => SemanticTypeKey::Tuple(
                 elements

@@ -155,6 +155,19 @@ pub enum TypeScriptLoweringError {
         module: String,
         identity: String,
     },
+    MissingExternalTypeBinding {
+        canonical: String,
+    },
+    MissingSourceTypeProvider {
+        canonical: String,
+    },
+    AmbiguousSourceTypeProvider {
+        canonical: String,
+    },
+    MissingTypeOutputSpecifier {
+        module: String,
+        canonical: String,
+    },
     ImportNameCollision {
         local: String,
     },
@@ -395,12 +408,15 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         .adts
         .iter()
         .cloned()
-        .map(|adt| lower_core_adt_to_typescript(adt, &mut runtime_requirements))
+        .map(|adt| {
+            lower_core_adt_to_typescript(adt, &module_imports.type_names, &mut runtime_requirements)
+        })
         .collect();
     let instances = lower_core_instances_to_typescript(
         &module.instances,
         &module.adts,
         &module_imports.instance_names,
+        &module_imports.type_names,
         &mut runtime_requirements,
         &mut imports,
         &mut type_imports,
@@ -414,10 +430,11 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             TypeScriptBinding::Const {
                 exported: binding.visibility == Visibility::Public,
                 name: local_name(&binding.symbol),
-                type_ref: type_ref_from_core_expr(&binding.value),
+                type_ref: type_ref_from_core_expr(&binding.value, &module_imports.type_names),
                 initializer: lower_core_expr_to_typescript(
                     binding.value,
                     &module_imports.value_names,
+                    &module_imports.type_names,
                 ),
                 origin: binding.origin,
             }
@@ -432,7 +449,11 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             }
             collect_expr_runtime_requirements(&function.body, &mut runtime_requirements);
             collect_expr_runtime_imports(&function.body, &mut imports);
-            let body = lower_core_expr_to_typescript(function.body, &module_imports.value_names);
+            let body = lower_core_expr_to_typescript(
+                function.body,
+                &module_imports.value_names,
+                &module_imports.type_names,
+            );
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
@@ -441,7 +462,9 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                 parameters: function
                     .parameters
                     .into_iter()
-                    .map(lower_core_parameter_to_typescript)
+                    .map(|parameter| {
+                        lower_core_parameter_to_typescript(parameter, &module_imports.type_names)
+                    })
                     .collect(),
                 body,
                 origin: function.origin,

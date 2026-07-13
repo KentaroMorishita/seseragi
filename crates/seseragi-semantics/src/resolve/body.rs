@@ -14,6 +14,7 @@ mod imports;
 mod instances;
 mod namespace;
 mod pattern;
+mod scheme_types;
 #[cfg(test)]
 mod tests;
 

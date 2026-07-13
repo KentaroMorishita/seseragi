@@ -45,4 +45,9 @@ pub struct ResolvedImport {
     pub origin: seseragi_syntax::ByteSpan,
     pub in_scope: bool,
     pub export: InterfaceExport,
+    /// Nominal types referenced by a public callable scheme, resolved while
+    /// the provider's final interface is still available. `None` means the
+    /// callable scheme could not be resolved without ambiguity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme_type_bindings: Option<Vec<crate::ExternalTypeBinding>>,
 }

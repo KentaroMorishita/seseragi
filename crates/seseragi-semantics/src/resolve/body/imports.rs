@@ -1,4 +1,4 @@
-use super::Resolver;
+use super::{scheme_types::callable_scheme_type_bindings, Resolver};
 use crate::{ResolvedImport, SymbolKind, SymbolNamespace};
 use seseragi_project::{LinkedDependency, LinkedImport};
 
@@ -39,6 +39,10 @@ pub(super) fn register_linked_imports(
                         origin: *origin,
                         in_scope: true,
                         export: export.clone(),
+                        scheme_type_bindings: callable_scheme_type_bindings(
+                            &dependency.interface,
+                            export,
+                        ),
                     });
                 }
                 LinkedImport::Namespace {
@@ -59,7 +63,7 @@ pub(super) fn register_linked_imports(
                         &dependency.specifier,
                         &dependency.interface.module,
                         *origin,
-                        &dependency.interface.exports,
+                        &dependency.interface,
                         dependency.header.as_ref(),
                     );
                 }
@@ -90,6 +94,10 @@ pub(super) fn register_linked_imports(
                         origin: *origin,
                         in_scope: true,
                         export: export.clone(),
+                        scheme_type_bindings: callable_scheme_type_bindings(
+                            &dependency.interface,
+                            export,
+                        ),
                     });
                 }
             }
@@ -147,6 +155,7 @@ fn ensure_dependency_member(
         origin: seseragi_syntax::ByteSpan { start: 0, end: 0 },
         in_scope: false,
         export: export.clone(),
+        scheme_type_bindings: callable_scheme_type_bindings(&dependency.interface, export),
     });
 }
 

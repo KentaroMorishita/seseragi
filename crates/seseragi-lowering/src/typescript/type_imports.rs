@@ -72,6 +72,11 @@ fn collect_type_imports(
                 collect_type_imports(argument, bindings, requirements, imports);
             }
         }
+        CoreType::ExternalNamed { arguments, .. } => {
+            for argument in arguments {
+                collect_type_imports(argument, bindings, requirements, imports);
+            }
+        }
         CoreType::Record { fields, .. } => {
             for field in fields {
                 collect_type_imports(&field.type_ref, bindings, requirements, imports);

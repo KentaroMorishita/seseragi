@@ -8,6 +8,7 @@ use std::collections::BTreeMap;
 
 mod imported_effect_invocations;
 mod imported_instance_evidence;
+mod imported_scheme_nominals;
 mod namespace_constructors;
 mod namespace_types;
 
@@ -378,8 +379,9 @@ fn localizes_imported_function_schemes_to_a_type_alias_import() {
     assert!(matches!(
         body,
         TypedExpr::Call { type_ref, .. }
-            if *type_ref == TypedType::Named {
+            if *type_ref == TypedType::ExternalNamed {
                 name: "LocalHand".to_owned(),
+                canonical: "fixture/game::domain::Hand".to_owned(),
                 arguments: Vec::new(),
             }
     ));

@@ -101,7 +101,9 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
 pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
     match type_ref {
         TypedType::Hole => true,
-        TypedType::Named { arguments, .. } => arguments.iter().any(typed_type_contains_hole),
+        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+            arguments.iter().any(typed_type_contains_hole)
+        }
         TypedType::Record { fields, .. } => fields
             .iter()
             .any(|field| typed_type_contains_hole(&field.type_ref)),
