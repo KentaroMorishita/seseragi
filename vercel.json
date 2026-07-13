@@ -1,7 +1,8 @@
 {
-  "buildCommand": "cd playground && bun install && bun run build",
-  "outputDirectory": "playground/dist",
-  "installCommand": "bun install",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd apps/playground && bun run build",
+  "outputDirectory": "apps/playground/dist",
+  "installCommand": "cd apps/playground && bun install --frozen-lockfile",
   "framework": null,
   "rewrites": [
     {

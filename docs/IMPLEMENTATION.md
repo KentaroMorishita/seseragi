@@ -97,11 +97,18 @@ Playground-0では`seseragi-wasm`が同じ`compile_module`とpublicなruntime en
 playground adapterは生成TypeScriptをbrowser用Console / Stdin service providerで実行し、compilerやEffect semanticsを
 再実装しません。sampleは`examples/spec/lessons/01-hello-world.ssrg?raw`を直接読み、WASM integration testはlesson 01に
 加えてPhase 1累積じゃんけんをdeterministic inputで実行します。`bun run test:playground:wasm`がWASM生成とintegration、
-`bun run build:playground`がWASMを含むproduction bundleを検証します。生成bindingsはbuild artifactとしてcommitしません。
+`bun run build:playground`がWASMを含むproduction bundleを検証します。
 
-現在のWASMは約900 KB、既存Monacoとbrowser TypeScript transpilerを含むJS chunkは約3.9 MBです。これは意味境界を
-作り直さずworker化・code split・lazy loadで改善できるため、Playground-0のcorrectness blockerにはせず後続のproduct
-quality gateへ送ります。UIから任意Stdinを入力するsurfaceも同じbrowser host API上へ追加でき、compiler変更は不要です。
+Playground-1では`apps/playground`を旧React / Monaco UIから独立させ、CodeMirror 6、Seseragi専用stream language、
+mobile panel、任意Stdinを実装しました。diagnostic rangeはshared UTF-8 byte rangeをUI boundaryでのみUTF-16へ変換し、
+compiler diagnosticを再生成しません。初期application chunkは約18 KB、editor chunkは約330 KBです。約3.6 MBのbrowser
+TypeScript transpilerはRun時だけlazy loadし、約900 KBのWASMもdriver初回利用時に初期化します。
+
+VercelのGit buildへRust / rustup / wasm-pack installを持ち込むとhost差とdownload failureがdeploymentを壊すため、
+`apps/playground/src/wasm/pkg`は例外的にversioned deployment artifactとしてcommitします。Rust compilerまたはWASM
+adapter変更時は`bun run build:playground:wasm`で再生成し、browser execution integrationと同じcommitに含めます。
+Vercelはfrozen app lockfileとViteだけでbuildします。これはcompiler semanticsのsnapshotを手修正する経路ではなく、
+Rust producerからのみ生成する配布binaryです。
 
 このlayoutは実装方式の推奨であり言語仕様ではありません。Rust採用を変更しても、2章のartifact境界とfixtureは
 維持します。

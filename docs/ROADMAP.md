@@ -23,7 +23,7 @@ Phase番号は言語能力の依存順です。product surfaceの実装をPhase 
 | ------- | ------- | ------- | --------------------- |
 | CLI | structured diagnosticsを表示するthin adapter | **`seseragi run path/to/app.ssrg`**でsingle-fileをcompile / run | manifestとfilesystem discovery完成後に`seseragi run .` |
 | LSP | **LSP-0完了:** open documentを同じdriverでparse / resolve / typeし、source range付きdiagnosticsを返す | Phase 1構文のdocument diagnostics | module graph、cross-file definition / reference、package diagnostics |
-| playground / WASM | **Playground-0完了:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | Phase 1累積programをbrowser host adapterで実行 | module input、resource制限、stdlibのbrowser capability |
+| playground / WASM | **Playground-0完了:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | **Playground-1実装済み:** mobile-first editor、専用highlight、任意Stdin、structured diagnosticsを新UIで提供 | module input、resource制限、stdlibのbrowser capability |
 | formatter | lossless CSTを共有し、parse recoveryを壊さない | Phase 1構文をround-trip | 各Phaseの新構文をgrammarと同じcommitで追加 |
 | conformance | stage schemaとpositive / negative fixture | Phase 1累積programとactual execution | 小さい機能fixture＋過去能力を残した累積goal program |
 
@@ -43,6 +43,9 @@ language semanticsをtarget adapterへ委譲しません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS
   parserではなくWASM compile、generated TypeScript、browser Console / Stdin hostを通ります。lesson 01と
   Phase 1累積じゃんけんの実行をintegration testで固定済みです。
+- Playground-1: `apps/playground`へ旧UIと独立したCodeMirror 6のmobile-first surfaceを実装済みです。
+  diagnosticsのUTF-8 range変換、専用syntax highlight、任意Stdin、responsive panelを小さいmoduleへ分離し、
+  Vercelはversioned WASM deployment artifactをViteでbundleするためbuild hostのRust toolchainへ依存しません。
 - formatter共有gate: 未完了。Phase 2と独立にlossless CST boundary上で進めます。
 
 ## 完了判定
