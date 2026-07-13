@@ -51,5 +51,26 @@ describe("Playground-0 WASM boundary", () => {
         compiled.entry
       )
     ).toBe("Hello, Seseragi!")
+
+    const phaseOneSource = await Bun.file(
+      new URL(
+        "../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const phaseOne = JSON.parse(
+      bindings.compile_single_file(
+        "rock-paper-scissors.ssrg",
+        "playground/rock-paper-scissors",
+        phaseOneSource
+      )
+    ) as SuccessResponse
+    expect(
+      await executeGeneratedModule(
+        phaseOne.generated.typescript,
+        phaseOne.entry,
+        "rock\nscissors\n"
+      )
+    ).toBe("Player 1 wins!")
   })
 })
