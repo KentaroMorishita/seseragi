@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/transitive-effect-failure::facade",
+  "externalTypeBindings": [
+    {
+      "spelling": "InputError",
+      "canonical": "fixture/transitive-effect-failure::provider::InputError",
+      "provider": {
+        "module": "fixture/transitive-effect-failure::provider",
+        "export": "InputError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-effect-failure::provider",
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "reject",
+          "local": "reject",
+          "canonical": "fixture/transitive-effect-failure::provider::reject",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/transitive-effect-failure::facade::rejectViaFacade",
+      "visibility": "public",
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 37,
+        "end": 97
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-invoke",
+        "callee": "fixture/transitive-effect-failure::provider::reject",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "external-named",
+          "name": "InputError",
+          "canonical": "fixture/transitive-effect-failure::provider::InputError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "input",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "facade.ssrg",
+              "start": 92,
+              "end": 97
+            }
+          }
+        ],
+        "origin": {
+          "source": "facade.ssrg",
+          "start": 85,
+          "end": 97
+        }
+      }
+    }
+  ]
+}

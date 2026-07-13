@@ -1,0 +1,7 @@
+import { rejectViaFacade } from "./facade"
+
+pub effect fn main =
+  do {
+    rejectViaFacade "lizard"
+    succeed ()
+  }

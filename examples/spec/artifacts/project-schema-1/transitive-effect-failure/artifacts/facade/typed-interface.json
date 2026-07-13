@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/transitive-effect-failure::facade",
+  "source": "facade.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-effect-failure::provider",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "reject",
+          "symbol": "fixture/transitive-effect-failure::provider::reject"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/transitive-effect-failure::facade::rejectViaFacade",
+      "namespace": "value",
+      "name": "rejectViaFacade",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 37,
+        "end": 97
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "external-named",
+                "name": "InputError",
+                "canonical": "fixture/transitive-effect-failure::provider::InputError",
+                "providerModule": "fixture/transitive-effect-failure::provider",
+                "providerExport": "InputError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<fixture/transitive-effect-failure::provider::InputError>",
+      "providerModule": "fixture/transitive-effect-failure::provider",
+      "typeIdentity": "fixture/transitive-effect-failure::provider::InputError",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 59
+      }
+    }
+  ]
+}

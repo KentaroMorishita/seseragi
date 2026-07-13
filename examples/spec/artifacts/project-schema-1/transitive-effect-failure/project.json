@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/transitive-effect-failure::provider",
+    "fixture/transitive-effect-failure::facade",
+    "fixture/transitive-effect-failure::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/transitive-effect-failure::provider",
+      "source": "src/provider.ssrg",
+      "output": "dist/transitive-effect-failure/provider.js",
+      "artifacts": "artifacts/provider",
+      "imports": []
+    },
+    {
+      "id": "fixture/transitive-effect-failure::facade",
+      "source": "src/facade.ssrg",
+      "output": "dist/transitive-effect-failure/facade.js",
+      "artifacts": "artifacts/facade",
+      "imports": [
+        {
+          "specifier": "./provider",
+          "module": "fixture/transitive-effect-failure::provider"
+        }
+      ]
+    },
+    {
+      "id": "fixture/transitive-effect-failure::main",
+      "source": "src/main.ssrg",
+      "output": "dist/transitive-effect-failure/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./facade",
+          "module": "fixture/transitive-effect-failure::facade"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+import { reject } from "./provider"
+
+pub effect fn rejectViaFacade input: String =
+  reject input

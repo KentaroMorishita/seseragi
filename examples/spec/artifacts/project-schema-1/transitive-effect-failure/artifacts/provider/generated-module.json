@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-effect-failure::provider",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.show.dictionary",
+      "core.string.show",
+      "effect.core.fail"
+    ]
+  },
+  "exports": [
+    "InvalidInput",
+    "reject"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/transitive-effect-failure::provider::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/transitive-effect-failure::provider::InputError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-effect-failure/provider.ts",
+    "sourceMap": "dist/transitive-effect-failure/provider.ts.map"
+  }
+}

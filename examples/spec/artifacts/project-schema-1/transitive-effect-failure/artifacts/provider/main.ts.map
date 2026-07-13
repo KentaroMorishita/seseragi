@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "file": "dist/transitive-effect-failure/provider.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-effect-failure::provider"
+  ],
+  "sourcesContent": [
+    "pub type InputError deriving Show =\n  | InvalidInput String\n\npub effect fn reject input: String =\n  fail (InvalidInput input)\n"
+  ],
+  "names": [
+    "InputError",
+    "InvalidInput",
+    "__ssrg$instance$Show$0",
+    "reject",
+    "fail",
+    "InvalidInput"
+  ],
+  "mappings": ";;;AAAAA;;AACIC;AADJC;AAGAC"
+}

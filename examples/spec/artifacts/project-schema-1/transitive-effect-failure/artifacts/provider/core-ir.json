@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/transitive-effect-failure::provider",
+  "adts": [
+    {
+      "symbol": "fixture/transitive-effect-failure::provider::InputError",
+      "name": "InputError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/transitive-effect-failure::provider::InvalidInput",
+          "name": "InvalidInput",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "provider.ssrg",
+            "start": 40,
+            "end": 52
+          }
+        }
+      ],
+      "origin": {
+        "source": "provider.ssrg",
+        "start": 0,
+        "end": 59
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/transitive-effect-failure::provider::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/transitive-effect-failure::provider::InputError",
+      "origin": {
+        "source": "provider.ssrg",
+        "start": 0,
+        "end": 59
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/transitive-effect-failure::provider::InputError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/transitive-effect-failure::provider::InvalidInput",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/transitive-effect-failure::provider::reject",
+      "visibility": "public",
+      "origin": {
+        "source": "provider.ssrg",
+        "start": 61,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "id": "input",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "effect.fail",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "InputError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/transitive-effect-failure::provider::InvalidInput",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "input",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "provider.ssrg",
+                  "start": 119,
+                  "end": 124
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            "origin": {
+              "source": "provider.ssrg",
+              "start": 106,
+              "end": 124
+            }
+          }
+        ],
+        "origin": {
+          "source": "provider.ssrg",
+          "start": 100,
+          "end": 125
+        }
+      }
+    }
+  ]
+}

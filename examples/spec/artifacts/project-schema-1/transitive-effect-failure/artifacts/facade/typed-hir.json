@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "facade.ssrg",
+  "module": "fixture/transitive-effect-failure::facade",
+  "externalTypeBindings": [
+    {
+      "spelling": "InputError",
+      "canonical": "fixture/transitive-effect-failure::provider::InputError",
+      "provider": {
+        "module": "fixture/transitive-effect-failure::provider",
+        "export": "InputError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-effect-failure::provider",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "reject",
+          "local": "reject",
+          "canonical": "fixture/transitive-effect-failure::provider::reject",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/transitive-effect-failure::facade::rejectViaFacade",
+      "visibility": "public",
+      "origin": {
+        "start": 37,
+        "end": 97
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 67,
+            "end": 72
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "external-named",
+          "name": "InputError",
+          "canonical": "fixture/transitive-effect-failure::provider::InputError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-invoke",
+        "callee": "fixture/transitive-effect-failure::provider::reject",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "external-named",
+            "name": "InputError",
+            "canonical": "fixture/transitive-effect-failure::provider::InputError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "input",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 92,
+              "end": 97
+            }
+          }
+        ],
+        "origin": {
+          "start": 85,
+          "end": 97
+        }
+      }
+    }
+  ]
+}

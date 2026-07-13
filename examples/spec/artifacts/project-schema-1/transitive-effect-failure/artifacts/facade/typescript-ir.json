@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/transitive-effect-failure::facade",
+  "runtimeRequirements": [
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/transitive-effect-failure::provider",
+      "specifier": "./provider.js",
+      "bindings": [
+        {
+          "imported": "reject",
+          "local": "reject",
+          "sourceLocal": "reject",
+          "canonical": "fixture/transitive-effect-failure::provider::reject",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "InputError",
+          "local": "InputError",
+          "sourceLocal": "InputError",
+          "canonical": "fixture/transitive-effect-failure::provider::InputError",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 0,
+            "end": 35
+          }
+        }
+      ],
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 35
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "rejectViaFacade",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "reject",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "input"
+          }
+        ]
+      },
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 37,
+        "end": 97
+      }
+    }
+  ]
+}

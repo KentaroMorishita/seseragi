@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-effect-failure::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "effect.core.flatMap",
+      "core.string",
+      "effect.core.succeed"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-effect-failure/main.ts",
+    "sourceMap": "dist/transitive-effect-failure/main.ts.map"
+  }
+}

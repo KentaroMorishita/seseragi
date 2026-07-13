@@ -1,0 +1,5 @@
+pub type InputError deriving Show =
+  | InvalidInput String
+
+pub effect fn reject input: String =
+  fail (InvalidInput input)

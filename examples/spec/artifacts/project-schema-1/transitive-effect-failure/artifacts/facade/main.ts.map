@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/transitive-effect-failure/facade.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-effect-failure::facade"
+  ],
+  "sourcesContent": [
+    "import { reject } from \"./provider\"\n\npub effect fn rejectViaFacade input: String =\n  reject input\n"
+  ],
+  "names": [
+    "rejectViaFacade",
+    "reject"
+  ],
+  "mappings": ";;AAEAA"
+}

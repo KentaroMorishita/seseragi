@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/transitive-effect-failure/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-effect-failure::main"
+  ],
+  "sourcesContent": [
+    "import { rejectViaFacade } from \"./facade\"\n\npub effect fn main =\n  do {\n    rejectViaFacade \"lizard\"\n    succeed ()\n  }\n"
+  ],
+  "names": [
+    "main",
+    "rejectViaFacade",
+    "succeed"
+  ],
+  "mappings": ";;;;AAEAA"
+}

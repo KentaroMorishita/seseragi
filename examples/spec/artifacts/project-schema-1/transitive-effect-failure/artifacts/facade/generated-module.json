@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-effect-failure::facade",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string"
+    ]
+  },
+  "exports": [
+    "rejectViaFacade"
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-effect-failure/facade.ts",
+    "sourceMap": "dist/transitive-effect-failure/facade.ts.map"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/transitive-effect-failure::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.core.flatMap",
+    "core.string",
+    "effect.core.succeed"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/transitive-effect-failure::facade",
+      "specifier": "./facade.js",
+      "bindings": [
+        {
+          "imported": "rejectViaFacade",
+          "local": "rejectViaFacade",
+          "sourceLocal": "rejectViaFacade",
+          "canonical": "fixture/transitive-effect-failure::facade::rejectViaFacade",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "module": "fixture/transitive-effect-failure::provider",
+      "specifier": "./provider.js",
+      "runtimeEdge": false,
+      "bindings": [
+        {
+          "imported": "InputError",
+          "local": "InputError",
+          "sourceLocal": "InputError",
+          "canonical": "fixture/transitive-effect-failure::provider::InputError",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 44,
+            "end": 119
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 119
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "rejectViaFacade",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "lizard"
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 119
+      }
+    }
+  ]
+}

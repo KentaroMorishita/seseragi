@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/transitive-effect-failure::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "InputError",
+      "canonical": "fixture/transitive-effect-failure::provider::InputError",
+      "provider": {
+        "module": "fixture/transitive-effect-failure::provider",
+        "export": "InputError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./facade",
+      "module": "fixture/transitive-effect-failure::facade",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "rejectViaFacade",
+          "local": "rejectViaFacade",
+          "canonical": "fixture/transitive-effect-failure::facade::rejectViaFacade",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 24
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/transitive-effect-failure::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 119
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "fixture/transitive-effect-failure::facade::rejectViaFacade",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "external-named",
+                "name": "InputError",
+                "canonical": "fixture/transitive-effect-failure::provider::InputError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "lizard",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 92,
+                    "end": 100
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 76,
+                "end": 100
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "effect.succeed",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 105,
+            "end": 115
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 67,
+          "end": 119
+        }
+      }
+    }
+  ]
+}
