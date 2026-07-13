@@ -39,7 +39,8 @@ language semanticsをtarget adapterへ委譲しません。
 - Phase 2: linked compileとproject executionは進行中です。strict manifest、canonical local discovery、shared project driver、
   multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。registry / alias / path dependencyの
   typed manifest contractに加え、canonical path dependencyを再帰発見するlocal package graphを接続済みです。依存先manifestの
-  name / language照合、cycle、同名同versionの別source混入をproject layerで拒否します。複数packageのsource module linkと
+  name / language照合、cycle、同名同versionの別source混入をproject layerで拒否します。bare importはimporterの宣言済み
+  dependency keyを最長prefixで選び、exact package identityの公開export subpathへ解決します。複数packageのsource module linkと
   source root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つrelative / `self/`
   importだけの一package executionを対象にします。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの

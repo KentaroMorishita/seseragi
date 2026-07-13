@@ -1,11 +1,13 @@
 mod error;
+mod import;
 mod model;
 
 #[cfg(test)]
 mod tests;
 
 pub use error::LocalPackageGraphError;
-pub use model::{LocalPackageGraph, LocalPackageManifest};
+pub use import::PackageImportError;
+pub use model::{LocalPackageGraph, LocalPackageManifest, ResolvedPackageImport};
 
 use crate::{
     parse_manifest, ManifestDependency, ModuleGraph, PackageIdentity, PackageName,

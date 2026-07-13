@@ -54,6 +54,10 @@ where
         })
     }
 
+    pub fn dependency_for(&self, module: &T, specifier: &str) -> Option<&T> {
+        self.dependencies.get(module)?.get(specifier)
+    }
+
     /// Returns dependencies before their importers, with deterministic order
     /// for otherwise independent modules.
     pub fn topological_order(&self) -> Result<Vec<T>, ModuleGraphError<T>> {

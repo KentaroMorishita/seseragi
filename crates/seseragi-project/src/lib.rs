@@ -26,6 +26,7 @@ pub use loader::{
 };
 pub use local_graph::{
     discover_local_package_graph, LocalPackageGraph, LocalPackageGraphError, LocalPackageManifest,
+    PackageImportError, ResolvedPackageImport,
 };
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,

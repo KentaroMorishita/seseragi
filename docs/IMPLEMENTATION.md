@@ -513,8 +513,10 @@ manifest単体ではresolved identityを持ちません。`discover_local_packag
 name / version / languageを照合し、`PackageIdentity`をnode、dependency keyをedgeにした閉じたgraphへ解決します。同じ
 name / exact versionが異なるcanonical sourceから入る状態、declared package name不一致、cycleをcompile前に拒否します。
 registry dependencyはlockfile resolverへ意味を委譲し、local graphがversionを選択しません。各nodeのsource module / export
-subpath discoveryとdriver compileは次のsliceが所有します。foreign、test、benchmark、tool tableは引き続きdeferred TOML
-valueであり、この段階ではruntime semanticsを推測しません。
+subpathはimporter manifestのdependency keyを最長prefixで選び、graph edgeが持つexact package identityとtarget manifestの
+export mapから解決します。未宣言dependencyは`SES-K0103`、公開されていないsubpathは`SES-N0104`で停止し、transitive
+dependencyやprivate fileへfallbackしません。target source file discoveryとdriver compileは次のsliceが所有します。foreign、
+test、benchmark、tool tableは引き続きdeferred TOML valueであり、この段階ではruntime semanticsを推測しません。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。
