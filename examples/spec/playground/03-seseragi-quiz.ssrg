@@ -1,0 +1,40 @@
+// 入力した答えをString patternで判定し、結果はADTとして保持する小さなクイズです。
+// StdinへSeseragiのTypeScript backendを実装している言語名を入力します。
+
+pub type QuizResult =
+  | Correct
+  | Close
+  | TryAgain
+
+pub type AppError deriving Show =
+  | StdinFailure StdinError
+  | EndOfInput
+  | ConsoleFailure ConsoleError
+
+fn parseInput input: Maybe<String> -> Either<AppError, String> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> Right line
+  }
+
+fn judge answer: String -> QuizResult =
+  match answer {
+    "rust" -> Correct
+    "typescript" -> Close
+    _ -> TryAgain
+  }
+
+fn renderResult result: QuizResult -> String =
+  match result {
+    Correct -> "Correct! The new compiler is implemented in Rust."
+    Close -> "TypeScript is the backend. The compiler itself is Rust."
+    TryAgain -> "Try again: which language implements the new compiler?"
+  }
+
+pub effect fn main =
+  do {
+    answerInput <- mapError StdinFailure (readLine ())
+    answer <- fromEither (parseInput answerInput)
+    let result = judge answer
+    mapError ConsoleFailure (println (renderResult result))
+  }

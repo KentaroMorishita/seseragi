@@ -1,0 +1,75 @@
+// 顧客区分と配送方法をADTで表し、tuple patternで送料プランを決めます。
+// Stdinには1行目へmemberまたはguest、2行目へstandardまたはexpressを入力します。
+
+pub type Customer =
+  | Member
+  | Guest
+
+pub type Delivery =
+  | Standard
+  | Express
+
+pub type ShippingPlan =
+  | FreeShipping
+  | MemberExpress
+  | RegularShipping
+  | GuestExpress
+
+pub type AppError deriving Show =
+  | StdinFailure StdinError
+  | EndOfInput
+  | UnknownCustomer String
+  | UnknownDelivery String
+  | ConsoleFailure ConsoleError
+
+fn parseCustomer input: String -> Either<AppError, Customer> =
+  match input {
+    "member" -> Right Member
+    "guest" -> Right Guest
+    other -> Left (UnknownCustomer other)
+  }
+
+fn parseDelivery input: String -> Either<AppError, Delivery> =
+  match input {
+    "standard" -> Right Standard
+    "express" -> Right Express
+    other -> Left (UnknownDelivery other)
+  }
+
+fn parseCustomerInput input: Maybe<String> -> Either<AppError, Customer> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> parseCustomer line
+  }
+
+fn parseDeliveryInput input: Maybe<String> -> Either<AppError, Delivery> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> parseDelivery line
+  }
+
+fn choosePlan customer: Customer -> delivery: Delivery -> ShippingPlan =
+  match (customer, delivery) {
+    (Member, Standard) -> FreeShipping
+    (Member, Express) -> MemberExpress
+    (Guest, Standard) -> RegularShipping
+    _ -> GuestExpress
+  }
+
+fn renderPlan plan: ShippingPlan -> String =
+  match plan {
+    FreeShipping -> "Member standard shipping: free"
+    MemberExpress -> "Member express shipping: 500 yen"
+    RegularShipping -> "Guest standard shipping: 800 yen"
+    GuestExpress -> "Guest express shipping: 1200 yen"
+  }
+
+pub effect fn main =
+  do {
+    customerInput <- mapError StdinFailure (readLine ())
+    customer <- fromEither (parseCustomerInput customerInput)
+    deliveryInput <- mapError StdinFailure (readLine ())
+    delivery <- fromEither (parseDeliveryInput deliveryInput)
+    let plan = choosePlan customer delivery
+    mapError ConsoleFailure (println (renderPlan plan))
+  }

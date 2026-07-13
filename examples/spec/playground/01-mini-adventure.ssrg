@@ -1,0 +1,75 @@
+// 森か洞窟を選び、持っていく道具との組み合わせで結末が変わるミニ冒険です。
+// Stdinには1行目へforestまたはcave、2行目へtorchまたはropeを入力します。
+
+pub type Route =
+  | Forest
+  | Cave
+
+pub type Tool =
+  | Torch
+  | Rope
+
+pub type Ending =
+  | HiddenLake
+  | CrystalRoom
+  | SafeReturn
+  | Lost
+
+pub type AppError deriving Show =
+  | StdinFailure StdinError
+  | EndOfInput
+  | UnknownRoute String
+  | UnknownTool String
+  | ConsoleFailure ConsoleError
+
+fn parseRoute input: String -> Either<AppError, Route> =
+  match input {
+    "forest" -> Right Forest
+    "cave" -> Right Cave
+    other -> Left (UnknownRoute other)
+  }
+
+fn parseTool input: String -> Either<AppError, Tool> =
+  match input {
+    "torch" -> Right Torch
+    "rope" -> Right Rope
+    other -> Left (UnknownTool other)
+  }
+
+fn parseRouteInput input: Maybe<String> -> Either<AppError, Route> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> parseRoute line
+  }
+
+fn parseToolInput input: Maybe<String> -> Either<AppError, Tool> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> parseTool line
+  }
+
+fn chooseEnding route: Route -> tool: Tool -> Ending =
+  match (route, tool) {
+    (Forest, Rope) -> HiddenLake
+    (Cave, Torch) -> CrystalRoom
+    (Forest, Torch) -> SafeReturn
+    _ -> Lost
+  }
+
+fn renderEnding ending: Ending -> String =
+  match ending {
+    HiddenLake -> "You cross the ravine and discover a hidden lake!"
+    CrystalRoom -> "Your torch reveals a room filled with crystals!"
+    SafeReturn -> "The torch guides you safely through the dark forest."
+    Lost -> "Without the right tool, you decide to turn back."
+  }
+
+pub effect fn main =
+  do {
+    routeInput <- mapError StdinFailure (readLine ())
+    route <- fromEither (parseRouteInput routeInput)
+    toolInput <- mapError StdinFailure (readLine ())
+    tool <- fromEither (parseToolInput toolInput)
+    let ending = chooseEnding route tool
+    mapError ConsoleFailure (println (renderEnding ending))
+  }
