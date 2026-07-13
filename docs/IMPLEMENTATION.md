@@ -93,6 +93,16 @@ UTF-8 byteのまま保持し、`seseragi-source::LineIndex`がnegotiated UTF-8 /
 structured artifactを利用できます。LSP-0はsingle-file diagnostics gateであり、module graph、hover、completionは
 対応する言語能力Phaseへ残します。
 
+Playground-0では`seseragi-wasm`が同じ`compile_module`とpublicなruntime entry contractをversioned JSONへ変換します。
+playground adapterは生成TypeScriptをbrowser用Console / Stdin service providerで実行し、compilerやEffect semanticsを
+再実装しません。sampleは`examples/spec/lessons/01-hello-world.ssrg?raw`を直接読み、WASM integration testはlesson 01に
+加えてPhase 1累積じゃんけんをdeterministic inputで実行します。`bun run test:playground:wasm`がWASM生成とintegration、
+`bun run build:playground`がWASMを含むproduction bundleを検証します。生成bindingsはbuild artifactとしてcommitしません。
+
+現在のWASMは約900 KB、既存Monacoとbrowser TypeScript transpilerを含むJS chunkは約3.9 MBです。これは意味境界を
+作り直さずworker化・code split・lazy loadで改善できるため、Playground-0のcorrectness blockerにはせず後続のproduct
+quality gateへ送ります。UIから任意Stdinを入力するsurfaceも同じbrowser host API上へ追加でき、compiler変更は不要です。
+
 このlayoutは実装方式の推奨であり言語仕様ではありません。Rust採用を変更しても、2章のartifact境界とfixtureは
 維持します。
 

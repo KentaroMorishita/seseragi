@@ -23,7 +23,7 @@ Phase番号は言語能力の依存順です。product surfaceの実装をPhase 
 | ------- | ------- | ------- | --------------------- |
 | CLI | structured diagnosticsを表示するthin adapter | **`seseragi run path/to/app.ssrg`**でsingle-fileをcompile / run | manifestとfilesystem discovery完成後に`seseragi run .` |
 | LSP | **LSP-0完了:** open documentを同じdriverでparse / resolve / typeし、source range付きdiagnosticsを返す | Phase 1構文のdocument diagnostics | module graph、cross-file definition / reference、package diagnostics |
-| playground / WASM | **Playground-0:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | Phase 1累積programをbrowser host adapterで実行 | module input、resource制限、stdlibのbrowser capability |
+| playground / WASM | **Playground-0完了:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | Phase 1累積programをbrowser host adapterで実行 | module input、resource制限、stdlibのbrowser capability |
 | formatter | lossless CSTを共有し、parse recoveryを壊さない | Phase 1構文をround-trip | 各Phaseの新構文をgrammarと同じcommitで追加 |
 | conformance | stage schemaとpositive / negative fixture | Phase 1累積programとactual execution | 小さい機能fixture＋過去能力を残した累積goal program |
 
@@ -40,7 +40,10 @@ language semanticsをtarget adapterへ委譲しません。
   `seseragi run .`はまだ提供しません。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
-- Playground-0 / formatter共有gate: 未完了。Phase 2と独立に、同じdriver boundary上で進めます。
+- Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS
+  parserではなくWASM compile、generated TypeScript、browser Console / Stdin hostを通ります。lesson 01と
+  Phase 1累積じゃんけんの実行をintegration testで固定済みです。
+- formatter共有gate: 未完了。Phase 2と独立にlossless CST boundary上で進めます。
 
 ## 完了判定
 

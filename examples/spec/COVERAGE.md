@@ -58,6 +58,7 @@
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
 | manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*`                  | covered |
 | parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots                              | partial |
+| shared-driver playground / browser host       | Lesson 01         | `tests/playground-wasm.integration.ts`         | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
 | diagnostic schema / inference explanation     | none              | diagnostic JSON / explain snapshots            | partial |
 | document comments / doctest                   | none              | `projects/doc-tests`                           | partial |
@@ -73,4 +74,4 @@
 1. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
 2. module、process、interop、packageをmulti-file project fixtureで固定する。
 3. erasure、tail call、specialization、fusionをIR shape fixtureで固定する。
-4. 全sourceをformatter、LSP、syntax preview、playgroundが共有するrunnerを作る。
+4. formatterとsemantic toolingを、LSP-0 / Playground-0が利用するshared frontendへ接続する。
