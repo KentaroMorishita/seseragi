@@ -507,8 +507,8 @@ default / explicit layout、export map、executable entryとhost policyをtyped 
 型違いは`SES-K0101`相当のsource range付き`ManifestError`になり、package名、exact SemVer、language range spelling、
 module path、target ID、seed、signal / shutdown組合せ、layout root overlapをfilesystemへ触れる前に検証します。
 dependencies、foreign、test、benchmark、tool tableはtyped TOML valueで保持しますが、このsliceではpackage identityや
-runtime semanticsを推測しません。dependency schema、language version評価、canonical root / symlink / case / NFC
-filesystem discoveryを接続するまでP2-1全体および`seseragi run .`は未完了です。
+runtime semanticsを推測しません。dependency schemaとcanonical root / symlink / case / NFC filesystem discoveryを
+接続するまで、このmanifest sliceだけではP2-1全体および`seseragi run .`は未完了です。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。
@@ -516,7 +516,12 @@ package root、source root、各module fileはfilesystemでcanonicalizeし、roo
 複数logical moduleが同じphysical fileへ収束する状態をproject errorとして拒否します。読み込んだmoduleはcanonical pathを
 source labelに、`PackageIdentity + ModuleRoot::Source + ModulePath`をstructural identityに保持します。package / `std/` /
 `gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。dependency schema、package graph、
-language version評価を接続するまでP2-1全体は引き続き未完了です。
+entryから到達しないsourceも含むroot全体のcollision auditを接続するまでP2-1全体は引き続き未完了です。
+
+`package.language`はsource discoveryより先に実装言語version `0.1.0`へ照合します。exact、比較、intersection、`||`、
+caret、tildeを仕様の上限規則で評価し、prereleaseは同じmajor / minor / patchのprerelease comparatorがrangeへ明記された
+場合だけ候補にします。不適合はsource fileが存在しなくても`SES-K0101`で停止するため、未対応syntaxを偶然parseして
+package互換と誤認する経路はありません。
 
 module graphの最小contractとして、`seseragi-project::ModuleGraph`はlogical module identityだけをノードに持ち、
 dependencyをimporterからdependencyへのedgeとして登録します。topological orderは依存を先に、独立nodeはcanonical

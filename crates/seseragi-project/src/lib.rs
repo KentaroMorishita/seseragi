@@ -20,7 +20,9 @@ pub use link::{
     link_module, LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule,
     ModuleLinkTarget,
 };
-pub use loader::{load_package, LoadedModule, LoadedPackage, PackageLoadError};
+pub use loader::{
+    load_package, LoadedModule, LoadedPackage, PackageLoadError, IMPLEMENTED_LANGUAGE_VERSION,
+};
 pub use manifest::{
     parse_manifest, LanguageRequirement, LayoutPath, Manifest, ManifestError, ManifestLayout,
     ManifestPackage, ManifestRun, RunSeed, SignalMode, TargetId,

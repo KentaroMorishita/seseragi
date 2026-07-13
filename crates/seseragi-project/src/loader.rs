@@ -23,6 +23,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
+pub const IMPLEMENTED_LANGUAGE_VERSION: &str = "0.1.0";
+
 pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoadError> {
     let root = filesystem::canonical_directory(root.as_ref(), "package root")?;
     let manifest_path = root.join("seseragi.toml");
@@ -33,6 +35,14 @@ pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoad
             path: manifest_path,
             error,
         })?;
+    let implemented = semver::Version::parse(IMPLEMENTED_LANGUAGE_VERSION)
+        .expect("implemented language version is valid SemVer");
+    if !manifest.package.language.matches(&implemented) {
+        return Err(PackageLoadError::UnsupportedLanguageVersion {
+            requirement: manifest.package.language.as_str().to_owned(),
+            implemented: IMPLEMENTED_LANGUAGE_VERSION.to_owned(),
+        });
+    }
     let entry = manifest
         .run
         .as_ref()

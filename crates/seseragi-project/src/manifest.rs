@@ -1,6 +1,7 @@
 mod error;
 mod model;
 mod parse;
+mod requirement;
 #[cfg(test)]
 mod tests;
 

@@ -74,6 +74,25 @@ fn rejects_symlink_escape_from_the_source_root() {
     assert!(matches!(error, PackageLoadError::RootEscape { .. }));
 }
 
+#[test]
+fn rejects_an_incompatible_language_version_before_reading_source() {
+    let root = TempPackage::new();
+    root.write(
+        "seseragi.toml",
+        "[package]\nname = \"fixture/loader-test\"\nversion = \"0.0.0\"\nlanguage = \"^2.0.0\"\n\n[run]\nentry = \"missing\"\n",
+    );
+
+    let error = load_package(root.path()).unwrap_err();
+    assert!(matches!(
+        error,
+        PackageLoadError::UnsupportedLanguageVersion {
+            ref requirement,
+            ref implemented,
+        } if requirement == "^2.0.0" && implemented == IMPLEMENTED_LANGUAGE_VERSION
+    ));
+    assert_eq!(error.code(), "SES-K0101");
+}
+
 fn manifest(entry: &str) -> String {
     format!(
         "[package]\nname = \"fixture/loader-test\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[run]\nentry = \"{entry}\"\n"

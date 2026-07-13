@@ -131,24 +131,9 @@ fn parse_package(raw: RawPackage) -> Result<ManifestPackage, ManifestError> {
 }
 
 fn validate_language_requirement(value: &str) -> Result<(), ManifestError> {
-    if value.trim().is_empty() {
-        return Err(ManifestError::InvalidLanguageRequirement(value.to_owned()));
-    }
-    for union in value.split("||") {
-        let comparators = union.split_whitespace().collect::<Vec<_>>();
-        if comparators.is_empty() || comparators.iter().any(|item| !valid_comparator(item)) {
-            return Err(ManifestError::InvalidLanguageRequirement(value.to_owned()));
-        }
-    }
-    Ok(())
-}
-
-fn valid_comparator(value: &str) -> bool {
-    let version = [">=", "<=", ">", "<", "^", "~"]
-        .iter()
-        .find_map(|prefix| value.strip_prefix(prefix))
-        .unwrap_or(value);
-    !version.is_empty() && Version::parse(version).is_ok()
+    super::requirement::validate(value)
+        .then_some(())
+        .ok_or_else(|| ManifestError::InvalidLanguageRequirement(value.to_owned()))
 }
 
 fn parse_layout(raw: RawLayout) -> Result<ManifestLayout, ManifestError> {

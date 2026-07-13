@@ -128,7 +128,8 @@ browser host実行しています。formatter-0はlossless token / CST、shared 
 累積programのround-tripを固定しました。resolved fixity依存の整形とrange / stdin formatは独立した後続surface
 gateとして進め、Phase 2完了後へ一括延期しません。
 package directoryの`seseragi run .`はlocal filesystem discovery、shared project driver、multi-module runtimeへ接続済みです。
-dependency package graphは後続Phase 2 gateとして残します。
+manifestのlanguage rangeもsource読込前に実装versionへ照合します。dependency package graphとsource root全体のcollision
+auditは後続Phase 2 gateとして残します。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

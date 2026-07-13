@@ -29,6 +29,10 @@ impl LanguageRequirement {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    pub fn matches(&self, version: &Version) -> bool {
+        super::requirement::matches(&self.0, version)
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

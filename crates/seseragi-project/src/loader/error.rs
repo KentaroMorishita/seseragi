@@ -16,6 +16,10 @@ pub enum PackageLoadError {
         error: ManifestError,
     },
     MissingRunEntry,
+    UnsupportedLanguageVersion {
+        requirement: String,
+        implemented: String,
+    },
     NonCanonicalSpelling {
         expected: String,
         actual: String,
@@ -66,7 +70,7 @@ impl PackageLoadError {
 
     pub const fn code(&self) -> &'static str {
         match self {
-            Self::Manifest { .. } => "SES-K0101",
+            Self::Manifest { .. } | Self::UnsupportedLanguageVersion { .. } => "SES-K0101",
             Self::UnsupportedImport {
                 kind: ImportSpecifier::Package(_),
                 ..
@@ -86,6 +90,13 @@ impl fmt::Display for PackageLoadError {
                 write!(formatter, "invalid manifest `{}`: {error}", path.display())
             }
             Self::MissingRunEntry => formatter.write_str("package manifest has no [run] entry"),
+            Self::UnsupportedLanguageVersion {
+                requirement,
+                implemented,
+            } => write!(
+                formatter,
+                "package requires Seseragi `{requirement}`, but this compiler implements `{implemented}`"
+            ),
             Self::NonCanonicalSpelling { expected, actual, directory } => write!(
                 formatter,
                 "module path component `{actual}` in `{}` is not canonical NFC spelling `{expected}`",
