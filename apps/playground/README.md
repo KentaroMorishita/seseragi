@@ -16,6 +16,16 @@ structured diagnostics、runtime entry contractを利用します。
 現在はHello world、型付きじゃんけん、ミニ冒険、送料アドバイザー、Seseragiクイズの5 sampleを収録しています。
 いずれも`examples/spec`のcanonical sourceを直接bundleし、WASM compileとbrowser executionをtestします。
 
+## mobile layout contract
+
+iPhone Safariで編集時の自動zoomを避けるため、CodeMirrorのeditable surface、sample select、Stdinは
+16px未満にしません。狭い画面では文字を縮める代わりに、line height、line number gutter、inline padding、
+panel headingを圧縮します。lint diagnosticsは本文のunderlineとtooltipを維持し、空のgutter icon領域だけを
+非表示にします。
+
+portraitの小画面に加え、iPhone相当のlandscape viewportでもCode / I/Oのsingle-panel tabsを維持します。
+touch targetは44pxを下回らず、viewport metaでpinch zoomを禁止しません。
+
 ## 開発
 
 ```sh

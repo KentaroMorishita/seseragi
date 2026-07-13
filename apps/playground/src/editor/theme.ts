@@ -20,13 +20,17 @@ export const seseragiEditorTheme = [
         color: colors.text,
         backgroundColor: "#0d1513",
         fontSize: "16px",
+        lineHeight: "var(--cm-line-height, 1.4)",
       },
       ".cm-content": {
         caretColor: colors.accent,
         fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", monospace',
-        padding: "18px 0 28px",
+        lineHeight: "var(--cm-line-height, 1.4)",
+        padding: "var(--cm-content-padding, 18px 0 28px)",
       },
-      ".cm-line": { padding: "0 18px" },
+      ".cm-line": {
+        padding: "0 var(--cm-line-inline-padding, 18px)",
+      },
       ".cm-cursor, .cm-dropCursor": { borderLeftColor: colors.accent },
       ".cm-selectionBackground, ::selection": {
         backgroundColor: "#27574888 !important",
@@ -36,6 +40,11 @@ export const seseragiEditorTheme = [
         backgroundColor: "#0b1210",
         color: colors.muted,
         borderRight: "1px solid #1b2a26",
+        fontSize: "var(--cm-gutter-font-size, 13px)",
+      },
+      ".cm-lineNumbers .cm-gutterElement": {
+        minWidth: "var(--cm-line-number-min-width, 2.5em)",
+        padding: "var(--cm-line-number-padding, 0 8px 0 5px)",
       },
       ".cm-activeLineGutter": {
         backgroundColor: "#16231f",
