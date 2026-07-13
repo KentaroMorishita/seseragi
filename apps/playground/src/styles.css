@@ -51,20 +51,7 @@ select {
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
   min-width: 0;
-}
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  flex: 0 0 auto;
-  border: 1px solid #315d4e;
-  border-radius: 12px;
-  color: #87e0b8;
-  background: linear-gradient(145deg, #173329, #0d1d18);
-  box-shadow: 0 8px 30px #0008;
 }
 .brand div {
   display: flex;
@@ -94,6 +81,7 @@ select {
   font-size: 13px;
 }
 .sample-picker select {
+  width: clamp(150px, 22vw, 220px);
   max-width: 220px;
   color: #dce9e4;
   border: 1px solid #294139;
@@ -269,12 +257,10 @@ footer a {
     overflow: hidden;
   }
   .topbar {
+    display: grid;
+    grid-template-columns: auto minmax(96px, 1fr) auto;
     padding: 9px 11px;
     gap: 9px;
-  }
-  .brand-mark {
-    width: 36px;
-    height: 36px;
   }
   .brand div {
     display: block;
@@ -287,23 +273,20 @@ footer a {
   #sample-picker-label {
     display: none;
   }
-  .sample-picker select {
-    width: 42px;
-    max-width: 42px;
-    padding: 0;
-    color: transparent;
+  .topbar-actions {
+    display: contents;
   }
   .sample-picker {
-    position: relative;
+    min-width: 0;
+    width: 100%;
   }
-  .sample-picker::after {
-    content: "☰";
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    color: #a9bbb4;
-    pointer-events: none;
+  .sample-picker select {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    padding: 0 28px 0 10px;
+    color: #dce9e4;
+    text-overflow: ellipsis;
   }
   .run-button {
     padding: 0 15px;

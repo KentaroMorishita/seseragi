@@ -13,6 +13,9 @@ React / Monaco UIや旧TypeScript compilerは利用しません。
 UIはparser、resolver、type checker、Effect semanticsを所有しません。CLI / LSP / Playgroundは同じdriver、
 structured diagnostics、runtime entry contractを利用します。
 
+現在はHello world、型付きじゃんけん、doの逐次実行、pure let、bindの5 sampleを収録しています。
+いずれも`examples/spec`のcanonical sourceを直接bundleし、WASM compileとbrowser executionをtestします。
+
 ## 開発
 
 ```sh

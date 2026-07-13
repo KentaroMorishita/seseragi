@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import type { CompileResponse } from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
+import { sampleCatalog } from "../src/sample-catalog"
 
 type WasmBindings = {
   readonly default: (input: {
@@ -40,48 +41,25 @@ async function compile(
 }
 
 describe("new Playground product gate", () => {
-  test("executes lesson 01 through the shared driver and browser runtime", async () => {
-    const source = await Bun.file(
-      new URL(
-        "../../../examples/spec/lessons/01-hello-world.ssrg",
-        import.meta.url
-      )
-    ).text()
-    const response = await compile("hello-world.ssrg", source)
+  for (const sample of sampleCatalog) {
+    test(`executes bundled sample: ${sample.label}`, async () => {
+      const source = await Bun.file(
+        new URL(`../../../${sample.sourcePath}`, import.meta.url)
+      ).text()
+      const response = await compile(`${sample.id}.ssrg`, source)
 
-    expect(response.status).toBe("success")
-    if (response.status !== "success" || !response.entry)
-      throw new Error("missing entry")
-    expect(
-      await executeGeneratedModule(
-        response.generated.typescript,
-        response.entry
-      )
-    ).toEqual({
-      stdout: "Hello, Seseragi!",
+      expect(response.status).toBe("success")
+      if (response.status !== "success" || !response.entry)
+        throw new Error("missing entry")
+      expect(
+        await executeGeneratedModule(
+          response.generated.typescript,
+          response.entry,
+          sample.stdin
+        )
+      ).toEqual({ stdout: sample.expectedOutput })
     })
-  })
-
-  test("passes user-provided stdin to the cumulative Phase 1 program", async () => {
-    const source = await Bun.file(
-      new URL(
-        "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg",
-        import.meta.url
-      )
-    ).text()
-    const response = await compile("rock-paper-scissors.ssrg", source)
-
-    expect(response.status).toBe("success")
-    if (response.status !== "success" || !response.entry)
-      throw new Error("missing entry")
-    expect(
-      await executeGeneratedModule(
-        response.generated.typescript,
-        response.entry,
-        "rock\nscissors\n"
-      )
-    ).toEqual({ stdout: "Player 1 wins!" })
-  })
+  }
 
   test("returns structured diagnostics for invalid source", async () => {
     const response = await compile("broken.ssrg", "pub let broken: Int =\n")
