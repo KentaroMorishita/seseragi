@@ -12,6 +12,8 @@ use std::path::Path;
 
 #[path = "model/discovery.rs"]
 mod discovery;
+#[path = "model/schema.rs"]
+mod schema;
 
 pub(crate) use discovery::{
     has_project_execution_layout, load_project_execution_cases, LoadedProjectExecutionCase,
@@ -97,6 +99,7 @@ pub(crate) fn load_project_execution_case(case: &Path) -> Result<ProjectExecutio
         .map_err(|error| format!("failed to parse execution.json: {error}"))?;
     let descriptor: ProjectExecutionDescriptor = serde_json::from_value(document.clone())
         .map_err(|error| format!("failed to parse execution.json: {error}"))?;
+    schema::validate_nested_fields(&document)?;
     if descriptor.schema != 1 {
         return Err("execution.json must use schema 1".to_owned());
     }
