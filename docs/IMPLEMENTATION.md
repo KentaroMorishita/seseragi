@@ -86,6 +86,13 @@ versioned ABI fixtureだけを共有します。これによりcompiler core、r
 runtime crateはcompiler artifactから`main`のEffect contract、Console / Stdin requirement、selected `Show<E>`を
 検証し、埋め込んだversioned TypeScript runtimeをBun target adapterへstageします。fixtureの`run.json`は読みません。
 
+同日にLSP-0も接続しました。`seseragi-lsp`はstdio framing、LSP request model、capability negotiation、diagnostic wire
+変換だけを所有し、open documentのcompileは`seseragi-driver::compile_module`を直接使います。compiler内部rangeは
+UTF-8 byteのまま保持し、`seseragi-source::LineIndex`がnegotiated UTF-8 / UTF-16 / UTF-32 positionへ厳密変換します。
+これによりLSP adapterはparser、resolver、type checker、diagnostic生成を複製せず、将来のWASM adapterも同じdriverの
+structured artifactを利用できます。LSP-0はsingle-file diagnostics gateであり、module graph、hover、completionは
+対応する言語能力Phaseへ残します。
+
 このlayoutは実装方式の推奨であり言語仕様ではありません。Rust採用を変更しても、2章のartifact境界とfixtureは
 維持します。
 
