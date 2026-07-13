@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test"
 import { createBrowserEnvironment } from "../runtime/ts/src/browser/host"
-import { println } from "../runtime/ts/src/browser/console"
-import { readLine } from "../runtime/ts/src/browser/stdin"
+import {
+  println,
+  type ConsoleEnvironment,
+} from "../runtime/ts/src/browser/console"
+import {
+  readLine,
+  type StdinEnvironment,
+} from "../runtime/ts/src/browser/stdin"
 import { run } from "../runtime/ts/src/effect"
 
 describe("browser runtime host", () => {
@@ -13,7 +19,7 @@ describe("browser runtime host", () => {
       (value) => {
         output += value
       }
-    )
+    ) as ConsoleEnvironment
 
     expect(await run(println("Hello, Seseragi!"), environment)).toEqual({
       kind: "success",
@@ -27,7 +33,7 @@ describe("browser runtime host", () => {
       [{ field: "stdin", service: "stdin" }],
       "rock\nscissors\n",
       () => {}
-    )
+    ) as StdinEnvironment
 
     expect(await run(readLine(), environment)).toEqual({
       kind: "success",

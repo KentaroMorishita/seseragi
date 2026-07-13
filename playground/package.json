@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "typecheck": "tsc --noEmit --skipLibCheck",
+    "build:wasm": "../scripts/build-playground-wasm.sh",
+    "build": "bun run build:wasm && vite build",
+    "typecheck": "bun run build:wasm && tsc --noEmit --skipLibCheck",
     "preview": "vite preview"
   },
   "dependencies": {

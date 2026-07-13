@@ -5,6 +5,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "allowArbitraryExtensions": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -20,6 +21,6 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["../src", "../**/*.ts"],
+  "exclude": ["../src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
