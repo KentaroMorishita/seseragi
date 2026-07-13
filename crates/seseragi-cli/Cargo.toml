@@ -11,4 +11,5 @@ path = "src/main.rs"
 
 [dependencies]
 seseragi-driver = { path = "../seseragi-driver" }
+seseragi-project = { path = "../seseragi-project" }
 seseragi-runtime = { path = "../seseragi-runtime" }

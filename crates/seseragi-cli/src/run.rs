@@ -2,12 +2,17 @@ use std::path::Path;
 
 use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput};
 
-pub(crate) fn run_file(path: &Path) -> Result<i32, String> {
+mod package;
+
+pub(crate) fn run_path(path: &Path) -> Result<i32, String> {
     if path.is_dir() {
-        return Err(
-            "package directory execution is not available yet; pass one .ssrg file".to_owned(),
-        );
+        package::run_package(path)
+    } else {
+        run_file(path)
     }
+}
+
+fn run_file(path: &Path) -> Result<i32, String> {
     if path.extension().and_then(|extension| extension.to_str()) != Some("ssrg") {
         return Err("run expects a .ssrg source file".to_owned());
     }

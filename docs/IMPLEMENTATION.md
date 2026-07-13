@@ -516,7 +516,7 @@ package root、source root、各module fileはfilesystemでcanonicalizeし、roo
 複数logical moduleが同じphysical fileへ収束する状態をproject errorとして拒否します。読み込んだmoduleはcanonical pathを
 source labelに、`PackageIdentity + ModuleRoot::Source + ModulePath`をstructural identityに保持します。package / `std/` /
 `gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。dependency schema、package graph、
-language version評価を接続するまでP2-1全体とPackage CLI gateは引き続き未完了です。
+language version評価を接続するまでP2-1全体は引き続き未完了です。
 
 module graphの最小contractとして、`seseragi-project::ModuleGraph`はlogical module identityだけをノードに持ち、
 dependencyをimporterからdependencyへのedgeとして登録します。topological orderは依存を先に、独立nodeはcanonical
@@ -637,8 +637,16 @@ dependency-firstの全moduleから重複なしで集めます。`imported-effect
 success exitを比較します。`rock-paper-scissors-cli-split`はdomain / input / mainの三moduleを一度compileし、同じstaged module setに
 対して正常入力、不正入力、EOF、Stdin host failure、Console host failureの五caseをBunで実行します。single-file版と同じ
 typed failure payload、derived stderr、stdout、actual trace、process exitを比較するため、分割compileだけをgreenにしてruntime
-compositionを未検証にする経路はありません。これはstrict `project.json`から始まるP2-5 execution gateであり、manifest entryと
-filesystem package discoveryは引き続き未実装です。
+compositionを未検証にする経路はありません。strict `project.json`から始まるP2-5 execution gateに加え、local Package CLIは
+同じsourceへ置いた`seseragi.toml`からentryとmodule graphを発見し、shared driverでcompileした全generated moduleを
+`seseragi-runtime`がplanned pathへstageします。CLI integration testはfixture descriptorなしの`seseragi run .`で正常入力と
+typed failure / exit 1を比較します。dependency package graphは引き続き未実装です。
+
+local driver adapterがcompilerへ渡すopaque IDは、現在の閉じた一package graphでは`<package name>::<module path>`です。
+これはstructural `PackageIdentity`の一般serialization規則ではありません。同名・同version・別sourceの混在を扱う
+dependency package gateでは、project resolverがconfusion check後のstructural identityからcollision-freeなIDを割り当て、
+CLIやdriverがpackage identityの文法を再実装しないことを完了条件にします。driverは引き続きIDをopaqueに扱うため、
+この回収でresolver / TypedHir / CoreIrの表現を作り直す必要はありません。
 
 `project-schema-1/imported-effect-failure`は、dependencyの`InputError deriving Show`とcompact `reject` Effectをmainがimportし、
 local `AppError`へ`mapError`する組み合わせを固定します。generated mainはdriver output planが渡したexact dictionary exportを

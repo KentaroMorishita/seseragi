@@ -58,6 +58,55 @@ fn renders_typed_failure_and_preserves_the_program_exit_class() {
 }
 
 #[test]
+fn runs_the_manifest_discovered_split_phase_one_program() {
+    let package = repository_root()
+        .join("examples/spec/artifacts/project-schema-1/rock-paper-scissors-cli-split");
+    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(".")
+        .current_dir(package)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(b"paper\nrock\n")
+        .unwrap();
+    let output = child.wait_with_output().unwrap();
+
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "Player 1 wins!\n");
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn renders_a_split_package_typed_failure() {
+    let package = repository_root()
+        .join("examples/spec/artifacts/project-schema-1/rock-paper-scissors-cli-split");
+    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(package)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    child.stdin.take().unwrap().write_all(b"lizard\n").unwrap();
+    let output = child.wait_with_output().unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    assert_eq!(
+        String::from_utf8_lossy(&output.stderr),
+        "InputFailure UnknownHand lizard\n"
+    );
+}
+
+#[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
     let program =
         repository_root().join("examples/spec/fixtures/diagnostics/invalid-numeric-literal.ssrg");

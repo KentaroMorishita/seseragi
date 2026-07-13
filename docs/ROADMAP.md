@@ -21,7 +21,7 @@ Phase番号は言語能力の依存順です。product surfaceの実装をPhase 
 
 | Surface | Phase 0 | Phase 1 | Phase 2以降の伸ばし方 |
 | ------- | ------- | ------- | --------------------- |
-| CLI | structured diagnosticsを表示するthin adapter | **`seseragi run path/to/app.ssrg`**でsingle-fileをcompile / run | manifestとfilesystem discovery完成後に`seseragi run .` |
+| CLI | structured diagnosticsを表示するthin adapter | **`seseragi run path/to/app.ssrg`**でsingle-fileをcompile / run | **local Package CLI完了:** manifest entryとlocal module graphを`seseragi run .`でcompile / run。dependency package対応を後続追加 |
 | LSP | **LSP-0完了:** open documentを同じdriverでparse / resolve / typeし、source range付きdiagnosticsを返す | Phase 1構文のdocument diagnostics | module graph、cross-file definition / reference、package diagnostics |
 | playground / WASM | **Playground-0完了:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | **Playground-1実装済み:** mobile-first editor、専用highlight、任意Stdin、structured diagnosticsを新UIで提供 | module input、resource制限、stdlibのbrowser capability |
 | formatter | lossless CSTを共有し、parse recoveryを壊さない | Phase 1構文をround-trip | 各Phaseの新構文をgrammarと同じcommitで追加 |
@@ -36,9 +36,9 @@ language semanticsをtarget adapterへ委譲しません。
 - Phase 0: Rust compiler pipelineとconformance artifactの最小経路は接続済み。
 - Phase 1: 型付きじゃんけんprogramのcompiler / runtime fixtureに加え、fixture metadataなしの
   `seseragi run path/to/app.ssrg`を接続済み。
-- Phase 2: linked compileとproject executionは進行中です。strict manifest parserに加え、`run.entry`からrelative /
-  `self/` importを辿るcanonical local filesystem discoveryをtyped project modelへ接続済みです。dependency schema、
-  package graphとdriver adapterが未完了なので`seseragi run .`はまだ提供しません。
+- Phase 2: linked compileとproject executionは進行中です。strict manifest、canonical local discovery、shared project driver、
+  multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。dependency schemaと複数package
+  graphは未完了なので、現在のPackage CLIはrelative / `self/` importだけを対象にします。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS

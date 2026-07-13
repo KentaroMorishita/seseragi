@@ -141,6 +141,7 @@ name = "seseragi-cli"
 version = "0.0.0"
 dependencies = [
  "seseragi-driver",
+ "seseragi-project",
  "seseragi-runtime",
 ]
 
