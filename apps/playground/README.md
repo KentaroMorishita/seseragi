@@ -23,6 +23,7 @@ bun run check:playground
 
 Rust側のcompiler、runtime contract、または`seseragi-wasm`を変更したcommitでは、最初のcommandで
 `src/wasm/pkg`を再生成し、integration testと同じcommitへ含めます。
+`bun run test:playground:wasm`は再生成後にGit差分がないことも検査し、古いdeployment artifactを拒否します。
 
 ## Vercel
 

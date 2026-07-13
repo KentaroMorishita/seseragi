@@ -16,7 +16,7 @@
     "vscode": "./scripts/vscode.sh",
     "all": "./scripts/dev-all.sh",
     "test": "bun test",
-    "test:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg && cd apps/playground && bun run test",
+    "test:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg && git diff --exit-code -- apps/playground/src/wasm/pkg && cd apps/playground && bun run test",
     "test:watch": "bun test --watch",
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",
