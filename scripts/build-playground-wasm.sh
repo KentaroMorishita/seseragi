@@ -2,6 +2,11 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+OUT_DIR="${1:-playground/src/wasm/pkg}"
+
+if [[ "$OUT_DIR" != /* ]]; then
+  OUT_DIR="$ROOT/$OUT_DIR"
+fi
 
 if ! command -v wasm-pack >/dev/null 2>&1; then
   echo "wasm-pack is required to build the Rust playground adapter" >&2
@@ -21,6 +26,11 @@ fi
 
 wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --target web \
-  --out-dir "$ROOT/playground/src/wasm/pkg" \
+  --out-dir "$OUT_DIR" \
   --out-name seseragi_wasm \
   --release
+
+# wasm-pack treats publishable packages as ignored by default. The new
+# playground deliberately versions this target-neutral deployment artifact so
+# Vercel never needs a Rust toolchain during its static-site build.
+rm -f "$OUT_DIR/.gitignore"

@@ -1,0 +1,17 @@
+import * as browserConsole from "../../../../runtime/ts/src/browser/console"
+import * as browserStdin from "../../../../runtime/ts/src/browser/stdin"
+import * as effect from "../../../../runtime/ts/src/effect"
+import * as int64 from "../../../../runtime/ts/src/int64"
+import * as service from "../../../../runtime/ts/src/service"
+import * as show from "../../../../runtime/ts/src/show"
+import * as sum from "../../../../runtime/ts/src/sum"
+
+export const runtimeModules: Readonly<Record<string, unknown>> = {
+  "@seseragi/runtime/effect": effect,
+  "@seseragi/runtime/int64": int64,
+  "@seseragi/runtime/service": service,
+  "@seseragi/runtime/show": show,
+  "@seseragi/runtime/sum": sum,
+  "@seseragi/runtime/console": browserConsole,
+  "@seseragi/runtime/stdin": browserStdin,
+}

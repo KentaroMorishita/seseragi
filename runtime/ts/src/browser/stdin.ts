@@ -14,6 +14,7 @@ export function createTextStdin(input: string): Stdin {
     readLine() {
       if (cursor >= lines.length) return serviceSuccess(Nothing)
       const line = lines[cursor]
+      if (line === undefined) return serviceSuccess(Nothing)
       cursor += 1
       return serviceSuccess(Just(line))
     },

@@ -1,0 +1,20 @@
+{
+  "name": "seseragi-wasm",
+  "type": "module",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/morishita/seseragi"
+  },
+  "files": [
+    "seseragi_wasm_bg.wasm",
+    "seseragi_wasm.js",
+    "seseragi_wasm.d.ts"
+  ],
+  "main": "seseragi_wasm.js",
+  "types": "seseragi_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

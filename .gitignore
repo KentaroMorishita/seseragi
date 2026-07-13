@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 bun.lock
+!apps/playground/bun.lock
 !examples/spec/fixtures/projects/**/host/bun.lock
 
 # Build outputs
