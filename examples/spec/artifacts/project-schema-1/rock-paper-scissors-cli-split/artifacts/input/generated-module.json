@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "module": "fixture/rps-cli-split::input",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "effect.stdin.error",
+      "core.adt",
+      "core.string",
+      "core.show.dictionary",
+      "effect.stdin.error.show",
+      "core.string.show",
+      "core.either",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.stdin.readLine",
+      "effect.core.fromEither"
+    ]
+  },
+  "exports": [
+    "StdinFailure",
+    "EndOfInput",
+    "UnknownHand",
+    "readHand"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::input::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/rps-cli-split::input::InputError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/rps-cli/input.ts",
+    "sourceMap": "dist/rps-cli/input.ts.map"
+  }
+}

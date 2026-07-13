@@ -1,0 +1,26 @@
+import { Hand, Rock, Paper, Scissors } from "./domain"
+
+pub type InputError deriving Show =
+  | StdinFailure StdinError
+  | EndOfInput
+  | UnknownHand String
+
+fn parseHand input: String -> Either<InputError, Hand> =
+  match input {
+    "rock" -> Right Rock
+    "paper" -> Right Paper
+    "scissors" -> Right Scissors
+    other -> Left (UnknownHand other)
+  }
+
+fn parseInput input: Maybe<String> -> Either<InputError, Hand> =
+  match input {
+    Nothing -> Left EndOfInput
+    Just line -> parseHand line
+  }
+
+pub effect fn readHand =
+  do {
+    input <- mapError StdinFailure (readLine ())
+    fromEither (parseInput input)
+  }

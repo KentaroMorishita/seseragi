@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/rps-cli-split::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-cli-split::domain",
+      "origin": {
+        "start": 0,
+        "end": 48
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "decide",
+          "symbol": "fixture/rps-cli-split::domain::decide"
+        },
+        {
+          "namespace": "value",
+          "name": "renderOutcome",
+          "symbol": "fixture/rps-cli-split::domain::renderOutcome"
+        }
+      ]
+    },
+    {
+      "specifier": "./input",
+      "module": "fixture/rps-cli-split::input",
+      "origin": {
+        "start": 49,
+        "end": 95
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "InputError",
+          "symbol": "fixture/rps-cli-split::input::InputError"
+        },
+        {
+          "namespace": "value",
+          "name": "readHand",
+          "symbol": "fixture/rps-cli-split::input::readHand"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/rps-cli-split::main::AppError",
+      "namespace": "type",
+      "name": "AppError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 97,
+        "end": 190
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "AppError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::main::InputFailure",
+      "namespace": "value",
+      "name": "InputFailure",
+      "constructorOf": "fixture/rps-cli-split::main::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 135,
+        "end": 147
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::main::ConsoleFailure",
+      "namespace": "value",
+      "name": "ConsoleFailure",
+      "constructorOf": "fixture/rps-cli-split::main::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 163,
+        "end": 177
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 192,
+        "end": 422
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::main::AppError>",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 97,
+        "end": 190
+      }
+    }
+  ]
+}

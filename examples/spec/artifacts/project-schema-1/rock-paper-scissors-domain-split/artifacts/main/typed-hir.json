@@ -3,6 +3,24 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/rps-domain-split::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Hand",
+      "canonical": "fixture/rps-domain-split::domain::Hand",
+      "provider": {
+        "module": "fixture/rps-domain-split::domain",
+        "export": "Hand"
+      }
+    },
+    {
+      "spelling": "Outcome",
+      "canonical": "fixture/rps-domain-split::domain::Outcome",
+      "provider": {
+        "module": "fixture/rps-domain-split::domain",
+        "export": "Outcome"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",
@@ -378,8 +396,9 @@
               }
             ],
             "type": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Outcome",
+              "canonical": "fixture/rps-domain-split::domain::Outcome",
               "arguments": []
             },
             "origin": {
@@ -475,8 +494,9 @@
                       }
                     ],
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Outcome",
+                      "canonical": "fixture/rps-domain-split::domain::Outcome",
                       "arguments": []
                     },
                     "origin": {
@@ -486,8 +506,9 @@
                   }
                 ],
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Outcome",
+                  "canonical": "fixture/rps-domain-split::domain::Outcome",
                   "arguments": []
                 },
                 "origin": {

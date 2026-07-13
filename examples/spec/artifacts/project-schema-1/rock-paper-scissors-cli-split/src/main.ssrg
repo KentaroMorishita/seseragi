@@ -1,0 +1,14 @@
+import { decide, renderOutcome } from "./domain"
+import { InputError, readHand } from "./input"
+
+pub type AppError deriving Show =
+  | InputFailure InputError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main =
+  do {
+    first <- mapError InputFailure (readHand ())
+    second <- mapError InputFailure (readHand ())
+    let outcome = decide first second
+    mapError ConsoleFailure (println (renderOutcome outcome))
+  }

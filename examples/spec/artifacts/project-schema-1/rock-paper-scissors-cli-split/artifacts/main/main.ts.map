@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "file": "dist/rps-cli/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/rps-cli-split::main"
+  ],
+  "sourcesContent": [
+    "import { decide, renderOutcome } from \"./domain\"\nimport { InputError, readHand } from \"./input\"\n\npub type AppError deriving Show =\n  | InputFailure InputError\n  | ConsoleFailure ConsoleError\n\npub effect fn main =\n  do {\n    first <- mapError InputFailure (readHand ())\n    second <- mapError InputFailure (readHand ())\n    let outcome = decide first second\n    mapError ConsoleFailure (println (renderOutcome outcome))\n  }\n"
+  ],
+  "names": [
+    "AppError",
+    "InputFailure",
+    "ConsoleFailure",
+    "__ssrg$instance$Show$0",
+    "main",
+    "first",
+    "mapError",
+    "readHand",
+    "second",
+    "mapError",
+    "readHand",
+    "outcome",
+    "decide",
+    "mapError",
+    "println",
+    "renderOutcome"
+  ],
+  "mappings": ";;;;;;AAGAA;;;AACIC;AACAC;AAFJC;AAIAC"
+}

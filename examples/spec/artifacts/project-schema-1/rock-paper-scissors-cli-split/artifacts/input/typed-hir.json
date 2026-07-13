@@ -1,0 +1,1014 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "input.ssrg",
+  "module": "fixture/rps-cli-split::input",
+  "externalTypeBindings": [
+    {
+      "spelling": "StdinError",
+      "canonical": "std/prelude::StdinError"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-cli-split::domain",
+      "origin": {
+        "start": 0,
+        "end": 54
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Hand",
+          "local": "Hand",
+          "canonical": "fixture/rps-cli-split::domain::Hand",
+          "origin": {
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Rock",
+          "local": "Rock",
+          "canonical": "fixture/rps-cli-split::domain::Rock",
+          "origin": {
+            "start": 15,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Paper",
+          "local": "Paper",
+          "canonical": "fixture/rps-cli-split::domain::Paper",
+          "origin": {
+            "start": 21,
+            "end": 26
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Scissors",
+          "local": "Scissors",
+          "canonical": "fixture/rps-cli-split::domain::Scissors",
+          "origin": {
+            "start": 28,
+            "end": 36
+          }
+        }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::input::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/rps-cli-split::input::InputError",
+      "constraints": [],
+      "origin": {
+        "start": 56,
+        "end": 157
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/rps-cli-split::input::InputError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/rps-cli-split::input::StdinFailure",
+            "typeIdentity": "std/prelude::StdinError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::StdinError>"
+            }
+          },
+          {
+            "variantSymbol": "fixture/rps-cli-split::input::UnknownHand",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/rps-cli-split::input::InputError",
+      "name": "InputError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/rps-cli-split::input::StdinFailure",
+          "name": "StdinFailure",
+          "payload": {
+            "kind": "named",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "StdinError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 96,
+            "end": 108
+          }
+        },
+        {
+          "symbol": "fixture/rps-cli-split::input::EndOfInput",
+          "name": "EndOfInput",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 124,
+            "end": 134
+          }
+        },
+        {
+          "symbol": "fixture/rps-cli-split::input::UnknownHand",
+          "name": "UnknownHand",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 139,
+            "end": 150
+          }
+        }
+      ],
+      "origin": {
+        "start": 56,
+        "end": 157
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/rps-cli-split::input::parseHand",
+      "visibility": "private",
+      "origin": {
+        "start": 159,
+        "end": 358
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 172,
+            "end": 177
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 224,
+            "end": 229
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "rock",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 236,
+                "end": 242
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::domain::Rock",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 252,
+                    "end": 256
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 246,
+                "end": 256
+              }
+            },
+            "origin": {
+              "start": 236,
+              "end": 256
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "paper",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 261,
+                "end": 268
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::domain::Paper",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 278,
+                    "end": 283
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 272,
+                "end": 283
+              }
+            },
+            "origin": {
+              "start": 261,
+              "end": 283
+            }
+          },
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "scissors",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 288,
+                "end": 298
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::domain::Scissors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 308,
+                    "end": 316
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 302,
+                "end": 316
+              }
+            },
+            "origin": {
+              "start": 288,
+              "end": 316
+            }
+          },
+          {
+            "pattern": {
+              "kind": "binding",
+              "symbol": 23,
+              "name": "other",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 321,
+                "end": 326
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Left",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/rps-cli-split::input::UnknownHand",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "other",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 348,
+                        "end": 353
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 336,
+                    "end": 353
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 330,
+                "end": 354
+              }
+            },
+            "origin": {
+              "start": 321,
+              "end": 354
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 218,
+          "end": 358
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/rps-cli-split::input::parseInput",
+      "visibility": "private",
+      "origin": {
+        "start": 360,
+        "end": 507
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 374,
+            "end": 379
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "input",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 433,
+            "end": 438
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 445,
+                "end": 452
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Left",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::input::EndOfInput",
+                  "type": {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 461,
+                    "end": 471
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 456,
+                "end": 471
+              }
+            },
+            "origin": {
+              "start": 445,
+              "end": 471
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 29,
+                "name": "line",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 481,
+                  "end": 485
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 476,
+                "end": 485
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "fixture/rps-cli-split::input::parseHand",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "line",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 499,
+                    "end": 503
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 489,
+                "end": 503
+              }
+            },
+            "origin": {
+              "start": 476,
+              "end": 503
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 427,
+          "end": 507
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/rps-cli-split::input::readHand",
+      "visibility": "public",
+      "origin": {
+        "start": 509,
+        "end": 627
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "stdin",
+              "type": {
+                "kind": "named",
+                "name": "Stdin",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "InputError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "input",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "stdin",
+                      "type": {
+                        "kind": "named",
+                        "name": "Stdin",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "InputError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::input::StdinFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "StdinError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "InputError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 563,
+                    "end": 575
+                  }
+                },
+                {
+                  "kind": "effect-call",
+                  "operation": "std/prelude::readLine",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "stdin",
+                          "type": {
+                            "kind": "named",
+                            "name": "Stdin",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "failure": {
+                      "kind": "named",
+                      "name": "StdinError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "arguments": [],
+                  "origin": {
+                    "start": 577,
+                    "end": 588
+                  }
+                }
+              ],
+              "origin": {
+                "start": 554,
+                "end": 589
+              }
+            },
+            "origin": {
+              "start": 545,
+              "end": 589
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/effect::fromEither",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "fixture/rps-cli-split::input::parseInput",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "input",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 617,
+                    "end": 622
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "InputError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Hand",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 606,
+                "end": 622
+              }
+            }
+          ],
+          "origin": {
+            "start": 594,
+            "end": 623
+          }
+        },
+        "origin": {
+          "start": 536,
+          "end": 627
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "modules": [
+    {
+      "id": "fixture/rps-cli-split::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/rps-cli/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/rps-cli-split::input",
+      "source": "src/input.ssrg",
+      "output": "dist/rps-cli/input.js",
+      "artifacts": "artifacts/input",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/rps-cli-split::domain"
+        }
+      ]
+    },
+    {
+      "id": "fixture/rps-cli-split::main",
+      "source": "src/main.ssrg",
+      "output": "dist/rps-cli/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/rps-cli-split::domain"
+        },
+        {
+          "specifier": "./input",
+          "module": "fixture/rps-cli-split::input"
+        }
+      ]
+    }
+  ],
+  "expectedOrder": [
+    "fixture/rps-cli-split::domain",
+    "fixture/rps-cli-split::input",
+    "fixture/rps-cli-split::main"
+  ]
+}

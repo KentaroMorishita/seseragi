@@ -1,0 +1,398 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/rps-cli-split::main",
+  "runtimeRequirements": [
+    "effect.console.error",
+    "core.adt",
+    "core.show.dictionary",
+    "effect.console.error.show",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.core.mapError",
+    "effect.console.println",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.error.show",
+      "local": "_ssrg_show_consoleErrorShow"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    },
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/rps-cli-split::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "decide",
+          "local": "decide",
+          "sourceLocal": "decide",
+          "canonical": "fixture/rps-cli-split::domain::decide",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "renderOutcome",
+          "local": "renderOutcome",
+          "sourceLocal": "renderOutcome",
+          "canonical": "fixture/rps-cli-split::domain::renderOutcome",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 30
+          }
+        },
+        {
+          "imported": "Hand",
+          "local": "Hand",
+          "sourceLocal": "Hand",
+          "canonical": "fixture/rps-cli-split::domain::Hand",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 48
+          }
+        },
+        {
+          "imported": "Outcome",
+          "local": "Outcome",
+          "sourceLocal": "Outcome",
+          "canonical": "fixture/rps-cli-split::domain::Outcome",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 48
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "module": "fixture/rps-cli-split::input",
+      "specifier": "./input.js",
+      "bindings": [
+        {
+          "imported": "InputError",
+          "local": "InputError",
+          "sourceLocal": "InputError",
+          "canonical": "fixture/rps-cli-split::input::InputError",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 68
+          }
+        },
+        {
+          "imported": "readHand",
+          "local": "readHand",
+          "sourceLocal": "readHand",
+          "canonical": "fixture/rps-cli-split::input::readHand",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 70,
+            "end": 78
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Show$0",
+          "local": "__ssrg$instance$Show$0_1",
+          "sourceLocal": "Show<fixture/rps-cli-split::input::InputError>",
+          "canonical": "Show<fixture/rps-cli-split::input::InputError>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 95
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 95
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "InputFailure",
+          "tag": "InputFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "InputError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 135,
+            "end": 147
+          }
+        },
+        {
+          "exported": true,
+          "name": "ConsoleFailure",
+          "tag": "ConsoleFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 163,
+            "end": 177
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 190
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::main::AppError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/rps-cli-split::main::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 190
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "AppError",
+        "variants": [
+          {
+            "name": "InputFailure",
+            "tag": "InputFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "InputError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "imported",
+                "identity": "Show<fixture/rps-cli-split::input::InputError>",
+                "providerModule": "fixture/rps-cli-split::input",
+                "local": "__ssrg$instance$Show$0_1"
+              }
+            }
+          },
+          {
+            "name": "ConsoleFailure",
+            "tag": "ConsoleFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/prelude::ConsoleError>",
+                "feature": "effect.console.error.show",
+                "local": "_ssrg_show_consoleErrorShow"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "InputFailure"
+                },
+                {
+                  "kind": "call",
+                  "callee": "readHand",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 224,
+              "end": 268
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "reference",
+              "name": "Hand",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "InputFailure"
+                },
+                {
+                  "kind": "call",
+                  "callee": "readHand",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 273,
+              "end": 318
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "outcome",
+            "type": {
+              "kind": "reference",
+              "name": "Outcome",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "decide",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "first"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "second"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 323,
+              "end": 356
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_mapError",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "ConsoleFailure"
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderOutcome",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "outcome"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 192,
+        "end": 422
+      }
+    }
+  ]
+}

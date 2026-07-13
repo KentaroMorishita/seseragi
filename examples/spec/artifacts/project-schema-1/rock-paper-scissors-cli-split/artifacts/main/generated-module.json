@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "module": "fixture/rps-cli-split::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "effect.console.error",
+      "core.adt",
+      "core.show.dictionary",
+      "effect.console.error.show",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.console.println",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "InputFailure",
+    "ConsoleFailure",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::main::AppError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/rps-cli-split::main::AppError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/rps-cli/main.ts",
+    "sourceMap": "dist/rps-cli/main.ts.map"
+  }
+}

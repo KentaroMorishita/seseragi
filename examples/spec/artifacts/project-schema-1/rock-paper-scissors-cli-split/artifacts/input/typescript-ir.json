@@ -1,0 +1,532 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/rps-cli-split::input",
+  "runtimeRequirements": [
+    "effect.stdin.error",
+    "core.adt",
+    "core.string",
+    "core.show.dictionary",
+    "effect.stdin.error.show",
+    "core.string.show",
+    "core.either",
+    "core.either.right",
+    "core.either.left",
+    "core.maybe",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.core.mapError",
+    "effect.stdin.readLine",
+    "effect.core.fromEither"
+  ],
+  "imports": [
+    {
+      "feature": "effect.stdin.error.show",
+      "local": "_ssrg_show_stdinErrorShow"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.stdin.readLine",
+      "local": "_ssrg_stdin_readLine"
+    },
+    {
+      "feature": "effect.core.fromEither",
+      "local": "_ssrg_effect_fromEither"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.stdin.error",
+      "local": "StdinError"
+    },
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/rps-cli-split::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Hand",
+          "local": "Hand",
+          "sourceLocal": "Hand",
+          "canonical": "fixture/rps-cli-split::domain::Hand",
+          "typeOnly": true,
+          "origin": {
+            "source": "input.ssrg",
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "imported": "Rock",
+          "local": "Rock",
+          "sourceLocal": "Rock",
+          "canonical": "fixture/rps-cli-split::domain::Rock",
+          "typeOnly": false,
+          "origin": {
+            "source": "input.ssrg",
+            "start": 15,
+            "end": 19
+          }
+        },
+        {
+          "imported": "Paper",
+          "local": "Paper",
+          "sourceLocal": "Paper",
+          "canonical": "fixture/rps-cli-split::domain::Paper",
+          "typeOnly": false,
+          "origin": {
+            "source": "input.ssrg",
+            "start": 21,
+            "end": 26
+          }
+        },
+        {
+          "imported": "Scissors",
+          "local": "Scissors",
+          "sourceLocal": "Scissors",
+          "canonical": "fixture/rps-cli-split::domain::Scissors",
+          "typeOnly": false,
+          "origin": {
+            "source": "input.ssrg",
+            "start": 28,
+            "end": 36
+          }
+        }
+      ],
+      "origin": {
+        "source": "input.ssrg",
+        "start": 0,
+        "end": 54
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "InputError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "StdinFailure",
+          "tag": "StdinFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "input.ssrg",
+            "start": 96,
+            "end": 108
+          }
+        },
+        {
+          "exported": true,
+          "name": "EndOfInput",
+          "tag": "EndOfInput",
+          "origin": {
+            "source": "input.ssrg",
+            "start": 124,
+            "end": 134
+          }
+        },
+        {
+          "exported": true,
+          "name": "UnknownHand",
+          "tag": "UnknownHand",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "input.ssrg",
+            "start": 139,
+            "end": 150
+          }
+        }
+      ],
+      "origin": {
+        "source": "input.ssrg",
+        "start": 56,
+        "end": 157
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::input::InputError>",
+      "trait": "Show",
+      "head": {
+        "kind": "reference",
+        "name": "InputError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/rps-cli-split::input::InputError",
+      "origin": {
+        "source": "input.ssrg",
+        "start": 56,
+        "end": 157
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "InputError",
+        "variants": [
+          {
+            "name": "StdinFailure",
+            "tag": "StdinFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "StdinError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/prelude::StdinError>",
+                "feature": "effect.stdin.error.show",
+                "local": "_ssrg_show_stdinErrorShow"
+              }
+            }
+          },
+          {
+            "name": "EndOfInput",
+            "tag": "EndOfInput"
+          },
+          {
+            "name": "UnknownHand",
+            "tag": "UnknownHand",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/prelude::String>",
+                "feature": "core.string.show",
+                "local": "_ssrg_show_stringShow"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "parseHand",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "input"
+        },
+        "scrutineeType": {
+          "kind": "string"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "rock"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Rock"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "paper"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Paper"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "scissors"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Scissors"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "other",
+                "type": {
+                  "kind": "string"
+                },
+                "path": []
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Left",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "UnknownHand",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "other"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "InputError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      },
+      "origin": {
+        "source": "input.ssrg",
+        "start": 159,
+        "end": 358
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "parseInput",
+      "parameters": [
+        {
+          "name": "input",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "input"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "string"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Left",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "EndOfInput"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "line",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "parseHand",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "line"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "InputError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Hand",
+            "arguments": []
+          }
+        }
+      },
+      "origin": {
+        "source": "input.ssrg",
+        "start": 360,
+        "end": 507
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "readHand",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "input",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "StdinFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_stdin_readLine",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "input.ssrg",
+              "start": 545,
+              "end": 589
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_fromEither",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "parseInput",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "input"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "input.ssrg",
+        "start": 509,
+        "end": 627
+      }
+    }
+  ]
+}

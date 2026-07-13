@@ -1,0 +1,640 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/rps-cli-split::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "Hand",
+      "canonical": "fixture/rps-cli-split::domain::Hand",
+      "provider": {
+        "module": "fixture/rps-cli-split::domain",
+        "export": "Hand"
+      }
+    },
+    {
+      "spelling": "Outcome",
+      "canonical": "fixture/rps-cli-split::domain::Outcome",
+      "provider": {
+        "module": "fixture/rps-cli-split::domain",
+        "export": "Outcome"
+      }
+    },
+    {
+      "spelling": "InputError",
+      "canonical": "fixture/rps-cli-split::input::InputError",
+      "provider": {
+        "module": "fixture/rps-cli-split::input",
+        "export": "InputError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-cli-split::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 48
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "decide",
+          "local": "decide",
+          "canonical": "fixture/rps-cli-split::domain::decide",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "renderOutcome",
+          "local": "renderOutcome",
+          "canonical": "fixture/rps-cli-split::domain::renderOutcome",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 30
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./input",
+      "module": "fixture/rps-cli-split::input",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 95
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "InputError",
+          "local": "InputError",
+          "canonical": "fixture/rps-cli-split::input::InputError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 68
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "readHand",
+          "local": "readHand",
+          "canonical": "fixture/rps-cli-split::input::readHand",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 70,
+            "end": 78
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "fixture/rps-cli-split::main::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/rps-cli-split::main::InputFailure",
+          "name": "InputFailure",
+          "payload": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 135,
+            "end": 147
+          }
+        },
+        {
+          "symbol": "fixture/rps-cli-split::main::ConsoleFailure",
+          "name": "ConsoleFailure",
+          "payload": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 163,
+            "end": 177
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 190
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::main::AppError>",
+      "trait": "Show",
+      "head": {
+        "kind": "named",
+        "name": "AppError",
+        "arguments": []
+      },
+      "typeIdentity": "fixture/rps-cli-split::main::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 190
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/rps-cli-split::main::AppError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/rps-cli-split::main::InputFailure",
+            "typeIdentity": "fixture/rps-cli-split::input::InputError",
+            "evidence": {
+              "kind": "imported",
+              "identity": "Show<fixture/rps-cli-split::input::InputError>",
+              "providerModule": "fixture/rps-cli-split::input"
+            }
+          },
+          {
+            "variantSymbol": "fixture/rps-cli-split::main::ConsoleFailure",
+            "typeIdentity": "std/prelude::ConsoleError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::ConsoleError>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/rps-cli-split::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 192,
+        "end": 422
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "first",
+            "type": {
+              "kind": "external-named",
+              "name": "Hand",
+              "canonical": "fixture/rps-cli-split::domain::Hand",
+              "arguments": []
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.mapError",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "external-named",
+                "name": "Hand",
+                "canonical": "fixture/rps-cli-split::domain::Hand",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::main::InputFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "InputError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 242,
+                    "end": 254
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "fixture/rps-cli-split::input::readHand",
+                  "requirements": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "stdin",
+                        "type": {
+                          "kind": "named",
+                          "name": "Stdin",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "external-named",
+                    "name": "InputError",
+                    "canonical": "fixture/rps-cli-split::input::InputError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "external-named",
+                    "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
+                    "arguments": []
+                  },
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 265,
+                        "end": 267
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 256,
+                    "end": 267
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 233,
+                "end": 268
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 224,
+              "end": 268
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "second",
+            "type": {
+              "kind": "external-named",
+              "name": "Hand",
+              "canonical": "fixture/rps-cli-split::domain::Hand",
+              "arguments": []
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.mapError",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "external-named",
+                "name": "Hand",
+                "canonical": "fixture/rps-cli-split::domain::Hand",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/rps-cli-split::main::InputFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "InputError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 292,
+                    "end": 304
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "fixture/rps-cli-split::input::readHand",
+                  "requirements": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "stdin",
+                        "type": {
+                          "kind": "named",
+                          "name": "Stdin",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "external-named",
+                    "name": "InputError",
+                    "canonical": "fixture/rps-cli-split::input::InputError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "external-named",
+                    "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
+                    "arguments": []
+                  },
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 315,
+                        "end": 317
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 306,
+                    "end": 317
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 283,
+                "end": 318
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 273,
+              "end": 318
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "outcome",
+            "type": {
+              "kind": "external-named",
+              "name": "Outcome",
+              "canonical": "fixture/rps-cli-split::domain::Outcome",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/rps-cli-split::domain::decide",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "first",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 344,
+                    "end": 349
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "second",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Hand",
+                    "canonical": "fixture/rps-cli-split::domain::Hand",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 350,
+                    "end": 356
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Outcome",
+                "canonical": "fixture/rps-cli-split::domain::Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 337,
+                "end": 356
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 323,
+              "end": 356
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "effect.mapError",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "fixture/rps-cli-split::main::ConsoleFailure",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 370,
+                "end": 384
+              }
+            },
+            {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/rps-cli-split::domain::renderOutcome",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "outcome",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Outcome",
+                        "canonical": "fixture/rps-cli-split::domain::Outcome",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 409,
+                        "end": 416
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 395,
+                    "end": 416
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 386,
+                "end": 417
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 361,
+            "end": 418
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 215,
+          "end": 422
+        }
+      }
+    }
+  ]
+}

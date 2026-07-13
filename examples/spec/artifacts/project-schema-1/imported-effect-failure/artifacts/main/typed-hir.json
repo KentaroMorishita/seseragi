@@ -3,6 +3,16 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-effect-failure::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "InputError",
+      "canonical": "fixture/imported-effect-failure::input::InputError",
+      "provider": {
+        "module": "fixture/imported-effect-failure::input",
+        "export": "InputError"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./input",
@@ -200,8 +210,9 @@
                 "fields": []
               },
               "failure": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "InputError",
+                "canonical": "fixture/imported-effect-failure::input::InputError",
                 "arguments": []
               },
               "success": {

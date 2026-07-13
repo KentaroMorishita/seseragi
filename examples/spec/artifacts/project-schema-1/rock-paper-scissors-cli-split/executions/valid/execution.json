@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/rps-cli-split::main",
+    "export": "main"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": { "cold": true, "rootScope": true }
+  },
+  "input": { "stdin": "stdin.txt" },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      { "name": "stdin", "type": "Stdin" },
+      { "name": "console", "type": "Console" }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      { "field": "stdin", "type": "Stdin", "adapter": "process-stdin" },
+      { "field": "console", "type": "Console", "adapter": "capture-console" }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "effect.stdin.error",
+      "core.show.dictionary",
+      "effect.stdin.error.show",
+      "core.string.show",
+      "core.either",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.stdin.readLine",
+      "effect.core.fromEither",
+      "effect.console.error",
+      "effect.console.error.show",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Player 1 wins!"],
+        "stdout": "Player 1 wins!\n"
+      }
+    ]
+  }
+}

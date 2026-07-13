@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/rps-cli-split::input",
+  "source": "input.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/rps-cli-split::domain",
+      "origin": {
+        "start": 0,
+        "end": 54
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Hand",
+          "symbol": "fixture/rps-cli-split::domain::Hand"
+        },
+        {
+          "namespace": "value",
+          "name": "Rock",
+          "symbol": "fixture/rps-cli-split::domain::Rock"
+        },
+        {
+          "namespace": "value",
+          "name": "Paper",
+          "symbol": "fixture/rps-cli-split::domain::Paper"
+        },
+        {
+          "namespace": "value",
+          "name": "Scissors",
+          "symbol": "fixture/rps-cli-split::domain::Scissors"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/rps-cli-split::input::InputError",
+      "namespace": "type",
+      "name": "InputError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 56,
+        "end": 157
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "InputError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::input::StdinFailure",
+      "namespace": "value",
+      "name": "StdinFailure",
+      "constructorOf": "fixture/rps-cli-split::input::InputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 96,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "StdinError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::input::EndOfInput",
+      "namespace": "value",
+      "name": "EndOfInput",
+      "constructorOf": "fixture/rps-cli-split::input::InputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 124,
+        "end": 134
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "InputError",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::input::UnknownHand",
+      "namespace": "value",
+      "name": "UnknownHand",
+      "constructorOf": "fixture/rps-cli-split::input::InputError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 139,
+        "end": 150
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/rps-cli-split::input::readHand",
+      "namespace": "value",
+      "name": "readHand",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 509,
+        "end": 627
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "stdin",
+                    "type": {
+                      "kind": "named",
+                      "name": "Stdin",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "InputError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<fixture/rps-cli-split::input::InputError>",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 56,
+        "end": 157
+      }
+    }
+  ]
+}

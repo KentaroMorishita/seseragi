@@ -1,0 +1,36 @@
+{
+  "version": 3,
+  "file": "dist/rps-cli/input.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/rps-cli-split::input"
+  ],
+  "sourcesContent": [
+    "import { Hand, Rock, Paper, Scissors } from \"./domain\"\n\npub type InputError deriving Show =\n  | StdinFailure StdinError\n  | EndOfInput\n  | UnknownHand String\n\nfn parseHand input: String -> Either<InputError, Hand> =\n  match input {\n    \"rock\" -> Right Rock\n    \"paper\" -> Right Paper\n    \"scissors\" -> Right Scissors\n    other -> Left (UnknownHand other)\n  }\n\nfn parseInput input: Maybe<String> -> Either<InputError, Hand> =\n  match input {\n    Nothing -> Left EndOfInput\n    Just line -> parseHand line\n  }\n\npub effect fn readHand =\n  do {\n    input <- mapError StdinFailure (readLine ())\n    fromEither (parseInput input)\n  }\n"
+  ],
+  "names": [
+    "InputError",
+    "StdinFailure",
+    "EndOfInput",
+    "UnknownHand",
+    "__ssrg$instance$Show$0",
+    "parseHand",
+    "Right",
+    "Right",
+    "Right",
+    "other",
+    "Left",
+    "UnknownHand",
+    "parseInput",
+    "Left",
+    "line",
+    "parseHand",
+    "readHand",
+    "input",
+    "mapError",
+    "readLine",
+    "fromEither",
+    "parseInput"
+  ],
+  "mappings": ";;;;;;AAEAA;;;;AACIC;AACAC;AACAC;AAHJC;AAKAC;AAQAO;AAMAI"
+}
