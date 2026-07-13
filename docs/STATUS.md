@@ -129,6 +129,8 @@ Playground-1は`apps/playground`へ旧UIと分離して実装しました。Code
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
 静的bundleするためRust installを要求しません。旧`playground/`はrollback比較用に残しますが、root commandと
 deployment configは新surfaceを正とします。
+2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
+<https://seseragi.vercel.app/>で確認しました。
 
 ### 5. 一般機能の未定義項目
 

@@ -36,3 +36,5 @@ bunx vercel deploy
 ```
 
 productionで正常に動作することを確認してから`bunx vercel deploy --prod`を実行します。
+
+Production: <https://seseragi.vercel.app/>
