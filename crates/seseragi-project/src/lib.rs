@@ -6,6 +6,7 @@
 mod graph;
 mod identity;
 mod link;
+mod loader;
 mod manifest;
 mod module_path;
 mod package_name;
@@ -19,6 +20,7 @@ pub use link::{
     link_module, LinkError, LinkTargetError, LinkedDependency, LinkedImport, LinkedModule,
     ModuleLinkTarget,
 };
+pub use loader::{load_package, LoadedModule, LoadedPackage, PackageLoadError};
 pub use manifest::{
     parse_manifest, LanguageRequirement, LayoutPath, Manifest, ManifestError, ManifestLayout,
     ManifestPackage, ManifestRun, RunSeed, SignalMode, TargetId,
