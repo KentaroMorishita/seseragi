@@ -1,58 +1,28 @@
 import { stdin as processStdin } from "node:process"
 import { createInterface } from "node:readline"
-import type { Effect } from "./effect"
-import {
-  serviceEffect,
-  serviceFailure,
-  type ServiceOperation,
-  serviceSuccess,
-} from "./service"
-import { Just, type Maybe, Nothing } from "./sum"
+import { serviceFailure, serviceSuccess } from "./service"
+import { Just, Nothing } from "./sum"
+import type {
+  ConcurrentStdinRead,
+  Stdin,
+  StdinReadFailure,
+} from "./stdin-service"
 
-export type StdinUnavailable = {
-  readonly tag: "StdinUnavailable"
-}
-
-export type StdinReadFailure = {
-  readonly tag: "StdinReadFailure"
-}
-
-export type ConcurrentStdinRead = {
-  readonly tag: "ConcurrentStdinRead"
-}
-
-export type InvalidStdinUtf8 = {
-  readonly tag: "InvalidStdinUtf8"
-  readonly value: { readonly offset: bigint }
-}
-
-export type StdinLineTooLong = {
-  readonly tag: "StdinLineTooLong"
-  readonly value: { readonly limitBytes: bigint }
-}
-
-export type StdinPositionOverflow = {
-  readonly tag: "StdinPositionOverflow"
-}
-
-export type StdinError =
-  | StdinUnavailable
-  | StdinReadFailure
-  | ConcurrentStdinRead
-  | InvalidStdinUtf8
-  | StdinLineTooLong
-  | StdinPositionOverflow
-
-export type Stdin = {
-  readonly readLine: () => ServiceOperation<StdinError, Maybe<string>>
-}
+export type {
+  ConcurrentStdinRead,
+  InvalidStdinUtf8,
+  Stdin,
+  StdinEnvironment,
+  StdinError,
+  StdinLineTooLong,
+  StdinPositionOverflow,
+  StdinReadFailure,
+  StdinUnavailable,
+} from "./stdin-service"
+export { readLine } from "./stdin-service"
 
 export type ProcessStdin = Stdin & {
   readonly close: () => void
-}
-
-export type StdinEnvironment = {
-  readonly stdin: Stdin
 }
 
 const STDIN_READ_FAILURE: StdinReadFailure = Object.freeze({
@@ -136,15 +106,4 @@ export function createProcessStdin(
     },
     close,
   }
-}
-
-/** Reads one line from the Stdin service supplied at the runner boundary. */
-export function readLine(): Effect<
-  StdinEnvironment,
-  StdinError,
-  Maybe<string>
-> {
-  return serviceEffect((environment: StdinEnvironment) =>
-    environment.stdin.readLine()
-  )
 }

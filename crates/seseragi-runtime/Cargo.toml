@@ -6,6 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+serde.workspace = true
 seseragi-driver = { path = "../seseragi-driver" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }

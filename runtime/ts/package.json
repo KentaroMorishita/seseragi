@@ -36,6 +36,18 @@
     "./show": {
       "types": "./src/show.ts",
       "default": "./src/show.ts"
+    },
+    "./browser/console": {
+      "types": "./src/browser/console.ts",
+      "default": "./src/browser/console.ts"
+    },
+    "./browser/stdin": {
+      "types": "./src/browser/stdin.ts",
+      "default": "./src/browser/stdin.ts"
+    },
+    "./browser/host": {
+      "types": "./src/browser/host.ts",
+      "default": "./src/browser/host.ts"
     }
   },
   "license": "Apache-2.0"

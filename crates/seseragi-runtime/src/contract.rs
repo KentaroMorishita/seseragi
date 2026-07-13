@@ -1,31 +1,36 @@
+use serde::Serialize;
 use seseragi_driver::CompiledModule;
 use seseragi_semantics::{TypedDecl, TypedParameter, TypedType};
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(super) struct MainContract {
-    pub(super) environment: Vec<EnvironmentBinding>,
-    pub(super) failure_renderer: FailureRenderer,
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MainContract {
+    pub environment: Vec<EnvironmentBinding>,
+    pub failure_renderer: FailureRenderer,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(super) struct EnvironmentBinding {
-    pub(super) field: String,
-    pub(super) service: HostService,
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EnvironmentBinding {
+    pub field: String,
+    pub service: HostService,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(super) enum HostService {
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum HostService {
     Console,
     Stdin,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(super) enum FailureRenderer {
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(tag = "kind", rename_all = "camelCase")]
+pub enum FailureRenderer {
     Never,
     Show { module: String, export: String },
 }
 
-pub(super) fn main_contract(compiled: &CompiledModule) -> Result<MainContract, String> {
+pub fn main_contract(compiled: &CompiledModule) -> Result<MainContract, String> {
     let main = compiled
         .typed_hir
         .declarations

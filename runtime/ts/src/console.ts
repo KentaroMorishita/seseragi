@@ -1,25 +1,18 @@
 import { stdout } from "node:process"
-import { unit, type Effect, type Unit } from "./effect"
+import { unit, type Unit } from "./effect"
 import {
-  serviceEffect,
   serviceFailure,
   serviceSuccess,
   type ServiceOperation,
 } from "./service"
+import type { Console, ConsoleError } from "./console-service"
 
-export type Console = {
-  readonly print: (value: string) => ServiceOperation<ConsoleError, Unit>
-  readonly println: (value: string) => ServiceOperation<ConsoleError, Unit>
-}
-
-export type ConsoleEnvironment = {
-  readonly console: Console
-}
-
-export type ConsoleError = {
-  readonly kind: "console-error"
-  readonly message: string
-}
+export type {
+  Console,
+  ConsoleEnvironment,
+  ConsoleError,
+} from "./console-service"
+export { print, println } from "./console-service"
 
 export const liveConsole: Console = {
   print(value) {
@@ -28,22 +21,6 @@ export const liveConsole: Console = {
   println(value) {
     return writeStdout(`${value}\n`)
   },
-}
-
-export function print(
-  value: unknown
-): Effect<ConsoleEnvironment, ConsoleError, Unit> {
-  return serviceEffect((environment: ConsoleEnvironment) =>
-    environment.console.print(String(value))
-  )
-}
-
-export function println(
-  value: unknown
-): Effect<ConsoleEnvironment, ConsoleError, Unit> {
-  return serviceEffect((environment: ConsoleEnvironment) =>
-    environment.console.println(String(value))
-  )
 }
 
 function writeStdout(value: string): ServiceOperation<ConsoleError, Unit> {

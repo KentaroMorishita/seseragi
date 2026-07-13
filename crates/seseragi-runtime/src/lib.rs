@@ -7,8 +7,13 @@
 //! share compiler output without reimplementing language semantics.
 
 mod contract;
+#[cfg(not(target_arch = "wasm32"))]
 mod package;
+#[cfg(not(target_arch = "wasm32"))]
 mod process;
 
+pub use contract::{main_contract, EnvironmentBinding, FailureRenderer, HostService, MainContract};
+#[cfg(not(target_arch = "wasm32"))]
 pub use package::stage_typescript_package;
+#[cfg(not(target_arch = "wasm32"))]
 pub use process::{run_main, RunError, RunOutcome};

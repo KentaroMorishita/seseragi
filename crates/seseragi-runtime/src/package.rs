@@ -15,6 +15,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/console.ts"),
     ),
     (
+        "src/console-service.ts",
+        include_str!("../../../runtime/ts/src/console-service.ts"),
+    ),
+    (
         "src/effect.ts",
         include_str!("../../../runtime/ts/src/effect.ts"),
     ),
@@ -34,7 +38,23 @@ const FILES: &[(&str, &str)] = &[
         "src/stdin.ts",
         include_str!("../../../runtime/ts/src/stdin.ts"),
     ),
+    (
+        "src/stdin-service.ts",
+        include_str!("../../../runtime/ts/src/stdin-service.ts"),
+    ),
     ("src/sum.ts", include_str!("../../../runtime/ts/src/sum.ts")),
+    (
+        "src/browser/console.ts",
+        include_str!("../../../runtime/ts/src/browser/console.ts"),
+    ),
+    (
+        "src/browser/host.ts",
+        include_str!("../../../runtime/ts/src/browser/host.ts"),
+    ),
+    (
+        "src/browser/stdin.ts",
+        include_str!("../../../runtime/ts/src/browser/stdin.ts"),
+    ),
 ];
 
 /// Stages the TypeScript runtime package embedded in this Rust crate.

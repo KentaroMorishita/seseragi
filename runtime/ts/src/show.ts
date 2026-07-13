@@ -1,5 +1,5 @@
-import type { ConsoleError } from "./console"
-import type { StdinError } from "./stdin"
+import type { ConsoleError } from "./console-service"
+import type { StdinError } from "./stdin-service"
 
 /**
  * The runtime dictionary representation of Seseragi's pure `Show<A>` trait.

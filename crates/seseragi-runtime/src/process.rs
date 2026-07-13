@@ -5,7 +5,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use seseragi_driver::CompiledModule;
 
-use crate::contract::{main_contract, FailureRenderer, HostService, MainContract};
+use crate::{main_contract, FailureRenderer, HostService, MainContract};
 
 static NEXT_RUN: AtomicU64 = AtomicU64::new(0);
 
@@ -156,7 +156,7 @@ fn entry_source(contract: &MainContract) -> String {
 #[cfg(test)]
 mod tests {
     use super::entry_source;
-    use crate::contract::{EnvironmentBinding, FailureRenderer, HostService, MainContract};
+    use crate::{EnvironmentBinding, FailureRenderer, HostService, MainContract};
 
     #[test]
     fn prepares_live_process_services_and_typed_failure_rendering() {
