@@ -46,7 +46,11 @@ language semanticsをtarget adapterへ委譲しません。
 - Playground-1: `apps/playground`へ旧UIと独立したCodeMirror 6のmobile-first surfaceを実装済みです。
   diagnosticsのUTF-8 range変換、専用syntax highlight、任意Stdin、responsive panelを小さいmoduleへ分離し、
   Vercelはversioned WASM deployment artifactをViteでbundleするためbuild hostのRust toolchainへ依存しません。
-- formatter共有gate: 未完了。Phase 2と独立にlossless CST boundary上で進めます。
+- formatter-0: `seseragi-formatter`がlossless token / CSTを入力にし、shared driver経由の
+  `seseragi format [--check] path.ssrg`を提供済みです。Phase 1累積programのidempotent round-tripと
+  compile artifact不変、CRLFからLF、2-space indent、trailing whitespace、末尾newlineを固定しました。
+  parse recovery treeはtokenを変更せず、CLIはshared structured diagnosticsを返します。resolved fixityを
+  必要とするoperator spacing / line wrappingとrange / stdin formatは、独自precedenceを作らず後続gateで接続します。
 
 ## 完了判定
 

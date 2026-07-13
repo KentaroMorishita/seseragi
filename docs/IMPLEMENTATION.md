@@ -93,6 +93,13 @@ UTF-8 byteのまま保持し、`seseragi-source::LineIndex`がnegotiated UTF-8 /
 structured artifactを利用できます。LSP-0はsingle-file diagnostics gateであり、module graph、hover、completionは
 対応する言語能力Phaseへ残します。
 
+同日にformatter-0も接続しました。`seseragi-formatter`は共有lossless token / CSTだけを入力にし、token順、literal、
+custom operator spellingを変更せずline ending、indent、trailing whitespace、末尾newlineをcanonical化します。
+`seseragi-driver::format_module`がparse diagnosticsとformatter coreを束ね、native CLIはfile I/O、write / check modeだけを
+所有します。Phase 1累積programをformat前後でcompileし、TypedHir、CoreIr、TypeScriptIr、generated TypeScriptが不変な
+testをgateにします。resolved fixityがpublic artifactになっていない現段階でoperator spacingやline wrappingを
+formatter独自に推測しません。
+
 Playground-0では`seseragi-wasm`が同じ`compile_module`とpublicなruntime entry contractをversioned JSONへ変換します。
 playground adapterは生成TypeScriptをbrowser用Console / Stdin service providerで実行し、compilerやEffect semanticsを
 再実装しません。sampleは`examples/spec/lessons/01-hello-world.ssrg?raw`を直接読み、WASM integration testはlesson 01に

@@ -24,7 +24,10 @@ impl Lexer<'_> {
                 break;
             };
             match char {
-                ' ' => self.scan_run(TokenKind::TriviaSpace, |char| char == ' '),
+                ' ' | '\t' => {
+                    self.scan_run(TokenKind::TriviaSpace, |char| matches!(char, ' ' | '\t'))
+                }
+                '\r' if self.starts_with("\r\n") => self.scan_crlf(),
                 '\n' => self.scan_newline(),
                 '(' => self.bump_fixed(TokenKind::PunctuationParenLeft, start, char),
                 ')' => self.bump_fixed(TokenKind::PunctuationParenRight, start, char),
@@ -69,6 +72,12 @@ impl Lexer<'_> {
     fn scan_newline(&mut self) {
         let start = self.cursor;
         self.cursor += 1;
+        self.push(TokenKind::TriviaNewline, start, self.cursor);
+    }
+
+    fn scan_crlf(&mut self) {
+        let start = self.cursor;
+        self.cursor += 2;
         self.push(TokenKind::TriviaNewline, start, self.cursor);
     }
 
@@ -264,6 +273,30 @@ mod tests {
             ]
         );
         assert_eq!(stream.reconstructed_text(), "pub let answer: Int = 42\n");
+    }
+
+    #[test]
+    fn preserves_crlf_as_one_lossless_newline_token() {
+        let source = "pub let answer: Int = 42\r\n";
+        let stream = lex("main.ssrg", source);
+        let newline = stream
+            .tokens
+            .iter()
+            .find(|token| token.kind == TokenKind::TriviaNewline)
+            .expect("newline token");
+
+        assert_eq!(newline.raw, "\r\n");
+        assert_eq!(stream.reconstructed_text(), source);
+    }
+
+    #[test]
+    fn preserves_horizontal_tabs_as_space_trivia() {
+        let source = "\tpub let answer: Int = 42\n";
+        let stream = lex("main.ssrg", source);
+
+        assert_eq!(stream.tokens[0].kind, TokenKind::TriviaSpace);
+        assert_eq!(stream.tokens[0].raw, "\t");
+        assert_eq!(stream.reconstructed_text(), source);
     }
 
     #[test]

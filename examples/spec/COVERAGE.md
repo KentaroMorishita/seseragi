@@ -57,7 +57,7 @@
 | foreign module load mode / single-flight      | interop guide     | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
 | manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*`                  | covered |
-| parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots                              | partial |
+| parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots + Phase 1 format round-trip   | partial |
 | shared-driver playground / browser host       | Lesson 01         | `tests/playground-wasm.integration.ts`         | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
 | diagnostic schema / inference explanation     | none              | diagnostic JSON / explain snapshots            | partial |
@@ -74,4 +74,5 @@
 1. 各Lessonに対応するcompile / diagnostic fixtureを追加する。
 2. module、process、interop、packageをmulti-file project fixtureで固定する。
 3. erasure、tail call、specialization、fusionをIR shape fixtureで固定する。
-4. formatterとsemantic toolingを、LSP-0 / Playground-0が利用するshared frontendへ接続する。
+4. formatter-0はshared lossless frontendとdriverへ接続済み。resolved fixityを使うcanonical spacing / wrappingと
+   range formatを追加し、grammar coverageのformatter targetを実行snapshotへ昇格する。

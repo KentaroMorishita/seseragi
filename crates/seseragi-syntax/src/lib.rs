@@ -9,7 +9,7 @@ mod surface;
 mod surface_model;
 mod token;
 
-pub use cst::{parse_cst, CstArtifact, CstError, CstMissing, CstNode};
+pub use cst::{parse_cst, parse_cst_from_tokens, CstArtifact, CstError, CstMissing, CstNode};
 pub use diagnostics::{
     parse_diagnostics, ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticEdit, DiagnosticFix,
     DiagnosticSeverity, RelatedDiagnostic,

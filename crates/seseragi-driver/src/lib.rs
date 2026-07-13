@@ -6,6 +6,7 @@
 
 mod compile;
 mod dependencies;
+mod format;
 mod input;
 mod output;
 mod output_plan;
@@ -16,6 +17,7 @@ pub use compile::{
     compile_linked_module, compile_linked_module_with_output_paths, compile_module,
     LinkedCompileError,
 };
+pub use format::format_module;
 pub use input::CompileInput;
 pub use output::CompiledModule;
 pub use output_plan::{
@@ -26,3 +28,4 @@ pub use project_compile::{
     compile_project, CompiledProject, ProjectCompileError, ProjectModuleInput,
 };
 pub use reporting::render_terminal_diagnostics;
+pub use seseragi_formatter::FormattedSource;

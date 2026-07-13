@@ -132,10 +132,18 @@ name = "seseragi-driver"
 version = "0.0.0"
 dependencies = [
  "serde_json",
+ "seseragi-formatter",
  "seseragi-lowering",
  "seseragi-project",
  "seseragi-semantics",
  "seseragi-source",
+ "seseragi-syntax",
+]
+
+[[package]]
+name = "seseragi-formatter"
+version = "0.0.0"
+dependencies = [
  "seseragi-syntax",
 ]
 

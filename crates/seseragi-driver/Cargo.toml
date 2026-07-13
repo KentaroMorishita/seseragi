@@ -6,6 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+seseragi-formatter = { path = "../seseragi-formatter" }
 seseragi-lowering = { path = "../seseragi-lowering" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-semantics = { path = "../seseragi-semantics" }

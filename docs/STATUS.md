@@ -49,7 +49,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
 | pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR lesson、DOM / hydration fixtureあり    | 未着手             |
 | 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |
-| diagnostics、formatter、LSP                | 契約初稿あり  | diagnostic fixture + stdio integration     | LSP-0 open document diagnosticsまで実装 |
+| diagnostics、formatter、LSP                | 縦slice進行中 | diagnostic fixture + stdio / CLI integration | LSP-0とformatter-0を実装              |
 | syntax highlight                           | token契約あり | spec preview拡張あり                       | 仮実装あり         |
 | playground                                 | 共有契約あり  | lesson 01 + Phase 1 WASM execution          | Playground-1 mobile / deploy surface実装済み |
 
@@ -122,7 +122,9 @@ single-file CLIはshared driverとstructured diagnosticsへ接続済みです。
 同じdriverを呼び、UTF-8 / UTF-16 / UTF-32へ変換したparse / resolve / type diagnosticsをopen documentへ返します。
 Playground-0も`seseragi-wasm`から同じdriverとruntime entry contractを利用し、lesson sourceを手作業で複製せず
 WASM compile、generated TypeScript、browser host runtimeへ接続済みです。Phase 1累積じゃんけんもdeterministic Stdinで
-browser host実行しています。formatter共有は未達で、Phase 2完了後へ一括延期せず独立したsurface gateとして進めます。
+browser host実行しています。formatter-0はlossless token / CST、shared driver、native CLIを接続し、Phase 1
+累積programのround-tripを固定しました。resolved fixity依存の整形とrange / stdin formatは独立した後続surface
+gateとして進め、Phase 2完了後へ一括延期しません。
 package directoryの`seseragi run .`はmanifest / filesystem discoveryを必要とするためPhase 2 gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
@@ -131,6 +133,12 @@ mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、
 deployment configは新surfaceを正とします。
 2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
 <https://seseragi.vercel.app/>で確認しました。
+
+Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
+playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
+所有します。syntax errorはcompilerと同じsource range付きdiagnosticsを返し、recovery nodeをformatter都合で
+書き換えません。現段階ではtoken順とintra-line triviaを保持する保守的なlayout formatterであり、12.8の
+fixity-aware operator spacing、100 columns wrapping、range / stdin optionは未完了です。
 
 ### 5. 一般機能の未定義項目
 
