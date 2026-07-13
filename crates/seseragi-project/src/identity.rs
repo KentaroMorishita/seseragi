@@ -76,7 +76,7 @@ impl fmt::Display for PackageSourceIdentity {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum ModuleRoot {
     Source,
     Test,
@@ -84,7 +84,7 @@ pub enum ModuleRoot {
     Generated,
 }
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ModuleIdentity {
     package: PackageIdentity,
     root: ModuleRoot,

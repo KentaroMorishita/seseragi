@@ -8,6 +8,7 @@ mod identity;
 mod link;
 mod loader;
 mod local_graph;
+mod local_project;
 mod manifest;
 mod module_path;
 mod package_name;
@@ -28,6 +29,7 @@ pub use local_graph::{
     discover_local_package_graph, LocalPackageGraph, LocalPackageGraphError, LocalPackageManifest,
     PackageImportError, ResolvedPackageImport,
 };
+pub use local_project::{load_local_project, LoadedLocalProject, LocalProjectLoadError};
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
     LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestLayout,

@@ -40,7 +40,8 @@ language semanticsをtarget adapterへ委譲しません。
   multi-module runtimeを接続し、分割じゃんけんpackageを`seseragi run .`で実行できます。registry / alias / path dependencyの
   typed manifest contractに加え、canonical path dependencyを再帰発見するlocal package graphを接続済みです。依存先manifestの
   name / language照合、cycle、同名同versionの別source混入をproject layerで拒否します。bare importはimporterの宣言済み
-  dependency keyを最長prefixで選び、exact package identityの公開export subpathへ解決します。複数packageのsource module linkと
+  dependency keyを最長prefixで選び、exact package identityの公開export subpathへ解決します。複数packageのcanonical source
+  discoveryまで接続し、path dependencyをまたぐ閉じた`ModuleIdentity` graphを構築できます。cross-package driver compileと
   source root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つrelative / `self/`
   importだけの一package executionを対象にします。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの

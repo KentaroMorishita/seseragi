@@ -5,7 +5,7 @@
 //! LSP, and browser adapters can share the same project model.
 
 mod error;
-mod filesystem;
+pub(crate) mod filesystem;
 mod model;
 
 #[cfg(test)]

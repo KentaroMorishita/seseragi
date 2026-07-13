@@ -515,17 +515,23 @@ name / exact versionが異なるcanonical sourceから入る状態、declared pa
 registry dependencyはlockfile resolverへ意味を委譲し、local graphがversionを選択しません。各nodeのsource module / export
 subpathはimporter manifestのdependency keyを最長prefixで選び、graph edgeが持つexact package identityとtarget manifestの
 export mapから解決します。未宣言dependencyは`SES-K0103`、公開されていないsubpathは`SES-N0104`で停止し、transitive
-dependencyやprivate fileへfallbackしません。target source file discoveryとdriver compileは次のsliceが所有します。foreign、
-test、benchmark、tool tableは引き続きdeferred TOML valueであり、この段階ではruntime semanticsを推測しません。
+dependencyやprivate fileへfallbackしません。foreign、test、benchmark、tool tableは引き続きdeferred TOML valueであり、
+この段階ではruntime semanticsを推測しません。
+
+`load_local_project`はroot packageのrun entryからsource importを辿り、relative / `self/` edgeは同じpackage identity、bare
+dependency edgeは上記export resolverのtarget identityへ接続します。各packageのsource rootとmodule fileは既存canonical
+filesystem resolverを再利用し、`PackageIdentity + ModuleRoot::Source + ModulePath`をnodeにした閉じたgraphを返します。
+`package-path-dependency` fixtureではroot `main`、dependency `lib` / `stats`の三nodeと二つのbare import edgeを固定しました。
+このloaderはcompiler stageを呼ばず、次のdriver adapterがopaque compiler IDとTypeScript output pathを割り当てます。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。
 package root、source root、各module fileはfilesystemでcanonicalizeし、root外へ向くsymlink、case違い、非NFC spelling、
 複数logical moduleが同じphysical fileへ収束する状態をproject errorとして拒否します。読み込んだmoduleはcanonical pathを
 source labelに、`PackageIdentity + ModuleRoot::Source + ModulePath`をstructural identityに保持します。package / `std/` /
-`gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。typed dependencyをpackage graphへ
-解決するmanifest-level処理は接続済みですが、package importをdependencyのexport / source moduleへ結ぶ処理と、entryから
-到達しないsourceも含むroot全体のcollision auditを接続するまでP2-1全体は引き続き未完了です。
+`gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。typed dependencyのmanifest-level解決と
+entryから到達するcross-package source graphは接続済みですが、entryから到達しないsourceも含むroot全体のcollision auditを
+接続するまでP2-1全体は引き続き未完了です。
 
 `package.language`はsource discoveryより先に実装言語version `0.1.0`へ照合します。exact、比較、intersection、`||`、
 caret、tildeを仕様の上限規則で評価し、prereleaseは同じmajor / minor / patchのprerelease comparatorがrangeへ明記された
