@@ -1,17 +1,11 @@
 [package]
-name = "seseragi-conformance"
+name = "seseragi-runtime"
 version = "0.0.0"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-default-run = "seseragi-conformance"
 
 [dependencies]
-serde.workspace = true
-serde_json.workspace = true
 seseragi-driver = { path = "../seseragi-driver" }
-seseragi-lowering = { path = "../seseragi-lowering" }
-seseragi-project = { path = "../seseragi-project" }
-seseragi-runtime = { path = "../seseragi-runtime" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }

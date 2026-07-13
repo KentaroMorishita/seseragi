@@ -9,6 +9,7 @@ repository.workspace = true
 seseragi-lowering = { path = "../seseragi-lowering" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-semantics = { path = "../seseragi-semantics" }
+seseragi-source = { path = "../seseragi-source" }
 seseragi-syntax = { path = "../seseragi-syntax" }
 
 [dev-dependencies]

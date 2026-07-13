@@ -1,9 +1,11 @@
 [workspace]
 members = [
+  "crates/seseragi-cli",
   "crates/seseragi-conformance",
   "crates/seseragi-driver",
   "crates/seseragi-lowering",
   "crates/seseragi-project",
+  "crates/seseragi-runtime",
   "crates/seseragi-semantics",
   "crates/seseragi-source",
   "crates/seseragi-syntax",

@@ -82,6 +82,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-cli"
+version = "0.0.0"
+dependencies = [
+ "seseragi-driver",
+ "seseragi-runtime",
+]
+
+[[package]]
 name = "seseragi-conformance"
 version = "0.0.0"
 dependencies = [
@@ -90,6 +98,7 @@ dependencies = [
  "seseragi-driver",
  "seseragi-lowering",
  "seseragi-project",
+ "seseragi-runtime",
  "seseragi-semantics",
  "seseragi-syntax",
 ]
@@ -102,6 +111,7 @@ dependencies = [
  "seseragi-lowering",
  "seseragi-project",
  "seseragi-semantics",
+ "seseragi-source",
  "seseragi-syntax",
 ]
 
@@ -123,6 +133,15 @@ dependencies = [
  "semver",
  "seseragi-syntax",
  "unicode-normalization",
+]
+
+[[package]]
+name = "seseragi-runtime"
+version = "0.0.0"
+dependencies = [
+ "seseragi-driver",
+ "seseragi-semantics",
+ "seseragi-syntax",
 ]
 
 [[package]]

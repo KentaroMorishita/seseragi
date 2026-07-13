@@ -10,6 +10,7 @@ mod input;
 mod output;
 mod output_plan;
 mod project_compile;
+mod reporting;
 
 pub use compile::{
     compile_linked_module, compile_linked_module_with_output_paths, compile_module,
@@ -24,3 +25,4 @@ pub use output_plan::{
 pub use project_compile::{
     compile_project, CompiledProject, ProjectCompileError, ProjectModuleInput,
 };
+pub use reporting::render_terminal_diagnostics;
