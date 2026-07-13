@@ -75,6 +75,15 @@ pub enum InterfaceType {
         name: String,
         arguments: Vec<InterfaceType>,
     },
+    /// A nominal type occurrence whose owner was fixed by a final typed
+    /// interface. Shallow syntax interfaces never synthesize this variant.
+    ExternalNamed {
+        name: String,
+        canonical: String,
+        provider_module: String,
+        provider_export: String,
+        arguments: Vec<InterfaceType>,
+    },
     Hole,
     TypeConstructor {
         name: String,
@@ -125,6 +134,13 @@ pub struct InterfaceInstance {
     /// absent because they cannot resolve every type in an instance head.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity: Option<String>,
+    /// Structured provenance is present on final typed interfaces. Keeping it
+    /// separate from `identity` avoids parsing canonical identities or type
+    /// spellings while transporting transitive evidence.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider_module: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub type_identity: Option<String>,
     #[serde(rename = "trait")]
     pub trait_name: String,
     pub type_parameters: Vec<String>,

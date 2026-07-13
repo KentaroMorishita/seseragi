@@ -365,6 +365,8 @@
   "instances": [
     {
       "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
+      "providerModule": "artifact/rock-paper-scissors-cli",
+      "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
       "trait": "Show",
       "typeParameters": [],
       "head": {

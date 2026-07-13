@@ -7,8 +7,10 @@ use seseragi_syntax::{
 };
 
 use crate::execution_case::effect_contract::model::{
-    DictionaryImport, EffectEntryContract, FailureRenderer,
+    DictionaryImport, EffectEntryContract, FailureRenderer, ProjectFailureRendererCatalog,
 };
+
+mod project;
 
 fn named(name: &str) -> InterfaceType {
     InterfaceType::Named {
@@ -41,6 +43,8 @@ fn type_export(name: &str) -> InterfaceExport {
 fn show_instance(type_ref: InterfaceType) -> InterfaceInstance {
     InterfaceInstance {
         identity: Some("Show<artifact/example::AppError>".to_owned()),
+        provider_module: Some("artifact/example".to_owned()),
+        type_identity: Some("artifact/example::AppError".to_owned()),
         trait_name: "Show".to_owned(),
         type_parameters: Vec::new(),
         head: InterfaceType::Apply {
@@ -89,9 +93,13 @@ fn interface_with_imported_type(name: &str) -> TypedModuleInterface {
 }
 
 fn generated_instances(instances: serde_json::Value) -> GeneratedModule {
+    generated_module("artifact/example", instances)
+}
+
+fn generated_module(module: &str, instances: serde_json::Value) -> GeneratedModule {
     serde_json::from_value(json!({
         "schema": 1,
-        "module": "artifact/example",
+        "module": module,
         "target": "typescript-es2022",
         "runtime": {
             "identity": "@seseragi/runtime",

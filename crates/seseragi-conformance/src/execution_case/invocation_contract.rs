@@ -123,7 +123,10 @@ fn invocation_argument_spelling(argument: &InvocationArgument) -> &'static str {
 
 fn interface_type_spelling(type_ref: &InterfaceType) -> String {
     match type_ref {
-        InterfaceType::Named { name, arguments } => type_application_spelling(name, arguments),
+        InterfaceType::Named { name, arguments }
+        | InterfaceType::ExternalNamed {
+            name, arguments, ..
+        } => type_application_spelling(name, arguments),
         InterfaceType::Apply {
             constructor,
             arguments,

@@ -103,6 +103,8 @@
   "instances": [
     {
       "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+      "providerModule": "fixture/imported-effect-failure::input",
+      "typeIdentity": "fixture/imported-effect-failure::input::InputError",
       "trait": "Show",
       "typeParameters": [],
       "head": {

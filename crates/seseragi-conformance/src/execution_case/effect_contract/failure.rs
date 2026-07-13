@@ -5,6 +5,8 @@ use seseragi_syntax::{InterfaceInstance, InterfaceType};
 use super::model::{DictionaryImport, EffectEntryContract, FailureRenderer};
 use super::standard_types::reject_shadowed_standard_failure;
 
+pub(super) mod project;
+
 const RUNTIME_SHOW_MODULE: &str = "@seseragi/runtime/show";
 
 pub(crate) fn resolve_effect_entry_contract(
@@ -172,6 +174,9 @@ fn is_never(type_ref: &InterfaceType) -> bool {
 fn canonical_type_spelling(type_ref: &InterfaceType) -> String {
     match type_ref {
         InterfaceType::Named { name, arguments }
+        | InterfaceType::ExternalNamed {
+            name, arguments, ..
+        }
         | InterfaceType::Apply {
             constructor: name,
             arguments,

@@ -14,7 +14,7 @@ pub(super) mod standard_types;
 
 #[cfg(test)]
 pub(crate) use model::DictionaryImport;
-pub(crate) use model::{EffectEntryContract, FailureRenderer};
+pub(crate) use model::{EffectEntryContract, FailureRenderer, ProjectFailureRendererCatalog};
 
 pub(super) fn validate_effect_entry_contract(
     case: &Path,
@@ -63,6 +63,49 @@ pub(crate) fn validate_effect_entry_contract_in_memory(
     entry_module_specifier: &str,
     required_environment: &BTreeMap<String, String>,
 ) -> Result<EffectEntryContract, String> {
+    let failure = validate_effect_contract_shape(
+        interface,
+        generated_module,
+        entry_export,
+        required_environment,
+    )?;
+    failure::resolve_effect_entry_contract(
+        interface,
+        failure,
+        generated_module,
+        entry_module_specifier,
+    )
+}
+
+pub(crate) fn validate_project_effect_entry_contract_in_memory(
+    interface: &TypedModuleInterface,
+    generated_module: &GeneratedModule,
+    entry_export: &str,
+    entry_module_specifier: &str,
+    required_environment: &BTreeMap<String, String>,
+    catalog: &ProjectFailureRendererCatalog<'_>,
+) -> Result<EffectEntryContract, String> {
+    let failure = validate_effect_contract_shape(
+        interface,
+        generated_module,
+        entry_export,
+        required_environment,
+    )?;
+    failure::project::resolve(
+        interface,
+        failure,
+        generated_module,
+        entry_module_specifier,
+        catalog,
+    )
+}
+
+fn validate_effect_contract_shape<'a>(
+    interface: &'a TypedModuleInterface,
+    generated_module: &GeneratedModule,
+    entry_export: &str,
+    required_environment: &BTreeMap<String, String>,
+) -> Result<&'a InterfaceType, String> {
     if interface.schema != 1 || interface.stage != "typed-interface" {
         return Err(
             "execution entry.typedInterface must reference a schema 1 typed-interface artifact"
@@ -93,14 +136,12 @@ pub(crate) fn validate_effect_entry_contract_in_memory(
     )?;
     let effect = effect_type(&export.scheme.type_ref, entry_export)?;
     standard_types::reject_shadowed_environment_types(interface, effect.environment, entry_export)?;
+    if entry_export == "main" {
+        standard_types::validate_effect_success(interface, effect.success, entry_export)?;
+    }
     let environment = environment_fields(effect.environment, entry_export)?;
     compare_required_environment(&environment, required_environment, entry_export)?;
-    failure::resolve_effect_entry_contract(
-        interface,
-        effect.failure,
-        generated_module,
-        entry_module_specifier,
-    )
+    Ok(effect.failure)
 }
 
 fn read_compiled_module(case: &Path, run: &serde_json::Value) -> Result<GeneratedModule, String> {
@@ -142,6 +183,7 @@ fn effect_environment(
 struct EffectType<'a> {
     environment: &'a InterfaceType,
     failure: &'a InterfaceType,
+    success: &'a InterfaceType,
 }
 
 fn effect_type<'a>(
@@ -174,6 +216,7 @@ fn effect_type<'a>(
     Ok(EffectType {
         environment: &arguments[0],
         failure: &arguments[1],
+        success: &arguments[2],
     })
 }
 
@@ -219,9 +262,10 @@ fn canonical_record_fields(
 
 fn canonical_type_spelling(type_ref: &InterfaceType) -> Result<String, String> {
     match type_ref {
-        InterfaceType::Named { name, arguments } => {
-            render_type_application(name, arguments, canonical_type_spelling)
-        }
+        InterfaceType::Named { name, arguments }
+        | InterfaceType::ExternalNamed {
+            name, arguments, ..
+        } => render_type_application(name, arguments, canonical_type_spelling),
         InterfaceType::Apply {
             constructor,
             arguments,

@@ -83,7 +83,7 @@
       "declarationKind": "effect-function",
       "declaration": {
         "start": 109,
-        "end": 171
+        "end": 199
       },
       "scheme": {
         "typeParameters": [],
@@ -111,7 +111,7 @@
               },
               {
                 "kind": "named",
-                "name": "Never",
+                "name": "Unit",
                 "arguments": []
               }
             ]
@@ -124,6 +124,8 @@
   "instances": [
     {
       "identity": "Show<fixture/imported-effect-failure::main::AppError>",
+      "providerModule": "fixture/imported-effect-failure::main",
+      "typeIdentity": "fixture/imported-effect-failure::main::AppError",
       "trait": "Show",
       "typeParameters": [],
       "head": {
@@ -141,6 +143,29 @@
       "origin": {
         "start": 46,
         "end": 107
+      }
+    },
+    {
+      "identity": "Show<fixture/imported-effect-failure::input::InputError>",
+      "providerModule": "fixture/imported-effect-failure::input",
+      "typeIdentity": "fixture/imported-effect-failure::input::InputError",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "InputError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 59
       }
     }
   ]

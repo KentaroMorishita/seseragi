@@ -193,6 +193,8 @@
   "instances": [
     {
       "identity": "Show<fixture/rps-cli-split::input::InputError>",
+      "providerModule": "fixture/rps-cli-split::input",
+      "typeIdentity": "fixture/rps-cli-split::input::InputError",
       "trait": "Show",
       "typeParameters": [],
       "head": {

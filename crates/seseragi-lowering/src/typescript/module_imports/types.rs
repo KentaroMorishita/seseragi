@@ -75,6 +75,7 @@ pub(super) fn lower_external_type_imports(
                 imports.push(TypeScriptSourceImport {
                     module: provider_module.to_owned(),
                     specifier: specifier.to_owned(),
+                    runtime_edge: false,
                     bindings: Vec::new(),
                     origin: inferred_import_origin(module),
                 });

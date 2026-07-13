@@ -51,7 +51,7 @@ fn constructor_payload(type_ref: &InterfaceType) -> Option<Option<TypedType>> {
         InterfaceType::Function { parameter, .. } => {
             Some(Some(typed_type_from_interface_type((**parameter).clone())?))
         }
-        InterfaceType::Named { .. } => Some(None),
+        InterfaceType::Named { .. } | InterfaceType::ExternalNamed { .. } => Some(None),
         _ => None,
     }
 }

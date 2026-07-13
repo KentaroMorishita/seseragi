@@ -3,13 +3,14 @@ use super::model::{
 };
 use crate::execution::{self, StagedExecutionRequest};
 use crate::execution_case::{
-    compare_observation, compare_trace, trace_stdout, validate_effect_entry_contract_in_memory,
-    validate_final_interface_invocation,
+    compare_observation, compare_trace, trace_stdout, validate_final_interface_invocation,
+    validate_project_effect_entry_contract_in_memory, ProjectFailureRendererCatalog,
 };
 use crate::project_compile::{
-    compile_project_compile_case, stage_project_typescript, CompiledProjectCompileCase,
+    compile_project_compile_case, stage_project_typescript, staged_relative_output_path,
+    CompiledProjectCompileCase,
 };
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
@@ -82,17 +83,20 @@ fn check_compiled_project_execution(
         ));
     }
     let entry_module_specifier = format!("./{}", compiled.generated.metadata.outputs.typescript);
-    let effect_contract = (execution_case.kind == ProjectExecutionKind::Effect)
-        .then(|| {
-            validate_effect_entry_contract_in_memory(
-                &compiled.typed_interface,
-                &compiled.generated.metadata,
-                &execution_case.entry_export,
-                &entry_module_specifier,
-                &execution_case.required_environment,
-            )
-        })
-        .transpose()?;
+    let effect_contract = if execution_case.kind == ProjectExecutionKind::Effect {
+        let catalog =
+            project_failure_renderer_catalog(compiled_case, &execution_case.entry_module)?;
+        Some(validate_project_effect_entry_contract_in_memory(
+            &compiled.typed_interface,
+            &compiled.generated.metadata,
+            &execution_case.entry_export,
+            &entry_module_specifier,
+            &execution_case.required_environment,
+            &catalog,
+        )?)
+    } else {
+        None
+    };
     let execution_kind = format!("project/{project_id}");
     let execution_dir = execution::prepare_execution_dir(root, &execution_kind, &loaded.directory)?;
     stage_project_typescript(&execution_dir, compiled_case)?;
@@ -112,6 +116,80 @@ fn check_compiled_project_execution(
     )?;
     compare_process_output(&loaded.directory, execution_case, actual)
         .map_err(|error| format!("{} in project {}", error, project_root.display()))
+}
+
+fn project_failure_renderer_catalog<'a>(
+    compiled_case: &'a CompiledProjectCompileCase,
+    entry_module: &str,
+) -> Result<ProjectFailureRendererCatalog<'a>, String> {
+    let dependencies = compiled_case
+        .descriptor
+        .modules
+        .iter()
+        .map(|module| {
+            (
+                module.id.clone(),
+                module
+                    .imports
+                    .iter()
+                    .map(|import| import.module.clone())
+                    .collect(),
+            )
+        })
+        .collect::<BTreeMap<_, _>>();
+    let closure = project_module_closure(entry_module, &dependencies)?;
+    let mut generated_modules = Vec::with_capacity(closure.len());
+    let mut typed_interfaces = Vec::with_capacity(closure.len());
+    let mut wrapper_module_specifiers = Vec::with_capacity(closure.len());
+    for module in closure {
+        let compiled = compiled_case
+            .compiled
+            .modules
+            .get(&module)
+            .ok_or_else(|| format!("project compiler omitted renderer module {module}"))?;
+        let output = &compiled.generated.metadata.outputs.typescript;
+        staged_relative_output_path(output)?;
+        generated_modules.push((module.clone(), &compiled.generated.metadata));
+        typed_interfaces.push((module.clone(), &compiled.typed_interface));
+        wrapper_module_specifiers.push((module, format!("./{output}")));
+    }
+    Ok(ProjectFailureRendererCatalog::new(
+        generated_modules,
+        typed_interfaces,
+        wrapper_module_specifiers,
+    ))
+}
+
+fn project_module_closure(
+    entry_module: &str,
+    dependencies: &BTreeMap<String, Vec<String>>,
+) -> Result<BTreeSet<String>, String> {
+    if !dependencies.contains_key(entry_module) {
+        return Err(format!(
+            "project execution entry module is missing from the project graph: {entry_module}"
+        ));
+    }
+    let mut closure = BTreeSet::new();
+    let mut pending = vec![entry_module.to_owned()];
+    while let Some(module) = pending.pop() {
+        if !closure.insert(module.clone()) {
+            continue;
+        }
+        let imports = dependencies
+            .get(&module)
+            .ok_or_else(|| format!("project graph dependency is undeclared: {module}"))?;
+        for dependency in imports {
+            if !dependencies.contains_key(dependency) {
+                return Err(format!(
+                    "project module {module} imports undeclared module {dependency}"
+                ));
+            }
+            if !closure.contains(dependency) {
+                pending.push(dependency.clone());
+            }
+        }
+    }
+    Ok(closure)
 }
 
 fn project_runtime_requirements(
@@ -169,4 +247,43 @@ fn compare_process_output(
         actual.operation_trace.as_ref(),
     )?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn renderer_catalog_scope_is_the_entry_module_transitive_closure() {
+        let dependencies = BTreeMap::from([
+            ("main".to_owned(), vec!["facade".to_owned()]),
+            ("facade".to_owned(), vec!["provider".to_owned()]),
+            ("provider".to_owned(), Vec::new()),
+            ("unrelated".to_owned(), Vec::new()),
+        ]);
+
+        assert_eq!(
+            project_module_closure("main", &dependencies).unwrap(),
+            BTreeSet::from([
+                "facade".to_owned(),
+                "main".to_owned(),
+                "provider".to_owned(),
+            ])
+        );
+    }
+
+    #[test]
+    fn renderer_catalog_scope_rejects_missing_graph_nodes() {
+        let dependencies = BTreeMap::from([
+            ("main".to_owned(), vec!["provider".to_owned()]),
+            ("unrelated".to_owned(), Vec::new()),
+        ]);
+
+        assert!(project_module_closure("missing", &dependencies)
+            .unwrap_err()
+            .contains("entry module is missing"));
+        assert!(project_module_closure("main", &dependencies)
+            .unwrap_err()
+            .contains("imports undeclared module provider"));
+    }
 }

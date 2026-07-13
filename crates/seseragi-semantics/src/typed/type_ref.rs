@@ -10,6 +10,19 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<
                 .map(typed_type_from_interface_type)
                 .collect::<Option<Vec<_>>>()?,
         }),
+        InterfaceType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+            ..
+        } => Some(TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments: arguments
+                .into_iter()
+                .map(typed_type_from_interface_type)
+                .collect::<Option<Vec<_>>>()?,
+        }),
         InterfaceType::Hole => Some(TypedType::Hole),
         InterfaceType::Record { closed, fields } => Some(TypedType::Record {
             closed,

@@ -74,6 +74,25 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             }],
             fixes: Vec::new(),
         },
+        DerivedInstanceIssue::AmbiguousInstance {
+            trait_name,
+            type_identity,
+            provider_module,
+            primary,
+        } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0202".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "trait.instance-ambiguous".to_owned(),
+            primary: byte_range(*primary),
+            related: vec![RelatedDiagnostic {
+                message: format!(
+                    "conflicting {trait_name}<{type_identity}> instance is imported from {provider_module}"
+                ),
+                primary: byte_range(*primary),
+            }],
+            fixes: Vec::new(),
+        },
     }
 }
 

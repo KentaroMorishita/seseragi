@@ -147,6 +147,82 @@ fn requires_a_typed_interface_reference_for_effect_execution() {
 }
 
 #[test]
+fn requires_unit_success_only_for_the_package_main_entry() {
+    let effect = |success| InterfaceType::Function {
+        parameter: Box::new(named("Unit")),
+        result: Box::new(InterfaceType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![
+                InterfaceType::Record {
+                    closed: true,
+                    fields: Vec::new(),
+                },
+                named("Never"),
+                success,
+            ],
+        }),
+    };
+    let mut interface = TypedModuleInterface {
+        schema: 1,
+        stage: "typed-interface".to_owned(),
+        module: "fixture/parse".to_owned(),
+        source: "main.ssrg".to_owned(),
+        dependencies: Vec::new(),
+        exports: vec![InterfaceExport {
+            symbol: "fixture/parse::parse".to_owned(),
+            namespace: "value".to_owned(),
+            name: "parse".to_owned(),
+            constructor_of: None,
+            visibility: Visibility::Public,
+            declaration_kind: Some("effect-function".to_owned()),
+            declaration: ByteSpan { start: 0, end: 5 },
+            scheme: InterfaceScheme {
+                type_parameters: Vec::new(),
+                constraints: Vec::new(),
+                type_ref: effect(named("String")),
+            },
+            representation: None,
+        }],
+        operators: Vec::new(),
+        instances: Vec::new(),
+    };
+    let generated: GeneratedModule = serde_json::from_value(serde_json::json!({
+        "schema": 1,
+        "module": "fixture/parse",
+        "target": "typescript-es2022",
+        "runtime": {
+            "identity": "@seseragi/runtime",
+            "abiMajor": 1,
+            "requirements": []
+        },
+        "exports": ["parse"],
+        "outputs": { "typescript": "main.js", "sourceMap": "main.js.map" }
+    }))
+    .unwrap();
+
+    assert!(validate_effect_entry_contract_in_memory(
+        &interface,
+        &generated,
+        "parse",
+        "./main.js",
+        &BTreeMap::new(),
+    )
+    .is_ok());
+
+    interface.exports[0].name = "main".to_owned();
+    interface.exports[0].symbol = "fixture/parse::main".to_owned();
+    assert!(validate_effect_entry_contract_in_memory(
+        &interface,
+        &generated,
+        "main",
+        "./main.js",
+        &BTreeMap::new(),
+    )
+    .unwrap_err()
+    .contains("success type A must be standard Unit"));
+}
+
+#[test]
 fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
     let app_error = named("AppError");
     let entry_type = InterfaceType::Function {
@@ -207,6 +283,8 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
         operators: Vec::new(),
         instances: vec![InterfaceInstance {
             identity: Some("Show<fixture/game::main::AppError>".to_owned()),
+            provider_module: Some("fixture/game::main".to_owned()),
+            type_identity: Some("fixture/game::main::AppError".to_owned()),
             trait_name: "Show".to_owned(),
             type_parameters: Vec::new(),
             head: InterfaceType::Apply {

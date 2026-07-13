@@ -32,7 +32,7 @@ fn render_source_imports(module: &TypeScriptModule) -> Vec<String> {
                 import.specifier
             ));
         }
-        if !import.bindings.iter().any(|binding| !binding.type_only) {
+        if import.runtime_edge && !import.bindings.iter().any(|binding| !binding.type_only) {
             lines.push(format!("import {:?}", import.specifier));
         }
     }

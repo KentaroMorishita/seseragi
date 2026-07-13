@@ -1,16 +1,22 @@
 use crate::{
-    TypedDecl, TypedEffect, TypedInstance, TypedModule, TypedModuleInterface, TypedParameter,
-    TypedRecordField, TypedScheme, TypedType,
+    ResolvedDependencyInstance, TypedDecl, TypedEffect, TypedInstance, TypedModule,
+    TypedModuleInterface, TypedParameter, TypedScheme,
 };
 use seseragi_syntax::{
-    InterfaceConstraint, InterfaceExport, InterfaceInstance, InterfaceRecordField, InterfaceScheme,
-    InterfaceType, ModuleInterface, Visibility,
+    InterfaceConstraint, InterfaceExport, InterfaceInstance, InterfaceScheme, InterfaceType,
+    ModuleInterface, Visibility,
 };
+
+mod types;
+
+use types::InterfaceTypes;
 
 pub(crate) fn typed_interface_from_modules(
     shallow: ModuleInterface,
     typed: &TypedModule,
+    dependency_instances: &[ResolvedDependencyInstance],
 ) -> TypedModuleInterface {
+    let types = InterfaceTypes::new(&typed.external_type_bindings);
     let mut exports = shallow
         .exports
         .into_iter()
@@ -22,12 +28,22 @@ pub(crate) fn typed_interface_from_modules(
         typed
             .declarations
             .iter()
-            .filter_map(typed_value_export)
+            .filter_map(|declaration| typed_value_export(declaration, &types))
             .collect::<Vec<_>>(),
     );
 
     let mut instances = shallow.instances;
-    instances.extend(typed.instances.iter().map(interface_instance_from_typed));
+    instances.extend(
+        typed
+            .instances
+            .iter()
+            .map(|instance| interface_instance_from_typed(instance, &typed.module, &types)),
+    );
+    instances.extend(
+        dependency_instances
+            .iter()
+            .map(interface_instance_from_dependency),
+    );
 
     TypedModuleInterface {
         schema: shallow.schema,
@@ -41,14 +57,20 @@ pub(crate) fn typed_interface_from_modules(
     }
 }
 
-fn interface_instance_from_typed(instance: &TypedInstance) -> InterfaceInstance {
+fn interface_instance_from_typed(
+    instance: &TypedInstance,
+    module: &str,
+    types: &InterfaceTypes<'_>,
+) -> InterfaceInstance {
     InterfaceInstance {
         identity: Some(instance.identity.clone()),
+        provider_module: Some(module.to_owned()),
+        type_identity: Some(instance.type_identity.clone()),
         trait_name: instance.trait_name.clone(),
         type_parameters: Vec::new(),
         head: InterfaceType::Apply {
             constructor: instance.trait_name.clone(),
-            arguments: vec![interface_type_from_typed_type(&instance.head)],
+            arguments: vec![types.convert(&instance.head)],
         },
         constraints: instance
             .constraints
@@ -61,7 +83,23 @@ fn interface_instance_from_typed(instance: &TypedInstance) -> InterfaceInstance 
     }
 }
 
-fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
+fn interface_instance_from_dependency(instance: &ResolvedDependencyInstance) -> InterfaceInstance {
+    InterfaceInstance {
+        identity: Some(instance.identity.clone()),
+        provider_module: Some(instance.provider_module.clone()),
+        type_identity: Some(instance.type_identity.clone()),
+        trait_name: instance.trait_name.clone(),
+        type_parameters: instance.type_parameters.clone(),
+        head: instance.head.clone(),
+        constraints: instance.constraints.clone(),
+        origin: instance.origin,
+    }
+}
+
+fn typed_value_export(
+    declaration: &TypedDecl,
+    types: &InterfaceTypes<'_>,
+) -> Option<InterfaceExport> {
     match declaration {
         TypedDecl::Adt { .. } => None,
         TypedDecl::Let {
@@ -78,7 +116,7 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
             visibility: *visibility,
             declaration_kind: None,
             declaration: *origin,
-            scheme: interface_scheme_from_typed_scheme(scheme),
+            scheme: interface_scheme_from_typed_scheme(scheme, types),
             representation: None,
         }),
         TypedDecl::Fn {
@@ -107,7 +145,8 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
                     .collect(),
                 type_ref: function_interface_type(
                     parameters,
-                    &interface_type_from_typed_type(&scheme.type_ref),
+                    &types.convert(&scheme.type_ref),
+                    types,
                 ),
             },
             representation: None,
@@ -130,7 +169,11 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
             scheme: InterfaceScheme {
                 type_parameters: Vec::new(),
                 constraints: Vec::new(),
-                type_ref: function_interface_type(parameters, &effect_interface_type(effect)),
+                type_ref: function_interface_type(
+                    parameters,
+                    &effect_interface_type(effect, types),
+                    types,
+                ),
             },
             representation: None,
         }),
@@ -138,7 +181,10 @@ fn typed_value_export(declaration: &TypedDecl) -> Option<InterfaceExport> {
     }
 }
 
-fn interface_scheme_from_typed_scheme(scheme: &TypedScheme) -> InterfaceScheme {
+fn interface_scheme_from_typed_scheme(
+    scheme: &TypedScheme,
+    types: &InterfaceTypes<'_>,
+) -> InterfaceScheme {
     InterfaceScheme {
         type_parameters: scheme.type_parameters.clone(),
         constraints: scheme
@@ -148,79 +194,34 @@ fn interface_scheme_from_typed_scheme(scheme: &TypedScheme) -> InterfaceScheme {
                 name: constraint.name.clone(),
             })
             .collect(),
-        type_ref: interface_type_from_typed_type(&scheme.type_ref),
+        type_ref: types.convert(&scheme.type_ref),
     }
 }
 
-fn function_interface_type(parameters: &[TypedParameter], result: &InterfaceType) -> InterfaceType {
+fn function_interface_type(
+    parameters: &[TypedParameter],
+    result: &InterfaceType,
+    types: &InterfaceTypes<'_>,
+) -> InterfaceType {
     parameters
         .iter()
         .rev()
         .fold(result.clone(), |result, parameter| {
             InterfaceType::Function {
-                parameter: Box::new(interface_type_from_typed_type(parameter_type(parameter))),
+                parameter: Box::new(types.parameter(parameter)),
                 result: Box::new(result),
             }
         })
 }
 
-fn effect_interface_type(effect: &TypedEffect) -> InterfaceType {
+fn effect_interface_type(effect: &TypedEffect, types: &InterfaceTypes<'_>) -> InterfaceType {
     InterfaceType::Named {
         name: "Effect".to_owned(),
         arguments: vec![
-            interface_type_from_typed_type(&effect.environment),
-            interface_type_from_typed_type(&effect.failure),
-            interface_type_from_typed_type(&effect.success),
+            types.convert(&effect.environment),
+            types.convert(&effect.failure),
+            types.convert(&effect.success),
         ],
-    }
-}
-
-fn interface_type_from_typed_type(type_ref: &TypedType) -> InterfaceType {
-    match type_ref {
-        TypedType::Named { name, arguments }
-        | TypedType::ExternalNamed {
-            name, arguments, ..
-        } => InterfaceType::Named {
-            name: name.clone(),
-            arguments: arguments
-                .iter()
-                .map(interface_type_from_typed_type)
-                .collect(),
-        },
-        TypedType::Hole => InterfaceType::Hole,
-        TypedType::Record { closed, fields } => InterfaceType::Record {
-            closed: *closed,
-            fields: fields
-                .iter()
-                .map(interface_record_field_from_typed)
-                .collect(),
-        },
-        TypedType::Tuple { elements } => InterfaceType::Tuple {
-            elements: elements
-                .iter()
-                .map(interface_type_from_typed_type)
-                .collect(),
-        },
-        TypedType::Function { parameter, result } => InterfaceType::Function {
-            parameter: Box::new(interface_type_from_typed_type(parameter)),
-            result: Box::new(interface_type_from_typed_type(result)),
-        },
-    }
-}
-
-fn interface_record_field_from_typed(field: &TypedRecordField) -> InterfaceRecordField {
-    InterfaceRecordField {
-        name: field.name.clone(),
-        optional: field.optional,
-        type_ref: interface_type_from_typed_type(&field.type_ref),
-    }
-}
-
-fn parameter_type(parameter: &TypedParameter) -> &TypedType {
-    match parameter {
-        TypedParameter::ImplicitUnit { type_ref } | TypedParameter::Named { type_ref, .. } => {
-            type_ref
-        }
     }
 }
 

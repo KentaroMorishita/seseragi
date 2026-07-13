@@ -4,6 +4,8 @@ use crate::{
     TypedInstanceImplementation,
 };
 
+mod transitive;
+
 #[test]
 fn selects_direct_dependency_show_evidence_for_a_derived_payload() {
     let domain_source = "pub type ImportedError deriving Show =\n  | Message String\n";

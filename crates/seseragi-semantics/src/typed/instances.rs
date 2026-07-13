@@ -32,6 +32,12 @@ pub(crate) enum DerivedInstanceIssue {
         primary: ByteSpan,
         declaration: ByteSpan,
     },
+    AmbiguousInstance {
+        trait_name: String,
+        type_identity: String,
+        provider_module: String,
+        primary: ByteSpan,
+    },
 }
 
 pub(crate) fn analyze_derived_instances(
@@ -41,8 +47,33 @@ pub(crate) fn analyze_derived_instances(
     let mut issues = traits::unknown_trait_issues(&resolved.declarations);
     let show = show::analyze_derived_show(resolved, resolution);
     issues.extend(show.issues);
+    issues.extend(local_dependency_conflicts(resolved, &show.instances));
     DerivedInstanceAnalysis {
         instances: show.instances,
         issues,
     }
+}
+
+fn local_dependency_conflicts(
+    resolved: &ResolvedModule,
+    local_instances: &[TypedInstance],
+) -> Vec<DerivedInstanceIssue> {
+    local_instances
+        .iter()
+        .filter_map(|local| {
+            resolved
+                .dependency_instances
+                .iter()
+                .find(|imported| {
+                    imported.trait_name == local.trait_name
+                        && imported.type_identity == local.type_identity
+                })
+                .map(|imported| DerivedInstanceIssue::AmbiguousInstance {
+                    trait_name: local.trait_name.clone(),
+                    type_identity: local.type_identity.clone(),
+                    provider_module: imported.provider_module.clone(),
+                    primary: local.origin,
+                })
+        })
+        .collect()
 }

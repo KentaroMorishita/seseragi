@@ -51,6 +51,7 @@ pub(super) fn lower_module_imports(
                 imports.push(TypeScriptSourceImport {
                     module: dependency.module.clone(),
                     specifier: specifier.to_owned(),
+                    runtime_edge: true,
                     bindings: Vec::new(),
                     origin: dependency.origin.clone(),
                 });

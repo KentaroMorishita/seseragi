@@ -95,6 +95,11 @@ pub struct TypeScriptTypeImport {
 pub struct TypeScriptSourceImport {
     pub module: String,
     pub specifier: String,
+    /// Whether this group originated from a Seseragi source dependency edge
+    /// whose module evaluation must be preserved even when every selected
+    /// binding is type-only. Inferred nominal providers are type metadata only.
+    #[serde(default = "default_runtime_edge", skip_serializing_if = "is_true")]
+    pub runtime_edge: bool,
     pub bindings: Vec<TypeScriptSourceImportBinding>,
     pub origin: SourceSpan,
 }
@@ -506,4 +511,12 @@ pub(super) fn push_import_unique(imports: &mut Vec<TypeScriptImport>, import: Ty
 
 fn is_false(value: &bool) -> bool {
     !*value
+}
+
+fn default_runtime_edge() -> bool {
+    true
+}
+
+fn is_true(value: &bool) -> bool {
+    *value
 }

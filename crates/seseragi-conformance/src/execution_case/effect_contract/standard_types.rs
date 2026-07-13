@@ -62,6 +62,24 @@ pub(super) fn reject_shadowed_standard_failure(
     reject_user_shadow(interface, name, "failure type")
 }
 
+pub(super) fn validate_effect_success(
+    interface: &TypedModuleInterface,
+    success: &InterfaceType,
+    entry_export: &str,
+) -> Result<(), String> {
+    if !matches!(
+        success,
+        InterfaceType::Named { name, arguments }
+            if name == "Unit" && arguments.is_empty()
+    ) {
+        return Err(format!(
+            "execution Effect entry {entry_export} success type A must be standard Unit"
+        ));
+    }
+    reject_user_shadow(interface, "Unit", "success type")
+        .map_err(|error| format!("execution Effect entry {entry_export} {error}"))
+}
+
 pub(in crate::execution_case) fn reject_user_shadow(
     interface: &TypedModuleInterface,
     spelling: &str,
@@ -115,7 +133,10 @@ fn standard_identity(spelling: &str) -> Option<&'static str> {
 
 #[cfg(test)]
 mod tests {
-    use super::{reject_shadowed_effect_constructor, reject_shadowed_environment_types};
+    use super::{
+        reject_shadowed_effect_constructor, reject_shadowed_environment_types,
+        validate_effect_success,
+    };
     use seseragi_semantics::TypedModuleInterface;
     use seseragi_syntax::{
         ByteSpan, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceRecordField,
@@ -255,5 +276,23 @@ mod tests {
         let imported_error =
             reject_shadowed_effect_constructor(&imported, &effect_entry(), "main").unwrap_err();
         assert!(imported_error.contains("resolves to user type artifact/domain::CustomEffect"));
+    }
+
+    #[test]
+    fn accepts_only_unshadowed_standard_unit_as_effect_success() {
+        let typed = interface();
+        assert_eq!(
+            validate_effect_success(&typed, &named("Unit"), "main"),
+            Ok(())
+        );
+
+        let non_unit = validate_effect_success(&typed, &named("Never"), "main").unwrap_err();
+        assert!(non_unit.contains("success type A must be standard Unit"));
+
+        let mut shadowed = interface();
+        shadowed.exports.push(type_export("Unit"));
+        let shadowed_error =
+            validate_effect_success(&shadowed, &named("Unit"), "main").unwrap_err();
+        assert!(shadowed_error.contains("resolves to user type artifact/main::Unit"));
     }
 }

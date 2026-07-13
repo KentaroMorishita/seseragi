@@ -97,6 +97,28 @@ fn collect_bindings(
                 collect_bindings(argument, type_parameters, candidates, bindings)?;
             }
         }
+        InterfaceType::ExternalNamed {
+            name,
+            canonical,
+            provider_module,
+            provider_export,
+            arguments,
+        } => {
+            let binding = ExternalTypeBinding {
+                spelling: name.clone(),
+                canonical: canonical.clone(),
+                provider: Some(ExternalTypeProvider {
+                    module: provider_module.clone(),
+                    export: provider_export.clone(),
+                }),
+            };
+            if !bindings.contains(&binding) {
+                bindings.push(binding);
+            }
+            for argument in arguments {
+                collect_bindings(argument, type_parameters, candidates, bindings)?;
+            }
+        }
         InterfaceType::TypeConstructor { name, .. } => {
             collect_named(name, type_parameters, candidates, bindings)?;
         }

@@ -9,8 +9,10 @@
       "core.adt",
       "core.show.dictionary",
       "core.unit",
+      "effect.core.flatMap",
       "effect.core.mapError",
-      "core.string"
+      "core.string",
+      "effect.core.succeed"
     ]
   },
   "exports": [

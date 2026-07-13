@@ -7,6 +7,7 @@ use super::super::type_ref::typed_type_from_interface_type;
 
 pub(super) struct ImportedTypeContext {
     names: BTreeMap<(String, String), String>,
+    canonical_names: BTreeMap<String, String>,
     owners: BTreeMap<(String, String), SymbolId>,
     canonical_owners: BTreeMap<String, SymbolId>,
 }
@@ -38,6 +39,12 @@ impl ImportedTypeContext {
                 )
             })
             .collect();
+        let canonical_names = resolved
+            .imports
+            .iter()
+            .filter(|import| import.export.namespace == "type")
+            .map(|import| (import.export.symbol.clone(), import.local_name.clone()))
+            .collect();
         let canonical_owners = resolved
             .imports
             .iter()
@@ -46,6 +53,7 @@ impl ImportedTypeContext {
             .collect();
         Self {
             names,
+            canonical_names,
             owners,
             canonical_owners,
         }
@@ -99,7 +107,22 @@ impl ImportedTypeContext {
                     },
                 }
             }
-            TypedType::ExternalNamed { .. } => type_ref,
+            TypedType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
+            } => TypedType::ExternalNamed {
+                name: self
+                    .canonical_names
+                    .get(&canonical)
+                    .cloned()
+                    .unwrap_or(name),
+                canonical,
+                arguments: arguments
+                    .into_iter()
+                    .map(|argument| self.localize(argument, module, type_parameters, bindings))
+                    .collect(),
+            },
             TypedType::Record { closed, fields } => TypedType::Record {
                 closed,
                 fields: fields
@@ -165,6 +188,29 @@ impl ImportedTypeContext {
                         })
                     },
                 )
+            }
+            InterfaceType::ExternalNamed {
+                canonical,
+                arguments,
+                ..
+            } => {
+                let arguments = arguments
+                    .iter()
+                    .cloned()
+                    .map(|argument| {
+                        self.semantic_value(argument, module, type_parameters, bindings)
+                    })
+                    .collect::<Option<Vec<_>>>()?;
+                Some(match self.canonical_owners.get(canonical) {
+                    Some(owner) => SemanticTypeKey::Adt {
+                        owner: *owner,
+                        arguments,
+                    },
+                    None => SemanticTypeKey::ExternalNominal {
+                        canonical: canonical.clone(),
+                        arguments,
+                    },
+                })
             }
             InterfaceType::Tuple { elements } => Some(SemanticTypeKey::Tuple(
                 elements

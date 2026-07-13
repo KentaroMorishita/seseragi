@@ -6,13 +6,23 @@
     "core.adt",
     "core.show.dictionary",
     "core.unit",
+    "effect.core.flatMap",
     "effect.core.mapError",
-    "core.string"
+    "core.string",
+    "effect.core.succeed"
   ],
   "imports": [
     {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
       "feature": "effect.core.mapError",
       "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
     }
   ],
   "typeImports": [
@@ -153,29 +163,46 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
-        "callee": "_ssrg_effect_mapError",
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "identifier",
-            "name": "InputFailure"
-          },
-          {
-            "kind": "call",
-            "callee": "reject",
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "lizard"
-              }
-            ]
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "InputFailure"
+                },
+                {
+                  "kind": "call",
+                  "callee": "reject",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "lizard"
+                    }
+                  ]
+                }
+              ]
+            }
           }
-        ]
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
         "start": 109,
-        "end": 171
+        "end": 199
       }
     }
   ]

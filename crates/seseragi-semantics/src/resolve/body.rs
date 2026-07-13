@@ -37,8 +37,10 @@ pub fn resolve_linked_module(
     source: &str,
 ) -> ResolvedModule {
     let surface = parse_surface_ast(linked.interface.source.clone(), source);
-    let dependency_instances = instances::resolve_dependency_instances(&linked.dependencies);
+    let (dependency_instances, dependency_instance_issues) =
+        instances::resolve_dependency_instances(&linked.dependencies);
     let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
+    resolver.issues.extend(dependency_instance_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     let imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);

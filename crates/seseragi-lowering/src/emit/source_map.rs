@@ -429,6 +429,7 @@ mod tests {
             source_imports: vec![TypeScriptSourceImport {
                 module: "fixture/game::domain".to_owned(),
                 specifier: "./domain.js".to_owned(),
+                runtime_edge: true,
                 bindings: vec![TypeScriptSourceImportBinding {
                     imported: "Hand".to_owned(),
                     local: "LocalHand".to_owned(),
@@ -459,5 +460,13 @@ mod tests {
 
         assert_eq!(render_import_lines(&module).len(), 2);
         assert_eq!(generated_declaration_start_line(&module), 3);
+
+        let mut inferred_only = module;
+        inferred_only.source_imports[0].runtime_edge = false;
+        assert_eq!(
+            render_import_lines(&inferred_only),
+            vec!["import { type Hand as LocalHand } from \"./domain.js\""],
+        );
+        assert_eq!(generated_declaration_start_line(&inferred_only), 2);
     }
 }

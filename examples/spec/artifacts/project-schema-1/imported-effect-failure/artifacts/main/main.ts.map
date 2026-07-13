@@ -6,7 +6,7 @@
     "seseragi://fixture/imported-effect-failure::main"
   ],
   "sourcesContent": [
-    "import { InputError, reject } from \"./input\"\n\npub type AppError deriving Show =\n  | InputFailure InputError\n\npub effect fn main =\n  mapError InputFailure (reject \"lizard\")\n"
+    "import { InputError, reject } from \"./input\"\n\npub type AppError deriving Show =\n  | InputFailure InputError\n\npub effect fn main =\n  do {\n    mapError InputFailure (reject \"lizard\")\n    succeed ()\n  }\n"
   ],
   "names": [
     "AppError",
@@ -14,7 +14,8 @@
     "__ssrg$instance$Show$0",
     "main",
     "mapError",
-    "reject"
+    "reject",
+    "succeed"
   ],
   "mappings": ";;;;AAEAA;;AACIC;AADJC;AAGAC"
 }

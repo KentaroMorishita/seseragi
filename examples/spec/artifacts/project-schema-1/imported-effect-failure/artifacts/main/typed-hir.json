@@ -128,7 +128,7 @@
       "visibility": "public",
       "origin": {
         "start": 109,
-        "end": 171
+        "end": 199
       },
       "inferredContract": true,
       "parameters": [
@@ -154,97 +154,135 @@
         },
         "success": {
           "kind": "named",
-          "name": "Never",
+          "name": "Unit",
           "arguments": []
         }
       },
       "body": {
-        "kind": "effect-call",
-        "operation": "std/effect::mapError",
-        "effect": {
-          "environment": {
-            "kind": "record",
-            "closed": true,
-            "fields": []
-          },
-          "failure": {
-            "kind": "named",
-            "name": "AppError",
-            "arguments": []
-          },
-          "success": {
-            "kind": "named",
-            "name": "Never",
-            "arguments": []
-          }
-        },
-        "arguments": [
+        "kind": "do-block",
+        "statements": [
           {
-            "kind": "variable",
-            "name": "fixture/imported-effect-failure::main::InputFailure",
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "named",
-                "name": "InputError",
-                "arguments": []
-              },
-              "result": {
-                "kind": "named",
-                "name": "AppError",
-                "arguments": []
-              }
-            },
-            "origin": {
-              "start": 141,
-              "end": 153
-            }
-          },
-          {
-            "kind": "effect-invoke",
-            "callee": "fixture/imported-effect-failure::input::reject",
-            "effect": {
-              "environment": {
-                "kind": "record",
-                "closed": true,
-                "fields": []
-              },
-              "failure": {
-                "kind": "external-named",
-                "name": "InputError",
-                "canonical": "fixture/imported-effect-failure::input::InputError",
-                "arguments": []
-              },
-              "success": {
-                "kind": "named",
-                "name": "Never",
-                "arguments": []
-              }
-            },
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "lizard",
-                "type": {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
                   "kind": "named",
-                  "name": "String",
+                  "name": "AppError",
                   "arguments": []
                 },
-                "origin": {
-                  "start": 162,
-                  "end": 170
+                "success": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
                 }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/imported-effect-failure::main::InputFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "InputError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 150,
+                    "end": 162
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "fixture/imported-effect-failure::input::reject",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    "failure": {
+                      "kind": "external-named",
+                      "name": "InputError",
+                      "canonical": "fixture/imported-effect-failure::input::InputError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "lizard",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 171,
+                        "end": 179
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "start": 164,
+                    "end": 179
+                  }
+                }
+              ],
+              "origin": {
+                "start": 141,
+                "end": 180
               }
-            ],
-            "origin": {
-              "start": 155,
-              "end": 170
             }
           }
         ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/effect::succeed",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [],
+          "origin": {
+            "start": 185,
+            "end": 195
+          }
+        },
         "origin": {
           "start": 132,
-          "end": 171
+          "end": 199
         }
       }
     }

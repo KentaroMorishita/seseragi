@@ -40,7 +40,9 @@
       "core.string.show",
       "effect.core.fail",
       "core.unit",
-      "effect.core.mapError"
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.core.succeed"
     ],
     "process": { "exitCode": 1 },
     "stdout": "execution.stdout.txt",

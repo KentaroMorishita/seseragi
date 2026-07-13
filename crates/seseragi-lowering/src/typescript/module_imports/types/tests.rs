@@ -84,9 +84,14 @@ fn groups_an_inferred_type_with_an_existing_direct_source_import() {
 
     assert_eq!(lowered.imports.len(), 1);
     assert_eq!(lowered.imports[0].module, "fixture/domain");
+    assert!(lowered.imports[0].runtime_edge);
     assert_eq!(lowered.imports[0].bindings.len(), 1);
     assert!(lowered.imports[0].bindings[0].type_only);
     assert_eq!(lowered.imports[0].bindings[0].imported, "Hand");
+    assert!(serde_json::to_value(&lowered.imports[0])
+        .unwrap()
+        .get("runtimeEdge")
+        .is_none());
     assert_eq!(
         lowered.type_names.get(canonical).map(String::as_str),
         Some("Hand")
@@ -107,7 +112,12 @@ fn creates_a_type_only_import_for_a_transitive_provider_without_a_source_binding
 
     assert_eq!(lowered.imports.len(), 1);
     assert_eq!(lowered.imports[0].specifier, "../domain.js");
+    assert!(!lowered.imports[0].runtime_edge);
     assert_eq!(lowered.imports[0].bindings[0].canonical, canonical);
+    assert_eq!(
+        serde_json::to_value(&lowered.imports[0]).unwrap()["runtimeEdge"],
+        false,
+    );
 }
 
 #[test]

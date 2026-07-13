@@ -116,7 +116,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 109,
-        "end": 171
+        "end": 199
       },
       "parameters": [
         {
@@ -130,87 +130,125 @@
         }
       ],
       "body": {
-        "kind": "effect-operation",
-        "operation": "effect.mapError",
-        "requirements": {
-          "kind": "record",
-          "closed": true,
-          "fields": []
-        },
-        "failure": {
-          "kind": "named",
-          "name": "AppError",
-          "arguments": []
-        },
-        "success": {
-          "kind": "named",
-          "name": "Never",
-          "arguments": []
-        },
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "variable",
-            "name": "fixture/imported-effect-failure::main::InputFailure",
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "named",
-                "name": "InputError",
-                "arguments": []
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.mapError",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
               },
-              "result": {
+              "failure": {
                 "kind": "named",
                 "name": "AppError",
                 "arguments": []
-              }
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 141,
-              "end": 153
-            }
-          },
-          {
-            "kind": "effect-invoke",
-            "callee": "fixture/imported-effect-failure::input::reject",
-            "requirements": {
-              "kind": "record",
-              "closed": true,
-              "fields": []
-            },
-            "failure": {
-              "kind": "external-named",
-              "name": "InputError",
-              "canonical": "fixture/imported-effect-failure::input::InputError",
-              "arguments": []
-            },
-            "success": {
-              "kind": "named",
-              "name": "Never",
-              "arguments": []
-            },
-            "arguments": [
-              {
-                "kind": "string",
-                "value": "lizard",
-                "origin": {
-                  "source": "main.ssrg",
-                  "start": 162,
-                  "end": 170
+              },
+              "success": {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "fixture/imported-effect-failure::main::InputFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "InputError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 150,
+                    "end": 162
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "fixture/imported-effect-failure::input::reject",
+                  "requirements": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  "failure": {
+                    "kind": "external-named",
+                    "name": "InputError",
+                    "canonical": "fixture/imported-effect-failure::input::InputError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "lizard",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 171,
+                        "end": 179
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 164,
+                    "end": 179
+                  }
                 }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 141,
+                "end": 180
               }
-            ],
-            "origin": {
-              "source": "main.ssrg",
-              "start": 155,
-              "end": 170
             }
           }
         ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "effect.succeed",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 185,
+            "end": 195
+          }
+        },
         "origin": {
           "source": "main.ssrg",
           "start": 132,
-          "end": 171
+          "end": 199
         }
       }
     }

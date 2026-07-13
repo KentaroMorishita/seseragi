@@ -12,7 +12,10 @@ mod trace;
 use effect_contract::validate_effect_entry_contract;
 #[cfg(test)]
 pub(crate) use effect_contract::DictionaryImport;
-pub(crate) use effect_contract::{validate_effect_entry_contract_in_memory, FailureRenderer};
+pub(crate) use effect_contract::{
+    validate_project_effect_entry_contract_in_memory, FailureRenderer,
+    ProjectFailureRendererCatalog,
+};
 use environment::parse_environment_plan;
 pub(crate) use exit::{compare_observation, expected_observation};
 use invocation::parse_invocation;

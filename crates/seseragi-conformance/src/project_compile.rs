@@ -14,4 +14,4 @@ mod typecheck;
 
 pub(crate) use check::check_project_compile_case;
 pub(crate) use compile::{compile_project_compile_case, CompiledProjectCompileCase};
-pub(crate) use stage::stage_project_typescript;
+pub(crate) use stage::{stage_project_typescript, staged_relative_output_path};

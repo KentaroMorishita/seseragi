@@ -4,4 +4,7 @@ pub type AppError deriving Show =
   | InputFailure InputError
 
 pub effect fn main =
-  mapError InputFailure (reject "lizard")
+  do {
+    mapError InputFailure (reject "lizard")
+    succeed ()
+  }

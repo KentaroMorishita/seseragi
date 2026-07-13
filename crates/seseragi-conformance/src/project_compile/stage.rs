@@ -38,7 +38,7 @@ pub(crate) fn stage_project_typescript(
     Ok(sources)
 }
 
-fn staged_relative_output_path(value: &str) -> Result<PathBuf, String> {
+pub(crate) fn staged_relative_output_path(value: &str) -> Result<PathBuf, String> {
     let path = Path::new(value);
     if value.is_empty()
         || path.is_absolute()
