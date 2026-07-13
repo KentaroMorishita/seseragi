@@ -1,0 +1,89 @@
+use super::{parse_manifest, ManifestError, RunSeed};
+use semver::Version;
+
+#[test]
+fn parses_executable_manifest_with_canonical_defaults() {
+    let manifest = parse_manifest(include_str!(
+        "../../../../examples/spec/fixtures/projects/modules-reexport-run/seseragi.toml"
+    ))
+    .unwrap();
+
+    assert_eq!(
+        manifest.package.name.as_str(),
+        "fixture/modules-reexport-run"
+    );
+    assert_eq!(manifest.package.version, Version::new(0, 0, 0));
+    assert_eq!(manifest.package.language.as_str(), ">=0.1.0 <0.2.0");
+    assert_eq!(manifest.layout.source.as_str(), "src");
+    assert_eq!(manifest.layout.generated.as_str(), ".seseragi/generated");
+    assert_eq!(manifest.exports["."].as_str(), "facade");
+    let run = manifest.run.expect("run table");
+    assert_eq!(run.entry.as_str(), "main");
+    assert_eq!(run.target.unwrap().as_str(), "test-js");
+    assert_eq!(run.shutdown_grace_ms, Some(10_000));
+    assert_eq!(run.hash_seed, RunSeed::Entropy);
+}
+
+#[test]
+fn rejects_unknown_core_tables_at_the_toml_range() {
+    let source = include_str!(
+        "../../../../examples/spec/fixtures/projects/package-invalid-manifest/seseragi.toml"
+    );
+    let error = parse_manifest(source).unwrap_err();
+
+    assert_eq!(error.code(), "SES-K0101");
+    let range = error.range().expect("TOML decoder provides a source range");
+    assert_eq!(&source[range], "[compiler]");
+}
+
+#[test]
+fn rejects_overlapping_layout_roots() {
+    let error = parse_manifest(
+        "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[layout]\nsource = \"src\"\ntests = \"src/tests\"\n",
+    )
+    .unwrap_err();
+
+    assert_eq!(
+        error,
+        ManifestError::OverlappingLayoutRoots {
+            left: "layout.source",
+            right: "layout.tests"
+        }
+    );
+}
+
+#[test]
+fn rejects_noncanonical_entry_target_and_run_policy() {
+    for (run, expected) in [
+        ("entry = \"main.ssrg\"\n", "invalid run entry `main.ssrg`"),
+        (
+            "entry = \"main\"\ntarget = \"Node\"\n",
+            "invalid target id `Node`",
+        ),
+        (
+            "entry = \"main\"\nsignal_mode = \"forward\"\nshutdown_grace_ms = 1\n",
+            "run.shutdown_grace_ms is only valid",
+        ),
+    ] {
+        let source = format!(
+            "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"~0.1.0\"\n\n[run]\n{run}"
+        );
+        let error = parse_manifest(&source).unwrap_err();
+        assert!(error.to_string().contains(expected), "{error}");
+    }
+}
+
+#[test]
+fn preserves_deferred_dependency_tables_without_assigning_identity() {
+    let manifest = parse_manifest(include_str!(
+        "../../../../examples/spec/fixtures/projects/package-path-dependency/seseragi.toml"
+    ))
+    .unwrap();
+
+    assert_eq!(manifest.deferred.dependencies.len(), 1);
+    assert!(manifest.deferred.dependencies.contains_key("math"));
+    assert!(manifest.deferred.foreign.is_none());
+    assert!(manifest.deferred.test.is_none());
+    assert!(manifest.deferred.benchmark.is_none());
+    assert!(manifest.deferred.tool.is_none());
+}

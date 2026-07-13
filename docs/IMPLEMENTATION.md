@@ -502,6 +502,14 @@ SemVer、registry content digestまたはcanonical absolute pathのsource identi
 lockfileからこの値を構築する検証、canonical filesystem pathの取得、case / symlink衝突はまだ実装していないため、
 P2-1全体の完了とは扱いません。
 
+P2-1のmanifest sliceでは`seseragi-project::parse_manifest`を追加し、TOML 1.0 decoderから必須package identity input、
+default / explicit layout、export map、executable entryとhost policyをtyped modelへ変換します。未知core table、重複key、
+型違いは`SES-K0101`相当のsource range付き`ManifestError`になり、package名、exact SemVer、language range spelling、
+module path、target ID、seed、signal / shutdown組合せ、layout root overlapをfilesystemへ触れる前に検証します。
+dependencies、foreign、test、benchmark、tool tableはtyped TOML valueで保持しますが、このsliceではpackage identityや
+runtime semanticsを推測しません。dependency schema、language version評価、canonical root / symlink / case / NFC
+filesystem discoveryを接続するまでP2-1全体および`seseragi run .`は未完了です。
+
 module graphの最小contractとして、`seseragi-project::ModuleGraph`はlogical module identityだけをノードに持ち、
 dependencyをimporterからdependencyへのedgeとして登録します。topological orderは依存を先に、独立nodeはcanonical
 順に返し、未登録dependencyと循環は専用errorで返します。循環errorはcycleに到達する下流node全体ではなく、実際の

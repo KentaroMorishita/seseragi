@@ -42,7 +42,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | linked rank-1 / namespace value・type・constructor / direct Show dictionary import + Effect project executionまで部分実装 |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict core manifest + linked compile / executionまで部分実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | lessonあり、境界fixture不足                | 未着手             |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
@@ -159,7 +159,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    拒否する。`project-schema-1`のconformance/writerで分割RPS domainを全IR・生成artifactまで固定し、planned output pathへ
    stageしたmodule setのTypeScript type-checkも行う。pure entry、imported Effect / Console entryに加え、domain / input / mainへ
    分割したじゃんけんCLIの正常・不正・EOF・Stdin host failure・Console host failureを同じ生成module setからBunで実行済み。
-   project descriptorの複数case discoveryは実装済みだが、filesystem discoveryとmanifest entry解決は未実装。
+   project descriptorの複数case discoveryは実装済み。core manifestのpackage / layout / exports / runはtyped modelへ
+   parseできるが、dependency schema、canonical filesystem discovery、manifest entryからgraphを構築するloaderは未実装。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。

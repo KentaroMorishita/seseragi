@@ -36,7 +36,8 @@ language semanticsをtarget adapterへ委譲しません。
 - Phase 0: Rust compiler pipelineとconformance artifactの最小経路は接続済み。
 - Phase 1: 型付きじゃんけんprogramのcompiler / runtime fixtureに加え、fixture metadataなしの
   `seseragi run path/to/app.ssrg`を接続済み。
-- Phase 2: linked compileとproject executionは進行中。manifest / filesystem discoveryが未完了なので
+- Phase 2: linked compileとproject executionは進行中です。strict manifest parserはpackage / layout / exports / runを
+  typed project modelへ接続済みですが、dependency schemaとcanonical filesystem discoveryが未完了なので
   `seseragi run .`はまだ提供しません。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。

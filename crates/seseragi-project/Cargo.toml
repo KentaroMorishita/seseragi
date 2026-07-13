@@ -7,5 +7,7 @@ repository.workspace = true
 
 [dependencies]
 semver.workspace = true
+serde.workspace = true
 seseragi-syntax = { path = "../seseragi-syntax" }
+toml.workspace = true
 unicode-normalization.workspace = true

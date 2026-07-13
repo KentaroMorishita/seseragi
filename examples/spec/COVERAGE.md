@@ -56,7 +56,7 @@
 | generated naming / declaration merge          | converter guide   | `projects/dts-{generated*,*merge,namespace*}`  | partial |
 | foreign module load mode / single-flight      | interop guide     | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
-| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*`                  | covered |
+| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*`                  | partial (core manifest parser) |
 | parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots + Phase 1 format round-trip   | partial |
 | shared-driver playground / browser host       | Lesson 01         | `tests/playground-wasm.integration.ts`         | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
