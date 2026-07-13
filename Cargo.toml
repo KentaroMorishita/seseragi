@@ -4,6 +4,7 @@ members = [
   "crates/seseragi-conformance",
   "crates/seseragi-driver",
   "crates/seseragi-lowering",
+  "crates/seseragi-lsp",
   "crates/seseragi-project",
   "crates/seseragi-runtime",
   "crates/seseragi-semantics",

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 mod line_index;
 
-pub use line_index::{LineColumn, LineIndex, LineIndexError};
+pub use line_index::{EncodedPosition, LineColumn, LineIndex, LineIndexError, PositionEncoding};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct SourceSnapshot {

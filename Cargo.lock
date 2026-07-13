@@ -127,6 +127,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-lsp"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "seseragi-driver",
+ "seseragi-source",
+ "seseragi-syntax",
+]
+
+[[package]]
 name = "seseragi-project"
 version = "0.0.0"
 dependencies = [
