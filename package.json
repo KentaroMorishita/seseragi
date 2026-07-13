@@ -18,7 +18,8 @@
     "test": "bun test",
     "test:watch": "bun test --watch",
     "dev:playground": "cd playground && bun run dev",
-    "build:playground": "cd playground && bun run build"
+    "build:playground": "cd playground && bun run build",
+    "build:playground:wasm": "./scripts/build-playground-wasm.sh"
   },
   "keywords": [],
   "author": "",

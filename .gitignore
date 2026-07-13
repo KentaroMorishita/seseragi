@@ -6,6 +6,7 @@ bun.lock
 # Build outputs
 dist/
 target/
+playground/src/wasm/pkg/
 *.tsbuildinfo
 
 # Environment
