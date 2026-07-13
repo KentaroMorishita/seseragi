@@ -14,44 +14,24 @@ A programming language that compiles to TypeScript
 ## クイックスタート
 
 ```bash
-# インストール
-bun install
+# 新しいRust実装をbuild
+cargo build -p seseragi-cli
 
-# Hello World
-echo 'let message = "Hello, Seseragi!"
-print message' > hello.ssrg
-
-# 実行
-seseragi run hello.ssrg
+# single-file programをcompileして実行（Bun target adapterが必要）
+./target/debug/seseragi run examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
 ```
 
-## 基本的な使い方
+現在のRust CLIは一つの`.ssrg`を受け取ります。package directoryを実行する`seseragi run .`はmanifest / filesystem
+discoveryとともにPhase 2で追加します。実装順は[roadmap](./docs/ROADMAP.md)を参照してください。
+
+## 現在のRust CLI
 
 ```bash
-# Seseragiファイルを直接実行
 seseragi run example.ssrg
-
-# TypeScriptにコンパイル（シンプル版）
-seseragi example.ssrg              # example.ts に出力
-
-# TypeScriptにコンパイル（出力先指定）
-seseragi example.ssrg -o output.ts
-
-# コードフォーマット（上書き）
-seseragi fmt example.ssrg
-
-# コードフォーマット（出力先指定）
-seseragi fmt example.ssrg -o formatted.ssrg
-
-# ファイル監視でコンパイル
-seseragi example.ssrg --auto
-
-# ダイレクト実行
-seseragi run example.ssrg
-
-# ファイル監視で実行
-seseragi run example.ssrg --watch
 ```
+
+このcommandはsingle-file sourceをRust driverの通常pipelineでcompileし、生成TypeScriptと埋め込みruntimeを
+Bunで実行します。formatter、watch、package executionは新実装の公開commandにはまだ接続していません。
 
 ## サンプルコード
 

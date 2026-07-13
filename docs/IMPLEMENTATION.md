@@ -11,6 +11,10 @@
 - 複数laneが同時に進んでも、共有AST fileやdiagnostic文字列の編集競合を常態化させない。
 - 各段階をstable artifactとconformance fixtureで接続し、未完成な後段なしで前段を検証できる。
 
+言語能力とproduct surfaceの二軸roadmapは[`ROADMAP.md`](./ROADMAP.md)を参照します。CLI、LSP、
+playground、formatter、conformanceは最終Phaseへ延期せず、各言語Phaseを人間が利用・検証するthin adapterとして
+同じdriver / diagnosticsを使います。
+
 ## 2. compiler pipeline
 
 ```text
@@ -60,6 +64,7 @@ crates/
   seseragi-backend-ts      TypeScriptIr、emitter、source map
   seseragi-formatter       CST formatter
   seseragi-driver          incremental queryとpublic compiler API
+  seseragi-runtime         generated moduleのhost execution boundary
   seseragi-cli             native command surface
   seseragi-lsp             native language server adapter
   seseragi-wasm            playground向けdriver adapter
@@ -75,6 +80,11 @@ runtime/
 `source`から`core-ir`まではfilesystem、process、Node、browser APIへ依存できないpure coreにします。`cli`、
 `lsp`、`wasm`は同じ`driver`を呼び、playground専用parserを持ちません。`runtime/typescript`はRust crateへ逆依存せず、
 versioned ABI fixtureだけを共有します。これによりcompiler core、runtime、product toolingを別worktreeで進められます。
+
+2026-07-14にsingle-file product gateを接続しました。`seseragi-cli`はfile I/Oとcommand解釈だけを所有し、
+`seseragi-driver::compile_module`、shared terminal diagnostic renderer、`seseragi-runtime::run_main`を呼びます。
+runtime crateはcompiler artifactから`main`のEffect contract、Console / Stdin requirement、selected `Show<E>`を
+検証し、埋め込んだversioned TypeScript runtimeをBun target adapterへstageします。fixtureの`run.json`は読みません。
 
 このlayoutは実装方式の推奨であり言語仕様ではありません。Rust採用を変更しても、2章のartifact境界とfixtureは
 維持します。
@@ -423,6 +433,11 @@ CoreIrは比較対象とprojectionを保持し、TypeScript backendだけがbigi
 2026-07-12にP1-0からP1-6のsingle-file gateを閉じました。正常入力、不正入力、EOFに加え、host Stdin / Console
 failureをtyped channelへ変換するexecution case、captured Console operationのactual trace、matchのnon-exhaustive /
 unreachable / pattern type mismatch、欠けたarm bodyから後続armを保持するrecoveryを固定しています。
+
+2026-07-14にP1-6のuser-facing gateも閉じました。`cargo run -p seseragi-cli -- run examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg`
+はsourceを通常driverでcompileし、processのstdin / stdout /
+stderrへ直接接続します。CLI integration testは正常入力とtyped failure、compile diagnosticのsource rangeを検証します。
+package directoryはmanifest / filesystem discovery完成前に推測で実行せず、Phase 2のPackage CLI gateへ残します。
 
 ## 11. フェーズ2: moduleへ分割した型付きじゃんけんCLI
 

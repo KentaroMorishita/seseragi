@@ -1,0 +1,48 @@
+# Seseragi roadmap
+
+このroadmapは、言語能力の完成順と、その能力を人間が利用・検証するproduct surfaceを別軸として扱います。
+CLI、LSP、playgroundは完成後に載せる別製品ではありません。各Phaseのcompiler entrypoint、structured
+diagnostics、runtime boundaryを実際の利用経路から検証する縦sliceです。
+
+## 言語能力のPhase
+
+| Phase | 利用者が書けるprogram | 主な一般機構 |
+| ----- | --------------------- | ------------ |
+| 0 compiler基盤 | sourceを全artifactへ変換し、同じ診断を再現できる | source / CST / AST / resolver / TypedHir / CoreIr / backend / diagnostics |
+| 1 single-file言語 | 一つの`.ssrg`でADT、match、typed Effect、Console / Stdinを組み合わせたprogram | single-module driver、cold Effect、host runtime、user-facing file execution |
+| 2 module / package | Phase 1 programを複数moduleとpackageへ分割できる | module identity、manifest、filesystem discovery、link、instance closure、package entry |
+| 3 generic抽象化 | user定義generic ADT、HKT、trait、instance、Functor / Applicative / Monadを組み合わせられる | kind inference、constraint solving、coherence、dictionary evidence、generic lowering |
+| 4 resource / concurrency | resource lifetimeと並行taskをtyped Effect内で安全に構成できる | scope、acquire / release、cancellation、structured concurrency、Stream / Signal runtime |
+| 5 stdlib / interop | 実用的なapplicationを標準APIとTypeScript / JavaScript境界へ接続できる | collection、filesystem、HTTP、codec、foreign ABI、DOM / SSR |
+
+Phase番号は言語能力の依存順です。product surfaceの実装をPhase 5の後まで待つ意味ではありません。
+
+## Phaseごとのproduct surface gate
+
+| Surface | Phase 0 | Phase 1 | Phase 2以降の伸ばし方 |
+| ------- | ------- | ------- | --------------------- |
+| CLI | structured diagnosticsを表示するthin adapter | **`seseragi run path/to/app.ssrg`**でsingle-fileをcompile / run | manifestとfilesystem discovery完成後に`seseragi run .` |
+| LSP | **LSP-0:** open documentを同じdriverでparse / resolve / typeし、source range付きdiagnosticsを返す | Phase 1構文のdocument diagnostics | module graph、cross-file definition / reference、package diagnostics |
+| playground / WASM | **Playground-0:** single-file sourceを同じdriverでcompileし、実行結果またはdiagnosticsを表示する | Phase 1累積programをbrowser host adapterで実行 | module input、resource制限、stdlibのbrowser capability |
+| formatter | lossless CSTを共有し、parse recoveryを壊さない | Phase 1構文をround-trip | 各Phaseの新構文をgrammarと同じcommitで追加 |
+| conformance | stage schemaとpositive / negative fixture | Phase 1累積programとactual execution | 小さい機能fixture＋過去能力を残した累積goal program |
+
+CLI / LSP / WASM adapterはparser、resolver、type checker、loweringを所有しません。`seseragi-driver`のpublic
+entrypointとstructured diagnosticsを使います。process executionは`seseragi-runtime`のhost boundaryを使い、
+language semanticsをtarget adapterへ委譲しません。
+
+## 現在のgate
+
+- Phase 0: Rust compiler pipelineとconformance artifactの最小経路は接続済み。
+- Phase 1: 型付きじゃんけんprogramのcompiler / runtime fixtureに加え、fixture metadataなしの
+  `seseragi run path/to/app.ssrg`を接続済み。
+- Phase 2: linked compileとproject executionは進行中。manifest / filesystem discoveryが未完了なので
+  `seseragi run .`はまだ提供しません。
+- LSP-0 / Playground-0 / formatter共有gate: 未完了。Phase 2と独立に、同じdriver boundary上で進めます。
+
+## 完了判定
+
+各言語Phaseは、小さいpositive / negative fixtureだけでなく、過去Phaseの能力を残した累積goal programを
+compile、diagnostics、CoreIr、TypeScriptIr、generated code、該当runtime executionまで通して完了とします。
+標準型の名前やcompiler-private helperだけをhardcodeしてuser-defined programへ同等の表現力が渡らない経路は、
+完了条件に含めません。
