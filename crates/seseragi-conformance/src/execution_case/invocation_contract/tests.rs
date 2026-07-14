@@ -41,6 +41,7 @@ fn interface(entry_type: InterfaceType) -> TypedModuleInterface {
                 constraints: Vec::new(),
                 type_ref: entry_type,
             },
+            methods: Vec::new(),
             representation: None,
         }],
         operators: Vec::new(),
@@ -65,6 +66,7 @@ fn type_export(name: &str, arity: u32) -> InterfaceExport {
                 arity,
             },
         },
+        methods: Vec::new(),
         representation: None,
     }
 }

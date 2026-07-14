@@ -36,6 +36,7 @@ fn type_export(name: &str) -> InterfaceExport {
                 arity: 0,
             },
         },
+        methods: Vec::new(),
         representation: None,
     }
 }

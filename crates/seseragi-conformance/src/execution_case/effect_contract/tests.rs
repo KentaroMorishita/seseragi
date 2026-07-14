@@ -181,6 +181,7 @@ fn requires_unit_success_only_for_the_package_main_entry() {
                 constraints: Vec::new(),
                 type_ref: effect(named("String")),
             },
+            methods: Vec::new(),
             representation: None,
         }],
         operators: Vec::new(),
@@ -262,6 +263,7 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
                         arity: 0,
                     },
                 },
+                methods: Vec::new(),
                 representation: None,
             },
             InterfaceExport {
@@ -277,6 +279,7 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
                     constraints: Vec::new(),
                     type_ref: entry_type,
                 },
+                methods: Vec::new(),
                 representation: None,
             },
         ],
