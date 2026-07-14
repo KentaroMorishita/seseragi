@@ -140,8 +140,9 @@ generic higher-order parameter callとchecked Int arithmetic operator section `(
 標準`Reducible<Array<A>, A>`を使うgeneric `reduce`は`schema-1/array-reduce`で選択済みevidenceを
 TypedHir / CoreIrへ保持し、checked `(+)` callback、TypeScript runtime、actual executionまで接続済みです。
 Playgroundでも`Arrayスコア集計`として同じdriver / browser runtimeを実行できます。
-残る主要gateはoperator sectionを`Add<L, R, O>` evidenceへ一般化することと、user-defined / imported instance search、
-coherence、dictionary passingです。
+Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
+backendはそのevidenceを確認してchecked runtime helperを選択します。残る主要gateはこの標準Int経路を一般化する
+user-defined / imported instance search、coherence、dictionary passingです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -182,7 +183,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    generated runtime executionと全source root identity auditまで接続済み。full collection fixtureの分解を開始し、
    immutable Array literal、generic higher-order callback、checked Int arithmetic operator sectionは全IRとgenerated codeへ
    接続済み。標準Arrayのgeneric `reduce`もregistry / lockfile resolutionとは独立にactual executionまで回収済み。
-   次は標準名専用の経路を一般instance機構の完了と誤認せず、`Add` evidenceとuser-defined / imported instance searchへ進む。
+   Int算術とoperator sectionは`Add<Int, Int, Int>`等のevidenceを全IRへ保持済み。次は標準名専用の経路を
+   一般instance機構の完了と誤認せず、user-defined / imported instance searchへ進む。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。

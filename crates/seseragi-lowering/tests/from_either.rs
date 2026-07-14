@@ -55,6 +55,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
                 success: named("String"),
                 arguments: vec![CoreExpr::Variable {
                     name: "candidate".to_owned(),
+                    evidence: Vec::new(),
                     type_ref: either,
                     origin: origin(),
                 }],

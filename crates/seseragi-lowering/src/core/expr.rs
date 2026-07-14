@@ -77,10 +77,12 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         },
         TypedExpr::Variable {
             name,
+            evidence,
             type_ref,
             origin,
         } => CoreExpr::Variable {
             name,
+            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -119,12 +121,14 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             operator,
             left,
             right,
+            evidence,
             type_ref,
             origin,
         } => CoreExpr::Binary {
             operator,
             left: Box::new(lower_expr(source, *left)),
             right: Box::new(lower_expr(source, *right)),
+            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },

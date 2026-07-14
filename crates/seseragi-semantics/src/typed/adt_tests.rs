@@ -30,6 +30,7 @@ fn types_nullary_adt_constructors_from_resolved_symbols() {
         body,
         &TypedExpr::Variable {
             name: "artifact/hand::Rock".to_owned(),
+            evidence: Vec::new(),
             type_ref: named("Hand"),
             origin: seseragi_syntax::ByteSpan { start: 78, end: 82 },
         }
@@ -127,6 +128,7 @@ fn keeps_nullary_generic_constructor_polymorphic_instead_of_hole() {
         body,
         &TypedExpr::Variable {
             name: "artifact/maybe::Nothing".to_owned(),
+            evidence: Vec::new(),
             type_ref: TypedType::Named {
                 name: "Maybe".to_owned(),
                 arguments: vec![named("A")],

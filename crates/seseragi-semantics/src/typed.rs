@@ -929,6 +929,7 @@ mod tests {
             body,
             &TypedExpr::Variable {
                 name: "missing".to_owned(),
+                evidence: Vec::new(),
                 type_ref: TypedType::Hole,
                 origin: ByteSpan { start: 38, end: 45 },
             }
@@ -983,6 +984,29 @@ mod tests {
                 TypedExpr::Integer { value: first, .. },
                 TypedExpr::Integer { value: second, .. }
             ] if first == "1" && second == "2"
+        ));
+    }
+
+    #[test]
+    fn records_selected_add_evidence_on_binary_expression() {
+        let typed = type_module(
+            "artifact/add-evidence/main.ssrg",
+            "pub fn add left: Int -> right: Int -> Int = left + right\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected function declaration");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::Binary { operator, evidence, .. }
+                if operator == "+"
+                    && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        constraint: TypedConstraint { name, arguments },
+                        evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    }] if name == "Add"
+                        && arguments == &vec![int_type(), int_type(), int_type()]
+                        && identity == "std/int::Add")
         ));
     }
 

@@ -311,6 +311,8 @@ pub enum TypedExpr {
     },
     Variable {
         name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<TypedCallEvidence>,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,
@@ -340,6 +342,8 @@ pub enum TypedExpr {
         operator: String,
         left: Box<TypedExpr>,
         right: Box<TypedExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<TypedCallEvidence>,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,

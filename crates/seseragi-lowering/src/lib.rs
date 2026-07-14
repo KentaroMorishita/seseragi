@@ -393,6 +393,7 @@ type Internal =
                     callee: "artifact/calls::default".to_owned(),
                     arguments: vec![CoreExpr::Variable {
                         name: "value".to_owned(),
+                        evidence: Vec::new(),
                         type_ref: int_type.clone(),
                         origin: origin.clone(),
                     }],

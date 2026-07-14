@@ -1,6 +1,6 @@
 use crate::collection_ops::runtime_collection_operation;
 use crate::effect_ops::runtime_effect_operation;
-use crate::int_ops::runtime_int_operation;
+use crate::int_ops::runtime_int_operation_with_evidence;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{CoreExpr, CoreStatement, CoreType};
 use std::collections::BTreeMap;
@@ -20,9 +20,14 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
-        CoreExpr::Variable { name, type_ref, .. } => {
+        CoreExpr::Variable {
+            name,
+            evidence,
+            type_ref,
+            ..
+        } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if let Some(operation) = runtime_int_operation(&name) {
+                if let Some(operation) = runtime_int_operation_with_evidence(&name, &evidence) {
                     return TypeScriptExpr::CurriedRuntimeReference {
                         name: operation.local_name.to_owned(),
                         arity: 2,
@@ -83,12 +88,14 @@ pub(super) fn lower_core_expr_to_typescript(
             operator,
             left,
             right,
+            evidence,
             type_ref,
             ..
         } => lower_binary(
             operator,
             *left,
             *right,
+            evidence,
             type_ref,
             imported_values,
             imported_types,
@@ -227,6 +234,7 @@ fn lower_binary(
     operator: String,
     left: CoreExpr,
     right: CoreExpr,
+    evidence: Vec<crate::CoreCallEvidence>,
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
     imported_types: &BTreeMap<String, String>,
@@ -234,7 +242,7 @@ fn lower_binary(
     let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
     let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
     if is_int_type(&type_ref) {
-        if let Some(operation) = runtime_int_operation(&operator) {
+        if let Some(operation) = runtime_int_operation_with_evidence(&operator, &evidence) {
             return TypeScriptExpr::RuntimeCall {
                 callee: operation.local_name.to_owned(),
                 arguments: vec![left, right],

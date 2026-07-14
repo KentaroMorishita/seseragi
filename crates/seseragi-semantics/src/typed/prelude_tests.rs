@@ -179,6 +179,18 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
                 ..
             }] if identity == "std/array::Reducible")
     ));
+    let TypedExpr::Call { arguments, .. } = body else {
+        unreachable!();
+    };
+    assert!(matches!(
+        arguments.as_slice(),
+        [_, TypedExpr::Variable { name, evidence, .. }, _]
+            if name == "+"
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    constraint: crate::TypedConstraint { name, .. },
+                    evidence: TypedInstanceEvidence::Standard { identity },
+                }] if name == "Add" && identity == "std/int::Add")
+    ));
 }
 
 fn named(name: &str) -> TypedType {

@@ -114,6 +114,7 @@ fn type_unknown_application(
     }
     callee.value = TypedExpr::Variable {
         name: String::new(),
+        evidence: Vec::new(),
         type_ref: TypedType::Hole,
         origin: span,
     };

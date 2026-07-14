@@ -124,6 +124,8 @@ pub enum CoreExpr {
     },
     Variable {
         name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<CoreCallEvidence>,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,
@@ -153,6 +155,8 @@ pub enum CoreExpr {
         operator: String,
         left: Box<CoreExpr>,
         right: Box<CoreExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<CoreCallEvidence>,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,

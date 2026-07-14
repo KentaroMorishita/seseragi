@@ -260,6 +260,7 @@ pub(super) fn type_surface_expression(
             SurfaceExpressionAnalysis::valid_with_semantic_type(
                 TypedExpr::Variable {
                     name: String::new(),
+                    evidence: Vec::new(),
                     type_ref: TypedType::Hole,
                     origin: *span,
                 },
@@ -281,6 +282,7 @@ fn type_name(
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: name.to_owned(),
+                evidence: Vec::new(),
                 type_ref: TypedType::Hole,
                 origin: span,
             },
@@ -291,6 +293,7 @@ fn type_name(
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: name.to_owned(),
+                evidence: Vec::new(),
                 type_ref: value_type.type_ref.clone(),
                 origin: span,
             },
@@ -306,6 +309,7 @@ fn type_name(
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: resolved_name,
+                evidence: Vec::new(),
                 type_ref: type_ref.clone(),
                 origin: span,
             },
@@ -332,6 +336,7 @@ fn type_name(
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: function.symbol.clone(),
+                evidence: Vec::new(),
                 type_ref,
                 origin: span,
             },
@@ -342,6 +347,7 @@ fn type_name(
     SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
             name: name.to_owned(),
+            evidence: Vec::new(),
             type_ref: TypedType::Hole,
             origin: span,
         },
@@ -356,9 +362,20 @@ fn type_arithmetic_operator_reference(
 ) -> SurfaceExpressionAnalysis {
     let type_ref = curried_binary_type(named_type("Int"), named_type("Int"));
     let valid = context.operator_target(span).is_some();
+    let evidence = valid
+        .then(|| {
+            super::call_evidence::select_arithmetic_evidence(
+                name,
+                named_type("Int"),
+                named_type("Int"),
+                named_type("Int"),
+            )
+        })
+        .unwrap_or_default();
     SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
             name: name.to_owned(),
+            evidence,
             type_ref: if valid { type_ref } else { TypedType::Hole },
             origin: span,
         },

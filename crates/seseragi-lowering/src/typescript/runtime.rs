@@ -1,8 +1,8 @@
 use crate::collection_ops::runtime_collection_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
-    effect_ops::runtime_effect_operation, int_ops::runtime_int_operation, CoreExpr, CoreStatement,
-    CoreType,
+    effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence, CoreExpr,
+    CoreStatement, CoreType,
 };
 
 use super::{push_import_unique, push_unique, TypeScriptImport};
@@ -13,9 +13,14 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
-        CoreExpr::Variable { name, type_ref, .. } => {
+        CoreExpr::Variable {
+            name,
+            evidence,
+            type_ref,
+            ..
+        } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if let Some(operation) = runtime_int_operation(name) {
+                if let Some(operation) = runtime_int_operation_with_evidence(name, evidence) {
                     push_unique(requirements, operation.runtime_feature);
                 }
             }
@@ -56,12 +61,13 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             operator,
             left,
             right,
+            evidence,
             type_ref,
             ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
             if is_int_type(type_ref) {
-                if let Some(operation) = runtime_int_operation(operator) {
+                if let Some(operation) = runtime_int_operation_with_evidence(operator, evidence) {
                     push_unique(requirements, operation.runtime_feature);
                 }
             }
@@ -195,9 +201,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
-        CoreExpr::Variable { name, type_ref, .. } => {
+        CoreExpr::Variable {
+            name,
+            evidence,
+            type_ref,
+            ..
+        } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if let Some(operation) = runtime_int_operation(name) {
+                if let Some(operation) = runtime_int_operation_with_evidence(name, evidence) {
                     push_import_unique(
                         imports,
                         TypeScriptImport {
@@ -241,11 +252,12 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             operator,
             left,
             right,
+            evidence,
             type_ref,
             ..
         } => {
             if is_int_type(type_ref) {
-                if let Some(operation) = runtime_int_operation(operator) {
+                if let Some(operation) = runtime_int_operation_with_evidence(operator, evidence) {
                     push_import_unique(
                         imports,
                         TypeScriptImport {

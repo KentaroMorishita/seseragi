@@ -8,24 +8,45 @@
       "kind": "fn",
       "symbol": "artifact/add-fn::add",
       "visibility": "public",
-      "origin": { "start": 0, "end": 42 },
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
-        "type": { "kind": "named", "name": "Int", "arguments": [] }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "parameters": [
         {
           "kind": "named",
           "name": "x",
-          "type": { "kind": "named", "name": "Int", "arguments": [] },
-          "origin": { "start": 11, "end": 12 }
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 11,
+            "end": 12
+          }
         },
         {
           "kind": "named",
           "name": "y",
-          "type": { "kind": "named", "name": "Int", "arguments": [] },
-          "origin": { "start": 21, "end": 22 }
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 21,
+            "end": 22
+          }
         }
       ],
       "body": {
@@ -34,17 +55,66 @@
         "left": {
           "kind": "variable",
           "name": "x",
-          "type": { "kind": "named", "name": "Int", "arguments": [] },
-          "origin": { "start": 37, "end": 38 }
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 37,
+            "end": 38
+          }
         },
         "right": {
           "kind": "variable",
           "name": "y",
-          "type": { "kind": "named", "name": "Int", "arguments": [] },
-          "origin": { "start": 41, "end": 42 }
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 41,
+            "end": 42
+          }
         },
-        "type": { "kind": "named", "name": "Int", "arguments": [] },
-        "origin": { "start": 37, "end": 42 }
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 37,
+          "end": 42
+        }
       }
     }
   ]

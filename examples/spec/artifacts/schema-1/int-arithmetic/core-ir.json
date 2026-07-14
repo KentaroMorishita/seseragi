@@ -62,6 +62,34 @@
             "end": 56
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Int",
@@ -133,6 +161,34 @@
             "end": 118
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Sub",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Sub"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Int",
@@ -204,6 +260,34 @@
             "end": 180
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Mul",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Mul"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Int",
@@ -275,6 +359,34 @@
             "end": 240
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Div",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Div"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Int",
@@ -346,6 +458,34 @@
             "end": 303
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Rem",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Rem"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Int",
@@ -417,6 +557,34 @@
             "end": 369
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Pow",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Pow"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Int",

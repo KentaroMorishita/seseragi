@@ -5,6 +5,7 @@ use super::{
     named_type, named_type_is, type_surface_expression, PureExpressionContext,
     SurfaceExpressionAnalysis,
 };
+use crate::typed::call_evidence::select_arithmetic_evidence;
 use crate::typed::type_ref::inferred_type_from_expr;
 
 pub(super) fn type_binary(
@@ -18,10 +19,17 @@ pub(super) fn type_binary(
     let left = type_surface_expression(left, &operand_context);
     let right = type_surface_expression(right, &operand_context);
     let result_type = binary_result_type(operator, &left.value, &right.value);
+    let evidence = select_arithmetic_evidence(
+        operator,
+        inferred_type_from_expr(&left.value),
+        inferred_type_from_expr(&right.value),
+        result_type.clone(),
+    );
     let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Binary {
         operator: operator.to_owned(),
         left: Box::new(left.value.clone()),
         right: Box::new(right.value.clone()),
+        evidence,
         type_ref: result_type,
         origin: span,
     });
