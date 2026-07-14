@@ -319,6 +319,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Array {
+        elements: Vec<TypedExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Binary {
         operator: String,
         left: Box<TypedExpr>,

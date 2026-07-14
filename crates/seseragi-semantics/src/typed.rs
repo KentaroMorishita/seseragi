@@ -31,7 +31,7 @@ pub(crate) use analysis::{analyze_pure_function, PureFunctionAnalysis};
 pub(crate) use effect_analysis::{analyze_effect_function, EffectFunctionIssue};
 pub(crate) use function_body::FunctionBodyIssue;
 use interface::typed_interface_from_modules;
-pub(crate) use pure_issues::{ConditionalIssue, MatchIssue, PureCallIssue};
+pub(crate) use pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue};
 pub(crate) use resolution::TypedResolution;
 use surface::typed_decl_from_surface;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};

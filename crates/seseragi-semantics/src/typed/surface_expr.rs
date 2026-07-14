@@ -3,12 +3,12 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr};
 use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
-use super::pure_issues::MatchIssue;
-use super::pure_issues::{ConditionalIssue, PureCallIssue};
+use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue};
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
 
 mod application;
+mod array;
 mod binary;
 mod conditional;
 mod match_expression;
@@ -63,6 +63,10 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.semantic_types()
     }
 
+    pub(super) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
+        self.resolution.semantic_value_from_typed_type(type_ref)
+    }
+
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {
         let mut parameters = self.parameters.clone();
         parameters.extend(locals);
@@ -78,6 +82,7 @@ impl<'a> PureExpressionContext<'a> {
 pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) conditional_issue: Option<ConditionalIssue>,
+    pub(crate) array_issue: Option<ArrayIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
     pub(crate) match_issues: Vec<MatchIssue>,
     pub(crate) semantic_type: SemanticTypeKey,
@@ -88,6 +93,7 @@ impl SurfaceExpressionAnalysis {
         Self {
             value,
             conditional_issue: None,
+            array_issue: None,
             pure_call_issue: None,
             match_issues: Vec::new(),
             semantic_type: SemanticTypeKey::Other,
@@ -101,6 +107,7 @@ impl SurfaceExpressionAnalysis {
         Self {
             value,
             conditional_issue: None,
+            array_issue: None,
             pure_call_issue: None,
             match_issues: Vec::new(),
             semantic_type,
@@ -109,6 +116,7 @@ impl SurfaceExpressionAnalysis {
 
     pub(super) fn merge_issues_from(&mut self, child: Self) {
         self.conditional_issue = self.conditional_issue.take().or(child.conditional_issue);
+        self.array_issue = self.array_issue.take().or(child.array_issue);
         self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
         self.match_issues.extend(child.match_issues);
     }
@@ -133,6 +141,17 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
                 .map(surface_expression_type_hint)
                 .collect::<Option<Vec<_>>>()?,
         }),
+        SurfaceExpr::Array { elements, .. } => {
+            let element = elements.first().and_then(surface_expression_type_hint)?;
+            elements
+                .iter()
+                .skip(1)
+                .all(|value| surface_expression_type_hint(value).as_ref() == Some(&element))
+                .then_some(TypedType::Named {
+                    name: "Array".to_owned(),
+                    arguments: vec![element],
+                })
+        }
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
         SurfaceExpr::If {
             then_branch,
@@ -185,6 +204,7 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Grouped { value, .. } => type_surface_expression(value, context),
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
         SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
+        SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),
         SurfaceExpr::Binary {
             operator,
             left,

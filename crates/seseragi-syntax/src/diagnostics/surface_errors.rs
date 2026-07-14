@@ -39,7 +39,7 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
             collect_expression_errors(function, errors);
             collect_expression_errors(argument, errors);
         }
-        SurfaceExpr::Tuple { elements, .. } => {
+        SurfaceExpr::Tuple { elements, .. } | SurfaceExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expression_errors(element, errors);
             }

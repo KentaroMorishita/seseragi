@@ -19,7 +19,7 @@ pub(super) fn resolve_expression(
             resolve_expression(resolver, scope, function);
             resolve_expression(resolver, scope, argument);
         }
-        SurfaceExpr::Tuple { elements, .. } => {
+        SurfaceExpr::Tuple { elements, .. } | SurfaceExpr::Array { elements, .. } => {
             for element in elements {
                 resolve_expression(resolver, scope, element);
             }

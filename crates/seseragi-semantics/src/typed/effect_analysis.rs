@@ -3,7 +3,7 @@ use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceExpr, Token, TokenKind};
 
 use super::effect_body::analyze_effect_body;
 use super::functions::typed_parameters_from_surface;
-use super::pure_issues::PureCallIssue;
+use super::pure_issues::{ArrayIssue, PureCallIssue};
 use super::TypedResolution;
 
 mod contracts;
@@ -63,6 +63,7 @@ pub(crate) enum EffectFunctionIssue {
         actual: TypedType,
     },
     Call(PureCallIssue),
+    Array(ArrayIssue),
 }
 
 pub(crate) fn analyze_effect_function(
@@ -89,6 +90,14 @@ pub(crate) fn analyze_effect_function(
     let typed_parameters = typed_parameters_from_surface(parameters);
     let body_analysis = analyze_effect_body(surface_body, &typed_parameters, resolution);
     let typed_body = body_analysis.value;
+
+    if !body_analysis.array_issues.is_empty() {
+        return body_analysis
+            .array_issues
+            .into_iter()
+            .map(EffectFunctionIssue::Array)
+            .collect();
+    }
 
     let bind_issues = invalid_bind_issues(&typed_body);
     if !bind_issues.is_empty() {
@@ -234,6 +243,7 @@ pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::Variable { origin, .. }
         | TypedExpr::Call { origin, .. }
         | TypedExpr::Tuple { origin, .. }
+        | TypedExpr::Array { origin, .. }
         | TypedExpr::Binary { origin, .. }
         | TypedExpr::If { origin, .. }
         | TypedExpr::Match { origin, .. }

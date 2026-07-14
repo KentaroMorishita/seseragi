@@ -527,7 +527,11 @@ filesystem resolverを再利用し、`PackageIdentity + ModuleRoot::Source + Mod
 package scopeとmodule IDを割り当て、package / version / module pathを分離したcanonical TypeScript output pathを計画して
 shared `compile_project`へ渡します。runtime stagingは従来の一package runnerと同じ`CompiledProject + entry module`実行境界を
 再利用します。`package-path-dependency-basic`はdependencyの公開String functionをEffect entryから呼び、CLIで`42`を出力します。
-Array / reduceを含む既存full fixtureはcollections一般機構なしに特別扱いせず、後続language sliceへ残します。
+collections回収の最初の縦sliceとして、`schema-1/array-literal`でimmutable `Array<A>` literalを
+SurfaceAst、TypedHir、CoreIr、TypeScriptIr、generated moduleまで接続しました。空配列は周囲の`Array<A>`から
+要素型を受け取り、文脈がない場合や異なる要素型の混在は`SES-T0101`で停止します。TypeScript backendはtupleへ
+潰さず`ReadonlyArray<A>`として保持します。既存full fixtureの`reduce`はgeneric higher-order collection APIとして
+独立sliceに残し、fixture名や特定packageへ分岐して通しません。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。

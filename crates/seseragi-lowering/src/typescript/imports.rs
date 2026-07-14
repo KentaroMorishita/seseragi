@@ -117,7 +117,7 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 rewrite_expr(argument, renames);
             }
         }
-        TypeScriptExpr::Tuple { elements } => {
+        TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             for element in elements {
                 rewrite_expr(element, renames);
             }

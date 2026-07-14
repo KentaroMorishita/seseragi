@@ -17,6 +17,19 @@ pub(crate) enum PureCallIssue {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) enum ArrayIssue {
+    EmptyWithoutExpectedType {
+        array: ByteSpan,
+    },
+    ElementTypeMismatch {
+        element: ByteSpan,
+        index: usize,
+        expected: TypedType,
+        actual: TypedType,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum ConditionalIssue {
     ConditionNotBool {
         condition: ByteSpan,

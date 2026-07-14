@@ -53,6 +53,7 @@ pub(super) fn local_value_names(module: &CoreModule) -> BTreeSet<String> {
 fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
     match expr {
         CoreExpr::Tuple { elements, .. }
+        | CoreExpr::Array { elements, .. }
         | CoreExpr::EffectOperation {
             arguments: elements,
             ..

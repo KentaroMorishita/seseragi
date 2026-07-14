@@ -51,6 +51,15 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
             elements: lower_core_expressions(elements, imported_values, imported_types),
         },
+        CoreExpr::Array {
+            elements, type_ref, ..
+        } => TypeScriptExpr::Array {
+            elements: lower_core_expressions(elements, imported_values, imported_types),
+            element_type: match type_ref_from_core_type(&type_ref, imported_types) {
+                super::TypeScriptType::Array { element } => *element,
+                _ => super::TypeScriptType::Unknown,
+            },
+        },
         CoreExpr::Binary {
             operator,
             left,
@@ -136,7 +145,9 @@ pub(super) fn lower_core_expr_to_typescript(
 pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
     match expr {
         TypeScriptExpr::Await { .. } => true,
-        TypeScriptExpr::Tuple { elements } => elements.iter().any(typescript_expr_contains_await),
+        TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
+            elements.iter().any(typescript_expr_contains_await)
+        }
         TypeScriptExpr::Binary { left, right, .. } => {
             typescript_expr_contains_await(left) || typescript_expr_contains_await(right)
         }

@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "choose",
+      "nameSpan": {
+        "start": 7,
+        "end": 13
+      },
+      "parameters": [
+        {
+          "name": "enabled",
+          "nameSpan": {
+            "start": 14,
+            "end": 21
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 23,
+              "end": 27
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 37,
+              "end": 40
+            }
+          }
+        ],
+        "span": {
+          "start": 31,
+          "end": 41
+        }
+      },
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "name",
+          "name": "enabled",
+          "span": {
+            "start": 49,
+            "end": 56
+          }
+        },
+        "thenBranch": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 63,
+                "end": 64
+              }
+            },
+            {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 66,
+                "end": 67
+              }
+            },
+            {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 69,
+                "end": 70
+              }
+            }
+          ],
+          "span": {
+            "start": 62,
+            "end": 71
+          }
+        },
+        "elseBranch": {
+          "kind": "array",
+          "elements": [],
+          "span": {
+            "start": 77,
+            "end": 79
+          }
+        },
+        "span": {
+          "start": 46,
+          "end": 79
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 79
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "matrix",
+      "nameSpan": {
+        "start": 88,
+        "end": 94
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 110,
+                  "end": 113
+                }
+              }
+            ],
+            "span": {
+              "start": 104,
+              "end": 114
+            }
+          }
+        ],
+        "span": {
+          "start": 98,
+          "end": 115
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "integer",
+                "raw": "1",
+                "span": {
+                  "start": 122,
+                  "end": 123
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "2",
+                "span": {
+                  "start": 125,
+                  "end": 126
+                }
+              }
+            ],
+            "span": {
+              "start": 121,
+              "end": 127
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [],
+            "span": {
+              "start": 129,
+              "end": 131
+            }
+          }
+        ],
+        "span": {
+          "start": 120,
+          "end": 132
+        }
+      },
+      "span": {
+        "start": 81,
+        "end": 132
+      }
+    }
+  ]
+}

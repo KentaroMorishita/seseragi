@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/array-literal",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/array-literal::choose",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 79
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "enabled",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 14,
+            "end": 21
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "variable",
+          "name": "enabled",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        },
+        "thenBranch": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "integer",
+              "value": "1",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 63,
+                "end": 64
+              }
+            },
+            {
+              "kind": "integer",
+              "value": "2",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 66,
+                "end": 67
+              }
+            },
+            {
+              "kind": "integer",
+              "value": "3",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 69,
+                "end": 70
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 62,
+            "end": 71
+          }
+        },
+        "elseBranch": {
+          "kind": "array",
+          "elements": [],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 77,
+            "end": 79
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 46,
+          "end": 79
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/array-literal::matrix",
+      "visibility": "public",
+      "origin": {
+        "start": 81,
+        "end": 132
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 122,
+                  "end": 123
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "2",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 125,
+                  "end": 126
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 121,
+              "end": 127
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 129,
+              "end": 131
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 120,
+          "end": 132
+        }
+      }
+    }
+  ]
+}

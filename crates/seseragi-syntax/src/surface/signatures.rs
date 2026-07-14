@@ -11,6 +11,15 @@ impl SurfaceParser<'_> {
         let mut parameters = Vec::new();
         let mut cursor = start;
 
+        let first = self.next_significant_token(cursor, end)?;
+        if self.kind_at(first) == Some(TokenKind::OperatorArrow) {
+            let (return_type, after_return_type) = self.parse_type_ref(first + 1, end)?;
+            return self
+                .next_significant_token(after_return_type, end)
+                .is_none()
+                .then_some((parameters, return_type));
+        }
+
         loop {
             let name_index = self.next_significant_token(cursor, end)?;
             let name = self.identifier_name_at(name_index)?;

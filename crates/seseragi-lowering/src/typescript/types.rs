@@ -16,6 +16,7 @@ pub(super) fn type_ref_from_core_expr(
         CoreExpr::Variable { type_ref, .. }
         | CoreExpr::Call { type_ref, .. }
         | CoreExpr::Tuple { type_ref, .. }
+        | CoreExpr::Array { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
         | CoreExpr::Decision { type_ref, .. } => type_ref_from_core_type(type_ref, imported_types),
@@ -67,6 +68,11 @@ pub(super) fn type_ref_from_core_type(
             TypeScriptType::Either {
                 error: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
                 value: Box::new(type_ref_from_core_type(&arguments[1], imported_types)),
+            }
+        }
+        CoreType::Named { name, arguments } if name == "Array" && arguments.len() == 1 => {
+            TypeScriptType::Array {
+                element: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
             }
         }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
@@ -150,6 +156,9 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
+        TypeScriptType::Array { element } => {
+            format!("ReadonlyArray<{}>", render_typescript_type(element))
+        }
     }
 }
 

@@ -271,6 +271,27 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
+        TypeScriptExpr::Array {
+            elements,
+            element_type,
+        } => {
+            let literal = format!(
+                "[{}]",
+                elements
+                    .iter()
+                    .map(render_typescript_expr)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
+            if elements.is_empty() {
+                format!(
+                    "{literal} as ReadonlyArray<{}>",
+                    render_typescript_type(element_type)
+                )
+            } else {
+                literal
+            }
+        }
         TypeScriptExpr::Binary {
             operator,
             left,

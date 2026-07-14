@@ -34,6 +34,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         }
         CoreExpr::Tuple {
             elements, type_ref, ..
+        }
+        | CoreExpr::Array {
+            elements, type_ref, ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
             for element in elements {
@@ -198,7 +201,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_expr_runtime_imports(argument, imports);
             }
         }
-        CoreExpr::Tuple { elements, .. } => {
+        CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr_runtime_imports(element, imports);
             }

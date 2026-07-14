@@ -39,6 +39,32 @@ fn compiles_a_valid_module_through_every_owned_stage() {
 }
 
 #[test]
+fn compiles_array_literals_through_every_owned_stage() {
+    const SOURCE: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/array-literal/main.ssrg");
+    const EXPECTED_TYPESCRIPT: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/array-literal/main.ts");
+    let compiled = compile_module(input(
+        "artifact/driver-array/main.ssrg",
+        "artifact/driver-array",
+        SOURCE,
+    ))
+    .expect("typed array literals should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(serde_json::to_string(&compiled.typed_hir)
+        .unwrap()
+        .contains("\"kind\":\"array\""));
+    assert!(serde_json::to_string(&compiled.core_ir)
+        .unwrap()
+        .contains("\"kind\":\"array\""));
+    assert!(serde_json::to_string(&compiled.typescript_ir)
+        .unwrap()
+        .contains("\"kind\":\"array\""));
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
 fn keeps_physical_source_name_independent_from_logical_module_identity() {
     let compiled = compile_module(input(
         "/tmp/seseragi-cache/entry.ssrg",

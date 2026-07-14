@@ -1,7 +1,7 @@
 use crate::{SymbolNamespace, TypedEffect, TypedExpr, TypedType};
 
 use super::super::functions::application_result_type_from;
-use super::super::pure_issues::PureCallIssue;
+use super::super::pure_issues::{ArrayIssue, PureCallIssue};
 use super::super::semantic_types::{semantic_values_are_compatible, SemanticValueType};
 use super::super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::super::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
@@ -13,6 +13,7 @@ pub(super) fn type_imported_effect_application(
     context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
     issues: &mut Vec<PureCallIssue>,
+    array_issues: &mut Vec<ArrayIssue>,
 ) -> Option<TypedExpr> {
     let (callee, argument_nodes) = flatten_application(expression);
     let seseragi_syntax::SurfaceExpr::Name { span: callee, .. } = callee else {
@@ -28,6 +29,12 @@ pub(super) fn type_imported_effect_application(
             analyze_resolved_expression(argument, &context.with_expected(expected))
         })
         .collect::<Vec<_>>();
+
+    array_issues.extend(
+        analyses
+            .iter()
+            .filter_map(|analysis| analysis.array_issue.clone()),
+    );
 
     if argument_nodes.len() > signature.parameters.len() {
         issues.push(PureCallIssue::Arity {

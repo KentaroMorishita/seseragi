@@ -1,6 +1,7 @@
 use crate::typed::{analyze_pure_function, TypedResolution};
 use seseragi_syntax::{lex, parse_diagnostics, Diagnostic, DiagnosticArtifact, SurfaceDecl, Token};
 
+mod array;
 mod conditional;
 mod effect;
 mod function_body;
@@ -88,6 +89,7 @@ fn collect_decl_diagnostics(
     } = declaration
     {
         let analysis = analyze_pure_function(body.as_ref(), parameters, return_type, resolution);
+        array::collect_array_diagnostic(analysis.array_issue.as_ref(), *span, diagnostics);
         conditional::collect_conditional_diagnostics(
             analysis.conditional_issue.as_ref(),
             *span,

@@ -396,3 +396,18 @@ fn keeps_a_leading_pipeline_in_the_previous_match_arm_body() {
         SurfaceExpr::Binary { ref operator, .. } if operator == "|>"
     ));
 }
+
+#[test]
+fn parses_empty_nested_and_trailing_comma_array_literals() {
+    let body = first_body("fn arrays -> Array<Array<Int>> = [[], [1, 2,],]\n");
+
+    let SurfaceExpr::Array { elements, .. } = body else {
+        panic!("expected array expression");
+    };
+    assert_eq!(elements.len(), 2);
+    assert!(matches!(&elements[0], SurfaceExpr::Array { elements, .. } if elements.is_empty()));
+    assert!(matches!(&elements[1], SurfaceExpr::Array { elements, .. } if elements.len() == 2));
+
+    let mixed = first_body("fn mixed -> Array<Int> = [1, \"bad\"]\n");
+    assert!(matches!(mixed, SurfaceExpr::Array { elements, .. } if elements.len() == 2));
+}

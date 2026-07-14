@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/array-literal",
+  "runtimeRequirements": [
+    "core.bool",
+    "core.int64"
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "choose",
+      "parameters": [
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "identifier",
+          "name": "enabled"
+        },
+        "thenBranch": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "bigint",
+              "value": "1"
+            },
+            {
+              "kind": "bigint",
+              "value": "2"
+            },
+            {
+              "kind": "bigint",
+              "value": "3"
+            }
+          ],
+          "elementType": {
+            "kind": "bigint"
+          }
+        },
+        "elseBranch": {
+          "kind": "array",
+          "elements": [],
+          "elementType": {
+            "kind": "bigint"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 79
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "matrix",
+      "parameters": [],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "bigint",
+                "value": "1"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ],
+            "elementType": {
+              "kind": "bigint"
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [],
+            "elementType": {
+              "kind": "bigint"
+            }
+          }
+        ],
+        "elementType": {
+          "kind": "array",
+          "element": {
+            "kind": "bigint"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 81,
+        "end": 132
+      }
+    }
+  ]
+}

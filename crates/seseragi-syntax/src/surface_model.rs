@@ -244,6 +244,10 @@ pub enum SurfaceExpr {
         elements: Vec<SurfaceExpr>,
         span: ByteSpan,
     },
+    Array {
+        elements: Vec<SurfaceExpr>,
+        span: ByteSpan,
+    },
     Binary {
         operator: String,
         operator_span: ByteSpan,
@@ -287,6 +291,7 @@ impl SurfaceExpr {
             | Self::Name { span, .. }
             | Self::Application { span, .. }
             | Self::Tuple { span, .. }
+            | Self::Array { span, .. }
             | Self::Binary { span, .. }
             | Self::If { span, .. }
             | Self::Match { span, .. }

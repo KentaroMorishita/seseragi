@@ -100,6 +100,7 @@ fn collect_effect_contract(
         | TypedExpr::Variable { .. }
         | TypedExpr::Call { .. }
         | TypedExpr::Tuple { .. }
+        | TypedExpr::Array { .. }
         | TypedExpr::Binary { .. }
         | TypedExpr::If { .. } => {}
     }

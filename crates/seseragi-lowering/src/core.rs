@@ -132,6 +132,12 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Array {
+        elements: Vec<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Binary {
         operator: String,
         left: Box<CoreExpr>,

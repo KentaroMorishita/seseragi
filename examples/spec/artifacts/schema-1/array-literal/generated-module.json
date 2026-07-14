@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "artifact/array-literal",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.bool",
+      "core.int64"
+    ]
+  },
+  "exports": [
+    "choose",
+    "matrix"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

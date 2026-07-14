@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/array-literal"
+  ],
+  "sourcesContent": [
+    "pub fn choose enabled: Bool -> Array<Int> =\n  if enabled then [1, 2, 3] else []\n\npub fn matrix -> Array<Array<Int>> =\n  [[1, 2], []]\n"
+  ],
+  "names": [
+    "choose",
+    "matrix"
+  ],
+  "mappings": "AAAAA;AAGAC"
+}

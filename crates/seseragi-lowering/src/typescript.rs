@@ -250,6 +250,9 @@ pub enum TypeScriptType {
     Tuple {
         elements: Vec<TypeScriptType>,
     },
+    Array {
+        element: Box<TypeScriptType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -277,6 +280,10 @@ pub enum TypeScriptExpr {
     },
     Tuple {
         elements: Vec<TypeScriptExpr>,
+    },
+    Array {
+        elements: Vec<TypeScriptExpr>,
+        element_type: TypeScriptType,
     },
     Binary {
         operator: String,

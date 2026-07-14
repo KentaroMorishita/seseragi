@@ -1,0 +1,5 @@
+pub fn choose enabled: Bool -> Array<Int> =
+  if enabled then [1, 2, 3] else []
+
+pub fn matrix -> Array<Array<Int>> =
+  [[1, 2], []]

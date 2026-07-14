@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/array-literal",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/array-literal::choose",
+      "namespace": "value",
+      "name": "choose",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 79
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/array-literal::matrix",
+      "namespace": "value",
+      "name": "matrix",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 81,
+        "end": 132
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
