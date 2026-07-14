@@ -67,7 +67,7 @@ impl SurfaceParser<'_> {
             self.parse_type_name(fails + 1, failure_end)
         });
         let constraints = where_index
-            .map(|where_index| self.parse_constraint_names(where_index + 1, header_end))
+            .map(|where_index| self.parse_constraints(where_index + 1, header_end))
             .unwrap_or_default();
         let body = equals.and_then(|equals| self.parse_expression(equals + 1, end));
 

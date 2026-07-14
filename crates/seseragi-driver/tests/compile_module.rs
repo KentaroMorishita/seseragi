@@ -2,9 +2,11 @@ use seseragi_driver::{
     compile_linked_module, compile_module, plan_typescript_outputs, CompileInput,
     LinkedCompileError, TypeScriptModuleOutput,
 };
-use seseragi_lowering::{GeneratedModule, TypeScriptLoweringError, TypeScriptOutputPlan};
+use seseragi_lowering::{
+    GeneratedModule, TypeScriptFunction, TypeScriptLoweringError, TypeScriptOutputPlan,
+};
 use seseragi_project::{link_module, ModuleLinkTarget};
-use seseragi_semantics::TypedModuleInterface;
+use seseragi_semantics::{TypedDecl, TypedModuleInterface};
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::BTreeMap;
 
@@ -131,6 +133,32 @@ fn passes_an_arithmetic_operator_as_a_function_value() {
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
+fn preserves_constraint_arguments_through_owned_ir_stages() {
+    const SOURCE: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/constraint-arguments/main.ssrg");
+    let compiled = compile_module(input(
+        "artifact/constraint-arguments/main.ssrg",
+        "artifact/constraint-arguments",
+        SOURCE,
+    ))
+    .expect("structured constraints should compile");
+
+    let TypedDecl::Fn { scheme, .. } = &compiled.typed_hir.declarations[0] else {
+        panic!("expected a typed function");
+    };
+    assert_eq!(scheme.constraints[0].name, "Reducible");
+    assert_eq!(scheme.constraints[0].arguments.len(), 2);
+    assert_eq!(
+        compiled.core_ir.functions[0].constraints[0].arguments.len(),
+        2
+    );
+    let TypeScriptFunction::ConstFunction { constraints, .. } =
+        &compiled.typescript_ir.functions[0];
+    assert_eq!(constraints[0].name, "Reducible");
+    assert_eq!(constraints[0].arguments.len(), 2);
 }
 
 #[test]

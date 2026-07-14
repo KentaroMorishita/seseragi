@@ -121,7 +121,14 @@ pub(crate) fn typed_decl_from_surface(
                     type_parameters,
                     constraints: constraints
                         .into_iter()
-                        .map(|name| crate::TypedConstraint { name })
+                        .map(|constraint| crate::TypedConstraint {
+                            name: constraint.name,
+                            arguments: constraint
+                                .arguments
+                                .iter()
+                                .map(typed_type_from_type_ref)
+                                .collect(),
+                        })
                         .collect(),
                     type_ref: typed_type_from_type_ref(&return_type),
                 },

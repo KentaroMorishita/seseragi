@@ -1,0 +1,6 @@
+pub fn chooseFallback<C, A>
+  values: C
+  -> fallback: A
+  -> A
+where Reducible<C, A> =
+  fallback

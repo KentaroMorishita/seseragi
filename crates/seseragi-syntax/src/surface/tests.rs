@@ -130,7 +130,11 @@ fn parses_pure_function_type_parameters_and_constraints() {
     };
 
     assert_eq!(type_parameters, &vec!["A".to_owned()]);
-    assert_eq!(constraints, &vec!["Eq".to_owned()]);
+    assert_eq!(constraints[0].name, "Eq");
+    assert!(matches!(
+        constraints[0].arguments.as_slice(),
+        [TypeRef::Named { name, .. }] if name == "A"
+    ));
     assert_eq!(*span, ByteSpan { start: 0, end: 92 });
 }
 
@@ -440,7 +444,15 @@ fn parses_instance_type_parameters_and_constraints() {
                 }],
                 span: ByteSpan { start: 17, end: 23 },
             }],
-            constraints: vec!["Show".to_owned()],
+            constraints: vec![SurfaceConstraint {
+                name: "Show".to_owned(),
+                arguments: vec![TypeRef::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 36, end: 37 },
+                }],
+                span: ByteSpan { start: 31, end: 38 },
+            }],
             span: ByteSpan { start: 0, end: 84 },
         }
     );
@@ -460,7 +472,15 @@ fn parses_trait_declarations() {
             name: "Ord".to_owned(),
             name_span: ByteSpan { start: 10, end: 13 },
             type_parameters: vec!["A".to_owned()],
-            constraints: vec!["Eq".to_owned()],
+            constraints: vec![SurfaceConstraint {
+                name: "Eq".to_owned(),
+                arguments: vec![TypeRef::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 26, end: 27 },
+                }],
+                span: ByteSpan { start: 23, end: 28 },
+            }],
             span: ByteSpan { start: 0, end: 70 },
         }
     );

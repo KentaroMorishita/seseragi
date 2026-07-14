@@ -165,6 +165,13 @@ fn parses_public_pure_fn_interface() {
     assert_eq!(function_export.namespace, "value");
     assert_eq!(function_export.scheme.type_parameters, vec!["A".to_owned()]);
     assert_eq!(function_export.scheme.constraints[0].name, "Eq");
+    assert_eq!(
+        function_export.scheme.constraints[0].arguments,
+        vec![InterfaceType::Named {
+            name: "A".to_owned(),
+            arguments: Vec::new(),
+        }]
+    );
 }
 
 #[test]

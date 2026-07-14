@@ -25,6 +25,8 @@ pub struct CoreInstance {
 #[serde(rename_all = "camelCase")]
 pub struct CoreInstanceConstraint {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub arguments: Vec<CoreType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -121,9 +123,14 @@ fn lower_show_payload_evidence(evidence: TypedShowPayloadEvidence) -> CoreShowPa
     }
 }
 
-fn lower_constraint(constraint: TypedConstraint) -> CoreInstanceConstraint {
+pub(super) fn lower_constraint(constraint: TypedConstraint) -> CoreInstanceConstraint {
     CoreInstanceConstraint {
         name: constraint.name,
+        arguments: constraint
+            .arguments
+            .into_iter()
+            .map(lower_typed_type)
+            .collect(),
     }
 }
 

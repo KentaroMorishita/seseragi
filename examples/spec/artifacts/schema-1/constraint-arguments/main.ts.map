@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/constraint-arguments"
+  ],
+  "sourcesContent": [
+    "pub fn chooseFallback<C, A>\n  values: C\n  -> fallback: A\n  -> A\nwhere Reducible<C, A> =\n  fallback\n"
+  ],
+  "names": [
+    "chooseFallback"
+  ],
+  "mappings": "AAAAA"
+}

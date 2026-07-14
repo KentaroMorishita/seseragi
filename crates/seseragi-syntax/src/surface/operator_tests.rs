@@ -60,6 +60,10 @@ fn parses_operator_constraints() {
         panic!("expected operator declaration");
     };
 
-    assert_eq!(constraints, &vec!["Semigroup".to_owned()]);
+    assert_eq!(constraints[0].name, "Semigroup");
+    assert!(matches!(
+        constraints[0].arguments.as_slice(),
+        [TypeRef::Named { name, .. }] if name == "A"
+    ));
     assert_eq!(*span, ByteSpan { start: 0, end: 83 });
 }

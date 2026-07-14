@@ -62,6 +62,8 @@ pub struct InterfaceScheme {
 #[serde(rename_all = "camelCase")]
 pub struct InterfaceConstraint {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub arguments: Vec<InterfaceType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

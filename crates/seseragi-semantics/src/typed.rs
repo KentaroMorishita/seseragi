@@ -60,6 +60,14 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
                         .into_iter()
                         .map(|constraint| TypedConstraint {
                             name: constraint.name,
+                            arguments: constraint
+                                .arguments
+                                .into_iter()
+                                .map(|argument| {
+                                    typed_type_from_interface_type(argument)
+                                        .unwrap_or(TypedType::Hole)
+                                })
+                                .collect(),
                         })
                         .collect(),
                     type_ref,

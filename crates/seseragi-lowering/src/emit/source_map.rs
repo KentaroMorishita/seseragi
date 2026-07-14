@@ -448,6 +448,7 @@ mod tests {
                 is_async: false,
                 name: "run".to_owned(),
                 type_parameters: Vec::new(),
+                constraints: Vec::new(),
                 parameters: Vec::new(),
                 body: TypeScriptExpr::Undefined,
                 origin: SourceSpan {

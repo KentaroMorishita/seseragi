@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/constraint-arguments",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/constraint-arguments::chooseFallback",
+      "namespace": "value",
+      "name": "chooseFallback",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 98
+      },
+      "scheme": {
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Reducible",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

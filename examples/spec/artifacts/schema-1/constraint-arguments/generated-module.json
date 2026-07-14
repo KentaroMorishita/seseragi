@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "module": "artifact/constraint-arguments",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": []
+  },
+  "exports": [
+    "chooseFallback"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

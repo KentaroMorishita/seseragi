@@ -21,7 +21,7 @@ impl SurfaceParser<'_> {
             .unwrap_or(end);
         let constraints = self
             .find_raw(after_type_parameters, body_start, "where")
-            .map(|where_index| self.parse_constraint_names(where_index + 1, body_start))
+            .map(|where_index| self.parse_constraints(where_index + 1, body_start))
             .unwrap_or_default();
 
         Some(SurfaceDecl::Trait {

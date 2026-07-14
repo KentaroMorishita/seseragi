@@ -25,7 +25,10 @@ fn parses_nested_type_arguments_in_surface_ast() {
                 }],
                 span: ByteSpan { start: 16, end: 33 },
             }),
-            body: None,
+            body: Some(SurfaceExpr::Array {
+                elements: Vec::new(),
+                span: ByteSpan { start: 36, end: 38 },
+            }),
             span: ByteSpan { start: 0, end: 38 },
         }
     );

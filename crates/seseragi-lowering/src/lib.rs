@@ -382,6 +382,7 @@ type Internal =
                 visibility: Visibility::Public,
                 origin: origin.clone(),
                 type_parameters: Vec::new(),
+                constraints: Vec::new(),
                 parameters: vec![CoreParameter {
                     id: "value".to_owned(),
                     kind: "named".to_owned(),

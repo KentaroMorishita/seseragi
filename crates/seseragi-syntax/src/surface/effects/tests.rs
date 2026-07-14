@@ -38,6 +38,10 @@ fn preserves_explicit_effect_contract_clauses() {
         failure,
         Some(TypeRef::Named { name, .. }) if name == "AppError"
     ));
-    assert_eq!(constraints, &["Show".to_owned()]);
+    assert_eq!(constraints[0].name, "Show");
+    assert!(matches!(
+        constraints[0].arguments.as_slice(),
+        [TypeRef::Named { name, .. }] if name == "Int"
+    ));
     assert!(body.is_some());
 }

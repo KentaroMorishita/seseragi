@@ -209,6 +209,8 @@ pub enum TypeScriptFunction {
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypeScriptInstanceConstraint>,
         parameters: Vec<TypeScriptParameter>,
         body: TypeScriptExpr,
         origin: SourceSpan,
@@ -475,6 +477,20 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                 is_async: typescript_expr_contains_await(&body),
                 name: local_name(&function.symbol),
                 type_parameters: function.type_parameters,
+                constraints: function
+                    .constraints
+                    .iter()
+                    .map(|constraint| TypeScriptInstanceConstraint {
+                        name: constraint.name.clone(),
+                        arguments: constraint
+                            .arguments
+                            .iter()
+                            .map(|argument| {
+                                types::type_ref_from_core_type(argument, &module_imports.type_names)
+                            })
+                            .collect(),
+                    })
+                    .collect(),
                 parameters: function
                     .parameters
                     .into_iter()

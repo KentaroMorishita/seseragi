@@ -1,9 +1,9 @@
 use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 pub use crate::surface_model::{
-    ByteSpan, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImport, SurfaceImportItem,
-    SurfaceMatchArm, SurfaceModule, SurfaceParameter, SurfacePattern, SurfaceRequirement,
-    SurfaceVariant, TypeRef, Visibility,
+    ByteSpan, SurfaceConstraint, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImport,
+    SurfaceImportItem, SurfaceMatchArm, SurfaceModule, SurfaceParameter, SurfacePattern,
+    SurfaceRequirement, SurfaceVariant, TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 

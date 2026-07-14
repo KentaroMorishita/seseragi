@@ -78,6 +78,8 @@ pub struct CoreFunction {
     pub origin: SourceSpan,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub type_parameters: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub constraints: Vec<CoreInstanceConstraint>,
     pub parameters: Vec<CoreParameter>,
     pub body: CoreExpr,
 }
@@ -284,6 +286,11 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 visibility,
                 origin: source_span(&module.source, origin),
                 type_parameters: scheme.type_parameters,
+                constraints: scheme
+                    .constraints
+                    .into_iter()
+                    .map(instances::lower_constraint)
+                    .collect(),
                 parameters: parameters
                     .into_iter()
                     .map(|parameter| lower_parameter(&parameter))
@@ -303,6 +310,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 visibility,
                 origin: source_span(&module.source, origin),
                 type_parameters: Vec::new(),
+                constraints: Vec::new(),
                 parameters: parameters
                     .into_iter()
                     .map(|parameter| lower_parameter(&parameter))

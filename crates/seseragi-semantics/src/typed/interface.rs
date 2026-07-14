@@ -77,6 +77,11 @@ fn interface_instance_from_typed(
             .iter()
             .map(|constraint| InterfaceConstraint {
                 name: constraint.name.clone(),
+                arguments: constraint
+                    .arguments
+                    .iter()
+                    .map(|argument| types.convert(argument))
+                    .collect(),
             })
             .collect(),
         origin: instance.origin,
@@ -141,6 +146,11 @@ fn typed_value_export(
                     .iter()
                     .map(|constraint| InterfaceConstraint {
                         name: constraint.name.clone(),
+                        arguments: constraint
+                            .arguments
+                            .iter()
+                            .map(|argument| types.convert(argument))
+                            .collect(),
                     })
                     .collect(),
                 type_ref: function_interface_type(
@@ -192,6 +202,11 @@ fn interface_scheme_from_typed_scheme(
             .iter()
             .map(|constraint| InterfaceConstraint {
                 name: constraint.name.clone(),
+                arguments: constraint
+                    .arguments
+                    .iter()
+                    .map(|argument| types.convert(argument))
+                    .collect(),
             })
             .collect(),
         type_ref: types.convert(&scheme.type_ref),

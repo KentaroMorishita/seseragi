@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "chooseFallback",
+      "nameSpan": {
+        "start": 7,
+        "end": 21
+      },
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 30,
+            "end": 36
+          },
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "span": {
+              "start": 38,
+              "end": 39
+            }
+          }
+        },
+        {
+          "name": "fallback",
+          "nameSpan": {
+            "start": 45,
+            "end": 53
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 55,
+              "end": 56
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 62,
+          "end": 63
+        }
+      },
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "span": {
+                "start": 80,
+                "end": 81
+              }
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 83,
+                "end": 84
+              }
+            }
+          ],
+          "span": {
+            "start": 70,
+            "end": 85
+          }
+        }
+      ],
+      "body": {
+        "kind": "name",
+        "name": "fallback",
+        "span": {
+          "start": 90,
+          "end": 98
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 98
+      }
+    }
+  ]
+}

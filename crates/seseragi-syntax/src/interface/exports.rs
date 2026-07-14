@@ -80,7 +80,7 @@ fn export_from_surface_decl(
                 type_parameters: type_parameters.clone(),
                 constraints: constraints
                     .iter()
-                    .map(|name| InterfaceConstraint { name: name.clone() })
+                    .map(interface_constraint_from_surface)
                     .collect(),
                 type_ref: function_interface_type(parameters, return_type),
             },
@@ -145,7 +145,7 @@ fn export_from_surface_decl(
                 type_parameters: type_parameters.clone(),
                 constraints: constraints
                     .iter()
-                    .map(|name| InterfaceConstraint { name: name.clone() })
+                    .map(interface_constraint_from_surface)
                     .collect(),
                 type_ref: InterfaceType::TypeConstructor {
                     name: name.clone(),
@@ -175,13 +175,24 @@ fn export_from_surface_decl(
                 type_parameters: type_parameters.clone(),
                 constraints: constraints
                     .iter()
-                    .map(|name| InterfaceConstraint { name: name.clone() })
+                    .map(interface_constraint_from_surface)
                     .collect(),
                 type_ref: function_interface_type(parameters, return_type),
             },
             representation: None,
         }),
         _ => None,
+    }
+}
+
+fn interface_constraint_from_surface(constraint: &crate::SurfaceConstraint) -> InterfaceConstraint {
+    InterfaceConstraint {
+        name: constraint.name.clone(),
+        arguments: constraint
+            .arguments
+            .iter()
+            .map(interface_type_from_type_ref)
+            .collect(),
     }
 }
 

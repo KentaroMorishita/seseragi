@@ -148,6 +148,8 @@ pub struct TypedScheme {
 #[serde(rename_all = "camelCase")]
 pub struct TypedConstraint {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub arguments: Vec<TypedType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

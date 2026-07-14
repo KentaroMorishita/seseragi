@@ -62,7 +62,7 @@ pub enum SurfaceDecl {
         #[serde(skip_serializing_if = "Option::is_none")]
         failure: Option<TypeRef>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        constraints: Vec<String>,
+        constraints: Vec<SurfaceConstraint>,
         #[serde(skip_serializing_if = "Option::is_none")]
         body: Option<SurfaceExpr>,
         span: ByteSpan,
@@ -76,7 +76,7 @@ pub enum SurfaceDecl {
         parameters: Vec<SurfaceParameter>,
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        constraints: Vec<String>,
+        constraints: Vec<SurfaceConstraint>,
         #[serde(skip_serializing_if = "Option::is_none")]
         body: Option<SurfaceExpr>,
         span: ByteSpan,
@@ -136,7 +136,7 @@ pub enum SurfaceDecl {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<String>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        constraints: Vec<String>,
+        constraints: Vec<SurfaceConstraint>,
         span: ByteSpan,
     },
     Operator {
@@ -149,7 +149,7 @@ pub enum SurfaceDecl {
         parameters: Vec<SurfaceParameter>,
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        constraints: Vec<String>,
+        constraints: Vec<SurfaceConstraint>,
         span: ByteSpan,
     },
     Instance {
@@ -158,7 +158,7 @@ pub enum SurfaceDecl {
         trait_name: String,
         arguments: Vec<TypeRef>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        constraints: Vec<String>,
+        constraints: Vec<SurfaceConstraint>,
         span: ByteSpan,
     },
 }
@@ -187,6 +187,15 @@ pub struct SurfaceParameter {
     pub name_span: ByteSpan,
     #[serde(rename = "type")]
     pub type_ref: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceConstraint {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub arguments: Vec<TypeRef>,
+    pub span: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

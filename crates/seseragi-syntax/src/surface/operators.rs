@@ -23,7 +23,7 @@ impl SurfaceParser<'_> {
         let where_index = self.find_raw(after_spelling, equals, "where");
         let signature_end = where_index.unwrap_or(equals);
         let constraints = where_index
-            .map(|where_index| self.parse_constraint_names(where_index + 1, equals))
+            .map(|where_index| self.parse_constraints(where_index + 1, equals))
             .unwrap_or_default();
         let (parameters, return_type) =
             self.parse_curried_signature(after_spelling, signature_end)?;

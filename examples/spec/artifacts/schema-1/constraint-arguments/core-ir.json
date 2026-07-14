@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/constraint-arguments",
+  "functions": [
+    {
+      "symbol": "artifact/constraint-arguments::chooseFallback",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 98
+      },
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          }
+        },
+        {
+          "id": "fallback",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "fallback",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 90,
+          "end": 98
+        }
+      }
+    }
+  ]
+}

@@ -33,6 +33,8 @@ pub struct TypeScriptInstance {
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptInstanceConstraint {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub arguments: Vec<TypeScriptType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -203,6 +205,11 @@ fn lower_instance(
             .iter()
             .map(|constraint| TypeScriptInstanceConstraint {
                 name: constraint.name.clone(),
+                arguments: constraint
+                    .arguments
+                    .iter()
+                    .map(|argument| type_ref_from_core_type(argument, context.imported_type_names))
+                    .collect(),
             })
             .collect(),
         origin: instance.origin.clone(),

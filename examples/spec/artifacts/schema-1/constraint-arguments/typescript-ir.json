@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/constraint-arguments",
+  "runtimeRequirements": [],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "chooseFallback",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        },
+        {
+          "name": "fallback",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "fallback"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 98
+      }
+    }
+  ]
+}

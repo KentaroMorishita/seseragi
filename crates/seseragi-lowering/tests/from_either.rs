@@ -39,6 +39,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
             visibility: Visibility::Public,
             origin: origin(),
             type_parameters: Vec::new(),
+            constraints: Vec::new(),
             parameters: vec![CoreParameter {
                 id: "candidate".to_owned(),
                 kind: "named".to_owned(),

@@ -1,0 +1,217 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/constraint-arguments",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "chooseFallback",
+      "nameSpan": {
+        "start": 7,
+        "end": 21
+      },
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 30,
+            "end": 36
+          },
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "span": {
+              "start": 38,
+              "end": 39
+            }
+          }
+        },
+        {
+          "name": "fallback",
+          "nameSpan": {
+            "start": 45,
+            "end": 53
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 55,
+              "end": 56
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 62,
+          "end": 63
+        }
+      },
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "span": {
+                "start": 80,
+                "end": 81
+              }
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 83,
+                "end": 84
+              }
+            }
+          ],
+          "span": {
+            "start": 70,
+            "end": 85
+          }
+        }
+      ],
+      "body": {
+        "kind": "name",
+        "name": "fallback",
+        "span": {
+          "start": 90,
+          "end": 98
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 98
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 98
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 98
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "chooseFallback",
+      "canonical": "artifact/constraint-arguments::chooseFallback",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 21
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "C",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 98
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 98
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 30,
+        "end": 36
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "fallback",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 45,
+        "end": 53
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "C",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 38,
+        "end": 39
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 55,
+        "end": 56
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 62,
+        "end": 63
+      }
+    },
+    {
+      "spelling": "fallback",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 90,
+        "end": 98
+      }
+    }
+  ],
+  "issues": []
+}

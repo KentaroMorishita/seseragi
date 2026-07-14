@@ -23,7 +23,14 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
             },
             constraints: constraints
                 .iter()
-                .map(|name| InterfaceConstraint { name: name.clone() })
+                .map(|constraint| InterfaceConstraint {
+                    name: constraint.name.clone(),
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(interface_type_from_type_ref)
+                        .collect(),
+                })
                 .collect(),
             origin: span,
         }),
