@@ -59,6 +59,34 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.callable(target)
     }
 
+    pub(super) fn callable_value(&self, target: SymbolId) -> Option<TopLevelPureFunction> {
+        if let Some(callable) = self.callable(target) {
+            return Some(callable.clone());
+        }
+        let value = self.parameters.get(&target)?;
+        let symbol = self.resolution.symbol(target)?;
+        let mut type_ref = &value.type_ref;
+        let mut parameters = Vec::new();
+        while let TypedType::Function { parameter, result } = type_ref {
+            parameters.push(parameter.as_ref().clone());
+            type_ref = result;
+        }
+        if parameters.is_empty() {
+            return None;
+        }
+        Some(TopLevelPureFunction {
+            symbol: symbol.spelling.clone(),
+            type_parameters: Vec::new(),
+            semantic_parameters: parameters
+                .iter()
+                .map(|parameter| self.semantic_value_from_typed_type(parameter).key)
+                .collect(),
+            parameters,
+            result: type_ref.clone(),
+            semantic_result: self.semantic_value_from_typed_type(type_ref).key,
+        })
+    }
+
     pub(super) fn semantic_types(&self) -> &SemanticTypeCatalog {
         self.resolution.semantic_types()
     }

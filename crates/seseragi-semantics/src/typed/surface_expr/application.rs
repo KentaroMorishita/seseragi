@@ -23,7 +23,7 @@ pub(super) fn type_application(
     let Some(target) = context.target(*callee_span) else {
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
-    let Some(signature) = context.callable(target) else {
+    let Some(signature) = context.callable_value(target) else {
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
@@ -32,7 +32,7 @@ pub(super) fn type_application(
     } else {
         None
     };
-    let seeded_application = instantiated_application(signature, expected_result, &[]);
+    let seeded_application = instantiated_application(&signature, expected_result, &[]);
     let mut arguments = Vec::with_capacity(argument_nodes.len());
     let mut semantic_arguments = Vec::with_capacity(argument_nodes.len());
     let mut child_analyses = Vec::with_capacity(argument_nodes.len());
@@ -47,7 +47,7 @@ pub(super) fn type_application(
         arguments.push(analysis.value.clone());
         child_analyses.push(analysis);
     }
-    let application = instantiated_application(signature, expected_result, &semantic_arguments);
+    let application = instantiated_application(&signature, expected_result, &semantic_arguments);
     let issue = call_issue(
         *callee_span,
         signature.parameters.len(),

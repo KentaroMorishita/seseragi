@@ -65,6 +65,58 @@ fn compiles_array_literals_through_every_owned_stage() {
 }
 
 #[test]
+fn compiles_a_higher_order_parameter_call_through_every_owned_stage() {
+    let compiled = compile_module(input(
+        "artifact/driver-higher-order/main.ssrg",
+        "artifact/driver-higher-order",
+        concat!(
+            "pub fn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
+            "pub fn increment value: Int -> Int = value + 1\n",
+            "pub fn example value: Int -> Int = apply increment value\n",
+        ),
+    ))
+    .expect("higher-order parameter application should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert_eq!(
+        compiled.generated.typescript,
+        concat!(
+            "import { add as _ssrg_int64_add } from \"@seseragi/runtime/int64\"\n",
+            "\n",
+            "export const apply = (f: (argument: bigint) => bigint) => (value: bigint) => f(value)\n",
+            "export const increment = (value: bigint) => _ssrg_int64_add(value, 1n)\n",
+            "export const example = (value: bigint) => apply(increment)(value)\n",
+        )
+    );
+}
+
+#[test]
+fn instantiates_a_generic_higher_order_function() {
+    const SOURCE: &str = include_str!(
+        "../../../examples/spec/artifacts/schema-1/generic-higher-order-call/main.ssrg"
+    );
+    const EXPECTED_TYPESCRIPT: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/generic-higher-order-call/main.ts");
+    let compiled = compile_module(input(
+        "artifact/driver-generic-higher-order/main.ssrg",
+        "artifact/driver-generic-higher-order",
+        SOURCE,
+    ))
+    .expect("generic higher-order application should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("export const apply = <A, B,>(f: (argument: A) => B)"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("apply(increment)(value)"));
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
 fn keeps_physical_source_name_independent_from_logical_module_identity() {
     let compiled = compile_module(input(
         "/tmp/seseragi-cache/entry.ssrg",

@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/generic-higher-order-call",
+  "functions": [
+    {
+      "symbol": "artifact/generic-higher-order-call::apply",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 59
+      },
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "f",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 54,
+              "end": 59
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 52,
+          "end": 59
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-higher-order-call::increment",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 61,
+        "end": 109
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 100,
+            "end": 105
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "1",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 108,
+            "end": 109
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 100,
+          "end": 109
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-higher-order-call::example",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 111,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/generic-higher-order-call::apply",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/generic-higher-order-call::increment",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 154,
+              "end": 163
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 164,
+              "end": 169
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 148,
+          "end": 169
+        }
+      }
+    }
+  ]
+}

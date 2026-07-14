@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "module": "artifact/generic-higher-order-call",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/generic-higher-order-call::apply",
+      "namespace": "value",
+      "name": "apply",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 59
+      },
+      "scheme": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-higher-order-call::increment",
+      "namespace": "value",
+      "name": "increment",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 61,
+        "end": 109
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-higher-order-call::example",
+      "namespace": "value",
+      "name": "example",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 111,
+        "end": 169
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

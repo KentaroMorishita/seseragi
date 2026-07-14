@@ -106,9 +106,11 @@ pub(super) fn type_ref_from_core_type(
                 .map(|element| type_ref_from_core_type(element, imported_types))
                 .collect(),
         },
-        CoreType::Hole | CoreType::Record { .. } | CoreType::Function { .. } => {
-            TypeScriptType::Unknown
-        }
+        CoreType::Function { parameter, result } => TypeScriptType::Function {
+            parameter: Box::new(type_ref_from_core_type(parameter, imported_types)),
+            result: Box::new(type_ref_from_core_type(result, imported_types)),
+        },
+        CoreType::Hole | CoreType::Record { .. } => TypeScriptType::Unknown,
     }
 }
 
@@ -159,6 +161,11 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
         TypeScriptType::Array { element } => {
             format!("ReadonlyArray<{}>", render_typescript_type(element))
         }
+        TypeScriptType::Function { parameter, result } => format!(
+            "(argument: {}) => {}",
+            render_typescript_type(parameter),
+            render_typescript_type(result)
+        ),
     }
 }
 

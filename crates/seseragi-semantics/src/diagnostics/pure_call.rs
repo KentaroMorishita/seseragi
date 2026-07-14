@@ -74,3 +74,26 @@ fn argument_word(count: usize) -> &'static str {
         "arguments"
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::semantic_diagnostics;
+
+    #[test]
+    fn reports_a_non_function_higher_order_argument() {
+        let artifact = semantic_diagnostics(
+            "higher-order-mismatch.ssrg",
+            concat!(
+                "fn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
+                "fn broken value: Int -> Int = apply value value\n",
+            ),
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+    }
+}

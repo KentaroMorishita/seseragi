@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/generic-higher-order-call"
+  ],
+  "sourcesContent": [
+    "pub fn apply<A, B> f: (A -> B) -> value: A -> B =\n  f value\n\npub fn increment value: Int -> Int =\n  value + 1\n\npub fn example value: Int -> Int =\n  apply increment value\n"
+  ],
+  "names": [
+    "apply",
+    "f",
+    "increment",
+    "add",
+    "example",
+    "apply"
+  ],
+  "mappings": ";;AAAAA;AAGAE;AAGAE"
+}

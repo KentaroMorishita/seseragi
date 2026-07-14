@@ -1,0 +1,247 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/generic-higher-order-call",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/generic-higher-order-call::apply",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 59
+      },
+      "scheme": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "f",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 19,
+            "end": 20
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 34,
+            "end": 39
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "f",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "start": 54,
+              "end": 59
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        },
+        "origin": {
+          "start": 52,
+          "end": 59
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/generic-higher-order-call::increment",
+      "visibility": "public",
+      "origin": {
+        "start": 61,
+        "end": 109
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 78,
+            "end": 83
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 100,
+            "end": 105
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 108,
+            "end": 109
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 100,
+          "end": 109
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/generic-higher-order-call::example",
+      "visibility": "public",
+      "origin": {
+        "start": 111,
+        "end": 169
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 126,
+            "end": 131
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/generic-higher-order-call::apply",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/generic-higher-order-call::increment",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 154,
+              "end": 163
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 164,
+              "end": 169
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 148,
+          "end": 169
+        }
+      }
+    }
+  ]
+}

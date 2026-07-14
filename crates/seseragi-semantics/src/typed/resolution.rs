@@ -207,10 +207,6 @@ fn collect_callables(
                     .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
                     .collect::<Vec<_>>();
                 let result = typed_type_from_type_ref(return_type);
-                if parameters.iter().any(contains_function_type) || contains_function_type(&result)
-                {
-                    continue;
-                }
                 let Some(canonical) = symbol.canonical.clone() else {
                     continue;
                 };
@@ -330,7 +326,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn includes_unconstrained_generics_but_excludes_constrained_and_higher_order_functions() {
+    fn includes_unconstrained_generic_and_higher_order_functions() {
         let resolved = crate::resolve_module(
             "artifact/functions/main.ssrg",
             "fn identity<A> value: A -> A = value\nfn constrained<A> value: A -> A\nwhere Eq<A> = value\nfn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
@@ -338,11 +334,14 @@ mod tests {
 
         let semantic_types = SemanticTypeCatalog::new(&resolved);
         let callables = collect_callables(&resolved, &semantic_types);
-        assert_eq!(callables.len(), 1);
-        assert_eq!(
-            callables.values().next().unwrap().symbol,
-            "artifact/functions::identity"
-        );
-        assert_eq!(callables.values().next().unwrap().type_parameters, ["A"]);
+        assert_eq!(callables.len(), 2);
+        assert!(callables
+            .values()
+            .any(|callable| callable.symbol == "artifact/functions::identity"
+                && callable.type_parameters == ["A"]));
+        assert!(callables
+            .values()
+            .any(|callable| callable.symbol == "artifact/functions::apply"
+                && callable.parameters.len() == 2));
     }
 }

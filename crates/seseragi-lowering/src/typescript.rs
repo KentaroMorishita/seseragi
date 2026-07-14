@@ -253,6 +253,10 @@ pub enum TypeScriptType {
     Array {
         element: Box<TypeScriptType>,
     },
+    Function {
+        parameter: Box<TypeScriptType>,
+        result: Box<TypeScriptType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
