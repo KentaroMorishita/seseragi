@@ -19,9 +19,20 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 43
+        "end": 52
       },
       "imports": [
+        {
+          "namespace": "trait",
+          "imported": "Labeled",
+          "local": "Labeled",
+          "canonical": "fixture/imported-trait-instance-contract::contract::trait(Labeled)",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 16
+          }
+        },
         {
           "namespace": "type",
           "imported": "Prefix",
@@ -29,8 +40,8 @@
           "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
           "origin": {
             "source": "main.ssrg",
-            "start": 9,
-            "end": 15
+            "start": 18,
+            "end": 24
           }
         },
         {
@@ -40,8 +51,8 @@
           "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
           "origin": {
             "source": "main.ssrg",
-            "start": 9,
-            "end": 15
+            "start": 18,
+            "end": 24
           }
         },
         {
@@ -51,8 +62,8 @@
           "canonical": "fixture/imported-trait-instance-contract::contract::trait(Render)",
           "origin": {
             "source": "main.ssrg",
-            "start": 17,
-            "end": 23
+            "start": 26,
+            "end": 32
           }
         }
       ]
@@ -64,8 +75,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 157,
-        "end": 210
+        "start": 193,
+        "end": 246
       },
       "parameters": [
         {
@@ -83,8 +94,8 @@
         "value": "contract ready",
         "origin": {
           "source": "main.ssrg",
-          "start": 194,
-          "end": 210
+          "start": 230,
+          "end": 246
         }
       }
     }

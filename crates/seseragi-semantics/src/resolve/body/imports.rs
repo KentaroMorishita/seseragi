@@ -1,4 +1,7 @@
-use super::{scheme_types::export_scheme_type_bindings, Resolver};
+use super::{
+    scheme_types::{export_contract_trait_bindings, export_scheme_type_bindings},
+    Resolver,
+};
 use crate::{ResolvedImport, SymbolKind, SymbolNamespace};
 use seseragi_project::{LinkedDependency, LinkedImport};
 
@@ -40,6 +43,10 @@ pub(super) fn register_linked_imports(
                         in_scope: true,
                         export: export.clone(),
                         scheme_type_bindings: export_scheme_type_bindings(
+                            &dependency.interface,
+                            export,
+                        ),
+                        contract_trait_bindings: export_contract_trait_bindings(
                             &dependency.interface,
                             export,
                         ),
@@ -95,6 +102,10 @@ pub(super) fn register_linked_imports(
                         in_scope: true,
                         export: export.clone(),
                         scheme_type_bindings: export_scheme_type_bindings(
+                            &dependency.interface,
+                            export,
+                        ),
+                        contract_trait_bindings: export_contract_trait_bindings(
                             &dependency.interface,
                             export,
                         ),
@@ -156,6 +167,7 @@ fn ensure_dependency_member(
         in_scope: false,
         export: export.clone(),
         scheme_type_bindings: export_scheme_type_bindings(&dependency.interface, export),
+        contract_trait_bindings: export_contract_trait_bindings(&dependency.interface, export),
     });
 }
 

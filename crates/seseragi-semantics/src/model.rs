@@ -51,6 +51,13 @@ pub struct ExternalTypeProvider {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct ExternalTraitBinding {
+    pub spelling: String,
+    pub canonical: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TypedModuleDependency {
     pub specifier: String,
     pub module: String,

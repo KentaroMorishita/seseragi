@@ -1,4 +1,4 @@
-use crate::ExternalTypeBinding;
+use crate::{ExternalTraitBinding, ExternalTypeBinding};
 use seseragi_syntax::{ByteSpan, InterfaceMethod, SurfaceMethod};
 
 pub(super) enum TraitContract<'a> {
@@ -13,6 +13,7 @@ pub(super) enum TraitContract<'a> {
         parameters: &'a [String],
         methods: &'a [InterfaceMethod],
         bindings: &'a [ExternalTypeBinding],
+        trait_bindings: &'a [ExternalTraitBinding],
         import_span: ByteSpan,
     },
 }

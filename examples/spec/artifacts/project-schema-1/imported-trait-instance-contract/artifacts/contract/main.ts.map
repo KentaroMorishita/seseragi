@@ -6,7 +6,7 @@
     "seseragi://fixture/imported-trait-instance-contract::contract"
   ],
   "sourcesContent": [
-    "pub type Prefix =\n  | Prefix String\n\npub trait Render<A> {\n  fn render prefix: Prefix -> value: A -> String\n}\n"
+    "pub type Prefix =\n  | Prefix String\n\npub trait Labeled<A> {\n  fn label value: A -> String\n}\n\npub trait Render<A> {\n  fn render prefix: Prefix -> value: A -> String\n  where Labeled<A>\n}\n"
   ],
   "names": [
     "Prefix",

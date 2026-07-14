@@ -1,4 +1,4 @@
-use crate::{ExternalTypeBinding, ResolvedModule, SymbolId};
+use crate::{ExternalTraitBinding, ExternalTypeBinding, ResolvedModule, SymbolId};
 use seseragi_syntax::{InterfaceMethod, SurfaceMethod, TypeRef};
 use std::collections::BTreeMap;
 
@@ -12,6 +12,7 @@ use resolution::{contract_constraint, contract_type, declaration_type_parameters
 pub(super) struct ImportedMethodContext<'a> {
     pub(super) trait_parameters: &'a [String],
     pub(super) bindings: &'a [ExternalTypeBinding],
+    pub(super) trait_bindings: &'a [ExternalTraitBinding],
     pub(super) trait_name: &'a str,
     pub(super) trait_canonical: &'a str,
 }
@@ -75,6 +76,7 @@ pub(super) fn imported_method_contract_matches(
         expected,
         &substitutions,
         context.bindings,
+        context.trait_bindings,
         context.trait_name,
         context.trait_canonical,
     )?;

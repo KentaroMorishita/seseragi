@@ -55,14 +55,62 @@
       }
     },
     {
+      "symbol": "fixture/imported-trait-instance-contract::contract::trait(Labeled)",
+      "namespace": "trait",
+      "name": "Labeled",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 37,
+        "end": 91
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Labeled",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "label",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 62,
+            "end": 89
+          }
+        }
+      ]
+    },
+    {
       "symbol": "fixture/imported-trait-instance-contract::contract::trait(Render)",
       "namespace": "trait",
       "name": "Render",
       "visibility": "public",
       "declarationKind": "trait",
       "declaration": {
-        "start": 37,
-        "end": 109
+        "start": 93,
+        "end": 184
       },
       "scheme": {
         "typeParameters": [
@@ -80,7 +128,18 @@
           "name": "render",
           "scheme": {
             "typeParameters": [],
-            "constraints": [],
+            "constraints": [
+              {
+                "name": "Labeled",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
             "type": {
               "kind": "function",
               "parameter": {
@@ -104,8 +163,8 @@
             }
           },
           "origin": {
-            "start": 61,
-            "end": 107
+            "start": 117,
+            "end": 182
           }
         }
       ]

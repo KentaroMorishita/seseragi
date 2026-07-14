@@ -19,17 +19,27 @@
       "module": "fixture/imported-trait-instance-contract::contract",
       "origin": {
         "start": 0,
-        "end": 43
+        "end": 52
       },
       "imports": [
+        {
+          "namespace": "trait",
+          "imported": "Labeled",
+          "local": "Labeled",
+          "canonical": "fixture/imported-trait-instance-contract::contract::trait(Labeled)",
+          "origin": {
+            "start": 9,
+            "end": 16
+          }
+        },
         {
           "namespace": "type",
           "imported": "Prefix",
           "local": "Prefix",
           "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
           "origin": {
-            "start": 9,
-            "end": 15
+            "start": 18,
+            "end": 24
           }
         },
         {
@@ -38,8 +48,8 @@
           "local": "Prefix",
           "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
           "origin": {
-            "start": 9,
-            "end": 15
+            "start": 18,
+            "end": 24
           }
         },
         {
@@ -48,8 +58,8 @@
           "local": "Render",
           "canonical": "fixture/imported-trait-instance-contract::contract::trait(Render)",
           "origin": {
-            "start": 17,
-            "end": 23
+            "start": 26,
+            "end": 32
           }
         }
       ]
@@ -61,8 +71,8 @@
       "symbol": "fixture/imported-trait-instance-contract::main::status",
       "visibility": "public",
       "origin": {
-        "start": 157,
-        "end": 210
+        "start": 193,
+        "end": 246
       },
       "scheme": {
         "typeParameters": [],
@@ -83,8 +93,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 171,
-            "end": 175
+            "start": 207,
+            "end": 211
           }
         }
       ],
@@ -97,8 +107,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 194,
-          "end": 210
+          "start": 230,
+          "end": 246
         }
       }
     }

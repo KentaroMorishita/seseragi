@@ -583,8 +583,9 @@ trait / method type parameterはinstance headで置換・alpha normalizeし、pr
 比較します。provider側のsource spanをconsumer sourceへ誤表示しないため、cross-module contract diagnosticの関連位置はimport spanを
 anchorにします。`project-schema-1/imported-trait-instance-contract`はtrait export、named import、consumer側instance契約検査を
 closed projectのTypedHir / TypedInterface / CoreIr / TypeScriptIr / generated moduleまで固定します。これはinterface契約の検査gateであり、
-instance method bodyやdictionaryがbackendへ残ることの証明ではありません。また、imported method constraintがprovider-localな別traitを
-参照する場合のcanonical trait bindingは後続gateへ残し、解決不能時に綴り比較へfallbackして誤診断しません。
+instance method bodyやdictionaryがbackendへ残ることの証明ではありません。imported method constraintがprovider-localまたは
+provider dependencyのtraitを参照する場合は、provider interfaceからcanonical trait bindingをresolved importへ運びます。
+bindingが曖昧または解決不能な場合は綴り比較へfallbackせず、誤った契約一致を作りません。
 
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、

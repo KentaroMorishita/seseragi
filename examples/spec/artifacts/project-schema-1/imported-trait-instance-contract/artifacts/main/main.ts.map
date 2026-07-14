@@ -6,10 +6,10 @@
     "seseragi://fixture/imported-trait-instance-contract::main"
   ],
   "sourcesContent": [
-    "import { Prefix, Render } from \"./contract\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render prefix: Prefix -> value: Score -> String = \"score\"\n}\n\npub fn status unit: Unit -> String = \"contract ready\"\n"
+    "import { Labeled, Prefix, Render } from \"./contract\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render prefix: Prefix -> value: Score -> String\n  where Labeled<Score> =\n    \"score\"\n}\n\npub fn status unit: Unit -> String = \"contract ready\"\n"
   ],
   "names": [
     "status"
   ],
-  "mappings": ";;AAQAA"
+  "mappings": ";;AAUAA"
 }

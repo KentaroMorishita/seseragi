@@ -9,9 +9,14 @@
       "module": "fixture/imported-trait-instance-contract::contract",
       "origin": {
         "start": 0,
-        "end": 43
+        "end": 52
       },
       "imports": [
+        {
+          "namespace": "trait",
+          "name": "Labeled",
+          "symbol": "fixture/imported-trait-instance-contract::contract::trait(Labeled)"
+        },
         {
           "namespace": "type",
           "name": "Prefix",
@@ -38,8 +43,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 157,
-        "end": 210
+        "start": 193,
+        "end": 246
       },
       "scheme": {
         "typeParameters": [],
@@ -78,8 +83,8 @@
       },
       "constraints": [],
       "origin": {
-        "start": 66,
-        "end": 155
+        "start": 75,
+        "end": 191
       }
     }
   ]

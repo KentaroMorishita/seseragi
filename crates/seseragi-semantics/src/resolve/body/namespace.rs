@@ -190,6 +190,7 @@ impl Resolver {
             in_scope: true,
             export: member.export,
             scheme_type_bindings: member.scheme_type_bindings,
+            contract_trait_bindings: None,
         });
         Ok(Some(symbol))
     }

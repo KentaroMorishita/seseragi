@@ -2,7 +2,7 @@ use super::model::{
     apply_arguments, ContractConstraint, ContractMethod, ContractType, TypeIdentity,
 };
 use crate::prelude::{is_standalone_symbol, sum_type_for_symbol};
-use crate::{ExternalTypeBinding, SymbolNamespace};
+use crate::{ExternalTraitBinding, ExternalTypeBinding, SymbolNamespace};
 use seseragi_syntax::{InterfaceConstraint, InterfaceMethod, InterfaceType};
 use std::collections::BTreeMap;
 
@@ -10,6 +10,7 @@ pub(super) fn contract_method_from_interface(
     method: &InterfaceMethod,
     substitutions: &BTreeMap<String, ContractType>,
     bindings: &[ExternalTypeBinding],
+    trait_bindings: &[ExternalTraitBinding],
     trait_name: &str,
     trait_canonical: &str,
 ) -> Option<ContractMethod> {
@@ -30,6 +31,7 @@ pub(super) fn contract_method_from_interface(
                 &binders,
                 substitutions,
                 bindings,
+                trait_bindings,
                 trait_name,
                 trait_canonical,
             )
@@ -47,11 +49,17 @@ fn contract_constraint(
     binders: &BTreeMap<String, u32>,
     substitutions: &BTreeMap<String, ContractType>,
     bindings: &[ExternalTypeBinding],
+    trait_bindings: &[ExternalTraitBinding],
     trait_name: &str,
     trait_canonical: &str,
 ) -> Option<ContractConstraint> {
     let trait_identity = if constraint.name == trait_name {
         TypeIdentity::Canonical(trait_canonical.to_owned())
+    } else if let Some(binding) = trait_bindings
+        .iter()
+        .find(|binding| binding.spelling == constraint.name)
+    {
+        TypeIdentity::Canonical(binding.canonical.clone())
     } else if is_standalone_symbol(SymbolNamespace::Trait, &constraint.name) {
         TypeIdentity::Canonical(format!("std/prelude::{}", constraint.name))
     } else {

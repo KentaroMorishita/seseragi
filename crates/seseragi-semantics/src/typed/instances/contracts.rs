@@ -130,6 +130,7 @@ fn validate_instance(
                     canonical,
                     parameters,
                     bindings,
+                    trait_bindings,
                     ..
                 },
                 TraitMethodContract::Imported(expected),
@@ -141,6 +142,7 @@ fn validate_instance(
                 types::ImportedMethodContext {
                     trait_parameters: parameters,
                     bindings,
+                    trait_bindings,
                     trait_name: name,
                     trait_canonical: canonical,
                 },
@@ -212,6 +214,7 @@ fn trait_contract<'a>(
         parameters: &imported.export.scheme.type_parameters,
         methods: &imported.export.methods,
         bindings: imported.scheme_type_bindings.as_deref().unwrap_or(&[]),
+        trait_bindings: imported.contract_trait_bindings.as_deref().unwrap_or(&[]),
         import_span: imported.origin,
     })
 }

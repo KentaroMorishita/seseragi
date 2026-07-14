@@ -3,6 +3,10 @@ use crate::{ExternalTypeBinding, ExternalTypeProvider, SymbolNamespace};
 use seseragi_syntax::{InterfaceExport, InterfaceType, ModuleInterface};
 use std::collections::{BTreeMap, BTreeSet};
 
+mod trait_bindings;
+
+pub(super) use trait_bindings::export_contract_trait_bindings;
+
 pub(super) fn export_scheme_type_bindings(
     provider: &ModuleInterface,
     export: &InterfaceExport,

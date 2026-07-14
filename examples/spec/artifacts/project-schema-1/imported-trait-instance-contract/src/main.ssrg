@@ -1,9 +1,11 @@
-import { Prefix, Render } from "./contract"
+import { Labeled, Prefix, Render } from "./contract"
 
 newtype Score = Int
 
 instance Render<Score> {
-  fn render prefix: Prefix -> value: Score -> String = "score"
+  fn render prefix: Prefix -> value: Score -> String
+  where Labeled<Score> =
+    "score"
 }
 
 pub fn status unit: Unit -> String = "contract ready"

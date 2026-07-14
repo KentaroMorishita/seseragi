@@ -1,6 +1,11 @@
 pub type Prefix =
   | Prefix String
 
+pub trait Labeled<A> {
+  fn label value: A -> String
+}
+
 pub trait Render<A> {
   fn render prefix: Prefix -> value: A -> String
+  where Labeled<A>
 }

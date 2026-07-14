@@ -81,6 +81,37 @@ fn alpha_normalizes_imported_generic_methods_and_prelude_constraints() {
 }
 
 #[test]
+fn resolves_provider_local_method_constraints_by_trait_identity() {
+    let domain_source = "pub trait Labeled<A> {\n  fn label value: A -> String\n}\n\npub trait Render<A> {\n  fn render value: A -> String\n  where Labeled<A>\n}\n";
+    let main_source = "import { Labeled, Render } from \"./domain\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render value: Score -> String\n  where Labeled<Score> =\n    \"score\"\n}\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked.clone(), main_source);
+    let render = resolved
+        .imports
+        .iter()
+        .find(|import| import.export.name == "Render")
+        .unwrap();
+    assert!(render
+        .contract_trait_bindings
+        .as_ref()
+        .unwrap()
+        .iter()
+        .any(|binding| binding.spelling == "Labeled"
+            && binding.canonical == "fixture/game::domain::trait(Labeled)"));
+
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+}
+
+#[test]
 fn rejects_a_signature_that_breaks_an_imported_trait_contract() {
     let domain_source = "pub trait Render<A> {\n  fn render value: A -> String\n}\n";
     let main_source = "import { Render } from \"./domain\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render value: Score -> Int = 0\n}\n";
