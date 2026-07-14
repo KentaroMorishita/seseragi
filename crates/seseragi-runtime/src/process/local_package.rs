@@ -1,31 +1,42 @@
 use super::{entry_source, finish_run, prepare_directory, run_target, RunError, RunOutcome};
 use crate::main_contract;
-use seseragi_driver::CompiledLocalPackage;
+use seseragi_driver::{CompiledLocalPackage, CompiledLocalProject, CompiledProject};
 use std::fs;
 use std::path::{Path, PathBuf};
 
 /// Runs the manifest-selected entry from a compiled local package with the
 /// same process Console and Stdin adapters as single-file execution.
 pub fn run_local_package(package: &CompiledLocalPackage) -> Result<RunOutcome, RunError> {
-    let entry = package
-        .compiled
+    run_compiled_project(&package.compiled, &package.entry_module)
+}
+
+/// Runs a manifest-selected entry from a compiled multi-package local project.
+pub fn run_local_project(project: &CompiledLocalProject) -> Result<RunOutcome, RunError> {
+    run_compiled_project(&project.compiled, &project.entry_module)
+}
+
+fn run_compiled_project(
+    compiled: &CompiledProject,
+    entry_module: &str,
+) -> Result<RunOutcome, RunError> {
+    let entry = compiled
         .modules
-        .get(&package.entry_module)
+        .get(entry_module)
         .ok_or_else(|| RunError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
     let contract = main_contract(entry).map_err(RunError::InvalidEntry)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
-    let result = run_in_directory(package, &contract, &directory);
+    let result = run_in_directory(compiled, entry_module, &contract, &directory);
     finish_run(result, &directory)
 }
 
 fn run_in_directory(
-    package: &CompiledLocalPackage,
+    compiled: &CompiledProject,
+    entry_module: &str,
     contract: &crate::MainContract,
     directory: &Path,
 ) -> Result<RunOutcome, RunError> {
-    for module_id in &package.compiled.order {
-        let module = package
-            .compiled
+    for module_id in &compiled.order {
+        let module = compiled
             .modules
             .get(module_id)
             .ok_or_else(|| RunError::Host(format!("compiled package omitted {module_id}")))?;
@@ -52,10 +63,9 @@ fn run_in_directory(
         })?;
     }
     crate::stage_typescript_package(directory).map_err(RunError::Host)?;
-    let entry = package
-        .compiled
+    let entry = compiled
         .modules
-        .get(&package.entry_module)
+        .get(entry_module)
         .expect("entry was validated");
     let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)
         .map_err(RunError::Host)?;

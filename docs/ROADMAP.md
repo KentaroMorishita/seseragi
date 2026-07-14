@@ -41,9 +41,9 @@ language semanticsをtarget adapterへ委譲しません。
   typed manifest contractに加え、canonical path dependencyを再帰発見するlocal package graphを接続済みです。依存先manifestの
   name / language照合、cycle、同名同versionの別source混入をproject layerで拒否します。bare importはimporterの宣言済み
   dependency keyを最長prefixで選び、exact package identityの公開export subpathへ解決します。複数packageのcanonical source
-  discoveryまで接続し、path dependencyをまたぐ閉じた`ModuleIdentity` graphを構築できます。cross-package driver compileと
-  source root全体のcollision auditは未完了なので、現在のPackage CLIはcompatibleなlanguage rangeを持つrelative / `self/`
-  importだけの一package executionを対象にします。
+  discoveryとshared driver compileまで接続し、path dependencyをまたぐ閉じた`ModuleIdentity` graphを通常pipelineへ渡します。
+  `seseragi run package-path-dependency-basic`はdependencyの公開functionを呼ぶEffect entryを生成runtimeで実行します。
+  registry / lockfile resolution、full collection fixture、source root全体のcollision auditは未完了です。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS

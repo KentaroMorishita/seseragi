@@ -56,7 +56,7 @@
 | generated naming / declaration merge          | converter guide   | `projects/dts-{generated*,*merge,namespace*}`  | partial |
 | foreign module load mode / single-flight      | interop guide     | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
-| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (cross-package source graph) |
+| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (local path dependency execution) |
 | parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots + Phase 1 format round-trip   | partial |
 | shared-driver playground / browser host       | Lesson 01         | `tests/playground-wasm.integration.ts`         | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
@@ -77,5 +77,5 @@
 4. formatter-0はshared lossless frontendとdriverへ接続済み。resolved fixityを使うcanonical spacing / wrappingと
    range formatを追加し、grammar coverageのformatter targetを実行snapshotへ昇格する。
 5. local Package CLIはsplit RPSをfixture descriptorなしの`seseragi run .`で実行済み。registry / alias / path dependencyの
-   typed manifest contractとcanonical local package identity graphも固定した。dependency export解決で得たtarget moduleの
-   cross-package source graphまで固定済み。次は同じdriver境界からcompileする。
+   typed manifest contractとcanonical local package identity graphも固定した。dependency export解決、cross-package source graph、
+   shared driver compile、`package-path-dependency-basic`のCLI実行まで固定済み。次はfull collection fixtureとcollision auditを回収する。

@@ -11,7 +11,7 @@ mod entry;
 mod local_package;
 
 use entry::entry_source;
-pub use local_package::run_local_package;
+pub use local_package::{run_local_package, run_local_project};
 
 static NEXT_RUN: AtomicU64 = AtomicU64::new(0);
 

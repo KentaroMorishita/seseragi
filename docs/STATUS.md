@@ -132,8 +132,9 @@ manifestのlanguage rangeもsource読込前に実装versionへ照合します。
 structural package graphへ解決し、dependency name不一致、cycle、同名同versionの別source混入を拒否します。各dependencyの
 bare importは宣言済みdependency keyの最長prefixとtarget export mapを使い、未宣言dependencyを`SES-K0103`、非公開subpathを
 `SES-N0104`で拒否します。root entryからrelative / `self/` / path dependency importを辿るcanonical source discoveryも
-`ModuleIdentity` graphへ接続済みです。cross-package driver compileとsource root全体のcollision auditは後続Phase 2 gateとして
-残します。
+`ModuleIdentity` graphへ接続済みです。driverはopaque package scopeでpublic/private境界を維持し、packageごとのoutput pathを
+計画します。CLIとruntimeは`package-path-dependency-basic`の公開function callを実行して`42`を確認済みです。registry /
+lockfile resolution、Array / reduceを含むfull fixture、source root全体のcollision auditは後続Phase 2 gateとして残します。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -170,8 +171,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    project descriptorの複数case discoveryは実装済み。core manifestのpackage / layout / exports / runに加え、short registry、
    alias付きregistry、local path dependencyをtyped modelへparseできる。canonical local module discoveryとmanifest entryから
    一package graphを構築するloaderに加え、path dependency manifestを再帰解決する複数package identity graphも接続済み。
-   package importからexact dependency identity / export subpathへの解決と、path dependencyをまたぐsource graphまで接続済み。
-   次はこのstructural identity graphをshared project driverでcompileする。
+   package importからexact dependency identity / export subpathへの解決、path dependencyをまたぐsource graph、shared driver compile、
+   generated runtime executionまで接続済み。次はsource root全体のcollision auditとfull collection fixtureを分離して回収する。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyのderived `Show` evidenceはcanonical type identityでResolvedAstからTypedHir / CoreIr / TypeScript source
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。

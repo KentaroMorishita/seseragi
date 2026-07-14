@@ -522,7 +522,11 @@ dependencyやprivate fileへfallbackしません。foreign、test、benchmark、
 dependency edgeは上記export resolverのtarget identityへ接続します。各packageのsource rootとmodule fileは既存canonical
 filesystem resolverを再利用し、`PackageIdentity + ModuleRoot::Source + ModulePath`をnodeにした閉じたgraphを返します。
 `package-path-dependency` fixtureではroot `main`、dependency `lib` / `stats`の三nodeと二つのbare import edgeを固定しました。
-このloaderはcompiler stageを呼ばず、次のdriver adapterがopaque compiler IDとTypeScript output pathを割り当てます。
+このloader自身はcompiler stageを呼びません。`compile_local_project` adapterがpackage name / exact versionからopaque
+package scopeとmodule IDを割り当て、package / version / module pathを分離したcanonical TypeScript output pathを計画して
+shared `compile_project`へ渡します。runtime stagingは従来の一package runnerと同じ`CompiledProject + entry module`実行境界を
+再利用します。`package-path-dependency-basic`はdependencyの公開String functionをEffect entryから呼び、CLIで`42`を出力します。
+Array / reduceを含む既存full fixtureはcollections一般機構なしに特別扱いせず、後続language sliceへ残します。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。

@@ -1,0 +1,5 @@
+fn hidden value: Int -> Int = value
+
+pub fn double value: Int -> Int = value * 2
+
+pub fn message unit: Unit -> String = "42"

@@ -1,0 +1,4 @@
+import { message } from "math"
+
+pub effect fn main =
+  println (message ())

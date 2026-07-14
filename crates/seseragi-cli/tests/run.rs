@@ -107,6 +107,24 @@ fn renders_a_split_package_typed_failure() {
 }
 
 #[test]
+fn runs_a_local_path_dependency_package() {
+    let package =
+        repository_root().join("examples/spec/fixtures/projects/package-path-dependency-basic");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
     let program =
         repository_root().join("examples/spec/fixtures/diagnostics/invalid-numeric-literal.ssrg");
