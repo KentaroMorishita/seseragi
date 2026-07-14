@@ -1,4 +1,4 @@
-use crate::{TypedRecordField, TypedType};
+use crate::{TypedConstraint, TypedRecordField, TypedType};
 use std::collections::BTreeMap;
 
 use super::{application_result_type_from, TopLevelPureFunction};
@@ -9,6 +9,7 @@ use crate::typed::type_ref::typed_type_contains_hole;
 pub(crate) struct InstantiatedApplication {
     pub(crate) parameters: Vec<SemanticValueType>,
     pub(crate) result: SemanticValueType,
+    pub(crate) constraints: Vec<TypedConstraint>,
 }
 
 pub(crate) fn instantiated_application(
@@ -55,6 +56,18 @@ pub(crate) fn instantiated_application(
         .map(|parameter| substitute_type_parameters(parameter, &substitutions))
         .collect::<Vec<_>>();
     let result_type = substitute_type_parameters(&signature.result, &substitutions);
+    let constraints = signature
+        .constraints
+        .iter()
+        .map(|constraint| TypedConstraint {
+            name: constraint.name.clone(),
+            arguments: constraint
+                .arguments
+                .iter()
+                .map(|argument| substitute_type_parameters(argument, &substitutions))
+                .collect(),
+        })
+        .collect();
     InstantiatedApplication {
         parameters: parameter_types
             .into_iter()
@@ -68,6 +81,7 @@ pub(crate) fn instantiated_application(
             type_ref: result_type,
             key: semantic.result.key,
         },
+        constraints,
     }
 }
 

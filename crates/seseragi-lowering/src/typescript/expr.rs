@@ -1,3 +1,4 @@
+use crate::collection_ops::runtime_collection_operation;
 use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -22,8 +23,9 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Variable { name, type_ref, .. } => {
             if matches!(type_ref, CoreType::Function { .. }) {
                 if let Some(operation) = runtime_int_operation(&name) {
-                    return TypeScriptExpr::RuntimeReference {
+                    return TypeScriptExpr::CurriedRuntimeReference {
                         name: operation.local_name.to_owned(),
+                        arity: 2,
                     };
                 }
             }
@@ -39,10 +41,18 @@ pub(super) fn lower_core_expr_to_typescript(
                 })
         }
         CoreExpr::Call {
-            callee, arguments, ..
+            callee,
+            arguments,
+            evidence,
+            ..
         } => {
             let arguments = lower_core_expressions(arguments, imported_values, imported_types);
-            if let Some(constructor) = runtime_sum_constructor(&callee) {
+            if let Some(operation) = runtime_collection_operation(&callee, &evidence) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: constructor.local_name.to_owned(),
                     arguments,
@@ -195,7 +205,8 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         | TypeScriptExpr::String { .. }
         | TypeScriptExpr::Boolean { .. }
         | TypeScriptExpr::Identifier { .. }
-        | TypeScriptExpr::RuntimeReference { .. } => false,
+        | TypeScriptExpr::RuntimeReference { .. }
+        | TypeScriptExpr::CurriedRuntimeReference { .. } => false,
     }
 }
 

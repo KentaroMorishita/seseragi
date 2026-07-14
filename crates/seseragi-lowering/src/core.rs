@@ -94,6 +94,13 @@ pub struct CoreParameter {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreCallEvidence {
+    pub constraint: CoreInstanceConstraint,
+    pub evidence: CoreInstanceEvidence,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "kebab-case",
@@ -124,6 +131,8 @@ pub enum CoreExpr {
     Call {
         callee: String,
         arguments: Vec<CoreExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<CoreCallEvidence>,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,

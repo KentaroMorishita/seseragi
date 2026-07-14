@@ -10,10 +10,26 @@
       "name": "Ord",
       "visibility": "public",
       "declarationKind": "trait",
-      "declaration": { "start": 0, "end": 70 },
+      "declaration": {
+        "start": 0,
+        "end": 70
+      },
       "scheme": {
-        "typeParameters": ["A"],
-        "constraints": [{ "name": "Eq" }],
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Eq",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
         "type": {
           "kind": "type-constructor",
           "name": "Ord",

@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/array-reduce",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.bool",
+    "core.array.reduce",
+    "core.int64",
+    "core.int64.add"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "arrayReduceWorks",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_array_reduce",
+          "arguments": [
+            {
+              "kind": "bigint",
+              "value": "0"
+            },
+            {
+              "kind": "curried-runtime-reference",
+              "name": "_ssrg_int64_add",
+              "arity": 2
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "bigint",
+                  "value": "4"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "8"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "15"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "16"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "23"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "42"
+                }
+              ],
+              "elementType": {
+                "kind": "bigint"
+              }
+            }
+          ]
+        },
+        "right": {
+          "kind": "bigint",
+          "value": "108"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 89
+      }
+    }
+  ]
+}

@@ -263,6 +263,16 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Identifier { name } => name.clone(),
         TypeScriptExpr::RuntimeReference { name } => name.clone(),
+        TypeScriptExpr::CurriedRuntimeReference { name, arity } => {
+            let parameters = (0..*arity)
+                .map(|index| format!("_argument{index}"))
+                .collect::<Vec<_>>();
+            let call = format!("{name}({})", parameters.join(", "));
+            parameters
+                .into_iter()
+                .rev()
+                .fold(call, |body, parameter| format!("({parameter}) => {body}"))
+        }
         TypeScriptExpr::Tuple { elements } => format!(
             "[{}] as const",
             elements

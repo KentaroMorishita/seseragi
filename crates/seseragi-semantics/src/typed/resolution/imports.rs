@@ -69,6 +69,7 @@ pub(super) fn collect_imported_callables(
                 TopLevelPureFunction {
                     symbol: export.symbol.clone(),
                     type_parameters: export.scheme.type_parameters.clone(),
+                    constraints: Vec::new(),
                     parameters: parameter_types,
                     semantic_parameters,
                     result: result_type,

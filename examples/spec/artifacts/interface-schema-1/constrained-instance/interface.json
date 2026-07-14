@@ -8,7 +8,9 @@
   "instances": [
     {
       "trait": "Show",
-      "typeParameters": ["A"],
+      "typeParameters": [
+        "A"
+      ],
       "head": {
         "kind": "apply",
         "constructor": "Show",
@@ -16,12 +18,32 @@
           {
             "kind": "named",
             "name": "Box",
-            "arguments": [{ "kind": "named", "name": "A", "arguments": [] }]
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
           }
         ]
       },
-      "constraints": [{ "name": "Show" }],
-      "origin": { "start": 0, "end": 84 }
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 84
+      }
     }
   ]
 }

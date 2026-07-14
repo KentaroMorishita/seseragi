@@ -162,6 +162,34 @@ fn preserves_constraint_arguments_through_owned_ir_stages() {
 }
 
 #[test]
+fn compiles_standard_array_reduce_with_selected_instance_evidence() {
+    const SOURCE: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/array-reduce/main.ssrg");
+    const EXPECTED_TYPESCRIPT: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/array-reduce/main.ts");
+    let compiled = compile_module(input(
+        "artifact/array-reduce/main.ssrg",
+        "artifact/array-reduce",
+        SOURCE,
+    ))
+    .expect("standard Array reduction should compile");
+
+    let core = serde_json::to_string(&compiled.core_ir).unwrap();
+    assert!(core.contains("std/array::Reducible"));
+    assert_eq!(
+        compiled.typescript_ir.runtime_requirements,
+        vec![
+            "core.unit",
+            "core.bool",
+            "core.array.reduce",
+            "core.int64",
+            "core.int64.add",
+        ]
+    );
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
 fn keeps_physical_source_name_independent_from_logical_module_identity() {
     let compiled = compile_module(input(
         "/tmp/seseragi-cache/entry.ssrg",

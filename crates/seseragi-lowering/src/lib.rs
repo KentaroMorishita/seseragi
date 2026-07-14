@@ -1,3 +1,4 @@
+mod collection_ops;
 mod core;
 mod effect_ops;
 mod emit;
@@ -9,11 +10,11 @@ mod sum_ops;
 mod typescript;
 
 pub use core::{
-    lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreDecisionBinding,
-    CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreFunction,
-    CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation,
-    CoreModule, CoreModuleDependency, CoreModuleImport, CoreParameter, CoreRecordField,
-    CoreShowPayloadEvidence, CoreStatement, CoreType,
+    lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreCallEvidence,
+    CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr,
+    CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
+    CoreInstanceImplementation, CoreModule, CoreModuleDependency, CoreModuleImport, CoreParameter,
+    CoreRecordField, CoreShowPayloadEvidence, CoreStatement, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -395,6 +396,7 @@ type Internal =
                         type_ref: int_type.clone(),
                         origin: origin.clone(),
                     }],
+                    evidence: Vec::new(),
                     type_ref: int_type,
                     origin,
                 },

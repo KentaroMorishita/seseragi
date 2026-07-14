@@ -72,6 +72,17 @@
       }
     },
     {
+      "id": "core.array.reduce",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "B -> (B -> A -> B) -> Array<A> -> B",
+      "instanceIdentity": "std/array::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "reduce"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

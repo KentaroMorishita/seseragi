@@ -2,6 +2,7 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
+use crate::typed::call_evidence::select_call_evidence;
 use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
@@ -48,7 +49,7 @@ pub(super) fn type_application(
         child_analyses.push(analysis);
     }
     let application = instantiated_application(&signature, expected_result, &semantic_arguments);
-    let issue = call_issue(
+    let mut issue = call_issue(
         *callee_span,
         signature.parameters.len(),
         &application.parameters,
@@ -56,6 +57,20 @@ pub(super) fn type_application(
         &arguments,
         &semantic_arguments,
     );
+    let evidence = if issue.is_none() && arguments.len() >= signature.parameters.len() {
+        match select_call_evidence(&application.constraints) {
+            Ok(evidence) => evidence,
+            Err(constraint) => {
+                issue = Some(PureCallIssue::MissingInstance {
+                    callee: *callee_span,
+                    constraint,
+                });
+                Vec::new()
+            }
+        }
+    } else {
+        Vec::new()
+    };
     let type_ref = if issue.is_none() {
         instantiated_application_result_type(&application, arguments.len())
     } else {
@@ -72,6 +87,7 @@ pub(super) fn type_application(
         TypedExpr::Call {
             callee: signature.symbol.clone(),
             arguments,
+            evidence,
             type_ref,
             origin: expression.span(),
         },

@@ -1,0 +1,209 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/array-reduce",
+  "functions": [
+    {
+      "symbol": "artifact/array-reduce::arrayReduceWorks",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 89
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "call",
+          "callee": "std/prelude::reduce",
+          "arguments": [
+            {
+              "kind": "int64",
+              "value": "0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 54,
+                "end": 55
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "+",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 57,
+                "end": 58
+              }
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "int64",
+                  "value": "4",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 61,
+                    "end": 62
+                  }
+                },
+                {
+                  "kind": "int64",
+                  "value": "8",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 64,
+                    "end": 65
+                  }
+                },
+                {
+                  "kind": "int64",
+                  "value": "15",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 67,
+                    "end": 69
+                  }
+                },
+                {
+                  "kind": "int64",
+                  "value": "16",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 71,
+                    "end": 73
+                  }
+                },
+                {
+                  "kind": "int64",
+                  "value": "23",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 75,
+                    "end": 77
+                  }
+                },
+                {
+                  "kind": "int64",
+                  "value": "42",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 79,
+                    "end": 81
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 60,
+                "end": 82
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Reducible",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/array::Reducible"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 47,
+            "end": 82
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "108",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 86,
+            "end": 89
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 47,
+          "end": 89
+        }
+      }
+    }
+  ]
+}

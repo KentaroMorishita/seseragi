@@ -99,7 +99,8 @@ fn fresh_name(base: &str, used: &BTreeSet<String>) -> String {
 
 fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
     match expr {
-        TypeScriptExpr::RuntimeReference { name } => {
+        TypeScriptExpr::RuntimeReference { name }
+        | TypeScriptExpr::CurriedRuntimeReference { name, .. } => {
             if let Some(fresh) = renames.get(name) {
                 *name = fresh.clone();
             }

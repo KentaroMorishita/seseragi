@@ -4,7 +4,9 @@
   "declarations": [
     {
       "kind": "instance",
-      "typeParameters": ["A"],
+      "typeParameters": [
+        "A"
+      ],
       "traitName": "Show",
       "arguments": [
         {
@@ -14,14 +16,41 @@
             {
               "kind": "named",
               "name": "A",
-              "span": { "start": 21, "end": 22 }
+              "span": {
+                "start": 21,
+                "end": 22
+              }
             }
           ],
-          "span": { "start": 17, "end": 23 }
+          "span": {
+            "start": 17,
+            "end": 23
+          }
         }
       ],
-      "constraints": ["Show"],
-      "span": { "start": 0, "end": 84 }
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 36,
+                "end": 37
+              }
+            }
+          ],
+          "span": {
+            "start": 31,
+            "end": 38
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 84
+      }
     }
   ]
 }

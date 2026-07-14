@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/array-reduce",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/array-reduce::arrayReduceWorks",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 89
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 24,
+            "end": 28
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "call",
+          "callee": "std/prelude::reduce",
+          "arguments": [
+            {
+              "kind": "integer",
+              "value": "0",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 54,
+                "end": 55
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "+",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "start": 57,
+                "end": 58
+              }
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "value": "4",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 61,
+                    "end": 62
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "8",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 64,
+                    "end": 65
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "15",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 67,
+                    "end": 69
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "16",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 71,
+                    "end": 73
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "23",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 75,
+                    "end": 77
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "42",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 79,
+                    "end": 81
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 60,
+                "end": 82
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Reducible",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/array::Reducible"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 47,
+            "end": 82
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "108",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 86,
+            "end": 89
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 47,
+          "end": 89
+        }
+      }
+    }
+  ]
+}

@@ -55,7 +55,23 @@
         }
       },
       "constraints": [
-        "Semigroup"
+        {
+          "name": "Semigroup",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 72,
+                "end": 73
+              }
+            }
+          ],
+          "span": {
+            "start": 62,
+            "end": 74
+          }
+        }
       ],
       "span": {
         "start": 0,

@@ -17,6 +17,7 @@ export {
   unit,
 } from "./effect"
 export { add, divide, multiply, power, remainder, subtract } from "./int64"
+export { reduce } from "./array"
 export type {
   Awaitable,
   ServiceFailure,

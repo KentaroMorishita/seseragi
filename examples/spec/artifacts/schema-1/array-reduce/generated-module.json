@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "module": "artifact/array-reduce",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.bool",
+      "core.array.reduce",
+      "core.int64",
+      "core.int64.add"
+    ]
+  },
+  "exports": [
+    "arrayReduceWorks"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

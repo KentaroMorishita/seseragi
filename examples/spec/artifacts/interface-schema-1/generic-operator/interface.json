@@ -10,17 +10,45 @@
       "name": "<+>",
       "visibility": "public",
       "declarationKind": "custom-operator",
-      "declaration": { "start": 0, "end": 83 },
+      "declaration": {
+        "start": 0,
+        "end": 83
+      },
       "scheme": {
-        "typeParameters": ["A"],
-        "constraints": [{ "name": "Semigroup" }],
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Semigroup",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
         "type": {
           "kind": "function",
-          "parameter": { "kind": "named", "name": "A", "arguments": [] },
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
           "result": {
             "kind": "function",
-            "parameter": { "kind": "named", "name": "A", "arguments": [] },
-            "result": { "kind": "named", "name": "A", "arguments": [] }
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
           }
         }
       }
@@ -32,7 +60,10 @@
       "spelling": "<+>",
       "fixity": "infixr",
       "precedence": 5,
-      "origin": { "start": 0, "end": 83 }
+      "origin": {
+        "start": 0,
+        "end": 83
+      }
     }
   ],
   "instances": []

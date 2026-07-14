@@ -46,6 +46,14 @@ pub(super) fn call_diagnostic(
                 type_label(&actual)
             ),
         ),
+        PureCallIssue::MissingInstance { callee, constraint } => (
+            "instance.missing",
+            callee,
+            format!(
+                "no {} instance matches the inferred call arguments",
+                constraint.name
+            ),
+        ),
     };
     Diagnostic {
         id: String::new(),
@@ -95,5 +103,17 @@ mod tests {
             artifact.diagnostics[0].message_key,
             "call.argument-type-mismatch"
         );
+    }
+
+    #[test]
+    fn reports_missing_reducible_evidence_instead_of_an_unresolved_name() {
+        let artifact = semantic_diagnostics(
+            "missing-reducible.ssrg",
+            "fn broken value: Int -> Int = reduce 0 (+) value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
     }
 }

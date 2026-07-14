@@ -10,21 +10,51 @@
       "name": "member",
       "visibility": "public",
       "declarationKind": "function",
-      "declaration": { "start": 0, "end": 92 },
+      "declaration": {
+        "start": 0,
+        "end": 92
+      },
       "scheme": {
-        "typeParameters": ["A"],
-        "constraints": [{ "name": "Eq" }],
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Eq",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
         "type": {
           "kind": "function",
-          "parameter": { "kind": "named", "name": "A", "arguments": [] },
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
           "result": {
             "kind": "function",
             "parameter": {
               "kind": "named",
               "name": "List",
-              "arguments": [{ "kind": "named", "name": "A", "arguments": [] }]
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
             },
-            "result": { "kind": "named", "name": "Bool", "arguments": [] }
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
           }
         }
       }

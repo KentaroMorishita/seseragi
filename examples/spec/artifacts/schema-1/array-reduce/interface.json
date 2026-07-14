@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "module": "artifact/array-reduce",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/array-reduce::arrayReduceWorks",
+      "namespace": "value",
+      "name": "arrayReduceWorks",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 89
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

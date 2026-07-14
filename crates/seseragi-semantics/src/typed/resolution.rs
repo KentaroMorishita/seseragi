@@ -215,6 +215,7 @@ fn collect_callables(
                     TopLevelPureFunction {
                         symbol: canonical,
                         type_parameters: type_parameters.clone(),
+                        constraints: Vec::new(),
                         parameters,
                         semantic_parameters,
                         result,
@@ -231,6 +232,7 @@ fn collect_callables(
             TopLevelPureFunction {
                 symbol: signature.symbol,
                 type_parameters: signature.type_parameters,
+                constraints: Vec::new(),
                 parameters: signature
                     .parameters
                     .iter()
@@ -247,7 +249,49 @@ fn collect_callables(
         );
     }
     callables.extend(imports::collect_imported_callables(resolved));
+    for symbol in &resolved.symbols {
+        if symbol.canonical.as_deref() == Some("std/prelude::reduce") {
+            callables.insert(symbol.id, standard_reduce_callable());
+        }
+    }
     callables
+}
+
+fn standard_reduce_callable() -> TopLevelPureFunction {
+    let accumulator = TypedType::Named {
+        name: "B".to_owned(),
+        arguments: Vec::new(),
+    };
+    let element = TypedType::Named {
+        name: "A".to_owned(),
+        arguments: Vec::new(),
+    };
+    let collection = TypedType::Named {
+        name: "C".to_owned(),
+        arguments: Vec::new(),
+    };
+    TopLevelPureFunction {
+        symbol: "std/prelude::reduce".to_owned(),
+        type_parameters: vec!["C".to_owned(), "A".to_owned(), "B".to_owned()],
+        constraints: vec![crate::TypedConstraint {
+            name: "Reducible".to_owned(),
+            arguments: vec![collection.clone(), element.clone()],
+        }],
+        parameters: vec![
+            accumulator.clone(),
+            TypedType::Function {
+                parameter: Box::new(accumulator.clone()),
+                result: Box::new(TypedType::Function {
+                    parameter: Box::new(element),
+                    result: Box::new(accumulator.clone()),
+                }),
+            },
+            collection,
+        ],
+        semantic_parameters: vec![SemanticTypeKey::Other; 3],
+        result: accumulator,
+        semantic_result: SemanticTypeKey::Other,
+    }
 }
 
 fn collect_semantic_value_types(

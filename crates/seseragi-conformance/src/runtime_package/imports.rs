@@ -118,6 +118,19 @@ fn source_exports_type_name(source: &str, name: &str) -> bool {
         || tokens
             .windows(3)
             .any(|tokens| tokens[0] == "export" && tokens[1] == "interface" && tokens[2] == name)
+        || source
+            .match_indices("export type")
+            .filter_map(|(start, _)| {
+                source[start + "export type".len()..]
+                    .trim_start()
+                    .strip_prefix('{')
+            })
+            .filter_map(|block| block.split_once('}').map(|(bindings, _)| bindings))
+            .any(|bindings| {
+                bindings
+                    .split(|character: char| !(character.is_alphanumeric() || character == '_'))
+                    .any(|binding| binding == name)
+            })
 }
 
 #[cfg(test)]
@@ -151,6 +164,10 @@ mod tests {
         assert!(source_exports_type_name(
             "export type {\n  Console,\n  ConsoleError,\n} from \"./console\";",
             "Console"
+        ));
+        assert!(source_exports_type_name(
+            "export type {\n  Console,\n  ConsoleError,\n} from \"./console\";",
+            "ConsoleError"
         ));
     }
 

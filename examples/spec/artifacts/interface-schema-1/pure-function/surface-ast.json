@@ -64,7 +64,23 @@
         }
       },
       "constraints": [
-        "Eq"
+        {
+          "name": "Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 63,
+                "end": 64
+              }
+            }
+          ],
+          "span": {
+            "start": 60,
+            "end": 65
+          }
+        }
       ],
       "body": {
         "kind": "application",

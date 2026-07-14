@@ -1,3 +1,4 @@
+use crate::collection_ops::runtime_collection_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation, CoreExpr, CoreStatement,
@@ -26,10 +27,13 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Call {
             callee,
             arguments,
+            evidence,
             type_ref,
             ..
         } => {
-            if let Some(constructor) = runtime_sum_constructor(callee) {
+            if let Some(operation) = runtime_collection_operation(callee, evidence) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(constructor) = runtime_sum_constructor(callee) {
                 push_unique(requirements, constructor.runtime_feature);
             }
             collect_type_runtime_requirement(type_ref, requirements);
@@ -208,9 +212,20 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
         }
         CoreExpr::Call {
-            callee, arguments, ..
+            callee,
+            arguments,
+            evidence,
+            ..
         } => {
-            if let Some(constructor) = runtime_sum_constructor(callee) {
+            if let Some(operation) = runtime_collection_operation(callee, evidence) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(constructor) = runtime_sum_constructor(callee) {
                 push_sum_constructor_import(imports, constructor);
             }
             for argument in arguments {

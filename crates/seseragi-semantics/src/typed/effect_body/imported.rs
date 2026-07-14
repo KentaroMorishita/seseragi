@@ -56,6 +56,7 @@ pub(super) fn type_imported_effect_application(
         return Some(TypedExpr::Call {
             callee: signature.symbol.clone(),
             arguments,
+            evidence: Vec::new(),
             type_ref: application_result_type_from(
                 &signature
                     .parameters

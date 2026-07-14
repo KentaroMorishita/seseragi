@@ -81,6 +81,7 @@ impl<'a> PureExpressionContext<'a> {
         Some(TopLevelPureFunction {
             symbol: symbol.spelling.clone(),
             type_parameters: Vec::new(),
+            constraints: Vec::new(),
             semantic_parameters: parameters
                 .iter()
                 .map(|parameter| self.semantic_value_from_typed_type(parameter).key)

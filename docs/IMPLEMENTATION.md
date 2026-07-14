@@ -547,8 +547,15 @@ Int arithmetic operator sectionだけです。仕様上の`Add<L, R, O>` constra
 
 `schema-1/constraint-arguments`では、`where Reducible<C, A>`をtrait名だけの文字列へ潰さず、型引数を持つ
 structured constraintとしてSurfaceAst、shallow / typed interface、TypedHir、CoreIr、TypeScriptIrへ保持します。
-この段階ではconstraint dictionaryをgenerated function parameterへ追加せず、constrained callも有効化しません。
-次のinstance selection sliceが、この構造からcanonical evidenceを選んで初めて実行可能になります。
+`schema-1/array-reduce`では、その構造から標準`Reducible<Array<A>, A>`を飽和call時に選択し、選択済みの
+canonical evidenceをTypedHirとCoreIrへ保持してから`@seseragi/runtime/array`へloweringします。対応instanceがない
+concrete callは未解決名へfallbackせず`instance.missing`で停止します。`(+)`はfunction valueとして渡すときも
+Seseragiのcurried ABIを保ち、checked Int helperを二引数で呼ぶadapterへ生成します。これによりbinary expressionと
+higher-order callのoverflow semanticsが分岐しません。
+
+このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
+coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、
+標準型名だけを通る経路と区別して回収します。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。

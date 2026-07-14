@@ -5,37 +5,75 @@
     {
       "kind": "operator",
       "visibility": "public",
-      "typeParameters": ["A"],
+      "typeParameters": [
+        "A"
+      ],
       "fixity": "infixr",
       "precedence": 5,
       "spelling": "<+>",
       "parameters": [
         {
           "name": "left",
-          "nameSpan": { "start": 31, "end": 35 },
+          "nameSpan": {
+            "start": 31,
+            "end": 35
+          },
           "type": {
             "kind": "named",
             "name": "A",
-            "span": { "start": 37, "end": 38 }
+            "span": {
+              "start": 37,
+              "end": 38
+            }
           }
         },
         {
           "name": "right",
-          "nameSpan": { "start": 42, "end": 47 },
+          "nameSpan": {
+            "start": 42,
+            "end": 47
+          },
           "type": {
             "kind": "named",
             "name": "A",
-            "span": { "start": 49, "end": 50 }
+            "span": {
+              "start": 49,
+              "end": 50
+            }
           }
         }
       ],
       "returnType": {
         "kind": "named",
         "name": "A",
-        "span": { "start": 54, "end": 55 }
+        "span": {
+          "start": 54,
+          "end": 55
+        }
       },
-      "constraints": ["Semigroup"],
-      "span": { "start": 0, "end": 83 }
+      "constraints": [
+        {
+          "name": "Semigroup",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 72,
+                "end": 73
+              }
+            }
+          ],
+          "span": {
+            "start": 62,
+            "end": 74
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 83
+      }
     }
   ]
 }

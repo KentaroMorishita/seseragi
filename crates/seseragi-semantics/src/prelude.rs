@@ -90,7 +90,14 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
         ),
         SymbolNamespace::Value => matches!(
             spelling,
-            "print" | "println" | "readLine" | "succeed" | "fail" | "mapError" | "fromEither"
+            "print"
+                | "println"
+                | "readLine"
+                | "succeed"
+                | "fail"
+                | "mapError"
+                | "fromEither"
+                | "reduce"
         ),
         SymbolNamespace::Operator => matches!(
             spelling,

@@ -25,6 +25,10 @@
       "types": "./src/int64.ts",
       "default": "./src/int64.ts"
     },
+    "./array": {
+      "types": "./src/array.ts",
+      "default": "./src/array.ts"
+    },
     "./sum": {
       "types": "./src/sum.ts",
       "default": "./src/sum.ts"

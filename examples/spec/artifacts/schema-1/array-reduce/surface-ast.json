@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "arrayReduceWorks",
+      "nameSpan": {
+        "start": 7,
+        "end": 23
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 24,
+            "end": 28
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 30,
+              "end": 34
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 38,
+          "end": 42
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 83,
+          "end": 85
+        },
+        "left": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "reduce",
+                "span": {
+                  "start": 47,
+                  "end": 53
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "0",
+                "span": {
+                  "start": 54,
+                  "end": 55
+                }
+              },
+              "span": {
+                "start": 47,
+                "end": 55
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "name",
+                "name": "+",
+                "span": {
+                  "start": 57,
+                  "end": 58
+                }
+              },
+              "span": {
+                "start": 56,
+                "end": 59
+              }
+            },
+            "span": {
+              "start": 47,
+              "end": 59
+            }
+          },
+          "argument": {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "integer",
+                "raw": "4",
+                "span": {
+                  "start": 61,
+                  "end": 62
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "8",
+                "span": {
+                  "start": 64,
+                  "end": 65
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "15",
+                "span": {
+                  "start": 67,
+                  "end": 69
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "16",
+                "span": {
+                  "start": 71,
+                  "end": 73
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "23",
+                "span": {
+                  "start": 75,
+                  "end": 77
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "42",
+                "span": {
+                  "start": 79,
+                  "end": 81
+                }
+              }
+            ],
+            "span": {
+              "start": 60,
+              "end": 82
+            }
+          },
+          "span": {
+            "start": 47,
+            "end": 82
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "108",
+          "span": {
+            "start": 86,
+            "end": 89
+          }
+        },
+        "span": {
+          "start": 47,
+          "end": 89
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 89
+      }
+    }
+  ]
+}

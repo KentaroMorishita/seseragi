@@ -6,10 +6,36 @@
       "kind": "trait",
       "visibility": "public",
       "name": "Ord",
-      "nameSpan": { "start": 10, "end": 13 },
-      "typeParameters": ["A"],
-      "constraints": ["Eq"],
-      "span": { "start": 0, "end": 70 }
+      "nameSpan": {
+        "start": 10,
+        "end": 13
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 26,
+                "end": 27
+              }
+            }
+          ],
+          "span": {
+            "start": 23,
+            "end": 28
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 70
+      }
     }
   ]
 }

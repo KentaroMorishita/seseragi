@@ -29,7 +29,7 @@
 | rank-1 generic / higher-order pure function / operator section / module import | Lesson 11 | `schema-1/generic-higher-order-call` + `schema-1/operator-reference` + `project-schema-1/rock-paper-scissors-domain-split` | partial |
 | comprehension、Array / record pattern         | Lesson 12         | parse / pattern diagnostics                    | partial |
 | custom trait / instance / custom operator     | Lesson 13         | instance syntax / orphan / fixity / `project-schema-1/imported-effect-failure` | partial |
-| structured constraint arguments / evidence passing | Lesson 13    | `schema-1/constraint-arguments`             | partial |
+| structured constraint arguments / evidence passing | Lesson 13    | `schema-1/{constraint-arguments,array-reduce}` + `execution-schema-1/array-reduce` | partial |
 | Semigroup / Monoid                            | Lesson 14         | law fixtures                                   | partial |
 | generic ADT、local / mutual recursion、spread | Lesson 19         | local recursion / forward reference fixtures   | partial |
 | monad transformer                             | Lesson 20         | transformer order fixtures                     | partial |

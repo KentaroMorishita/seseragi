@@ -154,6 +154,13 @@ pub struct TypedConstraint {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TypedCallEvidence {
+    pub constraint: TypedConstraint,
+    pub evidence: TypedInstanceEvidence,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TypedInstance {
     pub identity: String,
     #[serde(rename = "trait")]
@@ -311,6 +318,8 @@ pub enum TypedExpr {
     Call {
         callee: String,
         arguments: Vec<TypedExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<TypedCallEvidence>,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,

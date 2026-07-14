@@ -284,6 +284,10 @@ pub enum TypeScriptExpr {
     RuntimeReference {
         name: String,
     },
+    CurriedRuntimeReference {
+        name: String,
+        arity: usize,
+    },
     Tuple {
         elements: Vec<TypeScriptExpr>,
     },

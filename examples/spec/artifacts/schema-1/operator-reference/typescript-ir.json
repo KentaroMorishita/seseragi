@@ -75,8 +75,9 @@
         "callee": "foldPair",
         "arguments": [
           {
-            "kind": "runtime-reference",
-            "name": "_ssrg_int64_add"
+            "kind": "curried-runtime-reference",
+            "name": "_ssrg_int64_add",
+            "arity": 2
           },
           {
             "kind": "identifier",

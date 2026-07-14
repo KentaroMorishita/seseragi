@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "case": "array-reduce",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/array-reduce",
+    "export": "arrayReduceWorks",
+    "compiledModule": "../../schema-1/array-reduce/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.unit",
+      "core.bool",
+      "core.array.reduce",
+      "core.int64",
+      "core.int64.add"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

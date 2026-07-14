@@ -1,4 +1,4 @@
-use crate::TypedType;
+use crate::{TypedConstraint, TypedType};
 use seseragi_syntax::SurfaceParameter;
 
 use super::semantic_types::SemanticTypeKey;
@@ -12,6 +12,7 @@ pub(crate) use generic::{instantiated_application, instantiated_application_resu
 pub(crate) struct TopLevelPureFunction {
     pub(crate) symbol: String,
     pub(crate) type_parameters: Vec<String>,
+    pub(crate) constraints: Vec<TypedConstraint>,
     pub(crate) parameters: Vec<TypedType>,
     pub(crate) semantic_parameters: Vec<SemanticTypeKey>,
     pub(crate) result: TypedType,

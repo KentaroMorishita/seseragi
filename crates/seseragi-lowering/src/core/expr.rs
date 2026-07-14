@@ -1,9 +1,11 @@
 use crate::source_span;
-use seseragi_semantics::{TypedDoStatement, TypedExpr, TypedParameter};
+use seseragi_semantics::{
+    TypedCallEvidence, TypedDoStatement, TypedExpr, TypedInstanceEvidence, TypedParameter,
+};
 
 use super::decision::lower_match;
 use super::types::lower_typed_type;
-use super::{CoreExpr, CoreParameter, CoreStatement};
+use super::{CoreCallEvidence, CoreExpr, CoreInstanceEvidence, CoreParameter, CoreStatement};
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
     match body {
@@ -85,11 +87,13 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         TypedExpr::Call {
             callee,
             arguments,
+            evidence,
             type_ref,
             origin,
         } => CoreExpr::Call {
             callee,
             arguments: lower_exprs(source, arguments),
+            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
@@ -181,6 +185,25 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
             origin: source_span(source, origin),
+        },
+    }
+}
+
+fn lower_call_evidence(evidence: TypedCallEvidence) -> CoreCallEvidence {
+    CoreCallEvidence {
+        constraint: super::instances::lower_constraint(evidence.constraint),
+        evidence: match evidence.evidence {
+            TypedInstanceEvidence::Local { identity } => CoreInstanceEvidence::Local { identity },
+            TypedInstanceEvidence::Imported {
+                identity,
+                provider_module,
+            } => CoreInstanceEvidence::Imported {
+                identity,
+                provider_module,
+            },
+            TypedInstanceEvidence::Standard { identity } => {
+                CoreInstanceEvidence::Standard { identity }
+            }
         },
     }
 }

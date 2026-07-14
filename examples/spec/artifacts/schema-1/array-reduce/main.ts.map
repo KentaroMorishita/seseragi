@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/array-reduce"
+  ],
+  "sourcesContent": [
+    "pub fn arrayReduceWorks unit: Unit -> Bool =\n  reduce 0 (+) [4, 8, 15, 16, 23, 42] == 108\n"
+  ],
+  "names": [
+    "arrayReduceWorks",
+    "_ssrg_array_reduce",
+    "add"
+  ],
+  "mappings": ";;;AAAAA"
+}

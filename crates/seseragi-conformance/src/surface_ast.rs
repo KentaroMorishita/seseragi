@@ -35,7 +35,8 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
 
     match kind {
         "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
-        "tuple" => validate_expression_array(expression, "elements", path),
+        "tuple" => validate_expression_array(expression, "elements", path, 2),
+        "array" => validate_expression_array(expression, "elements", path, 0),
         "grouped" => validate_child(expression, "value", path),
         "application" => {
             validate_child(expression, "function", path)?;
@@ -119,14 +120,19 @@ fn validate_do(expression: &Value, path: &str) -> Result<(), String> {
     validate_expression(result, &format!("{path}.result"))
 }
 
-fn validate_expression_array(parent: &Value, field: &str, path: &str) -> Result<(), String> {
+fn validate_expression_array(
+    parent: &Value,
+    field: &str,
+    path: &str,
+    minimum: usize,
+) -> Result<(), String> {
     let elements = parent
         .get(field)
         .and_then(Value::as_array)
         .ok_or_else(|| format!("SurfaceAst {path}.{field} must be an array"))?;
-    if elements.len() < 2 {
+    if elements.len() < minimum {
         return Err(format!(
-            "SurfaceAst {path}.{field} must contain at least two elements"
+            "SurfaceAst {path}.{field} must contain at least {minimum} elements"
         ));
     }
     for (index, element) in elements.iter().enumerate() {
@@ -225,6 +231,34 @@ mod tests {
                     },
                     "argument": { "kind": "integer", "span": { "start": 6, "end": 7 } },
                     "span": { "start": 0, "end": 7 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_array_values_at_any_expression_depth() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "application",
+                    "function": { "kind": "name", "span": { "start": 0, "end": 6 } },
+                    "argument": {
+                        "kind": "array",
+                        "elements": [
+                            { "kind": "integer", "span": { "start": 8, "end": 9 } },
+                            {
+                                "kind": "array",
+                                "elements": [],
+                                "span": { "start": 11, "end": 13 }
+                            }
+                        ],
+                        "span": { "start": 7, "end": 14 }
+                    },
+                    "span": { "start": 0, "end": 14 }
                 }
             }]
         });

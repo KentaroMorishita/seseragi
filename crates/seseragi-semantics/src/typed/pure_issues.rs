@@ -14,6 +14,10 @@ pub(crate) enum PureCallIssue {
         expected: TypedType,
         actual: TypedType,
     },
+    MissingInstance {
+        callee: ByteSpan,
+        constraint: crate::TypedConstraint,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

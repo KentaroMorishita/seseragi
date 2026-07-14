@@ -209,7 +209,8 @@ fn collect_expr_names(
     names: &mut Vec<String>,
 ) {
     match expr {
-        TypeScriptExpr::RuntimeReference { name } => {
+        TypeScriptExpr::RuntimeReference { name }
+        | TypeScriptExpr::CurriedRuntimeReference { name, .. } => {
             names.push(
                 helper_names
                     .get(name)

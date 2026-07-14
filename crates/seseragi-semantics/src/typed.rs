@@ -5,6 +5,7 @@ mod adt;
 #[cfg(test)]
 mod adt_tests;
 mod analysis;
+mod call_evidence;
 mod effect;
 mod effect_analysis;
 mod effect_body;

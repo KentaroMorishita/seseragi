@@ -1,5 +1,5 @@
 use super::type_module;
-use crate::{TypedDecl, TypedExpr, TypedPattern, TypedType};
+use crate::{TypedDecl, TypedExpr, TypedInstanceEvidence, TypedPattern, TypedType};
 
 #[test]
 fn types_standard_maybe_constructor_from_its_argument() {
@@ -152,6 +152,32 @@ fn types_standard_either_patterns_and_proves_the_family_exhaustive() {
         } if symbol == "std/prelude::Right"
             && matches!(argument.as_ref(), TypedPattern::Binding { type_ref, .. }
                 if type_ref == &named("Int"))
+    ));
+}
+
+#[test]
+fn selects_array_reducible_evidence_for_standard_reduce() {
+    let typed = type_module(
+        "artifact/array-reduce/main.ssrg",
+        "pub fn sum values: Array<Int> -> Int = reduce 0 (+) values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected sum function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::reduce"
+            && type_ref == &named("Int")
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { identity },
+                ..
+            }] if identity == "std/array::Reducible")
     ));
 }
 
