@@ -10,6 +10,7 @@ mod dependencies;
 mod exports;
 mod header;
 mod instances;
+mod methods;
 mod types;
 
 use dependencies::dependency_from_surface_import;
