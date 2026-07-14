@@ -582,6 +582,12 @@ imported effect functionは、このcatalogを一般化する後続gateです。
 targetは公開interfaceだけを持ち、private declarationの存在を漏らしません。これらを`SES-N0102` / `SES-N0104`へ変換する
 project diagnostic adapterはまだ未実装です。
 
+shared `compile_project`はmodule IDの文字列を分解してpackage境界を推測しません。project adapterが
+`ProjectModuleInput::with_package_scope`でopaqueなvisibility scopeを渡し、同じscopeのedgeだけを
+`ModuleLinkTarget::same_package`、異なるscopeまたは片側だけ未指定のedgeをexternal targetにします。従来のscope未指定
+single-package input同士は互換のためsame-packageとして扱います。これによりcross-package compiler adapterを追加しても、
+dependencyのprivate headerがimporterへ漏れません。
+
 `ModuleLinkTarget::same_package`はheaderの全public nameがfinal interfaceに存在することを検証します。したがってcompact
 inferred effectのexportが欠けるshallow interfaceを誤ってlink inputへ使うと、semantic linking前に失敗します。
 current module headerのnameもlink scopeへ先に予約するため、同じnamespaceのlocal declarationとimportが衝突した状態で

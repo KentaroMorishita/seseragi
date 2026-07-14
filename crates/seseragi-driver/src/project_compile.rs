@@ -13,12 +13,16 @@ use std::collections::BTreeMap;
 mod outputs;
 mod validation;
 
+#[cfg(test)]
+mod package_scope_tests;
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProjectModuleInput {
     pub source_name: String,
     pub module_id: String,
     pub source: String,
     pub output_path: String,
+    pub package_scope: Option<String>,
 }
 
 impl ProjectModuleInput {
@@ -33,7 +37,15 @@ impl ProjectModuleInput {
             module_id: module_id.into(),
             source: source.into(),
             output_path: output_path.into(),
+            package_scope: None,
         }
+    }
+
+    /// Assigns an opaque project-owned package scope for visibility linking.
+    /// Modules in different scopes expose only their public interface.
+    pub fn with_package_scope(mut self, package_scope: impl Into<String>) -> Self {
+        self.package_scope = Some(package_scope.into());
+        self
     }
 }
 
@@ -142,12 +154,20 @@ pub fn compile_project(
                 .typed_interface
                 .clone()
                 .into_link_interface();
-            let target =
+            let same_package = match (&input.package_scope, &dependency_input.package_scope) {
+                (None, None) => true,
+                (Some(importer), Some(dependency)) => importer == dependency,
+                _ => false,
+            };
+            let target = if same_package {
                 ModuleLinkTarget::same_package(dependency_unlinked.header, dependency_interface)
                     .map_err(|error| ProjectCompileError::LinkTarget {
                         module: module.clone(),
                         error,
-                    })?;
+                    })?
+            } else {
+                ModuleLinkTarget::external(dependency_interface)
+            };
             targets.insert(specifier, target);
         }
         let linked =
