@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/operator-reference"
+  ],
+  "sourcesContent": [
+    "pub fn foldPair\n  step: (Int -> Int -> Int)\n  -> initial: Int\n  -> value: Int\n  -> Int =\n  step initial value\n\npub fn addPair initial: Int -> value: Int -> Int =\n  foldPair (+) initial value\n"
+  ],
+  "names": [
+    "foldPair",
+    "step",
+    "addPair",
+    "foldPair",
+    "add"
+  ],
+  "mappings": ";;AAAAA;AAOAE"
+}

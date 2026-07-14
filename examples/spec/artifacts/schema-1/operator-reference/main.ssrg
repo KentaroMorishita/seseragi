@@ -1,0 +1,9 @@
+pub fn foldPair
+  step: (Int -> Int -> Int)
+  -> initial: Int
+  -> value: Int
+  -> Int =
+  step initial value
+
+pub fn addPair initial: Int -> value: Int -> Int =
+  foldPair (+) initial value

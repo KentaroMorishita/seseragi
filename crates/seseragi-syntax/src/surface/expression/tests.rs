@@ -55,6 +55,17 @@ fn preserves_grouped_expression_boundaries() {
 }
 
 #[test]
+fn parses_an_arithmetic_operator_as_a_grouped_function_value() {
+    let body = first_body("pub let add: (Int -> Int -> Int) = (+)\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Grouped { value, .. }
+            if matches!(*value, SurfaceExpr::Name { ref name, .. } if name == "+")
+    ));
+}
+
+#[test]
 fn parses_tuple_values_without_losing_grouped_expressions() {
     let body = first_body("pub fn pair left: Int -> right: Bool -> (Int, Bool) = (left, right)\n");
 

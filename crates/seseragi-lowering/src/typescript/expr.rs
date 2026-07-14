@@ -19,16 +19,25 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
-        CoreExpr::Variable { name, .. } => runtime_sum_constructor(&name)
-            .map(|constructor| TypeScriptExpr::RuntimeReference {
-                name: constructor.local_name.to_owned(),
-            })
-            .unwrap_or_else(|| TypeScriptExpr::Identifier {
-                name: imported_values
-                    .get(&name)
-                    .cloned()
-                    .unwrap_or_else(|| local_name(&name)),
-            }),
+        CoreExpr::Variable { name, type_ref, .. } => {
+            if matches!(type_ref, CoreType::Function { .. }) {
+                if let Some(operation) = runtime_int_operation(&name) {
+                    return TypeScriptExpr::RuntimeReference {
+                        name: operation.local_name.to_owned(),
+                    };
+                }
+            }
+            runtime_sum_constructor(&name)
+                .map(|constructor| TypeScriptExpr::RuntimeReference {
+                    name: constructor.local_name.to_owned(),
+                })
+                .unwrap_or_else(|| TypeScriptExpr::Identifier {
+                    name: imported_values
+                        .get(&name)
+                        .cloned()
+                        .unwrap_or_else(|| local_name(&name)),
+                })
+        }
         CoreExpr::Call {
             callee, arguments, ..
         } => {

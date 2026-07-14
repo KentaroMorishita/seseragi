@@ -49,6 +49,10 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.target(origin, SymbolNamespace::Value)
     }
 
+    pub(super) fn operator_target(&self, origin: ByteSpan) -> Option<SymbolId> {
+        self.resolution.target(origin, SymbolNamespace::Operator)
+    }
+
     pub(super) fn binding_symbol(&self, origin: ByteSpan) -> Option<SymbolId> {
         self.resolution
             .declaration_symbol(origin, SymbolKind::PatternBinding)
@@ -269,6 +273,9 @@ fn type_name(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    if is_arithmetic_operator_reference(name) {
+        return type_arithmetic_operator_reference(name, span, context);
+    }
     let Some(target) = context.target(span) else {
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
@@ -339,6 +346,41 @@ fn type_name(
         },
         SemanticTypeKey::Invalid,
     )
+}
+
+fn type_arithmetic_operator_reference(
+    name: &str,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let type_ref = curried_binary_type(named_type("Int"), named_type("Int"));
+    let valid = context.operator_target(span).is_some();
+    SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Variable {
+            name: name.to_owned(),
+            type_ref: if valid { type_ref } else { TypedType::Hole },
+            origin: span,
+        },
+        if valid {
+            SemanticTypeKey::Other
+        } else {
+            SemanticTypeKey::Invalid
+        },
+    )
+}
+
+fn curried_binary_type(parameter: TypedType, result: TypedType) -> TypedType {
+    TypedType::Function {
+        parameter: Box::new(parameter.clone()),
+        result: Box::new(TypedType::Function {
+            parameter: Box::new(parameter),
+            result: Box::new(result),
+        }),
+    }
+}
+
+fn is_arithmetic_operator_reference(name: &str) -> bool {
+    matches!(name, "+" | "-" | "*" | "/" | "%" | "**")
 }
 
 pub(super) fn named_type(name: &str) -> TypedType {

@@ -45,7 +45,8 @@ language semanticsをtarget adapterへ委譲しません。
   `seseragi run package-path-dependency-basic`はdependencyの公開functionを呼ぶEffect entryを生成runtimeで実行します。
   全source rootのNFC / case / symlink / physical alias auditもentry discovery前に接続済みです。registry / lockfile resolutionと
   full collection fixtureは未完了です。immutable Array literalはsingle-fileの全compiler stageへ接続済みで、
-  次のcollection gateはgeneric `reduce`とoperator sectionです。
+  generic higher-order callbackとchecked Int arithmetic operator section `(+)`も接続済みです。次のcollection gateは
+  `Add` / `Reducible` evidenceを用いるgeneric `reduce`です。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS

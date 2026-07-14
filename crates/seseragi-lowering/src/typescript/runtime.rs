@@ -13,6 +13,11 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
         CoreExpr::Variable { name, type_ref, .. } => {
+            if matches!(type_ref, CoreType::Function { .. }) {
+                if let Some(operation) = runtime_int_operation(name) {
+                    push_unique(requirements, operation.runtime_feature);
+                }
+            }
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_unique(requirements, constructor.runtime_feature);
             }
@@ -186,7 +191,18 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
-        CoreExpr::Variable { name, .. } => {
+        CoreExpr::Variable { name, type_ref, .. } => {
+            if matches!(type_ref, CoreType::Function { .. }) {
+                if let Some(operation) = runtime_int_operation(name) {
+                    push_import_unique(
+                        imports,
+                        TypeScriptImport {
+                            feature: operation.runtime_feature.to_owned(),
+                            local: operation.local_name.to_owned(),
+                        },
+                    );
+                }
+            }
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_sum_constructor_import(imports, constructor);
             }

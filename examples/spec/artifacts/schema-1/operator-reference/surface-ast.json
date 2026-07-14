@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "foldPair",
+      "nameSpan": {
+        "start": 7,
+        "end": 15
+      },
+      "parameters": [
+        {
+          "name": "step",
+          "nameSpan": {
+            "start": 18,
+            "end": 22
+          },
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 25,
+                "end": 28
+              }
+            },
+            "result": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 32,
+                  "end": 35
+                }
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 39,
+                  "end": 42
+                }
+              },
+              "span": {
+                "start": 32,
+                "end": 42
+              }
+            },
+            "span": {
+              "start": 25,
+              "end": 42
+            }
+          }
+        },
+        {
+          "name": "initial",
+          "nameSpan": {
+            "start": 49,
+            "end": 56
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 58,
+              "end": 61
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 67,
+            "end": 72
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 74,
+              "end": 77
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 83,
+          "end": 86
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "step",
+            "span": {
+              "start": 91,
+              "end": 95
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "initial",
+            "span": {
+              "start": 96,
+              "end": 103
+            }
+          },
+          "span": {
+            "start": 91,
+            "end": 103
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 104,
+            "end": 109
+          }
+        },
+        "span": {
+          "start": 91,
+          "end": 109
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 109
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "addPair",
+      "nameSpan": {
+        "start": 118,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "initial",
+          "nameSpan": {
+            "start": 126,
+            "end": 133
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 135,
+              "end": 138
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 142,
+            "end": 147
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 149,
+              "end": 152
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 156,
+          "end": 159
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "foldPair",
+              "span": {
+                "start": 164,
+                "end": 172
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "name",
+                "name": "+",
+                "span": {
+                  "start": 174,
+                  "end": 175
+                }
+              },
+              "span": {
+                "start": 173,
+                "end": 176
+              }
+            },
+            "span": {
+              "start": 164,
+              "end": 176
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "initial",
+            "span": {
+              "start": 177,
+              "end": 184
+            }
+          },
+          "span": {
+            "start": 164,
+            "end": 184
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 185,
+            "end": 190
+          }
+        },
+        "span": {
+          "start": 164,
+          "end": 190
+        }
+      },
+      "span": {
+        "start": 111,
+        "end": 190
+      }
+    }
+  ]
+}

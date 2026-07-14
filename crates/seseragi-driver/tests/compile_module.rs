@@ -117,6 +117,23 @@ fn instantiates_a_generic_higher_order_function() {
 }
 
 #[test]
+fn passes_an_arithmetic_operator_as_a_function_value() {
+    const SOURCE: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/operator-reference/main.ssrg");
+    const EXPECTED_TYPESCRIPT: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/operator-reference/main.ts");
+    let compiled = compile_module(input(
+        "artifact/driver-operator-reference/main.ssrg",
+        "artifact/driver-operator-reference",
+        SOURCE,
+    ))
+    .expect("arithmetic operator reference should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
 fn keeps_physical_source_name_independent_from_logical_module_identity() {
     let compiled = compile_module(input(
         "/tmp/seseragi-cache/entry.ssrg",

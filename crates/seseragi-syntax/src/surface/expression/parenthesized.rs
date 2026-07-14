@@ -15,6 +15,30 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
         });
     }
 
+    if parser.kind_at_cursor() == Some(TokenKind::OperatorArithmetic) {
+        let operator = parser.tokens.get(parser.cursor)?.clone();
+        parser.cursor += 1;
+        parser.skip_trivia();
+        if parser.kind_at_cursor() == Some(TokenKind::PunctuationParenRight) {
+            let close = parser.tokens.get(parser.cursor)?;
+            parser.cursor += 1;
+            return Some(SurfaceExpr::Grouped {
+                value: Box::new(SurfaceExpr::Name {
+                    name: operator.raw,
+                    span: ByteSpan {
+                        start: operator.start,
+                        end: operator.end,
+                    },
+                }),
+                span: ByteSpan {
+                    start: open_token.start,
+                    end: close.end,
+                },
+            });
+        }
+        return None;
+    }
+
     let first = parser.parse_expr_bp(
         0,
         &[

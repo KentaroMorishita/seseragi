@@ -11,7 +11,12 @@ pub(super) fn resolve_expression(
 ) {
     match expression {
         SurfaceExpr::Name { name, span } => {
-            resolver.reference(scope, SymbolNamespace::Value, name, *span, true);
+            let namespace = if is_operator_reference(name) {
+                SymbolNamespace::Operator
+            } else {
+                SymbolNamespace::Value
+            };
+            resolver.reference(scope, namespace, name, *span, true);
         }
         SurfaceExpr::Application {
             function, argument, ..
@@ -84,6 +89,10 @@ pub(super) fn resolve_expression(
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Error { .. } => {}
     }
+}
+
+fn is_operator_reference(name: &str) -> bool {
+    matches!(name, "+" | "-" | "*" | "/" | "%" | "**")
 }
 
 fn resolve_do_item(resolver: &mut Resolver, scope: ScopeId, item: &SurfaceDoItem) {
