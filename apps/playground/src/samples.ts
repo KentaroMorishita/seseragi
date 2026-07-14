@@ -3,6 +3,7 @@ import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
 import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
 import shippingAdvisor from "../../../examples/spec/playground/02-shipping-advisor.ssrg?raw"
 import seseragiQuiz from "../../../examples/spec/playground/03-seseragi-quiz.ssrg?raw"
+import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboard.ssrg?raw"
 import { sampleCatalog } from "./sample-catalog"
 
 export type PlaygroundSample = {
@@ -18,6 +19,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "mini-adventure": miniAdventure,
   "shipping-advisor": shippingAdvisor,
   "seseragi-quiz": seseragiQuiz,
+  "array-scoreboard": arrayScoreboard,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

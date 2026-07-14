@@ -43,4 +43,11 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "rust\n",
     expectedOutput: "Correct! The new compiler is implemented in Rust.",
   },
+  {
+    id: "array-scoreboard",
+    label: "Arrayスコア集計",
+    sourcePath: "examples/spec/playground/04-array-scoreboard.ssrg",
+    stdin: "",
+    expectedOutput: "Score total: 108 — perfect checksum!",
+  },
 ]
