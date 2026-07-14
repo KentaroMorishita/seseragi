@@ -65,12 +65,16 @@ fn interface_instance_from_typed(
     InterfaceInstance {
         identity: Some(instance.identity.clone()),
         provider_module: Some(module.to_owned()),
-        type_identity: Some(instance.type_identity.clone()),
+        type_identity: instance.type_identity.clone(),
         trait_name: instance.trait_name.clone(),
         type_parameters: Vec::new(),
         head: InterfaceType::Apply {
             constructor: instance.trait_name.clone(),
-            arguments: vec![types.convert(&instance.head)],
+            arguments: instance
+                .arguments
+                .iter()
+                .map(|argument| types.convert(argument))
+                .collect(),
         },
         constraints: instance
             .constraints

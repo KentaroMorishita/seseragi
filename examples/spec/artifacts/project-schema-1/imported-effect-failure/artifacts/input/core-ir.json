@@ -36,11 +36,13 @@
     {
       "identity": "Show<fixture/imported-effect-failure::input::InputError>",
       "trait": "Show",
-      "head": {
-        "kind": "named",
-        "name": "InputError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "InputError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/imported-effect-failure::input::InputError",
       "origin": {
         "source": "input.ssrg",

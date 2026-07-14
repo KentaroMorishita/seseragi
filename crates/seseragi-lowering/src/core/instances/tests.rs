@@ -21,13 +21,16 @@ pub type AppError deriving Show =
     let instance = &core.instances[0];
     assert_eq!(instance.identity, "Show<artifact/derived-show::AppError>");
     assert_eq!(instance.trait_name, "Show");
-    assert_eq!(instance.type_identity, "artifact/derived-show::AppError");
     assert_eq!(
-        instance.head,
-        CoreType::Named {
+        instance.type_identity.as_deref(),
+        Some("artifact/derived-show::AppError")
+    );
+    assert_eq!(
+        instance.arguments,
+        vec![CoreType::Named {
             name: "AppError".to_owned(),
             arguments: Vec::new(),
-        }
+        }]
     );
     assert!(instance.constraints.is_empty());
     assert_eq!(
@@ -57,7 +60,7 @@ fn carries_local_show_payload_evidence_into_core_ir() {
     let app_error = core
         .instances
         .iter()
-        .find(|instance| instance.type_identity == "artifact/local-show::AppError")
+        .find(|instance| instance.type_identity.as_deref() == Some("artifact/local-show::AppError"))
         .unwrap();
 
     assert!(matches!(

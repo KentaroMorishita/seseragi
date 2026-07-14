@@ -128,7 +128,8 @@ fn resolve_external_show_dictionary(
         .instances
         .iter()
         .filter(|instance| {
-            instance.trait_name == "Show" && instance.type_identity == canonical.as_str()
+            instance.trait_name == "Show"
+                && instance.type_identity.as_deref() == Some(canonical.as_str())
         })
         .collect::<Vec<_>>();
     let metadata = match matching.as_slice() {

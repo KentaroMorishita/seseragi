@@ -11,12 +11,13 @@ fn metadata(instances: serde_json::Value) -> serde_json::Value {
 
 fn show_instance(type_identity: &str, dictionary_export: &str) -> serde_json::Value {
     json!({
+        "identity": format!("Show<{type_identity}>"),
         "trait": "Show",
-        "head": {
-            "kind": "reference",
-            "name": "AppError",
-            "arguments": [],
-        },
+        "arguments": [{
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": [],
+        }],
         "typeIdentity": type_identity,
         "dictionaryExport": dictionary_export,
     })
@@ -43,7 +44,25 @@ fn accepts_internal_dictionary_exports_backed_by_typescript_consts() {
 }
 
 #[test]
-fn rejects_malformed_instance_and_head_shapes() {
+fn accepts_multi_parameter_instance_heads_without_a_primary_type() {
+    let dictionary = "__ssrg$instance$Add$0";
+    let generated = metadata(json!([{
+        "identity": "Add<Vector,Float,Vector>",
+        "trait": "Add",
+        "arguments": [
+            { "kind": "reference", "name": "Vector", "arguments": [] },
+            { "kind": "float" },
+            { "kind": "reference", "name": "Vector", "arguments": [] }
+        ],
+        "dictionaryExport": dictionary,
+    }]));
+    let typescript = format!("export const {dictionary} = {{}};\n");
+
+    check_generated_instances(&generated, &typescript).unwrap();
+}
+
+#[test]
+fn rejects_malformed_instance_and_argument_shapes() {
     assert_eq!(
         check_generated_instances(&json!({ "instances": {} }), "").unwrap_err(),
         "generated module instances must be an array"
@@ -52,33 +71,36 @@ fn rejects_malformed_instance_and_head_shapes() {
         .unwrap_err()
         .contains("instances[0] must be an object"));
 
-    let missing_head = json!({
+    let missing_arguments = json!({
+        "identity": "Show<artifact/example::AppError>",
         "trait": "Show",
         "typeIdentity": "artifact/example::AppError",
         "dictionaryExport": "showAppError",
     });
     assert!(
-        check_generated_instances(&metadata(json!([missing_head])), "")
+        check_generated_instances(&metadata(json!([missing_arguments])), "")
             .unwrap_err()
-            .contains("head must be an object")
+            .contains("arguments must be an array")
     );
 
-    let missing_head_kind = json!({
+    let missing_argument_kind = json!({
+        "identity": "Show<artifact/example::AppError>",
         "trait": "Show",
-        "head": {},
+        "arguments": [{}],
         "typeIdentity": "artifact/example::AppError",
         "dictionaryExport": "showAppError",
     });
     assert!(
-        check_generated_instances(&metadata(json!([missing_head_kind])), "")
+        check_generated_instances(&metadata(json!([missing_argument_kind])), "")
             .unwrap_err()
-            .contains("head.kind must be a non-empty string")
+            .contains("arguments[0].kind must be a non-empty string")
     );
 }
 
 #[test]
 fn rejects_missing_string_fields() {
     for (field, expected) in [
+        ("identity", ".identity must be a non-empty string"),
         ("trait", ".trait must be a non-empty string"),
         ("typeIdentity", ".typeIdentity must be a non-empty string"),
         (
@@ -94,7 +116,7 @@ fn rejects_missing_string_fields() {
 }
 
 #[test]
-fn rejects_duplicate_trait_and_type_identity_pairs() {
+fn rejects_duplicate_instance_identities() {
     let generated = metadata(json!([
         show_instance("artifact/example::AppError", "showAppError1"),
         show_instance("artifact/example::AppError", "showAppError2")
@@ -105,7 +127,7 @@ fn rejects_duplicate_trait_and_type_identity_pairs() {
     )
     .unwrap_err();
 
-    assert!(error.contains("duplicate Show instance metadata"));
+    assert!(error.contains("duplicate instance metadata identity"));
 }
 
 #[test]

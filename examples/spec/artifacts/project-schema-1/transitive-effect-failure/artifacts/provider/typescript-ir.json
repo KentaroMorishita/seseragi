@@ -56,11 +56,13 @@
     {
       "identity": "Show<fixture/transitive-effect-failure::provider::InputError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "InputError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "InputError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/transitive-effect-failure::provider::InputError",
       "origin": {
         "source": "provider.ssrg",

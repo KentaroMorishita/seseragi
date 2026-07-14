@@ -26,16 +26,28 @@ pub(super) fn check_generated_instances(
         let instance = instance
             .as_object()
             .ok_or_else(|| format!("{label} must be an object"))?;
+        let identity = required_string(instance.get("identity"), &format!("{label}.identity"))?;
         let trait_name = required_string(instance.get("trait"), &format!("{label}.trait"))?;
-        let head = instance
-            .get("head")
-            .and_then(Value::as_object)
-            .ok_or_else(|| format!("{label}.head must be an object"))?;
-        required_string(head.get("kind"), &format!("{label}.head.kind"))?;
-        let type_identity = required_string(
-            instance.get("typeIdentity"),
-            &format!("{label}.typeIdentity"),
-        )?;
+        let arguments = instance
+            .get("arguments")
+            .and_then(Value::as_array)
+            .ok_or_else(|| format!("{label}.arguments must be an array"))?;
+        if arguments.is_empty() {
+            return Err(format!("{label}.arguments must not be empty"));
+        }
+        for (argument_index, argument) in arguments.iter().enumerate() {
+            let argument_label = format!("{label}.arguments[{argument_index}]");
+            let argument = argument
+                .as_object()
+                .ok_or_else(|| format!("{argument_label} must be an object"))?;
+            required_string(argument.get("kind"), &format!("{argument_label}.kind"))?;
+        }
+        if trait_name == "Show" {
+            required_string(
+                instance.get("typeIdentity"),
+                &format!("{label}.typeIdentity"),
+            )?;
+        }
         let dictionary_export = required_string(
             instance.get("dictionaryExport"),
             &format!("{label}.dictionaryExport"),
@@ -45,9 +57,9 @@ pub(super) fn check_generated_instances(
                 "{label}.dictionaryExport must be a compiler-safe TypeScript identifier"
             ));
         }
-        if !selected.insert((trait_name, type_identity)) {
+        if !selected.insert(identity) {
             return Err(format!(
-                "generated module has duplicate {trait_name} instance metadata for {type_identity}"
+                "generated module has duplicate instance metadata identity {identity}"
             ));
         }
         if public_exports

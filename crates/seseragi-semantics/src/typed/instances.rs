@@ -68,11 +68,14 @@ fn local_dependency_conflicts(
                 .iter()
                 .find(|imported| {
                     imported.trait_name == local.trait_name
-                        && imported.type_identity == local.type_identity
+                        && local.type_identity.as_deref() == Some(imported.type_identity.as_str())
                 })
                 .map(|imported| DerivedInstanceIssue::AmbiguousInstance {
                     trait_name: local.trait_name.clone(),
-                    type_identity: local.type_identity.clone(),
+                    type_identity: local
+                        .type_identity
+                        .clone()
+                        .expect("derived Show instance must retain its primary type identity"),
                     provider_module: imported.provider_module.clone(),
                     primary: local.origin,
                 })

@@ -20,8 +20,9 @@ pub struct TypeScriptInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
-    pub head: TypeScriptType,
-    pub type_identity: String,
+    pub arguments: Vec<TypeScriptType>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub type_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<TypeScriptInstanceConstraint>,
     pub origin: SourceSpan,
@@ -198,7 +199,11 @@ fn lower_instance(
     TypeScriptInstance {
         identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
-        head: type_ref_from_core_type(&instance.head, context.imported_type_names),
+        arguments: instance
+            .arguments
+            .iter()
+            .map(|argument| type_ref_from_core_type(argument, context.imported_type_names))
+            .collect(),
         type_identity: instance.type_identity.clone(),
         constraints: instance
             .constraints

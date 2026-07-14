@@ -13,8 +13,9 @@ pub struct CoreInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
-    pub head: CoreType,
-    pub type_identity: String,
+    pub arguments: Vec<CoreType>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub type_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<CoreInstanceConstraint>,
     pub origin: SourceSpan,
@@ -80,7 +81,11 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
     CoreInstance {
         identity: instance.identity,
         trait_name: instance.trait_name,
-        head: lower_typed_type(instance.head),
+        arguments: instance
+            .arguments
+            .into_iter()
+            .map(lower_typed_type)
+            .collect(),
         type_identity: instance.type_identity,
         constraints: instance
             .constraints

@@ -113,7 +113,9 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
         }
     }
     for instance in &module.instances {
-        collect_type_names(&instance.head, &mut references);
+        for argument in &instance.arguments {
+            collect_type_names(argument, &mut references);
+        }
     }
     for binding in &module.bindings {
         collect_expr_type_names(&binding.value, &mut references);

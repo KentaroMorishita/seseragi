@@ -49,11 +49,13 @@
     {
       "identity": "Show<fixture/imported-effect-failure::main::AppError>",
       "trait": "Show",
-      "head": {
-        "kind": "named",
-        "name": "AppError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/imported-effect-failure::main::AppError",
       "constraints": [],
       "origin": {

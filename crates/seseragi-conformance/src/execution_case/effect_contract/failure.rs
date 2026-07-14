@@ -75,7 +75,10 @@ fn resolve_local_show_dictionary(
     let matching = generated_module
         .instances
         .iter()
-        .filter(|instance| instance.trait_name == "Show" && instance.type_identity == type_identity)
+        .filter(|instance| {
+            instance.trait_name == "Show"
+                && instance.type_identity.as_deref() == Some(type_identity.as_str())
+        })
         .collect::<Vec<_>>();
     let metadata = match matching.as_slice() {
         [metadata] => *metadata,

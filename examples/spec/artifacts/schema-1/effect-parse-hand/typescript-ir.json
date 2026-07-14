@@ -109,11 +109,13 @@
     {
       "identity": "Show<artifact/effect-parse-hand::HandInputError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "HandInputError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "HandInputError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "artifact/effect-parse-hand::HandInputError",
       "origin": {
         "source": "main.ssrg",

@@ -33,7 +33,12 @@ pub(super) fn render_typescript_instances(
 fn render_instance(instance: &TypeScriptInstance, show_type_local: &str) -> String {
     match &instance.implementation {
         TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } => {
-            let head = render_typescript_type(&instance.head);
+            let head = render_typescript_type(
+                instance
+                    .arguments
+                    .first()
+                    .expect("DerivedShow instance must retain one head argument"),
+            );
             let body = render_derived_show_body(adt_name, variants);
             format!(
                 "export const {}: {show_type_local}<{head}> = {{ show: {body} }};",

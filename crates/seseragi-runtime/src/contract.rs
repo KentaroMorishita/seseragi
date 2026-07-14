@@ -132,7 +132,10 @@ fn failure_renderer(
         .typed_hir
         .instances
         .iter()
-        .find(|instance| instance.trait_name == "Show" && &instance.head == failure)
+        .find(|instance| {
+            instance.trait_name == "Show"
+                && instance.arguments.as_slice() == std::slice::from_ref(failure)
+        })
         .ok_or_else(|| "`main` failure type requires a selected Show instance".to_owned())?;
     let generated = compiled
         .generated

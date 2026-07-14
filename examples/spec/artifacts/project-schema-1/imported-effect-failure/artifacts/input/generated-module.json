@@ -21,11 +21,13 @@
     {
       "identity": "Show<fixture/imported-effect-failure::input::InputError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "InputError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "InputError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/imported-effect-failure::input::InputError",
       "dictionaryExport": "__ssrg$instance$Show$0"
     }

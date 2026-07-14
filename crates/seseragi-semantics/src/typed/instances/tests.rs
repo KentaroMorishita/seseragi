@@ -15,8 +15,11 @@ fn selects_non_generic_derived_show_as_typed_evidence() {
     let instance = &typed.instances[0];
     assert_eq!(instance.identity, "Show<artifact/derived-show::AppError>");
     assert_eq!(instance.trait_name, "Show");
-    assert_eq!(instance.head, named("AppError"));
-    assert_eq!(instance.type_identity, "artifact/derived-show::AppError");
+    assert_eq!(instance.arguments, vec![named("AppError")]);
+    assert_eq!(
+        instance.type_identity.as_deref(),
+        Some("artifact/derived-show::AppError")
+    );
     assert!(instance.constraints.is_empty());
     assert!(matches!(
         &instance.implementation,
@@ -49,12 +52,12 @@ fn accepts_payload_with_a_local_derived_show_instance() {
 
     assert_eq!(typed.instances.len(), 2);
     assert_eq!(
-        typed.instances[0].type_identity,
-        "artifact/nested-derived-show::Outer"
+        typed.instances[0].type_identity.as_deref(),
+        Some("artifact/nested-derived-show::Outer")
     );
     assert_eq!(
-        typed.instances[1].type_identity,
-        "artifact/nested-derived-show::Detail"
+        typed.instances[1].type_identity.as_deref(),
+        Some("artifact/nested-derived-show::Detail")
     );
     assert!(matches!(
         &typed.instances[0].implementation,

@@ -23,11 +23,13 @@
     {
       "identity": "Show<fixture/imported-effect-failure::main::AppError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "AppError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/imported-effect-failure::main::AppError",
       "dictionaryExport": "__ssrg$instance$Show$0"
     }

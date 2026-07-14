@@ -172,8 +172,15 @@ pub struct TypedInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
-    pub head: TypedType,
-    pub type_identity: String,
+    /// Ordered arguments of the trait application in the instance head.
+    /// Keeping all arguments prevents multi-parameter traits from collapsing
+    /// into the first nominal type used by current runtime dictionaries.
+    pub arguments: Vec<TypedType>,
+    /// Canonical primary nominal type used by specialized runtime consumers.
+    /// General multi-parameter instances are identified by `identity` and
+    /// `arguments` and do not have to invent a single primary type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub type_identity: Option<String>,
     pub constraints: Vec<TypedConstraint>,
     pub origin: ByteSpan,
     pub implementation: TypedInstanceImplementation,

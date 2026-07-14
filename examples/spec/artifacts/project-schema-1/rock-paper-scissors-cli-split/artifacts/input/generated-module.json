@@ -33,11 +33,13 @@
     {
       "identity": "Show<fixture/rps-cli-split::input::InputError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "InputError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "InputError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/rps-cli-split::input::InputError",
       "dictionaryExport": "__ssrg$instance$Show$0"
     }

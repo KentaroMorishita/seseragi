@@ -152,6 +152,10 @@ imported public traitもdependency interfaceのmethod schemeを使い、provider
 trait type argument substitution、alpha-renamed generic method、部分適用型構築子、prelude constraintを同じ契約modelで検査します。
 provider-localまたはproviderがimportした別traitをmethod constraintが参照する場合も、provider interfaceからcanonical trait identityを
 consumerのresolved importへ運び、consumer側の同名traitへ綴りで取り違えません。
+TypedHir / CoreIr / TypeScriptIr / generated moduleのinstance headは、単一`head`型ではなくordered `arguments`として保持します。
+これにより`Show<A>`の現在のdictionary経路を維持しながら、`Add<L, R, O>`や`Iterable<C, A>`を第一引数へ潰さず後続へ運べます。
+`typeIdentity`はderived `Show`などprimary nominal typeを必要とする専用runtime consumer向けのoptional metadataであり、
+一般instance identityの代用にはしません。
 `project-schema-1/imported-trait-instance-contract`がclosed multi-module compilerの全IR / generated TypeScript gateを固定します。
 instance method bodyの型付け / IR / dictionary化は未接続です。
 

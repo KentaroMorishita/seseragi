@@ -47,11 +47,11 @@ pub type AppError deriving Show =
     assert_eq!(detail.trait_name, "Show");
     assert_eq!(detail.dictionary_export, "__ssrg$instance$Show$0");
     assert_eq!(
-        detail.head,
-        TypeScriptType::Reference {
+        detail.arguments,
+        vec![TypeScriptType::Reference {
             name: "Detail".to_owned(),
             arguments: Vec::new(),
-        }
+        }]
     );
     let TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } =
         &detail.implementation;

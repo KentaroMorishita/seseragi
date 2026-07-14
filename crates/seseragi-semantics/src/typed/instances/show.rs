@@ -175,11 +175,11 @@ fn typed_instance(
     TypedInstance {
         identity,
         trait_name: "Show".to_owned(),
-        head: TypedType::Named {
+        arguments: vec![TypedType::Named {
             name: candidate.name,
             arguments: Vec::new(),
-        },
-        type_identity: candidate.symbol.clone(),
+        }],
+        type_identity: Some(candidate.symbol.clone()),
         constraints: Vec::new(),
         origin: candidate.origin,
         implementation: TypedInstanceImplementation::DerivedShow {

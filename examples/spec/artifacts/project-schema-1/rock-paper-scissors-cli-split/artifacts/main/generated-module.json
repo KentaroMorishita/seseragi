@@ -26,11 +26,13 @@
     {
       "identity": "Show<fixture/rps-cli-split::main::AppError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "AppError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "fixture/rps-cli-split::main::AppError",
       "dictionaryExport": "__ssrg$instance$Show$0"
     }

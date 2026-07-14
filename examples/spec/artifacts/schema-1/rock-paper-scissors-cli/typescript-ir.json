@@ -233,11 +233,13 @@
     {
       "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
       "trait": "Show",
-      "head": {
-        "kind": "reference",
-        "name": "AppError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
       "origin": {
         "source": "main.ssrg",

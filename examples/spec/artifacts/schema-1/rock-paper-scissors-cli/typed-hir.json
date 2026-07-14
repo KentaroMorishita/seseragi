@@ -17,11 +17,13 @@
     {
       "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
       "trait": "Show",
-      "head": {
-        "kind": "named",
-        "name": "AppError",
-        "arguments": []
-      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
       "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
       "constraints": [],
       "origin": {

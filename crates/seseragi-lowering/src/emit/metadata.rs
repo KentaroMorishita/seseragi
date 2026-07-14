@@ -23,8 +23,9 @@ pub struct GeneratedInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
-    pub head: TypeScriptType,
-    pub type_identity: String,
+    pub arguments: Vec<TypeScriptType>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub type_identity: Option<String>,
     pub dictionary_export: String,
 }
 
@@ -75,7 +76,7 @@ fn generated_instance_from_typescript(instance: &TypeScriptInstance) -> Generate
     GeneratedInstance {
         identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
-        head: instance.head.clone(),
+        arguments: instance.arguments.clone(),
         type_identity: instance.type_identity.clone(),
         dictionary_export: instance.dictionary_export.clone(),
     }
@@ -136,15 +137,15 @@ mod tests {
         );
         assert_eq!(metadata.instances[0].trait_name, "Show");
         assert_eq!(
-            metadata.instances[0].head,
-            TypeScriptType::Reference {
+            metadata.instances[0].arguments,
+            vec![TypeScriptType::Reference {
                 name: "AppError".to_owned(),
                 arguments: Vec::new(),
-            }
+            }]
         );
         assert_eq!(
-            metadata.instances[0].type_identity,
-            "artifact/generated-show::AppError"
+            metadata.instances[0].type_identity.as_deref(),
+            Some("artifact/generated-show::AppError")
         );
         assert_eq!(
             metadata.instances[0].dictionary_export,
