@@ -43,7 +43,8 @@ language semanticsをtarget adapterへ委譲しません。
   dependency keyを最長prefixで選び、exact package identityの公開export subpathへ解決します。複数packageのcanonical source
   discoveryとshared driver compileまで接続し、path dependencyをまたぐ閉じた`ModuleIdentity` graphを通常pipelineへ渡します。
   `seseragi run package-path-dependency-basic`はdependencyの公開functionを呼ぶEffect entryを生成runtimeで実行します。
-  registry / lockfile resolution、full collection fixture、source root全体のcollision auditは未完了です。
+  全source rootのNFC / case / symlink / physical alias auditもentry discovery前に接続済みです。registry / lockfile resolutionと
+  full collection fixtureは未完了です。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS

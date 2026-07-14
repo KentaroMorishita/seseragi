@@ -8,6 +8,7 @@ mod tests;
 pub use error::LocalProjectLoadError;
 pub use model::LoadedLocalProject;
 
+use crate::loader::audit;
 use crate::loader::filesystem;
 use crate::{
     discover_local_package_graph, LoadedModule, LocalPackageGraph, ModuleGraph, ModuleIdentity,
@@ -65,6 +66,12 @@ impl<'a> SourceDiscovery<'a> {
                         package: Box::new(identity.clone()),
                         error: Box::new(error),
                     })?;
+            audit::audit_source_root(&source_root).map_err(|error| {
+                LocalProjectLoadError::Filesystem {
+                    package: Box::new(identity.clone()),
+                    error: Box::new(error),
+                }
+            })?;
             source_roots.insert(identity.clone(), source_root);
         }
         Ok(Self {

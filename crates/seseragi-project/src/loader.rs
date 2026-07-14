@@ -4,6 +4,7 @@
 //! stops before compiler orchestration and generated-output planning so CLI,
 //! LSP, and browser adapters can share the same project model.
 
+pub(crate) mod audit;
 mod error;
 pub(crate) mod filesystem;
 mod model;
@@ -50,6 +51,7 @@ pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoad
         .entry
         .clone();
     let source_root = filesystem::resolve_source_root(&root, &manifest.layout.source)?;
+    audit::audit_source_root(&source_root)?;
     let package_identity = PackageIdentity::new(
         manifest.package.name.clone(),
         manifest.package.version.clone(),

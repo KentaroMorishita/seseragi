@@ -44,6 +44,24 @@ pub enum PackageLoadError {
         second: ModulePath,
         canonical_path: PathBuf,
     },
+    DuplicatePhysicalDirectory {
+        first: PathBuf,
+        second: PathBuf,
+        canonical_path: PathBuf,
+    },
+    InvalidSourceModulePath {
+        path: PathBuf,
+        reason: String,
+    },
+    SourceNormalizationCollision {
+        first: PathBuf,
+        second: PathBuf,
+        module: ModulePath,
+    },
+    SourceCaseCollision {
+        first: ModulePath,
+        second: ModulePath,
+    },
     InvalidImport {
         module: ModulePath,
         specifier: String,
@@ -125,6 +143,39 @@ impl fmt::Display for PackageLoadError {
                 first.as_str(),
                 second.as_str(),
                 canonical_path.display()
+            ),
+            Self::DuplicatePhysicalDirectory {
+                first,
+                second,
+                canonical_path,
+            } => write!(
+                formatter,
+                "source directories `{}` and `{}` resolve to the same directory `{}`",
+                first.display(),
+                second.display(),
+                canonical_path.display()
+            ),
+            Self::InvalidSourceModulePath { path, reason } => write!(
+                formatter,
+                "source file `{}` is not a valid module path: {reason}",
+                path.display()
+            ),
+            Self::SourceNormalizationCollision {
+                first,
+                second,
+                module,
+            } => write!(
+                formatter,
+                "source files `{}` and `{}` normalize to module `{}`",
+                first.display(),
+                second.display(),
+                module.as_str()
+            ),
+            Self::SourceCaseCollision { first, second } => write!(
+                formatter,
+                "source modules `{}` and `{}` differ only by case",
+                first.as_str(),
+                second.as_str()
             ),
             Self::InvalidImport {
                 module,

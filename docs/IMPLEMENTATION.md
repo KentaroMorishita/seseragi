@@ -500,8 +500,9 @@ directoryから同じroot内だけを解決し、`.ssrg`の有無を同じmodule
 dot / empty segmentを拒否します。package identityは独自の表示文字列へ潰さず、仕様どおりASCII package name、exact
 SemVer、registry content digestまたはcanonical absolute pathのsource identityをstructuralに保持します。manifest /
 lockfileからregistry identityを構築する検証はまだ実装していません。local path identityはfilesystem canonical pathから
-構築し、source module discoveryでcase / symlink衝突を拒否しますが、全source root監査は未完了なためP2-1全体の完了とは
-扱いません。
+構築します。entry reachabilityに依存しないsource root auditが全`.ssrg`を列挙し、NFC / case collision、非canonical
+spelling、root外symlink、同じphysical file / directoryへの複数logical pathをsource parse前に拒否します。これによりlocal
+filesystemに対するP2-1 identity gateは完了です。registry content identityはlockfile resolverの別gateに残します。
 
 P2-1のmanifest sliceでは`seseragi-project::parse_manifest`を追加し、TOML 1.0 decoderから必須package identity input、
 default / explicit layout、export map、executable entryとhost policyをtyped modelへ変換します。未知core table、重複key、
@@ -534,8 +535,9 @@ package root、source root、各module fileはfilesystemでcanonicalizeし、roo
 複数logical moduleが同じphysical fileへ収束する状態をproject errorとして拒否します。読み込んだmoduleはcanonical pathを
 source labelに、`PackageIdentity + ModuleRoot::Source + ModulePath`をstructural identityに保持します。package / `std/` /
 `gen/` importはlocal fileへ誤変換せず、dependency resolver未接続として停止します。typed dependencyのmanifest-level解決と
-entryから到達するcross-package source graphは接続済みですが、entryから到達しないsourceも含むroot全体のcollision auditを
-接続するまでP2-1全体は引き続き未完了です。
+entryから到達するcross-package source graphに加え、各path dependencyのentryから到達しないsourceも含むroot全体のidentity
+auditを接続済みです。auditはsourceをcompileする代わりではなく、build / test discoveryが後から同じidentityを再利用できる
+filesystem gateです。
 
 `package.language`はsource discoveryより先に実装言語version `0.1.0`へ照合します。exact、比較、intersection、`||`、
 caret、tildeを仕様の上限規則で評価し、prereleaseは同じmajor / minor / patchのprerelease comparatorがrangeへ明記された

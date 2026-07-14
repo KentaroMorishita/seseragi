@@ -67,6 +67,38 @@ fn reports_undeclared_package_import_at_the_source_edge() {
     ));
 }
 
+#[cfg(unix)]
+#[test]
+fn audits_unreachable_source_aliases_before_entry_discovery() {
+    use std::os::unix::fs::symlink;
+
+    let project = TempProject::new();
+    project.write(
+        "seseragi.toml",
+        concat!(
+            "[package]\n",
+            "name = \"fixture/source-audit\"\n",
+            "version = \"1.0.0\"\n",
+            "language = \"^0.1.0\"\n\n",
+            "[run]\n",
+            "entry = \"main\"\n",
+        ),
+    );
+    project.write("src/main.ssrg", "pub fn main -> Unit = ()\n");
+    symlink(
+        project.path().join("src/main.ssrg"),
+        project.path().join("src/unreachable.ssrg"),
+    )
+    .unwrap();
+
+    let error = load_local_project(project.path()).unwrap_err();
+    assert!(matches!(
+        error,
+        LocalProjectLoadError::Filesystem { error, .. }
+            if matches!(*error, PackageLoadError::DuplicatePhysicalModule { .. })
+    ));
+}
+
 struct TempProject {
     path: PathBuf,
 }
