@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-trait-instance-contract::contract",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Prefix",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Prefix",
+          "tag": "Prefix",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "contract.ssrg",
+            "start": 22,
+            "end": 28
+          }
+        }
+      ],
+      "origin": {
+        "source": "contract.ssrg",
+        "start": 0,
+        "end": 35
+      }
+    }
+  ]
+}

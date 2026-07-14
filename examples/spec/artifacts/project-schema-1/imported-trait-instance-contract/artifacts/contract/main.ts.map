@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/imported-trait-instance-contract/contract.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-trait-instance-contract::contract"
+  ],
+  "sourcesContent": [
+    "pub type Prefix =\n  | Prefix String\n\npub trait Render<A> {\n  fn render prefix: Prefix -> value: A -> String\n}\n"
+  ],
+  "names": [
+    "Prefix",
+    "Prefix"
+  ],
+  "mappings": "AAAAA;;AACIC"
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "contract.ssrg",
+  "module": "fixture/imported-trait-instance-contract::contract",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-trait-instance-contract::contract::Prefix",
+      "name": "Prefix",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-trait-instance-contract::contract::Prefix",
+          "name": "Prefix",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Prefix",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 22,
+            "end": 28
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 35
+      }
+    }
+  ]
+}

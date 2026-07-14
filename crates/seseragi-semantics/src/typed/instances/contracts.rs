@@ -2,49 +2,11 @@ use crate::{ResolvedModule, SymbolKind, SymbolNamespace};
 use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceMethod};
 use std::collections::BTreeMap;
 
+mod model;
 mod types;
 
-struct LocalTraitContract<'a> {
-    parameters: &'a [String],
-    methods: &'a [SurfaceMethod],
-    span: ByteSpan,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) enum InstanceContractIssue {
-    ArityMismatch {
-        trait_name: String,
-        expected: usize,
-        actual: usize,
-        primary: ByteSpan,
-        declaration: ByteSpan,
-    },
-    MissingMethod {
-        method: String,
-        primary: ByteSpan,
-        contract: ByteSpan,
-    },
-    UnexpectedMethod {
-        method: String,
-        primary: ByteSpan,
-        contract: ByteSpan,
-    },
-    DuplicateMethod {
-        method: String,
-        primary: ByteSpan,
-        declaration: ByteSpan,
-    },
-    SignatureMismatch {
-        method: String,
-        primary: ByteSpan,
-        contract: ByteSpan,
-    },
-    MissingBody {
-        method: String,
-        primary: ByteSpan,
-        contract: ByteSpan,
-    },
-}
+pub(crate) use model::InstanceContractIssue;
+use model::{TraitContract, TraitMethodContract};
 
 pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<InstanceContractIssue> {
     resolved
@@ -62,7 +24,7 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
             else {
                 return None;
             };
-            let contract = local_trait_contract(resolved, *trait_name_span)?;
+            let contract = trait_contract(resolved, *trait_name_span)?;
             Some(validate_instance(
                 resolved, trait_name, arguments, methods, *span, contract,
             ))
@@ -77,16 +39,26 @@ fn validate_instance(
     arguments: &[seseragi_syntax::TypeRef],
     methods: &[SurfaceMethod],
     instance_span: ByteSpan,
-    contract: LocalTraitContract<'_>,
+    contract: TraitContract<'_>,
 ) -> Vec<InstanceContractIssue> {
     let mut issues = Vec::new();
-    if arguments.len() != contract.parameters.len() {
+    let (parameters, contract_span) = match &contract {
+        TraitContract::Local {
+            parameters, span, ..
+        } => (*parameters, *span),
+        TraitContract::Imported {
+            parameters,
+            import_span,
+            ..
+        } => (*parameters, *import_span),
+    };
+    if arguments.len() != parameters.len() {
         issues.push(InstanceContractIssue::ArityMismatch {
             trait_name: trait_name.to_owned(),
-            expected: contract.parameters.len(),
+            expected: parameters.len(),
             actual: arguments.len(),
             primary: instance_span,
-            declaration: contract.span,
+            declaration: contract_span,
         });
         return issues;
     }
@@ -105,45 +77,81 @@ fn validate_instance(
         }
     }
 
-    let expected = contract
-        .methods
+    let expected_methods = match &contract {
+        TraitContract::Local { methods, .. } => methods
+            .iter()
+            .map(TraitMethodContract::Local)
+            .collect::<Vec<_>>(),
+        TraitContract::Imported { methods, .. } => methods
+            .iter()
+            .map(TraitMethodContract::Imported)
+            .collect::<Vec<_>>(),
+    };
+    let expected = expected_methods
         .iter()
-        .map(|method| (method.name.as_str(), method))
+        .map(|method| (method.name(), method))
         .collect::<BTreeMap<_, _>>();
-    for expected_method in contract.methods {
+    for expected_method in &expected_methods {
         let Some(implementation) = actual
-            .get(expected_method.name.as_str())
+            .get(expected_method.name())
             .and_then(|methods| methods.first())
         else {
             issues.push(InstanceContractIssue::MissingMethod {
-                method: expected_method.name.clone(),
+                method: expected_method.name().to_owned(),
                 primary: instance_span,
-                contract: expected_method.span,
+                contract: contract_method_span(expected_method, contract_span),
             });
             continue;
         };
         if implementation.body.is_none() {
             issues.push(InstanceContractIssue::MissingBody {
-                method: expected_method.name.clone(),
+                method: expected_method.name().to_owned(),
                 primary: implementation.span,
-                contract: expected_method.span,
+                contract: contract_method_span(expected_method, contract_span),
             });
         }
-        if matches!(
-            types::method_contract_matches(
+        let matches = match (&contract, expected_method) {
+            (
+                TraitContract::Local {
+                    parameters, span, ..
+                },
+                TraitMethodContract::Local(expected),
+            ) => types::method_contract_matches(
                 resolved,
-                contract.span,
-                contract.parameters,
+                *span,
+                parameters,
                 arguments,
-                expected_method,
+                expected,
                 implementation,
             ),
-            Some(false)
-        ) {
+            (
+                TraitContract::Imported {
+                    name,
+                    canonical,
+                    parameters,
+                    bindings,
+                    ..
+                },
+                TraitMethodContract::Imported(expected),
+            ) => types::imported_method_contract_matches(
+                resolved,
+                arguments,
+                expected,
+                implementation,
+                types::ImportedMethodContext {
+                    trait_parameters: parameters,
+                    bindings,
+                    trait_name: name,
+                    trait_canonical: canonical,
+                },
+            ),
+            _ => None,
+        };
+        if matches == Some(false) {
             issues.push(InstanceContractIssue::SignatureMismatch {
-                method: expected_method.name.clone(),
+                method: expected_method.name().to_owned(),
                 primary: implementation.span,
-                contract: expected_method.span,
+                contract: contract_method_span(expected_method, contract_span),
             });
         }
     }
@@ -152,17 +160,17 @@ fn validate_instance(
             issues.push(InstanceContractIssue::UnexpectedMethod {
                 method: implementation.name.clone(),
                 primary: implementation.name_span,
-                contract: contract.span,
+                contract: contract_span,
             });
         }
     }
     issues
 }
 
-fn local_trait_contract<'a>(
+fn trait_contract<'a>(
     resolved: &'a ResolvedModule,
     trait_name_span: ByteSpan,
-) -> Option<LocalTraitContract<'a>> {
+) -> Option<TraitContract<'a>> {
     let target = resolved
         .references
         .iter()
@@ -174,7 +182,7 @@ fn local_trait_contract<'a>(
         .symbols
         .iter()
         .find(|symbol| symbol.id == target && symbol.kind == SymbolKind::Trait)?;
-    resolved.declarations.iter().find_map(|declaration| {
+    if let Some(contract) = resolved.declarations.iter().find_map(|declaration| {
         let SurfaceDecl::Trait {
             name_span,
             type_parameters,
@@ -185,10 +193,32 @@ fn local_trait_contract<'a>(
         else {
             return None;
         };
-        (*name_span == symbol.origin).then_some(LocalTraitContract {
+        (*name_span == symbol.origin).then_some(TraitContract::Local {
             parameters: type_parameters,
             methods,
             span: *span,
         })
+    }) {
+        return Some(contract);
+    }
+    let imported = resolved.imports.iter().find(|import| {
+        import.symbol == target
+            && import.export.namespace == "trait"
+            && import.export.declaration_kind.as_deref() == Some("trait")
+    })?;
+    Some(TraitContract::Imported {
+        name: &imported.export.name,
+        canonical: &imported.export.symbol,
+        parameters: &imported.export.scheme.type_parameters,
+        methods: &imported.export.methods,
+        bindings: imported.scheme_type_bindings.as_deref().unwrap_or(&[]),
+        import_span: imported.origin,
     })
+}
+
+fn contract_method_span(method: &TraitMethodContract<'_>, fallback: ByteSpan) -> ByteSpan {
+    match method {
+        TraitMethodContract::Local(method) => method.span,
+        TraitMethodContract::Imported(_) => fallback,
+    }
 }

@@ -576,7 +576,15 @@ local user-defined instanceは、resolved trait identityから対応するtrait 
 再解析せずresolved type / trait symbol identityを使い、method genericはalpha normalize、record fieldとconstraint順はcanonicalize、
 `F<A>`と`Either<E, _>`のような型構築子適用はhole substitution後に比較します。
 `semantic-diagnostics-schema-1/{instance-contract,instance-contract-mismatch}`がpositive / negative diagnosticを固定します。これはlocal契約検査のgateであり、
-instance bodyのTypedHir化、imported trait contract照合、dictionary生成・dispatchはまだ完了扱いしません。
+instance bodyのTypedHir化、dictionary生成・dispatchはまだ完了扱いしません。
+
+named importで得たpublic traitは、`ModuleInterface`に保持したmethod schemeを同じcontract modelへ正規化して照合します。
+trait / method type parameterはinstance headで置換・alpha normalizeし、prelude type / traitとprovider nominal typeはcanonical identityで
+比較します。provider側のsource spanをconsumer sourceへ誤表示しないため、cross-module contract diagnosticの関連位置はimport spanを
+anchorにします。`project-schema-1/imported-trait-instance-contract`はtrait export、named import、consumer側instance契約検査を
+closed projectのTypedHir / TypedInterface / CoreIr / TypeScriptIr / generated moduleまで固定します。これはinterface契約の検査gateであり、
+instance method bodyやdictionaryがbackendへ残ることの証明ではありません。また、imported method constraintがprovider-localな別traitを
+参照する場合のcanonical trait bindingは後続gateへ残し、解決不能時に綴り比較へfallbackして誤診断しません。
 
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、
@@ -616,8 +624,8 @@ import itemのbyte span付きで保持し、dependency bodyを読みません。
 constructorとoperatorはresolver scopeへ入り、pure function schemeとADT familyをTypedHirへ接続済みです。
 namespace-qualified pure callableとtype referenceは選択されたexportだけをcanonical importへ変換します。constructor pattern /
 expressionも同じcanonical constructor identityへ解決し、imported ADT familyを使うscalar / tuple matchの網羅性と
-unreachable armを検査します。trait / nested namespace、higher-order callable、generic imported ADTは後続の小さいgateに残るため、P2-2全体を
-完了とは扱いません。
+unreachable armを検査します。imported traitはmethod contractの照合まで接続済みですがdictionary生成・dispatchは未接続です。
+nested namespace、constraint付きhigher-order callable、generic imported ADTも後続の小さいgateに残るため、P2-2全体を完了とは扱いません。
 
 実compileでlinkerへ渡すのはshallow interfaceの推測値ではなく、dependencyをtopological orderで型検査した後の
 `TypedModuleInterface::into_link_interface`です。これによりcompact inferred `effect fn`のR / E / Aをbodyから確定した

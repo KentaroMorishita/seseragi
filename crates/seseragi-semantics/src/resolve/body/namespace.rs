@@ -1,4 +1,4 @@
-use super::{scheme_types::callable_scheme_type_bindings, Resolver};
+use super::{scheme_types::export_scheme_type_bindings, Resolver};
 use crate::{ResolveIssue, ResolvedImport, ScopeId, SymbolId, SymbolKind, SymbolNamespace};
 use seseragi_syntax::{ByteSpan, InterfaceExport, ModuleHeader, ModuleInterface, Visibility};
 use std::collections::{BTreeMap, BTreeSet};
@@ -59,7 +59,7 @@ impl NamespaceImports {
             .map(|export| {
                 (
                     (export.namespace.clone(), export.name.clone()),
-                    callable_scheme_type_bindings(interface, export),
+                    export_scheme_type_bindings(interface, export),
                 )
             })
             .collect();

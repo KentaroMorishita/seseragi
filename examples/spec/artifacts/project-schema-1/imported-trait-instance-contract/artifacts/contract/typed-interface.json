@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-trait-instance-contract::contract",
+  "source": "contract.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-trait-instance-contract::contract::Prefix",
+      "namespace": "type",
+      "name": "Prefix",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 35
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Prefix",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-trait-instance-contract::contract::Prefix",
+      "namespace": "value",
+      "name": "Prefix",
+      "constructorOf": "fixture/imported-trait-instance-contract::contract::Prefix",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 22,
+        "end": 28
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Prefix",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-trait-instance-contract::contract::trait(Render)",
+      "namespace": "trait",
+      "name": "Render",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 37,
+        "end": 109
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Render",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "render",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Prefix",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 61,
+            "end": 107
+          }
+        }
+      ]
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-trait-instance-contract::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./contract",
+      "module": "fixture/imported-trait-instance-contract::contract",
+      "origin": {
+        "start": 0,
+        "end": 43
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Prefix",
+          "symbol": "fixture/imported-trait-instance-contract::contract::Prefix"
+        },
+        {
+          "namespace": "value",
+          "name": "Prefix",
+          "symbol": "fixture/imported-trait-instance-contract::contract::Prefix"
+        },
+        {
+          "namespace": "trait",
+          "name": "Render",
+          "symbol": "fixture/imported-trait-instance-contract::contract::trait(Render)"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-trait-instance-contract::main::status",
+      "namespace": "value",
+      "name": "status",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 157,
+        "end": 210
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Render",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 66,
+        "end": 155
+      }
+    }
+  ]
+}

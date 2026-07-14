@@ -9,6 +9,7 @@ use std::collections::BTreeMap;
 mod imported_effect_invocations;
 mod imported_instance_evidence;
 mod imported_scheme_nominals;
+mod imported_trait_contracts;
 mod namespace_constructors;
 mod namespace_types;
 

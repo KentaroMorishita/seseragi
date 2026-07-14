@@ -1,0 +1,9 @@
+import { Prefix, Render } from "./contract"
+
+newtype Score = Int
+
+instance Render<Score> {
+  fn render prefix: Prefix -> value: Score -> String = "score"
+}
+
+pub fn status unit: Unit -> String = "contract ready"

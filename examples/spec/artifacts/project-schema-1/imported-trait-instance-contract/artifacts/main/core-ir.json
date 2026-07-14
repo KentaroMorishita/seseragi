@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-trait-instance-contract::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Prefix",
+      "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
+      "provider": {
+        "module": "fixture/imported-trait-instance-contract::contract",
+        "export": "Prefix"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./contract",
+      "module": "fixture/imported-trait-instance-contract::contract",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 43
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Prefix",
+          "local": "Prefix",
+          "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Prefix",
+          "local": "Prefix",
+          "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "trait",
+          "imported": "Render",
+          "local": "Render",
+          "canonical": "fixture/imported-trait-instance-contract::contract::trait(Render)",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 23
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-trait-instance-contract::main::status",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 157,
+        "end": 210
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "string",
+        "value": "contract ready",
+        "origin": {
+          "source": "main.ssrg",
+          "start": 194,
+          "end": 210
+        }
+      }
+    }
+  ]
+}

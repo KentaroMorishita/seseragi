@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-trait-instance-contract::contract",
+    "fixture/imported-trait-instance-contract::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-trait-instance-contract::contract",
+      "source": "src/contract.ssrg",
+      "output": "dist/imported-trait-instance-contract/contract.js",
+      "artifacts": "artifacts/contract",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-trait-instance-contract::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-trait-instance-contract/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./contract",
+          "module": "fixture/imported-trait-instance-contract::contract"
+        }
+      ]
+    }
+  ]
+}

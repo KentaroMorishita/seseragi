@@ -1,0 +1,6 @@
+pub type Prefix =
+  | Prefix String
+
+pub trait Render<A> {
+  fn render prefix: Prefix -> value: A -> String
+}

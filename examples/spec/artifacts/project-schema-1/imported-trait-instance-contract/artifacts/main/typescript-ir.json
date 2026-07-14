@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-trait-instance-contract::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-trait-instance-contract::contract",
+      "specifier": "./contract.js",
+      "bindings": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 43
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "status",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "string",
+        "value": "contract ready"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 157,
+        "end": 210
+      }
+    }
+  ]
+}

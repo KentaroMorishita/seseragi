@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-trait-instance-contract::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "status"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-trait-instance-contract/main.ts",
+    "sourceMap": "dist/imported-trait-instance-contract/main.ts.map"
+  }
+}

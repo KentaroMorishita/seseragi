@@ -3,30 +3,55 @@ use crate::{ExternalTypeBinding, ExternalTypeProvider, SymbolNamespace};
 use seseragi_syntax::{InterfaceExport, InterfaceType, ModuleInterface};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub(super) fn callable_scheme_type_bindings(
+pub(super) fn export_scheme_type_bindings(
     provider: &ModuleInterface,
-    callable: &InterfaceExport,
+    export: &InterfaceExport,
 ) -> Option<Vec<ExternalTypeBinding>> {
     if !matches!(
-        callable.declaration_kind.as_deref(),
-        Some("function" | "effect-function")
+        export.declaration_kind.as_deref(),
+        Some("function" | "effect-function" | "trait")
     ) {
         return None;
     }
     let candidates = provider_candidates(provider);
-    let type_parameters = callable
+    let type_parameters = export
         .scheme
         .type_parameters
         .iter()
         .cloned()
         .collect::<BTreeSet<_>>();
     let mut bindings = Vec::new();
-    collect_bindings(
-        &callable.scheme.type_ref,
-        &type_parameters,
-        &candidates,
-        &mut bindings,
-    )?;
+    if export.declaration_kind.as_deref() != Some("trait") {
+        collect_bindings(
+            &export.scheme.type_ref,
+            &type_parameters,
+            &candidates,
+            &mut bindings,
+        )?;
+    }
+    for constraint in &export.scheme.constraints {
+        for argument in &constraint.arguments {
+            collect_bindings(argument, &type_parameters, &candidates, &mut bindings)?;
+        }
+    }
+    for method in &export.methods {
+        let method_parameters = type_parameters
+            .iter()
+            .cloned()
+            .chain(method.scheme.type_parameters.iter().cloned())
+            .collect::<BTreeSet<_>>();
+        collect_bindings(
+            &method.scheme.type_ref,
+            &method_parameters,
+            &candidates,
+            &mut bindings,
+        )?;
+        for constraint in &method.scheme.constraints {
+            for argument in &constraint.arguments {
+                collect_bindings(argument, &method_parameters, &candidates, &mut bindings)?;
+            }
+        }
+    }
     Some(bindings)
 }
 
@@ -179,11 +204,55 @@ fn is_prelude_type(name: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::callable_scheme_type_bindings;
+    use super::export_scheme_type_bindings;
     use seseragi_syntax::{
-        ByteSpan, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceScheme,
-        InterfaceType, ModuleInterface, Visibility,
+        ByteSpan, InterfaceDependency, InterfaceExport, InterfaceImport, InterfaceMethod,
+        InterfaceScheme, InterfaceType, ModuleInterface, Visibility,
     };
+
+    #[test]
+    fn collects_provider_types_from_trait_method_contracts() {
+        let trait_export = InterfaceExport {
+            symbol: "fixture/provider::trait(Convert)".to_owned(),
+            namespace: "trait".to_owned(),
+            name: "Convert".to_owned(),
+            constructor_of: None,
+            visibility: Visibility::Public,
+            declaration_kind: Some("trait".to_owned()),
+            declaration: ByteSpan { start: 5, end: 40 },
+            scheme: InterfaceScheme {
+                type_parameters: vec!["A".to_owned()],
+                constraints: Vec::new(),
+                type_ref: InterfaceType::TypeConstructor {
+                    name: "Convert".to_owned(),
+                    arity: 1,
+                },
+            },
+            methods: vec![InterfaceMethod {
+                name: "convert".to_owned(),
+                scheme: InterfaceScheme {
+                    type_parameters: Vec::new(),
+                    constraints: Vec::new(),
+                    type_ref: InterfaceType::Function {
+                        parameter: Box::new(named("User")),
+                        result: Box::new(named("A")),
+                    },
+                },
+                origin: ByteSpan { start: 20, end: 35 },
+            }],
+            representation: None,
+        };
+        let provider = module(vec![
+            type_export("User", "fixture/provider::User"),
+            trait_export.clone(),
+        ]);
+
+        let bindings = export_scheme_type_bindings(&provider, &trait_export).unwrap();
+
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].spelling, "User");
+        assert_eq!(bindings[0].canonical, "fixture/provider::User");
+    }
 
     #[test]
     fn rejects_ambiguous_provider_local_type_spelling() {
@@ -201,7 +270,7 @@ mod tests {
         });
         let callable = function_export("accept", named("User"), named("Unit"));
 
-        assert_eq!(callable_scheme_type_bindings(&provider, &callable), None);
+        assert_eq!(export_scheme_type_bindings(&provider, &callable), None);
     }
 
     #[test]
@@ -209,7 +278,7 @@ mod tests {
         let provider = module(Vec::new());
         let callable = function_export("accept", named("Missing"), named("Unit"));
 
-        assert_eq!(callable_scheme_type_bindings(&provider, &callable), None);
+        assert_eq!(export_scheme_type_bindings(&provider, &callable), None);
     }
 
     fn module(exports: Vec<InterfaceExport>) -> ModuleInterface {

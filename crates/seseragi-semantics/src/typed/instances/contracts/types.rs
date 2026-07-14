@@ -1,12 +1,20 @@
-use crate::{ResolvedModule, SymbolId};
-use seseragi_syntax::{SurfaceMethod, TypeRef};
+use crate::{ExternalTypeBinding, ResolvedModule, SymbolId};
+use seseragi_syntax::{InterfaceMethod, SurfaceMethod, TypeRef};
 use std::collections::BTreeMap;
 
+mod interface;
 mod model;
 mod resolution;
 
 use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
+
+pub(super) struct ImportedMethodContext<'a> {
+    pub(super) trait_parameters: &'a [String],
+    pub(super) bindings: &'a [ExternalTypeBinding],
+    pub(super) trait_name: &'a str,
+    pub(super) trait_canonical: &'a str,
+}
 
 pub(super) fn method_contract_matches(
     resolved: &ResolvedModule,
@@ -34,6 +42,42 @@ pub(super) fn method_contract_matches(
     }
 
     let expected = contract_method(resolved, expected, &expected_binders, &substitutions)?;
+    let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
+    Some(expected == actual)
+}
+
+pub(super) fn imported_method_contract_matches(
+    resolved: &ResolvedModule,
+    instance_arguments: &[TypeRef],
+    expected: &InterfaceMethod,
+    actual: &SurfaceMethod,
+    context: ImportedMethodContext<'_>,
+) -> Option<bool> {
+    if context.trait_parameters.len() != instance_arguments.len()
+        || expected.scheme.type_parameters.len() != actual.type_parameters.len()
+    {
+        return Some(false);
+    }
+
+    let actual_binders = method_binders(resolved, actual)?;
+    let substitutions = context
+        .trait_parameters
+        .iter()
+        .zip(instance_arguments)
+        .map(|(parameter, argument)| {
+            Some((
+                parameter.clone(),
+                contract_type(resolved, argument, &BTreeMap::new(), &BTreeMap::new())?,
+            ))
+        })
+        .collect::<Option<BTreeMap<_, _>>>()?;
+    let expected = interface::contract_method_from_interface(
+        expected,
+        &substitutions,
+        context.bindings,
+        context.trait_name,
+        context.trait_canonical,
+    )?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
     Some(expected == actual)
 }
