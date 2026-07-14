@@ -106,6 +106,52 @@
           }
         }
       ],
+      "methods": [
+        {
+          "name": "show",
+          "nameSpan": {
+            "start": 171,
+            "end": 175
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 176,
+                "end": 181
+              },
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "span": {
+                  "start": 183,
+                  "end": 188
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 192,
+              "end": 198
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Score\"",
+            "span": {
+              "start": 201,
+              "end": 208
+            }
+          },
+          "span": {
+            "start": 168,
+            "end": 208
+          }
+        }
+      ],
       "span": {
         "start": 143,
         "end": 210

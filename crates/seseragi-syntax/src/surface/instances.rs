@@ -1,5 +1,5 @@
 use super::SurfaceParser;
-use crate::surface_model::SurfaceDecl;
+use crate::surface_model::{SurfaceDecl, SurfaceInstanceMethod, Visibility};
 use crate::token::TokenKind;
 
 impl SurfaceParser<'_> {
@@ -31,13 +31,73 @@ impl SurfaceParser<'_> {
             .find_raw(after_head, body_start, "where")
             .map(|where_index| self.parse_constraints(where_index + 1, body_start))
             .unwrap_or_default();
+        let methods = self.parse_instance_methods(body_start, end);
 
         Some(SurfaceDecl::Instance {
             type_parameters,
             trait_name,
             arguments,
             constraints,
+            methods,
             span: self.declaration_span(top_start, end)?,
         })
+    }
+
+    fn parse_instance_methods(&self, body_start: usize, end: usize) -> Vec<SurfaceInstanceMethod> {
+        if self.kind_at(body_start) != Some(TokenKind::PunctuationBraceLeft) {
+            return Vec::new();
+        }
+        let mut starts = Vec::new();
+        let mut depth = 1usize;
+        let mut body_end = end;
+        for index in body_start + 1..end {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    depth = depth.saturating_sub(1);
+                    if depth == 0 {
+                        body_end = index;
+                        break;
+                    }
+                }
+                Some(TokenKind::KeywordFn) if depth == 1 => {
+                    starts.push(index);
+                }
+                _ => {}
+            }
+        }
+        starts
+            .iter()
+            .enumerate()
+            .filter_map(|(position, start)| {
+                let method_end = starts.get(position + 1).copied().unwrap_or(body_end);
+                let declaration =
+                    self.parse_fn_decl(Visibility::Private, *start, *start, method_end)?;
+                let SurfaceDecl::Fn {
+                    name,
+                    name_span,
+                    type_parameters,
+                    parameters,
+                    return_type,
+                    constraints,
+                    body,
+                    span,
+                    ..
+                } = declaration
+                else {
+                    return None;
+                };
+                Some(SurfaceInstanceMethod {
+                    name,
+                    name_span,
+                    type_parameters,
+                    parameters,
+                    return_type,
+                    constraints,
+                    body,
+                    span,
+                })
+            })
+            .collect()
     }
 }

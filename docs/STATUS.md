@@ -142,7 +142,8 @@ TypedHir / CoreIrへ保持し、checked `(+)` callback、TypeScript runtime、ac
 Playgroundでも`Arrayスコア集計`として同じdriver / browser runtimeを実行できます。
 Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
 backendはそのevidenceを確認してchecked runtime helperを選択します。残る主要gateはこの標準Int経路を一般化する
-user-defined / imported instance search、coherence、dictionary passingです。
+user-defined / imported instance search、coherence、dictionary passingです。user-defined instanceのmethodはSurfaceAstで
+signature / body / spanを保持し、resolverのinstance / method scopeで名前解決されるところまで接続済みです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

@@ -26,6 +26,32 @@ fn keeps_private_declarations_and_resolves_parameter_and_module_references() {
 }
 
 #[test]
+fn resolves_instance_method_signatures_and_bodies_in_child_scopes() {
+    let resolved = resolve_module(
+        "artifact/instance-method/main.ssrg",
+        "newtype Score = Int\ninstance Show<Score> {\n  fn show value: Score -> Score = value\n}\n",
+    );
+
+    let value = symbol(&resolved, SymbolKind::Parameter, "value");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Value
+            && reference.spelling == "value"
+            && reference.target == Some(value)
+    }));
+    assert_eq!(
+        resolved
+            .references
+            .iter()
+            .filter(|reference| {
+                reference.namespace == SymbolNamespace::Type && reference.spelling == "Score"
+            })
+            .count(),
+        3
+    );
+    assert!(resolved.issues.is_empty());
+}
+
+#[test]
 fn separates_adt_type_and_constructor_symbols_by_namespace() {
     let resolved = resolve_module(
         "artifact/adt-resolution/main.ssrg",

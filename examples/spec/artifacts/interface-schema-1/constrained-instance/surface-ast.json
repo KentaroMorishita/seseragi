@@ -47,6 +47,62 @@
           }
         }
       ],
+      "methods": [
+        {
+          "name": "show",
+          "nameSpan": {
+            "start": 46,
+            "end": 50
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 51,
+                "end": 56
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 62,
+                      "end": 63
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 58,
+                  "end": 64
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 68,
+              "end": 74
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Box\"",
+            "span": {
+              "start": 77,
+              "end": 82
+            }
+          },
+          "span": {
+            "start": 43,
+            "end": 82
+          }
+        }
+      ],
       "span": {
         "start": 0,
         "end": 84

@@ -159,6 +159,8 @@ pub enum SurfaceDecl {
         arguments: Vec<TypeRef>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        methods: Vec<SurfaceInstanceMethod>,
         span: ByteSpan,
     },
 }
@@ -187,6 +189,22 @@ pub struct SurfaceParameter {
     pub name_span: ByteSpan,
     #[serde(rename = "type")]
     pub type_ref: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceInstanceMethod {
+    pub name: String,
+    pub name_span: ByteSpan,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<String>,
+    pub parameters: Vec<SurfaceParameter>,
+    pub return_type: TypeRef,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub constraints: Vec<SurfaceConstraint>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub body: Option<SurfaceExpr>,
+    pub span: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

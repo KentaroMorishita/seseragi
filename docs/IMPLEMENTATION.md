@@ -559,6 +559,12 @@ Int算術はさらに、binary expressionとoperator sectionの双方で`Add<Int
 これは標準Int instanceのevidence transportを固定するsliceであり、custom arithmetic instanceの探索やdictionary dispatchを
 標準名への分岐で代用するものではありません。
 
+user-defined instanceへ進む前提として、SurfaceAstの`instance`はhead / constraintだけでなく、各methodの型parameter、
+parameter、戻り型、constraint、body、source spanを保持します。resolverもinstance scopeを親にmethod scopeを作り、
+method signatureとbodyの型名・値名を通常のreferenceとして解決します。以前のようにfrontendでmethod bodyを捨てると、
+instance searchだけを追加してもruntime dictionaryを生成できないため、この保持を先行gateにしています。methodのtrait契約との
+型照合、coherence、TypedHir / CoreIr dictionary表現は後続sliceで接続し、このfrontend保持だけをinstance完成とは扱いません。
+
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、
 標準型名だけを通る経路と区別して回収します。

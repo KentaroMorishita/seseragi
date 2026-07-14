@@ -362,16 +362,16 @@ fn type_arithmetic_operator_reference(
 ) -> SurfaceExpressionAnalysis {
     let type_ref = curried_binary_type(named_type("Int"), named_type("Int"));
     let valid = context.operator_target(span).is_some();
-    let evidence = valid
-        .then(|| {
-            super::call_evidence::select_arithmetic_evidence(
-                name,
-                named_type("Int"),
-                named_type("Int"),
-                named_type("Int"),
-            )
-        })
-        .unwrap_or_default();
+    let evidence = if valid {
+        super::call_evidence::select_arithmetic_evidence(
+            name,
+            named_type("Int"),
+            named_type("Int"),
+            named_type("Int"),
+        )
+    } else {
+        Vec::new()
+    };
     SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
             name: name.to_owned(),

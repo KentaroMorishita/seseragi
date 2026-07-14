@@ -415,6 +415,49 @@ fn parses_rich_interface_surface_declarations() {
                 },
             }],
             constraints: Vec::new(),
+            methods: vec![SurfaceInstanceMethod {
+                name: "show".to_owned(),
+                name_span: ByteSpan {
+                    start: 171,
+                    end: 175
+                },
+                type_parameters: Vec::new(),
+                parameters: vec![SurfaceParameter {
+                    name: "value".to_owned(),
+                    name_span: ByteSpan {
+                        start: 176,
+                        end: 181
+                    },
+                    type_ref: TypeRef::Named {
+                        name: "Score".to_owned(),
+                        arguments: Vec::new(),
+                        span: ByteSpan {
+                            start: 183,
+                            end: 188
+                        },
+                    },
+                }],
+                return_type: TypeRef::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan {
+                        start: 192,
+                        end: 198
+                    },
+                },
+                constraints: Vec::new(),
+                body: Some(SurfaceExpr::String {
+                    raw: "\"Score\"".to_owned(),
+                    span: ByteSpan {
+                        start: 201,
+                        end: 208
+                    },
+                }),
+                span: ByteSpan {
+                    start: 168,
+                    end: 208
+                },
+            }],
             span: ByteSpan {
                 start: 143,
                 end: 210
@@ -453,9 +496,60 @@ fn parses_instance_type_parameters_and_constraints() {
                 }],
                 span: ByteSpan { start: 31, end: 38 },
             }],
+            methods: vec![SurfaceInstanceMethod {
+                name: "show".to_owned(),
+                name_span: ByteSpan { start: 46, end: 50 },
+                type_parameters: Vec::new(),
+                parameters: vec![SurfaceParameter {
+                    name: "value".to_owned(),
+                    name_span: ByteSpan { start: 51, end: 56 },
+                    type_ref: TypeRef::Named {
+                        name: "Box".to_owned(),
+                        arguments: vec![TypeRef::Named {
+                            name: "A".to_owned(),
+                            arguments: Vec::new(),
+                            span: ByteSpan { start: 62, end: 63 },
+                        }],
+                        span: ByteSpan { start: 58, end: 64 },
+                    },
+                }],
+                return_type: TypeRef::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 68, end: 74 },
+                },
+                constraints: Vec::new(),
+                body: Some(SurfaceExpr::String {
+                    raw: "\"Box\"".to_owned(),
+                    span: ByteSpan { start: 77, end: 82 },
+                }),
+                span: ByteSpan { start: 43, end: 82 },
+            }],
             span: ByteSpan { start: 0, end: 84 },
         }
     );
+}
+
+#[test]
+fn preserves_multiple_instance_methods_across_nested_expression_braces() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "instance Example<Int> { fn choose value: Int -> Int = match value { _ -> value }\n\
+           fn zero unit: Unit -> Int = 0\n\
+         }\n",
+    );
+
+    let SurfaceDecl::Instance { methods, .. } = &module.declarations[0] else {
+        panic!("expected instance declaration");
+    };
+    assert_eq!(methods.len(), 2);
+    assert_eq!(methods[0].name, "choose");
+    assert!(matches!(methods[0].body, Some(SurfaceExpr::Match { .. })));
+    assert_eq!(methods[1].name, "zero");
+    assert!(matches!(
+        methods[1].body,
+        Some(SurfaceExpr::Integer { ref raw, .. }) if raw == "0"
+    ));
 }
 
 #[test]

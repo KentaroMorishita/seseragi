@@ -10,6 +10,7 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
             trait_name,
             arguments,
             constraints,
+            methods: _,
             span,
         } => Some(InterfaceInstance {
             identity: None,
