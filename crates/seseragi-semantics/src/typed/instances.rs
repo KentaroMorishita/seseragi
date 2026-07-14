@@ -3,12 +3,14 @@ use seseragi_syntax::ByteSpan;
 
 use super::TypedResolution;
 
+mod contracts;
 mod show;
 #[cfg(test)]
 mod tests;
 mod traits;
 
 pub(crate) use crate::instance_identity::canonical_instance_identity;
+pub(crate) use contracts::{analyze_instance_contracts, InstanceContractIssue};
 
 pub(crate) struct DerivedInstanceAnalysis {
     pub(crate) instances: Vec<TypedInstance>,

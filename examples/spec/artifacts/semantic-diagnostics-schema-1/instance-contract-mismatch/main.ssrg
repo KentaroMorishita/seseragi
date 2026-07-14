@@ -1,0 +1,9 @@
+trait Render<A> {
+  fn render value: A -> String
+}
+
+newtype Score = Int
+
+instance Render<Score> {
+  fn render value: Score -> Int = 0
+}

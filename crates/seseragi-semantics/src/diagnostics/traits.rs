@@ -1,11 +1,13 @@
 use crate::{
     typed::{
-        instances::analyze_derived_instances, instances::DerivedInstanceIssue, TypedResolution,
+        instances::analyze_derived_instances, instances::analyze_instance_contracts,
+        instances::DerivedInstanceIssue, TypedResolution,
     },
     ResolvedModule,
 };
 use seseragi_syntax::{ByteRange, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
 
+mod contracts;
 #[cfg(test)]
 mod tests;
 
@@ -19,6 +21,11 @@ pub(super) fn collect_trait_diagnostics(
             .issues
             .iter()
             .map(diagnostic),
+    );
+    diagnostics.extend(
+        analyze_instance_contracts(resolved)
+            .iter()
+            .map(contracts::diagnostic),
     );
 }
 

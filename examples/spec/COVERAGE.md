@@ -28,7 +28,7 @@
 | generic struct / alias / impl                 | Lesson 11         | nested generic / kind / inference fixtures     | partial |
 | rank-1 generic / higher-order pure function / operator section / module import | Lesson 11 | `schema-1/generic-higher-order-call` + `schema-1/operator-reference` + `project-schema-1/rock-paper-scissors-domain-split` | partial |
 | comprehension、Array / record pattern         | Lesson 12         | parse / pattern diagnostics                    | partial |
-| custom trait / instance / custom operator     | Lesson 13         | `interface-schema-1/{basic-trait,rich,constrained-instance}` method contract / implementation preservation + resolved trait / constraint names + orphan / fixity / `project-schema-1/imported-effect-failure` | partial |
+| custom trait / instance / custom operator     | Lesson 13         | `interface-schema-1/{basic-trait,rich,constrained-instance}` preservation + `semantic-diagnostics-schema-1/{instance-contract,instance-contract-mismatch}` local contract validation + resolved trait / constraint names + orphan / fixity / `project-schema-1/imported-effect-failure` | partial |
 | structured constraint arguments / evidence passing | Lesson 13    | `schema-1/{constraint-arguments,array-reduce,int-arithmetic,operator-reference}` + `execution-schema-1/array-reduce` | partial |
 | Semigroup / Monoid                            | Lesson 14         | law fixtures                                   | partial |
 | generic ADT、local / mutual recursion、spread | Lesson 19         | local recursion / forward reference fixtures   | partial |

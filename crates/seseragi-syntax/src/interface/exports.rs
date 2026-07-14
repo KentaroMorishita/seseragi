@@ -1,10 +1,10 @@
-use crate::surface::{SurfaceDecl, TypeRef, Visibility};
+use crate::surface::{SurfaceDecl, Visibility};
 
-use super::types::interface_type_from_type_ref;
-use super::{
-    InterfaceConstraint, InterfaceExport, InterfaceMethod, InterfaceOperator, InterfaceScheme,
-    InterfaceType,
+use super::methods::{
+    function_interface_type, interface_constraint_from_surface, interface_method_from_surface,
 };
+use super::types::interface_type_from_type_ref;
+use super::{InterfaceExport, InterfaceOperator, InterfaceScheme, InterfaceType};
 
 mod adt;
 mod newtype;
@@ -157,22 +157,7 @@ fn export_from_surface_decl(
                     arity: type_parameters.len() as u32,
                 },
             },
-            methods: methods
-                .iter()
-                .map(|method| InterfaceMethod {
-                    name: method.name.clone(),
-                    scheme: InterfaceScheme {
-                        type_parameters: method.type_parameters.clone(),
-                        constraints: method
-                            .constraints
-                            .iter()
-                            .map(interface_constraint_from_surface)
-                            .collect(),
-                        type_ref: function_interface_type(&method.parameters, &method.return_type),
-                    },
-                    origin: method.span,
-                })
-                .collect(),
+            methods: methods.iter().map(interface_method_from_surface).collect(),
             representation: None,
         }),
         SurfaceDecl::Operator {
@@ -204,17 +189,6 @@ fn export_from_surface_decl(
             representation: None,
         }),
         _ => None,
-    }
-}
-
-fn interface_constraint_from_surface(constraint: &crate::SurfaceConstraint) -> InterfaceConstraint {
-    InterfaceConstraint {
-        name: constraint.name.clone(),
-        arguments: constraint
-            .arguments
-            .iter()
-            .map(interface_type_from_type_ref)
-            .collect(),
     }
 }
 
@@ -268,17 +242,4 @@ pub(super) fn operator_from_surface_decl(
         }),
         _ => None,
     }
-}
-
-fn function_interface_type(
-    parameters: &[crate::surface::SurfaceParameter],
-    return_type: &TypeRef,
-) -> InterfaceType {
-    parameters.iter().rev().fold(
-        interface_type_from_type_ref(return_type),
-        |result, parameter| InterfaceType::Function {
-            parameter: Box::new(interface_type_from_type_ref(&parameter.type_ref)),
-            result: Box::new(result),
-        },
-    )
 }

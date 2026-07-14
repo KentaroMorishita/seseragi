@@ -67,6 +67,118 @@ fn does_not_misclassify_other_standard_deriving_traits_as_unknown() {
 }
 
 #[test]
+fn accepts_a_local_instance_that_matches_its_trait_contract() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-contract/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score> { fn render value: Score -> String = \"score\" }\n",
+    );
+
+    assert!(artifact.diagnostics.is_empty());
+}
+
+#[test]
+fn accepts_alpha_renamed_higher_kinded_method_contracts() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-hkt-contract/main.ssrg",
+        "trait MapLike<F> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> where Eq<A>, Show<B> }\n\
+         type Box<A> = | Box A\n\
+         instance MapLike<Box> { fn map<X, Y> f: (X -> Y) -> value: Box<X> -> Box<Y> where Show<Y>, Eq<X> = value }\n",
+    );
+
+    assert!(artifact.diagnostics.is_empty());
+}
+
+#[test]
+fn reports_an_instance_method_signature_mismatch() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-contract-mismatch/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score> { fn render value: Score -> Int = 0 }\n",
+    );
+
+    assert_eq!(artifact.diagnostics.len(), 1);
+    assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+    assert_eq!(
+        artifact.diagnostics[0].message_key,
+        "trait.instance-method-signature-mismatch"
+    );
+    assert_eq!(
+        artifact.diagnostics[0].related[0].message,
+        "instance method render must match this trait contract"
+    );
+}
+
+#[test]
+fn reports_missing_and_unexpected_instance_methods() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-method-set/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score> { fn describe value: Score -> String = \"score\" }\n",
+    );
+
+    assert_eq!(artifact.diagnostics.len(), 2);
+    assert_eq!(
+        artifact.diagnostics[0].message_key,
+        "trait.instance-method-missing"
+    );
+    assert_eq!(
+        artifact.diagnostics[1].message_key,
+        "trait.instance-method-unexpected"
+    );
+}
+
+#[test]
+fn reports_instance_trait_arity_and_missing_method_implementation() {
+    let arity = semantic_diagnostics(
+        "artifact/instance-arity/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score, String> { fn render value: Score -> String = \"score\" }\n",
+    );
+    assert_eq!(arity.diagnostics.len(), 1);
+    assert_eq!(
+        arity.diagnostics[0].message_key,
+        "trait.instance-arity-mismatch"
+    );
+
+    let body = semantic_diagnostics(
+        "artifact/instance-method-body/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score> { fn render value: Score -> String }\n",
+    );
+    assert_eq!(body.diagnostics.len(), 1);
+    assert_eq!(
+        body.diagnostics[0].message_key,
+        "trait.instance-method-missing"
+    );
+}
+
+#[test]
+fn reports_duplicate_instance_method_definitions() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-method-duplicate/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score> {\n\
+           fn render value: Score -> String = \"first\"\n\
+           fn render value: Score -> String = \"second\"\n\
+         }\n",
+    );
+
+    assert_eq!(artifact.diagnostics.len(), 1);
+    assert_eq!(artifact.diagnostics[0].code, "SES-N0002");
+    assert_eq!(
+        artifact.diagnostics[0].message_key,
+        "name.duplicate-definition"
+    );
+}
+
+#[test]
 fn reports_distinct_dependency_providers_as_an_ambiguous_instance() {
     let source = "import * as left from \"./left\"\nimport * as right from \"./right\"\npub effect fn main = succeed ()\n";
     let linked = linked_with_instance_targets(

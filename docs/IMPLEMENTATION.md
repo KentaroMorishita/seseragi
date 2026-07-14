@@ -571,6 +571,12 @@ contract、method固有type parameter / constraint / curried signatureを各meth
 value / typeとは別のtrait namespaceでlocal、import、prelude symbolへ解決します。したがって後続のmethod契約照合と
 instance searchはtraitの綴りを再解析せずresolved symbol identityを正にできます。未解決traitはinstance headでも
 constraintでも通常の`SES-N0001`になり、標準traitはspecのprelude catalogからcanonical identityを得ます。
+local user-defined instanceは、resolved trait identityから対応するtrait declarationを選び、type argumentをtrait parameterへ
+置換してmethod集合、body有無、curried signature、method固有generic parameter、constraintを照合します。型比較はsource名を
+再解析せずresolved type / trait symbol identityを使い、method genericはalpha normalize、record fieldとconstraint順はcanonicalize、
+`F<A>`と`Either<E, _>`のような型構築子適用はhole substitution後に比較します。
+`semantic-diagnostics-schema-1/{instance-contract,instance-contract-mismatch}`がpositive / negative diagnosticを固定します。これはlocal契約検査のgateであり、
+instance bodyのTypedHir化、imported trait contract照合、dictionary生成・dispatchはまだ完了扱いしません。
 
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、
