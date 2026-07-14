@@ -66,6 +66,7 @@ pub(super) fn exports_from_type_decl(
                 constraints: Vec::new(),
                 type_ref,
             },
+            methods: Vec::new(),
             representation: None,
         }
     }));

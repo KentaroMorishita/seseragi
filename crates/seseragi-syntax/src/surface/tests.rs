@@ -415,7 +415,7 @@ fn parses_rich_interface_surface_declarations() {
                 },
             }],
             constraints: Vec::new(),
-            methods: vec![SurfaceInstanceMethod {
+            methods: vec![SurfaceMethod {
                 name: "show".to_owned(),
                 name_span: ByteSpan {
                     start: 171,
@@ -496,7 +496,7 @@ fn parses_instance_type_parameters_and_constraints() {
                 }],
                 span: ByteSpan { start: 31, end: 38 },
             }],
-            methods: vec![SurfaceInstanceMethod {
+            methods: vec![SurfaceMethod {
                 name: "show".to_owned(),
                 name_span: ByteSpan { start: 46, end: 50 },
                 type_parameters: Vec::new(),
@@ -574,6 +574,39 @@ fn parses_trait_declarations() {
                     span: ByteSpan { start: 26, end: 27 },
                 }],
                 span: ByteSpan { start: 23, end: 28 },
+            }],
+            methods: vec![SurfaceMethod {
+                name: "compare".to_owned(),
+                name_span: ByteSpan { start: 36, end: 43 },
+                type_parameters: Vec::new(),
+                parameters: vec![
+                    SurfaceParameter {
+                        name: "x".to_owned(),
+                        name_span: ByteSpan { start: 44, end: 45 },
+                        type_ref: TypeRef::Named {
+                            name: "A".to_owned(),
+                            arguments: Vec::new(),
+                            span: ByteSpan { start: 47, end: 48 },
+                        },
+                    },
+                    SurfaceParameter {
+                        name: "y".to_owned(),
+                        name_span: ByteSpan { start: 52, end: 53 },
+                        type_ref: TypeRef::Named {
+                            name: "A".to_owned(),
+                            arguments: Vec::new(),
+                            span: ByteSpan { start: 55, end: 56 },
+                        },
+                    },
+                ],
+                return_type: TypeRef::Named {
+                    name: "Ordering".to_owned(),
+                    arguments: Vec::new(),
+                    span: ByteSpan { start: 60, end: 68 },
+                },
+                constraints: Vec::new(),
+                body: None,
+                span: ByteSpan { start: 33, end: 68 },
             }],
             span: ByteSpan { start: 0, end: 70 },
         }

@@ -564,6 +564,9 @@ parameter、戻り型、constraint、body、source spanを保持します。reso
 method signatureとbodyの型名・値名を通常のreferenceとして解決します。以前のようにfrontendでmethod bodyを捨てると、
 instance searchだけを追加してもruntime dictionaryを生成できないため、この保持を先行gateにしています。methodのtrait契約との
 型照合、coherence、TypedHir / CoreIr dictionary表現は後続sliceで接続し、このfrontend保持だけをinstance完成とは扱いません。
+同じ理由でpublic `trait`のmethod signatureもSurfaceAstと`ModuleInterface`へ保持します。trait type parameterを外側の
+contract、method固有type parameter / constraint / curried signatureを各method schemeとして分離するため、imported traitの
+契約をcompiler-privateな標準名表へ戻さず、dependency interfaceから型照合できる境界になります。
 
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、

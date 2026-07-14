@@ -2,7 +2,8 @@ use crate::surface::{SurfaceDecl, TypeRef, Visibility};
 
 use super::types::interface_type_from_type_ref;
 use super::{
-    InterfaceConstraint, InterfaceExport, InterfaceOperator, InterfaceScheme, InterfaceType,
+    InterfaceConstraint, InterfaceExport, InterfaceMethod, InterfaceOperator, InterfaceScheme,
+    InterfaceType,
 };
 
 mod adt;
@@ -56,6 +57,7 @@ fn export_from_surface_decl(
                     constraints: Vec::new(),
                     type_ref,
                 },
+                methods: Vec::new(),
                 representation: None,
             })
         }
@@ -84,6 +86,7 @@ fn export_from_surface_decl(
                     .collect(),
                 type_ref: function_interface_type(parameters, return_type),
             },
+            methods: Vec::new(),
             representation: None,
         }),
         SurfaceDecl::Alias {
@@ -109,6 +112,7 @@ fn export_from_surface_decl(
                     arity: type_parameters.len() as u32,
                 },
             },
+            methods: Vec::new(),
             representation: Some(interface_type_from_type_ref(target)),
         }),
         SurfaceDecl::Struct {
@@ -131,6 +135,7 @@ fn export_from_surface_decl(
             name,
             type_parameters,
             constraints,
+            methods,
             span,
             ..
         } if *visibility == Visibility::Public => Some(InterfaceExport {
@@ -152,6 +157,22 @@ fn export_from_surface_decl(
                     arity: type_parameters.len() as u32,
                 },
             },
+            methods: methods
+                .iter()
+                .map(|method| InterfaceMethod {
+                    name: method.name.clone(),
+                    scheme: InterfaceScheme {
+                        type_parameters: method.type_parameters.clone(),
+                        constraints: method
+                            .constraints
+                            .iter()
+                            .map(interface_constraint_from_surface)
+                            .collect(),
+                        type_ref: function_interface_type(&method.parameters, &method.return_type),
+                    },
+                    origin: method.span,
+                })
+                .collect(),
             representation: None,
         }),
         SurfaceDecl::Operator {
@@ -179,6 +200,7 @@ fn export_from_surface_decl(
                     .collect(),
                 type_ref: function_interface_type(parameters, return_type),
             },
+            methods: Vec::new(),
             representation: None,
         }),
         _ => None,
@@ -220,6 +242,7 @@ fn nominal_type_export(
                 arity: type_parameters.len() as u32,
             },
         },
+        methods: Vec::new(),
         representation: None,
     }
 }

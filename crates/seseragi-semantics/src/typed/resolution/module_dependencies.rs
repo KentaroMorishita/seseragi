@@ -100,6 +100,7 @@ mod tests {
                         arguments: Vec::new(),
                     },
                 },
+                methods: Vec::new(),
                 representation: None,
             },
             scheme_type_bindings: None,

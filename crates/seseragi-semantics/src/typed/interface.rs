@@ -122,6 +122,7 @@ fn typed_value_export(
             declaration_kind: None,
             declaration: *origin,
             scheme: interface_scheme_from_typed_scheme(scheme, types),
+            methods: Vec::new(),
             representation: None,
         }),
         TypedDecl::Fn {
@@ -159,6 +160,7 @@ fn typed_value_export(
                     types,
                 ),
             },
+            methods: Vec::new(),
             representation: None,
         }),
         TypedDecl::EffectFn {
@@ -185,6 +187,7 @@ fn typed_value_export(
                     types,
                 ),
             },
+            methods: Vec::new(),
             representation: None,
         }),
         _ => None,

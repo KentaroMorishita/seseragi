@@ -23,6 +23,7 @@ impl SurfaceParser<'_> {
             .find_raw(after_type_parameters, body_start, "where")
             .map(|where_index| self.parse_constraints(where_index + 1, body_start))
             .unwrap_or_default();
+        let methods = self.parse_trait_methods(body_start, end);
 
         Some(SurfaceDecl::Trait {
             visibility,
@@ -30,6 +31,7 @@ impl SurfaceParser<'_> {
             name_span: self.byte_span(name_index)?,
             type_parameters,
             constraints,
+            methods,
             span: self.declaration_span(top_start, end)?,
         })
     }

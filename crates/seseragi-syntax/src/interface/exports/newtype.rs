@@ -51,6 +51,7 @@ pub(super) fn exports_from_newtype_decl(
                 arity: type_parameters.len() as u32,
             },
         },
+        methods: Vec::new(),
         representation: (!opaque).then(|| interface_type_from_type_ref(representation)),
     }];
     if !opaque {
@@ -70,6 +71,7 @@ pub(super) fn exports_from_newtype_decl(
                     result: Box::new(result),
                 },
             },
+            methods: Vec::new(),
             representation: None,
         });
     }

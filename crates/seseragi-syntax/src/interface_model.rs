@@ -45,8 +45,18 @@ pub struct InterfaceExport {
     pub declaration_kind: Option<String>,
     pub declaration: ByteSpan,
     pub scheme: InterfaceScheme,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub methods: Vec<InterfaceMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub representation: Option<InterfaceType>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InterfaceMethod {
+    pub name: String,
+    pub scheme: InterfaceScheme,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -241,6 +241,7 @@ mod tests {
                     arity: 0,
                 },
             },
+            methods: Vec::new(),
             representation: None,
         }
     }
@@ -266,6 +267,7 @@ mod tests {
                     result: Box::new(result),
                 },
             },
+            methods: Vec::new(),
             representation: None,
         }
     }

@@ -137,6 +137,8 @@ pub enum SurfaceDecl {
         type_parameters: Vec<String>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        methods: Vec<SurfaceMethod>,
         span: ByteSpan,
     },
     Operator {
@@ -160,7 +162,7 @@ pub enum SurfaceDecl {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        methods: Vec<SurfaceInstanceMethod>,
+        methods: Vec<SurfaceMethod>,
         span: ByteSpan,
     },
 }
@@ -193,7 +195,7 @@ pub struct SurfaceParameter {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SurfaceInstanceMethod {
+pub struct SurfaceMethod {
     pub name: String,
     pub name_span: ByteSpan,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

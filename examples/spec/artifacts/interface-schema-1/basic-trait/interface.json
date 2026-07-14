@@ -35,7 +35,41 @@
           "name": "Ord",
           "arity": 1
         }
-      }
+      },
+      "methods": [
+        {
+          "name": "compare",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Ordering",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 33,
+            "end": 68
+          }
+        }
+      ]
     }
   ],
   "operators": [],

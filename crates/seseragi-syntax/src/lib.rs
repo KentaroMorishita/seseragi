@@ -17,14 +17,14 @@ pub use diagnostics::{
 pub use interface::{
     parse_import_free_module_interface, parse_module_interface, parse_unlinked_module_interface,
     ImportOccurrence, InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport,
-    InterfaceInstance, InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType,
-    ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
+    InterfaceInstance, InterfaceMethod, InterfaceOperator, InterfaceRecordField, InterfaceScheme,
+    InterfaceType, ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
 };
 pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceConstraint, SurfaceDecl, SurfaceDoItem, SurfaceExpr,
-    SurfaceImport, SurfaceImportItem, SurfaceInstanceMethod, SurfaceMatchArm, SurfaceModule,
+    SurfaceImport, SurfaceImportItem, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
     SurfaceParameter, SurfacePattern, SurfaceRequirement, SurfaceVariant, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

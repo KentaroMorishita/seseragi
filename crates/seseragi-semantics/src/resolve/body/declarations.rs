@@ -1,6 +1,6 @@
 use super::{expression, Resolver};
 use crate::{ScopeKind, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{ModuleInterface, SurfaceDecl, SurfaceModule};
+use seseragi_syntax::{ModuleInterface, SurfaceDecl, SurfaceMethod, SurfaceModule};
 
 mod types;
 
@@ -229,10 +229,12 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
             }
             SurfaceDecl::Trait {
                 type_parameters,
+                methods,
                 span,
                 ..
             } => {
-                declaration_scope(resolver, module_scope, type_parameters, *span);
+                let scope = declaration_scope(resolver, module_scope, type_parameters, *span);
+                resolve_methods(resolver, scope, methods);
             }
             SurfaceDecl::Operator {
                 type_parameters,
@@ -256,21 +258,20 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 for argument in arguments {
                     resolve_type_ref(resolver, scope, argument);
                 }
-                for method in methods {
-                    let method_scope = resolver.new_scope(scope, ScopeKind::Function, method.span);
-                    register_type_parameters(
-                        resolver,
-                        method_scope,
-                        &method.type_parameters,
-                        method.span,
-                    );
-                    register_parameters(resolver, method_scope, &method.parameters);
-                    resolve_type_ref(resolver, method_scope, &method.return_type);
-                    if let Some(body) = &method.body {
-                        expression::resolve_expression(resolver, method_scope, body);
-                    }
-                }
+                resolve_methods(resolver, scope, methods);
             }
+        }
+    }
+}
+
+fn resolve_methods(resolver: &mut Resolver, parent: crate::ScopeId, methods: &[SurfaceMethod]) {
+    for method in methods {
+        let method_scope = resolver.new_scope(parent, ScopeKind::Function, method.span);
+        register_type_parameters(resolver, method_scope, &method.type_parameters, method.span);
+        register_parameters(resolver, method_scope, &method.parameters);
+        resolve_type_ref(resolver, method_scope, &method.return_type);
+        if let Some(body) = &method.body {
+            expression::resolve_expression(resolver, method_scope, body);
         }
     }
 }

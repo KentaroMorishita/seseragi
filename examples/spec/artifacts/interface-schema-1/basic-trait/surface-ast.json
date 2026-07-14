@@ -32,6 +32,59 @@
           }
         }
       ],
+      "methods": [
+        {
+          "name": "compare",
+          "nameSpan": {
+            "start": 36,
+            "end": 43
+          },
+          "parameters": [
+            {
+              "name": "x",
+              "nameSpan": {
+                "start": 44,
+                "end": 45
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 47,
+                  "end": 48
+                }
+              }
+            },
+            {
+              "name": "y",
+              "nameSpan": {
+                "start": 52,
+                "end": 53
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 55,
+                  "end": 56
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Ordering",
+            "span": {
+              "start": 60,
+              "end": 68
+            }
+          },
+          "span": {
+            "start": 33,
+            "end": 68
+          }
+        }
+      ],
       "span": {
         "start": 0,
         "end": 70
