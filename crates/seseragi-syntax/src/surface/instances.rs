@@ -13,6 +13,10 @@ impl SurfaceParser<'_> {
             self.parse_optional_type_parameters(decl_start + 1, end);
         let trait_index = self.next_significant_token(after_type_parameters, end)?;
         let trait_name = self.identifier_name_at(trait_index)?;
+        let trait_name_span = self.tokens.get(trait_index).map(|token| crate::ByteSpan {
+            start: token.start,
+            end: token.end,
+        })?;
         let mut arguments = Vec::new();
         let mut after_head = trait_index + 1;
         let next = self.next_significant_token(after_head, end);
@@ -36,6 +40,7 @@ impl SurfaceParser<'_> {
         Some(SurfaceDecl::Instance {
             type_parameters,
             trait_name,
+            trait_name_span,
             arguments,
             constraints,
             methods,

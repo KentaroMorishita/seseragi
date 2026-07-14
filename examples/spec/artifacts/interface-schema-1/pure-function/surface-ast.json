@@ -66,6 +66,10 @@
       "constraints": [
         {
           "name": "Eq",
+          "nameSpan": {
+            "start": 60,
+            "end": 62
+          },
           "arguments": [
             {
               "kind": "named",

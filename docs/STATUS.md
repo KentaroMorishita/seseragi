@@ -144,7 +144,9 @@ Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みev
 backendはそのevidenceを確認してchecked runtime helperを選択します。残る主要gateはこの標準Int経路を一般化する
 user-defined / imported instance search、coherence、dictionary passingです。user-defined instanceのmethodはSurfaceAstで
 signature / body / spanを保持し、resolverのinstance / method scopeで名前解決されるところまで接続済みです。public traitの
-method contractもSurfaceAst / ModuleInterfaceで構造化schemeとして保持します。
+method contractもSurfaceAst / ModuleInterfaceで構造化schemeとして保持します。instance headと各`where` constraintの
+trait名は独立したtrait namespaceでlocal / import / prelude symbolへ解決し、後続の契約照合が文字列比較へ戻らない境界まで
+接続済みです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

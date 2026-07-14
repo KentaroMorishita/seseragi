@@ -96,6 +96,10 @@
     {
       "kind": "instance",
       "traitName": "Show",
+      "traitNameSpan": {
+        "start": 152,
+        "end": 156
+      },
       "arguments": [
         {
           "kind": "named",

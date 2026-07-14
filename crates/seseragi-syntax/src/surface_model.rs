@@ -158,6 +158,7 @@ pub enum SurfaceDecl {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<String>,
         trait_name: String,
+        trait_name_span: ByteSpan,
         arguments: Vec<TypeRef>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
@@ -213,6 +214,7 @@ pub struct SurfaceMethod {
 #[serde(rename_all = "camelCase")]
 pub struct SurfaceConstraint {
     pub name: String,
+    pub name_span: ByteSpan,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub arguments: Vec<TypeRef>,
     pub span: ByteSpan,

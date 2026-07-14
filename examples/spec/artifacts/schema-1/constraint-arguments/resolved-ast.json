@@ -60,6 +60,10 @@
       "constraints": [
         {
           "name": "Reducible",
+          "nameSpan": {
+            "start": 70,
+            "end": 79
+          },
           "arguments": [
             {
               "kind": "named",
@@ -173,6 +177,18 @@
         "start": 45,
         "end": 53
       }
+    },
+    {
+      "id": 5,
+      "spelling": "Reducible",
+      "canonical": "std/prelude::Reducible",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
     }
   ],
   "references": [
@@ -201,6 +217,33 @@
       "origin": {
         "start": 62,
         "end": 63
+      }
+    },
+    {
+      "spelling": "Reducible",
+      "namespace": "trait",
+      "target": 5,
+      "origin": {
+        "start": 70,
+        "end": 79
+      }
+    },
+    {
+      "spelling": "C",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 80,
+        "end": 81
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 83,
+        "end": 84
       }
     },
     {

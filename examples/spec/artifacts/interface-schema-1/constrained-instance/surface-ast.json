@@ -8,6 +8,10 @@
         "A"
       ],
       "traitName": "Show",
+      "traitNameSpan": {
+        "start": 12,
+        "end": 16
+      },
       "arguments": [
         {
           "kind": "named",
@@ -31,6 +35,10 @@
       "constraints": [
         {
           "name": "Show",
+          "nameSpan": {
+            "start": 31,
+            "end": 35
+          },
           "arguments": [
             {
               "kind": "named",

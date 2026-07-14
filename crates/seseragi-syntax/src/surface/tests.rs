@@ -406,6 +406,10 @@ fn parses_rich_interface_surface_declarations() {
         SurfaceDecl::Instance {
             type_parameters: Vec::new(),
             trait_name: "Show".to_owned(),
+            trait_name_span: ByteSpan {
+                start: 152,
+                end: 156,
+            },
             arguments: vec![TypeRef::Named {
                 name: "Score".to_owned(),
                 arguments: Vec::new(),
@@ -478,6 +482,7 @@ fn parses_instance_type_parameters_and_constraints() {
         SurfaceDecl::Instance {
             type_parameters: vec!["A".to_owned()],
             trait_name: "Show".to_owned(),
+            trait_name_span: ByteSpan { start: 12, end: 16 },
             arguments: vec![TypeRef::Named {
                 name: "Box".to_owned(),
                 arguments: vec![TypeRef::Named {
@@ -489,6 +494,7 @@ fn parses_instance_type_parameters_and_constraints() {
             }],
             constraints: vec![SurfaceConstraint {
                 name: "Show".to_owned(),
+                name_span: ByteSpan { start: 31, end: 35 },
                 arguments: vec![TypeRef::Named {
                     name: "A".to_owned(),
                     arguments: Vec::new(),
@@ -568,6 +574,7 @@ fn parses_trait_declarations() {
             type_parameters: vec!["A".to_owned()],
             constraints: vec![SurfaceConstraint {
                 name: "Eq".to_owned(),
+                name_span: ByteSpan { start: 23, end: 25 },
                 arguments: vec![TypeRef::Named {
                     name: "A".to_owned(),
                     arguments: Vec::new(),

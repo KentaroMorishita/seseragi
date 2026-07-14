@@ -105,4 +105,24 @@ mod tests {
             "type declaration"
         );
     }
+
+    #[test]
+    fn reports_an_unknown_instance_trait_at_the_trait_name() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/unknown-instance-trait/main.ssrg",
+            "newtype Score = Int\ninstance Missing<Score> {}\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-N0001");
+        assert_eq!(artifact.diagnostics[0].message_key, "name.unresolved");
+        assert_eq!(
+            artifact.diagnostics[0].primary,
+            seseragi_syntax::ByteRange { start: 29, end: 36 }
+        );
+        assert_eq!(
+            artifact.diagnostics[0].related[0].message,
+            "instance declaration"
+        );
+    }
 }

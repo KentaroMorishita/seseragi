@@ -54,6 +54,10 @@
       "constraints": [
         {
           "name": "Semigroup",
+          "nameSpan": {
+            "start": 62,
+            "end": 71
+          },
           "arguments": [
             {
               "kind": "named",

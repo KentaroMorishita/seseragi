@@ -6,6 +6,12 @@ impl SurfaceParser<'_> {
         let mut constraints = Vec::new();
         let mut cursor = start;
         while let Some(next) = self.next_significant_token(cursor, end) {
+            let Some(name_span) = self.tokens.get(next).map(|token| crate::ByteSpan {
+                start: token.start,
+                end: token.end,
+            }) else {
+                break;
+            };
             let Some((constraint, after_constraint)) = self.parse_type_ref(next, end) else {
                 break;
             };
@@ -17,6 +23,7 @@ impl SurfaceParser<'_> {
             {
                 constraints.push(SurfaceConstraint {
                     name,
+                    name_span,
                     arguments,
                     span,
                 });

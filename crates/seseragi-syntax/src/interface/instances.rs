@@ -12,6 +12,7 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
             constraints,
             methods: _,
             span,
+            ..
         } => Some(InterfaceInstance {
             identity: None,
             provider_module: None,

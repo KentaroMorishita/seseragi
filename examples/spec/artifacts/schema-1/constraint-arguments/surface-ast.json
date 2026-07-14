@@ -57,6 +57,10 @@
       "constraints": [
         {
           "name": "Reducible",
+          "nameSpan": {
+            "start": 70,
+            "end": 79
+          },
           "arguments": [
             {
               "kind": "named",

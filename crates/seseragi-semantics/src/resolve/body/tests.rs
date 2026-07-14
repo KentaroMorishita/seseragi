@@ -48,6 +48,42 @@ fn resolves_instance_method_signatures_and_bodies_in_child_scopes() {
             .count(),
         3
     );
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Trait
+            && reference.spelling == "Show"
+            && reference.target.is_some_and(|target| {
+                resolved.symbols.iter().any(|symbol| {
+                    symbol.id == target && symbol.canonical.as_deref() == Some("std/prelude::Show")
+                })
+            })
+    }));
+    assert!(resolved.issues.is_empty());
+}
+
+#[test]
+fn resolves_local_trait_instance_heads_and_constraint_names_by_symbol() {
+    let resolved = resolve_module(
+        "artifact/local-trait-instance/main.ssrg",
+        "trait Render<A> { fn render value: A -> String }\n\
+         newtype Score = Int\n\
+         instance Render<Score> where Eq<Score> { fn render value: Score -> String = \"score\" }\n",
+    );
+
+    let render = symbol(&resolved, SymbolKind::Trait, "Render");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Trait
+            && reference.spelling == "Render"
+            && reference.target == Some(render)
+    }));
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Trait
+            && reference.spelling == "Eq"
+            && reference.target.is_some_and(|target| {
+                resolved.symbols.iter().any(|symbol| {
+                    symbol.id == target && symbol.canonical.as_deref() == Some("std/prelude::Eq")
+                })
+            })
+    }));
     assert!(resolved.issues.is_empty());
 }
 

@@ -96,6 +96,10 @@
     {
       "kind": "instance",
       "traitName": "Show",
+      "traitNameSpan": {
+        "start": 152,
+        "end": 156
+      },
       "arguments": [
         {
           "kind": "named",
@@ -289,6 +293,18 @@
     },
     {
       "id": 7,
+      "spelling": "Show",
+      "canonical": "std/prelude::Show",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -299,7 +315,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -349,6 +365,15 @@
       }
     },
     {
+      "spelling": "Show",
+      "namespace": "trait",
+      "target": 7,
+      "origin": {
+        "start": 152,
+        "end": 156
+      }
+    },
+    {
       "spelling": "Score",
       "namespace": "type",
       "target": 0,
@@ -369,7 +394,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 8,
+      "target": 9,
       "origin": {
         "start": 192,
         "end": 198

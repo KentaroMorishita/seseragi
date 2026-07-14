@@ -57,6 +57,10 @@
       "constraints": [
         {
           "name": "Semigroup",
+          "nameSpan": {
+            "start": 62,
+            "end": 71
+          },
           "arguments": [
             {
               "kind": "named",
@@ -143,6 +147,18 @@
         "start": 42,
         "end": 47
       }
+    },
+    {
+      "id": 4,
+      "spelling": "Semigroup",
+      "canonical": "std/prelude::Semigroup",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
     }
   ],
   "references": [
@@ -171,6 +187,24 @@
       "origin": {
         "start": 54,
         "end": 55
+      }
+    },
+    {
+      "spelling": "Semigroup",
+      "namespace": "trait",
+      "target": 4,
+      "origin": {
+        "start": 62,
+        "end": 71
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 72,
+        "end": 73
       }
     }
   ],

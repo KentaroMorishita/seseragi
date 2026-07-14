@@ -103,6 +103,31 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
             spelling,
             "+" | "-" | "*" | "/" | "%" | "==" | "!=" | "<" | "<=" | ">" | ">="
         ),
+        SymbolNamespace::Trait => matches!(
+            spelling,
+            "Eq" | "Ord"
+                | "Hash"
+                | "Show"
+                | "Debug"
+                | "Zero"
+                | "One"
+                | "Semigroup"
+                | "Monoid"
+                | "JsonEncode"
+                | "JsonDecode"
+                | "Functor"
+                | "Applicative"
+                | "Monad"
+                | "Iterable"
+                | "Reducible"
+                | "Traversable"
+                | "Add"
+                | "Sub"
+                | "Mul"
+                | "Div"
+                | "Rem"
+                | "Pow"
+        ),
         _ => false,
     }
 }

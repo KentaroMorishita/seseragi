@@ -1,6 +1,8 @@
 use super::{expression, Resolver};
 use crate::{ScopeKind, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{ModuleInterface, SurfaceDecl, SurfaceMethod, SurfaceModule};
+use seseragi_syntax::{
+    ModuleInterface, SurfaceConstraint, SurfaceDecl, SurfaceMethod, SurfaceModule,
+};
 
 mod types;
 
@@ -149,6 +151,7 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 type_parameters,
                 parameters,
                 return_type,
+                constraints,
                 body,
                 span,
                 ..
@@ -157,6 +160,7 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 register_type_parameters(resolver, scope, type_parameters, *span);
                 register_parameters(resolver, scope, parameters);
                 resolve_type_ref(resolver, scope, return_type);
+                resolve_constraints(resolver, scope, constraints);
                 if let Some(body) = body {
                     expression::resolve_expression(resolver, scope, body);
                 }
@@ -167,6 +171,7 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 return_type,
                 requirements,
                 failure,
+                constraints,
                 body,
                 span,
                 ..
@@ -181,6 +186,7 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 if let Some(failure) = failure {
                     resolve_type_ref(resolver, scope, failure);
                 }
+                resolve_constraints(resolver, scope, constraints);
                 if let Some(body) = body {
                     expression::resolve_expression(resolver, scope, body);
                 }
@@ -229,35 +235,50 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
             }
             SurfaceDecl::Trait {
                 type_parameters,
+                constraints,
                 methods,
                 span,
                 ..
             } => {
                 let scope = declaration_scope(resolver, module_scope, type_parameters, *span);
+                resolve_constraints(resolver, scope, constraints);
                 resolve_methods(resolver, scope, methods);
             }
             SurfaceDecl::Operator {
                 type_parameters,
                 parameters,
                 return_type,
+                constraints,
                 span,
                 ..
             } => {
                 let scope = declaration_scope(resolver, module_scope, type_parameters, *span);
                 register_parameters(resolver, scope, parameters);
                 resolve_type_ref(resolver, scope, return_type);
+                resolve_constraints(resolver, scope, constraints);
             }
             SurfaceDecl::Instance {
                 type_parameters,
+                trait_name,
+                trait_name_span,
                 arguments,
+                constraints,
                 methods,
                 span,
                 ..
             } => {
                 let scope = declaration_scope(resolver, module_scope, type_parameters, *span);
+                resolver.reference(
+                    scope,
+                    SymbolNamespace::Trait,
+                    trait_name,
+                    *trait_name_span,
+                    true,
+                );
                 for argument in arguments {
                     resolve_type_ref(resolver, scope, argument);
                 }
+                resolve_constraints(resolver, scope, constraints);
                 resolve_methods(resolver, scope, methods);
             }
         }
@@ -270,8 +291,28 @@ fn resolve_methods(resolver: &mut Resolver, parent: crate::ScopeId, methods: &[S
         register_type_parameters(resolver, method_scope, &method.type_parameters, method.span);
         register_parameters(resolver, method_scope, &method.parameters);
         resolve_type_ref(resolver, method_scope, &method.return_type);
+        resolve_constraints(resolver, method_scope, &method.constraints);
         if let Some(body) = &method.body {
             expression::resolve_expression(resolver, method_scope, body);
+        }
+    }
+}
+
+fn resolve_constraints(
+    resolver: &mut Resolver,
+    scope: crate::ScopeId,
+    constraints: &[SurfaceConstraint],
+) {
+    for constraint in constraints {
+        resolver.reference(
+            scope,
+            SymbolNamespace::Trait,
+            &constraint.name,
+            constraint.name_span,
+            true,
+        );
+        for argument in &constraint.arguments {
+            resolve_type_ref(resolver, scope, argument);
         }
     }
 }
