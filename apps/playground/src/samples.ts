@@ -6,6 +6,7 @@ import seseragiQuiz from "../../../examples/spec/playground/03-seseragi-quiz.ssr
 import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboard.ssrg?raw"
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
+import constrainedInstance from "../../../examples/spec/playground/07-constrained-instance.ssrg?raw"
 import { sampleCatalog } from "./sample-catalog"
 
 export type PlaygroundSample = {
@@ -24,6 +25,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "array-scoreboard": arrayScoreboard,
   "trait-badges": traitBadges,
   "generic-instance": genericInstance,
+  "constrained-instance": constrainedInstance,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

@@ -8,6 +8,10 @@
 | `01-mini-adventure.ssrg` | `forest` / `rope` | 複数ADT、tuple pattern、typed failure |
 | `02-shipping-advisor.ssrg` | `member` / `express` | domain分類、exhaustive match、pure function |
 | `03-seseragi-quiz.ssrg` | `rust` | String pattern、ADT、Stdin / Console Effect |
+| `04-array-scoreboard.ssrg` | なし | Array、generic reduce、checked Int arithmetic |
+| `05-trait-badges.ssrg` | なし | local trait、concrete instance、dictionary dispatch |
+| `06-generic-instance.ssrg` | なし | generic instance、`Maybe<T>`、dictionary factory |
+| `07-constrained-instance.ssrg` | なし | constraint付きgeneric instance、local evidence passing |
 
 各sourceは`apps/playground/tests/playground.integration.test.ts`からshared WASM driverでcompileし、generated
 TypeScriptとbrowser runtimeを通した実行結果まで固定します。

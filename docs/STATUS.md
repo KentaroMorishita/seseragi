@@ -165,8 +165,11 @@ local concrete user-defined instanceはmethod parameter / bodyをTypedHir、Core
 選び、selected evidenceをTypedHir / CoreIrへ保持してTypeScriptのdictionary method callまで生成します。
 `schema-1/trait-method-candidates`は同名methodをargument型とlocal instance evidenceで選び分け、選べないcaseを
 `SES-T0202`に固定します。`schema-1/generic-instance-dispatch`はconstraintなしgeneric headの型引数を選択済みevidenceへ残し、
-TypeScriptのdictionary factory具体化とmethod callまで生成します。未接続なのはconstrained evidence引数と
-cross-module dictionary selectionです。
+TypeScriptのdictionary factory具体化とmethod callまで生成します。
+`schema-1/constrained-instance-dispatch`はconstraint付きgeneric local instanceに必要なlocal evidenceを再帰選択し、
+TypedHir / CoreIrのevidence tree、TypeScriptIrのfactory argument、生成TSのdictionary引数、actual executionまで接続します。
+循環evidenceは`instance.missing`で停止します。未接続なのはinstance method body内のscoped constraint evidence、
+standard / imported evidenceのfactory引数化、cross-module dictionary selectionです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -178,6 +181,8 @@ local custom traitのvertical sliceは`Traitバッジ`としてsample catalogに
 dictionary dispatchの実行結果を確認できます。
 constraintなしgeneric local instanceのvertical sliceも`Generic instance`として追加し、`Maybe<Int>`に対する
 generic dictionary factoryの具体化と、`Nothing` / `Just`両方のdispatchを同じsurfaceで実行できます。
+constraint付きgeneric local instanceも`Constraint付きinstance`として追加し、必要なlocal evidenceを持つ
+`Maybe<Badge>`の`Nothing` / `Just`両方を同じWASM driverとbrowser runtimeで実行できます。
 
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
