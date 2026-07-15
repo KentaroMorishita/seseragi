@@ -148,6 +148,12 @@ fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static
     let [left, right, output] = constraint.arguments.as_slice() else {
         return None;
     };
+    let all_string = [left, right, output].iter().all(|type_ref| {
+        matches!(type_ref, TypedType::Named { name, arguments } if name == "String" && arguments.is_empty())
+    });
+    if constraint.name == "Add" && all_string {
+        return Some("std/string::Add");
+    }
     let all_int = [left, right, output]
         .iter()
         .all(|type_ref| matches!(type_ref, TypedType::Named { name, arguments } if name == "Int" && arguments.is_empty()));
@@ -241,6 +247,19 @@ mod tests {
                 constraint: TypedConstraint { name, arguments },
                 evidence: TypedInstanceEvidence::Standard { identity },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/int::Add"
+        ));
+    }
+
+    #[test]
+    fn selects_standard_string_add_evidence() {
+        let evidence =
+            select_arithmetic_evidence("+", named("String"), named("String"), named("String"));
+        assert!(matches!(
+            evidence.as_slice(),
+            [TypedCallEvidence {
+                constraint: TypedConstraint { name, arguments },
+                evidence: TypedInstanceEvidence::Standard { identity },
+            }] if name == "Add" && arguments.len() == 3 && identity == "std/string::Add"
         ));
     }
 }

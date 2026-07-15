@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/string-add",
+  "runtimeRequirements": [
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "invitation",
+      "parameters": [
+        {
+          "name": "guest",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "event",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Hello, "
+              },
+              "right": {
+                "kind": "identifier",
+                "name": "guest"
+              }
+            },
+            "right": {
+              "kind": "string",
+              "value": "! Welcome to "
+            }
+          },
+          "right": {
+            "kind": "identifier",
+            "name": "event"
+          }
+        },
+        "right": {
+          "kind": "string",
+          "value": "."
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 88,
+        "end": 196
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "invitation",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "Mio"
+              },
+              {
+                "kind": "string",
+                "value": "Seseragi Night"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 198,
+        "end": 304
+      }
+    }
+  ]
+}

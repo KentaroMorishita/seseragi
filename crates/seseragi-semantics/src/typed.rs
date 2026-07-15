@@ -1016,6 +1016,31 @@ mod tests {
     }
 
     #[test]
+    fn records_selected_string_add_evidence_on_binary_expression() {
+        let typed = type_module(
+            "artifact/string-add-evidence/main.ssrg",
+            "pub fn greet name: String -> String = \"Hello, \" + name\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected function declaration");
+        };
+        let string = string_type();
+        assert!(matches!(
+            body,
+            TypedExpr::Binary { operator, evidence, type_ref, .. }
+                if operator == "+"
+                    && type_ref == &string
+                    && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        constraint: TypedConstraint { name, arguments },
+                        evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    }] if name == "Add"
+                        && arguments == &vec![string.clone(), string.clone(), string.clone()]
+                        && identity == "std/string::Add")
+        ));
+    }
+
+    #[test]
     fn types_parameter_forwarded_to_top_level_pure_call() {
         let typed = type_module(
             "artifact/pure-call-parameter/main.ssrg",
@@ -1132,6 +1157,13 @@ mod tests {
     fn int_type() -> TypedType {
         TypedType::Named {
             name: "Int".to_owned(),
+            arguments: Vec::new(),
+        }
+    }
+
+    fn string_type() -> TypedType {
+        TypedType::Named {
+            name: "String".to_owned(),
             arguments: Vec::new(),
         }
     }

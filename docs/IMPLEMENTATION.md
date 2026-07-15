@@ -565,6 +565,12 @@ Int算術はさらに、binary expressionとoperator sectionの双方で`Add<Int
 これは標準Int instanceのevidence transportを固定するsliceであり、custom arithmetic instanceの探索やdictionary dispatchを
 標準名への分岐で代用するものではありません。
 
+`schema-1/string-add`は同じoperator typing境界で`Add<String, String, String>`を選び、選択済み
+`std/string::Add` evidenceをTypedHirとCoreIrへ保持します。backendは数値変換やchecked Int helperを挟まず、
+TypeScriptのString連結へ表現します。`execution-schema-1/string-add`は複数の左結合`+`とcurried function、
+`$`、Consoleを組み合わせ、実際の出力まで固定します。これは`+`をoperand型から選ぶ最初の非Int standard
+instanceであり、user-defined `Add<L, R, O>` dictionary dispatchは引き続き一般instance gateで回収します。
+
 user-defined instanceへ進む前提として、SurfaceAstの`instance`はhead / constraintだけでなく、各methodの型parameter、
 parameter、戻り型、constraint、body、source spanを保持します。resolverもinstance scopeを親にmethod scopeを作り、
 method signatureとbodyの型名・値名を通常のreferenceとして解決します。以前のようにfrontendでmethod bodyを捨てると、

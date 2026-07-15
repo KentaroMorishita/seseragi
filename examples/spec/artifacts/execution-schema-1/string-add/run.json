@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "case": "string-add",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/string-add",
+    "export": "main",
+    "compiledModule": "../../schema-1/string-add/generated-module.json",
+    "typedInterface": "../../schema-1/string-add/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Hello, Mio! Welcome to Seseragi Night."],
+        "stdout": "Hello, Mio! Welcome to Seseragi Night.\n"
+      }
+    ]
+  }
+}

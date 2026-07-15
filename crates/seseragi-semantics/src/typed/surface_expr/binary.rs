@@ -47,6 +47,12 @@ fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> Ty
     {
         return named_type("Int");
     }
+    if operator == "+"
+        && named_type_is(&left_type, "String")
+        && named_type_is(&right_type, "String")
+    {
+        return named_type("String");
+    }
     if matches!(operator, "==" | "!=")
         && ["Int", "Bool", "String"]
             .iter()

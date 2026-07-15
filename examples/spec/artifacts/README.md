@@ -71,6 +71,10 @@ pure Unit entryをEffect runnerへ渡さず直接呼び、生成値のJSONをrun
 `execution-schema-1/pipeline-application/`は同じsourceをConsole hostで実行し、checked Int helperを経た
 `Pipeline answer: 42`とactual operation traceを固定します。
 
+`schema-1/string-add/`は`Add<String, String, String>`のstandard evidenceをTypedHirとCoreIrへ保持し、
+複数の左結合`+`をString連結へlowerします。`execution-schema-1/string-add/`はcurried invitation functionと
+`$`、Consoleを組み合わせ、暗黙の数値変換やInt runtime helperなしでactual outputを固定します。
+
 `schema-1/parse-hand-either/`はString literal matchの結果をstandard `Either<HandInputError, Hand>`で返します。
 `execution-schema-1/parse-hand-either-valid/`と`parse-hand-either-invalid/`はpure entryへtyped String引数を渡し、
 生成TypeScriptとversioned runtimeを通した`Right Rock` / `Left (UnknownHand input)`をJSONで固定します。

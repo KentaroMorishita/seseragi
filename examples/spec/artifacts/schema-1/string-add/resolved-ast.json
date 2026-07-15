@@ -1,0 +1,498 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/string-add",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "invitation",
+      "nameSpan": {
+        "start": 91,
+        "end": 101
+      },
+      "parameters": [
+        {
+          "name": "guest",
+          "nameSpan": {
+            "start": 102,
+            "end": 107
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 109,
+              "end": 115
+            }
+          }
+        },
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 119,
+            "end": 124
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 126,
+              "end": 132
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 136,
+          "end": 142
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 191,
+          "end": 192
+        },
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "operatorSpan": {
+            "start": 183,
+            "end": 184
+          },
+          "left": {
+            "kind": "binary",
+            "operator": "+",
+            "operatorSpan": {
+              "start": 165,
+              "end": 166
+            },
+            "left": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 157,
+                "end": 158
+              },
+              "left": {
+                "kind": "string",
+                "raw": "\"Hello, \"",
+                "span": {
+                  "start": 147,
+                  "end": 156
+                }
+              },
+              "right": {
+                "kind": "name",
+                "name": "guest",
+                "span": {
+                  "start": 159,
+                  "end": 164
+                }
+              },
+              "span": {
+                "start": 147,
+                "end": 164
+              }
+            },
+            "right": {
+              "kind": "string",
+              "raw": "\"! Welcome to \"",
+              "span": {
+                "start": 167,
+                "end": 182
+              }
+            },
+            "span": {
+              "start": 147,
+              "end": 182
+            }
+          },
+          "right": {
+            "kind": "name",
+            "name": "event",
+            "span": {
+              "start": 185,
+              "end": 190
+            }
+          },
+          "span": {
+            "start": 147,
+            "end": 190
+          }
+        },
+        "right": {
+          "kind": "string",
+          "raw": "\".\"",
+          "span": {
+            "start": 193,
+            "end": 196
+          }
+        },
+        "span": {
+          "start": 147,
+          "end": 196
+        }
+      },
+      "span": {
+        "start": 88,
+        "end": 196
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 212,
+        "end": 216
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 220,
+          "end": 224
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 230,
+            "end": 237
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 244,
+          "end": 256
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 261,
+            "end": 268
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "invitation",
+              "span": {
+                "start": 271,
+                "end": 281
+              }
+            },
+            "argument": {
+              "kind": "string",
+              "raw": "\"Mio\"",
+              "span": {
+                "start": 282,
+                "end": 287
+              }
+            },
+            "span": {
+              "start": 271,
+              "end": 287
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"Seseragi Night\"",
+            "span": {
+              "start": 288,
+              "end": 304
+            }
+          },
+          "span": {
+            "start": 271,
+            "end": 304
+          }
+        },
+        "span": {
+          "start": 261,
+          "end": 304
+        }
+      },
+      "span": {
+        "start": 198,
+        "end": 304
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 88,
+        "end": 304
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 88,
+        "end": 196
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 198,
+        "end": 304
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "invitation",
+      "canonical": "artifact/string-add::invitation",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 91,
+        "end": 101
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "main",
+      "canonical": "artifact/string-add::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 212,
+        "end": 216
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "guest",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 102,
+        "end": 107
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 119,
+        "end": 124
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 109,
+        "end": 115
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 126,
+        "end": 132
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 136,
+        "end": 142
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 157,
+        "end": 158
+      }
+    },
+    {
+      "spelling": "guest",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 159,
+        "end": 164
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 165,
+        "end": 166
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 183,
+        "end": 184
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 185,
+        "end": 190
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 191,
+        "end": 192
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 220,
+        "end": 224
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 244,
+        "end": 256
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 261,
+        "end": 268
+      }
+    },
+    {
+      "spelling": "invitation",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 271,
+        "end": 281
+      }
+    }
+  ],
+  "issues": []
+}

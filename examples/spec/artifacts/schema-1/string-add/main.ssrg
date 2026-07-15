@@ -1,0 +1,8 @@
+// String同士の`+`は、Add<String, String, String> instanceで連結されます。
+fn invitation guest: String -> event: String -> String =
+  "Hello, " + guest + "! Welcome to " + event + "."
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ invitation "Mio" "Seseragi Night"

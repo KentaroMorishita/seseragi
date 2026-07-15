@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/string-add"
+  ],
+  "sourcesContent": [
+    "// String同士の`+`は、Add<String, String, String> instanceで連結されます。\nfn invitation guest: String -> event: String -> String =\n  \"Hello, \" + guest + \"! Welcome to \" + event + \".\"\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ invitation \"Mio\" \"Seseragi Night\"\n"
+  ],
+  "names": [
+    "invitation",
+    "main",
+    "println",
+    "invitation"
+  ],
+  "mappings": ";;AACAA;AAGAC"
+}

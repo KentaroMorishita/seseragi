@@ -445,6 +445,10 @@ trait Show<A> {
 Charのstandard Showはそのscalar一個を含むString、Stringのstandard Showは同じStringを返します。
 quoteやescapeを含むsource表現はDebugの責務であり、Showは自動でquoteを加えません。
 
+Stringは`Add<String, String, String>`のstandard instanceを持ち、`left + right`は二つのStringを
+その順で連結した新しいStringを返します。数値や他の型を暗黙にStringへ変換しません。異なる型を含む
+連結は`show`や名前付きformatterで明示的にStringへ変換してから行います。
+
 backtick templateのinterpolationは `Show` を使います。たとえば
 `` `user: ${user}` `` は概念上 `"user: " <> show user` へ展開されます。templateは
 compilerが構文として検査しますが、`show`自体は通常のtrait methodであり、compiler builtinや
