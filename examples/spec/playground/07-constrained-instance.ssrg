@@ -29,6 +29,6 @@ pub effect fn main -> Unit
 with Console
 fails ConsoleError =
   do {
-    println (report Nothing)
-    println (report (Just Active))
+    println $ report Nothing
+    println $ report $ Just Active
   }

@@ -1166,60 +1166,53 @@
                   "kind": "name",
                   "name": "mapError",
                   "span": {
-                    "start": 1090,
-                    "end": 1098
+                    "start": 1105,
+                    "end": 1113
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "StdinFailure",
                   "span": {
+                    "start": 1114,
+                    "end": 1126
+                  }
+                },
+                "span": {
+                  "start": 1105,
+                  "end": 1126
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "readLine",
+                  "span": {
+                    "start": 1090,
+                    "end": 1098
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
                     "start": 1099,
-                    "end": 1111
+                    "end": 1101
                   }
                 },
                 "span": {
                   "start": 1090,
-                  "end": 1111
-                }
-              },
-              "argument": {
-                "kind": "grouped",
-                "value": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "readLine",
-                    "span": {
-                      "start": 1113,
-                      "end": 1121
-                    }
-                  },
-                  "argument": {
-                    "kind": "unit",
-                    "span": {
-                      "start": 1122,
-                      "end": 1124
-                    }
-                  },
-                  "span": {
-                    "start": 1113,
-                    "end": 1124
-                  }
-                },
-                "span": {
-                  "start": 1112,
-                  "end": 1125
+                  "end": 1101
                 }
               },
               "span": {
                 "start": 1090,
-                "end": 1125
+                "end": 1126
               }
             },
             "span": {
               "start": 1076,
-              "end": 1125
+              "end": 1126
             }
           },
           {
@@ -1228,12 +1221,12 @@
               "kind": "name",
               "name": "first",
               "nameSpan": {
-                "start": 1130,
-                "end": 1135
+                "start": 1131,
+                "end": 1136
               },
               "span": {
-                "start": 1130,
-                "end": 1135
+                "start": 1131,
+                "end": 1136
               }
             },
             "value": {
@@ -1242,48 +1235,41 @@
                 "kind": "name",
                 "name": "fromEither",
                 "span": {
-                  "start": 1139,
-                  "end": 1149
+                  "start": 1168,
+                  "end": 1178
                 }
               },
               "argument": {
-                "kind": "grouped",
-                "value": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "parseInput",
-                    "span": {
-                      "start": 1151,
-                      "end": 1161
-                    }
-                  },
-                  "argument": {
-                    "kind": "name",
-                    "name": "firstInput",
-                    "span": {
-                      "start": 1162,
-                      "end": 1172
-                    }
-                  },
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "parseInput",
                   "span": {
-                    "start": 1151,
-                    "end": 1172
+                    "start": 1154,
+                    "end": 1164
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "firstInput",
+                  "span": {
+                    "start": 1140,
+                    "end": 1150
                   }
                 },
                 "span": {
-                  "start": 1150,
-                  "end": 1173
+                  "start": 1140,
+                  "end": 1164
                 }
               },
               "span": {
-                "start": 1139,
-                "end": 1173
+                "start": 1140,
+                "end": 1178
               }
             },
             "span": {
-              "start": 1130,
-              "end": 1173
+              "start": 1131,
+              "end": 1178
             }
           },
           {
@@ -1292,12 +1278,12 @@
               "kind": "name",
               "name": "secondInput",
               "nameSpan": {
-                "start": 1178,
-                "end": 1189
+                "start": 1183,
+                "end": 1194
               },
               "span": {
-                "start": 1178,
-                "end": 1189
+                "start": 1183,
+                "end": 1194
               }
             },
             "value": {
@@ -1308,60 +1294,53 @@
                   "kind": "name",
                   "name": "mapError",
                   "span": {
-                    "start": 1193,
-                    "end": 1201
+                    "start": 1213,
+                    "end": 1221
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "StdinFailure",
                   "span": {
-                    "start": 1202,
-                    "end": 1214
+                    "start": 1222,
+                    "end": 1234
                   }
                 },
                 "span": {
-                  "start": 1193,
-                  "end": 1214
+                  "start": 1213,
+                  "end": 1234
                 }
               },
               "argument": {
-                "kind": "grouped",
-                "value": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "readLine",
-                    "span": {
-                      "start": 1216,
-                      "end": 1224
-                    }
-                  },
-                  "argument": {
-                    "kind": "unit",
-                    "span": {
-                      "start": 1225,
-                      "end": 1227
-                    }
-                  },
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "readLine",
                   "span": {
-                    "start": 1216,
-                    "end": 1227
+                    "start": 1198,
+                    "end": 1206
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 1207,
+                    "end": 1209
                   }
                 },
                 "span": {
-                  "start": 1215,
-                  "end": 1228
+                  "start": 1198,
+                  "end": 1209
                 }
               },
               "span": {
-                "start": 1193,
-                "end": 1228
+                "start": 1198,
+                "end": 1234
               }
             },
             "span": {
-              "start": 1178,
-              "end": 1228
+              "start": 1183,
+              "end": 1234
             }
           },
           {
@@ -1370,12 +1349,12 @@
               "kind": "name",
               "name": "second",
               "nameSpan": {
-                "start": 1233,
-                "end": 1239
+                "start": 1239,
+                "end": 1245
               },
               "span": {
-                "start": 1233,
-                "end": 1239
+                "start": 1239,
+                "end": 1245
               }
             },
             "value": {
@@ -1384,48 +1363,41 @@
                 "kind": "name",
                 "name": "fromEither",
                 "span": {
-                  "start": 1243,
-                  "end": 1253
+                  "start": 1278,
+                  "end": 1288
                 }
               },
               "argument": {
-                "kind": "grouped",
-                "value": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "parseInput",
-                    "span": {
-                      "start": 1255,
-                      "end": 1265
-                    }
-                  },
-                  "argument": {
-                    "kind": "name",
-                    "name": "secondInput",
-                    "span": {
-                      "start": 1266,
-                      "end": 1277
-                    }
-                  },
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "parseInput",
                   "span": {
-                    "start": 1255,
-                    "end": 1277
+                    "start": 1264,
+                    "end": 1274
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "secondInput",
+                  "span": {
+                    "start": 1249,
+                    "end": 1260
                   }
                 },
                 "span": {
-                  "start": 1254,
-                  "end": 1278
+                  "start": 1249,
+                  "end": 1274
                 }
               },
               "span": {
-                "start": 1243,
-                "end": 1278
+                "start": 1249,
+                "end": 1288
               }
             },
             "span": {
-              "start": 1233,
-              "end": 1278
+              "start": 1239,
+              "end": 1288
             }
           },
           {
@@ -1434,12 +1406,12 @@
               "kind": "name",
               "name": "outcome",
               "nameSpan": {
-                "start": 1287,
-                "end": 1294
+                "start": 1297,
+                "end": 1304
               },
               "span": {
-                "start": 1287,
-                "end": 1294
+                "start": 1297,
+                "end": 1304
               }
             },
             "value": {
@@ -1450,39 +1422,39 @@
                   "kind": "name",
                   "name": "decide",
                   "span": {
-                    "start": 1297,
-                    "end": 1303
+                    "start": 1307,
+                    "end": 1313
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "first",
                   "span": {
-                    "start": 1304,
-                    "end": 1309
+                    "start": 1314,
+                    "end": 1319
                   }
                 },
                 "span": {
-                  "start": 1297,
-                  "end": 1309
+                  "start": 1307,
+                  "end": 1319
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "second",
                 "span": {
-                  "start": 1310,
-                  "end": 1316
+                  "start": 1320,
+                  "end": 1326
                 }
               },
               "span": {
-                "start": 1297,
-                "end": 1316
+                "start": 1307,
+                "end": 1326
               }
             },
             "span": {
-              "start": 1283,
-              "end": 1316
+              "start": 1293,
+              "end": 1326
             }
           }
         ],
@@ -1494,88 +1466,74 @@
               "kind": "name",
               "name": "mapError",
               "span": {
-                "start": 1321,
-                "end": 1329
+                "start": 1370,
+                "end": 1378
               }
             },
             "argument": {
               "kind": "name",
               "name": "ConsoleFailure",
               "span": {
-                "start": 1330,
-                "end": 1344
+                "start": 1379,
+                "end": 1393
               }
             },
             "span": {
-              "start": 1321,
-              "end": 1344
+              "start": 1370,
+              "end": 1393
             }
           },
           "argument": {
-            "kind": "grouped",
-            "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "println",
+              "span": {
+                "start": 1359,
+                "end": 1366
+              }
+            },
+            "argument": {
               "kind": "application",
               "function": {
                 "kind": "name",
-                "name": "println",
+                "name": "renderOutcome",
                 "span": {
-                  "start": 1346,
-                  "end": 1353
+                  "start": 1342,
+                  "end": 1355
                 }
               },
               "argument": {
-                "kind": "grouped",
-                "value": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "renderOutcome",
-                    "span": {
-                      "start": 1355,
-                      "end": 1368
-                    }
-                  },
-                  "argument": {
-                    "kind": "name",
-                    "name": "outcome",
-                    "span": {
-                      "start": 1369,
-                      "end": 1376
-                    }
-                  },
-                  "span": {
-                    "start": 1355,
-                    "end": 1376
-                  }
-                },
+                "kind": "name",
+                "name": "outcome",
                 "span": {
-                  "start": 1354,
-                  "end": 1377
+                  "start": 1331,
+                  "end": 1338
                 }
               },
               "span": {
-                "start": 1346,
-                "end": 1377
+                "start": 1331,
+                "end": 1355
               }
             },
             "span": {
-              "start": 1345,
-              "end": 1378
+              "start": 1331,
+              "end": 1366
             }
           },
           "span": {
-            "start": 1321,
-            "end": 1378
+            "start": 1331,
+            "end": 1393
           }
         },
         "span": {
           "start": 1067,
-          "end": 1382
+          "end": 1397
         }
       },
       "span": {
         "start": 1044,
-        "end": 1382
+        "end": 1397
       }
     }
   ]

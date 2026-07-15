@@ -37,8 +37,8 @@ pub effect fn main -> Unit
 with Console
 fails ConsoleError =
   do {
-    println (present Active)
-    println (present Automatic)
+    println $ present Active
+    println $ present Automatic
   }
 
 // Expected stdout:

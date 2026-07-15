@@ -307,7 +307,7 @@
       "declarationKind": "effect-function",
       "declaration": {
         "start": 1044,
-        "end": 1382
+        "end": 1397
       },
       "scheme": {
         "typeParameters": [],

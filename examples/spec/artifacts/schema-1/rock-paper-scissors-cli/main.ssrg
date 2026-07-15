@@ -48,10 +48,10 @@ fn renderOutcome outcome: Outcome -> String =
 
 pub effect fn main =
   do {
-    firstInput <- mapError StdinFailure (readLine ())
-    first <- fromEither (parseInput firstInput)
-    secondInput <- mapError StdinFailure (readLine ())
-    second <- fromEither (parseInput secondInput)
+    firstInput <- readLine () |> mapError StdinFailure
+    first <- firstInput |> parseInput |> fromEither
+    secondInput <- readLine () |> mapError StdinFailure
+    second <- secondInput |> parseInput |> fromEither
     let outcome = decide first second
-    mapError ConsoleFailure (println (renderOutcome outcome))
+    outcome |> renderOutcome |> println |> mapError ConsoleFailure
   }

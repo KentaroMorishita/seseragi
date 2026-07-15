@@ -66,10 +66,10 @@ fn renderEnding ending: Ending -> String =
 
 pub effect fn main =
   do {
-    routeInput <- mapError StdinFailure (readLine ())
-    route <- fromEither (parseRouteInput routeInput)
-    toolInput <- mapError StdinFailure (readLine ())
-    tool <- fromEither (parseToolInput toolInput)
+    routeInput <- readLine () |> mapError StdinFailure
+    route <- routeInput |> parseRouteInput |> fromEither
+    toolInput <- readLine () |> mapError StdinFailure
+    tool <- toolInput |> parseToolInput |> fromEither
     let ending = chooseEnding route tool
-    mapError ConsoleFailure (println (renderEnding ending))
+    ending |> renderEnding |> println |> mapError ConsoleFailure
   }
