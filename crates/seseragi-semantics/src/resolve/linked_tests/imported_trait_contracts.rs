@@ -65,7 +65,7 @@ fn compares_provider_nominals_by_canonical_identity() {
 #[test]
 fn alpha_normalizes_imported_generic_methods_and_prelude_constraints() {
     let domain_source =
-        "pub trait Convert<F> {\n  fn convert<A> value: F<A> -> F<A>\n  where Show<A>\n}\n";
+        "pub trait Convert<F<_>> {\n  fn convert<A> value: F<A> -> F<A>\n  where Show<A>\n}\n";
     let main_source = "import { Convert } from \"./domain\"\n\ninstance Convert<Either<String, _>> {\n  fn convert<B> value: Either<String, B> -> Either<String, B>\n  where Show<B> =\n    value\n}\n";
     let linked = linked_program(
         main_source,

@@ -1,4 +1,4 @@
-use crate::surface::{ByteSpan, Visibility};
+use crate::surface::{ByteSpan, TypeParameter, Visibility};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -62,7 +62,7 @@ pub struct InterfaceMethod {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InterfaceScheme {
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub constraints: Vec<InterfaceConstraint>,
     #[serde(rename = "type")]
     pub type_ref: InterfaceType,
@@ -165,7 +165,7 @@ pub struct InterfaceInstance {
     pub type_identity: Option<String>,
     #[serde(rename = "trait")]
     pub trait_name: String,
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub head: InterfaceType,
     pub constraints: Vec<InterfaceConstraint>,
     pub origin: ByteSpan,

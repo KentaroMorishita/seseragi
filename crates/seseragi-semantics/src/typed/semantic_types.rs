@@ -205,7 +205,10 @@ impl SemanticTypeCatalog {
                 SemanticAdt {
                     name: name.clone(),
                     type_parameters: parameters.clone(),
-                    type_parameter_names: parameter_names.clone(),
+                    type_parameter_names: parameter_names
+                        .iter()
+                        .map(|parameter| parameter.name.clone())
+                        .collect(),
                     variants: Vec::new(),
                 },
             );

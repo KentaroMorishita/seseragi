@@ -40,7 +40,7 @@ pub(super) fn exports_from_type_decl(
         arguments: type_parameters
             .iter()
             .map(|parameter| InterfaceType::Named {
-                name: parameter.clone(),
+                name: parameter.name.clone(),
                 arguments: Vec::new(),
             })
             .collect(),

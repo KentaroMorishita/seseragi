@@ -81,7 +81,7 @@ fn match_instance(
     }
     let type_arguments = type_parameters
         .iter()
-        .map(|parameter| substitutions.get(parameter).cloned())
+        .map(|parameter| substitutions.get(&parameter.name).cloned())
         .collect::<Option<Vec<_>>>()?;
     let matches = templates
         .iter()
@@ -100,7 +100,7 @@ fn match_instance(
     let binders = type_parameters
         .iter()
         .enumerate()
-        .map(|(index, parameter)| (parameter.as_str(), index))
+        .map(|(index, parameter)| (parameter.name.as_str(), index))
         .collect::<BTreeMap<_, _>>();
     let canonical_arguments = arguments
         .iter()

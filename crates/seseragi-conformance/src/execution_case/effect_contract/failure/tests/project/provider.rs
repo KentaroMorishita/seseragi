@@ -233,7 +233,7 @@ fn rejects_a_generic_provider_type_export_for_a_monomorphic_external_failure() {
     provider_interface.exports[0]
         .scheme
         .type_parameters
-        .push("error".to_owned());
+        .push(seseragi_syntax::TypeParameter::value("error"));
     let catalog = ProjectFailureRendererCatalog::new(
         [
             ("artifact/example".to_owned(), &entry),

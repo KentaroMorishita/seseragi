@@ -256,7 +256,7 @@ mod tests {
                 owner: "artifact/public-type::Maybe".to_owned(),
                 visibility: Visibility::Public,
                 scheme: InterfaceScheme {
-                    type_parameters: vec!["A".to_owned()],
+                    type_parameters: vec![seseragi_syntax::TypeParameter::value("A")],
                     constraints: Vec::new(),
                     type_ref: InterfaceType::Named {
                         name: "Maybe".to_owned(),

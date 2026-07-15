@@ -1,4 +1,90 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TypeParameter {
+    pub name: String,
+    /// Number of `Type` arguments accepted by this parameter. Zero denotes a
+    /// regular value type parameter (`A`); one denotes `F<_>`.
+    pub arity: u32,
+}
+
+impl TypeParameter {
+    pub fn value(name: impl Into<String>) -> Self {
+        Self {
+            name: name.into(),
+            arity: 0,
+        }
+    }
+
+    pub fn constructor(name: impl Into<String>, arity: u32) -> Self {
+        debug_assert!(arity > 0);
+        Self {
+            name: name.into(),
+            arity,
+        }
+    }
+
+    pub fn is_constructor(&self) -> bool {
+        self.arity > 0
+    }
+}
+
+impl PartialEq<String> for TypeParameter {
+    fn eq(&self, other: &String) -> bool {
+        self.arity == 0 && self.name == *other
+    }
+}
+
+impl PartialEq<&str> for TypeParameter {
+    fn eq(&self, other: &&str) -> bool {
+        self.arity == 0 && self.name == *other
+    }
+}
+
+// Keep existing schema-1 artifacts stable for ordinary type parameters while
+// giving higher-kinded parameters a structural representation.
+impl Serialize for TypeParameter {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        if self.arity == 0 {
+            serializer.serialize_str(&self.name)
+        } else {
+            #[derive(Serialize)]
+            #[serde(rename_all = "camelCase")]
+            struct Constructor<'a> {
+                name: &'a str,
+                arity: u32,
+            }
+
+            Constructor {
+                name: &self.name,
+                arity: self.arity,
+            }
+            .serialize(serializer)
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for TypeParameter {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        #[serde(untagged)]
+        enum Repr {
+            Value(String),
+            Constructor { name: String, arity: u32 },
+        }
+
+        Ok(match Repr::deserialize(deserializer)? {
+            Repr::Value(name) => Self::value(name),
+            Repr::Constructor { name, arity } => Self { name, arity },
+        })
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -51,7 +137,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         parameters: Vec<SurfaceParameter>,
         #[serde(default, skip_serializing_if = "is_false")]
@@ -72,7 +158,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         parameters: Vec<SurfaceParameter>,
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -88,7 +174,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         deriving: Vec<String>,
         representation: TypeRef,
@@ -99,7 +185,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         target: TypeRef,
         span: ByteSpan,
     },
@@ -110,7 +196,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         deriving: Vec<String>,
         variants: Vec<SurfaceVariant>,
@@ -123,7 +209,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         deriving: Vec<String>,
         fields: Vec<SurfaceField>,
@@ -134,7 +220,7 @@ pub enum SurfaceDecl {
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -144,7 +230,7 @@ pub enum SurfaceDecl {
     Operator {
         visibility: Visibility,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         fixity: String,
         precedence: u32,
         spelling: String,
@@ -156,7 +242,7 @@ pub enum SurfaceDecl {
     },
     Instance {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         trait_name: String,
         trait_name_span: ByteSpan,
         arguments: Vec<TypeRef>,
@@ -200,7 +286,7 @@ pub struct SurfaceMethod {
     pub name: String,
     pub name_span: ByteSpan,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub parameters: Vec<SurfaceParameter>,
     pub return_type: TypeRef,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

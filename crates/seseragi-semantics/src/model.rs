@@ -115,6 +115,8 @@ pub enum TypedDecl {
         symbol: String,
         visibility: Visibility,
         origin: ByteSpan,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_constructor_parameters: Vec<String>,
         scheme: TypedScheme,
         parameters: Vec<TypedParameter>,
         body: TypedExpr,

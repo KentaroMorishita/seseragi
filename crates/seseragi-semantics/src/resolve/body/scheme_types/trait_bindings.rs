@@ -218,7 +218,7 @@ mod tests {
             declaration_kind: Some("trait".to_owned()),
             declaration: ByteSpan { start: 0, end: 8 },
             scheme: InterfaceScheme {
-                type_parameters: vec!["A".to_owned()],
+                type_parameters: vec![seseragi_syntax::TypeParameter::value("A")],
                 constraints: Vec::new(),
                 type_ref: InterfaceType::TypeConstructor {
                     name: name.to_owned(),
@@ -251,7 +251,7 @@ mod tests {
             declaration_kind: Some("function".to_owned()),
             declaration: ByteSpan { start: 0, end: 8 },
             scheme: InterfaceScheme {
-                type_parameters: vec!["T".to_owned()],
+                type_parameters: vec![seseragi_syntax::TypeParameter::value("T")],
                 constraints: Vec::new(),
                 type_ref: InterfaceType::Function {
                     parameter: Box::new(named("T")),

@@ -59,7 +59,12 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
                 visibility: export.visibility,
                 origin: export.declaration,
                 scheme: TypedScheme {
-                    type_parameters: export.scheme.type_parameters,
+                    type_parameters: export
+                        .scheme
+                        .type_parameters
+                        .into_iter()
+                        .map(|parameter| parameter.name)
+                        .collect(),
                     constraints: export
                         .scheme
                         .constraints

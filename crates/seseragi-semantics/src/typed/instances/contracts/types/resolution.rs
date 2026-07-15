@@ -94,11 +94,11 @@ pub(super) fn method_binders(
         .type_parameters
         .iter()
         .enumerate()
-        .map(|(index, name)| {
+        .map(|(index, parameter)| {
             let symbol = resolved.symbols.iter().find(|symbol| {
                 symbol.scope == scope.id
                     && symbol.kind == SymbolKind::TypeParameter
-                    && symbol.spelling == *name
+                    && symbol.spelling == parameter.name
             })?;
             Some((symbol.id, index as u32))
         })
@@ -108,7 +108,7 @@ pub(super) fn method_binders(
 pub(super) fn declaration_type_parameters(
     resolved: &ResolvedModule,
     span: seseragi_syntax::ByteSpan,
-    names: &[String],
+    names: &[seseragi_syntax::TypeParameter],
 ) -> Option<Vec<SymbolId>> {
     let scope = resolved
         .scopes
@@ -116,14 +116,14 @@ pub(super) fn declaration_type_parameters(
         .find(|scope| scope.kind == ScopeKind::Declaration && scope.origin == span)?;
     names
         .iter()
-        .map(|name| {
+        .map(|parameter| {
             resolved
                 .symbols
                 .iter()
                 .find(|symbol| {
                     symbol.scope == scope.id
                         && symbol.kind == SymbolKind::TypeParameter
-                        && symbol.spelling == *name
+                        && symbol.spelling == parameter.name
                 })
                 .map(|symbol| symbol.id)
         })

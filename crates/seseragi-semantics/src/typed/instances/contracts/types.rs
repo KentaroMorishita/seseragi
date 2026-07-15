@@ -1,5 +1,5 @@
 use crate::{ExternalTraitBinding, ExternalTypeBinding, ResolvedModule, SymbolId};
-use seseragi_syntax::{InterfaceMethod, SurfaceMethod, TypeRef};
+use seseragi_syntax::{InterfaceMethod, SurfaceMethod, TypeParameter, TypeRef};
 use std::collections::BTreeMap;
 
 mod interface;
@@ -10,7 +10,7 @@ use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
 
 pub(super) struct ImportedMethodContext<'a> {
-    pub(super) trait_parameters: &'a [String],
+    pub(super) trait_parameters: &'a [TypeParameter],
     pub(super) bindings: &'a [ExternalTypeBinding],
     pub(super) trait_bindings: &'a [ExternalTraitBinding],
     pub(super) trait_name: &'a str,
@@ -20,7 +20,7 @@ pub(super) struct ImportedMethodContext<'a> {
 pub(super) fn method_contract_matches(
     resolved: &ResolvedModule,
     trait_span: seseragi_syntax::ByteSpan,
-    trait_parameters: &[String],
+    trait_parameters: &[TypeParameter],
     instance_arguments: &[TypeRef],
     expected: &SurfaceMethod,
     actual: &SurfaceMethod,
@@ -67,7 +67,7 @@ pub(super) fn imported_method_contract_matches(
         .zip(instance_arguments)
         .map(|(parameter, argument)| {
             Some((
-                parameter.clone(),
+                parameter.name.clone(),
                 contract_type(resolved, argument, &BTreeMap::new(), &BTreeMap::new())?,
             ))
         })

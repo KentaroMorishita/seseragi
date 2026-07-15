@@ -16,6 +16,7 @@
 | Array/List、lambda、Either                    | Lessons 04 and 08 | `schema-1/array-literal` + collection boundary fixtures | partial |
 | pure / Effectful traversal short-circuit      | Lesson 04         | `compile/short-circuit-traversal.ssrg`         | covered |
 | Map / Set ordering and serialization          | Lesson 06         | seed / duplicate / canonical fixtures          | partial |
+| HKT / `Functor<F<_>>` / generic `map`          | Lessons 09-11     | `schema-1/{functor-maybe,type-constructor-kind-mismatch}` + `execution-schema-1/functor-maybe`; kind arity、constructor inference、parameter / local evidence、dictionary execution | partial |
 | ApplicativeとValidation accumulation          | Lesson 09         | Applicative law fixtures                       | partial |
 | Monad、`>>=`、do desugar                      | Lesson 10         | Monad law / invalid bind pattern fixtures      | partial |
 | Signalとtransaction                           | Lesson 15         | `projects/signal-transaction-lifetime`         | covered |

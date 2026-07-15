@@ -1,5 +1,5 @@
 use crate::{TypedConstraint, TypedType};
-use seseragi_syntax::SurfaceParameter;
+use seseragi_syntax::{SurfaceParameter, TypeParameter};
 
 use super::semantic_types::SemanticTypeKey;
 use super::type_ref::typed_type_from_type_ref;
@@ -16,7 +16,7 @@ pub(crate) struct TopLevelPureFunction {
     pub(crate) symbol: String,
     pub(crate) trait_identity: Option<String>,
     pub(crate) trait_method: Option<String>,
-    pub(crate) type_parameters: Vec<String>,
+    pub(crate) type_parameters: Vec<TypeParameter>,
     pub(crate) constraints: Vec<TypedConstraint>,
     pub(crate) constraint_identities: Vec<Option<String>>,
     pub(crate) parameters: Vec<TypedType>,

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "module": "artifact/functor-maybe",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.adt",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.int64",
+      "core.int64.add",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/functor-maybe::trait(Functor)<std/prelude::Maybe>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

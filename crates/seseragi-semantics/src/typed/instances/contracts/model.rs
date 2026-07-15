@@ -1,16 +1,16 @@
 use crate::{ExternalTraitBinding, ExternalTypeBinding};
-use seseragi_syntax::{ByteSpan, InterfaceMethod, SurfaceMethod};
+use seseragi_syntax::{ByteSpan, InterfaceMethod, SurfaceMethod, TypeParameter};
 
 pub(super) enum TraitContract<'a> {
     Local {
-        parameters: &'a [String],
+        parameters: &'a [TypeParameter],
         methods: &'a [SurfaceMethod],
         span: ByteSpan,
     },
     Imported {
         name: &'a str,
         canonical: &'a str,
-        parameters: &'a [String],
+        parameters: &'a [TypeParameter],
         methods: &'a [InterfaceMethod],
         bindings: &'a [ExternalTypeBinding],
         trait_bindings: &'a [ExternalTraitBinding],
@@ -38,6 +38,13 @@ pub(crate) enum InstanceContractIssue {
         trait_name: String,
         expected: usize,
         actual: usize,
+        primary: ByteSpan,
+        declaration: ByteSpan,
+    },
+    KindMismatch {
+        parameter: String,
+        expected: u32,
+        actual: u32,
         primary: ByteSpan,
         declaration: ByteSpan,
     },

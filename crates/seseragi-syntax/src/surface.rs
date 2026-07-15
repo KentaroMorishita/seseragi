@@ -3,7 +3,8 @@ use crate::lexer::lex;
 pub use crate::surface_model::{
     ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl, SurfaceDoItem,
     SurfaceExpr, SurfaceImport, SurfaceImportItem, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
-    SurfaceParameter, SurfacePattern, SurfaceRequirement, SurfaceVariant, TypeRef, Visibility,
+    SurfaceParameter, SurfacePattern, SurfaceRequirement, SurfaceVariant, TypeParameter, TypeRef,
+    Visibility,
 };
 use crate::token::{Token, TokenKind};
 
@@ -198,7 +199,11 @@ impl SurfaceParser<'_> {
         })
     }
 
-    fn parse_optional_type_parameters(&self, start: usize, end: usize) -> (Vec<String>, usize) {
+    fn parse_optional_type_parameters(
+        &self,
+        start: usize,
+        end: usize,
+    ) -> (Vec<TypeParameter>, usize) {
         let Some(open_angle) = self.next_significant_token(start, end) else {
             return (Vec::new(), start);
         };
@@ -218,8 +223,41 @@ impl SurfaceParser<'_> {
             let Some(name) = self.identifier_name_at(next) else {
                 return (Vec::new(), start);
             };
-            parameters.push(name);
-            let Some(separator) = self.next_significant_token(next + 1, end) else {
+            let mut after_parameter = next + 1;
+            let arity = self
+                .next_significant_token(after_parameter, end)
+                .filter(|index| self.is_angle_left(*index))
+                .and_then(|open| {
+                    let mut cursor = open + 1;
+                    let mut arity = 0_u32;
+                    loop {
+                        let token = self.next_significant_token(cursor, end)?;
+                        if self.is_angle_right(token) {
+                            after_parameter = token + 1;
+                            return (arity > 0).then_some(arity);
+                        }
+                        if self.raw_at(token) != Some("_") {
+                            return None;
+                        }
+                        arity += 1;
+                        let separator = self.next_significant_token(token + 1, end)?;
+                        if self.is_angle_right(separator) {
+                            after_parameter = separator + 1;
+                            return Some(arity);
+                        }
+                        if self.kind_at(separator) != Some(TokenKind::PunctuationComma) {
+                            return None;
+                        }
+                        cursor = separator + 1;
+                    }
+                })
+                .unwrap_or(0);
+            parameters.push(if arity == 0 {
+                TypeParameter::value(name)
+            } else {
+                TypeParameter::constructor(name, arity)
+            });
+            let Some(separator) = self.next_significant_token(after_parameter, end) else {
                 return (Vec::new(), start);
             };
             if self.is_angle_right(separator) {

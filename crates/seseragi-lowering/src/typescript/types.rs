@@ -31,6 +31,7 @@ pub(super) fn type_ref_from_core_expr(
 pub(super) fn lower_core_parameter_to_typescript(
     parameter: CoreParameter,
     imported_types: &BTreeMap<String, String>,
+    type_constructor_parameters: &[String],
 ) -> TypeScriptParameter {
     TypeScriptParameter {
         name: if parameter.kind == "implicit" {
@@ -38,7 +39,11 @@ pub(super) fn lower_core_parameter_to_typescript(
         } else {
             safe_identifier(&parameter.id)
         },
-        type_name: render_core_type(&parameter.type_ref, imported_types),
+        type_name: render_typescript_type(&type_ref_from_core_type_with_erasure(
+            &parameter.type_ref,
+            imported_types,
+            type_constructor_parameters,
+        )),
         implicit: parameter.kind == "implicit",
     }
 }
@@ -47,7 +52,23 @@ pub(super) fn type_ref_from_core_type(
     type_ref: &CoreType,
     imported_types: &BTreeMap<String, String>,
 ) -> TypeScriptType {
+    type_ref_from_core_type_with_erasure(type_ref, imported_types, &[])
+}
+
+fn type_ref_from_core_type_with_erasure(
+    type_ref: &CoreType,
+    imported_types: &BTreeMap<String, String>,
+    type_constructor_parameters: &[String],
+) -> TypeScriptType {
     match type_ref {
+        CoreType::Named { name, arguments }
+            if !arguments.is_empty()
+                && type_constructor_parameters
+                    .iter()
+                    .any(|parameter| parameter == name) =>
+        {
+            TypeScriptType::Unknown
+        }
         CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty() => {
             TypeScriptType::Bigint
         }
@@ -62,18 +83,34 @@ pub(super) fn type_ref_from_core_type(
         }
         CoreType::Named { name, arguments } if name == "Maybe" && arguments.len() == 1 => {
             TypeScriptType::Maybe {
-                element: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
+                element: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )),
             }
         }
         CoreType::Named { name, arguments } if name == "Either" && arguments.len() == 2 => {
             TypeScriptType::Either {
-                error: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
-                value: Box::new(type_ref_from_core_type(&arguments[1], imported_types)),
+                error: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )),
+                value: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[1],
+                    imported_types,
+                    type_constructor_parameters,
+                )),
             }
         }
         CoreType::Named { name, arguments } if name == "Array" && arguments.len() == 1 => {
             TypeScriptType::Array {
-                element: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
+                element: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )),
             }
         }
         CoreType::Named { name, arguments }
@@ -89,7 +126,13 @@ pub(super) fn type_ref_from_core_type(
             name: local_name(name),
             arguments: arguments
                 .iter()
-                .map(|argument| type_ref_from_core_type(argument, imported_types))
+                .map(|argument| {
+                    type_ref_from_core_type_with_erasure(
+                        argument,
+                        imported_types,
+                        type_constructor_parameters,
+                    )
+                })
                 .collect(),
         },
         CoreType::ExternalNamed {
@@ -107,28 +150,41 @@ pub(super) fn type_ref_from_core_type(
                 }),
             arguments: arguments
                 .iter()
-                .map(|argument| type_ref_from_core_type(argument, imported_types))
+                .map(|argument| {
+                    type_ref_from_core_type_with_erasure(
+                        argument,
+                        imported_types,
+                        type_constructor_parameters,
+                    )
+                })
                 .collect(),
         },
         CoreType::Tuple { elements } => TypeScriptType::Tuple {
             elements: elements
                 .iter()
-                .map(|element| type_ref_from_core_type(element, imported_types))
+                .map(|element| {
+                    type_ref_from_core_type_with_erasure(
+                        element,
+                        imported_types,
+                        type_constructor_parameters,
+                    )
+                })
                 .collect(),
         },
         CoreType::Function { parameter, result } => TypeScriptType::Function {
-            parameter: Box::new(type_ref_from_core_type(parameter, imported_types)),
-            result: Box::new(type_ref_from_core_type(result, imported_types)),
+            parameter: Box::new(type_ref_from_core_type_with_erasure(
+                parameter,
+                imported_types,
+                type_constructor_parameters,
+            )),
+            result: Box::new(type_ref_from_core_type_with_erasure(
+                result,
+                imported_types,
+                type_constructor_parameters,
+            )),
         },
         CoreType::Hole | CoreType::Record { .. } => TypeScriptType::Unknown,
     }
-}
-
-pub(super) fn render_core_type(
-    type_ref: &CoreType,
-    imported_types: &BTreeMap<String, String>,
-) -> String {
-    render_typescript_type(&type_ref_from_core_type(type_ref, imported_types))
 }
 
 pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
@@ -184,7 +240,10 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{render_core_type, type_ref_from_core_type, CoreType};
+    use super::{
+        lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_type,
+        CoreParameter, CoreType,
+    };
     use crate::TypeScriptType;
 
     #[test]
@@ -194,7 +253,10 @@ mod tests {
             arguments: Vec::new(),
         };
 
-        assert_eq!(render_core_type(&type_ref, &Default::default()), "Hand");
+        assert_eq!(
+            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            "Hand"
+        );
     }
 
     #[test]
@@ -214,7 +276,7 @@ mod tests {
             }
         );
         assert_eq!(
-            render_core_type(&type_ref, &Default::default()),
+            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
             "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }"
         );
     }
@@ -246,8 +308,28 @@ mod tests {
             }
         );
         assert_eq!(
-            render_core_type(&type_ref, &Default::default()),
+            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
             "{ readonly tag: \"Left\"; readonly value: InputError } | { readonly tag: \"Right\"; readonly value: string }"
         );
+    }
+
+    #[test]
+    fn erases_higher_kinded_parameter_applications_at_the_typescript_boundary() {
+        let parameter = CoreParameter {
+            id: "value".to_owned(),
+            kind: "named".to_owned(),
+            type_ref: CoreType::Named {
+                name: "F".to_owned(),
+                arguments: vec![CoreType::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            },
+        };
+
+        let lowered =
+            lower_core_parameter_to_typescript(parameter, &Default::default(), &["F".to_owned()]);
+
+        assert_eq!(lowered.type_name, "unknown");
     }
 }

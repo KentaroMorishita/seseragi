@@ -197,7 +197,9 @@ fn rejects_generic_or_conditional_external_show_evidence() {
     );
 
     let mut generic = imported_show_instance(canonical, Some(provider_module));
-    generic.type_parameters.push("error".to_owned());
+    generic
+        .type_parameters
+        .push(seseragi_syntax::TypeParameter::value("error"));
     let generic = interface_with_exports(Vec::new(), vec![generic]);
     let error = super::super::project::resolve(&generic, &failure, &entry, "./main.ts", &catalog)
         .unwrap_err();

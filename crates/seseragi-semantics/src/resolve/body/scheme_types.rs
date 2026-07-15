@@ -22,7 +22,7 @@ pub(super) fn export_scheme_type_bindings(
         .scheme
         .type_parameters
         .iter()
-        .cloned()
+        .map(|parameter| parameter.name.clone())
         .collect::<BTreeSet<_>>();
     let mut bindings = Vec::new();
     if export.declaration_kind.as_deref() != Some("trait") {
@@ -42,7 +42,13 @@ pub(super) fn export_scheme_type_bindings(
         let method_parameters = type_parameters
             .iter()
             .cloned()
-            .chain(method.scheme.type_parameters.iter().cloned())
+            .chain(
+                method
+                    .scheme
+                    .type_parameters
+                    .iter()
+                    .map(|parameter| parameter.name.clone()),
+            )
             .collect::<BTreeSet<_>>();
         collect_bindings(
             &method.scheme.type_ref,
@@ -225,7 +231,7 @@ mod tests {
             declaration_kind: Some("trait".to_owned()),
             declaration: ByteSpan { start: 5, end: 40 },
             scheme: InterfaceScheme {
-                type_parameters: vec!["A".to_owned()],
+                type_parameters: vec![seseragi_syntax::TypeParameter::value("A")],
                 constraints: Vec::new(),
                 type_ref: InterfaceType::TypeConstructor {
                     name: "Convert".to_owned(),

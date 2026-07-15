@@ -533,7 +533,11 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                     .parameters
                     .into_iter()
                     .map(|parameter| {
-                        lower_core_parameter_to_typescript(parameter, &module_imports.type_names)
+                        lower_core_parameter_to_typescript(
+                            parameter,
+                            &module_imports.type_names,
+                            &function.type_constructor_parameters,
+                        )
                     })
                     .collect(),
                 body,

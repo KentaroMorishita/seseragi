@@ -311,7 +311,7 @@ fn lower_method(
             .iter()
             .cloned()
             .map(|parameter| {
-                lower_core_parameter_to_typescript(parameter, context.imported_type_names)
+                lower_core_parameter_to_typescript(parameter, context.imported_type_names, &[])
             })
             .collect(),
         body,

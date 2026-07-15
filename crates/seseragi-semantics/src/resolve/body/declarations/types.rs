@@ -1,11 +1,11 @@
 use super::super::Resolver;
 use crate::{ScopeId, ScopeKind, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{ByteSpan, SurfaceParameter, SurfaceRequirement, TypeRef};
+use seseragi_syntax::{ByteSpan, SurfaceParameter, SurfaceRequirement, TypeParameter, TypeRef};
 
 pub(super) fn declaration_scope(
     resolver: &mut Resolver,
     parent: ScopeId,
-    type_parameters: &[String],
+    type_parameters: &[TypeParameter],
     origin: ByteSpan,
 ) -> ScopeId {
     let scope = resolver.new_scope(parent, ScopeKind::Declaration, origin);
@@ -16,7 +16,7 @@ pub(super) fn declaration_scope(
 pub(super) fn register_type_parameters(
     resolver: &mut Resolver,
     scope: ScopeId,
-    parameters: &[String],
+    parameters: &[TypeParameter],
     origin: ByteSpan,
 ) {
     for parameter in parameters {
@@ -24,7 +24,7 @@ pub(super) fn register_type_parameters(
             scope,
             SymbolNamespace::Type,
             SymbolKind::TypeParameter,
-            parameter,
+            &parameter.name,
             None,
             origin,
         );

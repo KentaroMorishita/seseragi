@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "trait.instance-kind-mismatch",
+      "primary": {
+        "start": 46,
+        "end": 49
+      },
+      "related": [
+        {
+          "message": "trait parameter F expects kind Type -> Type, but the instance argument has kind Type",
+          "primary": {
+            "start": 0,
+            "end": 25
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

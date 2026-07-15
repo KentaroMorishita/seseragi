@@ -480,7 +480,7 @@ fn parses_instance_type_parameters_and_constraints() {
     assert_eq!(
         module.declarations[0],
         SurfaceDecl::Instance {
-            type_parameters: vec!["A".to_owned()],
+            type_parameters: vec![crate::TypeParameter::value("A")],
             trait_name: "Show".to_owned(),
             trait_name_span: ByteSpan { start: 12, end: 16 },
             arguments: vec![TypeRef::Named {
@@ -571,7 +571,7 @@ fn parses_trait_declarations() {
             visibility: Visibility::Public,
             name: "Ord".to_owned(),
             name_span: ByteSpan { start: 10, end: 13 },
-            type_parameters: vec!["A".to_owned()],
+            type_parameters: vec![crate::TypeParameter::value("A")],
             constraints: vec![SurfaceConstraint {
                 name: "Eq".to_owned(),
                 name_span: ByteSpan { start: 23, end: 25 },
@@ -618,4 +618,37 @@ fn parses_trait_declarations() {
             span: ByteSpan { start: 0, end: 70 },
         }
     );
+}
+
+#[test]
+fn parses_type_constructor_parameters() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n",
+    );
+
+    let SurfaceDecl::Trait {
+        type_parameters,
+        methods,
+        ..
+    } = &module.declarations[0]
+    else {
+        panic!("expected trait declaration");
+    };
+    assert_eq!(
+        type_parameters,
+        &vec![crate::TypeParameter::constructor("F", 1)]
+    );
+    assert_eq!(
+        methods[0].type_parameters,
+        vec![
+            crate::TypeParameter::value("A"),
+            crate::TypeParameter::value("B")
+        ]
+    );
+    assert!(matches!(
+        methods[0].parameters[1].type_ref,
+        TypeRef::Named { ref name, ref arguments, .. }
+            if name == "F" && arguments.len() == 1
+    ));
 }

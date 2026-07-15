@@ -264,7 +264,11 @@ fn collect_callables(
                 symbol: signature.symbol,
                 trait_identity: None,
                 trait_method: None,
-                type_parameters: signature.type_parameters,
+                type_parameters: signature
+                    .type_parameters
+                    .into_iter()
+                    .map(seseragi_syntax::TypeParameter::value)
+                    .collect(),
                 constraints: Vec::new(),
                 constraint_identities: Vec::new(),
                 parameters: signature
@@ -309,7 +313,11 @@ fn standard_reduce_callable() -> TopLevelPureFunction {
         symbol: "std/prelude::reduce".to_owned(),
         trait_identity: None,
         trait_method: None,
-        type_parameters: vec!["C".to_owned(), "A".to_owned(), "B".to_owned()],
+        type_parameters: vec![
+            seseragi_syntax::TypeParameter::value("C"),
+            seseragi_syntax::TypeParameter::value("A"),
+            seseragi_syntax::TypeParameter::value("B"),
+        ],
         constraints: vec![crate::TypedConstraint {
             name: "Reducible".to_owned(),
             arguments: vec![collection.clone(), element.clone()],
@@ -371,7 +379,7 @@ fn collect_local_trait_methods(
                 arguments: type_parameters
                     .iter()
                     .map(|parameter| TypedType::Named {
-                        name: parameter.clone(),
+                        name: parameter.name.clone(),
                         arguments: Vec::new(),
                     })
                     .collect(),

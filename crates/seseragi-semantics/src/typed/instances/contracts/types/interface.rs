@@ -19,7 +19,7 @@ pub(super) fn contract_method_from_interface(
         .type_parameters
         .iter()
         .enumerate()
-        .map(|(index, name)| (name.clone(), index as u32))
+        .map(|(index, parameter)| (parameter.name.clone(), index as u32))
         .collect::<BTreeMap<_, _>>();
     let mut constraints = method
         .scheme

@@ -227,6 +227,35 @@ fn parses_trait_declarations_in_interface() {
 }
 
 #[test]
+fn preserves_type_constructor_parameter_kind_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/functor/main.ssrg",
+        "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n",
+    );
+    let functor = interface
+        .exports
+        .iter()
+        .find(|export| export.name == "Functor")
+        .expect("Functor export exists");
+
+    assert_eq!(
+        functor.scheme.type_parameters,
+        vec![crate::TypeParameter::constructor("F", 1)]
+    );
+    assert_eq!(
+        functor.methods[0].scheme.type_parameters,
+        vec![
+            crate::TypeParameter::value("A"),
+            crate::TypeParameter::value("B")
+        ]
+    );
+    let json = serde_json::to_value(functor).expect("interface serializes");
+    assert_eq!(json["scheme"]["typeParameters"][0]["name"], "F");
+    assert_eq!(json["scheme"]["typeParameters"][0]["arity"], 1);
+    assert_eq!(json["methods"][0]["scheme"]["typeParameters"][0], "A");
+}
+
+#[test]
 fn parses_alias_declarations_in_interface() {
     let interface = parse_module_interface(
         "artifact/type-alias/main.ssrg",

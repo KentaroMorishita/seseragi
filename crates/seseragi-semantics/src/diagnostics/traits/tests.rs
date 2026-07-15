@@ -86,7 +86,7 @@ fn accepts_a_local_instance_that_matches_its_trait_contract() {
 fn accepts_alpha_renamed_higher_kinded_method_contracts() {
     let artifact = semantic_diagnostics(
         "artifact/instance-hkt-contract/main.ssrg",
-        "trait MapLike<F> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> where Eq<A>, Show<B> }\n\
+        "trait MapLike<F<_>> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> where Eq<A>, Show<B> }\n\
          type Box<A> = | Box A\n\
          instance MapLike<Box> { fn map<X, Y> f: (X -> Y) -> value: Box<X> -> Box<Y> where Show<Y>, Eq<X> = match value { Box item -> Box (f item) } }\n",
     );
@@ -96,6 +96,23 @@ fn accepts_alpha_renamed_higher_kinded_method_contracts() {
         "{:?}",
         artifact.diagnostics
     );
+}
+
+#[test]
+fn reports_a_higher_kinded_instance_argument_mismatch() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-kind-mismatch/main.ssrg",
+        "trait Functor<F<_>> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> }\n\
+         instance Functor<Int> { fn map<A, B> f: (A -> B) -> value: Int -> Int = value }\n",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0101"
+            && diagnostic.message_key == "trait.instance-kind-mismatch"
+            && diagnostic.related[0]
+                .message
+                .contains("expects kind Type -> Type")
+    }));
 }
 
 #[test]

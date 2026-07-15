@@ -12,7 +12,7 @@ fn parses_alias_declarations() {
             visibility: Visibility::Public,
             name: "Boxed".to_owned(),
             name_span: ByteSpan { start: 10, end: 15 },
-            type_parameters: vec!["A".to_owned()],
+            type_parameters: vec![crate::TypeParameter::value("A")],
             target: TypeRef::Named {
                 name: "Box".to_owned(),
                 arguments: vec![TypeRef::Named {
@@ -41,7 +41,7 @@ fn parses_type_declarations() {
             opaque: false,
             name: "Maybe".to_owned(),
             name_span: ByteSpan { start: 9, end: 14 },
-            type_parameters: vec!["A".to_owned()],
+            type_parameters: vec![crate::TypeParameter::value("A")],
             deriving: Vec::new(),
             variants: vec![
                 SurfaceVariant {
@@ -173,7 +173,7 @@ fn parses_struct_declarations() {
             opaque: false,
             name: "Box".to_owned(),
             name_span: ByteSpan { start: 11, end: 14 },
-            type_parameters: vec!["A".to_owned()],
+            type_parameters: vec![crate::TypeParameter::value("A")],
             deriving: Vec::new(),
             fields: vec![SurfaceField {
                 name: "value".to_owned(),

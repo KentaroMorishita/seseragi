@@ -71,7 +71,12 @@ fn interface_instance_from_typed(
         argument_identities: instance.argument_identities.clone(),
         type_identity: instance.type_identity.clone(),
         trait_name: instance.trait_name.clone(),
-        type_parameters: instance.type_parameters.clone(),
+        type_parameters: instance
+            .type_parameters
+            .iter()
+            .cloned()
+            .map(seseragi_syntax::TypeParameter::value)
+            .collect(),
         head: InterfaceType::Apply {
             constructor: instance.trait_name.clone(),
             arguments: instance
@@ -151,7 +156,12 @@ fn typed_value_export(
             declaration_kind: Some("function".to_owned()),
             declaration: *origin,
             scheme: InterfaceScheme {
-                type_parameters: scheme.type_parameters.clone(),
+                type_parameters: scheme
+                    .type_parameters
+                    .iter()
+                    .cloned()
+                    .map(seseragi_syntax::TypeParameter::value)
+                    .collect(),
                 constraints: scheme
                     .constraints
                     .iter()
@@ -209,7 +219,12 @@ fn interface_scheme_from_typed_scheme(
     types: &InterfaceTypes<'_>,
 ) -> InterfaceScheme {
     InterfaceScheme {
-        type_parameters: scheme.type_parameters.clone(),
+        type_parameters: scheme
+            .type_parameters
+            .iter()
+            .cloned()
+            .map(seseragi_syntax::TypeParameter::value)
+            .collect(),
         constraints: scheme
             .constraints
             .iter()

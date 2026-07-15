@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/type-constructor-kind-mismatch",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Container",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Container",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 27,
+        "end": 54
+      }
+    }
+  ]
+}

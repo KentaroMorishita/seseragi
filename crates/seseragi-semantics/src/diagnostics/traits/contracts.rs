@@ -20,6 +20,25 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
                 primary: byte_range(*declaration),
             },
         ),
+        InstanceContractIssue::KindMismatch {
+            parameter,
+            expected,
+            actual,
+            primary,
+            declaration,
+        } => (
+            "SES-T0101",
+            "trait.instance-kind-mismatch",
+            *primary,
+            RelatedDiagnostic {
+                message: format!(
+                    "trait parameter {parameter} expects kind {}, but the instance argument has kind {}",
+                    render_kind(*expected),
+                    render_kind(*actual),
+                ),
+                primary: byte_range(*declaration),
+            },
+        ),
         InstanceContractIssue::MissingMethod {
             method,
             primary,
@@ -95,6 +114,15 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
         related: vec![related],
         fixes: Vec::new(),
     }
+}
+
+fn render_kind(arity: u32) -> String {
+    if arity == 0 {
+        return "Type".to_owned();
+    }
+    std::iter::repeat_n("Type", arity as usize + 1)
+        .collect::<Vec<_>>()
+        .join(" -> ")
 }
 
 fn byte_range(span: seseragi_syntax::ByteSpan) -> ByteRange {

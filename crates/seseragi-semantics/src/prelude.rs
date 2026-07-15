@@ -133,6 +133,18 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
     }
 }
 
+pub(crate) fn type_constructor_arity(spelling: &str) -> Option<u32> {
+    if let Some(sum_type) = sum_type_for_symbol(SymbolNamespace::Type, spelling) {
+        return Some(sum_type.type_parameters.len() as u32);
+    }
+    match spelling {
+        "Array" | "List" | "Range" => Some(1),
+        "Effect" => Some(3),
+        name if is_standalone_symbol(SymbolNamespace::Type, name) => Some(0),
+        _ => None,
+    }
+}
+
 pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
     matches!(
         canonical,
@@ -158,5 +170,13 @@ mod tests {
             Some("Either")
         );
         assert!(sum_type_for_symbol(SymbolNamespace::Value, "println").is_none());
+    }
+
+    #[test]
+    fn records_prelude_type_constructor_arities() {
+        assert_eq!(type_constructor_arity("Int"), Some(0));
+        assert_eq!(type_constructor_arity("Maybe"), Some(1));
+        assert_eq!(type_constructor_arity("Either"), Some(2));
+        assert_eq!(type_constructor_arity("Effect"), Some(3));
     }
 }

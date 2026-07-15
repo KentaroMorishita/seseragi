@@ -1,4 +1,4 @@
-use crate::surface::{SurfaceDecl, Visibility};
+use crate::surface::{SurfaceDecl, TypeParameter, Visibility};
 
 use super::methods::{
     function_interface_type, interface_constraint_from_surface, interface_method_from_surface,
@@ -197,7 +197,7 @@ fn nominal_type_export(
     name: &str,
     visibility: Visibility,
     declaration_kind: &str,
-    type_parameters: &[String],
+    type_parameters: &[TypeParameter],
     span: crate::surface::ByteSpan,
 ) -> InterfaceExport {
     InterfaceExport {

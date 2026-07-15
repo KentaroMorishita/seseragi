@@ -1,4 +1,5 @@
 use crate::{TypedConstraint, TypedRecordField, TypedType};
+use seseragi_syntax::TypeParameter;
 use std::collections::BTreeMap;
 
 use super::{application_result_type_from, TopLevelPureFunction};
@@ -105,15 +106,45 @@ pub(crate) fn instantiated_application_result_type(
 pub(crate) fn infer_type_parameters(
     parameter: &TypedType,
     argument: &TypedType,
-    type_parameters: &[String],
+    type_parameters: &[TypeParameter],
     substitutions: &mut BTreeMap<String, TypedType>,
 ) {
     if let TypedType::Named { name, arguments } = parameter {
-        if arguments.is_empty() && type_parameters.iter().any(|parameter| parameter == name) {
+        if arguments.is_empty()
+            && type_parameters
+                .iter()
+                .any(|parameter| parameter.arity == 0 && parameter.name == *name)
+        {
             if !typed_type_contains_hole(argument) {
                 substitutions
                     .entry(name.clone())
                     .or_insert_with(|| argument.clone());
+            }
+            return;
+        }
+
+        if let Some(constructor_parameter) = type_parameters
+            .iter()
+            .find(|type_parameter| type_parameter.arity > 0 && type_parameter.name == *name)
+        {
+            if let TypedType::Named {
+                name: argument_name,
+                arguments: argument_arguments,
+            } = argument
+            {
+                if arguments.len() == constructor_parameter.arity as usize
+                    && argument_arguments.len() == arguments.len()
+                {
+                    substitutions
+                        .entry(name.clone())
+                        .or_insert_with(|| TypedType::Named {
+                            name: argument_name.clone(),
+                            arguments: Vec::new(),
+                        });
+                    for (parameter, argument) in arguments.iter().zip(argument_arguments) {
+                        infer_type_parameters(parameter, argument, type_parameters, substitutions);
+                    }
+                }
             }
             return;
         }
@@ -207,13 +238,29 @@ pub(crate) fn substitute_type_parameters(
             .get(name)
             .cloned()
             .unwrap_or_else(|| type_ref.clone()),
-        TypedType::Named { name, arguments } => TypedType::Named {
-            name: name.clone(),
-            arguments: arguments
+        TypedType::Named { name, arguments } => {
+            let arguments = arguments
                 .iter()
                 .map(|argument| substitute_type_parameters(argument, substitutions))
-                .collect(),
-        },
+                .collect::<Vec<_>>();
+            match substitutions.get(name) {
+                Some(TypedType::Named {
+                    name: constructor,
+                    arguments: existing,
+                }) => {
+                    let mut applied = existing.clone();
+                    applied.extend(arguments);
+                    TypedType::Named {
+                        name: constructor.clone(),
+                        arguments: applied,
+                    }
+                }
+                _ => TypedType::Named {
+                    name: name.clone(),
+                    arguments,
+                },
+            }
+        }
         TypedType::ExternalNamed {
             name,
             canonical,

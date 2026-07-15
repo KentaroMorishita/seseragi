@@ -51,6 +51,7 @@ fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> Core
             visibility: Visibility::Public,
             origin: origin(),
             type_parameters: Vec::new(),
+            type_constructor_parameters: Vec::new(),
             constraints: Vec::new(),
             parameters: parameters
                 .into_iter()

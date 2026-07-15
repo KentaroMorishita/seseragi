@@ -1,0 +1,136 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/type-constructor-kind-mismatch",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "trait",
+      "visibility": "private",
+      "name": "Container",
+      "nameSpan": {
+        "start": 6,
+        "end": 15
+      },
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 25
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Container",
+      "traitNameSpan": {
+        "start": 36,
+        "end": 45
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 46,
+            "end": 49
+          }
+        }
+      ],
+      "span": {
+        "start": 27,
+        "end": 54
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 25
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 27,
+        "end": 54
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Container",
+      "canonical": "artifact/type-constructor-kind-mismatch::trait(Container)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 6,
+        "end": 15
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "F",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 25
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Container",
+      "namespace": "trait",
+      "target": 0,
+      "origin": {
+        "start": 36,
+        "end": 45
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 46,
+        "end": 49
+      }
+    }
+  ],
+  "issues": []
+}

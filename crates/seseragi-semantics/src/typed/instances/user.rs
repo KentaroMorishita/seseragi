@@ -41,7 +41,7 @@ fn typed_instance(
     let binders = type_parameters
         .iter()
         .enumerate()
-        .map(|(index, name)| (name.as_str(), index))
+        .map(|(index, name)| (name.name.as_str(), index))
         .collect::<BTreeMap<_, _>>();
     let canonical_arguments = arguments
         .iter()
@@ -57,7 +57,10 @@ fn typed_instance(
         identity: canonical_instance_head_identity(&trait_identity, &canonical_arguments),
         trait_identity,
         trait_name: trait_name.clone(),
-        type_parameters: type_parameters.clone(),
+        type_parameters: type_parameters
+            .iter()
+            .map(|parameter| parameter.name.clone())
+            .collect(),
         arguments: arguments.iter().map(typed_type_from_type_ref).collect(),
         type_identity: None,
         argument_identities: canonical_arguments,
@@ -100,7 +103,11 @@ fn typed_method(
     Some(TypedInstanceMethod {
         name: method.name.clone(),
         scheme: TypedScheme {
-            type_parameters: method.type_parameters.clone(),
+            type_parameters: method
+                .type_parameters
+                .iter()
+                .map(|parameter| parameter.name.clone())
+                .collect(),
             constraints: method
                 .constraints
                 .iter()

@@ -1,5 +1,7 @@
 use crate::{ResolvedModule, SymbolKind, SymbolNamespace};
-use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceMethod};
+use seseragi_syntax::{
+    ByteSpan, InterfaceType, SurfaceDecl, SurfaceMethod, TypeParameter, TypeRef,
+};
 use std::collections::BTreeMap;
 
 mod model;
@@ -14,6 +16,7 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
         .iter()
         .filter_map(|declaration| {
             let SurfaceDecl::Instance {
+                type_parameters,
                 trait_name,
                 trait_name_span,
                 arguments,
@@ -26,7 +29,13 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
             };
             let contract = trait_contract(resolved, *trait_name_span)?;
             Some(validate_instance(
-                resolved, trait_name, arguments, methods, *span, contract,
+                resolved,
+                type_parameters,
+                trait_name,
+                arguments,
+                methods,
+                *span,
+                contract,
             ))
         })
         .flatten()
@@ -35,6 +44,7 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
 
 fn validate_instance(
     resolved: &ResolvedModule,
+    instance_parameters: &[TypeParameter],
     trait_name: &str,
     arguments: &[seseragi_syntax::TypeRef],
     methods: &[SurfaceMethod],
@@ -61,6 +71,20 @@ fn validate_instance(
             declaration: contract_span,
         });
         return issues;
+    }
+    for (parameter, argument) in parameters.iter().zip(arguments) {
+        let Some(actual) = type_ref_arity(resolved, instance_parameters, argument) else {
+            continue;
+        };
+        if actual != parameter.arity {
+            issues.push(InstanceContractIssue::KindMismatch {
+                parameter: parameter.name.clone(),
+                expected: parameter.arity,
+                actual,
+                primary: type_ref_span(argument),
+                declaration: contract_span,
+            });
+        }
     }
 
     let mut actual = BTreeMap::<&str, Vec<&SurfaceMethod>>::new();
@@ -167,6 +191,107 @@ fn validate_instance(
         }
     }
     issues
+}
+
+fn type_ref_arity(
+    resolved: &ResolvedModule,
+    instance_parameters: &[TypeParameter],
+    type_ref: &TypeRef,
+) -> Option<u32> {
+    match type_ref {
+        TypeRef::Named {
+            name,
+            arguments,
+            span,
+        } => {
+            let declared = named_type_arity(resolved, instance_parameters, name, *span)?;
+            let consumed = arguments
+                .iter()
+                .filter(|argument| !matches!(argument, TypeRef::Hole { .. }))
+                .count() as u32;
+            Some(declared.saturating_sub(consumed))
+        }
+        TypeRef::Hole { .. } => None,
+        TypeRef::Record { .. } | TypeRef::Tuple { .. } | TypeRef::Function { .. } => Some(0),
+    }
+}
+
+fn named_type_arity(
+    resolved: &ResolvedModule,
+    instance_parameters: &[TypeParameter],
+    name: &str,
+    origin: ByteSpan,
+) -> Option<u32> {
+    let target = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.namespace == SymbolNamespace::Type && reference.origin == origin
+        })?
+        .target?;
+    let symbol = resolved.symbols.iter().find(|symbol| symbol.id == target)?;
+    if symbol.kind == SymbolKind::TypeParameter {
+        return instance_parameters
+            .iter()
+            .find(|parameter| parameter.name == name)
+            .map(|parameter| parameter.arity);
+    }
+    if symbol
+        .canonical
+        .as_deref()
+        .is_some_and(|canonical| canonical.starts_with("std/prelude::"))
+    {
+        return crate::prelude::type_constructor_arity(name);
+    }
+    if let Some(arity) = resolved.declarations.iter().find_map(|declaration| {
+        let (name_span, parameters) = match declaration {
+            SurfaceDecl::Newtype {
+                name_span,
+                type_parameters,
+                ..
+            }
+            | SurfaceDecl::Alias {
+                name_span,
+                type_parameters,
+                ..
+            }
+            | SurfaceDecl::Type {
+                name_span,
+                type_parameters,
+                ..
+            }
+            | SurfaceDecl::Struct {
+                name_span,
+                type_parameters,
+                ..
+            } => (name_span, type_parameters),
+            _ => return None,
+        };
+        (*name_span == symbol.origin).then_some(parameters.len() as u32)
+    }) {
+        return Some(arity);
+    }
+    resolved
+        .imports
+        .iter()
+        .find(|import| import.symbol == target)
+        .and_then(|import| match import.export.representation.as_ref() {
+            Some(InterfaceType::TypeConstructor { arity, .. }) => Some(*arity),
+            _ if import.export.namespace == "type" => {
+                Some(import.export.scheme.type_parameters.len() as u32)
+            }
+            _ => None,
+        })
+}
+
+fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
+    match type_ref {
+        TypeRef::Named { span, .. }
+        | TypeRef::Hole { span }
+        | TypeRef::Record { span, .. }
+        | TypeRef::Tuple { span, .. }
+        | TypeRef::Function { span, .. } => *span,
+    }
 }
 
 fn trait_contract<'a>(

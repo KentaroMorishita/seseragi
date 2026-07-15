@@ -28,7 +28,7 @@ pub(super) fn collect_imported_callables(
                 .scheme
                 .type_parameters
                 .iter()
-                .cloned()
+                .map(|parameter| parameter.name.clone())
                 .collect::<BTreeSet<_>>();
             let parameters = parameter_interfaces
                 .into_iter()

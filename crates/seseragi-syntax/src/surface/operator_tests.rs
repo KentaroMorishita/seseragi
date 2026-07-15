@@ -11,7 +11,7 @@ fn parses_operator_type_parameters() {
         module.declarations[0],
         SurfaceDecl::Operator {
             visibility: Visibility::Public,
-            type_parameters: vec!["A".to_owned()],
+            type_parameters: vec![crate::TypeParameter::value("A")],
             fixity: "infixr".to_owned(),
             precedence: 5,
             spelling: "<+>".to_owned(),
