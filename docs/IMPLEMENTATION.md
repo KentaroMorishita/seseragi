@@ -550,6 +550,9 @@ applicationへdesugarします。pipelineの右辺には部分適用済みfuncti
 `add offset value`になります。両構文はSurfaceAst以降に専用nodeやruntime helperを残さず、通常callと同じ
 resolver、type checker、CoreIr、TypeScriptIrを通ります。`execution-schema-1/pipeline-application`は`$`と
 左結合pipeline chainの優先順位、checked Int演算、Console出力を生成runtimeで固定します。
+operator-firstの複数行pipelineはCSTとSurfaceAstが共通の継続行判定を使います。
+`schema-1/rock-paper-scissors-cli`がdo内のbind、pure let、最終resultを複数行へ折り返し、同じgenerated
+TypeScriptと正常入力・不正入力・EOFのexecution結果を維持することを固定します。
 
 `schema-1/constraint-arguments`では、`where Reducible<C, A>`をtrait名だけの文字列へ潰さず、型引数を持つ
 structured constraintとしてSurfaceAst、shallow / typed interface、TypedHir、CoreIr、TypeScriptIrへ保持します。

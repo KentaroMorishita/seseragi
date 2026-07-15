@@ -13,4 +13,8 @@ fn describe value: Int -> String =
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
-  println $ 16 |> add 5 |> double |> describe
+  println $
+    16
+    |> add 5
+    |> double
+    |> describe

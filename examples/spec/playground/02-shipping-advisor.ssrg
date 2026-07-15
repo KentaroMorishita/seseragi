@@ -66,10 +66,25 @@ fn renderPlan plan: ShippingPlan -> String =
 
 pub effect fn main =
   do {
-    customerInput <- readLine () |> mapError StdinFailure
-    customer <- customerInput |> parseCustomerInput |> fromEither
-    deliveryInput <- readLine () |> mapError StdinFailure
-    delivery <- deliveryInput |> parseDeliveryInput |> fromEither
-    let plan = choosePlan customer delivery
-    plan |> renderPlan |> println |> mapError ConsoleFailure
+    customerInput <-
+      readLine ()
+      |> mapError StdinFailure
+    customer <-
+      customerInput
+      |> parseCustomerInput
+      |> fromEither
+    deliveryInput <-
+      readLine ()
+      |> mapError StdinFailure
+    delivery <-
+      deliveryInput
+      |> parseDeliveryInput
+      |> fromEither
+    let plan =
+      delivery
+      |> choosePlan customer
+    plan
+    |> renderPlan
+    |> println
+    |> mapError ConsoleFailure
   }

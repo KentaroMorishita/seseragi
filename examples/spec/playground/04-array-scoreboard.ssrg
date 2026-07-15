@@ -13,4 +13,7 @@ fn renderScore totalScore: Int -> String =
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
-  println $ [4, 8, 15, 16, 23, 42] |> total |> renderScore
+  [4, 8, 15, 16, 23, 42]
+  |> total
+  |> renderScore
+  |> println

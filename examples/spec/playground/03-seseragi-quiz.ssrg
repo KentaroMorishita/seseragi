@@ -33,8 +33,16 @@ fn renderResult result: QuizResult -> String =
 
 pub effect fn main =
   do {
-    answerInput <- readLine () |> mapError StdinFailure
-    answer <- answerInput |> parseInput |> fromEither
-    let result = judge answer
-    result |> renderResult |> println |> mapError ConsoleFailure
+    answerInput <-
+      readLine ()
+      |> mapError StdinFailure
+    answer <-
+      answerInput
+      |> parseInput
+      |> fromEither
+    let result = answer |> judge
+    result
+    |> renderResult
+    |> println
+    |> mapError ConsoleFailure
   }

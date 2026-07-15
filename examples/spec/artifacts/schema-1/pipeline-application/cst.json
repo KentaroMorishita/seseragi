@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 138,
+    "endToken": 142,
     "children": [
       {
         "kind": "top-decl",
@@ -49,7 +49,7 @@
       {
         "kind": "top-decl",
         "startToken": 95,
-        "endToken": 138,
+        "endToken": 142,
         "children": [
           {
             "kind": "decl-modifiers",
@@ -60,7 +60,7 @@
           {
             "kind": "effect-fn-decl",
             "startToken": 97,
-            "endToken": 138,
+            "endToken": 142,
             "children": [
               {
                 "kind": "effect-signature",

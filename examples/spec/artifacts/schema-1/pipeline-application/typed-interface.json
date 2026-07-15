@@ -13,7 +13,7 @@
       "declarationKind": "effect-function",
       "declaration": {
         "start": 389,
-        "end": 495
+        "end": 511
       },
       "scheme": {
         "typeParameters": [],
