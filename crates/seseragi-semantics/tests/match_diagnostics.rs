@@ -207,3 +207,13 @@ fn reports_literal_pattern_type_mismatch() {
         "match.pattern-type-mismatch"
     );
 }
+
+#[test]
+fn keeps_tuple_literal_catchall_reachable() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "fn classify values: (Int, Int) -> Bool = match values { (45, 55) -> True; _ -> False }\n",
+    );
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}

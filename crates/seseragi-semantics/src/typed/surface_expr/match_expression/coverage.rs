@@ -22,11 +22,8 @@ pub(super) fn analyze_coverage(
     catalog: &SemanticTypeCatalog,
     arms: &[(CoveragePattern, bool)],
 ) -> Option<CoverageResult> {
-    let witnesses = if key == &SemanticTypeKey::Other {
-        scalar_witnesses(arms)
-    } else {
-        witnesses(key, catalog, &mut BTreeSet::new())?
-    };
+    let hints = arms.iter().map(|(pattern, _)| pattern).collect::<Vec<_>>();
+    let witnesses = witnesses(key, catalog, &mut BTreeSet::new(), &hints)?;
     Some(analyze_witnesses(&witnesses, arms))
 }
 
@@ -62,10 +59,10 @@ fn analyze_witnesses(witnesses: &[Witness], arms: &[(CoveragePattern, bool)]) ->
     }
 }
 
-fn scalar_witnesses(arms: &[(CoveragePattern, bool)]) -> Vec<Witness> {
-    let literals = arms
+fn scalar_witnesses(patterns: &[&CoveragePattern]) -> Vec<Witness> {
+    let literals = patterns
         .iter()
-        .filter_map(|(pattern, _)| match pattern {
+        .filter_map(|pattern| match pattern {
             CoveragePattern::Literal(literal) => Some(literal.clone()),
             _ => None,
         })
@@ -108,11 +105,12 @@ fn witnesses(
     key: &SemanticTypeKey,
     catalog: &SemanticTypeCatalog,
     visiting: &mut BTreeSet<SymbolId>,
+    hints: &[&CoveragePattern],
 ) -> Option<Vec<Witness>> {
     match key {
         SemanticTypeKey::Invalid => None,
-        SemanticTypeKey::Other
-        | SemanticTypeKey::TypeParameter(_)
+        SemanticTypeKey::Other => Some(scalar_witnesses(hints)),
+        SemanticTypeKey::TypeParameter(_)
         | SemanticTypeKey::SchemeParameter(_)
         | SemanticTypeKey::ExternalNominal { .. } => Some(vec![Witness {
             pattern: CoveragePattern::Any,
@@ -127,7 +125,17 @@ fn witnesses(
             for variant in &adt.variants {
                 if let Some(payload) = &variant.payload {
                     let payload = catalog.instantiate_payload(*owner, arguments, payload);
-                    for child in witnesses(&payload.key, catalog, visiting)? {
+                    let payload_hints = hints
+                        .iter()
+                        .filter_map(|hint| match hint {
+                            CoveragePattern::Constructor {
+                                constructor,
+                                argument: Some(argument),
+                            } if *constructor == variant.constructor => Some(argument.as_ref()),
+                            _ => None,
+                        })
+                        .collect::<Vec<_>>();
+                    for child in witnesses(&payload.key, catalog, visiting, &payload_hints)? {
                         result.push(Witness {
                             pattern: CoveragePattern::Constructor {
                                 constructor: variant.constructor,
@@ -155,8 +163,15 @@ fn witnesses(
         }
         SemanticTypeKey::Tuple(elements) => {
             let mut products = vec![(Vec::<CoveragePattern>::new(), Vec::<String>::new())];
-            for element in elements {
-                let children = witnesses(element, catalog, visiting)?;
+            for (index, element) in elements.iter().enumerate() {
+                let element_hints = hints
+                    .iter()
+                    .filter_map(|hint| match hint {
+                        CoveragePattern::Tuple(elements) => elements.get(index),
+                        _ => None,
+                    })
+                    .collect::<Vec<_>>();
+                let children = witnesses(element, catalog, visiting, &element_hints)?;
                 let mut next = Vec::new();
                 for (patterns, labels) in &products {
                     for child in &children {
