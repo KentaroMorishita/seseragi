@@ -10,6 +10,7 @@ pub(crate) struct InstantiatedApplication {
     pub(crate) parameters: Vec<SemanticValueType>,
     pub(crate) result: SemanticValueType,
     pub(crate) constraints: Vec<TypedConstraint>,
+    pub(crate) constraint_identities: Vec<Option<String>>,
 }
 
 pub(crate) fn instantiated_application(
@@ -82,6 +83,7 @@ pub(crate) fn instantiated_application(
             key: semantic.result.key,
         },
         constraints,
+        constraint_identities: signature.constraint_identities.clone(),
     }
 }
 

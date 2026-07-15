@@ -83,6 +83,7 @@ fn collect_decl_diagnostics(
     }
 
     if let SurfaceDecl::Fn {
+        constraints,
         parameters,
         return_type,
         body,
@@ -90,13 +91,14 @@ fn collect_decl_diagnostics(
         ..
     } = declaration
     {
+        let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
         collect_pure_body_diagnostics(
             body.as_ref(),
             parameters,
             return_type,
             *span,
             resolution,
-            &[],
+            &scoped_evidence,
             diagnostics,
         );
         return;

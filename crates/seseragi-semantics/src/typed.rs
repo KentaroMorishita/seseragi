@@ -25,6 +25,8 @@ mod semantic_types;
 mod surface;
 mod surface_expr;
 #[cfg(test)]
+mod top_level_constraint_tests;
+#[cfg(test)]
 mod tuple_tests;
 mod type_ref;
 

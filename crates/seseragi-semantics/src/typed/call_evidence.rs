@@ -72,41 +72,71 @@ pub(crate) fn select_trait_call_evidence(
         .iter()
         .cloned()
         .map(|constraint| {
-            let evidence = if let Some(parameter) = scoped.iter().find(|available| {
-                available.trait_identity == trait_identity
-                    && available.constraint.arguments.len() == constraint.arguments.len()
-                    && available
-                        .constraint
-                        .arguments
-                        .iter()
-                        .zip(&constraint.arguments)
-                        .all(|(available, required)| {
-                            super::semantic_types::semantic_values_are_compatible(
-                                &resolution.semantic_value_from_typed_type(available),
-                                &resolution.semantic_value_from_typed_type(required),
-                            )
-                        })
-            }) {
-                TypedInstanceEvidence::Parameter {
-                    index: parameter.index,
-                }
-            } else if let Some(evidence) =
-                local::select_local_instance(trait_identity, &constraint, resolution)
-            {
-                evidence
-            } else if let Some(identity) = standard_instance_identity(&constraint) {
-                TypedInstanceEvidence::Standard {
-                    identity: identity.to_owned(),
-                }
-            } else {
-                return Err(constraint);
-            };
+            let evidence =
+                select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
+                    .ok_or_else(|| constraint.clone())?;
             Ok(TypedCallEvidence {
                 constraint,
                 evidence,
             })
         })
         .collect()
+}
+
+pub(crate) fn select_function_call_evidence(
+    constraints: &[TypedConstraint],
+    trait_identities: &[Option<String>],
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<Vec<TypedCallEvidence>, TypedConstraint> {
+    constraints
+        .iter()
+        .cloned()
+        .enumerate()
+        .map(|(index, constraint)| {
+            let trait_identity = trait_identities.get(index).and_then(Option::as_deref);
+            let evidence = match trait_identity {
+                Some(trait_identity) => {
+                    select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
+                }
+                None => standard_instance_identity(&constraint)
+                    .map(|identity| TypedInstanceEvidence::Standard { identity }),
+            }
+            .ok_or_else(|| constraint.clone())?;
+            Ok(TypedCallEvidence {
+                constraint,
+                evidence,
+            })
+        })
+        .collect()
+}
+
+fn select_resolved_evidence(
+    constraint: &TypedConstraint,
+    trait_identity: &str,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Option<TypedInstanceEvidence> {
+    if let Some(parameter) = scoped.iter().find(|available| {
+        available.trait_identity == trait_identity
+            && available.constraint.arguments.len() == constraint.arguments.len()
+            && available
+                .constraint
+                .arguments
+                .iter()
+                .zip(&constraint.arguments)
+                .all(|(available, required)| {
+                    super::semantic_types::semantic_values_are_compatible(
+                        &resolution.semantic_value_from_typed_type(available),
+                        &resolution.semantic_value_from_typed_type(required),
+                    )
+                })
+    }) {
+        return Some(TypedInstanceEvidence::Parameter {
+            index: parameter.index,
+        });
+    }
+    local::select_local_instance(trait_identity, constraint, resolution)
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {

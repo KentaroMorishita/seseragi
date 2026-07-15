@@ -84,6 +84,7 @@ pub(super) fn type_application(
     let evidence = if issue.is_none() && (saturated || signature.trait_identity.is_some()) {
         match context.select_call_evidence(
             &application.constraints,
+            &application.constraint_identities,
             signature.trait_identity.as_deref(),
         ) {
             Ok(evidence) => evidence,

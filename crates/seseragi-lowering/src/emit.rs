@@ -5,6 +5,8 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 
+#[cfg(test)]
+mod constrained_function_tests;
 mod decision;
 mod imports;
 mod instances;
@@ -124,6 +126,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 is_async,
                 name,
                 type_parameters,
+                constraints,
                 parameters,
                 body,
                 ..
@@ -131,13 +134,27 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 if *exported {
                     output.push_str("export ");
                 }
+                let parameters = constrained_function_parameters(parameters, constraints.len());
                 let rendered_body =
-                    render_function_body(type_parameters, parameters, body, *is_async);
+                    render_function_body(type_parameters, &parameters, body, *is_async);
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
             }
         }
     }
     output
+}
+
+fn constrained_function_parameters(
+    parameters: &[crate::TypeScriptParameter],
+    evidence_count: usize,
+) -> Vec<crate::TypeScriptParameter> {
+    let mut rendered = parameters.to_vec();
+    rendered.extend((0..evidence_count).map(|index| crate::TypeScriptParameter {
+        name: crate::typescript::evidence_parameter_name(index),
+        type_name: "unknown".to_owned(),
+        implicit: true,
+    }));
+    rendered
 }
 
 fn render_adt(output: &mut String, adt: &TypeScriptAdt) {

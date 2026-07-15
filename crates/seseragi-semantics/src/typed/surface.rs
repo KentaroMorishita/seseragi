@@ -107,7 +107,9 @@ pub(crate) fn typed_decl_from_surface(
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters);
+            let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
             let context = PureExpressionContext::new(&typed_parameters, resolution)
+                .with_evidence_parameters(scoped_evidence)
                 .with_expected(Some(resolution.semantic_value_from_type_ref(&return_type)));
             let body = body
                 .as_ref()

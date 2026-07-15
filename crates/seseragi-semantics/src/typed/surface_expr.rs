@@ -95,6 +95,7 @@ impl<'a> PureExpressionContext<'a> {
             trait_method: None,
             type_parameters: Vec::new(),
             constraints: Vec::new(),
+            constraint_identities: Vec::new(),
             semantic_parameters: parameters
                 .iter()
                 .map(|parameter| self.semantic_value_from_typed_type(parameter).key)
@@ -116,6 +117,7 @@ impl<'a> PureExpressionContext<'a> {
     pub(super) fn select_call_evidence(
         &self,
         constraints: &[crate::TypedConstraint],
+        constraint_identities: &[Option<String>],
         trait_identity: Option<&str>,
     ) -> Result<Vec<crate::TypedCallEvidence>, crate::TypedConstraint> {
         match trait_identity {
@@ -125,7 +127,12 @@ impl<'a> PureExpressionContext<'a> {
                 self.resolution,
                 &self.evidence_parameters,
             ),
-            None => super::call_evidence::select_call_evidence(constraints),
+            None => super::call_evidence::select_function_call_evidence(
+                constraints,
+                constraint_identities,
+                self.resolution,
+                &self.evidence_parameters,
+            ),
         }
     }
 

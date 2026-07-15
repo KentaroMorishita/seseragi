@@ -37,3 +37,46 @@ fn does_not_cascade_return_mismatch_from_invalid_conditional() {
         "if.branch-type-mismatch"
     );
 }
+
+#[test]
+fn accepts_a_trait_call_backed_by_a_function_constraint() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub trait Ready<A> { fn ready value: A -> String }\n\
+         pub fn describe<T> value: T -> String\n\
+         where Ready<T> =\n\
+           ready value\n",
+    );
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn reports_a_missing_instance_for_a_constrained_function_call() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Ready<A> { fn ready value: A -> String }\n\
+         pub fn describe<T> value: T -> String\n\
+         where Ready<T> =\n\
+           \"unknown\"\n\
+         pub fn label value: Badge -> String = describe value\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
+}
+
+#[test]
+fn does_not_accept_an_unmaterialized_standard_function_dictionary() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub fn duplicate<T> value: T -> T\n\
+         where Add<T, T, T> =\n\
+           value\n\
+         pub fn duplicateInt value: Int -> Int = duplicate value\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
+}

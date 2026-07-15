@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 136,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 14,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 0,
+            "endToken": 1,
+            "children": []
+          },
+          {
+            "kind": "type-decl",
+            "startToken": 2,
+            "endToken": 14,
+            "children": [
+              {
+                "kind": "variant-decl",
+                "startToken": 9,
+                "endToken": 14,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 14,
+        "endToken": 42,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 14,
+            "endToken": 15,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 42,
+        "endToken": 72,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 72,
+        "endToken": 105,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 72,
+            "endToken": 73,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 74,
+            "endToken": 105,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 105,
+        "endToken": 136,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 105,
+            "endToken": 106,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 107,
+            "endToken": 136,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 107,
+                "endToken": 117,
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

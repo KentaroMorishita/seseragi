@@ -203,7 +203,7 @@ fn collect_callables(
                 return_type,
                 constraints,
                 ..
-            } if constraints.is_empty() && !parameters.is_empty() => {
+            } if !parameters.is_empty() => {
                 let Some(symbol) = resolved.symbols.iter().find(|symbol| {
                     symbol.kind == SymbolKind::Function && symbol.origin == *name_span
                 }) else {
@@ -220,6 +220,10 @@ fn collect_callables(
                     .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
                     .collect::<Vec<_>>();
                 let result = typed_type_from_type_ref(return_type);
+                let constraint_identities = constraints
+                    .iter()
+                    .map(|constraint| constraint_identity(resolved, constraint.name_span))
+                    .collect();
                 let Some(canonical) = symbol.canonical.clone() else {
                     continue;
                 };
@@ -230,7 +234,18 @@ fn collect_callables(
                         trait_identity: None,
                         trait_method: None,
                         type_parameters: type_parameters.clone(),
-                        constraints: Vec::new(),
+                        constraints: constraints
+                            .iter()
+                            .map(|constraint| crate::TypedConstraint {
+                                name: constraint.name.clone(),
+                                arguments: constraint
+                                    .arguments
+                                    .iter()
+                                    .map(typed_type_from_type_ref)
+                                    .collect(),
+                            })
+                            .collect(),
+                        constraint_identities,
                         parameters,
                         semantic_parameters,
                         result,
@@ -250,6 +265,7 @@ fn collect_callables(
                 trait_method: None,
                 type_parameters: signature.type_parameters,
                 constraints: Vec::new(),
+                constraint_identities: Vec::new(),
                 parameters: signature
                     .parameters
                     .iter()
@@ -297,6 +313,7 @@ fn standard_reduce_callable() -> TopLevelPureFunction {
             name: "Reducible".to_owned(),
             arguments: vec![collection.clone(), element.clone()],
         }],
+        constraint_identities: vec![None],
         parameters: vec![
             accumulator.clone(),
             TypedType::Function {
@@ -365,6 +382,7 @@ fn collect_local_trait_methods(
                             })
                             .collect(),
                     }],
+                    constraint_identities: vec![Some(trait_identity.clone())],
                     parameters: method
                         .parameters
                         .iter()
@@ -384,6 +402,22 @@ fn collect_local_trait_methods(
             );
         }
     }
+}
+
+fn constraint_identity(resolved: &ResolvedModule, origin: ByteSpan) -> Option<String> {
+    let target = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.namespace == SymbolNamespace::Trait && reference.origin == origin
+        })?
+        .target?;
+    resolved
+        .symbols
+        .iter()
+        .find(|symbol| symbol.id == target)?
+        .canonical
+        .clone()
 }
 
 fn collect_semantic_value_types(

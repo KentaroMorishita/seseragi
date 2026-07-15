@@ -18,6 +18,7 @@ pub(crate) struct TopLevelPureFunction {
     pub(crate) trait_method: Option<String>,
     pub(crate) type_parameters: Vec<String>,
     pub(crate) constraints: Vec<TypedConstraint>,
+    pub(crate) constraint_identities: Vec<Option<String>>,
     pub(crate) parameters: Vec<TypedType>,
     pub(crate) semantic_parameters: Vec<SemanticTypeKey>,
     pub(crate) result: TypedType,

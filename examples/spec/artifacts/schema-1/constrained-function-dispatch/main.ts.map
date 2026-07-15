@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/constrained-function-dispatch"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n\npub trait Ready<A> {\n  fn ready value: A -> String\n}\n\ninstance Ready<Badge> {\n  fn ready value: Badge -> String = \"Badge is ready\"\n}\n\npub fn describe<T> value: T -> String\nwhere Ready<T> =\n  ready value\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (describe Active)\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "__ssrg$instance$Ready$0",
+    "describe",
+    "__ssrg$evidence$0",
+    "main",
+    "println",
+    "describe"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAMJC;AAIAC;AAIAE"
+}

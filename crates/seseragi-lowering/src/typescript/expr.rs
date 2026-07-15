@@ -53,7 +53,7 @@ pub(super) fn lower_core_expr_to_typescript(
             trait_dispatch,
             ..
         } => {
-            let arguments = lower_core_expressions(arguments, imported_values, imported_types);
+            let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
             if let Some(dispatch) = trait_dispatch {
                 let selected = evidence
                     .iter()
@@ -83,6 +83,10 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else {
+                arguments.extend(evidence.iter().map(|selected| {
+                    local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                        .expect("constrained function call requires materializable evidence")
+                }));
                 TypeScriptExpr::Call {
                     callee: imported_values
                         .get(&callee)

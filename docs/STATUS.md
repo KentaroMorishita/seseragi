@@ -169,8 +169,12 @@ TypeScriptのdictionary factory具体化とmethod callまで生成します。
 `schema-1/constrained-instance-dispatch`はconstraint付きgeneric local instanceに必要なlocal evidenceを再帰選択し、
 TypedHir / CoreIrのevidence tree、TypeScriptIrのfactory argument、生成TSのdictionary引数、actual executionまで接続します。
 instance method bodyのtrait callもresolved constraint scopeから`parameter` evidenceを選び、factory closureのdictionaryを
-実際に消費します。循環evidenceは`instance.missing`で停止します。未接続なのはmethod固有constraint / constrained
-top-level functionのevidence ABI、standard / imported evidenceのfactory引数化、cross-module dictionary selectionです。
+実際に消費します。循環evidenceは`instance.missing`で停止します。未接続なのはmethod固有constraint、
+standard / imported evidenceのfactory引数化、cross-module dictionary selectionです。
+local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
+`schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
+生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
+first-class partial constrained function、imported constrained function、method固有constraintは未接続です。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
