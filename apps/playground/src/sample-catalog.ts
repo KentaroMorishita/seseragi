@@ -26,6 +26,14 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Pipeline answer: 42",
   },
   {
+    id: "string-add",
+    label: "Stringで招待状",
+    category: "基本",
+    sourcePath: "examples/spec/artifacts/schema-1/string-add/main.ssrg",
+    stdin: "",
+    expectedOutput: "Hello, Mio! Welcome to Seseragi Night.",
+  },
+  {
     id: "array-scoreboard",
     label: "Arrayスコア集計",
     category: "基本",

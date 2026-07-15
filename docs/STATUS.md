@@ -148,7 +148,8 @@ Playgroundでも`Arrayスコア集計`として同じdriver / browser runtimeを
 Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
 backendはそのevidenceを確認してchecked runtime helperを選択します。
 `String + String`も`Add<String, String, String>`のstandard instanceとして全IRとactual executionへ接続済みで、
-数値への暗黙変換は行いません。operator resultをIntだけに固定しない標準evidence selectionを証明しました。
+数値への暗黙変換は行いません。operator resultをIntだけに固定しない標準evidence selectionを証明し、
+Playgroundでも`Stringで招待状`として同じfixtureを実行できます。
 Int、Bool、Stringの`==` / `!=`もstandard `Eq<A>`の選択結果をTypedHir / CoreIrへ保持し、Stringの
 pure comparisonをactual executionへ接続済みです。derived / user-defined Eqの比較生成は後続gateです。
 残る主要gateはstandard instanceを列挙するだけでなく、user-defined arithmetic instanceを通常dictionary dispatchへ
