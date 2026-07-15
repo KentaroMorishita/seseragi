@@ -1,0 +1,31 @@
+pub type Badge =
+  | Active
+
+pub type Device =
+  | Online
+
+pub trait Ready<A> {
+  fn ready value: A -> String
+}
+
+instance Ready<Badge> {
+  fn ready value: Badge -> String = "Badge is ready"
+}
+
+instance Ready<Device> {
+  fn ready value: Device -> String = "Device is online"
+}
+
+// describe自身はTの正体を知りません。
+// Ready<T>のdictionaryを受け取るので、同じ関数を別の型へ使えます。
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  ready value
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    println (describe Active)
+    println (describe Online)
+  }

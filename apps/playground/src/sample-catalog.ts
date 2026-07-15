@@ -71,4 +71,11 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Constrained Maybe: empty\nBadge is ready",
   },
+  {
+    id: "constrained-function",
+    label: "Constraint付きgeneric関数",
+    sourcePath: "examples/spec/playground/08-constrained-function.ssrg",
+    stdin: "",
+    expectedOutput: "Badge is ready\nDevice is online",
+  },
 ]
