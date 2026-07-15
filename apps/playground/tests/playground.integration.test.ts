@@ -41,6 +41,15 @@ async function compile(
 }
 
 describe("new Playground product gate", () => {
+  test("keeps the stdin prompt independent from the selected sample", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+
+    expect(html).toContain('placeholder="プログラムへ渡す標準入力"')
+    expect(html).not.toContain("rock&#10;scissors")
+  })
+
   test("keeps the catalog curated and grouped by learning purpose", () => {
     expect(new Set(sampleCatalog.map((sample) => sample.id)).size).toBe(
       sampleCatalog.length
