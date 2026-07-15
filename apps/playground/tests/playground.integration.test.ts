@@ -41,6 +41,18 @@ async function compile(
 }
 
 describe("new Playground product gate", () => {
+  test("keeps the catalog curated and grouped by learning purpose", () => {
+    expect(new Set(sampleCatalog.map((sample) => sample.id)).size).toBe(
+      sampleCatalog.length
+    )
+    expect(new Set(sampleCatalog.map((sample) => sample.category))).toEqual(
+      new Set(["基本", "アプリ", "型と抽象化"])
+    )
+    expect(new Set(sampleCatalog.map((sample) => sample.sourcePath)).size).toBe(
+      sampleCatalog.length
+    )
+  })
+
   for (const sample of sampleCatalog) {
     test(`executes bundled sample: ${sample.label}`, async () => {
       const source = await Bun.file(

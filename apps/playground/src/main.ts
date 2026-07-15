@@ -23,11 +23,19 @@ const workspace = requiredElement(".workspace", HTMLElement)
 
 let source = samples[0]?.source ?? ""
 
+const sampleGroups = new Map<string, HTMLOptGroupElement>()
 for (const sample of samples) {
+  let group = sampleGroups.get(sample.category)
+  if (!group) {
+    group = document.createElement("optgroup")
+    group.label = sample.category
+    sampleGroups.set(sample.category, group)
+    sampleSelect.append(group)
+  }
   const option = document.createElement("option")
   option.value = sample.id
   option.textContent = sample.label
-  sampleSelect.append(option)
+  group.append(option)
 }
 
 const editor = createEditor(editorHost, source, (nextSource) => {

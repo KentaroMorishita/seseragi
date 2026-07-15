@@ -1,4 +1,5 @@
 import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
+import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipeline-application/main.ssrg?raw"
 import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
 import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
 import shippingAdvisor from "../../../examples/spec/playground/02-shipping-advisor.ssrg?raw"
@@ -6,20 +7,22 @@ import seseragiQuiz from "../../../examples/spec/playground/03-seseragi-quiz.ssr
 import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboard.ssrg?raw"
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
-import constrainedInstance from "../../../examples/spec/playground/07-constrained-instance.ssrg?raw"
-import constrainedFunction from "../../../examples/spec/playground/08-constrained-function.ssrg?raw"
-import methodConstraint from "../../../examples/spec/playground/09-method-constraint.ssrg?raw"
-import { sampleCatalog } from "./sample-catalog"
+import {
+  sampleCatalog,
+  type PlaygroundSampleDefinition,
+} from "./sample-catalog"
 
 export type PlaygroundSample = {
   readonly id: string
   readonly label: string
+  readonly category: PlaygroundSampleDefinition["category"]
   readonly source: string
   readonly stdin: string
 }
 
 const sourceById: Readonly<Record<string, string>> = {
   "hello-world": helloWorld,
+  "pipeline-application": pipelineApplication,
   "rock-paper-scissors": rockPaperScissors,
   "mini-adventure": miniAdventure,
   "shipping-advisor": shippingAdvisor,
@@ -27,9 +30,6 @@ const sourceById: Readonly<Record<string, string>> = {
   "array-scoreboard": arrayScoreboard,
   "trait-badges": traitBadges,
   "generic-instance": genericInstance,
-  "constrained-instance": constrainedInstance,
-  "constrained-function": constrainedFunction,
-  "method-constraint": methodConstraint,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
@@ -41,6 +41,7 @@ export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
     return {
       id: definition.id,
       label: definition.label,
+      category: definition.category,
       source,
       stdin: definition.stdin,
     }
