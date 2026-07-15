@@ -340,17 +340,22 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             type_arguments,
             arguments,
         } => {
-            let rendered_types = type_arguments
-                .iter()
-                .map(render_typescript_type)
-                .collect::<Vec<_>>()
-                .join(", ");
+            let rendered_callee = if type_arguments.is_empty() {
+                callee.clone()
+            } else {
+                let rendered_types = type_arguments
+                    .iter()
+                    .map(render_typescript_type)
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                format!("{callee}<{rendered_types}>")
+            };
             let rendered_arguments = arguments
                 .iter()
                 .map(render_typescript_expr)
                 .collect::<Vec<_>>()
                 .join(", ");
-            format!("{callee}<{rendered_types}>({rendered_arguments})")
+            format!("{rendered_callee}({rendered_arguments})")
         }
         TypeScriptExpr::DictionaryCall {
             dictionary,

@@ -6,7 +6,7 @@ use crate::{CoreExpr, CoreStatement, CoreType};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
-use super::instances::local_instance_expression_key;
+use super::dictionaries::local_dictionary_expression;
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{TypeScriptExpr, TypeScriptStatement};
@@ -57,35 +57,18 @@ pub(super) fn lower_core_expr_to_typescript(
             if let Some(dispatch) = trait_dispatch {
                 let selected = evidence
                     .iter()
-                    .find_map(|selected| match &selected.evidence {
-                        crate::CoreInstanceEvidence::Local {
-                            identity,
-                            type_arguments,
-                        } => Some((identity.as_str(), type_arguments.as_slice())),
-                        _ => None,
-                    });
-                let (identity, type_arguments) = selected
-                    .expect("local trait dispatch requires selected local instance evidence");
-                let dictionary_name = imported_values
-                    .get(&local_instance_expression_key(identity))
-                    .expect("local trait dispatch requires a generated dictionary")
-                    .clone();
-                let dictionary = if type_arguments.is_empty() {
-                    TypeScriptExpr::Identifier {
-                        name: dictionary_name,
-                    }
-                } else {
-                    TypeScriptExpr::TypeApplicationCall {
-                        callee: dictionary_name,
-                        type_arguments: type_arguments
-                            .iter()
-                            .map(|type_ref| type_ref_from_core_type(type_ref, imported_types))
-                            .collect(),
-                        arguments: Vec::new(),
-                    }
-                };
+                    .find_map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                    })
+                    .expect(
+                        "local trait dispatch requires recursively materialized local evidence",
+                    );
                 TypeScriptExpr::DictionaryCall {
-                    dictionary: Box::new(dictionary),
+                    dictionary: Box::new(selected),
                     method: dispatch.method,
                     arguments,
                 }

@@ -1,4 +1,4 @@
-use crate::{source_span, CoreType, SourceSpan};
+use crate::{source_span, CoreCallEvidence, CoreType, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{
     TypedConstraint, TypedInstance, TypedInstanceEvidence, TypedInstanceImplementation,
@@ -81,6 +81,8 @@ pub enum CoreInstanceEvidence {
         identity: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_arguments: Vec<CoreType>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence_arguments: Vec<CoreCallEvidence>,
     },
     Imported {
         identity: String,
@@ -158,25 +160,35 @@ fn lower_show_payload_evidence(evidence: TypedShowPayloadEvidence) -> CoreShowPa
     CoreShowPayloadEvidence {
         variant_symbol: evidence.variant_symbol,
         type_identity: evidence.type_identity,
-        evidence: match evidence.evidence {
-            TypedInstanceEvidence::Local {
-                identity,
-                type_arguments,
-            } => CoreInstanceEvidence::Local {
-                identity,
-                type_arguments: type_arguments.into_iter().map(lower_typed_type).collect(),
-            },
-            TypedInstanceEvidence::Imported {
-                identity,
-                provider_module,
-            } => CoreInstanceEvidence::Imported {
-                identity,
-                provider_module,
-            },
-            TypedInstanceEvidence::Standard { identity } => {
-                CoreInstanceEvidence::Standard { identity }
-            }
+        evidence: lower_instance_evidence(evidence.evidence),
+    }
+}
+
+pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreInstanceEvidence {
+    match evidence {
+        TypedInstanceEvidence::Local {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } => CoreInstanceEvidence::Local {
+            identity,
+            type_arguments: type_arguments.into_iter().map(lower_typed_type).collect(),
+            evidence_arguments: evidence_arguments
+                .into_iter()
+                .map(|evidence| CoreCallEvidence {
+                    constraint: lower_constraint(evidence.constraint),
+                    evidence: lower_instance_evidence(evidence.evidence),
+                })
+                .collect(),
         },
+        TypedInstanceEvidence::Imported {
+            identity,
+            provider_module,
+        } => CoreInstanceEvidence::Imported {
+            identity,
+            provider_module,
+        },
+        TypedInstanceEvidence::Standard { identity } => CoreInstanceEvidence::Standard { identity },
     }
 }
 

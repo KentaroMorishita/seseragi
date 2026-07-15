@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 
 mod adt;
 mod decision;
+mod dictionaries;
 mod expr;
 mod imports;
 mod instances;

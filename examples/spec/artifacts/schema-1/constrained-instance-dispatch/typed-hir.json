@@ -1,0 +1,459 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/constrained-instance-dispatch",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 139,
+        "end": 233
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 174,
+                  "end": 179
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "Constrained dictionary: active",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 199,
+                "end": 231
+              }
+            },
+            "origin": {
+              "start": 165,
+              "end": 231
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/constrained-instance-dispatch::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 235,
+        "end": 354
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 293,
+                  "end": 298
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "Constrained dictionary: ready",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 321,
+                "end": 352
+              }
+            },
+            "origin": {
+              "start": 283,
+              "end": 352
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/constrained-instance-dispatch::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/constrained-instance-dispatch::Active",
+          "name": "Active",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/constrained-instance-dispatch::label",
+      "visibility": "public",
+      "origin": {
+        "start": 356,
+        "end": 413
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Badge",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 369,
+            "end": 374
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/constrained-instance-dispatch::trait(Render)::render",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 408,
+              "end": 413
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/constrained-instance-dispatch::trait(Render)<std/prelude::Maybe<$0>>",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Ready",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/constrained-instance-dispatch::trait(Render)",
+          "method": "render"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 401,
+          "end": 413
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/constrained-instance-dispatch::main",
+      "visibility": "public",
+      "origin": {
+        "start": 415,
+        "end": 507
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/constrained-instance-dispatch::label",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/prelude::Just",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/constrained-instance-dispatch::Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 499,
+                      "end": 505
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 494,
+                  "end": 505
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 487,
+              "end": 506
+            }
+          }
+        ],
+        "origin": {
+          "start": 478,
+          "end": 507
+        }
+      }
+    }
+  ]
+}

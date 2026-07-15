@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "case": "constrained-instance-dispatch",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/constrained-instance-dispatch",
+    "export": "main",
+    "compiledModule": "../../schema-1/constrained-instance-dispatch/generated-module.json",
+    "typedInterface": "../../schema-1/constrained-instance-dispatch/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.maybe",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Constrained dictionary: ready"],
+        "stdout": "Constrained dictionary: ready\n"
+      }
+    ]
+  }
+}

@@ -164,6 +164,23 @@ mod tests {
     }
 
     #[test]
+    fn rejects_recursive_local_evidence_instead_of_recursing_forever() {
+        let artifact = semantic_diagnostics(
+            "recursive-instance-evidence.ssrg",
+            "type Badge = | Active\n\
+             trait Ready<A> { fn ready value: A -> String }\n\
+             instance<T> Ready<T> where Ready<T> {\n\
+               fn ready value: T -> String = \"ready\"\n\
+             }\n\
+             fn label value: Badge -> String = ready value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+    }
+
+    #[test]
     fn reports_same_named_trait_methods_when_type_and_instances_cannot_select_one() {
         let artifact = semantic_diagnostics(
             "ambiguous-trait-method.ssrg",

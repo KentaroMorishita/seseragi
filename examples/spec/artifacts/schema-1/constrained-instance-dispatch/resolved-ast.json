@@ -1,0 +1,1151 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/constrained-instance-dispatch",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 21,
+            "end": 27
+          },
+          "span": {
+            "start": 19,
+            "end": 27
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Ready",
+      "nameSpan": {
+        "start": 39,
+        "end": 44
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "nameSpan": {
+            "start": 55,
+            "end": 60
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 61,
+                "end": 66
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 68,
+                  "end": 69
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 73,
+              "end": 79
+            }
+          },
+          "span": {
+            "start": 52,
+            "end": 79
+          }
+        }
+      ],
+      "span": {
+        "start": 29,
+        "end": 81
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Render",
+      "nameSpan": {
+        "start": 93,
+        "end": 99
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 110,
+            "end": 116
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 117,
+                "end": 122
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 124,
+                  "end": 125
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 129,
+              "end": 135
+            }
+          },
+          "span": {
+            "start": 107,
+            "end": 135
+          }
+        }
+      ],
+      "span": {
+        "start": 83,
+        "end": 137
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Ready",
+      "traitNameSpan": {
+        "start": 148,
+        "end": 153
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 154,
+            "end": 159
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "nameSpan": {
+            "start": 168,
+            "end": 173
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 174,
+                "end": 179
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 181,
+                  "end": 186
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 190,
+              "end": 196
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Constrained dictionary: active\"",
+            "span": {
+              "start": 199,
+              "end": 231
+            }
+          },
+          "span": {
+            "start": 165,
+            "end": 231
+          }
+        }
+      ],
+      "span": {
+        "start": 139,
+        "end": 233
+      }
+    },
+    {
+      "kind": "instance",
+      "typeParameters": [
+        "T"
+      ],
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 247,
+        "end": 253
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 260,
+                "end": 261
+              }
+            }
+          ],
+          "span": {
+            "start": 254,
+            "end": 262
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "nameSpan": {
+            "start": 270,
+            "end": 275
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 276,
+                "end": 277
+              }
+            }
+          ],
+          "span": {
+            "start": 270,
+            "end": 278
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 286,
+            "end": 292
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 293,
+                "end": 298
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "span": {
+                      "start": 306,
+                      "end": 307
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 300,
+                  "end": 308
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 312,
+              "end": 318
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Constrained dictionary: ready\"",
+            "span": {
+              "start": 321,
+              "end": 352
+            }
+          },
+          "span": {
+            "start": 283,
+            "end": 352
+          }
+        }
+      ],
+      "span": {
+        "start": 235,
+        "end": 354
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "label",
+      "nameSpan": {
+        "start": 363,
+        "end": 368
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 369,
+            "end": 374
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 382,
+                  "end": 387
+                }
+              }
+            ],
+            "span": {
+              "start": 376,
+              "end": 388
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 392,
+          "end": 398
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "render",
+          "span": {
+            "start": 401,
+            "end": 407
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 408,
+            "end": 413
+          }
+        },
+        "span": {
+          "start": 401,
+          "end": 413
+        }
+      },
+      "span": {
+        "start": 356,
+        "end": 413
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 429,
+        "end": 433
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 437,
+          "end": 441
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 447,
+            "end": 454
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 461,
+          "end": 473
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 478,
+            "end": 485
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 487,
+                "end": 492
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "Just",
+                  "span": {
+                    "start": 494,
+                    "end": 498
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "Active",
+                  "span": {
+                    "start": 499,
+                    "end": 505
+                  }
+                },
+                "span": {
+                  "start": 494,
+                  "end": 505
+                }
+              },
+              "span": {
+                "start": 493,
+                "end": 506
+              }
+            },
+            "span": {
+              "start": 487,
+              "end": 506
+            }
+          },
+          "span": {
+            "start": 486,
+            "end": 507
+          }
+        },
+        "span": {
+          "start": 478,
+          "end": 507
+        }
+      },
+      "span": {
+        "start": 415,
+        "end": 507
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 507
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 29,
+        "end": 81
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 52,
+        "end": 79
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 83,
+        "end": 137
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "function",
+      "origin": {
+        "start": 107,
+        "end": 135
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 139,
+        "end": 233
+      }
+    },
+    {
+      "id": 7,
+      "parent": 6,
+      "kind": "function",
+      "origin": {
+        "start": 165,
+        "end": 231
+      }
+    },
+    {
+      "id": 8,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 235,
+        "end": 354
+      }
+    },
+    {
+      "id": 9,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "parent": 8,
+      "kind": "function",
+      "origin": {
+        "start": 283,
+        "end": 352
+      }
+    },
+    {
+      "id": 11,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 356,
+        "end": 413
+      }
+    },
+    {
+      "id": 12,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 415,
+        "end": 507
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Badge",
+      "canonical": "artifact/constrained-instance-dispatch::Badge",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Active",
+      "canonical": "artifact/constrained-instance-dispatch::Active",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 21,
+        "end": 27
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Ready",
+      "canonical": "artifact/constrained-instance-dispatch::trait(Ready)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 39,
+        "end": 44
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "ready",
+      "canonical": "artifact/constrained-instance-dispatch::trait(Ready)::ready",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 55,
+        "end": 60
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Render",
+      "canonical": "artifact/constrained-instance-dispatch::trait(Render)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 93,
+        "end": 99
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "render",
+      "canonical": "artifact/constrained-instance-dispatch::trait(Render)::render",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 110,
+        "end": 116
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "label",
+      "canonical": "artifact/constrained-instance-dispatch::label",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 363,
+        "end": 368
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "main",
+      "canonical": "artifact/constrained-instance-dispatch::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 429,
+        "end": 433
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 29,
+        "end": 81
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 61,
+        "end": 66
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 83,
+        "end": 137
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 117,
+        "end": 122
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 174,
+        "end": 179
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "T",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 8,
+      "origin": {
+        "start": 235,
+        "end": 354
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 9,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 10,
+      "origin": {
+        "start": 293,
+        "end": 298
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 11,
+      "origin": {
+        "start": 369,
+        "end": 374
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 68,
+        "end": 69
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 73,
+        "end": 79
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 124,
+        "end": 125
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 129,
+        "end": 135
+      }
+    },
+    {
+      "spelling": "Ready",
+      "namespace": "trait",
+      "target": 2,
+      "origin": {
+        "start": 148,
+        "end": 153
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 154,
+        "end": 159
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 181,
+        "end": 186
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 190,
+        "end": 196
+      }
+    },
+    {
+      "spelling": "Render",
+      "namespace": "trait",
+      "target": 4,
+      "origin": {
+        "start": 247,
+        "end": 253
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 254,
+        "end": 262
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 260,
+        "end": 261
+      }
+    },
+    {
+      "spelling": "Ready",
+      "namespace": "trait",
+      "target": 2,
+      "origin": {
+        "start": 270,
+        "end": 275
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 276,
+        "end": 277
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 300,
+        "end": 308
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 306,
+        "end": 307
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 312,
+        "end": 318
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 376,
+        "end": 388
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 382,
+        "end": 387
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 392,
+        "end": 398
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 5,
+      "candidates": [
+        5
+      ],
+      "origin": {
+        "start": 401,
+        "end": 407
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 408,
+        "end": 413
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 21,
+      "origin": {
+        "start": 437,
+        "end": 441
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 22,
+      "origin": {
+        "start": 461,
+        "end": 473
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 478,
+        "end": 485
+      }
+    },
+    {
+      "spelling": "label",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 487,
+        "end": 492
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 494,
+        "end": 498
+      }
+    },
+    {
+      "spelling": "Active",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 499,
+        "end": 505
+      }
+    }
+  ],
+  "issues": []
+}

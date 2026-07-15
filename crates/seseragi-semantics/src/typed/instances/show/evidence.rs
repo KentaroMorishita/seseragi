@@ -46,6 +46,7 @@ pub(super) fn payload_evidence(
         TypedInstanceEvidence::Local {
             identity: canonical_instance_identity("Show", &type_identity),
             type_arguments: Vec::new(),
+            evidence_arguments: Vec::new(),
         }
     } else if let Some(instance) = resolution.dependency_instance("Show", &type_identity) {
         TypedInstanceEvidence::Imported {

@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/constrained-instance-dispatch",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.maybe",
+    "core.unit",
+    "effect.console.println",
+    "core.maybe.just"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Badge",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Active",
+          "tag": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 139,
+        "end": 233
+      },
+      "dictionaryExport": "__ssrg$instance$Ready$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "Constrained dictionary: active"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 165,
+              "end": 231
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/constrained-instance-dispatch::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 235,
+        "end": 354
+      },
+      "dictionaryExport": "__ssrg$instance$Render$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "Constrained dictionary: ready"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 283,
+              "end": 352
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "label",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: Badge }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Render$1",
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "Badge",
+              "arguments": []
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "__ssrg$instance$Ready$0"
+            }
+          ]
+        },
+        "method": "render",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 356,
+        "end": 413
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "label",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "Active"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 415,
+        "end": 507
+      }
+    }
+  ]
+}

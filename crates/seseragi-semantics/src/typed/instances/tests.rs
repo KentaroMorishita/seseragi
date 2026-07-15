@@ -300,10 +300,57 @@ fn selects_unconstrained_generic_local_instance_with_concrete_type_arguments() {
                 evidence: TypedInstanceEvidence::Local {
                     identity,
                     type_arguments,
+                    ..
                 },
                 ..
             }] if identity == "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>"
                 && type_arguments == &[named("Int")])
+    ));
+}
+
+#[test]
+fn selects_required_local_evidence_for_a_constrained_generic_instance() {
+    let typed = type_module(
+        "artifact/constrained-instance-dispatch/main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Ready<A> { fn ready value: A -> String }\n\
+         pub trait Render<A> { fn render value: A -> String }\n\
+         instance Ready<Badge> { fn ready value: Badge -> String = \"active\" }\n\
+         instance<T> Render<Maybe<T>> where Ready<T> {\n\
+           fn render value: Maybe<T> -> String = \"ready\"\n\
+         }\n\
+         pub fn label value: Maybe<Badge> -> String = render value\n",
+    );
+
+    let call = typed.declarations.iter().find_map(|declaration| {
+        let crate::TypedDecl::Fn { symbol, body, .. } = declaration else {
+            return None;
+        };
+        symbol.ends_with("::label").then_some(body)
+    });
+    assert!(matches!(
+        call,
+        Some(crate::TypedExpr::Call {
+            evidence,
+            ..
+        }) if matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+            evidence: TypedInstanceEvidence::Local {
+                identity,
+                type_arguments,
+                evidence_arguments,
+            },
+            ..
+        }] if identity == "artifact/constrained-instance-dispatch::trait(Render)<std/prelude::Maybe<$0>>"
+            && type_arguments == &[named("Badge")]
+            && matches!(evidence_arguments.as_slice(), [crate::TypedCallEvidence {
+                constraint: crate::TypedConstraint { name, arguments },
+                evidence: TypedInstanceEvidence::Local {
+                    identity: required_identity,
+                    ..
+                },
+            }] if name == "Ready"
+                && arguments == &[named("Badge")]
+                && required_identity == "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>"))
     ));
 }
 

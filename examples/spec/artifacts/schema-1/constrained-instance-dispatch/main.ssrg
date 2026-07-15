@@ -1,0 +1,26 @@
+pub type Badge =
+  | Active
+
+pub trait Ready<A> {
+  fn ready value: A -> String
+}
+
+pub trait Render<A> {
+  fn render value: A -> String
+}
+
+instance Ready<Badge> {
+  fn ready value: Badge -> String = "Constrained dictionary: active"
+}
+
+instance<T> Render<Maybe<T>>
+where Ready<T> {
+  fn render value: Maybe<T> -> String = "Constrained dictionary: ready"
+}
+
+pub fn label value: Maybe<Badge> -> String = render value
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (label (Just Active))

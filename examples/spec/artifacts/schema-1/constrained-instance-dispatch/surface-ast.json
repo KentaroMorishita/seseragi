@@ -1,0 +1,499 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 21,
+            "end": 27
+          },
+          "span": {
+            "start": 19,
+            "end": 27
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Ready",
+      "nameSpan": {
+        "start": 39,
+        "end": 44
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "nameSpan": {
+            "start": 55,
+            "end": 60
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 61,
+                "end": 66
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 68,
+                  "end": 69
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 73,
+              "end": 79
+            }
+          },
+          "span": {
+            "start": 52,
+            "end": 79
+          }
+        }
+      ],
+      "span": {
+        "start": 29,
+        "end": 81
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Render",
+      "nameSpan": {
+        "start": 93,
+        "end": 99
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 110,
+            "end": 116
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 117,
+                "end": 122
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 124,
+                  "end": 125
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 129,
+              "end": 135
+            }
+          },
+          "span": {
+            "start": 107,
+            "end": 135
+          }
+        }
+      ],
+      "span": {
+        "start": 83,
+        "end": 137
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Ready",
+      "traitNameSpan": {
+        "start": 148,
+        "end": 153
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 154,
+            "end": 159
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "nameSpan": {
+            "start": 168,
+            "end": 173
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 174,
+                "end": 179
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 181,
+                  "end": 186
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 190,
+              "end": 196
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Constrained dictionary: active\"",
+            "span": {
+              "start": 199,
+              "end": 231
+            }
+          },
+          "span": {
+            "start": 165,
+            "end": 231
+          }
+        }
+      ],
+      "span": {
+        "start": 139,
+        "end": 233
+      }
+    },
+    {
+      "kind": "instance",
+      "typeParameters": [
+        "T"
+      ],
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 247,
+        "end": 253
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 260,
+                "end": 261
+              }
+            }
+          ],
+          "span": {
+            "start": 254,
+            "end": 262
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "nameSpan": {
+            "start": 270,
+            "end": 275
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 276,
+                "end": 277
+              }
+            }
+          ],
+          "span": {
+            "start": 270,
+            "end": 278
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 286,
+            "end": 292
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 293,
+                "end": 298
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "span": {
+                      "start": 306,
+                      "end": 307
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 300,
+                  "end": 308
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 312,
+              "end": 318
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Constrained dictionary: ready\"",
+            "span": {
+              "start": 321,
+              "end": 352
+            }
+          },
+          "span": {
+            "start": 283,
+            "end": 352
+          }
+        }
+      ],
+      "span": {
+        "start": 235,
+        "end": 354
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "label",
+      "nameSpan": {
+        "start": 363,
+        "end": 368
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 369,
+            "end": 374
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 382,
+                  "end": 387
+                }
+              }
+            ],
+            "span": {
+              "start": 376,
+              "end": 388
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 392,
+          "end": 398
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "render",
+          "span": {
+            "start": 401,
+            "end": 407
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 408,
+            "end": 413
+          }
+        },
+        "span": {
+          "start": 401,
+          "end": 413
+        }
+      },
+      "span": {
+        "start": 356,
+        "end": 413
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 429,
+        "end": 433
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 437,
+          "end": 441
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 447,
+            "end": 454
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 461,
+          "end": 473
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 478,
+            "end": 485
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 487,
+                "end": 492
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "Just",
+                  "span": {
+                    "start": 494,
+                    "end": 498
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "Active",
+                  "span": {
+                    "start": 499,
+                    "end": 505
+                  }
+                },
+                "span": {
+                  "start": 494,
+                  "end": 505
+                }
+              },
+              "span": {
+                "start": 493,
+                "end": 506
+              }
+            },
+            "span": {
+              "start": 487,
+              "end": 506
+            }
+          },
+          "span": {
+            "start": 486,
+            "end": 507
+          }
+        },
+        "span": {
+          "start": 478,
+          "end": 507
+        }
+      },
+      "span": {
+        "start": 415,
+        "end": 507
+      }
+    }
+  ]
+}

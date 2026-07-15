@@ -178,7 +178,15 @@ TypeScriptIrと生成moduleは対応する二つのdictionaryへ別々にdispatc
 推論した`Int`をselected evidenceのordered `typeArguments`としてTypedHir / CoreIrへ固定します。TypeScriptIrは
 dictionary factoryを`type-application-call`として表現し、生成moduleとCLI実行は`<bigint>()`で具体化したdictionaryから
 methodを呼びます。`execution-schema-1/generic-instance-dispatch`は同じ生成moduleをConsole hostで実行し、
-actual operation traceとstdoutを固定します。constraint付きinstanceのevidence引数はこのcaseのscope外です。
+actual operation traceとstdoutを固定します。
+
+`schema-1/constrained-instance-dispatch`は`instance<T> Render<Maybe<T>> where Ready<T>`を
+`Maybe<Badge>`へ選択するとき、必要な`Ready<Badge>`のlocal instanceを再帰選択します。orderedな
+`evidenceArguments`をTypedHir / CoreIrへ保持し、TypeScriptIrのdictionary factory callと生成TSの
+`<Badge>(readyDictionary)`へlowerします。`execution-schema-1/constrained-instance-dispatch`は同じ生成moduleを
+Console hostで実行します。このcaseはcall siteでのlocal evidence materializationを固定するgateです。
+instance method body内からconstraint methodを使うscoped evidenceと、standard / imported evidenceのfactory引数化は
+独立した後続gateです。
 
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する

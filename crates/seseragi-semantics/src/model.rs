@@ -240,6 +240,8 @@ pub enum TypedInstanceEvidence {
         identity: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_arguments: Vec<TypedType>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence_arguments: Vec<TypedCallEvidence>,
     },
     Imported {
         identity: String,
