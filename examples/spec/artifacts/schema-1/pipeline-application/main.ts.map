@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/pipeline-application"
+  ],
+  "sourcesContent": [
+    "// `$` と `|>` はどちらも通常の関数適用へ展開されます。\n// pipelineへ引数を追加しておくと、値は最後の引数として渡されます。\nfn add offset: Int -> value: Int -> Int = offset + value\n\nfn double value: Int -> Int = value * 2\n\nfn describe value: Int -> String =\n  match value {\n    42 -> \"Pipeline answer: 42\"\n    _ -> \"Unexpected result\"\n  }\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ 16 |> add 5 |> double |> describe\n"
+  ],
+  "names": [
+    "add",
+    "add",
+    "double",
+    "multiply",
+    "describe",
+    "main",
+    "println",
+    "describe",
+    "double",
+    "add"
+  ],
+  "mappings": ";;;AAEAA;AAEAE;AAEAE;AAMAC"
+}

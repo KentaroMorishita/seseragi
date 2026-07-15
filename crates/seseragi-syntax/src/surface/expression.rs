@@ -96,6 +96,11 @@ impl ExpressionParser<'_> {
                     argument: Box::new(right),
                     span,
                 },
+                ParsedOperator::Pipeline => SurfaceExpr::Application {
+                    function: Box::new(right),
+                    argument: Box::new(left),
+                    span,
+                },
                 ParsedOperator::Binary => SurfaceExpr::Binary {
                     operator: operator.raw.clone(),
                     operator_span: token_span(operator),
@@ -273,13 +278,14 @@ impl ExpressionParser<'_> {
 #[derive(Clone, Copy)]
 enum ParsedOperator {
     Apply,
+    Pipeline,
     Binary,
 }
 
 fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
     let (precedence, right_associative, kind) = match (token.kind, token.raw.as_str()) {
         (TokenKind::OperatorApply, "$") => (5, true, ParsedOperator::Apply),
-        (TokenKind::OperatorPipeline, "|>") => (10, false, ParsedOperator::Binary),
+        (TokenKind::OperatorPipeline, "|>") => (10, false, ParsedOperator::Pipeline),
         (TokenKind::OperatorComparison, _) => (30, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "+" | "-") => (40, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "*" | "/" | "%") => (50, false, ParsedOperator::Binary),

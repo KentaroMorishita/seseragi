@@ -404,7 +404,47 @@ fn keeps_a_leading_pipeline_in_the_previous_match_arm_body() {
     assert_eq!(arms.len(), 2);
     assert!(matches!(
         arms[0].body,
-        SurfaceExpr::Binary { ref operator, .. } if operator == "|>"
+        SurfaceExpr::Application { ref function, ref argument, .. }
+            if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "normalize")
+                && matches!(argument.as_ref(), SurfaceExpr::Name { name, .. } if name == "item")
+    ));
+}
+
+#[test]
+fn desugars_pipeline_chains_into_left_associative_application() {
+    let body = first_body("fn calculate value: Int -> Int = value |> add 5 |> double\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Application { function, argument, .. }
+            if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "double")
+                && matches!(
+                    argument.as_ref(),
+                    SurfaceExpr::Application { function, argument, .. }
+                        if matches!(
+                            function.as_ref(),
+                            SurfaceExpr::Application { function, argument, .. }
+                                if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "add")
+                                    && matches!(argument.as_ref(), SurfaceExpr::Integer { raw, .. } if raw == "5")
+                        ) && matches!(argument.as_ref(), SurfaceExpr::Name { name, .. } if name == "value")
+                )
+    ));
+}
+
+#[test]
+fn low_precedence_application_wraps_a_pipeline_chain() {
+    let body = first_body("fn renderAnswer value: Int -> String = render $ value |> double\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Application { function, argument, .. }
+            if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "render")
+                && matches!(
+                    argument.as_ref(),
+                    SurfaceExpr::Application { function, argument, .. }
+                        if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "double")
+                            && matches!(argument.as_ref(), SurfaceExpr::Name { name, .. } if name == "value")
+                )
     ));
 }
 

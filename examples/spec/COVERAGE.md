@@ -8,7 +8,7 @@
 | 仕様領域                                      | 学習用target      | 機械検証target                                 | 状態    |
 | --------------------------------------------- | ----------------- | ---------------------------------------------- | ------- |
 | program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics / `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | partial |
-| literal、application、`$`、pipeline           | Lessons 01-05     | literal / diagnostic / precedence fixtures     | partial |
+| literal、application、`$`、pipeline           | Lessons 01-05     | `schema-1/pipeline-application` + `execution-schema-1/pipeline-application` + literal / diagnostic fixtures | partial |
 | optional record field / presence              | Lesson 27         | `compile/optional-record-field.ssrg`           | partial |
 | match、tuple、range、effectful for            | Lessons 03 and 05 | exhaustiveness diagnostics                     | partial |
 | newtype、deriving、operator overload          | Lesson 07         | coherence diagnostics                          | partial |

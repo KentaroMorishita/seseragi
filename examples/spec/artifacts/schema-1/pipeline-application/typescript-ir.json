@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/pipeline-application",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.int64.multiply",
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.multiply",
+      "local": "_ssrg_int64_multiply"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "add",
+      "parameters": [
+        {
+          "name": "offset",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "offset"
+          },
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 173,
+        "end": 229
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "double",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_multiply",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "bigint",
+            "value": "2"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 231,
+        "end": 270
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "describe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "bigint"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Pipeline answer: 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Unexpected result"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 272,
+        "end": 387
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "describe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "double",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "add",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "5"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "16"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 389,
+        "end": 495
+      }
+    }
+  ]
+}

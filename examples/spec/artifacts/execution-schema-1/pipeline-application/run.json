@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "case": "pipeline-application",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/pipeline-application",
+    "export": "main",
+    "compiledModule": "../../schema-1/pipeline-application/generated-module.json",
+    "typedInterface": "../../schema-1/pipeline-application/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.int64.multiply",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Pipeline answer: 42"],
+        "stdout": "Pipeline answer: 42\n"
+      }
+    ]
+  }
+}

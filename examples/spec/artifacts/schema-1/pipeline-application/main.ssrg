@@ -1,0 +1,16 @@
+// `$` と `|>` はどちらも通常の関数適用へ展開されます。
+// pipelineへ引数を追加しておくと、値は最後の引数として渡されます。
+fn add offset: Int -> value: Int -> Int = offset + value
+
+fn double value: Int -> Int = value * 2
+
+fn describe value: Int -> String =
+  match value {
+    42 -> "Pipeline answer: 42"
+    _ -> "Unexpected result"
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ 16 |> add 5 |> double |> describe

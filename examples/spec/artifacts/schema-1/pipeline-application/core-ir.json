@@ -1,0 +1,418 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/pipeline-application",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/pipeline-application::add",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 173,
+        "end": 229
+      },
+      "parameters": [
+        {
+          "id": "offset",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "offset",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 215,
+            "end": 221
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 224,
+            "end": 229
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 215,
+          "end": 229
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pipeline-application::double",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 231,
+        "end": 270
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "*",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 261,
+            "end": 266
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "2",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 269,
+            "end": 270
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Mul",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Mul"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 261,
+          "end": 270
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pipeline-application::describe",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 272,
+        "end": 387
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 315,
+            "end": 320
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "integer",
+                "path": [],
+                "value": "42",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 327,
+                  "end": 329
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Pipeline answer: 42",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 333,
+                "end": 354
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 327,
+              "end": 354
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Unexpected result",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 364,
+                "end": 383
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 359,
+              "end": 383
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 309,
+          "end": 387
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pipeline-application::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 389,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/pipeline-application::describe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/pipeline-application::double",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/pipeline-application::add",
+                    "arguments": [
+                      {
+                        "kind": "int64",
+                        "value": "5",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 472,
+                          "end": 473
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "16",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 462,
+                          "end": 464
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 462,
+                      "end": 473
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 462,
+                  "end": 483
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 462,
+              "end": 495
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 452,
+          "end": 495
+        }
+      }
+    }
+  ]
+}
