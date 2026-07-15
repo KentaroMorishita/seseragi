@@ -501,3 +501,44 @@ fn parses_empty_nested_and_trailing_comma_array_literals() {
     let mixed = first_body("fn mixed -> Array<Int> = [1, \"bad\"]\n");
     assert!(matches!(mixed, SurfaceExpr::Array { elements, .. } if elements.len() == 2));
 }
+
+#[test]
+fn parses_exclusive_and_inclusive_range_operators() {
+    for (source, expected) in [
+        ("fn values -> Range<Int> = 1..10\n", ".."),
+        ("fn values -> Range<Int> = 1..=10\n", "..="),
+    ] {
+        let body = first_body(source);
+        assert!(matches!(
+            body,
+            SurfaceExpr::Binary { operator, left, right, .. }
+                if operator == expected
+                    && matches!(left.as_ref(), SurfaceExpr::Integer { raw, .. } if raw == "1")
+                    && matches!(right.as_ref(), SurfaceExpr::Integer { raw, .. } if raw == "10")
+        ));
+    }
+}
+
+#[test]
+fn range_binds_between_comparison_and_arithmetic() {
+    let body = first_body("fn contains -> Bool = 1 + 1..=10 == 2..=10\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Binary { operator, left, right, .. }
+            if operator == "=="
+                && matches!(
+                    left.as_ref(),
+                    SurfaceExpr::Binary { operator, left, .. }
+                        if operator == "..="
+                            && matches!(
+                                left.as_ref(),
+                                SurfaceExpr::Binary { operator, .. } if operator == "+"
+                            )
+                )
+                && matches!(
+                    right.as_ref(),
+                    SurfaceExpr::Binary { operator, .. } if operator == "..="
+                )
+    ));
+}

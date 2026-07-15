@@ -287,6 +287,9 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
         (TokenKind::OperatorApply, "$") => (5, true, ParsedOperator::Apply),
         (TokenKind::OperatorPipeline, "|>") => (10, false, ParsedOperator::Pipeline),
         (TokenKind::OperatorComparison, _) => (30, false, ParsedOperator::Binary),
+        (TokenKind::OperatorRangeExclusive | TokenKind::OperatorRangeInclusive, _) => {
+            (35, false, ParsedOperator::Binary)
+        }
         (TokenKind::OperatorArithmetic, "+" | "-") => (40, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "*" | "/" | "%") => (50, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "**") => (60, true, ParsedOperator::Binary),

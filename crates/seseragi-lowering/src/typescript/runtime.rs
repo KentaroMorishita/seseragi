@@ -1,4 +1,5 @@
 use crate::collection_ops::runtime_collection_operation;
+use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence, CoreExpr,
@@ -66,7 +67,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
-            if is_int_type(type_ref) {
+            if let Some(operation) = runtime_range_operation(operator) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if is_int_type(type_ref) {
                 if let Some(operation) = runtime_int_operation_with_evidence(operator, evidence) {
                     push_unique(requirements, operation.runtime_feature);
                 }
@@ -256,7 +259,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             type_ref,
             ..
         } => {
-            if is_int_type(type_ref) {
+            if let Some(operation) = runtime_range_operation(operator) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if is_int_type(type_ref) {
                 if let Some(operation) = runtime_int_operation_with_evidence(operator, evidence) {
                     push_import_unique(
                         imports,
@@ -365,6 +376,7 @@ pub(super) fn collect_type_runtime_requirement(
                 "Unit" => push_unique(requirements, "core.unit"),
                 "Maybe" => push_unique(requirements, "core.maybe"),
                 "Either" => push_unique(requirements, "core.either"),
+                "Range" => push_unique(requirements, "core.range"),
                 _ => {}
             }
             for argument in arguments {

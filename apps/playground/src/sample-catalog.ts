@@ -42,6 +42,14 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Score total: 108 — perfect checksum!",
   },
   {
+    id: "range-reduce",
+    label: "Rangeの境界と集計",
+    category: "基本",
+    sourcePath: "examples/spec/artifacts/schema-1/range-reduce/main.ssrg",
+    stdin: "",
+    expectedOutput: "exclusive: 45, inclusive: 55",
+  },
+  {
     id: "rock-paper-scissors",
     label: "型付きじゃんけん",
     category: "アプリ",

@@ -22,11 +22,17 @@ pub(super) fn collect_let_binding_diagnostics(
         .with_expected(Some(resolution.semantic_value_from_type_ref(annotation)));
     let analysis = analyze_resolved_expression(body, &context);
     if analysis.array_issue.is_some()
+        || analysis.range_issue.is_some()
         || analysis.conditional_issue.is_some()
         || analysis.pure_call_issue.is_some()
     {
         super::array::collect_array_diagnostic(
             analysis.array_issue.as_ref(),
+            declaration,
+            diagnostics,
+        );
+        super::range::collect_range_diagnostic(
+            analysis.range_issue.as_ref(),
             declaration,
             diagnostics,
         );

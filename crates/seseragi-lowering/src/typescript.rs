@@ -263,6 +263,7 @@ pub enum TypeScriptType {
     Array {
         element: Box<TypeScriptType>,
     },
+    Range,
     Function {
         parameter: Box<TypeScriptType>,
         result: Box<TypeScriptType>,

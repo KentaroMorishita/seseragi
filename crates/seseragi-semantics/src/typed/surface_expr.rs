@@ -3,7 +3,7 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr};
 use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
-use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue};
+use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue, RangeIssue};
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
 
@@ -152,6 +152,7 @@ pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) conditional_issue: Option<ConditionalIssue>,
     pub(crate) array_issue: Option<ArrayIssue>,
+    pub(crate) range_issue: Option<RangeIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
     pub(crate) match_issues: Vec<MatchIssue>,
     pub(crate) semantic_type: SemanticTypeKey,
@@ -163,6 +164,7 @@ impl SurfaceExpressionAnalysis {
             value,
             conditional_issue: None,
             array_issue: None,
+            range_issue: None,
             pure_call_issue: None,
             match_issues: Vec::new(),
             semantic_type: SemanticTypeKey::Other,
@@ -177,6 +179,7 @@ impl SurfaceExpressionAnalysis {
             value,
             conditional_issue: None,
             array_issue: None,
+            range_issue: None,
             pure_call_issue: None,
             match_issues: Vec::new(),
             semantic_type,
@@ -186,6 +189,7 @@ impl SurfaceExpressionAnalysis {
     pub(super) fn merge_issues_from(&mut self, child: Self) {
         self.conditional_issue = self.conditional_issue.take().or(child.conditional_issue);
         self.array_issue = self.array_issue.take().or(child.array_issue);
+        self.range_issue = self.range_issue.take().or(child.range_issue);
         self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
         self.match_issues.extend(child.match_issues);
     }

@@ -1,0 +1,317 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/range-reduce",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.range",
+    "core.int64",
+    "core.range.exclusive",
+    "core.range.inclusive",
+    "core.bool",
+    "core.range.reduce",
+    "core.int64.add",
+    "core.string",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.range.exclusive",
+      "local": "_ssrg_range_exclusive"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    },
+    {
+      "feature": "core.range.reduce",
+      "local": "_ssrg_range_reduce"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "exclusiveValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_range_exclusive",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "1"
+          },
+          {
+            "kind": "bigint",
+            "value": "10"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 51
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "inclusiveValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_range_inclusive",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "1"
+          },
+          {
+            "kind": "bigint",
+            "value": "10"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 53,
+        "end": 105
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "totalsAreCorrect",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_range_reduce",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "0"
+                },
+                {
+                  "kind": "curried-runtime-reference",
+                  "name": "_ssrg_int64_add",
+                  "arity": 2
+                },
+                {
+                  "kind": "call",
+                  "callee": "exclusiveValues",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_range_reduce",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "0"
+                },
+                {
+                  "kind": "curried-runtime-reference",
+                  "name": "_ssrg_int64_add",
+                  "arity": 2
+                },
+                {
+                  "kind": "call",
+                  "callee": "inclusiveValues",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "bigint"
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "value": "45"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": "55"
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "boolean",
+              "value": false
+            }
+          }
+        ],
+        "type": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 107,
+        "end": 282
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderResult",
+      "parameters": [
+        {
+          "name": "valid",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "valid"
+        },
+        "scrutineeType": {
+          "kind": "boolean"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "boolean-equals",
+                "path": [],
+                "value": true
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "exclusive: 45, inclusive: 55"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected range totals"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 284,
+        "end": 425
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "renderResult",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "totalsAreCorrect",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 427,
+        "end": 504
+      }
+    }
+  ]
+}

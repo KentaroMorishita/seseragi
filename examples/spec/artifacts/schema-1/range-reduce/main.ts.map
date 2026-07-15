@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/range-reduce"
+  ],
+  "sourcesContent": [
+    "fn exclusiveValues unit: Unit -> Range<Int> = 1..10\n\nfn inclusiveValues unit: Unit -> Range<Int> = 1..=10\n\nfn totalsAreCorrect unit: Unit -> Bool =\n  match (\n    exclusiveValues () |> reduce 0 (+),\n    inclusiveValues () |> reduce 0 (+)\n  ) {\n    (45, 55) -> True\n    _ -> False\n  }\n\nfn renderResult valid: Bool -> String =\n  match valid {\n    True -> \"exclusive: 45, inclusive: 55\"\n    False -> \"unexpected range totals\"\n  }\n\npub effect fn main =\n  totalsAreCorrect ()\n    |> renderResult\n    |> println\n"
+  ],
+  "names": [
+    "exclusiveValues",
+    "exclusive",
+    "inclusiveValues",
+    "inclusive",
+    "totalsAreCorrect",
+    "_ssrg_range_reduce",
+    "add",
+    "exclusiveValues",
+    "_ssrg_range_reduce",
+    "add",
+    "inclusiveValues",
+    "renderResult",
+    "main",
+    "println",
+    "renderResult",
+    "totalsAreCorrect"
+  ],
+  "mappings": ";;;;AAAAA;AAEAE;AAEAE;AASAO;AAMAC"
+}

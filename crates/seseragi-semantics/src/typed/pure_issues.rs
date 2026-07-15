@@ -40,6 +40,13 @@ pub(crate) enum ArrayIssue {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct RangeIssue {
+    pub(crate) endpoint: ByteSpan,
+    pub(crate) position: &'static str,
+    pub(crate) actual: TypedType,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum ConditionalIssue {
     ConditionNotBool {
         condition: ByteSpan,

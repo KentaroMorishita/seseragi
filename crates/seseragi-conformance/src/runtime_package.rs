@@ -4,6 +4,7 @@ use std::process::Command;
 
 mod effect;
 mod imports;
+mod range;
 mod service;
 mod services;
 mod sum;
@@ -64,6 +65,9 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.int64.add") {
         check_typescript_runtime_int64(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.range.reduce") {
+        range::check_typescript_runtime_range(root)?;
     }
     Ok(())
 }

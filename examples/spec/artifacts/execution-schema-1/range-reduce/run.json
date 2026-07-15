@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "case": "range-reduce",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/range-reduce",
+    "export": "main",
+    "compiledModule": "../../schema-1/range-reduce/generated-module.json",
+    "typedInterface": "../../schema-1/range-reduce/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.unit",
+      "core.range",
+      "core.int64",
+      "core.range.exclusive",
+      "core.range.inclusive",
+      "core.bool",
+      "core.range.reduce",
+      "core.int64.add",
+      "core.string",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["exclusive: 45, inclusive: 55"],
+        "stdout": "exclusive: 45, inclusive: 55\n"
+      }
+    ]
+  }
+}

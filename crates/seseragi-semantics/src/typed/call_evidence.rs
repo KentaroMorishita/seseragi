@@ -141,10 +141,20 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
     let TypedType::Named { name, arguments } = collection else {
         return None;
     };
-    (constraint.name == "Reducible"
-        && name == "Array"
-        && matches!(arguments.as_slice(), [array_element] if array_element == element))
-    .then(|| "std/array::Reducible".to_owned())
+    if constraint.name != "Reducible"
+        || !matches!(arguments.as_slice(), [collection_element] if collection_element == element)
+    {
+        return None;
+    }
+    match name.as_str() {
+        "Array" => Some("std/array::Reducible".to_owned()),
+        "Range" if named_type_is(element, "Int") => Some("std/range::Reducible".to_owned()),
+        _ => None,
+    }
+}
+
+fn named_type_is(type_ref: &TypedType, expected: &str) -> bool {
+    matches!(type_ref, TypedType::Named { name, arguments } if name == expected && arguments.is_empty())
 }
 
 fn equality_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
@@ -264,6 +274,30 @@ mod tests {
                 evidence: TypedInstanceEvidence::Standard { identity },
                 ..
             }] if identity == "std/array::Reducible"
+        ));
+    }
+
+    #[test]
+    fn selects_the_standard_int_range_reducible_instance() {
+        let int = named("Int");
+        let evidence = select_call_evidence(&[TypedConstraint {
+            name: "Reducible".to_owned(),
+            arguments: vec![
+                TypedType::Named {
+                    name: "Range".to_owned(),
+                    arguments: vec![int.clone()],
+                },
+                int,
+            ],
+        }])
+        .expect("standard range instance");
+
+        assert!(matches!(
+            evidence.as_slice(),
+            [TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { identity },
+                ..
+            }] if identity == "std/range::Reducible"
         ));
     }
 

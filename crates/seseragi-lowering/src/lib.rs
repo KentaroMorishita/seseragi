@@ -3,6 +3,7 @@ mod core;
 mod effect_ops;
 mod emit;
 mod int_ops;
+mod range_ops;
 mod runtime_types;
 mod show_ops;
 mod span;

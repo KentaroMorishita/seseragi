@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "invalidRange",
+      "nameSpan": {
+        "start": 7,
+        "end": 19
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 26,
+              "end": 30
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Range",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 40,
+              "end": 43
+            }
+          }
+        ],
+        "span": {
+          "start": 34,
+          "end": 44
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "..=",
+        "operatorSpan": {
+          "start": 48,
+          "end": 51
+        },
+        "left": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 47,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "string",
+          "raw": "\"ten\"",
+          "span": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "span": {
+          "start": 47,
+          "end": 56
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 56
+      }
+    }
+  ]
+}

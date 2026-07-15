@@ -1,19 +1,18 @@
 use crate::{SymbolNamespace, TypedEffect, TypedExpr, TypedType};
 
 use super::super::functions::application_result_type_from;
-use super::super::pure_issues::{ArrayIssue, PureCallIssue};
+use super::super::pure_issues::PureCallIssue;
 use super::super::semantic_types::{semantic_values_are_compatible, SemanticValueType};
 use super::super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::super::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 use super::super::TypedResolution;
-use super::flatten_application;
+use super::{flatten_application, EffectBodyIssues};
 
 pub(super) fn type_imported_effect_application(
     expression: &seseragi_syntax::SurfaceExpr,
     context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
-    issues: &mut Vec<PureCallIssue>,
-    array_issues: &mut Vec<ArrayIssue>,
+    issues: &mut EffectBodyIssues<'_>,
 ) -> Option<TypedExpr> {
     let (callee, argument_nodes) = flatten_application(expression);
     let seseragi_syntax::SurfaceExpr::Name { span: callee, .. } = callee else {
@@ -30,14 +29,19 @@ pub(super) fn type_imported_effect_application(
         })
         .collect::<Vec<_>>();
 
-    array_issues.extend(
+    issues.arrays.extend(
         analyses
             .iter()
             .filter_map(|analysis| analysis.array_issue.clone()),
     );
+    issues.ranges.extend(
+        analyses
+            .iter()
+            .filter_map(|analysis| analysis.range_issue.clone()),
+    );
 
     if argument_nodes.len() > signature.parameters.len() {
-        issues.push(PureCallIssue::Arity {
+        issues.calls.push(PureCallIssue::Arity {
             callee: *callee,
             expected: signature.parameters.len(),
             actual: argument_nodes.len(),
@@ -45,7 +49,7 @@ pub(super) fn type_imported_effect_application(
     } else if let Some(issue) =
         argument_type_issue(&argument_nodes, &analyses, &signature.parameters)
     {
-        issues.push(issue);
+        issues.calls.push(issue);
     }
 
     let arguments = analyses

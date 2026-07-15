@@ -18,6 +18,12 @@ export {
 } from "./effect"
 export { add, divide, multiply, power, remainder, subtract } from "./int64"
 export { reduce } from "./array"
+export type { IntRange } from "./range"
+export {
+  exclusive as exclusiveRange,
+  inclusive as inclusiveRange,
+  reduce as reduceRange,
+} from "./range"
 export type {
   Awaitable,
   ServiceFailure,

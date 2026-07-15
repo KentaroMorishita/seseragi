@@ -3,7 +3,7 @@ use seseragi_syntax::{SurfaceExpr, SurfaceParameter, TypeRef};
 
 use super::function_body::{function_body_issue, FunctionBodyIssue};
 use super::functions::typed_parameters_from_surface;
-use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue};
+use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue, RangeIssue};
 use super::semantic_types::{semantic_values_are_compatible, SemanticValueType};
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
@@ -12,6 +12,7 @@ use super::type_ref::inferred_type_from_expr;
 pub(crate) struct PureFunctionAnalysis {
     pub(crate) conditional_issue: Option<ConditionalIssue>,
     pub(crate) array_issue: Option<ArrayIssue>,
+    pub(crate) range_issue: Option<RangeIssue>,
     pub(crate) function_body_issue: Option<FunctionBodyIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
     pub(crate) match_issues: Vec<MatchIssue>,
@@ -28,6 +29,7 @@ pub(crate) fn analyze_pure_function(
         return PureFunctionAnalysis {
             conditional_issue: None,
             array_issue: None,
+            range_issue: None,
             function_body_issue: None,
             pure_call_issue: None,
             match_issues: Vec::new(),
@@ -46,6 +48,7 @@ pub(crate) fn analyze_pure_function(
     let semantically_compatible = semantic_values_are_compatible(&expected, &actual);
     let function_body_issue = (expression.conditional_issue.is_none()
         && expression.array_issue.is_none()
+        && expression.range_issue.is_none()
         && expression.pure_call_issue.is_none()
         && expression.match_issues.is_empty())
     .then(|| {
@@ -61,6 +64,7 @@ pub(crate) fn analyze_pure_function(
     PureFunctionAnalysis {
         conditional_issue: expression.conditional_issue,
         array_issue: expression.array_issue,
+        range_issue: expression.range_issue,
         function_body_issue,
         pure_call_issue: expression.pure_call_issue,
         match_issues: expression.match_issues,

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/range-reduce",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

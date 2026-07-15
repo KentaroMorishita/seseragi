@@ -1,6 +1,7 @@
 import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
 import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipeline-application/main.ssrg?raw"
 import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
+import rangeReduce from "../../../examples/spec/artifacts/schema-1/range-reduce/main.ssrg?raw"
 import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
 import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
 import shippingAdvisor from "../../../examples/spec/playground/02-shipping-advisor.ssrg?raw"
@@ -25,6 +26,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "hello-world": helloWorld,
   "pipeline-application": pipelineApplication,
   "string-add": stringAdd,
+  "range-reduce": rangeReduce,
   "rock-paper-scissors": rockPaperScissors,
   "mini-adventure": miniAdventure,
   "shipping-advisor": shippingAdvisor,

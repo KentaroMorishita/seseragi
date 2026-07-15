@@ -194,6 +194,10 @@ fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
             runtime_int_operation_for_feature(feature).map(|operation| operation.source_map_name)
         })
         .or_else(|| {
+            crate::range_ops::runtime_range_operation_for_feature(feature)
+                .map(|operation| operation.source_map_name)
+        })
+        .or_else(|| {
             runtime_sum_constructor_for_feature(feature)
                 .map(|constructor| constructor.source_map_name)
         })

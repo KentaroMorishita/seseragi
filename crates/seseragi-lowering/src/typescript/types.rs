@@ -75,6 +75,15 @@ pub(super) fn type_ref_from_core_type(
                 element: Box::new(type_ref_from_core_type(&arguments[0], imported_types)),
             }
         }
+        CoreType::Named { name, arguments }
+            if name == "Range"
+                && matches!(
+                    arguments.as_slice(),
+                    [CoreType::Named { name, arguments }] if name == "Int" && arguments.is_empty()
+                ) =>
+        {
+            TypeScriptType::Range
+        }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
             name: local_name(name),
             arguments: arguments
@@ -160,6 +169,9 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
         ),
         TypeScriptType::Array { element } => {
             format!("ReadonlyArray<{}>", render_typescript_type(element))
+        }
+        TypeScriptType::Range => {
+            "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>".to_owned()
         }
         TypeScriptType::Function { parameter, result } => format!(
             "(argument: {}) => {}",

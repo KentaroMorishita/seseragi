@@ -1,0 +1,203 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/range-invalid-endpoint",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "invalidRange",
+      "nameSpan": {
+        "start": 7,
+        "end": 19
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 20,
+            "end": 24
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 26,
+              "end": 30
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Range",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 40,
+              "end": 43
+            }
+          }
+        ],
+        "span": {
+          "start": 34,
+          "end": 44
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "..=",
+        "operatorSpan": {
+          "start": 48,
+          "end": 51
+        },
+        "left": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 47,
+            "end": 48
+          }
+        },
+        "right": {
+          "kind": "string",
+          "raw": "\"ten\"",
+          "span": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        "span": {
+          "start": 47,
+          "end": 56
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 56
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 56
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 56
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "invalidRange",
+      "canonical": "artifact/range-invalid-endpoint::invalidRange",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 19
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 20,
+        "end": 24
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Range",
+      "canonical": "std/prelude::Range",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 26,
+        "end": 30
+      }
+    },
+    {
+      "spelling": "Range",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 34,
+        "end": 44
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 40,
+        "end": 43
+      }
+    },
+    {
+      "spelling": "..=",
+      "namespace": "operator",
+      "origin": {
+        "start": 48,
+        "end": 51
+      }
+    }
+  ],
+  "issues": []
+}

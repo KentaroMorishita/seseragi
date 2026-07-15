@@ -1,0 +1,23 @@
+fn exclusiveValues unit: Unit -> Range<Int> = 1..10
+
+fn inclusiveValues unit: Unit -> Range<Int> = 1..=10
+
+fn totalsAreCorrect unit: Unit -> Bool =
+  match (
+    exclusiveValues () |> reduce 0 (+),
+    inclusiveValues () |> reduce 0 (+)
+  ) {
+    (45, 55) -> True
+    _ -> False
+  }
+
+fn renderResult valid: Bool -> String =
+  match valid {
+    True -> "exclusive: 45, inclusive: 55"
+    False -> "unexpected range totals"
+  }
+
+pub effect fn main =
+  totalsAreCorrect ()
+    |> renderResult
+    |> println

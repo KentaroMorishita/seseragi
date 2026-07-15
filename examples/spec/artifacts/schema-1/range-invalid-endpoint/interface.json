@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "module": "artifact/range-invalid-endpoint",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/range-invalid-endpoint::invalidRange",
+      "namespace": "value",
+      "name": "invalidRange",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 56
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Range",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

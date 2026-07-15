@@ -1,6 +1,7 @@
 use crate::collection_ops::runtime_collection_operation;
 use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation_with_evidence;
+use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{CoreExpr, CoreStatement, CoreType};
 use std::collections::BTreeMap;
@@ -276,6 +277,12 @@ fn lower_binary(
 ) -> TypeScriptExpr {
     let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
     let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
+    if let Some(operation) = runtime_range_operation(&operator) {
+        return TypeScriptExpr::RuntimeCall {
+            callee: operation.local_name.to_owned(),
+            arguments: vec![left, right],
+        };
+    }
     if is_int_type(&type_ref) {
         if let Some(operation) = runtime_int_operation_with_evidence(&operator, &evidence) {
             return TypeScriptExpr::RuntimeCall {

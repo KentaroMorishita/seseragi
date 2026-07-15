@@ -10,7 +10,8 @@
 | program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics / `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | partial |
 | literal、application、`$`、pipeline           | Lessons 01-05     | `schema-1/pipeline-application` + `execution-schema-1/pipeline-application` + literal / diagnostic fixtures | partial |
 | optional record field / presence              | Lesson 27         | `compile/optional-record-field.ssrg`           | partial |
-| match、tuple、range、effectful for            | Lessons 03 and 05 | exhaustiveness diagnostics                     | partial |
+| match、tuple、effectful for                   | Lessons 03 and 05 | RPS artifacts + exhaustiveness diagnostics      | partial |
+| `Range<Int>` literal / standard `Reducible`  | Lessons 05 and 12 | `schema-1/{range-reduce,range-invalid-endpoint}` + `execution-schema-1/range-reduce` | covered |
 | newtype、deriving、operator overload          | Lesson 07         | `schema-1/{pure-comparison,string-add}` + `execution-schema-1/{pure-comparison-string,string-add}` + coherence diagnostics | partial |
 | Array/List、lambda、Either                    | Lessons 04 and 08 | `schema-1/array-literal` + collection boundary fixtures | partial |
 | pure / Effectful traversal short-circuit      | Lesson 04         | `compile/short-circuit-traversal.ssrg`         | covered |
@@ -28,7 +29,7 @@
 | resource scopeとfinalizer                     | Lesson 18         | exit / defect ordering fixtures                | partial |
 | generic struct / alias / impl                 | Lesson 11         | nested generic / kind / inference fixtures     | partial |
 | rank-1 generic / higher-order pure function / operator section / module import | Lesson 11 | `schema-1/generic-higher-order-call` + `schema-1/operator-reference` + `project-schema-1/rock-paper-scissors-domain-split` | partial |
-| comprehension、Array / record pattern         | Lesson 12         | parse / pattern diagnostics                    | partial |
+| comprehension、Array / record pattern         | Lesson 12         | parse / pattern diagnostics; general `Iterable<C, A>` lowering remains | partial |
 | custom trait / instance / custom operator     | Lesson 13         | `interface-schema-1/{basic-trait,rich,constrained-instance}` preservation + `semantic-diagnostics-schema-1/{instance-contract,instance-contract-mismatch,instance-method-body,trait-method-ambiguous}` contract / body / ambiguity validation + `schema-1/{user-instance-dictionary,trait-method-candidates,generic-instance-dispatch,constrained-instance-dispatch,constrained-function-dispatch,method-constraint-dispatch}` local method body / selected evidence / same-named method selection / concrete, unconstrained generic, recursively constrained local dictionary call lowering, instance and method scoped evidence consumption, and saturated local constrained function dictionary passing + ordered multi-argument instance heads through TypedHir / CoreIr / TypeScriptIr / generated metadata + `project-schema-1/{imported-trait-instance-contract,imported-constrained-function}` imported contract, provider-local constraint identity, consumer-local dictionary passing, closed TypeScript check and execution + resolved trait / constraint names + orphan / fixity / `project-schema-1/imported-effect-failure` | partial |
 | structured constraint arguments / evidence passing | Lesson 13    | `schema-1/{constraint-arguments,array-reduce,int-arithmetic,operator-reference,string-add}` + `execution-schema-1/{array-reduce,string-add}` | partial |
 | Semigroup / Monoid                            | Lesson 14         | law fixtures                                   | partial |

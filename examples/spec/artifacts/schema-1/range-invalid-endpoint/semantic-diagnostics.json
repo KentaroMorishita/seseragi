@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "range.endpoint-not-int",
+      "primary": {
+        "start": 51,
+        "end": 56
+      },
+      "related": [
+        {
+          "message": "range end must be Int, received String",
+          "primary": {
+            "start": 0,
+            "end": 56
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

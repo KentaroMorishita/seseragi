@@ -1,0 +1,901 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/range-reduce",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/range-reduce::exclusiveValues",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 51
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Range",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 19,
+            "end": 23
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "..",
+        "left": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 46,
+            "end": 47
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "10",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 49,
+            "end": 51
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Range",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 46,
+          "end": 51
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/range-reduce::inclusiveValues",
+      "visibility": "private",
+      "origin": {
+        "start": 53,
+        "end": 105
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Range",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 72,
+            "end": 76
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "..=",
+        "left": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 99,
+            "end": 100
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "10",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 103,
+            "end": 105
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Range",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 99,
+          "end": 105
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/range-reduce::totalsAreCorrect",
+      "visibility": "private",
+      "origin": {
+        "start": 107,
+        "end": 282
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 127,
+            "end": 131
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::reduce",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "0",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 191,
+                    "end": 192
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "+",
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  "origin": {
+                    "start": 194,
+                    "end": 195
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "artifact/range-reduce::exclusiveValues",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 178,
+                        "end": 180
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Range",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 162,
+                    "end": 180
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Reducible",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Range",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/range::Reducible"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 162,
+                "end": 196
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "std/prelude::reduce",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "0",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 231,
+                    "end": 232
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "+",
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  "origin": {
+                    "start": 234,
+                    "end": 235
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "artifact/range-reduce::inclusiveValues",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 218,
+                        "end": 220
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Range",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 202,
+                    "end": 220
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Reducible",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Range",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/range::Reducible"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 202,
+                "end": 236
+              }
+            }
+          ],
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 156,
+            "end": 240
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "value": "45",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 248,
+                    "end": 250
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "55",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 252,
+                    "end": 254
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 247,
+                "end": 255
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 259,
+                "end": 263
+              }
+            },
+            "origin": {
+              "start": 247,
+              "end": 263
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 268,
+                "end": 269
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": false,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 273,
+                "end": 278
+              }
+            },
+            "origin": {
+              "start": 268,
+              "end": 278
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 150,
+          "end": 282
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/range-reduce::renderResult",
+      "visibility": "private",
+      "origin": {
+        "start": 284,
+        "end": 425
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "valid",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 300,
+            "end": 305
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "valid",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 332,
+            "end": 337
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "boolean",
+              "value": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 344,
+                "end": 348
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "exclusive: 45, inclusive: 55",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 352,
+                "end": 382
+              }
+            },
+            "origin": {
+              "start": 344,
+              "end": 382
+            }
+          },
+          {
+            "pattern": {
+              "kind": "boolean",
+              "value": false,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 387,
+                "end": 392
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "unexpected range totals",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 396,
+                "end": 421
+              }
+            },
+            "origin": {
+              "start": 387,
+              "end": 421
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 326,
+          "end": 425
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/range-reduce::main",
+      "visibility": "public",
+      "origin": {
+        "start": 427,
+        "end": 504
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/range-reduce::renderResult",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/range-reduce::totalsAreCorrect",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "type": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 467,
+                      "end": 469
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 450,
+                  "end": 469
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 450,
+              "end": 489
+            }
+          }
+        ],
+        "origin": {
+          "start": 450,
+          "end": 504
+        }
+      }
+    }
+  ]
+}

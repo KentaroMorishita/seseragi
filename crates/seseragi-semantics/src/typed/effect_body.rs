@@ -5,7 +5,7 @@ use crate::{
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
 use std::collections::BTreeMap;
 
-use super::pure_issues::{ArrayIssue, PureCallIssue};
+use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue};
 use super::semantic_types::SemanticValueType;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
@@ -20,6 +20,13 @@ pub(crate) struct EffectBodyAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) call_issues: Vec<PureCallIssue>,
     pub(crate) array_issues: Vec<ArrayIssue>,
+    pub(crate) range_issues: Vec<RangeIssue>,
+}
+
+pub(super) struct EffectBodyIssues<'a> {
+    pub(super) calls: &'a mut Vec<PureCallIssue>,
+    pub(super) arrays: &'a mut Vec<ArrayIssue>,
+    pub(super) ranges: &'a mut Vec<RangeIssue>,
 }
 
 pub(crate) fn analyze_effect_body(
@@ -30,17 +37,22 @@ pub(crate) fn analyze_effect_body(
     let context = PureExpressionContext::new(parameters, resolution);
     let mut call_issues = Vec::new();
     let mut array_issues = Vec::new();
+    let mut range_issues = Vec::new();
     let value = type_effect_expression(
         body,
         &context,
         resolution,
-        &mut call_issues,
-        &mut array_issues,
+        &mut EffectBodyIssues {
+            calls: &mut call_issues,
+            arrays: &mut array_issues,
+            ranges: &mut range_issues,
+        },
     );
     EffectBodyAnalysis {
         value,
         call_issues,
         array_issues,
+        range_issues,
     }
 }
 
@@ -56,15 +68,14 @@ fn type_effect_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
-    call_issues: &mut Vec<PureCallIssue>,
-    array_issues: &mut Vec<ArrayIssue>,
+    issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
     if let SurfaceExpr::Grouped { value, .. } = expression {
-        return type_effect_expression(value, context, resolution, call_issues, array_issues);
+        return type_effect_expression(value, context, resolution, issues);
     }
 
     if let Some((operation, arguments)) =
-        effect_application(expression, context, resolution, call_issues, array_issues)
+        effect_application(expression, context, resolution, issues)
     {
         let effect = operation_effect(operation, &arguments);
         return TypedExpr::EffectCall {
@@ -75,13 +86,9 @@ fn type_effect_expression(
         };
     }
 
-    if let Some(value) = imported::type_imported_effect_application(
-        expression,
-        context,
-        resolution,
-        call_issues,
-        array_issues,
-    ) {
+    if let Some(value) =
+        imported::type_imported_effect_application(expression, context, resolution, issues)
+    {
         return value;
     }
 
@@ -91,26 +98,17 @@ fn type_effect_expression(
         span,
     } = expression
     {
-        return type_do_block(
-            items,
-            result.as_deref(),
-            *span,
-            context,
-            resolution,
-            call_issues,
-            array_issues,
-        );
+        return type_do_block(items, result.as_deref(), *span, context, resolution, issues);
     }
 
-    type_pure_expression(expression, context, array_issues)
+    type_pure_expression(expression, context, issues)
 }
 
 fn effect_application(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
-    call_issues: &mut Vec<PureCallIssue>,
-    array_issues: &mut Vec<ArrayIssue>,
+    issues: &mut EffectBodyIssues<'_>,
 ) -> Option<(KnownEffectOperation, Vec<TypedExpr>)> {
     let (callee, argument_nodes) = flatten_application(expression);
     let SurfaceExpr::Name { span, .. } = callee else {
@@ -127,19 +125,13 @@ fn effect_application(
     }
     let mut arguments = if operation.surface_name == "mapError" {
         vec![
-            type_pure_expression(argument_nodes[0], context, array_issues),
-            type_effect_expression(
-                argument_nodes[1],
-                context,
-                resolution,
-                call_issues,
-                array_issues,
-            ),
+            type_pure_expression(argument_nodes[0], context, issues),
+            type_effect_expression(argument_nodes[1], context, resolution, issues),
         ]
     } else {
         argument_nodes
             .into_iter()
-            .map(|argument| type_pure_expression(argument, context, array_issues))
+            .map(|argument| type_pure_expression(argument, context, issues))
             .collect::<Vec<_>>()
     };
     if matches!(operation.surface_name, "readLine" | "succeed")
@@ -156,8 +148,7 @@ fn type_do_block(
     origin: ByteSpan,
     base_context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
-    call_issues: &mut Vec<PureCallIssue>,
-    array_issues: &mut Vec<ArrayIssue>,
+    issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
     let mut locals = BTreeMap::new();
     let mut statements = Vec::new();
@@ -167,13 +158,7 @@ fn type_do_block(
         match item {
             SurfaceDoItem::Expression { value, .. } => {
                 statements.push(TypedDoStatement::Effect {
-                    value: type_effect_expression(
-                        value,
-                        &context,
-                        resolution,
-                        call_issues,
-                        array_issues,
-                    ),
+                    value: type_effect_expression(value, &context, resolution, issues),
                 });
             }
             SurfaceDoItem::Bind {
@@ -181,8 +166,7 @@ fn type_do_block(
                 value,
                 span,
             } => {
-                let value =
-                    type_effect_expression(value, &context, resolution, call_issues, array_issues);
+                let value = type_effect_expression(value, &context, resolution, issues);
                 let type_ref = inferred_type_from_expr(&value);
                 if let Some((symbol, name)) = binding(pattern, resolution) {
                     locals.insert(symbol, resolution.semantic_value_from_typed_type(&type_ref));
@@ -203,7 +187,10 @@ fn type_do_block(
             } => {
                 let analysis = analyze_resolved_expression(value, &context);
                 if let Some(issue) = analysis.array_issue.clone() {
-                    array_issues.push(issue);
+                    issues.arrays.push(issue);
+                }
+                if let Some(issue) = analysis.range_issue.clone() {
+                    issues.ranges.push(issue);
                 }
                 let type_ref = inferred_type_from_expr(&analysis.value);
                 if let Some((symbol, name)) = binding(pattern, resolution) {
@@ -227,9 +214,7 @@ fn type_do_block(
 
     let context = base_context.with_locals(locals);
     let result = result
-        .map(|result| {
-            type_effect_expression(result, &context, resolution, call_issues, array_issues)
-        })
+        .map(|result| type_effect_expression(result, &context, resolution, issues))
         .unwrap_or_else(|| TypedExpr::Unit {
             type_ref: unit_type(),
             origin: insertion_point(origin),
@@ -244,11 +229,14 @@ fn type_do_block(
 fn type_pure_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
-    array_issues: &mut Vec<ArrayIssue>,
+    issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
     let analysis = analyze_resolved_expression(expression, context);
     if let Some(issue) = analysis.array_issue {
-        array_issues.push(issue);
+        issues.arrays.push(issue);
+    }
+    if let Some(issue) = analysis.range_issue {
+        issues.ranges.push(issue);
     }
     analysis.value
 }

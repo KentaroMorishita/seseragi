@@ -170,6 +170,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
         },
         EffectFunctionIssue::Call(issue) => super::pure_call::call_diagnostic(issue, function),
         EffectFunctionIssue::Array(issue) => super::array::array_diagnostic(&issue, function),
+        EffectFunctionIssue::Range(issue) => super::range::range_diagnostic(&issue, function),
     }
 }
 

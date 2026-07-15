@@ -29,6 +29,10 @@
       "types": "./src/array.ts",
       "default": "./src/array.ts"
     },
+    "./range": {
+      "types": "./src/range.ts",
+      "default": "./src/range.ts"
+    },
     "./sum": {
       "types": "./src/sum.ts",
       "default": "./src/sum.ts"

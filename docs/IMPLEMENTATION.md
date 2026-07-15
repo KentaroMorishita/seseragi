@@ -881,6 +881,14 @@ P2-1以降では、次の二層を維持します。
   imported constructor pattern、imported instance選択を個別に検査する。
 - 累積integration package: 分割RPSをparse、resolve、type、CoreIr、TypeScriptIr、generated code、runtime executionまで通す。
 
+collectionの小さい縦sliceとして、`Range<Int>` literalとstandard `Reducible<Range<Int>, Int>`を
+SurfaceAst、TypedHir、CoreIr、TypeScriptIr、versioned runtime ABI、Node / browser executionへ接続しました。
+RangeはArrayへlowerせず、exclusive / inclusive境界を保持します。これに続くcomprehensionは
+`Range<Int>`だけを特別にloopへ展開せず、仕様3.9どおり任意の`Iterable<C, A>`に対するpureな
+generator / pattern / guard loweringとして実装します。最初のgateは単一generatorとguard、次にpattern不一致と
+複数generatorを固定し、Lesson 12の累積programでArray結果まで実行します。この追加は現在のRange ABIを壊さず、
+後から一般Iterableを導入する際もASTやCoreIrのRange表現を作り直しません。
+
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head
 argument identitiesからsemantic identityを確定します。reachable dependencyのinstanceはResolvedAstに保持され、derived `Show`の

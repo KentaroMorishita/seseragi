@@ -83,6 +83,44 @@
       }
     },
     {
+      "id": "core.range",
+      "kind": "value-representation",
+      "typescript": "readonly { start: bigint; end: bigint; inclusive: boolean }",
+      "boundary": "finite ordered Range<Int> with unit step",
+      "import": null
+    },
+    {
+      "id": "core.range.exclusive",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Range<Int> with an excluded end",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "exclusive"
+      }
+    },
+    {
+      "id": "core.range.inclusive",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Range<Int> with an included end",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "inclusive"
+      }
+    },
+    {
+      "id": "core.range.reduce",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "B -> (B -> Int -> B) -> Range<Int> -> B",
+      "instanceIdentity": "std/range::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "reduce"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

@@ -82,6 +82,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "String"
                 | "Array"
                 | "List"
+                | "Range"
                 | "Effect"
                 | "Console"
                 | "ConsoleError"

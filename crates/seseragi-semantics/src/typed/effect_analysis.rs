@@ -3,7 +3,7 @@ use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceExpr, Token, TokenKind};
 
 use super::effect_body::analyze_effect_body;
 use super::functions::typed_parameters_from_surface;
-use super::pure_issues::{ArrayIssue, PureCallIssue};
+use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue};
 use super::TypedResolution;
 
 mod contracts;
@@ -64,6 +64,7 @@ pub(crate) enum EffectFunctionIssue {
     },
     Call(PureCallIssue),
     Array(ArrayIssue),
+    Range(RangeIssue),
 }
 
 pub(crate) fn analyze_effect_function(
@@ -96,6 +97,13 @@ pub(crate) fn analyze_effect_function(
             .array_issues
             .into_iter()
             .map(EffectFunctionIssue::Array)
+            .collect();
+    }
+    if !body_analysis.range_issues.is_empty() {
+        return body_analysis
+            .range_issues
+            .into_iter()
+            .map(EffectFunctionIssue::Range)
             .collect();
     }
 
