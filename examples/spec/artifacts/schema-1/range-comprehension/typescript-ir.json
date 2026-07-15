@@ -1,0 +1,264 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/range-comprehension",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.multiply",
+    "core.range.comprehend",
+    "core.range",
+    "core.range.inclusive",
+    "core.bool",
+    "core.int64.remainder",
+    "core.unit",
+    "core.array.reduce",
+    "core.int64.add",
+    "core.string",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.multiply",
+      "local": "_ssrg_int64_multiply"
+    },
+    {
+      "feature": "core.range.comprehend",
+      "local": "_ssrg_range_comprehend"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    },
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "evenSquares",
+      "parameters": [
+        {
+          "name": "limit",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_range_comprehend",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_range_inclusive",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "1"
+              },
+              {
+                "kind": "identifier",
+                "name": "limit"
+              }
+            ]
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value",
+            "body": {
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int64_remainder",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  }
+                ]
+              },
+              "right": {
+                "kind": "bigint",
+                "value": "0"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_multiply",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 96
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "total",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_reduce",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "curried-runtime-reference",
+            "name": "_ssrg_int64_add",
+            "arity": 2
+          },
+          {
+            "kind": "call",
+            "callee": "evenSquares",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "10"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 98,
+        "end": 163
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderTotal",
+      "parameters": [
+        {
+          "name": "total",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "total"
+        },
+        "scrutineeType": {
+          "kind": "bigint"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [],
+                "value": "220"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "even square total: 220"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected comprehension total"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 165,
+        "end": 300
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "renderTotal",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "total",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 302,
+        "end": 367
+      }
+    }
+  ]
+}

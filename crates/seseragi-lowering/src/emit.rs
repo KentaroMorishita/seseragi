@@ -322,6 +322,9 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 literal
             }
         }
+        TypeScriptExpr::Lambda { parameter, body } => {
+            format!("({parameter}) => {}", render_typescript_expr(body))
+        }
         TypeScriptExpr::Binary {
             operator,
             left,

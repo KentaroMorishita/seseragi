@@ -23,15 +23,15 @@ pub(super) enum CoveragePattern {
     Invalid,
 }
 
-pub(super) struct PatternAnalysis {
-    pub(super) typed: TypedPattern,
+pub(in crate::typed::surface_expr) struct PatternAnalysis {
+    pub(in crate::typed::surface_expr) typed: TypedPattern,
     pub(super) coverage: CoveragePattern,
-    pub(super) locals: BTreeMap<SymbolId, SemanticValueType>,
-    pub(super) issues: Vec<MatchIssue>,
+    pub(in crate::typed::surface_expr) locals: BTreeMap<SymbolId, SemanticValueType>,
+    pub(in crate::typed::surface_expr) issues: Vec<MatchIssue>,
     pub(super) invalid: bool,
 }
 
-pub(super) fn type_pattern(
+pub(in crate::typed::surface_expr) fn type_pattern(
     pattern: &SurfacePattern,
     expected: &SemanticValueType,
     context: &PureExpressionContext<'_>,

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/range-comprehension",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.multiply",
+      "core.range.comprehend",
+      "core.range",
+      "core.range.inclusive",
+      "core.bool",
+      "core.int64.remainder",
+      "core.unit",
+      "core.array.reduce",
+      "core.int64.add",
+      "core.string",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

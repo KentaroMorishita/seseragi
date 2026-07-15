@@ -9,7 +9,7 @@ use super::{
 };
 
 mod coverage;
-mod pattern;
+pub(super) mod pattern;
 
 use coverage::analyze_coverage;
 use pattern::type_pattern;

@@ -1,4 +1,4 @@
-use crate::{CoreExpr, CoreModule, CoreStatement};
+use crate::{CoreComprehensionClause, CoreExpr, CoreModule, CorePattern, CoreStatement};
 use std::collections::BTreeSet;
 
 use super::super::names::safe_identifier;
@@ -84,6 +84,24 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
                 collect_local_expr_names(argument, names);
             }
         }
+        CoreExpr::ArrayComprehension {
+            element, clauses, ..
+        } => {
+            collect_local_expr_names(element, names);
+            for clause in clauses {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        pattern, source, ..
+                    } => {
+                        collect_pattern_names(pattern, names);
+                        collect_local_expr_names(source, names);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_local_expr_names(condition, names);
+                    }
+                }
+            }
+        }
         CoreExpr::Binary { left, right, .. } => {
             collect_local_expr_names(left, names);
             collect_local_expr_names(right, names);
@@ -134,6 +152,29 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. }
         | CoreExpr::Variable { .. } => {}
+    }
+}
+
+fn collect_pattern_names(pattern: &CorePattern, names: &mut BTreeSet<String>) {
+    match pattern {
+        CorePattern::Binding { name, .. } => {
+            names.insert(safe_identifier(name));
+        }
+        CorePattern::Constructor { argument, .. } => {
+            if let Some(argument) = argument {
+                collect_pattern_names(argument, names);
+            }
+        }
+        CorePattern::Tuple { elements, .. } => {
+            for element in elements {
+                collect_pattern_names(element, names);
+            }
+        }
+        CorePattern::Integer { .. }
+        | CorePattern::String { .. }
+        | CorePattern::Boolean { .. }
+        | CorePattern::Wildcard { .. }
+        | CorePattern::Invalid { .. } => {}
     }
 }
 

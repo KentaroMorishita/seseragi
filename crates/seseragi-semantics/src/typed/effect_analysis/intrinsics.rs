@@ -92,7 +92,8 @@ fn collect_intrinsic_issues(
         | TypedExpr::Integer { .. }
         | TypedExpr::String { .. }
         | TypedExpr::Boolean { .. }
-        | TypedExpr::Variable { .. } => {}
+        | TypedExpr::Variable { .. }
+        | TypedExpr::ArrayComprehension { .. } => {}
     }
 }
 

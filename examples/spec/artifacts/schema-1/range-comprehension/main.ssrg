@@ -1,0 +1,17 @@
+fn evenSquares limit: Int -> Array<Int> =
+  [value * value | value <- 1..=limit, value % 2 == 0]
+
+fn total unit: Unit -> Int =
+  evenSquares 10
+    |> reduce 0 (+)
+
+fn renderTotal total: Int -> String =
+  match total {
+    220 -> "even square total: 220"
+    _ -> "unexpected comprehension total"
+  }
+
+pub effect fn main =
+  total ()
+    |> renderTotal
+    |> println

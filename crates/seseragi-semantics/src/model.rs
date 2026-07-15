@@ -388,6 +388,13 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    ArrayComprehension {
+        element: Box<TypedExpr>,
+        clauses: Vec<TypedComprehensionClause>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Binary {
         operator: String,
         left: Box<TypedExpr>,
@@ -430,6 +437,25 @@ pub enum TypedExpr {
     DoBlock {
         statements: Vec<TypedDoStatement>,
         result: Box<TypedExpr>,
+        origin: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedComprehensionClause {
+    Generator {
+        pattern: TypedPattern,
+        source: TypedExpr,
+        evidence: TypedCallEvidence,
+        origin: ByteSpan,
+    },
+    Guard {
+        condition: TypedExpr,
         origin: ByteSpan,
     },
 }

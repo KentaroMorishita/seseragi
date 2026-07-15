@@ -113,6 +113,80 @@ pub struct CoreTraitDispatch {
     rename_all = "kebab-case",
     rename_all_fields = "camelCase"
 )]
+pub enum CoreComprehensionClause {
+    Generator {
+        pattern: CorePattern,
+        source: CoreExpr,
+        evidence: CoreCallEvidence,
+        origin: SourceSpan,
+    },
+    Guard {
+        condition: CoreExpr,
+        origin: SourceSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum CorePattern {
+    Integer {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    String {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Boolean {
+        value: bool,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Binding {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Wildcard {
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Constructor {
+        symbol: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        argument: Option<Box<CorePattern>>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Tuple {
+        elements: Vec<CorePattern>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Invalid {
+        origin: SourceSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
 pub enum CoreExpr {
     Unit {
         origin: SourceSpan,
@@ -156,6 +230,13 @@ pub enum CoreExpr {
     },
     Array {
         elements: Vec<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    ArrayComprehension {
+        element: Box<CoreExpr>,
+        clauses: Vec<CoreComprehensionClause>,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,

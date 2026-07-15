@@ -279,6 +279,11 @@ pub enum SurfaceExpr {
         elements: Vec<SurfaceExpr>,
         span: ByteSpan,
     },
+    ArrayComprehension {
+        element: Box<SurfaceExpr>,
+        clauses: Vec<SurfaceComprehensionClause>,
+        span: ByteSpan,
+    },
     Binary {
         operator: String,
         operator_span: ByteSpan,
@@ -323,6 +328,7 @@ impl SurfaceExpr {
             | Self::Application { span, .. }
             | Self::Tuple { span, .. }
             | Self::Array { span, .. }
+            | Self::ArrayComprehension { span, .. }
             | Self::Binary { span, .. }
             | Self::If { span, .. }
             | Self::Match { span, .. }
@@ -331,6 +337,24 @@ impl SurfaceExpr {
             | Self::Error { span } => *span,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceComprehensionClause {
+    Generator {
+        pattern: SurfacePattern,
+        source: SurfaceExpr,
+        span: ByteSpan,
+    },
+    Guard {
+        condition: SurfaceExpr,
+        span: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

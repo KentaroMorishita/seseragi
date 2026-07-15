@@ -166,6 +166,7 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             }
         }
         TypeScriptExpr::Await { value } => rewrite_expr(value, renames),
+        TypeScriptExpr::Lambda { body, .. } => rewrite_expr(body, renames),
         TypeScriptExpr::Sequence { statements, result } => {
             for statement in statements {
                 match statement {

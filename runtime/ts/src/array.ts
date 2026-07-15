@@ -10,3 +10,33 @@ export function reduce<A, B>(
   }
   return accumulator
 }
+
+/** Pure comprehension lowering for the standard Array Iterable instance. */
+export function collectMap<A, B>(
+  values: ReadonlyArray<A>,
+  predicate: (value: A) => boolean,
+  transform: (value: A) => B,
+): ReadonlyArray<B> {
+  const result: B[] = []
+  for (const value of values) {
+    if (predicate(value)) {
+      result.push(transform(value))
+    }
+  }
+  return result
+}
+
+/** Nested pure comprehension lowering for the standard Array Iterable instance. */
+export function collectFlatMap<A, B>(
+  values: ReadonlyArray<A>,
+  predicate: (value: A) => boolean,
+  transform: (value: A) => ReadonlyArray<B>,
+): ReadonlyArray<B> {
+  const result: B[] = []
+  for (const value of values) {
+    if (predicate(value)) {
+      result.push(...transform(value))
+    }
+  }
+  return result
+}

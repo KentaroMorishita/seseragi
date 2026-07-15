@@ -1,0 +1,5 @@
+pub fn selectedPairs unit: Unit -> Array<Int> =
+  [left + right
+    | left <- [1, 2],
+      right <- [10, 20],
+      right == 20]

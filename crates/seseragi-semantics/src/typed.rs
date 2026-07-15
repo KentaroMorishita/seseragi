@@ -272,6 +272,56 @@ mod tests {
     }
 
     #[test]
+    fn types_range_comprehension_with_iterable_evidence_and_guard() {
+        let typed = type_module(
+            "artifact/range-comprehension/main.ssrg",
+            "pub fn evenSquares limit: Int -> Array<Int> = [n * n | n <- 1..=limit, n % 2 == 0]\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::ArrayComprehension {
+            element,
+            clauses,
+            type_ref,
+            ..
+        } = body
+        else {
+            panic!("expected typed array comprehension: {body:#?}");
+        };
+        assert!(matches!(element.as_ref(), TypedExpr::Binary { operator, .. } if operator == "*"));
+        assert_eq!(
+            type_ref,
+            &TypedType::Named {
+                name: "Array".to_owned(),
+                arguments: vec![TypedType::Named {
+                    name: "Int".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
+        assert!(matches!(
+            &clauses[0],
+            crate::TypedComprehensionClause::Generator {
+                pattern: crate::TypedPattern::Binding { name, .. },
+                evidence: crate::TypedCallEvidence {
+                    evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    ..
+                },
+                ..
+            } if name == "n" && identity == "std/range::Iterable"
+        ));
+        assert!(matches!(
+            &clauses[1],
+            crate::TypedComprehensionClause::Guard {
+                condition: TypedExpr::Binary { operator, .. },
+                ..
+            } if operator == "=="
+        ));
+    }
+
+    #[test]
     fn types_effect_main() {
         let typed = type_module(
             "artifact/effect-main/main.ssrg",

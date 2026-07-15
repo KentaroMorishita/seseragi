@@ -1,0 +1,436 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/array-comprehension",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "selectedPairs",
+      "nameSpan": {
+        "start": 7,
+        "end": 20
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 21,
+            "end": 25
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 27,
+              "end": 31
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 41,
+              "end": 44
+            }
+          }
+        ],
+        "span": {
+          "start": 35,
+          "end": 45
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "binary",
+          "operator": "+",
+          "operatorSpan": {
+            "start": 56,
+            "end": 57
+          },
+          "left": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 51,
+              "end": 55
+            }
+          },
+          "right": {
+            "kind": "name",
+            "name": "right",
+            "span": {
+              "start": 58,
+              "end": 63
+            }
+          },
+          "span": {
+            "start": 51,
+            "end": 63
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "left",
+              "nameSpan": {
+                "start": 70,
+                "end": 74
+              },
+              "span": {
+                "start": 70,
+                "end": 74
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 79,
+                    "end": 80
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "2",
+                  "span": {
+                    "start": 82,
+                    "end": 83
+                  }
+                }
+              ],
+              "span": {
+                "start": 78,
+                "end": 84
+              }
+            },
+            "span": {
+              "start": 70,
+              "end": 84
+            }
+          },
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "right",
+              "nameSpan": {
+                "start": 92,
+                "end": 97
+              },
+              "span": {
+                "start": 92,
+                "end": 97
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "10",
+                  "span": {
+                    "start": 102,
+                    "end": 104
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "20",
+                  "span": {
+                    "start": 106,
+                    "end": 108
+                  }
+                }
+              ],
+              "span": {
+                "start": 101,
+                "end": 109
+              }
+            },
+            "span": {
+              "start": 92,
+              "end": 109
+            }
+          },
+          {
+            "kind": "guard",
+            "condition": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 123,
+                "end": 125
+              },
+              "left": {
+                "kind": "name",
+                "name": "right",
+                "span": {
+                  "start": 117,
+                  "end": 122
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "20",
+                "span": {
+                  "start": 126,
+                  "end": 128
+                }
+              },
+              "span": {
+                "start": 117,
+                "end": 128
+              }
+            },
+            "span": {
+              "start": 117,
+              "end": 128
+            }
+          }
+        ],
+        "span": {
+          "start": 50,
+          "end": 129
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 129
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 129
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 129
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "comprehension",
+      "origin": {
+        "start": 70,
+        "end": 84
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "comprehension",
+      "origin": {
+        "start": 92,
+        "end": 109
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "selectedPairs",
+      "canonical": "artifact/array-comprehension::selectedPairs",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 20
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 21,
+        "end": 25
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 70,
+        "end": 74
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 3,
+      "origin": {
+        "start": 92,
+        "end": 97
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 27,
+        "end": 31
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 35,
+        "end": 45
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 41,
+        "end": 44
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 117,
+        "end": 122
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 7,
+      "origin": {
+        "start": 123,
+        "end": 125
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 51,
+        "end": 55
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 8,
+      "origin": {
+        "start": 56,
+        "end": 57
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 58,
+        "end": 63
+      }
+    }
+  ],
+  "issues": []
+}

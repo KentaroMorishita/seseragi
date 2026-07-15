@@ -1,5 +1,5 @@
 use crate::{
-    CoreCallEvidence, CoreDecisionBranch, CoreExpr, CoreInstanceEvidence,
+    CoreCallEvidence, CoreComprehensionClause, CoreDecisionBranch, CoreExpr, CoreInstanceEvidence,
     CoreInstanceImplementation, CoreModule, CoreStatement, TypeScriptLoweringError,
     TypeScriptOutputPlan, TypeScriptSourceImport, TypeScriptSourceImportBinding,
 };
@@ -107,6 +107,24 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
         CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr(element, imported);
+            }
+        }
+        CoreExpr::ArrayComprehension {
+            element, clauses, ..
+        } => {
+            collect_expr(element, imported);
+            for clause in clauses {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        source, evidence, ..
+                    } => {
+                        collect_call_evidence(std::slice::from_ref(evidence), imported);
+                        collect_expr(source, imported);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_expr(condition, imported);
+                    }
+                }
             }
         }
         CoreExpr::Binary {

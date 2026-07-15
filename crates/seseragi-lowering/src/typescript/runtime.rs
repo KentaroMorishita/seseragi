@@ -1,9 +1,9 @@
-use crate::collection_ops::runtime_collection_operation;
+use crate::collection_ops::{runtime_collection_operation, runtime_iterable_operation};
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
-    effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence, CoreExpr,
-    CoreStatement, CoreType,
+    effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence,
+    CoreComprehensionClause, CoreExpr, CoreStatement, CoreType,
 };
 
 use super::{push_import_unique, push_unique, TypeScriptImport};
@@ -56,6 +56,33 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             collect_type_runtime_requirement(type_ref, requirements);
             for element in elements {
                 collect_expr_runtime_requirements(element, requirements);
+            }
+        }
+        CoreExpr::ArrayComprehension {
+            element,
+            clauses,
+            type_ref,
+            ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            collect_expr_runtime_requirements(element, requirements);
+            for (index, clause) in clauses.iter().enumerate() {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        source, evidence, ..
+                    } => {
+                        let flatten = clauses[index + 1..].iter().any(|clause| {
+                            matches!(clause, CoreComprehensionClause::Generator { .. })
+                        });
+                        let operation = runtime_iterable_operation(evidence, flatten)
+                            .expect("typed comprehension requires registered Iterable evidence");
+                        push_unique(requirements, operation.runtime_feature);
+                        collect_expr_runtime_requirements(source, requirements);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_expr_runtime_requirements(condition, requirements);
+                    }
+                }
             }
         }
         CoreExpr::Binary {
@@ -249,6 +276,35 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr_runtime_imports(element, imports);
+            }
+        }
+        CoreExpr::ArrayComprehension {
+            element, clauses, ..
+        } => {
+            collect_expr_runtime_imports(element, imports);
+            for (index, clause) in clauses.iter().enumerate() {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        source, evidence, ..
+                    } => {
+                        let flatten = clauses[index + 1..].iter().any(|clause| {
+                            matches!(clause, CoreComprehensionClause::Generator { .. })
+                        });
+                        let operation = runtime_iterable_operation(evidence, flatten)
+                            .expect("typed comprehension requires registered Iterable evidence");
+                        push_import_unique(
+                            imports,
+                            TypeScriptImport {
+                                feature: operation.runtime_feature.to_owned(),
+                                local: operation.local_name.to_owned(),
+                            },
+                        );
+                        collect_expr_runtime_imports(source, imports);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_expr_runtime_imports(condition, imports);
+                    }
+                }
             }
         }
         CoreExpr::Binary {

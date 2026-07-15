@@ -12,6 +12,10 @@ use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{TypeScriptExpr, TypeScriptStatement};
 
+mod comprehension;
+
+use comprehension::lower_array_comprehension;
+
 pub(super) fn lower_core_expr_to_typescript(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
@@ -110,6 +114,9 @@ pub(super) fn lower_core_expr_to_typescript(
                 _ => super::TypeScriptType::Unknown,
             },
         },
+        CoreExpr::ArrayComprehension {
+            element, clauses, ..
+        } => lower_array_comprehension(*element, clauses, imported_values, imported_types, 0),
         CoreExpr::Binary {
             operator,
             left,
@@ -200,6 +207,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             elements.iter().any(typescript_expr_contains_await)
         }
+        TypeScriptExpr::Lambda { body, .. } => typescript_expr_contains_await(body),
         TypeScriptExpr::Binary { left, right, .. } => {
             typescript_expr_contains_await(left) || typescript_expr_contains_await(right)
         }

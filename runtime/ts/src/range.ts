@@ -36,3 +36,47 @@ export function reduce<B>(
   }
   return accumulator
 }
+
+/** Pure comprehension lowering for the standard Range Iterable instance. */
+export function collectMap<B>(
+  range: IntRange,
+  predicate: (value: bigint) => boolean,
+  transform: (value: bigint) => B,
+): ReadonlyArray<B> {
+  return collect(range, predicate, (result, value) => {
+    result.push(transform(value))
+  })
+}
+
+/** Nested pure comprehension lowering for the standard Range Iterable instance. */
+export function collectFlatMap<B>(
+  range: IntRange,
+  predicate: (value: bigint) => boolean,
+  transform: (value: bigint) => ReadonlyArray<B>,
+): ReadonlyArray<B> {
+  return collect(range, predicate, (result, value) => {
+    result.push(...transform(value))
+  })
+}
+
+function collect<B>(
+  range: IntRange,
+  predicate: (value: bigint) => boolean,
+  append: (result: B[], value: bigint) => void,
+): ReadonlyArray<B> {
+  const result: B[] = []
+  if (range.start > range.end) {
+    return result
+  }
+  let current = range.start
+  while (range.inclusive ? current <= range.end : current < range.end) {
+    if (predicate(current)) {
+      append(result, current)
+    }
+    if (current === range.end) {
+      break
+    }
+    current = add(current, 1n)
+  }
+  return result
+}

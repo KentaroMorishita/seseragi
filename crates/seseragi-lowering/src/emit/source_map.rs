@@ -251,6 +251,7 @@ fn collect_expr_names(
             }
         }
         TypeScriptExpr::Await { value } => collect_expr_names(value, helper_names, names),
+        TypeScriptExpr::Lambda { body, .. } => collect_expr_names(body, helper_names, names),
         TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr_names(element, helper_names, names);

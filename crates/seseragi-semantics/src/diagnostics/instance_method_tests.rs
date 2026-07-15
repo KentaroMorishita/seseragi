@@ -131,7 +131,7 @@ fn status value: Badge -> String = render value
 
     assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
     assert_eq!(
-        diagnostics.diagnostics[0].code, "SES-T0101",
+        diagnostics.diagnostics[0].code, "SES-T0201",
         "{diagnostics:#?}"
     );
     assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");

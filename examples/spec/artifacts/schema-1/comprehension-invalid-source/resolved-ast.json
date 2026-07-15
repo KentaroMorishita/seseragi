@@ -1,0 +1,237 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/comprehension-invalid-source",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "invalidSource",
+      "nameSpan": {
+        "start": 7,
+        "end": 20
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 21,
+            "end": 26
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 28,
+              "end": 31
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 41,
+              "end": 44
+            }
+          }
+        ],
+        "span": {
+          "start": 35,
+          "end": 45
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "name",
+          "name": "item",
+          "span": {
+            "start": 51,
+            "end": 55
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "item",
+              "nameSpan": {
+                "start": 58,
+                "end": 62
+              },
+              "span": {
+                "start": 58,
+                "end": 62
+              }
+            },
+            "source": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 66,
+                "end": 71
+              }
+            },
+            "span": {
+              "start": 58,
+              "end": 71
+            }
+          }
+        ],
+        "span": {
+          "start": 50,
+          "end": 72
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 72
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 72
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 72
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "comprehension",
+      "origin": {
+        "start": 58,
+        "end": 71
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "invalidSource",
+      "canonical": "artifact/comprehension-invalid-source::invalidSource",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 20
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 21,
+        "end": 26
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "item",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 58,
+        "end": 62
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 28,
+        "end": 31
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 35,
+        "end": 45
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 41,
+        "end": 44
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 66,
+        "end": 71
+      }
+    },
+    {
+      "spelling": "item",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 51,
+        "end": 55
+      }
+    }
+  ],
+  "issues": []
+}

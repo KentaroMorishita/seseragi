@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/array-comprehension"
+  ],
+  "sourcesContent": [
+    "pub fn selectedPairs unit: Unit -> Array<Int> =\n  [left + right\n    | left <- [1, 2],\n      right <- [10, 20],\n      right == 20]\n"
+  ],
+  "names": [
+    "selectedPairs",
+    "_ssrg_array_comprehend_flat",
+    "_ssrg_array_comprehend",
+    "add"
+  ],
+  "mappings": ";;;AAAAA"
+}

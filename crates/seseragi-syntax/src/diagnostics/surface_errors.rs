@@ -1,5 +1,5 @@
 use super::{ByteRange, Diagnostic, DiagnosticFix, DiagnosticSeverity, RelatedDiagnostic};
-use crate::{SurfaceDecl, SurfaceDoItem, SurfaceExpr};
+use crate::{SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr};
 use std::collections::BTreeSet;
 
 pub(super) fn diagnostics(
@@ -42,6 +42,18 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         SurfaceExpr::Tuple { elements, .. } | SurfaceExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expression_errors(element, errors);
+            }
+        }
+        SurfaceExpr::ArrayComprehension {
+            element, clauses, ..
+        } => {
+            collect_expression_errors(element, errors);
+            for clause in clauses {
+                let expression = match clause {
+                    SurfaceComprehensionClause::Generator { source, .. } => source,
+                    SurfaceComprehensionClause::Guard { condition, .. } => condition,
+                };
+                collect_expression_errors(expression, errors);
             }
         }
         SurfaceExpr::Binary { left, right, .. } => {

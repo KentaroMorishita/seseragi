@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "selectedPairs",
+      "nameSpan": {
+        "start": 7,
+        "end": 20
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 21,
+            "end": 25
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 27,
+              "end": 31
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 41,
+              "end": 44
+            }
+          }
+        ],
+        "span": {
+          "start": 35,
+          "end": 45
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "binary",
+          "operator": "+",
+          "operatorSpan": {
+            "start": 56,
+            "end": 57
+          },
+          "left": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 51,
+              "end": 55
+            }
+          },
+          "right": {
+            "kind": "name",
+            "name": "right",
+            "span": {
+              "start": 58,
+              "end": 63
+            }
+          },
+          "span": {
+            "start": 51,
+            "end": 63
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "left",
+              "nameSpan": {
+                "start": 70,
+                "end": 74
+              },
+              "span": {
+                "start": 70,
+                "end": 74
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 79,
+                    "end": 80
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "2",
+                  "span": {
+                    "start": 82,
+                    "end": 83
+                  }
+                }
+              ],
+              "span": {
+                "start": 78,
+                "end": 84
+              }
+            },
+            "span": {
+              "start": 70,
+              "end": 84
+            }
+          },
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "right",
+              "nameSpan": {
+                "start": 92,
+                "end": 97
+              },
+              "span": {
+                "start": 92,
+                "end": 97
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "10",
+                  "span": {
+                    "start": 102,
+                    "end": 104
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "20",
+                  "span": {
+                    "start": 106,
+                    "end": 108
+                  }
+                }
+              ],
+              "span": {
+                "start": 101,
+                "end": 109
+              }
+            },
+            "span": {
+              "start": 92,
+              "end": 109
+            }
+          },
+          {
+            "kind": "guard",
+            "condition": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 123,
+                "end": 125
+              },
+              "left": {
+                "kind": "name",
+                "name": "right",
+                "span": {
+                  "start": 117,
+                  "end": 122
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "20",
+                "span": {
+                  "start": 126,
+                  "end": 128
+                }
+              },
+              "span": {
+                "start": 117,
+                "end": 128
+              }
+            },
+            "span": {
+              "start": 117,
+              "end": 128
+            }
+          }
+        ],
+        "span": {
+          "start": 50,
+          "end": 129
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 129
+      }
+    }
+  ]
+}

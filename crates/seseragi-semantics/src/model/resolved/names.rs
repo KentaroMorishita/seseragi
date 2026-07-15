@@ -14,6 +14,7 @@ pub enum ScopeKind {
     Function,
     DoBlock,
     MatchArm,
+    Comprehension,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, Deserialize)]

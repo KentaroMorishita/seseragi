@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "invalidSource",
+      "nameSpan": {
+        "start": 7,
+        "end": 20
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 21,
+            "end": 26
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 28,
+              "end": 31
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 41,
+              "end": 44
+            }
+          }
+        ],
+        "span": {
+          "start": 35,
+          "end": 45
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "name",
+          "name": "item",
+          "span": {
+            "start": 51,
+            "end": 55
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "item",
+              "nameSpan": {
+                "start": 58,
+                "end": 62
+              },
+              "span": {
+                "start": 58,
+                "end": 62
+              }
+            },
+            "source": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 66,
+                "end": 71
+              }
+            },
+            "span": {
+              "start": 58,
+              "end": 71
+            }
+          }
+        ],
+        "span": {
+          "start": 50,
+          "end": 72
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 72
+      }
+    }
+  ]
+}

@@ -37,6 +37,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" => validate_expression_array(expression, "elements", path, 0),
+        "arrayComprehension" => validate_comprehension(expression, path),
         "grouped" => validate_child(expression, "value", path),
         "application" => {
             validate_child(expression, "function", path)?;
@@ -57,6 +58,42 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             "SurfaceAst {path} has unknown expression kind {other}"
         )),
     }
+}
+
+fn validate_comprehension(expression: &Value, path: &str) -> Result<(), String> {
+    validate_child(expression, "element", path)?;
+    let clauses = expression
+        .get("clauses")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.clauses must be an array"))?;
+    if clauses.is_empty() {
+        return Err(format!(
+            "SurfaceAst {path}.clauses must contain at least one clause"
+        ));
+    }
+    for (index, clause) in clauses.iter().enumerate() {
+        let clause_path = format!("{path}.clauses[{index}]");
+        require_span(clause, &clause_path)?;
+        match clause.get("kind").and_then(Value::as_str) {
+            Some("generator") => {
+                let pattern = clause
+                    .get("pattern")
+                    .ok_or_else(|| format!("SurfaceAst {clause_path}.pattern is required"))?;
+                validate_pattern(pattern, &format!("{clause_path}.pattern"))?;
+                validate_child(clause, "source", &clause_path)?;
+            }
+            Some("guard") => validate_child(clause, "condition", &clause_path)?,
+            Some(other) => {
+                return Err(format!(
+                    "SurfaceAst {clause_path} has unknown comprehension clause kind {other}"
+                ));
+            }
+            None => {
+                return Err(format!("SurfaceAst {clause_path}.kind must be a string"));
+            }
+        }
+    }
+    Ok(())
 }
 
 fn validate_match(expression: &Value, path: &str) -> Result<(), String> {
@@ -259,6 +296,35 @@ mod tests {
                         "span": { "start": 7, "end": 14 }
                     },
                     "span": { "start": 0, "end": 14 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_array_comprehension_with_generator_and_guard() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "arrayComprehension",
+                    "element": { "kind": "name", "span": { "start": 1, "end": 2 } },
+                    "clauses": [
+                        {
+                            "kind": "generator",
+                            "pattern": { "kind": "name", "span": { "start": 5, "end": 6 } },
+                            "source": { "kind": "name", "span": { "start": 10, "end": 16 } },
+                            "span": { "start": 5, "end": 16 }
+                        },
+                        {
+                            "kind": "guard",
+                            "condition": { "kind": "boolean", "span": { "start": 18, "end": 22 } },
+                            "span": { "start": 18, "end": 22 }
+                        }
+                    ],
+                    "span": { "start": 0, "end": 23 }
                 }
             }]
         });

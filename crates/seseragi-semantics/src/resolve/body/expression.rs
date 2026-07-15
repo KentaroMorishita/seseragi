@@ -1,6 +1,6 @@
 use super::Resolver;
 use crate::{ScopeId, ScopeKind, SymbolNamespace};
-use seseragi_syntax::{SurfaceDoItem, SurfaceExpr};
+use seseragi_syntax::{SurfaceComprehensionClause, SurfaceDoItem, SurfaceExpr};
 
 use super::pattern::resolve_pattern;
 
@@ -28,6 +28,34 @@ pub(super) fn resolve_expression(
             for element in elements {
                 resolve_expression(resolver, scope, element);
             }
+        }
+        SurfaceExpr::ArrayComprehension {
+            element,
+            clauses,
+            span,
+        } => {
+            let mut clause_scope = scope;
+            for clause in clauses {
+                match clause {
+                    SurfaceComprehensionClause::Generator {
+                        pattern,
+                        source,
+                        span,
+                    } => {
+                        resolve_expression(resolver, clause_scope, source);
+                        clause_scope =
+                            resolver.new_scope(clause_scope, ScopeKind::Comprehension, *span);
+                        resolve_pattern(resolver, clause_scope, pattern);
+                    }
+                    SurfaceComprehensionClause::Guard { condition, .. } => {
+                        resolve_expression(resolver, clause_scope, condition);
+                    }
+                }
+            }
+            if clauses.is_empty() {
+                clause_scope = resolver.new_scope(scope, ScopeKind::Comprehension, *span);
+            }
+            resolve_expression(resolver, clause_scope, element);
         }
         SurfaceExpr::Binary {
             operator,

@@ -49,7 +49,7 @@ pub(super) fn call_diagnostic(
             ),
         ),
         PureCallIssue::MissingInstance { callee, constraint } => (
-            "SES-T0101",
+            "SES-T0201",
             "instance.missing",
             callee,
             format!(
@@ -128,7 +128,7 @@ mod tests {
         );
 
         assert_eq!(artifact.diagnostics.len(), 1);
-        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
     }
 
@@ -142,7 +142,7 @@ mod tests {
         );
 
         assert_eq!(artifact.diagnostics.len(), 1);
-        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
     }
 
@@ -159,7 +159,7 @@ mod tests {
         );
 
         assert_eq!(artifact.diagnostics.len(), 1);
-        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
     }
 
@@ -176,7 +176,7 @@ mod tests {
         );
 
         assert_eq!(artifact.diagnostics.len(), 1);
-        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
     }
 

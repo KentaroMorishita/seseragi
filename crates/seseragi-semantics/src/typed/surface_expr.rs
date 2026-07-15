@@ -10,6 +10,7 @@ use super::TypedResolution;
 mod application;
 mod array;
 mod binary;
+mod comprehension;
 mod conditional;
 mod match_expression;
 mod tuple;
@@ -225,6 +226,10 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
                     arguments: vec![element],
                 })
         }
+        SurfaceExpr::ArrayComprehension { element, .. } => Some(TypedType::Named {
+            name: "Array".to_owned(),
+            arguments: vec![surface_expression_type_hint(element)?],
+        }),
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
         SurfaceExpr::If {
             then_branch,
@@ -278,6 +283,11 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
         SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
         SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),
+        SurfaceExpr::ArrayComprehension {
+            element,
+            clauses,
+            span,
+        } => comprehension::type_array_comprehension(element, clauses, *span, context),
         SurfaceExpr::Binary {
             operator,
             left,

@@ -1,0 +1,28 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/range-comprehension"
+  ],
+  "sourcesContent": [
+    "fn evenSquares limit: Int -> Array<Int> =\n  [value * value | value <- 1..=limit, value % 2 == 0]\n\nfn total unit: Unit -> Int =\n  evenSquares 10\n    |> reduce 0 (+)\n\nfn renderTotal total: Int -> String =\n  match total {\n    220 -> \"even square total: 220\"\n    _ -> \"unexpected comprehension total\"\n  }\n\npub effect fn main =\n  total ()\n    |> renderTotal\n    |> println\n"
+  ],
+  "names": [
+    "evenSquares",
+    "_ssrg_range_comprehend",
+    "inclusive",
+    "remainder",
+    "multiply",
+    "total",
+    "_ssrg_array_reduce",
+    "add",
+    "evenSquares",
+    "renderTotal",
+    "main",
+    "println",
+    "renderTotal",
+    "total"
+  ],
+  "mappings": ";;;;;AAAAA;AAGAK;AAIAI;AAMAC"
+}

@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/array-comprehension",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.int64",
+    "core.int64.add",
+    "core.array.comprehend.flat",
+    "core.array.comprehend",
+    "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.array.comprehend.flat",
+      "local": "_ssrg_array_comprehend_flat"
+    },
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "selectedPairs",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_comprehend_flat",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "bigint",
+                "value": "1"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ],
+            "elementType": {
+              "kind": "bigint"
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "left",
+            "body": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "left",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_array_comprehend",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "bigint",
+                      "value": "10"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "20"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "bigint"
+                  }
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "right",
+                  "body": {
+                    "kind": "binary",
+                    "operator": "===",
+                    "left": {
+                      "kind": "identifier",
+                      "name": "right"
+                    },
+                    "right": {
+                      "kind": "bigint",
+                      "value": "20"
+                    }
+                  }
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "right",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "left"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "right"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 129
+      }
+    }
+  ]
+}

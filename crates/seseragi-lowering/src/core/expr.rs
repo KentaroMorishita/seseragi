@@ -1,9 +1,14 @@
 use crate::source_span;
-use seseragi_semantics::{TypedCallEvidence, TypedDoStatement, TypedExpr, TypedParameter};
+use seseragi_semantics::{
+    TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr, TypedParameter,
+    TypedPattern,
+};
 
 use super::decision::lower_match;
 use super::types::lower_typed_type;
-use super::{CoreCallEvidence, CoreExpr, CoreParameter, CoreStatement};
+use super::{
+    CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreParameter, CorePattern, CoreStatement,
+};
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
     match body {
@@ -120,6 +125,20 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::ArrayComprehension {
+            element,
+            clauses,
+            type_ref,
+            origin,
+        } => CoreExpr::ArrayComprehension {
+            element: Box::new(lower_expr(source, *element)),
+            clauses: clauses
+                .into_iter()
+                .map(|clause| lower_comprehension_clause(source, clause))
+                .collect(),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::Binary {
             operator,
             left,
@@ -191,6 +210,101 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
                 .map(|statement| lower_expr_statement(source, statement))
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
+            origin: source_span(source, origin),
+        },
+    }
+}
+
+fn lower_comprehension_clause(
+    source: &str,
+    clause: TypedComprehensionClause,
+) -> CoreComprehensionClause {
+    match clause {
+        TypedComprehensionClause::Generator {
+            pattern,
+            source: values,
+            evidence,
+            origin,
+        } => CoreComprehensionClause::Generator {
+            pattern: lower_pattern(source, pattern),
+            source: lower_expr(source, values),
+            evidence: lower_call_evidence(evidence),
+            origin: source_span(source, origin),
+        },
+        TypedComprehensionClause::Guard { condition, origin } => CoreComprehensionClause::Guard {
+            condition: lower_expr(source, condition),
+            origin: source_span(source, origin),
+        },
+    }
+}
+
+fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
+    match pattern {
+        TypedPattern::Integer {
+            value,
+            type_ref,
+            origin,
+        } => CorePattern::Integer {
+            value,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::String {
+            value,
+            type_ref,
+            origin,
+        } => CorePattern::String {
+            value,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Boolean {
+            value,
+            type_ref,
+            origin,
+        } => CorePattern::Boolean {
+            value,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Binding {
+            name,
+            type_ref,
+            origin,
+            ..
+        } => CorePattern::Binding {
+            name,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Wildcard { type_ref, origin } => CorePattern::Wildcard {
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Constructor {
+            symbol,
+            argument,
+            type_ref,
+            origin,
+        } => CorePattern::Constructor {
+            symbol,
+            argument: argument.map(|argument| Box::new(lower_pattern(source, *argument))),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Tuple {
+            elements,
+            type_ref,
+            origin,
+        } => CorePattern::Tuple {
+            elements: elements
+                .into_iter()
+                .map(|element| lower_pattern(source, element))
+                .collect(),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Invalid { origin } => CorePattern::Invalid {
             origin: source_span(source, origin),
         },
     }

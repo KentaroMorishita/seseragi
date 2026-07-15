@@ -329,6 +329,31 @@ fn resolves_do_bindings_in_a_child_scope() {
 }
 
 #[test]
+fn resolves_comprehension_bindings_from_left_to_right() {
+    let resolved = resolve_module(
+        "artifact/comprehension-scope/main.ssrg",
+        "fn pairs limit: Int -> Array<(Int, Int)> = [(left, right) | left <- 1..=limit, right <- [left, limit], left < right]\n",
+    );
+
+    let scopes = resolved
+        .scopes
+        .iter()
+        .filter(|scope| scope.kind == ScopeKind::Comprehension)
+        .collect::<Vec<_>>();
+    assert_eq!(scopes.len(), 2);
+    assert_eq!(scopes[1].parent, Some(scopes[0].id));
+    for name in ["left", "right"] {
+        let binding = symbol(&resolved, SymbolKind::PatternBinding, name);
+        assert!(resolved.references.iter().any(|reference| {
+            reference.namespace == SymbolNamespace::Value
+                && reference.spelling == name
+                && reference.target == Some(binding)
+        }));
+    }
+    assert!(resolved.issues.is_empty(), "{:#?}", resolved.issues);
+}
+
+#[test]
 fn resolves_match_patterns_and_bodies_in_sibling_arm_scopes() {
     let resolved = resolve_module(
         "artifact/match-scope/main.ssrg",

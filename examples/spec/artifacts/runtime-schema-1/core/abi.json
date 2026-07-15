@@ -83,6 +83,28 @@
       }
     },
     {
+      "id": "core.array.comprehend",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<Array<A>, A> -> (A -> Bool) -> (A -> B) -> Array<B>",
+      "instanceIdentity": "std/array::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "collectMap"
+      }
+    },
+    {
+      "id": "core.array.comprehend.flat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<Array<A>, A> -> (A -> Bool) -> (A -> Array<B>) -> Array<B>",
+      "instanceIdentity": "std/array::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "collectFlatMap"
+      }
+    },
+    {
       "id": "core.range",
       "kind": "value-representation",
       "typescript": "readonly { start: bigint; end: bigint; inclusive: boolean }",
@@ -118,6 +140,28 @@
       "import": {
         "module": "@seseragi/runtime/range",
         "export": "reduce"
+      }
+    },
+    {
+      "id": "core.range.comprehend",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<Range<Int>, Int> -> (Int -> Bool) -> (Int -> B) -> Array<B>",
+      "instanceIdentity": "std/range::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "collectMap"
+      }
+    },
+    {
+      "id": "core.range.comprehend.flat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<Range<Int>, Int> -> (Int -> Bool) -> (Int -> Array<B>) -> Array<B>",
+      "instanceIdentity": "std/range::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "collectFlatMap"
       }
     },
     {

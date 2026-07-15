@@ -503,6 +503,51 @@ fn parses_empty_nested_and_trailing_comma_array_literals() {
 }
 
 #[test]
+fn parses_array_comprehension_generators_and_guards() {
+    let body =
+        first_body("fn squares limit: Int -> Array<Int> = [n * n | n <- 1..=limit, n % 2 == 0]\n");
+
+    let SurfaceExpr::ArrayComprehension {
+        element, clauses, ..
+    } = body
+    else {
+        panic!("expected array comprehension");
+    };
+    assert!(matches!(
+        element.as_ref(),
+        SurfaceExpr::Binary { operator, .. } if operator == "*"
+    ));
+    assert!(matches!(
+        &clauses[0],
+        crate::SurfaceComprehensionClause::Generator { pattern, source, .. }
+            if matches!(pattern, SurfacePattern::Name { name, .. } if name == "n")
+                && matches!(source, SurfaceExpr::Binary { operator, .. } if operator == "..=")
+    ));
+    assert!(matches!(
+        &clauses[1],
+        crate::SurfaceComprehensionClause::Guard { condition, .. }
+            if matches!(condition, SurfaceExpr::Binary { operator, .. } if operator == "==")
+    ));
+}
+
+#[test]
+fn parses_multiline_comprehension_with_multiple_generators() {
+    let body = first_body(
+        "fn pairs limit: Int -> Array<(Int, Int)> = [\n  (left, right)\n  | left <- 1..=limit,\n    right <- [left, limit],\n    left < right\n]\n",
+    );
+
+    let SurfaceExpr::ArrayComprehension { clauses, .. } = body else {
+        panic!("expected array comprehension");
+    };
+    assert_eq!(clauses.len(), 3);
+    assert!(matches!(
+        &clauses[1],
+        crate::SurfaceComprehensionClause::Generator { source, .. }
+            if matches!(source, SurfaceExpr::Array { elements, .. } if elements.len() == 2)
+    ));
+}
+
+#[test]
 fn parses_exclusive_and_inclusive_range_operators() {
     for (source, expected) in [
         ("fn values -> Range<Int> = 1..10\n", ".."),

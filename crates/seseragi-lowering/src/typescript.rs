@@ -304,6 +304,10 @@ pub enum TypeScriptExpr {
         elements: Vec<TypeScriptExpr>,
         element_type: TypeScriptType,
     },
+    Lambda {
+        parameter: String,
+        body: Box<TypeScriptExpr>,
+    },
     Binary {
         operator: String,
         left: Box<TypeScriptExpr>,

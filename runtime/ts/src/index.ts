@@ -17,9 +17,15 @@ export {
   unit,
 } from "./effect"
 export { add, divide, multiply, power, remainder, subtract } from "./int64"
-export { reduce } from "./array"
+export {
+  collectFlatMap as collectFlatMapArray,
+  collectMap as collectMapArray,
+  reduce,
+} from "./array"
 export type { IntRange } from "./range"
 export {
+  collectFlatMap as collectFlatMapRange,
+  collectMap as collectMapRange,
   exclusive as exclusiveRange,
   inclusive as inclusiveRange,
   reduce as reduceRange,

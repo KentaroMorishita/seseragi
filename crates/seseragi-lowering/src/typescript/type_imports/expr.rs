@@ -1,4 +1,4 @@
-use crate::{CoreExpr, CoreStatement};
+use crate::{CoreComprehensionClause, CoreExpr, CorePattern, CoreStatement};
 use seseragi_semantics::ExternalTypeBinding;
 
 use super::super::TypeScriptTypeImport;
@@ -34,6 +34,28 @@ pub(super) fn collect_expr_type_imports(
         } => {
             collect_type_imports(type_ref, bindings, requirements, imports);
             collect_exprs(elements, bindings, requirements, imports);
+        }
+        CoreExpr::ArrayComprehension {
+            element,
+            clauses,
+            type_ref,
+            ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            collect_expr_type_imports(element, bindings, requirements, imports);
+            for clause in clauses {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        pattern, source, ..
+                    } => {
+                        collect_pattern_type_imports(pattern, bindings, requirements, imports);
+                        collect_expr_type_imports(source, bindings, requirements, imports);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_expr_type_imports(condition, bindings, requirements, imports);
+                    }
+                }
+            }
         }
         CoreExpr::Binary {
             left,
@@ -105,6 +127,37 @@ pub(super) fn collect_expr_type_imports(
                 collect_expr_type_imports(value, bindings, requirements, imports);
             }
             collect_expr_type_imports(result, bindings, requirements, imports);
+        }
+    }
+}
+
+fn collect_pattern_type_imports(
+    pattern: &CorePattern,
+    bindings: &[ExternalTypeBinding],
+    requirements: &mut Vec<String>,
+    imports: &mut Vec<TypeScriptTypeImport>,
+) {
+    match pattern {
+        CorePattern::Integer { .. }
+        | CorePattern::String { .. }
+        | CorePattern::Boolean { .. }
+        | CorePattern::Wildcard { .. }
+        | CorePattern::Invalid { .. } => {}
+        CorePattern::Binding { type_ref, .. } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+        }
+        CorePattern::Constructor {
+            argument, type_ref, ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            if let Some(argument) = argument {
+                collect_pattern_type_imports(argument, bindings, requirements, imports);
+            }
+        }
+        CorePattern::Tuple { elements, .. } => {
+            for element in elements {
+                collect_pattern_type_imports(element, bindings, requirements, imports);
+            }
         }
     }
 }

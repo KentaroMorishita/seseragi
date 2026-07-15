@@ -137,7 +137,7 @@ pub fn status value: Badge -> String = describe value
     .unwrap_err();
 
     assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
-        diagnostic.code == "SES-T0101" && diagnostic.message_key == "instance.missing"
+        diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
     }));
     assert!(diagnostics
         .diagnostics

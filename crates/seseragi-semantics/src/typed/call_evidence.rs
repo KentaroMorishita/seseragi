@@ -141,16 +141,36 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
     let TypedType::Named { name, arguments } = collection else {
         return None;
     };
-    if constraint.name != "Reducible"
-        || !matches!(arguments.as_slice(), [collection_element] if collection_element == element)
-    {
+    if !matches!(
+        arguments.as_slice(),
+        [collection_element] if collection_element == element
+    ) {
         return None;
     }
-    match name.as_str() {
-        "Array" => Some("std/array::Reducible".to_owned()),
-        "Range" if named_type_is(element, "Int") => Some("std/range::Reducible".to_owned()),
+    match (constraint.name.as_str(), name.as_str()) {
+        ("Iterable", "Array") => Some("std/array::Iterable".to_owned()),
+        ("Iterable", "Range") if named_type_is(element, "Int") => {
+            Some("std/range::Iterable".to_owned())
+        }
+        ("Reducible", "Array") => Some("std/array::Reducible".to_owned()),
+        ("Reducible", "Range") if named_type_is(element, "Int") => {
+            Some("std/range::Reducible".to_owned())
+        }
         _ => None,
     }
+}
+
+pub(crate) fn select_iterable_evidence(
+    collection: TypedType,
+    element: TypedType,
+) -> Result<TypedCallEvidence, TypedConstraint> {
+    let constraint = TypedConstraint {
+        name: "Iterable".to_owned(),
+        arguments: vec![collection, element],
+    };
+    select_call_evidence(std::slice::from_ref(&constraint))
+        .map(|mut evidence| evidence.remove(0))
+        .map_err(|_| constraint)
 }
 
 fn named_type_is(type_ref: &TypedType, expected: &str) -> bool {
@@ -299,6 +319,34 @@ mod tests {
                 ..
             }] if identity == "std/range::Reducible"
         ));
+    }
+
+    #[test]
+    fn selects_standard_iterable_instances_by_collection_type() {
+        let int = named("Int");
+        for (collection, expected) in [
+            (
+                TypedType::Named {
+                    name: "Array".to_owned(),
+                    arguments: vec![int.clone()],
+                },
+                "std/array::Iterable",
+            ),
+            (
+                TypedType::Named {
+                    name: "Range".to_owned(),
+                    arguments: vec![int.clone()],
+                },
+                "std/range::Iterable",
+            ),
+        ] {
+            let evidence = select_iterable_evidence(collection, int.clone())
+                .expect("standard Iterable evidence");
+            assert!(matches!(
+                evidence.evidence,
+                TypedInstanceEvidence::Standard { identity } if identity == expected
+            ));
+        }
     }
 
     #[test]

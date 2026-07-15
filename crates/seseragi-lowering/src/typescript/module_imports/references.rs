@@ -1,4 +1,7 @@
-use crate::{CoreDecisionBranch, CoreExpr, CoreModule, CoreStatement, CoreType};
+use crate::{
+    CoreComprehensionClause, CoreDecisionBranch, CoreExpr, CoreModule, CorePattern, CoreStatement,
+    CoreType,
+};
 use std::collections::BTreeSet;
 
 pub(super) fn referenced_value_symbols(module: &CoreModule) -> BTreeSet<String> {
@@ -36,6 +39,18 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
         CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr_value_symbols(element, values);
+            }
+        }
+        CoreExpr::ArrayComprehension {
+            element, clauses, ..
+        } => {
+            collect_expr_value_symbols(element, values);
+            for clause in clauses {
+                let expression = match clause {
+                    CoreComprehensionClause::Generator { source, .. } => source,
+                    CoreComprehensionClause::Guard { condition, .. } => condition,
+                };
+                collect_expr_value_symbols(expression, values);
             }
         }
         CoreExpr::Binary { left, right, .. } => {
@@ -167,6 +182,28 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
                 collect_expr_type_names(element, references);
             }
         }
+        CoreExpr::ArrayComprehension {
+            element,
+            clauses,
+            type_ref,
+            ..
+        } => {
+            collect_type_names(type_ref, references);
+            collect_expr_type_names(element, references);
+            for clause in clauses {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        pattern, source, ..
+                    } => {
+                        collect_pattern_type_names(pattern, references);
+                        collect_expr_type_names(source, references);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_expr_type_names(condition, references);
+                    }
+                }
+            }
+        }
         CoreExpr::Binary {
             left,
             right,
@@ -253,6 +290,33 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
+    }
+}
+
+fn collect_pattern_type_names(pattern: &CorePattern, references: &mut ReferencedTypes) {
+    match pattern {
+        CorePattern::Integer { type_ref, .. }
+        | CorePattern::String { type_ref, .. }
+        | CorePattern::Boolean { type_ref, .. }
+        | CorePattern::Binding { type_ref, .. }
+        | CorePattern::Wildcard { type_ref, .. } => collect_type_names(type_ref, references),
+        CorePattern::Constructor {
+            argument, type_ref, ..
+        } => {
+            collect_type_names(type_ref, references);
+            if let Some(argument) = argument {
+                collect_pattern_type_names(argument, references);
+            }
+        }
+        CorePattern::Tuple {
+            elements, type_ref, ..
+        } => {
+            collect_type_names(type_ref, references);
+            for element in elements {
+                collect_pattern_type_names(element, references);
+            }
+        }
+        CorePattern::Invalid { .. } => {}
     }
 }
 
