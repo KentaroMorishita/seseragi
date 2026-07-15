@@ -139,9 +139,7 @@ fn preserves_same_named_trait_method_candidates_without_duplicate_definition() {
             .iter()
             .any(|symbol| symbol.id == *candidate && symbol.kind == SymbolKind::TraitMethod)
     }));
-    assert_eq!(resolved.issues.len(), 1);
-    assert_eq!(resolved.issues[0].code, "SES-T0202");
-    assert_eq!(resolved.issues[0].message_key, "trait.method-ambiguous");
+    assert!(resolved.issues.is_empty());
 }
 
 #[test]

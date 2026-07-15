@@ -1,0 +1,346 @@
+{
+  "schema": 1,
+  "module": "artifact/trait-method-candidates",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/trait-method-candidates::Badge",
+      "namespace": "type",
+      "name": "Badge",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Badge",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::Active",
+      "namespace": "value",
+      "name": "Active",
+      "constructorOf": "artifact/trait-method-candidates::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 21,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::Paused",
+      "namespace": "value",
+      "name": "Paused",
+      "constructorOf": "artifact/trait-method-candidates::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 32,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::Mode",
+      "namespace": "type",
+      "name": "Mode",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 40,
+        "end": 80
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Mode",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::Automatic",
+      "namespace": "value",
+      "name": "Automatic",
+      "constructorOf": "artifact/trait-method-candidates::Mode",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 60,
+        "end": 69
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::Manual",
+      "namespace": "value",
+      "name": "Manual",
+      "constructorOf": "artifact/trait-method-candidates::Mode",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 74,
+        "end": 80
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::trait(Render)",
+      "namespace": "trait",
+      "name": "Render",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 82,
+        "end": 137
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Render",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "present",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 106,
+            "end": 135
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::trait(Describe)",
+      "namespace": "trait",
+      "name": "Describe",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 139,
+        "end": 196
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Describe",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "present",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 165,
+            "end": 194
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::badgeLabel",
+      "namespace": "value",
+      "name": "badgeLabel",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 536,
+        "end": 592
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::modeLabel",
+      "namespace": "value",
+      "name": "modeLabel",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 594,
+        "end": 648
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/trait-method-candidates::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 650,
+        "end": 787
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Render",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 198,
+        "end": 364
+      }
+    },
+    {
+      "trait": "Describe",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Describe",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 366,
+        "end": 534
+      }
+    }
+  ]
+}

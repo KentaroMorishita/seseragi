@@ -18,6 +18,12 @@ pub(crate) enum PureCallIssue {
         callee: ByteSpan,
         constraint: crate::TypedConstraint,
     },
+    TraitMethodAmbiguous {
+        callee: ByteSpan,
+    },
+    TraitMethodNoMatch {
+        callee: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

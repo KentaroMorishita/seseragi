@@ -1,0 +1,751 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/trait-method-candidates",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/trait-method-candidates::trait(Render)<artifact/trait-method-candidates::Badge>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 198,
+        "end": 364
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "present",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 236,
+                  "end": 241
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 271,
+                  "end": 276
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/trait-method-candidates::Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 285,
+                      "end": 291
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Status badge: active",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 295,
+                      "end": 317
+                    }
+                  },
+                  "origin": {
+                    "start": 285,
+                    "end": 317
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/trait-method-candidates::Paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 324,
+                      "end": 330
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Status badge: paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 334,
+                      "end": 356
+                    }
+                  },
+                  "origin": {
+                    "start": 324,
+                    "end": 356
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 265,
+                "end": 362
+              }
+            },
+            "origin": {
+              "start": 225,
+              "end": 362
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/trait-method-candidates::trait(Describe)<artifact/trait-method-candidates::Mode>",
+      "trait": "Describe",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        }
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 366,
+        "end": 534
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "present",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Mode",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 405,
+                  "end": 410
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Mode",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 439,
+                  "end": 444
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/trait-method-candidates::Automatic",
+                    "type": {
+                      "kind": "named",
+                      "name": "Mode",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 453,
+                      "end": 462
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Mode badge: automatic",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 466,
+                      "end": 489
+                    }
+                  },
+                  "origin": {
+                    "start": 453,
+                    "end": 489
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/trait-method-candidates::Manual",
+                    "type": {
+                      "kind": "named",
+                      "name": "Mode",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 496,
+                      "end": 502
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Mode badge: manual",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 506,
+                      "end": 526
+                    }
+                  },
+                  "origin": {
+                    "start": 496,
+                    "end": 526
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 433,
+                "end": 532
+              }
+            },
+            "origin": {
+              "start": 394,
+              "end": 532
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/trait-method-candidates::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/trait-method-candidates::Active",
+          "name": "Active",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "symbol": "artifact/trait-method-candidates::Paused",
+          "name": "Paused",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 32,
+            "end": 38
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/trait-method-candidates::Mode",
+      "name": "Mode",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/trait-method-candidates::Automatic",
+          "name": "Automatic",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Mode",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 60,
+            "end": 69
+          }
+        },
+        {
+          "symbol": "artifact/trait-method-candidates::Manual",
+          "name": "Manual",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Mode",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 74,
+            "end": 80
+          }
+        }
+      ],
+      "origin": {
+        "start": 40,
+        "end": 80
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/trait-method-candidates::badgeLabel",
+      "visibility": "public",
+      "origin": {
+        "start": 536,
+        "end": 592
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          },
+          "origin": {
+            "start": 554,
+            "end": 559
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/trait-method-candidates::trait(Render)::present",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            },
+            "origin": {
+              "start": 587,
+              "end": 592
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/trait-method-candidates::trait(Render)<artifact/trait-method-candidates::Badge>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/trait-method-candidates::trait(Render)",
+          "method": "present"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 579,
+          "end": 592
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/trait-method-candidates::modeLabel",
+      "visibility": "public",
+      "origin": {
+        "start": 594,
+        "end": 648
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          },
+          "origin": {
+            "start": 611,
+            "end": 616
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/trait-method-candidates::trait(Describe)::present",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Mode",
+              "arguments": []
+            },
+            "origin": {
+              "start": 643,
+              "end": 648
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Describe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Mode",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/trait-method-candidates::trait(Describe)<artifact/trait-method-candidates::Mode>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/trait-method-candidates::trait(Describe)",
+          "method": "present"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 635,
+          "end": 648
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/trait-method-candidates::main",
+      "visibility": "public",
+      "origin": {
+        "start": 650,
+        "end": 787
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/trait-method-candidates::badgeLabel",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "artifact/trait-method-candidates::Active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 742,
+                        "end": 748
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 731,
+                    "end": 748
+                  }
+                }
+              ],
+              "origin": {
+                "start": 722,
+                "end": 749
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/trait-method-candidates::modeLabel",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/trait-method-candidates::Automatic",
+                  "type": {
+                    "kind": "named",
+                    "name": "Mode",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 773,
+                    "end": 782
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 763,
+                "end": 782
+              }
+            }
+          ],
+          "origin": {
+            "start": 754,
+            "end": 783
+          }
+        },
+        "origin": {
+          "start": 713,
+          "end": 787
+        }
+      }
+    }
+  ]
+}

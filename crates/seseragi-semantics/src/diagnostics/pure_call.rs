@@ -17,12 +17,13 @@ pub(super) fn call_diagnostic(
     issue: PureCallIssue,
     function_span: seseragi_syntax::ByteSpan,
 ) -> Diagnostic {
-    let (message_key, primary, related_message) = match issue {
+    let (code, message_key, primary, related_message) = match issue {
         PureCallIssue::Arity {
             callee,
             expected,
             actual,
         } => (
+            "SES-T0101",
             "call.arity-mismatch",
             callee,
             format!(
@@ -37,6 +38,7 @@ pub(super) fn call_diagnostic(
             expected,
             actual,
         } => (
+            "SES-T0101",
             "call.argument-type-mismatch",
             argument,
             format!(
@@ -47,6 +49,7 @@ pub(super) fn call_diagnostic(
             ),
         ),
         PureCallIssue::MissingInstance { callee, constraint } => (
+            "SES-T0101",
             "instance.missing",
             callee,
             format!(
@@ -54,10 +57,22 @@ pub(super) fn call_diagnostic(
                 constraint.name
             ),
         ),
+        PureCallIssue::TraitMethodAmbiguous { callee } => (
+            "SES-T0202",
+            "trait.method-ambiguous",
+            callee,
+            "multiple trait methods remain valid after type and instance selection".to_owned(),
+        ),
+        PureCallIssue::TraitMethodNoMatch { callee } => (
+            "SES-T0101",
+            "trait.method-no-match",
+            callee,
+            "no same-named trait method accepts the inferred call arguments".to_owned(),
+        ),
     };
     Diagnostic {
         id: String::new(),
-        code: "SES-T0101".to_owned(),
+        code: code.to_owned(),
         severity: DiagnosticSeverity::Error,
         message_key: message_key.to_owned(),
         primary: ByteRange {
@@ -129,5 +144,40 @@ mod tests {
         assert_eq!(artifact.diagnostics.len(), 1);
         assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+    }
+
+    #[test]
+    fn reports_same_named_trait_methods_when_type_and_instances_cannot_select_one() {
+        let artifact = semantic_diagnostics(
+            "ambiguous-trait-method.ssrg",
+            "type Badge = | Active\n\
+             trait Render<A> { fn present value: A -> String }\n\
+             trait Describe<A> { fn present value: A -> String }\n\
+             instance Render<Badge> { fn present value: Badge -> String = \"rendered\" }\n\
+             instance Describe<Badge> { fn present value: Badge -> String = \"described\" }\n\
+             fn label value: Badge -> String = present value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0202");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "trait.method-ambiguous"
+        );
+    }
+
+    #[test]
+    fn reports_when_no_same_named_trait_method_accepts_the_argument_type() {
+        let artifact = semantic_diagnostics(
+            "unmatched-trait-method.ssrg",
+            "type Badge = | Active\n\
+             trait Render<A> { fn present value: String -> String }\n\
+             trait Describe<A> { fn present value: Int -> String }\n\
+             fn label value: Badge -> String = present value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "trait.method-no-match");
     }
 }

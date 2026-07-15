@@ -1,6 +1,3 @@
-// 同じpresentというmethod名でも、引数型とinstanceからtraitを一意に選べます。
-// backendは値のruntime shapeを見ず、型検査済みdictionaryを呼び出します。
-
 pub type Badge =
   | Active
   | Paused
@@ -33,14 +30,14 @@ instance Describe<Mode> {
     }
 }
 
+pub fn badgeLabel value: Badge -> String = present value
+
+pub fn modeLabel value: Mode -> String = present value
+
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
   do {
-    println (present Active)
-    println (present Automatic)
+    println (badgeLabel Active)
+    println (modeLabel Automatic)
   }
-
-// Expected stdout:
-// Status badge: active
-// Mode badge: automatic

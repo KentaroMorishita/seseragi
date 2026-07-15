@@ -49,6 +49,14 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.target(origin, SymbolNamespace::Value)
     }
 
+    pub(super) fn callable_candidates(&self, origin: ByteSpan) -> Vec<TopLevelPureFunction> {
+        self.resolution
+            .candidates(origin, SymbolNamespace::Value)
+            .iter()
+            .filter_map(|candidate| self.callable(*candidate).cloned())
+            .collect()
+    }
+
     pub(super) fn operator_target(&self, origin: ByteSpan) -> Option<SymbolId> {
         self.resolution.target(origin, SymbolNamespace::Operator)
     }

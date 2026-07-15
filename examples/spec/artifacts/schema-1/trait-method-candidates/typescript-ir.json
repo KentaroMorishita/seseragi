@@ -1,0 +1,353 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/trait-method-candidates",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Badge",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Active",
+          "tag": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "exported": true,
+          "name": "Paused",
+          "tag": "Paused",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 32,
+            "end": 38
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "exported": true,
+      "name": "Mode",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Automatic",
+          "tag": "Automatic",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 60,
+            "end": 69
+          }
+        },
+        {
+          "exported": true,
+          "name": "Manual",
+          "tag": "Manual",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 74,
+            "end": 80
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 40,
+        "end": 80
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/trait-method-candidates::trait(Render)<artifact/trait-method-candidates::Badge>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 198,
+        "end": 364
+      },
+      "dictionaryExport": "__ssrg$instance$Render$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "present",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Active"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Status badge: active"
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "Status badge: paused"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 225,
+              "end": 362
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/trait-method-candidates::trait(Describe)<artifact/trait-method-candidates::Mode>",
+      "trait": "Describe",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Mode",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 366,
+        "end": 534
+      },
+      "dictionaryExport": "__ssrg$instance$Describe$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "present",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Mode",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Mode",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Automatic"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Mode badge: automatic"
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "Mode badge: manual"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 394,
+              "end": 532
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "badgeLabel",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Badge",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": "__ssrg$instance$Render$0",
+        "method": "present",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 536,
+        "end": 592
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "modeLabel",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": "__ssrg$instance$Describe$1",
+        "method": "present",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 594,
+        "end": 648
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "badgeLabel",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "Active"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "modeLabel",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Automatic"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 650,
+        "end": 787
+      }
+    }
+  ]
+}

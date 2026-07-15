@@ -225,6 +225,54 @@ fn selects_local_instance_evidence_for_a_trait_method_call() {
     ));
 }
 
+#[test]
+fn selects_one_same_named_trait_method_from_argument_instance_evidence() {
+    let typed = type_module(
+        "artifact/trait-method-candidates/main.ssrg",
+        "pub type Badge = | Active\n\
+         pub type Mode = | Automatic\n\
+         pub trait Render<A> { fn present value: A -> String }\n\
+         pub trait Describe<A> { fn present value: A -> String }\n\
+         instance Render<Badge> { fn present value: Badge -> String = \"active\" }\n\
+         instance Describe<Mode> { fn present value: Mode -> String = \"automatic\" }\n\
+         pub fn badge value: Badge -> String = present value\n\
+         pub fn mode value: Mode -> String = present value\n",
+    );
+
+    let calls = typed
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            let crate::TypedDecl::Fn { symbol, body, .. } = declaration else {
+                return None;
+            };
+            Some((symbol.as_str(), body))
+        })
+        .collect::<Vec<_>>();
+    assert!(matches!(
+        calls.as_slice(),
+        [(badge, crate::TypedExpr::Call {
+            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity: badge_trait, .. }),
+            evidence: badge_evidence,
+            ..
+        }), (mode, crate::TypedExpr::Call {
+            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity: mode_trait, .. }),
+            evidence: mode_evidence,
+            ..
+        })]
+            if badge.ends_with("::badge")
+                && mode.ends_with("::mode")
+                && badge_trait.ends_with("::trait(Render)")
+                && mode_trait.ends_with("::trait(Describe)")
+                && matches!(badge_evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Local { identity }, ..
+                }] if identity.ends_with("::trait(Render)<artifact/trait-method-candidates::Badge>"))
+                && matches!(mode_evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Local { identity }, ..
+                }] if identity.ends_with("::trait(Describe)<artifact/trait-method-candidates::Mode>"))
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

@@ -1,0 +1,31 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/trait-method-candidates"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n  | Paused\n\npub type Mode =\n  | Automatic\n  | Manual\n\npub trait Render<A> {\n  fn present value: A -> String\n}\n\npub trait Describe<A> {\n  fn present value: A -> String\n}\n\ninstance Render<Badge> {\n  fn present value: Badge -> String =\n    match value {\n      Active -> \"Status badge: active\"\n      Paused -> \"Status badge: paused\"\n    }\n}\n\ninstance Describe<Mode> {\n  fn present value: Mode -> String =\n    match value {\n      Automatic -> \"Mode badge: automatic\"\n      Manual -> \"Mode badge: manual\"\n    }\n}\n\npub fn badgeLabel value: Badge -> String = present value\n\npub fn modeLabel value: Mode -> String = present value\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    println (badgeLabel Active)\n    println (modeLabel Automatic)\n  }\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "Paused",
+    "Mode",
+    "Automatic",
+    "Manual",
+    "__ssrg$instance$Render$0",
+    "__ssrg$instance$Describe$1",
+    "badgeLabel",
+    "__ssrg$instance$Render$0",
+    "modeLabel",
+    "__ssrg$instance$Describe$1",
+    "main",
+    "println",
+    "badgeLabel",
+    "println",
+    "modeLabel"
+  ],
+  "mappings": ";;;AAAAA;;;AACIC;AACAC;AAEJC;;;AACIC;AACAC;AAUJC;AAQAC;AAQAC;AAEAE;AAEAE"
+}

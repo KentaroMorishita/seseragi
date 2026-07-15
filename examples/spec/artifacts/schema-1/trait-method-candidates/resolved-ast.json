@@ -1,0 +1,1497 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/trait-method-candidates",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 21,
+            "end": 27
+          },
+          "span": {
+            "start": 19,
+            "end": 27
+          }
+        },
+        {
+          "name": "Paused",
+          "nameSpan": {
+            "start": 32,
+            "end": 38
+          },
+          "span": {
+            "start": 30,
+            "end": 38
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Mode",
+      "nameSpan": {
+        "start": 49,
+        "end": 53
+      },
+      "variants": [
+        {
+          "name": "Automatic",
+          "nameSpan": {
+            "start": 60,
+            "end": 69
+          },
+          "span": {
+            "start": 58,
+            "end": 69
+          }
+        },
+        {
+          "name": "Manual",
+          "nameSpan": {
+            "start": 74,
+            "end": 80
+          },
+          "span": {
+            "start": 72,
+            "end": 80
+          }
+        }
+      ],
+      "span": {
+        "start": 40,
+        "end": 80
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Render",
+      "nameSpan": {
+        "start": 92,
+        "end": 98
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 109,
+            "end": 116
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 117,
+                "end": 122
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 124,
+                  "end": 125
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 129,
+              "end": 135
+            }
+          },
+          "span": {
+            "start": 106,
+            "end": 135
+          }
+        }
+      ],
+      "span": {
+        "start": 82,
+        "end": 137
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Describe",
+      "nameSpan": {
+        "start": 149,
+        "end": 157
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 168,
+            "end": 175
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 176,
+                "end": 181
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 183,
+                  "end": 184
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 188,
+              "end": 194
+            }
+          },
+          "span": {
+            "start": 165,
+            "end": 194
+          }
+        }
+      ],
+      "span": {
+        "start": 139,
+        "end": 196
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 207,
+        "end": 213
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 214,
+            "end": 219
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 228,
+            "end": 235
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 236,
+                "end": 241
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 243,
+                  "end": 248
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 252,
+              "end": 258
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 271,
+                "end": 276
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 285,
+                    "end": 291
+                  },
+                  "span": {
+                    "start": 285,
+                    "end": 291
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Status badge: active\"",
+                  "span": {
+                    "start": 295,
+                    "end": 317
+                  }
+                },
+                "span": {
+                  "start": 285,
+                  "end": 317
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 324,
+                    "end": 330
+                  },
+                  "span": {
+                    "start": 324,
+                    "end": 330
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Status badge: paused\"",
+                  "span": {
+                    "start": 334,
+                    "end": 356
+                  }
+                },
+                "span": {
+                  "start": 324,
+                  "end": 356
+                }
+              }
+            ],
+            "span": {
+              "start": 265,
+              "end": 362
+            }
+          },
+          "span": {
+            "start": 225,
+            "end": 362
+          }
+        }
+      ],
+      "span": {
+        "start": 198,
+        "end": 364
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Describe",
+      "traitNameSpan": {
+        "start": 375,
+        "end": 383
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Mode",
+          "span": {
+            "start": 384,
+            "end": 388
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 397,
+            "end": 404
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 405,
+                "end": 410
+              },
+              "type": {
+                "kind": "named",
+                "name": "Mode",
+                "span": {
+                  "start": 412,
+                  "end": 416
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 420,
+              "end": 426
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 439,
+                "end": 444
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Automatic",
+                  "nameSpan": {
+                    "start": 453,
+                    "end": 462
+                  },
+                  "span": {
+                    "start": 453,
+                    "end": 462
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Mode badge: automatic\"",
+                  "span": {
+                    "start": 466,
+                    "end": 489
+                  }
+                },
+                "span": {
+                  "start": 453,
+                  "end": 489
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Manual",
+                  "nameSpan": {
+                    "start": 496,
+                    "end": 502
+                  },
+                  "span": {
+                    "start": 496,
+                    "end": 502
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Mode badge: manual\"",
+                  "span": {
+                    "start": 506,
+                    "end": 526
+                  }
+                },
+                "span": {
+                  "start": 496,
+                  "end": 526
+                }
+              }
+            ],
+            "span": {
+              "start": 433,
+              "end": 532
+            }
+          },
+          "span": {
+            "start": 394,
+            "end": 532
+          }
+        }
+      ],
+      "span": {
+        "start": 366,
+        "end": 534
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "badgeLabel",
+      "nameSpan": {
+        "start": 543,
+        "end": 553
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 554,
+            "end": 559
+          },
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "span": {
+              "start": 561,
+              "end": 566
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 570,
+          "end": 576
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "present",
+          "span": {
+            "start": 579,
+            "end": 586
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 587,
+            "end": 592
+          }
+        },
+        "span": {
+          "start": 579,
+          "end": 592
+        }
+      },
+      "span": {
+        "start": 536,
+        "end": 592
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "modeLabel",
+      "nameSpan": {
+        "start": 601,
+        "end": 610
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 611,
+            "end": 616
+          },
+          "type": {
+            "kind": "named",
+            "name": "Mode",
+            "span": {
+              "start": 618,
+              "end": 622
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 626,
+          "end": 632
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "present",
+          "span": {
+            "start": 635,
+            "end": 642
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 643,
+            "end": 648
+          }
+        },
+        "span": {
+          "start": 635,
+          "end": 648
+        }
+      },
+      "span": {
+        "start": 594,
+        "end": 648
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 664,
+        "end": 668
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 672,
+          "end": 676
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 682,
+            "end": 689
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 696,
+          "end": 708
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 722,
+                  "end": 729
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "badgeLabel",
+                    "span": {
+                      "start": 731,
+                      "end": 741
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "Active",
+                    "span": {
+                      "start": 742,
+                      "end": 748
+                    }
+                  },
+                  "span": {
+                    "start": 731,
+                    "end": 748
+                  }
+                },
+                "span": {
+                  "start": 730,
+                  "end": 749
+                }
+              },
+              "span": {
+                "start": 722,
+                "end": 749
+              }
+            },
+            "span": {
+              "start": 722,
+              "end": 749
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 754,
+              "end": 761
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "modeLabel",
+                "span": {
+                  "start": 763,
+                  "end": 772
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Automatic",
+                "span": {
+                  "start": 773,
+                  "end": 782
+                }
+              },
+              "span": {
+                "start": 763,
+                "end": 782
+              }
+            },
+            "span": {
+              "start": 762,
+              "end": 783
+            }
+          },
+          "span": {
+            "start": 754,
+            "end": 783
+          }
+        },
+        "span": {
+          "start": 713,
+          "end": 787
+        }
+      },
+      "span": {
+        "start": 650,
+        "end": 787
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 787
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 40,
+        "end": 80
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 82,
+        "end": 137
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "function",
+      "origin": {
+        "start": 106,
+        "end": 135
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 139,
+        "end": 196
+      }
+    },
+    {
+      "id": 6,
+      "parent": 5,
+      "kind": "function",
+      "origin": {
+        "start": 165,
+        "end": 194
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 198,
+        "end": 364
+      }
+    },
+    {
+      "id": 8,
+      "parent": 7,
+      "kind": "function",
+      "origin": {
+        "start": 225,
+        "end": 362
+      }
+    },
+    {
+      "id": 9,
+      "parent": 8,
+      "kind": "match-arm",
+      "origin": {
+        "start": 285,
+        "end": 317
+      }
+    },
+    {
+      "id": 10,
+      "parent": 8,
+      "kind": "match-arm",
+      "origin": {
+        "start": 324,
+        "end": 356
+      }
+    },
+    {
+      "id": 11,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 366,
+        "end": 534
+      }
+    },
+    {
+      "id": 12,
+      "parent": 11,
+      "kind": "function",
+      "origin": {
+        "start": 394,
+        "end": 532
+      }
+    },
+    {
+      "id": 13,
+      "parent": 12,
+      "kind": "match-arm",
+      "origin": {
+        "start": 453,
+        "end": 489
+      }
+    },
+    {
+      "id": 14,
+      "parent": 12,
+      "kind": "match-arm",
+      "origin": {
+        "start": 496,
+        "end": 526
+      }
+    },
+    {
+      "id": 15,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 536,
+        "end": 592
+      }
+    },
+    {
+      "id": 16,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 594,
+        "end": 648
+      }
+    },
+    {
+      "id": 17,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 650,
+        "end": 787
+      }
+    },
+    {
+      "id": 18,
+      "parent": 17,
+      "kind": "do-block",
+      "origin": {
+        "start": 713,
+        "end": 787
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Badge",
+      "canonical": "artifact/trait-method-candidates::Badge",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Active",
+      "canonical": "artifact/trait-method-candidates::Active",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 21,
+        "end": 27
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Paused",
+      "canonical": "artifact/trait-method-candidates::Paused",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 32,
+        "end": 38
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Mode",
+      "canonical": "artifact/trait-method-candidates::Mode",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 49,
+        "end": 53
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Automatic",
+      "canonical": "artifact/trait-method-candidates::Automatic",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 60,
+        "end": 69
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Manual",
+      "canonical": "artifact/trait-method-candidates::Manual",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 74,
+        "end": 80
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Render",
+      "canonical": "artifact/trait-method-candidates::trait(Render)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 92,
+        "end": 98
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "present",
+      "canonical": "artifact/trait-method-candidates::trait(Render)::present",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 109,
+        "end": 116
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Describe",
+      "canonical": "artifact/trait-method-candidates::trait(Describe)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 149,
+        "end": 157
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "present",
+      "canonical": "artifact/trait-method-candidates::trait(Describe)::present",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 168,
+        "end": 175
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "badgeLabel",
+      "canonical": "artifact/trait-method-candidates::badgeLabel",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 543,
+        "end": 553
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "modeLabel",
+      "canonical": "artifact/trait-method-candidates::modeLabel",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 601,
+        "end": 610
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "main",
+      "canonical": "artifact/trait-method-candidates::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 664,
+        "end": 668
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 82,
+        "end": 137
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 117,
+        "end": 122
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 139,
+        "end": 196
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 176,
+        "end": 181
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 8,
+      "origin": {
+        "start": 236,
+        "end": 241
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 12,
+      "origin": {
+        "start": 405,
+        "end": 410
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 15,
+      "origin": {
+        "start": 554,
+        "end": 559
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 16,
+      "origin": {
+        "start": 611,
+        "end": 616
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 24,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 124,
+        "end": 125
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 129,
+        "end": 135
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 183,
+        "end": 184
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 188,
+        "end": 194
+      }
+    },
+    {
+      "spelling": "Render",
+      "namespace": "trait",
+      "target": 6,
+      "origin": {
+        "start": 207,
+        "end": 213
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 214,
+        "end": 219
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 243,
+        "end": 248
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 252,
+        "end": 258
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 271,
+        "end": 276
+      }
+    },
+    {
+      "spelling": "Active",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 285,
+        "end": 291
+      }
+    },
+    {
+      "spelling": "Paused",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 324,
+        "end": 330
+      }
+    },
+    {
+      "spelling": "Describe",
+      "namespace": "trait",
+      "target": 8,
+      "origin": {
+        "start": 375,
+        "end": 383
+      }
+    },
+    {
+      "spelling": "Mode",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 384,
+        "end": 388
+      }
+    },
+    {
+      "spelling": "Mode",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 412,
+        "end": 416
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 420,
+        "end": 426
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 439,
+        "end": 444
+      }
+    },
+    {
+      "spelling": "Automatic",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 453,
+        "end": 462
+      }
+    },
+    {
+      "spelling": "Manual",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 496,
+        "end": 502
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 561,
+        "end": 566
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 570,
+        "end": 576
+      }
+    },
+    {
+      "spelling": "present",
+      "namespace": "value",
+      "candidates": [
+        7,
+        9
+      ],
+      "origin": {
+        "start": 579,
+        "end": 586
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 587,
+        "end": 592
+      }
+    },
+    {
+      "spelling": "Mode",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 618,
+        "end": 622
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 626,
+        "end": 632
+      }
+    },
+    {
+      "spelling": "present",
+      "namespace": "value",
+      "candidates": [
+        7,
+        9
+      ],
+      "origin": {
+        "start": 635,
+        "end": 642
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 643,
+        "end": 648
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 22,
+      "origin": {
+        "start": 672,
+        "end": 676
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 23,
+      "origin": {
+        "start": 696,
+        "end": 708
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 24,
+      "origin": {
+        "start": 722,
+        "end": 729
+      }
+    },
+    {
+      "spelling": "badgeLabel",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 731,
+        "end": 741
+      }
+    },
+    {
+      "spelling": "Active",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 742,
+        "end": 748
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 24,
+      "origin": {
+        "start": 754,
+        "end": 761
+      }
+    },
+    {
+      "spelling": "modeLabel",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 763,
+        "end": 772
+      }
+    },
+    {
+      "spelling": "Automatic",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 773,
+        "end": 782
+      }
+    }
+  ],
+  "issues": []
+}

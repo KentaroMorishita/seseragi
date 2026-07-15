@@ -57,6 +57,15 @@ impl<'a> TypedResolution<'a> {
             .and_then(|reference| reference.target)
     }
 
+    pub(crate) fn candidates(&self, origin: ByteSpan, namespace: SymbolNamespace) -> &[SymbolId] {
+        self.resolved
+            .references
+            .iter()
+            .find(|reference| reference.namespace == namespace && reference.origin == origin)
+            .map(|reference| reference.candidates.as_slice())
+            .unwrap_or_default()
+    }
+
     pub(crate) fn symbol(&self, id: SymbolId) -> Option<&ResolvedSymbol> {
         self.resolved.symbols.iter().find(|symbol| symbol.id == id)
     }

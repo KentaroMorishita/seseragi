@@ -1,0 +1,20 @@
+type Badge =
+  | Active
+
+trait Render<A> {
+  fn present value: A -> String
+}
+
+trait Describe<A> {
+  fn present value: A -> String
+}
+
+instance Render<Badge> {
+  fn present value: Badge -> String = "rendered"
+}
+
+instance Describe<Badge> {
+  fn present value: Badge -> String = "described"
+}
+
+fn label value: Badge -> String = present value

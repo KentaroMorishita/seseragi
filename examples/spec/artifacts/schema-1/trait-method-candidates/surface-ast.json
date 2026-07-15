@@ -1,0 +1,713 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 21,
+            "end": 27
+          },
+          "span": {
+            "start": 19,
+            "end": 27
+          }
+        },
+        {
+          "name": "Paused",
+          "nameSpan": {
+            "start": 32,
+            "end": 38
+          },
+          "span": {
+            "start": 30,
+            "end": 38
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Mode",
+      "nameSpan": {
+        "start": 49,
+        "end": 53
+      },
+      "variants": [
+        {
+          "name": "Automatic",
+          "nameSpan": {
+            "start": 60,
+            "end": 69
+          },
+          "span": {
+            "start": 58,
+            "end": 69
+          }
+        },
+        {
+          "name": "Manual",
+          "nameSpan": {
+            "start": 74,
+            "end": 80
+          },
+          "span": {
+            "start": 72,
+            "end": 80
+          }
+        }
+      ],
+      "span": {
+        "start": 40,
+        "end": 80
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Render",
+      "nameSpan": {
+        "start": 92,
+        "end": 98
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 109,
+            "end": 116
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 117,
+                "end": 122
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 124,
+                  "end": 125
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 129,
+              "end": 135
+            }
+          },
+          "span": {
+            "start": 106,
+            "end": 135
+          }
+        }
+      ],
+      "span": {
+        "start": 82,
+        "end": 137
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Describe",
+      "nameSpan": {
+        "start": 149,
+        "end": 157
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 168,
+            "end": 175
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 176,
+                "end": 181
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 183,
+                  "end": 184
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 188,
+              "end": 194
+            }
+          },
+          "span": {
+            "start": 165,
+            "end": 194
+          }
+        }
+      ],
+      "span": {
+        "start": 139,
+        "end": 196
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 207,
+        "end": 213
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 214,
+            "end": 219
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 228,
+            "end": 235
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 236,
+                "end": 241
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 243,
+                  "end": 248
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 252,
+              "end": 258
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 271,
+                "end": 276
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 285,
+                    "end": 291
+                  },
+                  "span": {
+                    "start": 285,
+                    "end": 291
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Status badge: active\"",
+                  "span": {
+                    "start": 295,
+                    "end": 317
+                  }
+                },
+                "span": {
+                  "start": 285,
+                  "end": 317
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 324,
+                    "end": 330
+                  },
+                  "span": {
+                    "start": 324,
+                    "end": 330
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Status badge: paused\"",
+                  "span": {
+                    "start": 334,
+                    "end": 356
+                  }
+                },
+                "span": {
+                  "start": 324,
+                  "end": 356
+                }
+              }
+            ],
+            "span": {
+              "start": 265,
+              "end": 362
+            }
+          },
+          "span": {
+            "start": 225,
+            "end": 362
+          }
+        }
+      ],
+      "span": {
+        "start": 198,
+        "end": 364
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Describe",
+      "traitNameSpan": {
+        "start": 375,
+        "end": 383
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Mode",
+          "span": {
+            "start": 384,
+            "end": 388
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "present",
+          "nameSpan": {
+            "start": 397,
+            "end": 404
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 405,
+                "end": 410
+              },
+              "type": {
+                "kind": "named",
+                "name": "Mode",
+                "span": {
+                  "start": 412,
+                  "end": 416
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 420,
+              "end": 426
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 439,
+                "end": 444
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Automatic",
+                  "nameSpan": {
+                    "start": 453,
+                    "end": 462
+                  },
+                  "span": {
+                    "start": 453,
+                    "end": 462
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Mode badge: automatic\"",
+                  "span": {
+                    "start": 466,
+                    "end": 489
+                  }
+                },
+                "span": {
+                  "start": 453,
+                  "end": 489
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Manual",
+                  "nameSpan": {
+                    "start": 496,
+                    "end": 502
+                  },
+                  "span": {
+                    "start": 496,
+                    "end": 502
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Mode badge: manual\"",
+                  "span": {
+                    "start": 506,
+                    "end": 526
+                  }
+                },
+                "span": {
+                  "start": 496,
+                  "end": 526
+                }
+              }
+            ],
+            "span": {
+              "start": 433,
+              "end": 532
+            }
+          },
+          "span": {
+            "start": 394,
+            "end": 532
+          }
+        }
+      ],
+      "span": {
+        "start": 366,
+        "end": 534
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "badgeLabel",
+      "nameSpan": {
+        "start": 543,
+        "end": 553
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 554,
+            "end": 559
+          },
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "span": {
+              "start": 561,
+              "end": 566
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 570,
+          "end": 576
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "present",
+          "span": {
+            "start": 579,
+            "end": 586
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 587,
+            "end": 592
+          }
+        },
+        "span": {
+          "start": 579,
+          "end": 592
+        }
+      },
+      "span": {
+        "start": 536,
+        "end": 592
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "modeLabel",
+      "nameSpan": {
+        "start": 601,
+        "end": 610
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 611,
+            "end": 616
+          },
+          "type": {
+            "kind": "named",
+            "name": "Mode",
+            "span": {
+              "start": 618,
+              "end": 622
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 626,
+          "end": 632
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "present",
+          "span": {
+            "start": 635,
+            "end": 642
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 643,
+            "end": 648
+          }
+        },
+        "span": {
+          "start": 635,
+          "end": 648
+        }
+      },
+      "span": {
+        "start": 594,
+        "end": 648
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 664,
+        "end": 668
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 672,
+          "end": 676
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 682,
+            "end": 689
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 696,
+          "end": 708
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 722,
+                  "end": 729
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "badgeLabel",
+                    "span": {
+                      "start": 731,
+                      "end": 741
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "Active",
+                    "span": {
+                      "start": 742,
+                      "end": 748
+                    }
+                  },
+                  "span": {
+                    "start": 731,
+                    "end": 748
+                  }
+                },
+                "span": {
+                  "start": 730,
+                  "end": 749
+                }
+              },
+              "span": {
+                "start": 722,
+                "end": 749
+              }
+            },
+            "span": {
+              "start": 722,
+              "end": 749
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 754,
+              "end": 761
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "modeLabel",
+                "span": {
+                  "start": 763,
+                  "end": 772
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "Automatic",
+                "span": {
+                  "start": 773,
+                  "end": 782
+                }
+              },
+              "span": {
+                "start": 763,
+                "end": 782
+              }
+            },
+            "span": {
+              "start": 762,
+              "end": 783
+            }
+          },
+          "span": {
+            "start": 754,
+            "end": 783
+          }
+        },
+        "span": {
+          "start": 713,
+          "end": 787
+        }
+      },
+      "span": {
+        "start": 650,
+        "end": 787
+      }
+    }
+  ]
+}

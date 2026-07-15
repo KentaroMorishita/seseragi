@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0202",
+      "severity": "Error",
+      "messageKey": "trait.method-ambiguous",
+      "primary": {
+        "start": 324,
+        "end": 331
+      },
+      "related": [
+        {
+          "message": "multiple trait methods remain valid after type and instance selection",
+          "primary": {
+            "start": 290,
+            "end": 337
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

@@ -338,12 +338,6 @@ impl Resolver {
             candidates = self.lookup_trait_methods(scope, spelling);
             if let [candidate] = candidates.as_slice() {
                 target = Some(*candidate);
-            } else if candidates.len() > 1 {
-                self.issues.push(ResolveIssue {
-                    code: "SES-T0202".to_owned(),
-                    message_key: "trait.method-ambiguous".to_owned(),
-                    primary: origin,
-                });
             }
         }
         if target.is_none() {

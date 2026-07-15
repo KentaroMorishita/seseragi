@@ -9,6 +9,10 @@ use crate::typed::semantic_types::{
 };
 use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 
+mod candidates;
+
+use candidates::{select_trait_method_candidate, type_trait_method_selection_error};
+
 pub(super) fn type_application(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
@@ -20,11 +24,31 @@ pub(super) fn type_application(
     else {
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
-    let Some(target) = context.target(*callee_span) else {
-        return type_unknown_application(callee, &argument_nodes, expression.span(), context);
-    };
-    let Some(signature) = context.callable_value(target) else {
-        return type_unknown_application(callee, &argument_nodes, expression.span(), context);
+    let signature = if let Some(target) = context.target(*callee_span) {
+        let Some(signature) = context.callable_value(target) else {
+            return type_unknown_application(callee, &argument_nodes, expression.span(), context);
+        };
+        signature
+    } else {
+        match select_trait_method_candidate(*callee_span, &argument_nodes, context) {
+            Some(Ok(signature)) => signature,
+            Some(Err(issue)) => {
+                return type_trait_method_selection_error(
+                    &argument_nodes,
+                    expression.span(),
+                    issue,
+                    context,
+                );
+            }
+            None => {
+                return type_unknown_application(
+                    callee,
+                    &argument_nodes,
+                    expression.span(),
+                    context,
+                );
+            }
+        }
     };
 
     let expected_result = if argument_nodes.len() >= signature.parameters.len() {

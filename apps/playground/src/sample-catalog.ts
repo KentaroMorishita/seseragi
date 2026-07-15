@@ -55,6 +55,6 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     label: "Traitバッジ",
     sourcePath: "examples/spec/playground/05-trait-badges.ssrg",
     stdin: "",
-    expectedOutput: "Status badge: active",
+    expectedOutput: "Status badge: active\nMode badge: automatic",
   },
 ]

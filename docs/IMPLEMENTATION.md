@@ -603,9 +603,10 @@ instance専用の小型parserや型推論経路を増やしません。
 同fixtureの`label`はscope内の`render value`を通常のcurried callとして解決し、argument型からconcrete local instanceを
 一意に選択します。選択済みtrait identity、method、instance evidenceをTypedHirとCoreIrへ保持し、TypeScriptIrの
 `dictionary-call`と生成TSのdictionary method invocationまで接続します。backendはruntime tagやJS constructorを見て
-instanceを再選択しません。同名trait methodはresolverが候補集合として保持し、現時点では型によるoverload選択を未接続のため
-`SES-T0202`で保守的に拒否します。generic / constrained instanceのdictionary factory ABI、同名methodの型選択、
-cross-module dictionary selectionは、このlocal dispatch表現を再利用して別fixtureで固定します。
+instanceを再選択しません。`schema-1/trait-method-candidates`では、resolverが同名methodを候補集合として保持し、
+型checkerがargument / expected typeと利用可能なinstance evidenceを照合してtraitを一意に選びます。二つ以上残るcaseは
+`semantic-diagnostics-schema-1/trait-method-ambiguous`で`SES-T0202`に固定します。generic / constrained instanceの
+dictionary factory ABIとcross-module dictionary selectionは、このlocal dispatch表現を再利用して別fixtureで固定します。
 
 ここまでで標準Array instanceとlocal concrete user-defined instanceの選択、evidence transport、dictionary dispatchを
 別々のfixtureで証明しました。generic / constrained / imported instance search、coherence、dictionary parameter passingは
