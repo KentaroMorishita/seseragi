@@ -14,7 +14,8 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
         let leading_closers = leading_closing_braces(&tokens.tokens, first, last);
         let structural_depth = brace_depth.saturating_sub(leading_closers);
         let continuation = declaration_continuation(cst, &token_lines, first, &tokens.tokens);
-        let indent = structural_depth + continuation;
+        let do_item_continuation = do_item_continuation(cst, &token_lines, first, &tokens.tokens);
+        let indent = structural_depth + continuation + do_item_continuation;
         let content = tokens.tokens[first..last]
             .iter()
             .map(|token| token.raw.as_str())
@@ -28,6 +29,47 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
     }
     output.push(String::new());
     output.join("\n")
+}
+
+fn do_item_continuation(
+    cst: &CstArtifact,
+    token_lines: &[usize],
+    first: usize,
+    tokens: &[Token],
+) -> usize {
+    let Some(item) = enclosing_do_item(&cst.root, first) else {
+        return 0;
+    };
+    if token_lines.get(item.start_token) == token_lines.get(first) {
+        return 0;
+    }
+    if item.kind == "do-bind-item" {
+        return 1;
+    }
+    let starts_with_let = (item.start_token..item.end_token)
+        .find(|index| {
+            !matches!(
+                tokens[*index].kind,
+                TokenKind::TriviaComment | TokenKind::TriviaNewline | TokenKind::TriviaSpace
+            )
+        })
+        .is_some_and(|index| tokens[index].kind == TokenKind::KeywordLet);
+    usize::from(starts_with_let)
+}
+
+fn enclosing_do_item(node: &CstNode, token: usize) -> Option<&CstNode> {
+    if !node.children.is_empty() {
+        if let Some(item) = node
+            .children
+            .iter()
+            .find_map(|child| enclosing_do_item(child, token))
+        {
+            return Some(item);
+        }
+    }
+    matches!(node.kind.as_str(), "do-bind-item" | "do-expression-item")
+        .then_some(node)
+        .filter(|node| node.start_token <= token && token < node.end_token)
 }
 
 #[derive(Clone, Copy)]

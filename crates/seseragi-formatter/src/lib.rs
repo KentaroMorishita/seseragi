@@ -102,4 +102,26 @@ mod tests {
         assert!(!formatted.changed);
         assert_eq!(formatted.text, source);
     }
+
+    #[test]
+    fn indents_multiline_do_bind_and_let_pipelines_without_indenting_the_result() {
+        let source = concat!(
+            "pub effect fn main =\n",
+            "  do {\n",
+            "    input <-\n",
+            "      readLine ()\n",
+            "      |> mapError StdinFailure\n",
+            "    let parsed =\n",
+            "      input\n",
+            "      |> parseInput\n",
+            "    parsed\n",
+            "    |> println\n",
+            "  }\n",
+        );
+
+        let formatted = format(source);
+
+        assert!(!formatted.changed);
+        assert_eq!(formatted.text, source);
+    }
 }
