@@ -1,4 +1,5 @@
 use super::{find_matching_brace, parse_expression_range, ExpressionParser};
+use crate::line_continuation::starts_with_operator;
 use crate::surface::pattern::parse_pattern_range;
 use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceMatchArm};
 use crate::token::{Token, TokenKind};
@@ -101,7 +102,7 @@ fn split_arm_ranges(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, u
 }
 
 fn should_split_at_newline(tokens: &[Token], start: usize, newline: usize, end: usize) -> bool {
-    if next_significant_kind(tokens, newline + 1, end).is_some_and(is_line_continuation) {
+    if starts_with_operator(tokens, newline + 1, end) {
         return false;
     }
     let Some(arrow) = find_top_level(tokens, start, newline, TokenKind::OperatorArrow) else {
@@ -133,25 +134,6 @@ fn next_logical_line_has_arm_arrow(tokens: &[Token], start: usize, end: usize) -
         })
         .unwrap_or(end);
     find_top_level(tokens, line_start, line_end, TokenKind::OperatorArrow).is_some()
-}
-
-fn next_significant_kind(tokens: &[Token], start: usize, end: usize) -> Option<TokenKind> {
-    tokens
-        .iter()
-        .take(end)
-        .skip(start)
-        .find(|token| is_significant(token))
-        .map(|token| token.kind)
-}
-
-fn is_line_continuation(kind: TokenKind) -> bool {
-    matches!(
-        kind,
-        TokenKind::OperatorPipeline
-            | TokenKind::OperatorArithmetic
-            | TokenKind::OperatorComparison
-            | TokenKind::OperatorApply
-    )
 }
 
 fn find_top_level(

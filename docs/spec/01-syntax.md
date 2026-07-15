@@ -112,6 +112,25 @@ escapeし、raw `${`はinterpolationを開始します。二文字のliteral `${
 改行とインデントは、ブロックの境界を決めません。ブロックは `{` と `}` で囲みます。
 宣言や式の区切りには改行または `;` を使えます。括弧内では改行を自由に置けます。
 
+括弧外でも、改行直前のtokenが右辺を必要とする場合、または次の有効tokenが `|>`、`$`、
+算術・比較operatorの場合、その改行は式を区切らず継続します。これによりbind、pure let、通常の
+式を同じoperator-first styleで折り返せます。
+
+```seseragi
+do {
+  input <-
+    readLine ()
+    |> mapError StdinFailure
+  let parsed =
+    input
+    |> parseInput
+  parsed
+  |> fromEither
+}
+```
+
+`;` は常に明示的な区切りです。継続行の判定にindent幅は使いません。
+
 formatter は 2 spaces を標準表現としますが、インデント幅は構文の意味を持ちません。
 
 ## 1.4 関数適用

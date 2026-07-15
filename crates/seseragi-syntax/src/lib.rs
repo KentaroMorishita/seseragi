@@ -4,6 +4,7 @@ mod diagnostics;
 mod interface;
 mod interface_model;
 mod lexer;
+mod line_continuation;
 mod source;
 mod surface;
 mod surface_model;

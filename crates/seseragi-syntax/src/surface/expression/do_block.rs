@@ -1,4 +1,5 @@
 use super::parse_expression_range;
+use crate::line_continuation::starts_with_operator;
 use crate::surface::pattern::parse_pattern_range;
 use crate::surface_model::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use crate::token::{Token, TokenKind};
@@ -118,6 +119,7 @@ fn split_segments(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usi
                 if brace_depth == 0
                     && paren_depth == 0
                     && square_depth == 0
+                    && !starts_with_operator(tokens, index + 1, end)
                     && segment_is_complete(tokens, segment_start, index) =>
             {
                 push_non_empty_segment(tokens, &mut segments, segment_start, index);

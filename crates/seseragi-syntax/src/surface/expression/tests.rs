@@ -288,6 +288,45 @@ fn distinguishes_do_bind_let_and_final_result() {
 }
 
 #[test]
+fn continues_multiline_pipelines_in_do_bind_let_and_result() {
+    let body = first_body(
+        "effect fn main =\n  do {\n    input <-\n      readLine ()\n      |> mapError StdinFailure\n    let parsed =\n      input\n      |> parseInput\n    parsed\n    |> fromEither\n  }\n",
+    );
+
+    let SurfaceExpr::Do { items, result, .. } = body else {
+        panic!("expected do expression");
+    };
+    assert_eq!(items.len(), 2);
+
+    let SurfaceDoItem::Bind { value, .. } = &items[0] else {
+        panic!("expected bind item");
+    };
+    assert!(matches!(
+        value,
+        SurfaceExpr::Application { function, .. }
+            if matches!(
+                function.as_ref(),
+                SurfaceExpr::Application { function, .. }
+                    if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "mapError")
+            )
+    ));
+
+    let SurfaceDoItem::Let { value, .. } = &items[1] else {
+        panic!("expected pure let item");
+    };
+    assert!(matches!(
+        value,
+        SurfaceExpr::Application { function, .. }
+            if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "parseInput")
+    ));
+    assert!(matches!(
+        result.as_deref(),
+        Some(SurfaceExpr::Application { function, .. })
+            if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "fromEither")
+    ));
+}
+
+#[test]
 fn parses_rps_match_with_tuple_constructor_patterns_and_wildcard() {
     let body = first_body(
         "fn decide first: Hand -> second: Hand -> Outcome =\n  match (first, second) {\n    (Rock, Rock) -> Draw\n    (Rock, Scissors) -> Player1Wins\n    (Paper, Rock) -> Player1Wins\n    _ -> Player2Wins\n  }\n",

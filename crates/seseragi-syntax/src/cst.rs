@@ -1,5 +1,6 @@
 use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
+use crate::line_continuation::{ends_after_operator, starts_with_operator};
 use crate::token::{Token, TokenKind, TokenStream};
 use serde::Serialize;
 
@@ -277,7 +278,22 @@ impl CstParser<'_> {
 
         for index in start..end {
             match self.kind_at(index) {
-                Some(TokenKind::TriviaNewline | TokenKind::PunctuationSemicolon) => {
+                Some(TokenKind::TriviaNewline)
+                    if !ends_after_operator(
+                        self.tokens,
+                        statement_start.unwrap_or(start),
+                        index,
+                    ) && !starts_with_operator(self.tokens, index + 1, end) =>
+                {
+                    push_do_statement(
+                        &mut statements,
+                        statement_start.take(),
+                        statement_end.take(),
+                        has_bind,
+                    );
+                    has_bind = false;
+                }
+                Some(TokenKind::PunctuationSemicolon) => {
                     push_do_statement(
                         &mut statements,
                         statement_start.take(),
@@ -488,6 +504,25 @@ mod tests {
             effect_decl.children[2].children[1].kind,
             "do-expression-item"
         );
+    }
+
+    #[test]
+    fn keeps_operator_leading_lines_in_the_same_do_item() {
+        let cst = parse_cst(
+            "main.ssrg",
+            "effect fn main =\n  do {\n    input <-\n      readLine ()\n      |> mapError StdinFailure\n    input\n    |> parseInput\n    |> fromEither\n  }\n",
+        );
+
+        let effect_decl = &cst.root.children[0].children[0];
+        let do_block = effect_decl
+            .children
+            .iter()
+            .find(|child| child.kind == "do-block")
+            .expect("effect declaration contains a do block");
+
+        assert_eq!(do_block.children.len(), 2);
+        assert_eq!(do_block.children[0].kind, "do-bind-item");
+        assert_eq!(do_block.children[1].kind, "do-expression-item");
     }
 
     #[test]
