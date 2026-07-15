@@ -75,6 +75,10 @@ pure Unit entryをEffect runnerへ渡さず直接呼び、生成値のJSONをrun
 複数の左結合`+`をString連結へlowerします。`execution-schema-1/string-add/`はcurried invitation functionと
 `$`、Consoleを組み合わせ、暗黙の数値変換やInt runtime helperなしでactual outputを固定します。
 
+`schema-1/pure-comparison/`はInt、Bool、Stringの比較へstandard `Eq<A>` evidenceを保持します。
+`execution-schema-1/pure-comparison-string/`は二引数のpure curried entryを実行し、String `!=`のBool結果を
+JSON outputで固定します。strict equalityのbackend表現だけをEq instance選択の代用にはしません。
+
 `schema-1/parse-hand-either/`はString literal matchの結果をstandard `Either<HandInputError, Hand>`で返します。
 `execution-schema-1/parse-hand-either-valid/`と`parse-hand-either-invalid/`はpure entryへtyped String引数を渡し、
 生成TypeScriptとversioned runtimeを通した`Right Rock` / `Left (UnknownHand input)`をJSONで固定します。

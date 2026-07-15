@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "case": "pure-comparison-string",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/pure-comparison",
+    "export": "sameString",
+    "compiledModule": "../../schema-1/pure-comparison/generated-module.json"
+  },
+  "invocation": {
+    "arguments": [
+      { "type": "String", "value": "seseragi" },
+      { "type": "String", "value": "rust" }
+    ],
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": ["core.int64", "core.bool", "core.string"],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

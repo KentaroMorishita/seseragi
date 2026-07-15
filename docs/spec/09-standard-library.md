@@ -449,6 +449,10 @@ Stringは`Add<String, String, String>`のstandard instanceを持ち、`left + ri
 その順で連結した新しいStringを返します。数値や他の型を暗黙にStringへ変換しません。異なる型を含む
 連結は`show`や名前付きformatterで明示的にStringへ変換してから行います。
 
+Int、Bool、Stringはそれぞれ`Eq`のstandard instanceを持ちます。`==`は選択された`Eq<A>.eq`、
+`!=`はその結果の否定です。異なる型同士を暗黙変換して比較せず、対応する`Eq` instanceがない型の
+比較はcompile errorです。
+
 backtick templateのinterpolationは `Show` を使います。たとえば
 `` `user: ${user}` `` は概念上 `"user: " <> show user` へ展開されます。templateは
 compilerが構文として検査しますが、`show`自体は通常のtrait methodであり、compiler builtinや

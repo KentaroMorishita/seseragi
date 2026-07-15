@@ -571,6 +571,12 @@ TypeScriptのString連結へ表現します。`execution-schema-1/string-add`は
 `$`、Consoleを組み合わせ、実際の出力まで固定します。これは`+`をoperand型から選ぶ最初の非Int standard
 instanceであり、user-defined `Add<L, R, O>` dictionary dispatchは引き続き一般instance gateで回収します。
 
+`schema-1/pure-comparison`はInt、Bool、Stringの`==` / `!=`で、それぞれのstandard `Eq<A>` evidenceを
+TypedHirとCoreIrへ保持します。backendのstrict equality表現は変えませんが、型検査後にoperand spellingから
+instanceを再発見しません。`execution-schema-1/pure-comparison-string`はcurried pure entryを二つのStringで
+実行し、`!=`の結果をJSON Boolとして固定します。derived / user-defined Eqの構造比較とdictionary dispatchは
+同じevidence境界へ追加でき、primitive名だけの分岐を一般Eq完成とは扱いません。
+
 user-defined instanceへ進む前提として、SurfaceAstの`instance`はhead / constraintだけでなく、各methodの型parameter、
 parameter、戻り型、constraint、body、source spanを保持します。resolverもinstance scopeを親にmethod scopeを作り、
 method signatureとbodyの型名・値名を通常のreferenceとして解決します。以前のようにfrontendでmethod bodyを捨てると、

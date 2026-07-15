@@ -1041,6 +1041,30 @@ mod tests {
     }
 
     #[test]
+    fn records_selected_string_eq_evidence_on_binary_expression() {
+        let typed = type_module(
+            "artifact/string-eq-evidence/main.ssrg",
+            "pub fn isReady value: String -> Bool = value == \"ready\"\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected function declaration");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::Binary { operator, evidence, type_ref, .. }
+                if operator == "=="
+                    && matches!(type_ref, TypedType::Named { name, arguments } if name == "Bool" && arguments.is_empty())
+                    && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        constraint: TypedConstraint { name, arguments },
+                        evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    }] if name == "Eq"
+                        && arguments == &vec![string_type()]
+                        && identity == "std/string::Eq")
+        ));
+    }
+
+    #[test]
     fn types_parameter_forwarded_to_top_level_pure_call() {
         let typed = type_module(
             "artifact/pure-call-parameter/main.ssrg",

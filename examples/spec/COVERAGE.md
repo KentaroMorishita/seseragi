@@ -11,7 +11,7 @@
 | literal、application、`$`、pipeline           | Lessons 01-05     | `schema-1/pipeline-application` + `execution-schema-1/pipeline-application` + literal / diagnostic fixtures | partial |
 | optional record field / presence              | Lesson 27         | `compile/optional-record-field.ssrg`           | partial |
 | match、tuple、range、effectful for            | Lessons 03 and 05 | exhaustiveness diagnostics                     | partial |
-| newtype、deriving、operator overload          | Lesson 07         | coherence diagnostics                          | partial |
+| newtype、deriving、operator overload          | Lesson 07         | `schema-1/{pure-comparison,string-add}` + `execution-schema-1/{pure-comparison-string,string-add}` + coherence diagnostics | partial |
 | Array/List、lambda、Either                    | Lessons 04 and 08 | `schema-1/array-literal` + collection boundary fixtures | partial |
 | pure / Effectful traversal short-circuit      | Lesson 04         | `compile/short-circuit-traversal.ssrg`         | covered |
 | Map / Set ordering and serialization          | Lesson 06         | seed / duplicate / canonical fixtures          | partial |

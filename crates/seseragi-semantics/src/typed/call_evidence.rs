@@ -132,6 +132,9 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
     if let Some(identity) = arithmetic_instance_identity(constraint) {
         return Some(identity.to_owned());
     }
+    if let Some(identity) = equality_instance_identity(constraint) {
+        return Some(identity.to_owned());
+    }
     let [collection, element] = constraint.arguments.as_slice() else {
         return None;
     };
@@ -142,6 +145,27 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
         && name == "Array"
         && matches!(arguments.as_slice(), [array_element] if array_element == element))
     .then(|| "std/array::Reducible".to_owned())
+}
+
+fn equality_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
+    let [value] = constraint.arguments.as_slice() else {
+        return None;
+    };
+    if constraint.name != "Eq" {
+        return None;
+    }
+    let TypedType::Named { name, arguments } = value else {
+        return None;
+    };
+    if !arguments.is_empty() {
+        return None;
+    }
+    match name.as_str() {
+        "Int" => Some("std/int::Eq"),
+        "Bool" => Some("std/bool::Eq"),
+        "String" => Some("std/string::Eq"),
+        _ => None,
+    }
 }
 
 fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
@@ -189,6 +213,21 @@ pub(crate) fn select_arithmetic_evidence(
     select_call_evidence(&[TypedConstraint {
         name: name.to_owned(),
         arguments: vec![left, right, output],
+    }])
+    .unwrap_or_default()
+}
+
+pub(crate) fn select_equality_evidence(
+    operator: &str,
+    left: TypedType,
+    right: TypedType,
+) -> Vec<TypedCallEvidence> {
+    if !matches!(operator, "==" | "!=") || left != right {
+        return Vec::new();
+    }
+    select_call_evidence(&[TypedConstraint {
+        name: "Eq".to_owned(),
+        arguments: vec![left],
     }])
     .unwrap_or_default()
 }
@@ -261,5 +300,28 @@ mod tests {
                 evidence: TypedInstanceEvidence::Standard { identity },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/string::Add"
         ));
+    }
+
+    #[test]
+    fn selects_standard_equality_evidence_for_primitive_types() {
+        for (name, identity) in [
+            ("Int", "std/int::Eq"),
+            ("Bool", "std/bool::Eq"),
+            ("String", "std/string::Eq"),
+        ] {
+            let evidence = select_equality_evidence("==", named(name), named(name));
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    constraint: TypedConstraint { name, arguments },
+                    evidence: TypedInstanceEvidence::Standard { identity: selected },
+                }] if name == "Eq" && arguments.len() == 1 && selected == identity
+            ));
+        }
+    }
+
+    #[test]
+    fn does_not_select_equality_evidence_for_mixed_types() {
+        assert!(select_equality_evidence("==", named("Int"), named("String")).is_empty());
     }
 }

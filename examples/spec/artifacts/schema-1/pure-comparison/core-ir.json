@@ -48,6 +48,24 @@
             "end": 45
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Eq"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Bool",
@@ -119,6 +137,24 @@
             "end": 111
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/bool::Eq"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Bool",
@@ -190,6 +226,24 @@
             "end": 183
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::Eq"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Bool",

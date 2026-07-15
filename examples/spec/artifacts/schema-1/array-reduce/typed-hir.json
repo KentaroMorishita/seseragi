@@ -264,6 +264,24 @@
             "end": 89
           }
         },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Eq"
+            }
+          }
+        ],
         "type": {
           "kind": "named",
           "name": "Bool",
