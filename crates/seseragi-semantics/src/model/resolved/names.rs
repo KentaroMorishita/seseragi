@@ -39,6 +39,7 @@ pub enum SymbolKind {
     Type,
     Constructor,
     Trait,
+    TraitMethod,
     ModuleImport,
     Imported,
     Prelude,
@@ -75,6 +76,8 @@ pub struct ResolvedReference {
     pub namespace: SymbolNamespace,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target: Option<SymbolId>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub candidates: Vec<SymbolId>,
     pub origin: ByteSpan,
 }
 

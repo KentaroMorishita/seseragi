@@ -137,6 +137,7 @@ pub(super) struct Resolver {
     references: Vec<ResolvedReference>,
     issues: Vec<ResolveIssue>,
     names: BTreeMap<(ScopeId, SymbolNamespace, String), SymbolId>,
+    trait_methods: BTreeMap<(ScopeId, String), Vec<SymbolId>>,
     dependency_symbols: BTreeMap<(SymbolNamespace, String), SymbolId>,
     prelude_names: BTreeMap<(SymbolNamespace, String), SymbolId>,
     namespace_imports: namespace::NamespaceImports,
@@ -156,6 +157,7 @@ impl Resolver {
             references: Vec::new(),
             issues: Vec::new(),
             names: BTreeMap::new(),
+            trait_methods: BTreeMap::new(),
             dependency_symbols: BTreeMap::new(),
             prelude_names: BTreeMap::new(),
             namespace_imports: namespace::NamespaceImports::default(),
@@ -293,6 +295,28 @@ impl Resolver {
         )
     }
 
+    pub(super) fn register_trait_method(
+        &mut self,
+        trait_name: &str,
+        spelling: &str,
+        origin: ByteSpan,
+    ) -> SymbolId {
+        let scope = self.module_scope();
+        let id = self.push_symbol(
+            scope,
+            SymbolNamespace::Value,
+            SymbolKind::TraitMethod,
+            spelling,
+            Some(format!("{}::trait({trait_name})::{spelling}", self.module)),
+            origin,
+        );
+        self.trait_methods
+            .entry((scope, spelling.to_owned()))
+            .or_default()
+            .push(id);
+        id
+    }
+
     pub(super) fn reference(
         &mut self,
         scope: ScopeId,
@@ -302,11 +326,18 @@ impl Resolver {
         report_unresolved: bool,
     ) -> Option<SymbolId> {
         let mut target = self.lookup(scope, namespace, spelling);
+        let mut candidates = Vec::new();
         let mut namespace_issue = None;
         if target.is_none() && matches!(namespace, SymbolNamespace::Type | SymbolNamespace::Value) {
             match self.resolve_namespace_member(scope, namespace, spelling, origin) {
                 Ok(resolved) => target = resolved,
                 Err(issue) => namespace_issue = Some(issue),
+            }
+        }
+        if target.is_none() && namespace == SymbolNamespace::Value {
+            candidates = self.lookup_trait_methods(scope, spelling);
+            if let [candidate] = candidates.as_slice() {
+                target = Some(*candidate);
             }
         }
         if target.is_none() {
@@ -316,11 +347,18 @@ impl Resolver {
             spelling: spelling.to_owned(),
             namespace,
             target,
+            candidates,
             origin,
         });
         if let Some(issue) = namespace_issue {
             self.issues.push(issue);
-        } else if target.is_none() && report_unresolved {
+        } else if target.is_none()
+            && self
+                .references
+                .last()
+                .is_some_and(|reference| reference.candidates.is_empty())
+            && report_unresolved
+        {
             self.issues.push(ResolveIssue {
                 code: "SES-N0001".to_owned(),
                 message_key: "name.unresolved".to_owned(),
@@ -328,6 +366,22 @@ impl Resolver {
             });
         }
         target
+    }
+
+    fn lookup_trait_methods(&self, mut scope: ScopeId, spelling: &str) -> Vec<SymbolId> {
+        loop {
+            if let Some(methods) = self.trait_methods.get(&(scope, spelling.to_owned())) {
+                return methods.clone();
+            }
+            let Some(parent) = self
+                .scopes
+                .get(scope.0 as usize)
+                .and_then(|scope| scope.parent)
+            else {
+                return Vec::new();
+            };
+            scope = parent;
+        }
     }
 
     fn lookup(

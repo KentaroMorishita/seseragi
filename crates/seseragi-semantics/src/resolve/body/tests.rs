@@ -88,6 +88,64 @@ fn resolves_local_trait_instance_heads_and_constraint_names_by_symbol() {
 }
 
 #[test]
+fn resolves_a_unique_local_trait_method_as_a_value_candidate() {
+    let resolved = resolve_module(
+        "artifact/local-trait-call/main.ssrg",
+        "type Badge = | Active\n\
+         trait Render<A> { fn render value: A -> String }\n\
+         fn label value: Badge -> String = render value\n",
+    );
+
+    let method = symbol(&resolved, SymbolKind::TraitMethod, "render");
+    let reference = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.namespace == SymbolNamespace::Value && reference.spelling == "render"
+        })
+        .expect("trait method call reference");
+    assert_eq!(reference.target, Some(method));
+    assert_eq!(reference.candidates, vec![method]);
+    assert!(resolved.symbols.iter().any(|symbol| {
+        symbol.id == method
+            && symbol.canonical.as_deref()
+                == Some("artifact/local-trait-call::trait(Render)::render")
+    }));
+    assert!(resolved.issues.is_empty());
+}
+
+#[test]
+fn preserves_same_named_trait_method_candidates_without_duplicate_definition() {
+    let resolved = resolve_module(
+        "artifact/ambiguous-trait-call/main.ssrg",
+        "type Badge = | Active\n\
+         trait Render<A> { fn present value: A -> String }\n\
+         trait Encode<A> { fn present value: A -> String }\n\
+         fn label value: Badge -> String = present value\n",
+    );
+
+    let reference = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.namespace == SymbolNamespace::Value && reference.spelling == "present"
+        })
+        .expect("ambiguous trait method reference");
+    assert_eq!(reference.target, None);
+    assert_eq!(reference.candidates.len(), 2);
+    assert!(reference.candidates.iter().all(|candidate| {
+        resolved
+            .symbols
+            .iter()
+            .any(|symbol| symbol.id == *candidate && symbol.kind == SymbolKind::TraitMethod)
+    }));
+    assert!(resolved
+        .issues
+        .iter()
+        .all(|issue| issue.code != "SES-N0001" && issue.code != "SES-N0002"));
+}
+
+#[test]
 fn separates_adt_type_and_constructor_symbols_by_namespace() {
     let resolved = resolve_module(
         "artifact/adt-resolution/main.ssrg",

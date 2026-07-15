@@ -75,7 +75,10 @@ pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations
                 resolver.register_module(SymbolNamespace::Type, SymbolKind::Type, name, *name_span);
             }
             SurfaceDecl::Trait {
-                name, name_span, ..
+                name,
+                name_span,
+                methods,
+                ..
             } => {
                 resolver.register_module(
                     SymbolNamespace::Trait,
@@ -83,6 +86,9 @@ pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations
                     name,
                     *name_span,
                 );
+                for method in methods {
+                    resolver.register_trait_method(name, &method.name, method.name_span);
+                }
             }
             SurfaceDecl::Operator { spelling, span, .. } => {
                 resolver.register_module(
