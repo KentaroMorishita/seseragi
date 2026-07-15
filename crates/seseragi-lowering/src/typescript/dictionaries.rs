@@ -11,6 +11,11 @@ pub(super) fn local_dictionary_expression(
     imported_values: &BTreeMap<String, String>,
     imported_types: &BTreeMap<String, String>,
 ) -> Option<TypeScriptExpr> {
+    if let CoreInstanceEvidence::Parameter { index } = evidence {
+        return Some(TypeScriptExpr::Identifier {
+            name: super::evidence_parameter_name(*index),
+        });
+    }
     let CoreInstanceEvidence::Local {
         identity,
         type_arguments,

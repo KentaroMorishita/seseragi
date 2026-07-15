@@ -85,7 +85,12 @@ fn render_user_defined_instance(
         .constraints
         .iter()
         .enumerate()
-        .map(|(index, _)| format!("_evidence{index}: unknown"))
+        .map(|(index, _)| {
+            format!(
+                "{}: unknown",
+                crate::typescript::evidence_parameter_name(index)
+            )
+        })
         .collect::<Vec<_>>()
         .join(", ");
     format!(

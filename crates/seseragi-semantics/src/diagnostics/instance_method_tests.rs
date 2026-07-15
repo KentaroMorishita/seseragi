@@ -66,3 +66,29 @@ instance Echo<Int> {
 
     assert!(reference.target.is_some());
 }
+
+#[test]
+fn accepts_a_trait_call_backed_by_the_instance_constraint_scope() {
+    let source = "\
+trait Ready<A> {
+  fn ready value: A -> String
+}
+
+trait Inspect<A> {
+  fn inspect value: A -> String
+}
+
+instance<T> Inspect<Maybe<T>>
+where Ready<T> {
+  fn inspect value: Maybe<T> -> String =
+    match value {
+      Nothing -> \"empty\"
+      Just item -> ready item
+    }
+}
+";
+
+    let diagnostics = semantic_diagnostics("artifact/scoped-instance-evidence/main.ssrg", source);
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}

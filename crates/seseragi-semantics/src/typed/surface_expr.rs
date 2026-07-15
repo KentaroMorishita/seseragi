@@ -16,6 +16,7 @@ mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
     parameters: BTreeMap<SymbolId, SemanticValueType>,
+    evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     resolution: &'a TypedResolution<'a>,
     expected: Option<SemanticValueType>,
 }
@@ -24,6 +25,7 @@ impl<'a> PureExpressionContext<'a> {
     pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
         Self {
             parameters: resolution.parameter_types(parameters),
+            evidence_parameters: Vec::new(),
             resolution,
             expected: None,
         }
@@ -32,6 +34,7 @@ impl<'a> PureExpressionContext<'a> {
     pub(crate) fn with_expected(&self, expected: Option<SemanticValueType>) -> Self {
         Self {
             parameters: self.parameters.clone(),
+            evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected,
         }
@@ -120,6 +123,7 @@ impl<'a> PureExpressionContext<'a> {
                 constraints,
                 trait_identity,
                 self.resolution,
+                &self.evidence_parameters,
             ),
             None => super::call_evidence::select_call_evidence(constraints),
         }
@@ -130,9 +134,18 @@ impl<'a> PureExpressionContext<'a> {
         parameters.extend(locals);
         Self {
             parameters,
+            evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected: self.expected.clone(),
         }
+    }
+
+    pub(crate) fn with_evidence_parameters(
+        mut self,
+        evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
+    ) -> Self {
+        self.evidence_parameters = evidence_parameters;
+        self
     }
 }
 

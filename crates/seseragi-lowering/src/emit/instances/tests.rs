@@ -164,9 +164,9 @@ pub fn label value: Maybe<Badge> -> String = render value
     let bundle = emit_typescript_module(typescript, source);
 
     assert!(
-        bundle
-            .typescript
-            .contains("export const __ssrg$instance$Render$1 = <T,>(_evidence0: unknown) =>"),
+        bundle.typescript.contains(
+            "export const __ssrg$instance$Render$1 = <T,>(__ssrg$evidence$0: unknown) =>"
+        ),
         "{}",
         bundle.typescript
     );
@@ -204,4 +204,48 @@ pub fn label value: Badge -> String = render value
         bundle.typescript
     );
     assert!(!bundle.typescript.contains("__ssrg$instance$Render$1<>("));
+}
+
+#[test]
+fn dispatches_an_instance_method_through_its_scoped_evidence() {
+    let source = "\
+pub type Badge = | Active
+pub trait Ready<A> { fn ready value: A -> String }
+pub trait Inspect<A> { fn inspect value: A -> String }
+instance Ready<Badge> { fn ready value: Badge -> String = \"active\" }
+instance<T> Inspect<Maybe<T>> where Ready<T> {
+  fn inspect _evidence0: Maybe<T> -> String =
+    match _evidence0 {
+      Nothing -> \"empty\"
+      Just item -> ready item
+    }
+}
+pub fn label value: Maybe<Badge> -> String = inspect value
+";
+    let typed = type_module("artifact/scoped-instance-evidence/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle
+            .typescript
+            .contains("__ssrg$evidence$0[\"ready\"](item)"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("<T,>(__ssrg$evidence$0: unknown) => ({ \"inspect\": (_evidence0:"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$instance$Inspect$1<Badge>(__ssrg$instance$Ready$0)[\"inspect\"](value)"
+        ),
+        "{}",
+        bundle.typescript
+    );
 }

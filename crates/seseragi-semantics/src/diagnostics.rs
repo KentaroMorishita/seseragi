@@ -96,12 +96,19 @@ fn collect_decl_diagnostics(
             return_type,
             *span,
             resolution,
+            &[],
             diagnostics,
         );
         return;
     }
 
-    if let SurfaceDecl::Instance { methods, .. } = declaration {
+    if let SurfaceDecl::Instance {
+        constraints,
+        methods,
+        ..
+    } = declaration
+    {
+        let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
         for method in methods {
             collect_pure_body_diagnostics(
                 method.body.as_ref(),
@@ -109,6 +116,7 @@ fn collect_decl_diagnostics(
                 &method.return_type,
                 method.span,
                 resolution,
+                &scoped_evidence,
                 diagnostics,
             );
         }
@@ -124,9 +132,11 @@ fn collect_pure_body_diagnostics(
     return_type: &seseragi_syntax::TypeRef,
     span: seseragi_syntax::ByteSpan,
     resolution: &TypedResolution<'_>,
+    scoped_evidence: &[crate::typed::ScopedCallEvidence],
     diagnostics: &mut Vec<Diagnostic>,
 ) {
-    let analysis = analyze_pure_function(body, parameters, return_type, resolution);
+    let analysis =
+        analyze_pure_function(body, parameters, return_type, resolution, scoped_evidence);
     array::collect_array_diagnostic(analysis.array_issue.as_ref(), span, diagnostics);
     conditional::collect_conditional_diagnostics(
         analysis.conditional_issue.as_ref(),

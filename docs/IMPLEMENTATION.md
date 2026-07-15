@@ -620,16 +620,22 @@ TypeScriptIrは外側factoryの型引数と内側dictionary expressionを別fiel
 instanceを再選択しません。循環するlocal evidence chainはcall siteの`instance.missing`として停止します。
 `execution-schema-1/constrained-instance-dispatch`が生成module、Console trace、stdoutまで固定します。
 
-このsliceの再帰materializationはlocal evidenceだけを対象にします。instance method bodyのconstraint scopeから
-trait methodを呼ぶ経路と、standard / imported dictionary valueをfactory引数へ渡す経路は後続gateです。
-それらを`unknown` parameterの存在だけで完了扱いせず、method bodyが実際にevidenceを消費する小fixtureと、
-provider moduleを跨ぐ累積goal programで固定します。
+instance constraint scopeはresolved trait identity、型引数、ordered parameter indexとしてexpression typingへ渡します。
+`Just item -> ready item`のtrait callはlocal / standard instanceを再探索せず`parameter` evidenceを選び、
+TypedHir / CoreIrからTypeScriptIrのcompiler-private evidence parameter経由のmethod callへlowerします。
+parameter名にはSeseragi identifierと衝突しない`$`付きgenerated nameを使います。これにより`unknown` parameterの存在だけで
+完了扱いできず、actual executionが内側dictionary methodの結果を観測します。
+
+このsliceの再帰materializationはlocal evidenceとinstance-level constraint scopeだけを対象にします。
+method固有constraint / constrained top-level functionのevidence ABIと、standard / imported dictionary valueを
+factory引数へ渡す経路は後続gateです。provider moduleを跨ぐ累積goal programで別途固定します。
 
 ここまでで標準Array instance、local concrete user-defined instance、unconstrained generic local instance、
 constraint付きgeneric local instanceの選択、evidence transport、dictionary dispatchを別々のfixtureで証明しました。
-imported instance search、coherence、scoped constraint evidence、standard / imported dictionary parameter passingは
-まだ完了gateではありません。それらはPhase 3の一般trait / instance goal programで、標準型名やlocal instanceだけを
-通る経路と区別して回収します。
+imported instance search、coherence、残るscoped evidence form、standard / imported dictionary parameter passingは
+まだ完了gateではありません。instance-level scoped evidenceは接続済みですが、method固有constraintとconstrained
+top-level functionは独自のcall ABIを要するため未接続です。それらはPhase 3の一般trait / instance goal programで、
+標準型名やlocal instanceだけを通る経路と区別して回収します。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。

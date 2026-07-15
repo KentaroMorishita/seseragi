@@ -6,7 +6,7 @@
     "seseragi://artifact/constrained-instance-dispatch"
   ],
   "sourcesContent": [
-    "pub type Badge =\n  | Active\n\npub trait Ready<A> {\n  fn ready value: A -> String\n}\n\npub trait Render<A> {\n  fn render value: A -> String\n}\n\ninstance Ready<Badge> {\n  fn ready value: Badge -> String = \"Constrained dictionary: active\"\n}\n\ninstance<T> Render<Maybe<T>>\nwhere Ready<T> {\n  fn render value: Maybe<T> -> String = \"Constrained dictionary: ready\"\n}\n\npub fn label value: Maybe<Badge> -> String = render value\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (label (Just Active))\n"
+    "pub type Badge =\n  | Active\n\npub trait Ready<A> {\n  fn ready value: A -> String\n}\n\npub trait Render<A> {\n  fn render value: A -> String\n}\n\ninstance Ready<Badge> {\n  fn ready value: Badge -> String = \"Constrained dictionary: ready\"\n}\n\ninstance<T> Render<Maybe<T>>\nwhere Ready<T> {\n  fn render value: Maybe<T> -> String =\n    match value {\n      Nothing -> \"Constrained dictionary: empty\"\n      Just item -> ready item\n    }\n}\n\npub fn label value: Maybe<Badge> -> String = render value\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (label (Just Active))\n"
   ],
   "names": [
     "Badge",
@@ -20,5 +20,5 @@
     "label",
     "Just"
   ],
-  "mappings": ";;;AAAAA;;AACIC;AAUJC;AAIAC;AAKAC;AAEAE"
+  "mappings": ";;;AAAAA;;AACIC;AAUJC;AAIAC;AASAC;AAEAE"
 }

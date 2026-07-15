@@ -16,7 +16,9 @@ pub(super) fn imported_instance_evidence(module: &CoreModule) -> BTreeSet<(Strin
                 identity,
                 provider_module,
             } => Some((provider_module.clone(), identity.clone())),
-            CoreInstanceEvidence::Local { .. } | CoreInstanceEvidence::Standard { .. } => None,
+            CoreInstanceEvidence::Local { .. }
+            | CoreInstanceEvidence::Standard { .. }
+            | CoreInstanceEvidence::Parameter { .. } => None,
         })
         .collect()
 }

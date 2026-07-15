@@ -190,21 +190,21 @@
           },
           "body": {
             "kind": "string",
-            "raw": "\"Constrained dictionary: active\"",
+            "raw": "\"Constrained dictionary: ready\"",
             "span": {
               "start": 199,
-              "end": 231
+              "end": 230
             }
           },
           "span": {
             "start": 165,
-            "end": 231
+            "end": 230
           }
         }
       ],
       "span": {
         "start": 139,
-        "end": 233
+        "end": 232
       }
     },
     {
@@ -214,8 +214,8 @@
       ],
       "traitName": "Render",
       "traitNameSpan": {
-        "start": 247,
-        "end": 253
+        "start": 246,
+        "end": 252
       },
       "arguments": [
         {
@@ -226,14 +226,14 @@
               "kind": "named",
               "name": "T",
               "span": {
-                "start": 260,
-                "end": 261
+                "start": 259,
+                "end": 260
               }
             }
           ],
           "span": {
-            "start": 254,
-            "end": 262
+            "start": 253,
+            "end": 261
           }
         }
       ],
@@ -241,22 +241,22 @@
         {
           "name": "Ready",
           "nameSpan": {
-            "start": 270,
-            "end": 275
+            "start": 269,
+            "end": 274
           },
           "arguments": [
             {
               "kind": "named",
               "name": "T",
               "span": {
-                "start": 276,
-                "end": 277
+                "start": 275,
+                "end": 276
               }
             }
           ],
           "span": {
-            "start": 270,
-            "end": 278
+            "start": 269,
+            "end": 277
           }
         }
       ],
@@ -264,15 +264,15 @@
         {
           "name": "render",
           "nameSpan": {
-            "start": 286,
-            "end": 292
+            "start": 285,
+            "end": 291
           },
           "parameters": [
             {
               "name": "value",
               "nameSpan": {
-                "start": 293,
-                "end": 298
+                "start": 292,
+                "end": 297
               },
               "type": {
                 "kind": "named",
@@ -282,14 +282,14 @@
                     "kind": "named",
                     "name": "T",
                     "span": {
-                      "start": 306,
-                      "end": 307
+                      "start": 305,
+                      "end": 306
                     }
                   }
                 ],
                 "span": {
-                  "start": 300,
-                  "end": 308
+                  "start": 299,
+                  "end": 307
                 }
               }
             }
@@ -298,27 +298,115 @@
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 312,
-              "end": 318
+              "start": 311,
+              "end": 317
             }
           },
           "body": {
-            "kind": "string",
-            "raw": "\"Constrained dictionary: ready\"",
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 330,
+                "end": 335
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Nothing",
+                  "nameSpan": {
+                    "start": 344,
+                    "end": 351
+                  },
+                  "span": {
+                    "start": 344,
+                    "end": 351
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Constrained dictionary: empty\"",
+                  "span": {
+                    "start": 355,
+                    "end": 386
+                  }
+                },
+                "span": {
+                  "start": 344,
+                  "end": 386
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Just",
+                  "nameSpan": {
+                    "start": 393,
+                    "end": 397
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "item",
+                    "nameSpan": {
+                      "start": 398,
+                      "end": 402
+                    },
+                    "span": {
+                      "start": 398,
+                      "end": 402
+                    }
+                  },
+                  "span": {
+                    "start": 393,
+                    "end": 402
+                  }
+                },
+                "body": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "ready",
+                    "span": {
+                      "start": 406,
+                      "end": 411
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "item",
+                    "span": {
+                      "start": 412,
+                      "end": 416
+                    }
+                  },
+                  "span": {
+                    "start": 406,
+                    "end": 416
+                  }
+                },
+                "span": {
+                  "start": 393,
+                  "end": 416
+                }
+              }
+            ],
             "span": {
-              "start": 321,
-              "end": 352
+              "start": 324,
+              "end": 422
             }
           },
           "span": {
-            "start": 283,
-            "end": 352
+            "start": 282,
+            "end": 422
           }
         }
       ],
       "span": {
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       }
     },
     {
@@ -326,15 +414,15 @@
       "visibility": "public",
       "name": "label",
       "nameSpan": {
-        "start": 363,
-        "end": 368
+        "start": 433,
+        "end": 438
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 369,
-            "end": 374
+            "start": 439,
+            "end": 444
           },
           "type": {
             "kind": "named",
@@ -344,14 +432,14 @@
                 "kind": "named",
                 "name": "Badge",
                 "span": {
-                  "start": 382,
-                  "end": 387
+                  "start": 452,
+                  "end": 457
                 }
               }
             ],
             "span": {
-              "start": 376,
-              "end": 388
+              "start": 446,
+              "end": 458
             }
           }
         }
@@ -360,8 +448,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 392,
-          "end": 398
+          "start": 462,
+          "end": 468
         }
       },
       "body": {
@@ -370,26 +458,26 @@
           "kind": "name",
           "name": "render",
           "span": {
-            "start": 401,
-            "end": 407
+            "start": 471,
+            "end": 477
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 408,
-            "end": 413
+            "start": 478,
+            "end": 483
           }
         },
         "span": {
-          "start": 401,
-          "end": 413
+          "start": 471,
+          "end": 483
         }
       },
       "span": {
-        "start": 356,
-        "end": 413
+        "start": 426,
+        "end": 483
       }
     },
     {
@@ -397,15 +485,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 429,
-        "end": 433
+        "start": 499,
+        "end": 503
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 437,
-          "end": 441
+          "start": 507,
+          "end": 511
         }
       },
       "requirements": [
@@ -413,8 +501,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 447,
-            "end": 454
+            "start": 517,
+            "end": 524
           }
         }
       ],
@@ -422,8 +510,8 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 461,
-          "end": 473
+          "start": 531,
+          "end": 543
         }
       },
       "body": {
@@ -432,8 +520,8 @@
           "kind": "name",
           "name": "println",
           "span": {
-            "start": 478,
-            "end": 485
+            "start": 548,
+            "end": 555
           }
         },
         "argument": {
@@ -444,8 +532,8 @@
               "kind": "name",
               "name": "label",
               "span": {
-                "start": 487,
-                "end": 492
+                "start": 557,
+                "end": 562
               }
             },
             "argument": {
@@ -456,46 +544,46 @@
                   "kind": "name",
                   "name": "Just",
                   "span": {
-                    "start": 494,
-                    "end": 498
+                    "start": 564,
+                    "end": 568
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "Active",
                   "span": {
-                    "start": 499,
-                    "end": 505
+                    "start": 569,
+                    "end": 575
                   }
                 },
                 "span": {
-                  "start": 494,
-                  "end": 505
+                  "start": 564,
+                  "end": 575
                 }
               },
               "span": {
-                "start": 493,
-                "end": 506
+                "start": 563,
+                "end": 576
               }
             },
             "span": {
-              "start": 487,
-              "end": 506
+              "start": 557,
+              "end": 576
             }
           },
           "span": {
-            "start": 486,
-            "end": 507
+            "start": 556,
+            "end": 577
           }
         },
         "span": {
-          "start": 478,
-          "end": 507
+          "start": 548,
+          "end": 577
         }
       },
       "span": {
-        "start": 415,
-        "end": 507
+        "start": 485,
+        "end": 577
       }
     }
   ],
@@ -505,7 +593,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 507
+        "end": 577
       }
     },
     {
@@ -559,7 +647,7 @@
       "kind": "declaration",
       "origin": {
         "start": 139,
-        "end": 233
+        "end": 232
       }
     },
     {
@@ -568,7 +656,7 @@
       "kind": "function",
       "origin": {
         "start": 165,
-        "end": 231
+        "end": 230
       }
     },
     {
@@ -576,8 +664,8 @@
       "parent": 0,
       "kind": "declaration",
       "origin": {
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       }
     },
     {
@@ -594,26 +682,44 @@
       "parent": 8,
       "kind": "function",
       "origin": {
-        "start": 283,
-        "end": 352
+        "start": 282,
+        "end": 422
       }
     },
     {
       "id": 11,
-      "parent": 0,
-      "kind": "function",
+      "parent": 10,
+      "kind": "match-arm",
       "origin": {
-        "start": 356,
-        "end": 413
+        "start": 344,
+        "end": 386
       }
     },
     {
       "id": 12,
+      "parent": 10,
+      "kind": "match-arm",
+      "origin": {
+        "start": 393,
+        "end": 416
+      }
+    },
+    {
+      "id": 13,
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 415,
-        "end": 507
+        "start": 426,
+        "end": 483
+      }
+    },
+    {
+      "id": 14,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 485,
+        "end": 577
       }
     }
   ],
@@ -698,8 +804,8 @@
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 363,
-        "end": 368
+        "start": 433,
+        "end": 438
       }
     },
     {
@@ -710,8 +816,8 @@
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 429,
-        "end": 433
+        "start": 499,
+        "end": 503
       }
     },
     {
@@ -788,8 +894,8 @@
       "kind": "type-parameter",
       "scope": 8,
       "origin": {
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       }
     },
     {
@@ -847,23 +953,34 @@
       "kind": "parameter",
       "scope": 10,
       "origin": {
-        "start": 293,
-        "end": 298
+        "start": 292,
+        "end": 297
       }
     },
     {
       "id": 20,
-      "spelling": "value",
+      "spelling": "item",
       "namespace": "value",
-      "kind": "parameter",
-      "scope": 11,
+      "kind": "pattern-binding",
+      "scope": 12,
       "origin": {
-        "start": 369,
-        "end": 374
+        "start": 398,
+        "end": 402
       }
     },
     {
       "id": 21,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 13,
+      "origin": {
+        "start": 439,
+        "end": 444
+      }
+    },
+    {
+      "id": 22,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -875,7 +992,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 23,
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError",
       "namespace": "type",
@@ -887,7 +1004,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 24,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -977,8 +1094,8 @@
       "namespace": "trait",
       "target": 4,
       "origin": {
-        "start": 247,
-        "end": 253
+        "start": 246,
+        "end": 252
       }
     },
     {
@@ -986,8 +1103,8 @@
       "namespace": "type",
       "target": 15,
       "origin": {
-        "start": 254,
-        "end": 262
+        "start": 253,
+        "end": 261
       }
     },
     {
@@ -995,8 +1112,8 @@
       "namespace": "type",
       "target": 14,
       "origin": {
-        "start": 260,
-        "end": 261
+        "start": 259,
+        "end": 260
       }
     },
     {
@@ -1004,8 +1121,8 @@
       "namespace": "trait",
       "target": 2,
       "origin": {
-        "start": 270,
-        "end": 275
+        "start": 269,
+        "end": 274
       }
     },
     {
@@ -1013,8 +1130,8 @@
       "namespace": "type",
       "target": 14,
       "origin": {
-        "start": 276,
-        "end": 277
+        "start": 275,
+        "end": 276
       }
     },
     {
@@ -1022,8 +1139,8 @@
       "namespace": "type",
       "target": 15,
       "origin": {
-        "start": 300,
-        "end": 308
+        "start": 299,
+        "end": 307
       }
     },
     {
@@ -1031,8 +1148,8 @@
       "namespace": "type",
       "target": 14,
       "origin": {
-        "start": 306,
-        "end": 307
+        "start": 305,
+        "end": 306
       }
     },
     {
@@ -1040,8 +1157,56 @@
       "namespace": "type",
       "target": 10,
       "origin": {
-        "start": 312,
-        "end": 318
+        "start": 311,
+        "end": 317
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 330,
+        "end": 335
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 344,
+        "end": 351
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 393,
+        "end": 397
+      }
+    },
+    {
+      "spelling": "ready",
+      "namespace": "value",
+      "target": 3,
+      "candidates": [
+        3
+      ],
+      "origin": {
+        "start": 406,
+        "end": 411
+      }
+    },
+    {
+      "spelling": "item",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 412,
+        "end": 416
       }
     },
     {
@@ -1049,8 +1214,8 @@
       "namespace": "type",
       "target": 15,
       "origin": {
-        "start": 376,
-        "end": 388
+        "start": 446,
+        "end": 458
       }
     },
     {
@@ -1058,8 +1223,8 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 382,
-        "end": 387
+        "start": 452,
+        "end": 457
       }
     },
     {
@@ -1067,8 +1232,8 @@
       "namespace": "type",
       "target": 10,
       "origin": {
-        "start": 392,
-        "end": 398
+        "start": 462,
+        "end": 468
       }
     },
     {
@@ -1079,44 +1244,44 @@
         5
       ],
       "origin": {
-        "start": 401,
-        "end": 407
+        "start": 471,
+        "end": 477
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
-        "start": 408,
-        "end": 413
+        "start": 478,
+        "end": 483
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 21,
+      "target": 22,
       "origin": {
-        "start": 437,
-        "end": 441
+        "start": 507,
+        "end": 511
       }
     },
     {
       "spelling": "ConsoleError",
       "namespace": "type",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 461,
-        "end": 473
+        "start": 531,
+        "end": 543
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 23,
+      "target": 24,
       "origin": {
-        "start": 478,
-        "end": 485
+        "start": 548,
+        "end": 555
       }
     },
     {
@@ -1124,8 +1289,8 @@
       "namespace": "value",
       "target": 6,
       "origin": {
-        "start": 487,
-        "end": 492
+        "start": 557,
+        "end": 562
       }
     },
     {
@@ -1133,8 +1298,8 @@
       "namespace": "value",
       "target": 18,
       "origin": {
-        "start": 494,
-        "end": 498
+        "start": 564,
+        "end": 568
       }
     },
     {
@@ -1142,8 +1307,8 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 499,
-        "end": 505
+        "start": 569,
+        "end": 575
       }
     }
   ],

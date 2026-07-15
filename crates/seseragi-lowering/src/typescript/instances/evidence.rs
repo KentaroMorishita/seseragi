@@ -52,5 +52,8 @@ pub(super) fn resolve_show_dictionary(
                 local: dictionary.local_name.to_owned(),
             }
         }
+        CoreInstanceEvidence::Parameter { .. } => {
+            unreachable!("derived Show payload evidence cannot reference a scoped parameter")
+        }
     }
 }

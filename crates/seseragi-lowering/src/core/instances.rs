@@ -91,6 +91,9 @@ pub enum CoreInstanceEvidence {
     Standard {
         identity: String,
     },
+    Parameter {
+        index: usize,
+    },
 }
 
 pub(super) fn lower_instances(source: &str, instances: Vec<TypedInstance>) -> Vec<CoreInstance> {
@@ -189,6 +192,7 @@ pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreIn
             provider_module,
         },
         TypedInstanceEvidence::Standard { identity } => CoreInstanceEvidence::Standard { identity },
+        TypedInstanceEvidence::Parameter { index } => CoreInstanceEvidence::Parameter { index },
     }
 }
 

@@ -22,6 +22,10 @@ use evidence::resolve_show_dictionary;
 const SHOW_DICTIONARY_FEATURE: &str = "core.show.dictionary";
 const SHOW_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_show_Show";
 
+pub(crate) fn evidence_parameter_name(index: usize) -> String {
+    format!("__ssrg$evidence${index}")
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptInstance {

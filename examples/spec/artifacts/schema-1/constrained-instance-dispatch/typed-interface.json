@@ -149,8 +149,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 356,
-        "end": 413
+        "start": 426,
+        "end": 483
       },
       "scheme": {
         "typeParameters": [],
@@ -183,8 +183,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 415,
-        "end": 507
+        "start": 485,
+        "end": 577
       },
       "scheme": {
         "typeParameters": [],
@@ -251,7 +251,7 @@
       "constraints": [],
       "origin": {
         "start": 139,
-        "end": 233
+        "end": 232
       }
     },
     {
@@ -291,8 +291,8 @@
         }
       ],
       "origin": {
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       }
     }
   ]

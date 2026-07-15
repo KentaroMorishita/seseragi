@@ -354,6 +354,37 @@ fn selects_required_local_evidence_for_a_constrained_generic_instance() {
     ));
 }
 
+#[test]
+fn uses_instance_constraint_evidence_inside_a_method_body() {
+    let typed = type_module(
+        "artifact/scoped-instance-evidence/main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Ready<A> { fn ready value: A -> String }\n\
+         pub trait Inspect<A> { fn inspect value: A -> String }\n\
+         instance Ready<Badge> { fn ready value: Badge -> String = \"active\" }\n\
+         instance<T> Inspect<Maybe<T>> where Ready<T> {\n\
+           fn inspect value: Maybe<T> -> String =\n\
+             match value {\n\
+               Nothing -> \"empty\"\n\
+               Just item -> ready item\n\
+             }\n\
+         }\n",
+    );
+
+    assert!(matches!(
+        &typed.instances[1].implementation,
+        TypedInstanceImplementation::UserDefined { methods }
+            if matches!(methods.as_slice(), [method]
+                if matches!(&method.body, crate::TypedExpr::Match { arms, .. }
+                    if matches!(arms.as_slice(), [_, arm]
+                        if matches!(&arm.body, crate::TypedExpr::Call { evidence, .. }
+                            if matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                                evidence: TypedInstanceEvidence::Parameter { index: 0 },
+                                ..
+                            }])))))
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

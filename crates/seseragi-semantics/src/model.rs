@@ -250,6 +250,9 @@ pub enum TypedInstanceEvidence {
     Standard {
         identity: String,
     },
+    Parameter {
+        index: usize,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

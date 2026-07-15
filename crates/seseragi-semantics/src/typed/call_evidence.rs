@@ -1,7 +1,43 @@
 use super::TypedResolution;
-use crate::{TypedCallEvidence, TypedConstraint, TypedInstanceEvidence, TypedType};
+use crate::{
+    SymbolNamespace, TypedCallEvidence, TypedConstraint, TypedInstanceEvidence, TypedType,
+};
+use seseragi_syntax::SurfaceConstraint;
 
 mod local;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ScopedCallEvidence {
+    trait_identity: String,
+    constraint: TypedConstraint,
+    index: usize,
+}
+
+pub(crate) fn scoped_call_evidence(
+    constraints: &[SurfaceConstraint],
+    resolution: &TypedResolution<'_>,
+) -> Vec<ScopedCallEvidence> {
+    constraints
+        .iter()
+        .enumerate()
+        .filter_map(|(index, constraint)| {
+            let target = resolution.target(constraint.name_span, SymbolNamespace::Trait)?;
+            let trait_identity = resolution.symbol(target)?.canonical.clone()?;
+            Some(ScopedCallEvidence {
+                trait_identity,
+                constraint: TypedConstraint {
+                    name: constraint.name.clone(),
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(super::type_ref::typed_type_from_type_ref)
+                        .collect(),
+                },
+                index,
+            })
+        })
+        .collect()
+}
 
 /// Selects evidence for constraints attached to a saturated function call.
 ///
@@ -30,12 +66,31 @@ pub(crate) fn select_trait_call_evidence(
     constraints: &[TypedConstraint],
     trait_identity: &str,
     resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
 ) -> Result<Vec<TypedCallEvidence>, TypedConstraint> {
     constraints
         .iter()
         .cloned()
         .map(|constraint| {
-            let evidence = if let Some(evidence) =
+            let evidence = if let Some(parameter) = scoped.iter().find(|available| {
+                available.trait_identity == trait_identity
+                    && available.constraint.arguments.len() == constraint.arguments.len()
+                    && available
+                        .constraint
+                        .arguments
+                        .iter()
+                        .zip(&constraint.arguments)
+                        .all(|(available, required)| {
+                            super::semantic_types::semantic_values_are_compatible(
+                                &resolution.semantic_value_from_typed_type(available),
+                                &resolution.semantic_value_from_typed_type(required),
+                            )
+                        })
+            }) {
+                TypedInstanceEvidence::Parameter {
+                    index: parameter.index,
+                }
+            } else if let Some(evidence) =
                 local::select_local_instance(trait_identity, &constraint, resolution)
             {
                 evidence

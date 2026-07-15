@@ -187,21 +187,21 @@
           },
           "body": {
             "kind": "string",
-            "raw": "\"Constrained dictionary: active\"",
+            "raw": "\"Constrained dictionary: ready\"",
             "span": {
               "start": 199,
-              "end": 231
+              "end": 230
             }
           },
           "span": {
             "start": 165,
-            "end": 231
+            "end": 230
           }
         }
       ],
       "span": {
         "start": 139,
-        "end": 233
+        "end": 232
       }
     },
     {
@@ -211,8 +211,8 @@
       ],
       "traitName": "Render",
       "traitNameSpan": {
-        "start": 247,
-        "end": 253
+        "start": 246,
+        "end": 252
       },
       "arguments": [
         {
@@ -223,14 +223,14 @@
               "kind": "named",
               "name": "T",
               "span": {
-                "start": 260,
-                "end": 261
+                "start": 259,
+                "end": 260
               }
             }
           ],
           "span": {
-            "start": 254,
-            "end": 262
+            "start": 253,
+            "end": 261
           }
         }
       ],
@@ -238,22 +238,22 @@
         {
           "name": "Ready",
           "nameSpan": {
-            "start": 270,
-            "end": 275
+            "start": 269,
+            "end": 274
           },
           "arguments": [
             {
               "kind": "named",
               "name": "T",
               "span": {
-                "start": 276,
-                "end": 277
+                "start": 275,
+                "end": 276
               }
             }
           ],
           "span": {
-            "start": 270,
-            "end": 278
+            "start": 269,
+            "end": 277
           }
         }
       ],
@@ -261,15 +261,15 @@
         {
           "name": "render",
           "nameSpan": {
-            "start": 286,
-            "end": 292
+            "start": 285,
+            "end": 291
           },
           "parameters": [
             {
               "name": "value",
               "nameSpan": {
-                "start": 293,
-                "end": 298
+                "start": 292,
+                "end": 297
               },
               "type": {
                 "kind": "named",
@@ -279,14 +279,14 @@
                     "kind": "named",
                     "name": "T",
                     "span": {
-                      "start": 306,
-                      "end": 307
+                      "start": 305,
+                      "end": 306
                     }
                   }
                 ],
                 "span": {
-                  "start": 300,
-                  "end": 308
+                  "start": 299,
+                  "end": 307
                 }
               }
             }
@@ -295,27 +295,115 @@
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 312,
-              "end": 318
+              "start": 311,
+              "end": 317
             }
           },
           "body": {
-            "kind": "string",
-            "raw": "\"Constrained dictionary: ready\"",
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 330,
+                "end": 335
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Nothing",
+                  "nameSpan": {
+                    "start": 344,
+                    "end": 351
+                  },
+                  "span": {
+                    "start": 344,
+                    "end": 351
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Constrained dictionary: empty\"",
+                  "span": {
+                    "start": 355,
+                    "end": 386
+                  }
+                },
+                "span": {
+                  "start": 344,
+                  "end": 386
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Just",
+                  "nameSpan": {
+                    "start": 393,
+                    "end": 397
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "item",
+                    "nameSpan": {
+                      "start": 398,
+                      "end": 402
+                    },
+                    "span": {
+                      "start": 398,
+                      "end": 402
+                    }
+                  },
+                  "span": {
+                    "start": 393,
+                    "end": 402
+                  }
+                },
+                "body": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "ready",
+                    "span": {
+                      "start": 406,
+                      "end": 411
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "item",
+                    "span": {
+                      "start": 412,
+                      "end": 416
+                    }
+                  },
+                  "span": {
+                    "start": 406,
+                    "end": 416
+                  }
+                },
+                "span": {
+                  "start": 393,
+                  "end": 416
+                }
+              }
+            ],
             "span": {
-              "start": 321,
-              "end": 352
+              "start": 324,
+              "end": 422
             }
           },
           "span": {
-            "start": 283,
-            "end": 352
+            "start": 282,
+            "end": 422
           }
         }
       ],
       "span": {
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       }
     },
     {
@@ -323,15 +411,15 @@
       "visibility": "public",
       "name": "label",
       "nameSpan": {
-        "start": 363,
-        "end": 368
+        "start": 433,
+        "end": 438
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 369,
-            "end": 374
+            "start": 439,
+            "end": 444
           },
           "type": {
             "kind": "named",
@@ -341,14 +429,14 @@
                 "kind": "named",
                 "name": "Badge",
                 "span": {
-                  "start": 382,
-                  "end": 387
+                  "start": 452,
+                  "end": 457
                 }
               }
             ],
             "span": {
-              "start": 376,
-              "end": 388
+              "start": 446,
+              "end": 458
             }
           }
         }
@@ -357,8 +445,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 392,
-          "end": 398
+          "start": 462,
+          "end": 468
         }
       },
       "body": {
@@ -367,26 +455,26 @@
           "kind": "name",
           "name": "render",
           "span": {
-            "start": 401,
-            "end": 407
+            "start": 471,
+            "end": 477
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 408,
-            "end": 413
+            "start": 478,
+            "end": 483
           }
         },
         "span": {
-          "start": 401,
-          "end": 413
+          "start": 471,
+          "end": 483
         }
       },
       "span": {
-        "start": 356,
-        "end": 413
+        "start": 426,
+        "end": 483
       }
     },
     {
@@ -394,15 +482,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 429,
-        "end": 433
+        "start": 499,
+        "end": 503
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 437,
-          "end": 441
+          "start": 507,
+          "end": 511
         }
       },
       "requirements": [
@@ -410,8 +498,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 447,
-            "end": 454
+            "start": 517,
+            "end": 524
           }
         }
       ],
@@ -419,8 +507,8 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 461,
-          "end": 473
+          "start": 531,
+          "end": 543
         }
       },
       "body": {
@@ -429,8 +517,8 @@
           "kind": "name",
           "name": "println",
           "span": {
-            "start": 478,
-            "end": 485
+            "start": 548,
+            "end": 555
           }
         },
         "argument": {
@@ -441,8 +529,8 @@
               "kind": "name",
               "name": "label",
               "span": {
-                "start": 487,
-                "end": 492
+                "start": 557,
+                "end": 562
               }
             },
             "argument": {
@@ -453,46 +541,46 @@
                   "kind": "name",
                   "name": "Just",
                   "span": {
-                    "start": 494,
-                    "end": 498
+                    "start": 564,
+                    "end": 568
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "Active",
                   "span": {
-                    "start": 499,
-                    "end": 505
+                    "start": 569,
+                    "end": 575
                   }
                 },
                 "span": {
-                  "start": 494,
-                  "end": 505
+                  "start": 564,
+                  "end": 575
                 }
               },
               "span": {
-                "start": 493,
-                "end": 506
+                "start": 563,
+                "end": 576
               }
             },
             "span": {
-              "start": 487,
-              "end": 506
+              "start": 557,
+              "end": 576
             }
           },
           "span": {
-            "start": 486,
-            "end": 507
+            "start": 556,
+            "end": 577
           }
         },
         "span": {
-          "start": 478,
-          "end": 507
+          "start": 548,
+          "end": 577
         }
       },
       "span": {
-        "start": 415,
-        "end": 507
+        "start": 485,
+        "end": 577
       }
     }
   ]

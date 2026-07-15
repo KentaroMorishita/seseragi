@@ -22,6 +22,7 @@ pub(crate) fn analyze_pure_function(
     parameters: &[SurfaceParameter],
     return_type: &TypeRef,
     resolution: &TypedResolution<'_>,
+    scoped_evidence: &[super::ScopedCallEvidence],
 ) -> PureFunctionAnalysis {
     let Some(body) = body else {
         return PureFunctionAnalysis {
@@ -34,6 +35,7 @@ pub(crate) fn analyze_pure_function(
     };
     let typed_parameters = typed_parameters_from_surface(parameters);
     let context = PureExpressionContext::new(&typed_parameters, resolution)
+        .with_evidence_parameters(scoped_evidence.to_vec())
         .with_expected(Some(resolution.semantic_value_from_type_ref(return_type)));
     let expression = analyze_resolved_expression(body, &context);
     let expected = resolution.semantic_value_from_type_ref(return_type);

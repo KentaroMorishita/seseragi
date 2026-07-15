@@ -18,6 +18,7 @@ pub(crate) mod types;
 use adt::lower_core_adt_to_typescript;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
 use imports::freshen_runtime_imports;
+pub(crate) use instances::evidence_parameter_name;
 use instances::{
     dictionary_export_name, local_instance_expression_key, lower_core_instances_to_typescript,
 };

@@ -184,8 +184,10 @@ actual operation traceとstdoutを固定します。
 `Maybe<Badge>`へ選択するとき、必要な`Ready<Badge>`のlocal instanceを再帰選択します。orderedな
 `evidenceArguments`をTypedHir / CoreIrへ保持し、TypeScriptIrのdictionary factory callと生成TSの
 `<Badge>(readyDictionary)`へlowerします。`execution-schema-1/constrained-instance-dispatch`は同じ生成moduleを
-Console hostで実行します。このcaseはcall siteでのlocal evidence materializationを固定するgateです。
-instance method body内からconstraint methodを使うscoped evidenceと、standard / imported evidenceのfactory引数化は
+Console hostで実行します。`Render` methodの`Just item -> ready item`はinstance constraintを
+`parameter` evidenceとしてTypedHir / CoreIrへ保持し、生成TSではfactory closureのcompiler-private evidence名からdispatchします。
+このcaseはcall siteでのlocal evidence materializationとmethod bodyでの消費を両方固定するgateです。
+method固有constraint / constrained top-level functionのevidence ABIと、standard / imported evidenceのfactory引数化は
 独立した後続gateです。
 
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを

@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 206,
+    "endToken": 232,
     "children": [
       {
         "kind": "top-decl",
@@ -68,48 +68,48 @@
       {
         "kind": "top-decl",
         "startToken": 100,
-        "endToken": 146,
+        "endToken": 172,
         "children": []
       },
       {
         "kind": "top-decl",
-        "startToken": 146,
-        "endToken": 171,
+        "startToken": 172,
+        "endToken": 197,
         "children": [
           {
             "kind": "decl-modifiers",
-            "startToken": 146,
-            "endToken": 147,
+            "startToken": 172,
+            "endToken": 173,
             "children": []
           },
           {
             "kind": "fn-decl",
-            "startToken": 148,
-            "endToken": 171,
+            "startToken": 174,
+            "endToken": 197,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 171,
-        "endToken": 206,
+        "startToken": 197,
+        "endToken": 232,
         "children": [
           {
             "kind": "decl-modifiers",
-            "startToken": 171,
-            "endToken": 172,
+            "startToken": 197,
+            "endToken": 198,
             "children": []
           },
           {
             "kind": "effect-fn-decl",
-            "startToken": 173,
-            "endToken": 206,
+            "startToken": 199,
+            "endToken": 232,
             "children": [
               {
                 "kind": "effect-signature",
-                "startToken": 173,
-                "endToken": 183,
+                "startToken": 199,
+                "endToken": 209,
                 "children": []
               }
             ]

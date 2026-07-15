@@ -47,9 +47,10 @@ fn typed_instance(
         .iter()
         .map(|argument| canonical_type_ref(argument, resolution, &binders))
         .collect::<Option<Vec<_>>>()?;
+    let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
     let methods = methods
         .iter()
-        .map(|method| typed_method(method, resolution))
+        .map(|method| typed_method(method, resolution, &scoped_evidence))
         .collect::<Option<Vec<_>>>()?;
 
     Some(TypedInstance {
@@ -77,12 +78,15 @@ fn typed_instance(
 fn typed_method(
     method: &SurfaceMethod,
     resolution: &TypedResolution<'_>,
+    scoped_evidence: &[crate::typed::ScopedCallEvidence],
 ) -> Option<TypedInstanceMethod> {
     let body = method.body.as_ref()?;
     let parameters = typed_parameters_from_surface(&method.parameters);
-    let context = PureExpressionContext::new(&parameters, resolution).with_expected(Some(
-        resolution.semantic_value_from_type_ref(&method.return_type),
-    ));
+    let context = PureExpressionContext::new(&parameters, resolution)
+        .with_evidence_parameters(scoped_evidence.to_vec())
+        .with_expected(Some(
+            resolution.semantic_value_from_type_ref(&method.return_type),
+        ));
     let body = analyze_resolved_expression(body, &context).value;
 
     Some(TypedInstanceMethod {

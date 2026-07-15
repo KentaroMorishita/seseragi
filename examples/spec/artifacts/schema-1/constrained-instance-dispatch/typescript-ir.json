@@ -58,7 +58,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 139,
-        "end": 233
+        "end": 232
       },
       "dictionaryExport": "__ssrg$instance$Ready$0",
       "implementation": {
@@ -75,12 +75,12 @@
             ],
             "body": {
               "kind": "string",
-              "value": "Constrained dictionary: active"
+              "value": "Constrained dictionary: ready"
             },
             "origin": {
               "source": "main.ssrg",
               "start": 165,
-              "end": 231
+              "end": 230
             }
           }
         ]
@@ -116,8 +116,8 @@
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       },
       "dictionaryExport": "__ssrg$instance$Render$1",
       "implementation": {
@@ -133,13 +133,80 @@
               }
             ],
             "body": {
-              "kind": "string",
-              "value": "Constrained dictionary: ready"
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "T",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Nothing"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Constrained dictionary: empty"
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "ready",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "item"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 283,
-              "end": 352
+              "start": 282,
+              "end": 422
             }
           }
         ]
@@ -187,8 +254,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 356,
-        "end": 413
+        "start": 426,
+        "end": 483
       }
     },
     {
@@ -226,8 +293,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 415,
-        "end": 507
+        "start": 485,
+        "end": 577
       }
     }
   ]

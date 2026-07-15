@@ -23,7 +23,7 @@
       "constraints": [],
       "origin": {
         "start": 139,
-        "end": 233
+        "end": 232
       },
       "implementation": {
         "kind": "user-defined",
@@ -56,7 +56,7 @@
             ],
             "body": {
               "kind": "string",
-              "value": "Constrained dictionary: active",
+              "value": "Constrained dictionary: ready",
               "type": {
                 "kind": "named",
                 "name": "String",
@@ -64,12 +64,12 @@
               },
               "origin": {
                 "start": 199,
-                "end": 231
+                "end": 230
               }
             },
             "origin": {
               "start": 165,
-              "end": 231
+              "end": 230
             }
           }
         ]
@@ -107,8 +107,8 @@
         }
       ],
       "origin": {
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       },
       "implementation": {
         "kind": "user-defined",
@@ -140,27 +140,175 @@
                   ]
                 },
                 "origin": {
-                  "start": 293,
-                  "end": 298
+                  "start": 292,
+                  "end": 297
                 }
               }
             ],
             "body": {
-              "kind": "string",
-              "value": "Constrained dictionary: ready",
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 330,
+                  "end": 335
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 344,
+                      "end": 351
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Constrained dictionary: empty",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 355,
+                      "end": 386
+                    }
+                  },
+                  "origin": {
+                    "start": 344,
+                    "end": 386
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Just",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 20,
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 398,
+                        "end": 402
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 393,
+                      "end": 402
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "artifact/constrained-instance-dispatch::trait(Ready)::ready",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "item",
+                        "type": {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 412,
+                          "end": 416
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Ready",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "T",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
+                      "method": "ready"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 406,
+                      "end": 416
+                    }
+                  },
+                  "origin": {
+                    "start": 393,
+                    "end": 416
+                  }
+                }
+              ],
+              "exhaustive": true,
               "type": {
                 "kind": "named",
                 "name": "String",
                 "arguments": []
               },
               "origin": {
-                "start": 321,
-                "end": 352
+                "start": 324,
+                "end": 422
               }
             },
             "origin": {
-              "start": 283,
-              "end": 352
+              "start": 282,
+              "end": 422
             }
           }
         ]
@@ -204,8 +352,8 @@
       "symbol": "artifact/constrained-instance-dispatch::label",
       "visibility": "public",
       "origin": {
-        "start": 356,
-        "end": 413
+        "start": 426,
+        "end": 483
       },
       "scheme": {
         "typeParameters": [],
@@ -232,8 +380,8 @@
             ]
           },
           "origin": {
-            "start": 369,
-            "end": 374
+            "start": 439,
+            "end": 444
           }
         }
       ],
@@ -256,8 +404,8 @@
               ]
             },
             "origin": {
-              "start": 408,
-              "end": 413
+              "start": 478,
+              "end": 483
             }
           }
         ],
@@ -320,8 +468,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 401,
-          "end": 413
+          "start": 471,
+          "end": 483
         }
       }
     },
@@ -330,8 +478,8 @@
       "symbol": "artifact/constrained-instance-dispatch::main",
       "visibility": "public",
       "origin": {
-        "start": 415,
-        "end": 507
+        "start": 485,
+        "end": 577
       },
       "parameters": [
         {
@@ -416,8 +564,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 499,
-                      "end": 505
+                      "start": 569,
+                      "end": 575
                     }
                   }
                 ],
@@ -433,8 +581,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 494,
-                  "end": 505
+                  "start": 564,
+                  "end": 575
                 }
               }
             ],
@@ -444,14 +592,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 487,
-              "end": 506
+              "start": 557,
+              "end": 576
             }
           }
         ],
         "origin": {
-          "start": 478,
-          "end": 507
+          "start": 548,
+          "end": 577
         }
       }
     }

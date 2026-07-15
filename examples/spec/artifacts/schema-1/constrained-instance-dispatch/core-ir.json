@@ -47,7 +47,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 139,
-        "end": 233
+        "end": 232
       },
       "implementation": {
         "kind": "user-defined",
@@ -67,17 +67,17 @@
             ],
             "body": {
               "kind": "string",
-              "value": "Constrained dictionary: active",
+              "value": "Constrained dictionary: ready",
               "origin": {
                 "source": "main.ssrg",
                 "start": 199,
-                "end": 231
+                "end": 230
               }
             },
             "origin": {
               "source": "main.ssrg",
               "start": 165,
-              "end": 231
+              "end": 230
             }
           }
         ]
@@ -116,8 +116,8 @@
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 235,
-        "end": 354
+        "start": 234,
+        "end": 424
       },
       "implementation": {
         "kind": "user-defined",
@@ -142,18 +142,175 @@
               }
             ],
             "body": {
-              "kind": "string",
-              "value": "Constrained dictionary: ready",
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 330,
+                  "end": 335
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Nothing",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 344,
+                        "end": 351
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Constrained dictionary: empty",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 355,
+                      "end": 386
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 344,
+                    "end": 386
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Just",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 393,
+                        "end": 402
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 398,
+                        "end": 402
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/constrained-instance-dispatch::trait(Ready)::ready",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "item",
+                        "type": {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 412,
+                          "end": 416
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Ready",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "T",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
+                      "method": "ready"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 406,
+                      "end": 416
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 393,
+                    "end": 416
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
               "origin": {
                 "source": "main.ssrg",
-                "start": 321,
-                "end": 352
+                "start": 324,
+                "end": 422
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 283,
-              "end": 352
+              "start": 282,
+              "end": 422
             }
           }
         ]
@@ -166,8 +323,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 356,
-        "end": 413
+        "start": 426,
+        "end": 483
       },
       "parameters": [
         {
@@ -206,8 +363,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 408,
-              "end": 413
+              "start": 478,
+              "end": 483
             }
           }
         ],
@@ -271,8 +428,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 401,
-          "end": 413
+          "start": 471,
+          "end": 483
         }
       }
     },
@@ -281,8 +438,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 415,
-        "end": 507
+        "start": 485,
+        "end": 577
       },
       "parameters": [
         {
@@ -341,8 +498,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 499,
-                      "end": 505
+                      "start": 569,
+                      "end": 575
                     }
                   }
                 ],
@@ -359,8 +516,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 494,
-                  "end": 505
+                  "start": 564,
+                  "end": 575
                 }
               }
             ],
@@ -371,15 +528,15 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 487,
-              "end": 506
+              "start": 557,
+              "end": 576
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 478,
-          "end": 507
+          "start": 548,
+          "end": 577
         }
       }
     }

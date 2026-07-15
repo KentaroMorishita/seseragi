@@ -10,12 +10,16 @@ pub trait Render<A> {
 }
 
 instance Ready<Badge> {
-  fn ready value: Badge -> String = "Constrained dictionary: active"
+  fn ready value: Badge -> String = "Constrained dictionary: ready"
 }
 
 instance<T> Render<Maybe<T>>
 where Ready<T> {
-  fn render value: Maybe<T> -> String = "Constrained dictionary: ready"
+  fn render value: Maybe<T> -> String =
+    match value {
+      Nothing -> "Constrained dictionary: empty"
+      Just item -> ready item
+    }
 }
 
 pub fn label value: Maybe<Badge> -> String = render value
