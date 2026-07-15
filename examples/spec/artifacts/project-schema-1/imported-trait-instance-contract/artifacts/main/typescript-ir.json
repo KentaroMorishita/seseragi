@@ -3,18 +3,116 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-trait-instance-contract::main",
   "runtimeRequirements": [
-    "core.unit",
-    "core.string"
+    "core.adt",
+    "core.string",
+    "core.unit"
   ],
   "sourceImports": [
     {
       "module": "fixture/imported-trait-instance-contract::contract",
       "specifier": "./contract.js",
-      "bindings": [],
+      "bindings": [
+        {
+          "imported": "Prefix",
+          "local": "Prefix",
+          "sourceLocal": "Prefix",
+          "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 18,
+            "end": 24
+          }
+        }
+      ],
       "origin": {
         "source": "main.ssrg",
         "start": 0,
         "end": 52
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Score",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "ScoreValue",
+          "tag": "ScoreValue",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 69,
+            "end": 79
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 54,
+        "end": 79
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-trait-instance-contract::contract::trait(Render)<fixture/imported-trait-instance-contract::main::Score>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 81,
+        "end": 197
+      },
+      "dictionaryExport": "__ssrg$instance$Render$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "constraints": [
+              {
+                "name": "Labeled",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Score",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "prefix",
+                "type": "Prefix",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "Score",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "score"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 108,
+              "end": 195
+            }
+          }
+        ]
       }
     }
   ],
@@ -36,8 +134,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 193,
-        "end": 246
+        "start": 199,
+        "end": 252
       }
     }
   ]

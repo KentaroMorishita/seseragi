@@ -1,6 +1,6 @@
 import { Labeled, Prefix, Render } from "./contract"
 
-newtype Score = Int
+type Score = | ScoreValue
 
 instance Render<Score> {
   fn render prefix: Prefix -> value: Score -> String

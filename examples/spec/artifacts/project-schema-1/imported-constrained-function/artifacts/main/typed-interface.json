@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-constrained-function::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-constrained-function::domain",
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "trait",
+          "name": "Ready",
+          "symbol": "fixture/imported-constrained-function::domain::trait(Ready)"
+        },
+        {
+          "namespace": "value",
+          "name": "describe",
+          "symbol": "fixture/imported-constrained-function::domain::describe"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-constrained-function::main::Badge",
+      "namespace": "type",
+      "name": "Badge",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 44,
+        "end": 71
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Badge",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-constrained-function::main::Active",
+      "namespace": "value",
+      "name": "Active",
+      "constructorOf": "fixture/imported-constrained-function::main::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 65,
+        "end": 71
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-constrained-function::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 153,
+        "end": 241
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>",
+      "providerModule": "fixture/imported-constrained-function::main",
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 73,
+        "end": 151
+      }
+    }
+  ]
+}

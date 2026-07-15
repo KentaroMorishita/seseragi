@@ -1,4 +1,7 @@
-use super::{scheme_types::export_scheme_type_bindings, Resolver};
+use super::{
+    scheme_types::{export_scheme_trait_bindings, export_scheme_type_bindings},
+    Resolver,
+};
 use crate::{ResolveIssue, ResolvedImport, ScopeId, SymbolId, SymbolKind, SymbolNamespace};
 use seseragi_syntax::{ByteSpan, InterfaceExport, ModuleHeader, ModuleInterface, Visibility};
 use std::collections::{BTreeMap, BTreeSet};
@@ -15,6 +18,7 @@ struct NamespaceImport {
     origin: ByteSpan,
     exports: BTreeMap<(String, String), InterfaceExport>,
     scheme_type_bindings: BTreeMap<(String, String), Option<Vec<crate::ExternalTypeBinding>>>,
+    scheme_trait_bindings: BTreeMap<(String, String), Option<Vec<crate::ExternalTraitBinding>>>,
     private_names: BTreeSet<(String, String)>,
 }
 
@@ -24,6 +28,7 @@ struct NamespaceMember {
     origin: ByteSpan,
     export: InterfaceExport,
     scheme_type_bindings: Option<Vec<crate::ExternalTypeBinding>>,
+    scheme_trait_bindings: Option<Vec<crate::ExternalTraitBinding>>,
 }
 
 enum NamespaceMemberLookup {
@@ -63,6 +68,16 @@ impl NamespaceImports {
                 )
             })
             .collect();
+        let scheme_trait_bindings = interface
+            .exports
+            .iter()
+            .map(|export| {
+                (
+                    (export.namespace.clone(), export.name.clone()),
+                    export_scheme_trait_bindings(interface, export),
+                )
+            })
+            .collect();
         let private_names = header
             .into_iter()
             .flat_map(|header| &header.names)
@@ -80,6 +95,7 @@ impl NamespaceImports {
                 origin,
                 exports,
                 scheme_type_bindings,
+                scheme_trait_bindings,
                 private_names,
             },
         );
@@ -101,6 +117,7 @@ impl NamespaceImports {
                 origin: binding.origin,
                 export: export.clone(),
                 scheme_type_bindings: binding.scheme_type_bindings.get(&key).cloned().flatten(),
+                scheme_trait_bindings: binding.scheme_trait_bindings.get(&key).cloned().flatten(),
             })));
         }
         if binding.private_names.contains(&key) {
@@ -190,6 +207,7 @@ impl Resolver {
             in_scope: true,
             export: member.export,
             scheme_type_bindings: member.scheme_type_bindings,
+            scheme_trait_bindings: member.scheme_trait_bindings,
             contract_trait_bindings: None,
         });
         Ok(Some(symbol))

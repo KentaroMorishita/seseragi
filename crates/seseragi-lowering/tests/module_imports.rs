@@ -59,6 +59,41 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
 }
 
 #[test]
+fn passes_local_evidence_to_an_imported_constrained_function() {
+    let domain_source = "\
+pub trait Ready<A> { fn ready value: A -> String }
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  ready value
+";
+    let main_source = "\
+import { Ready, describe } from \"./domain\"
+pub type Badge = | Active
+instance Ready<Badge> { fn ready value: Badge -> String = \"imported ready\" }
+pub fn status value: Badge -> String = describe value
+";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+    let generated = emit_typescript_module(typescript, main_source);
+
+    assert!(generated
+        .typescript
+        .contains("import { describe } from \"./domain.js\""));
+    assert!(generated.typescript.contains(
+        "export const status = (value: Badge) => describe(value)(__ssrg$instance$Ready$0)"
+    ));
+    assert!(!generated.typescript.contains("@seseragi/runtime"));
+}
+
+#[test]
 fn lowers_a_namespace_member_call_to_a_selected_named_import() {
     let domain_source = "pub fn identity<A> value: A -> A = value\n";
     let main_source = "import * as domain from \"./domain\"\n\npub fn run value: String -> String = domain.identity value\n";

@@ -19,7 +19,7 @@ pub fn label value: Badge -> String = describe value
 
     assert!(
         bundle.typescript.contains(
-            "export const describe = <T,>(value: T) => (__ssrg$evidence$0: unknown) => __ssrg$evidence$0[\"ready\"](value)"
+            "export const describe = <T,>(value: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0[\"ready\"](value)"
         ),
         "{}",
         bundle.typescript

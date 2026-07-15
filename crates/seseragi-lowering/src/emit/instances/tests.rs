@@ -165,7 +165,7 @@ pub fn label value: Maybe<Badge> -> String = render value
 
     assert!(
         bundle.typescript.contains(
-            "export const __ssrg$instance$Render$1 = <T,>(__ssrg$evidence$0: unknown) =>"
+            "export const __ssrg$instance$Render$1 = <T,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) =>"
         ),
         "{}",
         bundle.typescript
@@ -237,7 +237,7 @@ pub fn label value: Maybe<Badge> -> String = inspect value
     assert!(
         bundle
             .typescript
-            .contains("<T,>(__ssrg$evidence$0: unknown) => ({ \"inspect\": (_evidence0:"),
+            .contains("<T,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ \"inspect\": (_evidence0:"),
         "{}",
         bundle.typescript
     );
@@ -271,7 +271,7 @@ pub fn status value: Badge -> String = render value
 
     assert!(
         bundle.typescript.contains(
-            "\"render\": (value: Badge) => (__ssrg$evidence$0: unknown) => __ssrg$evidence$0[\"label\"](value)"
+            "\"render\": (value: Badge) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0[\"label\"](value)"
         ),
         "{}",
         bundle.typescript
@@ -308,7 +308,7 @@ pub fn status value: Maybe<Badge> -> String = render value
 
     assert!(
         bundle.typescript.contains(
-            "<T,>(__ssrg$evidence$0: unknown) => ({ \"render\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => (__ssrg$evidence$1: unknown) =>"
+            "<T,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ \"render\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => (__ssrg$evidence$1: Readonly<Record<string, (...args: any[]) => any>>) =>"
         ),
         "{}",
         bundle.typescript

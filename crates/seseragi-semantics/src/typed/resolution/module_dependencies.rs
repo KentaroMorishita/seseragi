@@ -104,6 +104,7 @@ mod tests {
                 representation: None,
             },
             scheme_type_bindings: None,
+            scheme_trait_bindings: None,
             contract_trait_bindings: None,
         }
     }

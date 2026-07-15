@@ -1,4 +1,5 @@
-use crate::{ResolvedModule, SymbolId};
+use crate::prelude::is_standalone_symbol;
+use crate::{ResolvedModule, SymbolId, SymbolNamespace, TypedConstraint};
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::super::functions::TopLevelPureFunction;
@@ -18,9 +19,7 @@ pub(super) fn collect_imported_callables(
             }
             let export = &import.export;
             let scheme_type_bindings = import.scheme_type_bindings.as_deref()?;
-            if export.declaration_kind.as_deref() != Some("function")
-                || !export.scheme.constraints.is_empty()
-            {
+            if export.declaration_kind.as_deref() != Some("function") {
                 return None;
             }
             let (parameter_interfaces, result_interface) =
@@ -48,6 +47,52 @@ pub(super) fn collect_imported_callables(
                 &type_parameters,
                 scheme_type_bindings,
             )?;
+            let constraints = export
+                .scheme
+                .constraints
+                .iter()
+                .map(|constraint| {
+                    let arguments = constraint
+                        .arguments
+                        .iter()
+                        .cloned()
+                        .map(|argument| {
+                            types
+                                .semantic_value(
+                                    argument,
+                                    &import.module,
+                                    &type_parameters,
+                                    scheme_type_bindings,
+                                )
+                                .map(|argument| argument.type_ref)
+                        })
+                        .collect::<Option<Vec<_>>>()?;
+                    Some(TypedConstraint {
+                        name: constraint.name.clone(),
+                        arguments,
+                    })
+                })
+                .collect::<Option<Vec<_>>>()?;
+            let constraint_identities = export
+                .scheme
+                .constraints
+                .iter()
+                .map(|constraint| {
+                    if let Some(binding) =
+                        import
+                            .scheme_trait_bindings
+                            .as_deref()
+                            .and_then(|bindings| {
+                                bindings
+                                    .iter()
+                                    .find(|binding| binding.spelling == constraint.name)
+                            })
+                    {
+                        return Some(Some(binding.canonical.clone()));
+                    }
+                    is_standalone_symbol(SymbolNamespace::Trait, &constraint.name).then_some(None)
+                })
+                .collect::<Option<Vec<_>>>()?;
             let parameter_types = parameters
                 .iter()
                 .map(|parameter| parameter.type_ref.clone())
@@ -71,8 +116,8 @@ pub(super) fn collect_imported_callables(
                     trait_identity: None,
                     trait_method: None,
                     type_parameters: export.scheme.type_parameters.clone(),
-                    constraints: Vec::new(),
-                    constraint_identities: Vec::new(),
+                    constraints,
+                    constraint_identities,
                     parameters: parameter_types,
                     semantic_parameters,
                     result: result_type,

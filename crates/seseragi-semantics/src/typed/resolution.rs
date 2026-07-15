@@ -529,7 +529,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn includes_unconstrained_generic_and_higher_order_functions() {
+    fn includes_generic_constrained_and_higher_order_functions() {
         let resolved = crate::resolve_module(
             "artifact/functions/main.ssrg",
             "fn identity<A> value: A -> A = value\nfn constrained<A> value: A -> A\nwhere Eq<A> = value\nfn apply f: (Int -> Int) -> value: Int -> Int = f value\n",
@@ -537,7 +537,7 @@ mod tests {
 
         let semantic_types = SemanticTypeCatalog::new(&resolved);
         let callables = collect_callables(&resolved, &semantic_types);
-        assert_eq!(callables.len(), 2);
+        assert_eq!(callables.len(), 3);
         assert!(callables
             .values()
             .any(|callable| callable.symbol == "artifact/functions::identity"
@@ -546,5 +546,10 @@ mod tests {
             .values()
             .any(|callable| callable.symbol == "artifact/functions::apply"
                 && callable.parameters.len() == 2));
+        assert!(callables.values().any(|callable| {
+            callable.symbol == "artifact/functions::constrained"
+                && matches!(callable.constraints.as_slice(), [constraint]
+                    if constraint.name == "Eq")
+        }));
     }
 }

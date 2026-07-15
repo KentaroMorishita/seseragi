@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-constrained-function::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-constrained-function::domain",
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "trait",
+          "imported": "Ready",
+          "local": "Ready",
+          "canonical": "fixture/imported-constrained-function::domain::trait(Ready)",
+          "origin": {
+            "start": 9,
+            "end": 14
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "describe",
+          "local": "describe",
+          "canonical": "fixture/imported-constrained-function::domain::describe",
+          "origin": {
+            "start": 16,
+            "end": 24
+          }
+        }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 73,
+        "end": 151
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 108,
+                  "end": 113
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported ready",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 133,
+                "end": 149
+              }
+            },
+            "origin": {
+              "start": 99,
+              "end": 149
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-constrained-function::main::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-constrained-function::main::Active",
+          "name": "Active",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 65,
+            "end": 71
+          }
+        }
+      ],
+      "origin": {
+        "start": 44,
+        "end": 71
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-constrained-function::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 153,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-constrained-function::domain::describe",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "fixture/imported-constrained-function::main::Active",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 234,
+                  "end": 240
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Ready",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 225,
+              "end": 240
+            }
+          }
+        ],
+        "origin": {
+          "start": 216,
+          "end": 241
+        }
+      }
+    }
+  ]
+}

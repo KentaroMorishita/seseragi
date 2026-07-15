@@ -6,6 +6,7 @@ use seseragi_project::{link_module, ModuleLinkTarget};
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::BTreeMap;
 
+mod imported_constrained_functions;
 mod imported_effect_invocations;
 mod imported_instance_evidence;
 mod imported_scheme_nominals;

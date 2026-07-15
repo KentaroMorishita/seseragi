@@ -1,0 +1,227 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-constrained-function::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-constrained-function::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "trait",
+          "imported": "Ready",
+          "local": "Ready",
+          "canonical": "fixture/imported-constrained-function::domain::trait(Ready)",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 14
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "describe",
+          "local": "describe",
+          "canonical": "fixture/imported-constrained-function::domain::describe",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 24
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "fixture/imported-constrained-function::main::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-constrained-function::main::Active",
+          "name": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 65,
+            "end": 71
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 71
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 151
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported ready",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 133,
+                "end": 149
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 99,
+              "end": 149
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-constrained-function::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 153,
+        "end": 241
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-constrained-function::domain::describe",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "fixture/imported-constrained-function::main::Active",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 234,
+                  "end": 240
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Ready",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 225,
+              "end": 240
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 216,
+          "end": 241
+        }
+      }
+    }
+  ]
+}

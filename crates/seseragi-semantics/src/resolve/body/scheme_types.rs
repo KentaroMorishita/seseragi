@@ -5,7 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod trait_bindings;
 
-pub(super) use trait_bindings::export_contract_trait_bindings;
+pub(super) use trait_bindings::{export_contract_trait_bindings, export_scheme_trait_bindings};
 
 pub(super) fn export_scheme_type_bindings(
     provider: &ModuleInterface,

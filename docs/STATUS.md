@@ -38,7 +38,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | lessonあり、law fixture不足                | local / imported trait contract検査まで部分実装 |
+| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | lessonあり、law fixture不足                | local dictionary dispatch / imported constrained callableまで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
@@ -173,10 +173,14 @@ instance method bodyのtrait callもresolved constraint scopeから`parameter` e
 `schema-1/method-constraint-dispatch`でprimary dictionaryの後ろへordered evidenceとして選択し、method closureの
 compiler-private parameterから消費してactual executionまで接続済みです。instance-levelとmethod-levelのparameter indexは
 offsetで分離します。未接続なのはstandard / imported evidenceのfactory引数化とcross-module dictionary selectionです。
+public constrained pure functionはmodule interfaceのconstraintをprovider-local canonical trait identityとともに運び、
+consumer側のlocal instanceをimported callへ渡せます。`project-schema-1/imported-constrained-function`はproviderの
+`describe<T> where Ready<T>`とconsumerの`Ready<Badge>`を通常project pipelineへ通し、生成ESMのclosed TypeScript check、
+Console trace、stdoutまで固定します。別moduleがexportしたdictionary自体の選択とtransitive closureは未接続です。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained functionとimported constrained functionは未接続です。
+first-class partial constrained functionとimported dictionary selectionは未接続です。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

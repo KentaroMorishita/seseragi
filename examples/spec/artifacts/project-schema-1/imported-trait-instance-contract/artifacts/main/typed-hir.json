@@ -65,14 +65,136 @@
       ]
     }
   ],
+  "instances": [
+    {
+      "identity": "fixture/imported-trait-instance-contract::contract::trait(Render)<fixture/imported-trait-instance-contract::main::Score>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 81,
+        "end": 197
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [
+                {
+                  "name": "Labeled",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "prefix",
+                "type": {
+                  "kind": "named",
+                  "name": "Prefix",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 118,
+                  "end": 124
+                }
+              },
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 136,
+                  "end": 141
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "score",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 188,
+                "end": 195
+              }
+            },
+            "origin": {
+              "start": 108,
+              "end": 195
+            }
+          }
+        ]
+      }
+    }
+  ],
   "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-trait-instance-contract::main::Score",
+      "name": "Score",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-trait-instance-contract::main::ScoreValue",
+          "name": "ScoreValue",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 69,
+            "end": 79
+          }
+        }
+      ],
+      "origin": {
+        "start": 54,
+        "end": 79
+      }
+    },
     {
       "kind": "fn",
       "symbol": "fixture/imported-trait-instance-contract::main::status",
       "visibility": "public",
       "origin": {
-        "start": 193,
-        "end": 246
+        "start": 199,
+        "end": 252
       },
       "scheme": {
         "typeParameters": [],
@@ -93,8 +215,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 207,
-            "end": 211
+            "start": 213,
+            "end": 217
           }
         }
       ],
@@ -107,8 +229,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 230,
-          "end": 246
+          "start": 236,
+          "end": 252
         }
       }
     }

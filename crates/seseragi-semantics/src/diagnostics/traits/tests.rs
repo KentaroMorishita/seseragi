@@ -63,7 +63,11 @@ fn does_not_misclassify_other_standard_deriving_traits_as_unknown() {
         "type Hand deriving Eq = | Rock\n",
     );
 
-    assert!(artifact.diagnostics.is_empty());
+    assert!(
+        artifact.diagnostics.is_empty(),
+        "{:?}",
+        artifact.diagnostics
+    );
 }
 
 #[test]
@@ -84,10 +88,14 @@ fn accepts_alpha_renamed_higher_kinded_method_contracts() {
         "artifact/instance-hkt-contract/main.ssrg",
         "trait MapLike<F> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> where Eq<A>, Show<B> }\n\
          type Box<A> = | Box A\n\
-         instance MapLike<Box> { fn map<X, Y> f: (X -> Y) -> value: Box<X> -> Box<Y> where Show<Y>, Eq<X> = value }\n",
+         instance MapLike<Box> { fn map<X, Y> f: (X -> Y) -> value: Box<X> -> Box<Y> where Show<Y>, Eq<X> = match value { Box item -> Box (f item) } }\n",
     );
 
-    assert!(artifact.diagnostics.is_empty());
+    assert!(
+        artifact.diagnostics.is_empty(),
+        "{:?}",
+        artifact.diagnostics
+    );
 }
 
 #[test]

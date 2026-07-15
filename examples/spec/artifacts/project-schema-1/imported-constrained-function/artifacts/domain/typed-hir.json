@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-constrained-function::domain",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-constrained-function::domain::describe",
+      "visibility": "public",
+      "origin": {
+        "start": 54,
+        "end": 122
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Ready",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 73,
+            "end": 78
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-constrained-function::domain::trait(Ready)::ready",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "start": 117,
+              "end": 122
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ready",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
+          "method": "ready"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 111,
+          "end": 122
+        }
+      }
+    }
+  ]
+}

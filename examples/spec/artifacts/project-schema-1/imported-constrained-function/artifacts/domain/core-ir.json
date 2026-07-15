@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-constrained-function::domain",
+  "functions": [
+    {
+      "symbol": "fixture/imported-constrained-function::domain::describe",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 54,
+        "end": 122
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-constrained-function::domain::trait(Ready)::ready",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 117,
+              "end": 122
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ready",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
+          "method": "ready"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 111,
+          "end": 122
+        }
+      }
+    }
+  ]
+}

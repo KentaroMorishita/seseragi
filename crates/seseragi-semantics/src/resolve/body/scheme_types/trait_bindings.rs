@@ -11,21 +11,49 @@ pub(crate) fn export_contract_trait_bindings(
         return None;
     }
     let candidates = provider_trait_candidates(provider);
-    let mut bindings = Vec::new();
-    for constraint in export.scheme.constraints.iter().chain(
-        export
-            .methods
-            .iter()
-            .flat_map(|method| &method.scheme.constraints),
+    collect_constraint_bindings(
+        export.scheme.constraints.iter().chain(
+            export
+                .methods
+                .iter()
+                .flat_map(|method| &method.scheme.constraints),
+        ),
+        &candidates,
+    )
+}
+
+pub(crate) fn export_scheme_trait_bindings(
+    provider: &ModuleInterface,
+    export: &InterfaceExport,
+) -> Option<Vec<ExternalTraitBinding>> {
+    if !matches!(
+        export.declaration_kind.as_deref(),
+        Some("function" | "effect-function")
     ) {
-        if is_standalone_symbol(SymbolNamespace::Trait, &constraint.name) {
-            continue;
-        }
-        let [binding] = candidates.get(&constraint.name)?.as_slice() else {
-            return None;
-        };
-        if !bindings.contains(binding) {
-            bindings.push(binding.clone());
+        return None;
+    }
+    let candidates = provider_trait_candidates(provider);
+    let bindings = collect_constraint_bindings(&export.scheme.constraints, &candidates)?;
+    (!bindings.is_empty()).then_some(bindings)
+}
+
+fn collect_constraint_bindings<'a>(
+    constraints: impl IntoIterator<Item = &'a seseragi_syntax::InterfaceConstraint>,
+    candidates: &BTreeMap<String, Vec<ExternalTraitBinding>>,
+) -> Option<Vec<ExternalTraitBinding>> {
+    let mut bindings = Vec::new();
+    for constraint in constraints {
+        match candidates.get(&constraint.name) {
+            Some(matches) => {
+                let [binding] = matches.as_slice() else {
+                    return None;
+                };
+                if !bindings.contains(binding) {
+                    bindings.push(binding.clone());
+                }
+            }
+            None if is_standalone_symbol(SymbolNamespace::Trait, &constraint.name) => {}
+            None => return None,
         }
     }
     Some(bindings)
@@ -81,7 +109,7 @@ fn push_candidate(
 
 #[cfg(test)]
 mod tests {
-    use super::export_contract_trait_bindings;
+    use super::{export_contract_trait_bindings, export_scheme_trait_bindings};
     use seseragi_syntax::{
         ByteSpan, InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport,
         InterfaceMethod, InterfaceScheme, InterfaceType, ModuleInterface, Visibility,
@@ -135,6 +163,39 @@ mod tests {
         assert_eq!(bindings[0].canonical, "fixture/names::trait(Labeled)");
     }
 
+    #[test]
+    fn collects_provider_traits_from_callable_scheme_constraints() {
+        let ready = trait_export("Ready", Vec::new());
+        let mut describe = function_export("describe");
+        describe.scheme.constraints.push(InterfaceConstraint {
+            name: "Ready".to_owned(),
+            arguments: vec![named("T")],
+        });
+        let provider = module(vec![ready, describe.clone()]);
+
+        let bindings = export_scheme_trait_bindings(&provider, &describe).unwrap();
+
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].spelling, "Ready");
+        assert_eq!(bindings[0].canonical, "fixture/provider::trait(Ready)");
+    }
+
+    #[test]
+    fn prefers_a_provider_trait_that_shadows_a_standalone_spelling() {
+        let show = trait_export("Show", Vec::new());
+        let mut describe = function_export("describe");
+        describe.scheme.constraints.push(InterfaceConstraint {
+            name: "Show".to_owned(),
+            arguments: vec![named("T")],
+        });
+        let provider = module(vec![show, describe.clone()]);
+
+        let bindings = export_scheme_trait_bindings(&provider, &describe).unwrap();
+
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].canonical, "fixture/provider::trait(Show)");
+    }
+
     fn module(exports: Vec<InterfaceExport>) -> ModuleInterface {
         ModuleInterface {
             schema: 1,
@@ -176,6 +237,28 @@ mod tests {
                 },
                 origin: ByteSpan { start: 2, end: 7 },
             }],
+            representation: None,
+        }
+    }
+
+    fn function_export(name: &str) -> InterfaceExport {
+        InterfaceExport {
+            symbol: format!("fixture/provider::{name}"),
+            namespace: "value".to_owned(),
+            name: name.to_owned(),
+            constructor_of: None,
+            visibility: Visibility::Public,
+            declaration_kind: Some("function".to_owned()),
+            declaration: ByteSpan { start: 0, end: 8 },
+            scheme: InterfaceScheme {
+                type_parameters: vec!["T".to_owned()],
+                constraints: Vec::new(),
+                type_ref: InterfaceType::Function {
+                    parameter: Box::new(named("T")),
+                    result: Box::new(named("String")),
+                },
+            },
+            methods: Vec::new(),
             representation: None,
         }
     }

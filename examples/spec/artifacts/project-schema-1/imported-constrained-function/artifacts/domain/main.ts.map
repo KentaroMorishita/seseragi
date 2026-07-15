@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/imported-constrained-function/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-constrained-function::domain"
+  ],
+  "sourcesContent": [
+    "pub trait Ready<A> {\n  fn ready value: A -> String\n}\n\npub fn describe<T> value: T -> String\nwhere Ready<T> =\n  ready value\n"
+  ],
+  "names": [
+    "describe",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAIAA"
+}

@@ -6,12 +6,27 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.unit",
-      "core.string"
+      "core.adt",
+      "core.string",
+      "core.unit"
     ]
   },
   "exports": [
     "status"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-trait-instance-contract::contract::trait(Render)<fixture/imported-trait-instance-contract::main::Score>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Render$0"
+    }
   ],
   "outputs": {
     "typescript": "dist/imported-trait-instance-contract/main.ts",

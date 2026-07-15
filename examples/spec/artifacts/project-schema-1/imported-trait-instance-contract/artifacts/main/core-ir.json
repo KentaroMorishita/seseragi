@@ -69,14 +69,111 @@
       ]
     }
   ],
+  "adts": [
+    {
+      "symbol": "fixture/imported-trait-instance-contract::main::Score",
+      "name": "Score",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-trait-instance-contract::main::ScoreValue",
+          "name": "ScoreValue",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 69,
+            "end": 79
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 54,
+        "end": 79
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-trait-instance-contract::contract::trait(Render)<fixture/imported-trait-instance-contract::main::Score>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 81,
+        "end": 197
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "constraints": [
+              {
+                "name": "Labeled",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "prefix",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Prefix",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "score",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 188,
+                "end": 195
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 108,
+              "end": 195
+            }
+          }
+        ]
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/imported-trait-instance-contract::main::status",
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 193,
-        "end": 246
+        "start": 199,
+        "end": 252
       },
       "parameters": [
         {
@@ -94,8 +191,8 @@
         "value": "contract ready",
         "origin": {
           "source": "main.ssrg",
-          "start": 230,
-          "end": 246
+          "start": 236,
+          "end": 252
         }
       }
     }

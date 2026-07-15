@@ -1,0 +1,7 @@
+pub trait Ready<A> {
+  fn ready value: A -> String
+}
+
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  ready value

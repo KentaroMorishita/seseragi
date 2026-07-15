@@ -50,6 +50,12 @@ pub struct ResolvedImport {
     /// callable scheme could not be resolved without ambiguity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme_type_bindings: Option<Vec<crate::ExternalTypeBinding>>,
+    /// Trait names referenced by an imported callable scheme, resolved while
+    /// the provider's final interface is still available. The binding is only
+    /// needed for non-standalone traits; standard traits keep their registry
+    /// identity in the typed stage.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme_trait_bindings: Option<Vec<crate::ExternalTraitBinding>>,
     /// Trait names referenced by an imported public trait contract, resolved
     /// in the provider interface before consumer-side method validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]

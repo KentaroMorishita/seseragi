@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-constrained-function::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-constrained-function::domain::trait(Ready)",
+      "namespace": "trait",
+      "name": "Ready",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 52
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Ready",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "ready",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 23,
+            "end": 50
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/imported-constrained-function::domain::describe",
+      "namespace": "value",
+      "name": "describe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 54,
+        "end": 122
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Ready",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -1,0 +1,13 @@
+import { Ready, describe } from "./domain"
+
+pub type Badge =
+  | Active
+
+instance Ready<Badge> {
+  fn ready value: Badge -> String = "imported ready"
+}
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (describe Active)

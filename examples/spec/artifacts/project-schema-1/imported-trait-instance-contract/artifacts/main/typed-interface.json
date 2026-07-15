@@ -43,8 +43,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 193,
-        "end": 246
+        "start": 199,
+        "end": 252
       },
       "scheme": {
         "typeParameters": [],
@@ -68,6 +68,8 @@
   "operators": [],
   "instances": [
     {
+      "identity": "fixture/imported-trait-instance-contract::contract::trait(Render)<fixture/imported-trait-instance-contract::main::Score>",
+      "providerModule": "fixture/imported-trait-instance-contract::main",
       "trait": "Render",
       "typeParameters": [],
       "head": {
@@ -83,8 +85,8 @@
       },
       "constraints": [],
       "origin": {
-        "start": 75,
-        "end": 191
+        "start": 81,
+        "end": 197
       }
     }
   ]

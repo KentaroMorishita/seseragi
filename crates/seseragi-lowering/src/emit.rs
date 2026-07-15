@@ -153,7 +153,7 @@ pub(super) fn evidence_parameters(
     rendered.extend((start_index..start_index + evidence_count).map(|index| {
         crate::TypeScriptParameter {
             name: crate::typescript::evidence_parameter_name(index),
-            type_name: "unknown".to_owned(),
+            type_name: ERASED_EVIDENCE_TYPE.to_owned(),
             implicit: true,
         }
     }));
@@ -432,3 +432,4 @@ fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScrip
         ),
     }
 }
+const ERASED_EVIDENCE_TYPE: &str = "Readonly<Record<string, (...args: any[]) => any>>";

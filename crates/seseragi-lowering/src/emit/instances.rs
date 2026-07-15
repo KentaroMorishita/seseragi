@@ -92,8 +92,9 @@ fn render_user_defined_instance(
         .enumerate()
         .map(|(index, _)| {
             format!(
-                "{}: unknown",
-                crate::typescript::evidence_parameter_name(index)
+                "{}: {}",
+                crate::typescript::evidence_parameter_name(index),
+                super::ERASED_EVIDENCE_TYPE,
             )
         })
         .collect::<Vec<_>>()

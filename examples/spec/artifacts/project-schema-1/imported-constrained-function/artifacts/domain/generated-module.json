@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-constrained-function::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string"
+    ]
+  },
+  "exports": [
+    "describe"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-constrained-function/domain.ts",
+    "sourceMap": "dist/imported-constrained-function/domain.ts.map"
+  }
+}
