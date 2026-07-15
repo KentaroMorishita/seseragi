@@ -883,11 +883,13 @@ P2-1以降では、次の二層を維持します。
 
 collectionの小さい縦sliceとして、`Range<Int>` literalとstandard `Reducible<Range<Int>, Int>`を
 SurfaceAst、TypedHir、CoreIr、TypeScriptIr、versioned runtime ABI、Node / browser executionへ接続しました。
-RangeはArrayへlowerせず、exclusive / inclusive境界を保持します。これに続くcomprehensionは
-`Range<Int>`だけを特別にloopへ展開せず、仕様3.9どおり任意の`Iterable<C, A>`に対するpureな
-generator / pattern / guard loweringとして実装します。最初のgateは単一generatorとguard、次にpattern不一致と
-複数generatorを固定し、Lesson 12の累積programでArray結果まで実行します。この追加は現在のRange ABIを壊さず、
-後から一般Iterableを導入する際もASTやCoreIrのRange表現を作り直しません。
+RangeはArrayへlowerせず、exclusive / inclusive境界を保持します。comprehensionもRange専用loopへ展開せず、
+仕様3.9の`Iterable<C, A>` evidenceをTypedHir / CoreIrへ運びます。最初のgateとしてArray / Range source、
+binding / wildcard generator、guard、複数generatorを通常pipelineへ接続しました。backendは単一generatorを
+`collectMap`、後続generatorを持つ節を`collectFlatMap`へlowerし、source collectionとArray resultを混同しません。
+`schema-1/range-comprehension`はRangeからeven squareを生成してArray `reduce`へ接続し、Node / browserで実行します。
+`schema-1/array-comprehension`はArray同士のnested generatorを固定します。次のgateでは反駁可能patternの不一致を
+filterとして扱い、local / imported user-defined Iterable dictionaryを同じCore shapeから呼び出します。
 
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head

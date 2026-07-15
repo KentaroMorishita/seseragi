@@ -150,8 +150,12 @@ Playgroundでも`Arrayスコア集計`として同じdriver / browser runtimeを
 接続しました。両端はIntに限定し、誤った端点は`range.endpoint-not-int`でsource range付きdiagnosticを返します。
 backendはRangeをArrayへ偽装せず、`start / end / inclusive`を持つ有限値と`std/range::Reducible` evidenceを保持します。
 `schema-1/range-reduce`と同名execution fixtureはexclusive 45 / inclusive 55、空・降順・Int64最大端をruntime ABIで
-検証し、Playgroundでも同じsourceを実行します。comprehensionはRange専用展開にせず、任意の
-`Iterable<C, A>`、pattern、guard、複数generatorを扱う独立した次sliceへ残します。
+検証します。Array / Range comprehensionは同じ`Iterable<C, A>` evidenceをTypedHir / CoreIrへ保持し、guardを
+純粋なpredicate、複数generatorをnested flat-mapとしてTypeScript runtimeへlowerします。
+`schema-1/{range-comprehension,array-comprehension}`は単一generatorとguard、およびArray同士の複数generatorを固定し、
+`execution-schema-1/range-comprehension`とPlaygroundの`Rangeと内包表記`はeven square total 220を実行します。
+非Iterable sourceは`SES-T0201 instance.missing`で停止します。constructor / tupleなど反駁可能patternのfilter semanticsと、
+user-defined Iterable dictionary dispatchは後続gateです。
 Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
 backendはそのevidenceを確認してchecked runtime helperを選択します。
 `String + String`も`Add<String, String, String>`のstandard instanceとして全IRとactual executionへ接続済みで、
