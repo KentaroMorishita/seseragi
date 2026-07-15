@@ -16,6 +16,13 @@ pub(super) fn local_dictionary_expression(
             name: super::evidence_parameter_name(*index),
         });
     }
+    if let CoreInstanceEvidence::Imported { identity, .. } = evidence {
+        return Some(TypeScriptExpr::Identifier {
+            name: imported_values
+                .get(&local_instance_expression_key(identity))?
+                .clone(),
+        });
+    }
     let CoreInstanceEvidence::Local {
         identity,
         type_arguments,

@@ -6,18 +6,22 @@ use std::collections::{BTreeMap, BTreeSet};
 pub(super) fn resolve_dependency_instances(
     dependencies: &[LinkedDependency],
 ) -> (Vec<ResolvedDependencyInstance>, Vec<ResolveIssue>) {
-    let mut resolved = BTreeMap::<(String, String), Vec<ResolvedDependencyInstance>>::new();
+    let mut resolved = BTreeMap::<(String, Vec<String>), Vec<ResolvedDependencyInstance>>::new();
     let mut conflict_origins = BTreeSet::new();
     for dependency in dependencies {
         for instance in &dependency.interface.instances {
             let Some(instance) = resolved_dependency_instance(dependency, instance) else {
                 continue;
             };
-            let key = (instance.trait_name.clone(), instance.type_identity.clone());
+            let key = (
+                instance.trait_identity.clone(),
+                instance.argument_identities.clone(),
+            );
             let candidates = resolved.entry(key).or_default();
             if candidates.iter().any(|existing| {
                 existing.identity == instance.identity
                     && existing.provider_module == instance.provider_module
+                    && existing.trait_identity == instance.trait_identity
                     && existing.type_parameters == instance.type_parameters
                     && existing.head == instance.head
                     && existing.constraints == instance.constraints
@@ -46,23 +50,24 @@ fn resolved_dependency_instance(
     instance: &InterfaceInstance,
 ) -> Option<ResolvedDependencyInstance> {
     let identity = instance.identity.clone()?;
-    let (provider_module, type_identity) = match (
-        instance.provider_module.as_ref(),
-        instance.type_identity.as_ref(),
-    ) {
-        (Some(provider_module), Some(type_identity)) => {
-            (provider_module.clone(), type_identity.clone())
-        }
-        (None, None) => (
-            dependency.interface.module.clone(),
-            canonical_head_type(dependency, instance)?,
-        ),
-        _ => return None,
+    let provider_module = instance
+        .provider_module
+        .clone()
+        .unwrap_or_else(|| dependency.interface.module.clone());
+    let argument_identities = if instance.argument_identities.is_empty() {
+        vec![canonical_head_type(dependency, instance)?]
+    } else {
+        instance.argument_identities.clone()
     };
+    let trait_identity = instance
+        .trait_identity
+        .clone()
+        .unwrap_or_else(|| instance.trait_name.clone());
+    let type_identity = instance.type_identity.clone();
     if identity
-        != crate::instance_identity::canonical_instance_identity(
-            &instance.trait_name,
-            &type_identity,
+        != crate::instance_identity::canonical_instance_head_identity(
+            &trait_identity,
+            &argument_identities,
         )
     {
         return None;
@@ -70,7 +75,9 @@ fn resolved_dependency_instance(
     Some(ResolvedDependencyInstance {
         identity,
         provider_module,
+        trait_identity,
         trait_name: instance.trait_name.clone(),
+        argument_identities,
         type_identity,
         type_parameters: instance.type_parameters.clone(),
         head: instance.head.clone(),
@@ -147,6 +154,26 @@ mod tests {
     }
 
     #[test]
+    fn keeps_same_spelling_traits_separate_by_canonical_identity() {
+        let mut first = dependency_with_instance("fixture/left", "fixture/left");
+        first.interface.instances[0].trait_name = "Ready".to_owned();
+        first.interface.instances[0].trait_identity = Some("fixture/left::trait(Ready)".to_owned());
+        first.interface.instances[0].identity =
+            Some("fixture/left::trait(Ready)<fixture/types::InputError>".to_owned());
+        let mut second = dependency_with_instance("fixture/right", "fixture/right");
+        second.interface.instances[0].trait_name = "Ready".to_owned();
+        second.interface.instances[0].trait_identity =
+            Some("fixture/right::trait(Ready)".to_owned());
+        second.interface.instances[0].identity =
+            Some("fixture/right::trait(Ready)<fixture/types::InputError>".to_owned());
+
+        let (instances, issues) = resolve_dependency_instances(&[first, second]);
+
+        assert_eq!(instances.len(), 2);
+        assert!(issues.is_empty());
+    }
+
+    #[test]
     fn aggregates_multiple_conflicting_instance_keys_for_one_import_edge() {
         let first = dependency_with_two_instances("fixture/facade-a", "fixture/provider-a");
         let second = dependency_with_two_instances("fixture/facade-b", "fixture/provider-b");
@@ -163,6 +190,7 @@ mod tests {
         let mut dependency = dependency_with_instance(module, provider_module);
         let mut second = dependency.interface.instances[0].clone();
         second.identity = Some("Show<fixture/types::OtherError>".to_owned());
+        second.argument_identities = vec!["fixture/types::OtherError".to_owned()];
         second.type_identity = Some("fixture/types::OtherError".to_owned());
         second.head = InterfaceType::Named {
             name: "OtherError".to_owned(),
@@ -186,6 +214,8 @@ mod tests {
                 instances: vec![InterfaceInstance {
                     identity: Some("Show<fixture/types::InputError>".to_owned()),
                     provider_module: Some(provider_module.to_owned()),
+                    trait_identity: Some("Show".to_owned()),
+                    argument_identities: vec!["fixture/types::InputError".to_owned()],
                     type_identity: Some("fixture/types::InputError".to_owned()),
                     trait_name: "Show".to_owned(),
                     type_parameters: Vec::new(),

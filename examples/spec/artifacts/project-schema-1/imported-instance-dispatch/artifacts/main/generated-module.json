@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-instance-dispatch::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "effect.console.println",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-instance-dispatch/main.ts",
+    "sourceMap": "dist/imported-instance-dispatch/main.ts.map"
+  }
+}

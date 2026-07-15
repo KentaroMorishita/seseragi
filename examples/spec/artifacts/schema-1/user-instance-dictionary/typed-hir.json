@@ -12,6 +12,7 @@
   "instances": [
     {
       "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>",
+      "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
       "trait": "Render",
       "arguments": [
         {
@@ -19,6 +20,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/user-instance-dictionary::Badge"
       ],
       "constraints": [],
       "origin": {

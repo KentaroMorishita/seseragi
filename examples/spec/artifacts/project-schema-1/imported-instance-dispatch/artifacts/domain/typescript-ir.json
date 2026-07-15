@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-instance-dispatch::domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Badge",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Active",
+          "tag": "Active",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-instance-dispatch::domain::trait(Ready)<fixture/imported-instance-dispatch::domain::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 83,
+        "end": 161
+      },
+      "dictionaryExport": "__ssrg$instance$Ready$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "provider ready"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 109,
+              "end": 159
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "describe",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "ready",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 163,
+        "end": 231
+      }
+    }
+  ]
+}

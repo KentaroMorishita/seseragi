@@ -212,6 +212,10 @@
     {
       "identity": "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>",
       "providerModule": "artifact/method-constraint-dispatch",
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
+      "argumentIdentities": [
+        "artifact/method-constraint-dispatch::Badge"
+      ],
       "trait": "Labeled",
       "typeParameters": [],
       "head": {
@@ -234,6 +238,10 @@
     {
       "identity": "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>",
       "providerModule": "artifact/method-constraint-dispatch",
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
+      "argumentIdentities": [
+        "artifact/method-constraint-dispatch::Badge"
+      ],
       "trait": "Render",
       "typeParameters": [],
       "head": {

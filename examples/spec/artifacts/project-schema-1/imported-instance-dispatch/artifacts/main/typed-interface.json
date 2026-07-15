@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-instance-dispatch::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-instance-dispatch::domain",
+      "origin": {
+        "start": 0,
+        "end": 43
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "Active",
+          "symbol": "fixture/imported-instance-dispatch::domain::Active"
+        },
+        {
+          "namespace": "value",
+          "name": "describe",
+          "symbol": "fixture/imported-instance-dispatch::domain::describe"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-instance-dispatch::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 45,
+        "end": 133
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/imported-instance-dispatch::domain::trait(Ready)<fixture/imported-instance-dispatch::domain::Badge>",
+      "providerModule": "fixture/imported-instance-dispatch::domain",
+      "traitIdentity": "fixture/imported-instance-dispatch::domain::trait(Ready)",
+      "argumentIdentities": [
+        "fixture/imported-instance-dispatch::domain::Badge"
+      ],
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 83,
+        "end": 161
+      }
+    }
+  ]
+}

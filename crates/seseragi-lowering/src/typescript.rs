@@ -449,6 +449,9 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         })
         .collect();
     let mut expression_value_names = module_imports.value_names.clone();
+    for ((_, identity), local) in &module_imports.instance_names {
+        expression_value_names.insert(local_instance_expression_key(identity), local.clone());
+    }
     for (index, instance) in module.instances.iter().enumerate() {
         expression_value_names.insert(
             local_instance_expression_key(&instance.identity),

@@ -106,7 +106,8 @@ impl<'a> TypedResolution<'a> {
         type_identity: &str,
     ) -> Option<&crate::ResolvedDependencyInstance> {
         self.resolved.dependency_instances.iter().find(|instance| {
-            instance.trait_name == trait_name && instance.type_identity == type_identity
+            instance.trait_name == trait_name
+                && instance.type_identity.as_deref() == Some(type_identity)
         })
     }
 

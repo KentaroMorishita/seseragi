@@ -67,6 +67,8 @@ fn interface_instance_from_typed(
     InterfaceInstance {
         identity: Some(instance.identity.clone()),
         provider_module: Some(module.to_owned()),
+        trait_identity: Some(instance.trait_identity.clone()),
+        argument_identities: instance.argument_identities.clone(),
         type_identity: instance.type_identity.clone(),
         trait_name: instance.trait_name.clone(),
         type_parameters: instance.type_parameters.clone(),
@@ -98,7 +100,9 @@ fn interface_instance_from_dependency(instance: &ResolvedDependencyInstance) -> 
     InterfaceInstance {
         identity: Some(instance.identity.clone()),
         provider_module: Some(instance.provider_module.clone()),
-        type_identity: Some(instance.type_identity.clone()),
+        trait_identity: Some(instance.trait_identity.clone()),
+        argument_identities: instance.argument_identities.clone(),
+        type_identity: instance.type_identity.clone(),
         trait_name: instance.trait_name.clone(),
         type_parameters: instance.type_parameters.clone(),
         head: instance.head.clone(),

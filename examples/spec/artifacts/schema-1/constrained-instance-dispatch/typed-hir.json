@@ -12,6 +12,7 @@
   "instances": [
     {
       "identity": "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>",
+      "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
       "trait": "Ready",
       "arguments": [
         {
@@ -19,6 +20,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/constrained-instance-dispatch::Badge"
       ],
       "constraints": [],
       "origin": {
@@ -77,6 +81,7 @@
     },
     {
       "identity": "artifact/constrained-instance-dispatch::trait(Render)<std/prelude::Maybe<$0>>",
+      "traitIdentity": "artifact/constrained-instance-dispatch::trait(Render)",
       "trait": "Render",
       "typeParameters": [
         "T"
@@ -93,6 +98,9 @@
             }
           ]
         }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
       ],
       "constraints": [
         {

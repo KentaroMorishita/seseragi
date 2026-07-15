@@ -22,8 +22,8 @@ fn selects_direct_dependency_show_evidence_for_a_derived_payload() {
         "Show<fixture/game::domain::ImportedError>"
     );
     assert_eq!(
-        resolved.dependency_instances[0].type_identity,
-        "fixture/game::domain::ImportedError"
+        resolved.dependency_instances[0].type_identity.as_deref(),
+        Some("fixture/game::domain::ImportedError")
     );
 
     let analyzed = analyze_linked_module(

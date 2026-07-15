@@ -125,6 +125,10 @@
     {
       "identity": "Show<fixture/imported-effect-failure::main::AppError>",
       "providerModule": "fixture/imported-effect-failure::main",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/imported-effect-failure::main::AppError"
+      ],
       "typeIdentity": "fixture/imported-effect-failure::main::AppError",
       "trait": "Show",
       "typeParameters": [],
@@ -148,6 +152,10 @@
     {
       "identity": "Show<fixture/imported-effect-failure::input::InputError>",
       "providerModule": "fixture/imported-effect-failure::input",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/imported-effect-failure::input::InputError"
+      ],
       "typeIdentity": "fixture/imported-effect-failure::input::InputError",
       "trait": "Show",
       "typeParameters": [],

@@ -340,6 +340,10 @@
     {
       "identity": "artifact/trait-method-candidates::trait(Render)<artifact/trait-method-candidates::Badge>",
       "providerModule": "artifact/trait-method-candidates",
+      "traitIdentity": "artifact/trait-method-candidates::trait(Render)",
+      "argumentIdentities": [
+        "artifact/trait-method-candidates::Badge"
+      ],
       "trait": "Render",
       "typeParameters": [],
       "head": {
@@ -362,6 +366,10 @@
     {
       "identity": "artifact/trait-method-candidates::trait(Describe)<artifact/trait-method-candidates::Mode>",
       "providerModule": "artifact/trait-method-candidates",
+      "traitIdentity": "artifact/trait-method-candidates::trait(Describe)",
+      "argumentIdentities": [
+        "artifact/trait-method-candidates::Mode"
+      ],
       "trait": "Describe",
       "typeParameters": [],
       "head": {

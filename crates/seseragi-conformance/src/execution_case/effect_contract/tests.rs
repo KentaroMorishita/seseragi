@@ -287,6 +287,8 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
         instances: vec![InterfaceInstance {
             identity: Some("Show<fixture/game::main::AppError>".to_owned()),
             provider_module: Some("fixture/game::main".to_owned()),
+            trait_identity: Some("Show".to_owned()),
+            argument_identities: vec!["fixture/game::main::AppError".to_owned()],
             type_identity: Some("fixture/game::main::AppError".to_owned()),
             trait_name: "Show".to_owned(),
             type_parameters: Vec::new(),
@@ -311,6 +313,7 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
         "instances": [{
             "identity": "Show<fixture/game::main::AppError>",
             "trait": "Show",
+            "arguments": [{ "kind": "reference", "name": "AppError", "arguments": [] }],
             "head": { "kind": "reference", "name": "AppError", "arguments": [] },
             "typeIdentity": "fixture/game::main::AppError",
             "dictionaryExport": "__ssrg$instance$Show$0"

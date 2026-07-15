@@ -146,6 +146,10 @@
     {
       "identity": "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>",
       "providerModule": "artifact/generic-instance-dispatch",
+      "traitIdentity": "artifact/generic-instance-dispatch::trait(Tag)",
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
       "trait": "Tag",
       "typeParameters": [
         "T"

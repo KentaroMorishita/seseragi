@@ -174,12 +174,14 @@ fn typed_instance(
         .collect();
     TypedInstance {
         identity,
+        trait_identity: "Show".to_owned(),
         trait_name: "Show".to_owned(),
         type_parameters: Vec::new(),
         arguments: vec![TypedType::Named {
             name: candidate.name,
             arguments: Vec::new(),
         }],
+        argument_identities: vec![candidate.symbol.clone()],
         type_identity: Some(candidate.symbol.clone()),
         constraints: Vec::new(),
         origin: candidate.origin,

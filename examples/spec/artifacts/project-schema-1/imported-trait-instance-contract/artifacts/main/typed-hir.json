@@ -68,6 +68,7 @@
   "instances": [
     {
       "identity": "fixture/imported-trait-instance-contract::contract::trait(Render)<fixture/imported-trait-instance-contract::main::Score>",
+      "traitIdentity": "fixture/imported-trait-instance-contract::contract::trait(Render)",
       "trait": "Render",
       "arguments": [
         {
@@ -75,6 +76,9 @@
           "name": "Score",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-trait-instance-contract::main::Score"
       ],
       "constraints": [],
       "origin": {

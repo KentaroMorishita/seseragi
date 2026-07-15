@@ -1,0 +1,14 @@
+pub type Badge =
+  | Active
+
+pub trait Ready<A> {
+  fn ready value: A -> String
+}
+
+instance Ready<Badge> {
+  fn ready value: Badge -> String = "provider ready"
+}
+
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  ready value

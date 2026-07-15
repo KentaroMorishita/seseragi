@@ -44,6 +44,7 @@
   "instances": [
     {
       "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>",
+      "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
       "trait": "Ready",
       "arguments": [
         {
@@ -51,6 +52,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-constrained-function::main::Badge"
       ],
       "constraints": [],
       "origin": {

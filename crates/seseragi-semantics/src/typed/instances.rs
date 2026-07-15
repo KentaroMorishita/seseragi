@@ -70,15 +70,15 @@ fn local_dependency_conflicts(
                 .dependency_instances
                 .iter()
                 .find(|imported| {
-                    imported.trait_name == local.trait_name
-                        && local.type_identity.as_deref() == Some(imported.type_identity.as_str())
+                    imported.trait_identity == local.trait_identity
+                        && local.argument_identities == imported.argument_identities
                 })
                 .map(|imported| DerivedInstanceIssue::AmbiguousInstance {
                     trait_name: local.trait_name.clone(),
                     type_identity: local
                         .type_identity
                         .clone()
-                        .expect("derived Show instance must retain its primary type identity"),
+                        .unwrap_or_else(|| local.argument_identities.join(",")),
                     provider_module: imported.provider_module.clone(),
                     primary: local.origin,
                 })

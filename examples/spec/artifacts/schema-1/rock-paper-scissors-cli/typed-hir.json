@@ -16,6 +16,7 @@
   "instances": [
     {
       "identity": "Show<artifact/rock-paper-scissors-cli::AppError>",
+      "traitIdentity": "Show",
       "trait": "Show",
       "arguments": [
         {
@@ -23,6 +24,9 @@
           "name": "AppError",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/rock-paper-scissors-cli::AppError"
       ],
       "typeIdentity": "artifact/rock-paper-scissors-cli::AppError",
       "constraints": [],

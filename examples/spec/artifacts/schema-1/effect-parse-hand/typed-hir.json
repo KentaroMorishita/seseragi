@@ -6,6 +6,7 @@
   "instances": [
     {
       "identity": "Show<artifact/effect-parse-hand::HandInputError>",
+      "traitIdentity": "Show",
       "trait": "Show",
       "arguments": [
         {
@@ -13,6 +14,9 @@
           "name": "HandInputError",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/effect-parse-hand::HandInputError"
       ],
       "typeIdentity": "artifact/effect-parse-hand::HandInputError",
       "constraints": [],

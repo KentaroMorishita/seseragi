@@ -54,8 +54,8 @@ fn transports_provider_show_and_effect_failure_through_a_facade() {
         "fixture/closure::provider"
     );
     assert_eq!(
-        resolved.dependency_instances[0].type_identity,
-        "fixture/closure::provider::InputError"
+        resolved.dependency_instances[0].type_identity.as_deref(),
+        Some("fixture/closure::provider::InputError")
     );
 
     let analyzed = analyze_linked_module(

@@ -17,6 +17,8 @@ fn imported_show_instance(canonical: &str, provider_module: Option<&str>) -> Int
     InterfaceInstance {
         identity: Some(format!("Show<{canonical}>")),
         provider_module: provider_module.map(str::to_owned),
+        trait_identity: Some("Show".to_owned()),
+        argument_identities: vec![canonical.to_owned()],
         type_identity: Some(canonical.to_owned()),
         trait_name: "Show".to_owned(),
         type_parameters: Vec::new(),
@@ -39,6 +41,7 @@ fn generated_imported_show(
     json!({
         "identity": identity,
         "trait": "Show",
+        "arguments": [{ "kind": "reference", "name": "InputError", "arguments": [] }],
         "head": { "kind": "reference", "name": "InputError", "arguments": [] },
         "typeIdentity": canonical,
         "dictionaryExport": dictionary_export,

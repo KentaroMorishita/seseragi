@@ -278,6 +278,8 @@ fn instance_target(module: &str, provider_module: &str, type_identity: &str) -> 
         instances: vec![InterfaceInstance {
             identity: Some(format!("Show<{type_identity}>")),
             provider_module: Some(provider_module.to_owned()),
+            trait_identity: Some("Show".to_owned()),
+            argument_identities: vec![type_identity.to_owned()],
             type_identity: Some(type_identity.to_owned()),
             trait_name: "Show".to_owned(),
             type_parameters: Vec::new(),

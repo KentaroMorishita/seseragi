@@ -191,6 +191,10 @@
     {
       "identity": "Show<fixture/rps-cli-split::main::AppError>",
       "providerModule": "fixture/rps-cli-split::main",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/rps-cli-split::main::AppError"
+      ],
       "typeIdentity": "fixture/rps-cli-split::main::AppError",
       "trait": "Show",
       "typeParameters": [],
@@ -214,6 +218,10 @@
     {
       "identity": "Show<fixture/rps-cli-split::input::InputError>",
       "providerModule": "fixture/rps-cli-split::input",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/rps-cli-split::input::InputError"
+      ],
       "typeIdentity": "fixture/rps-cli-split::input::InputError",
       "trait": "Show",
       "typeParameters": [],

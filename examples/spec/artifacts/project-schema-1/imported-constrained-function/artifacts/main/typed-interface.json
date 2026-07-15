@@ -126,6 +126,10 @@
     {
       "identity": "fixture/imported-constrained-function::domain::trait(Ready)<fixture/imported-constrained-function::main::Badge>",
       "providerModule": "fixture/imported-constrained-function::main",
+      "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
+      "argumentIdentities": [
+        "fixture/imported-constrained-function::main::Badge"
+      ],
       "trait": "Ready",
       "typeParameters": [],
       "head": {

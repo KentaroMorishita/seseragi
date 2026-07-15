@@ -1,0 +1,6 @@
+import { Active, describe } from "./domain"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (describe Active)

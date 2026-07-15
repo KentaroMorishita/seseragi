@@ -12,6 +12,7 @@
   "instances": [
     {
       "identity": "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>",
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
       "trait": "Labeled",
       "arguments": [
         {
@@ -19,6 +20,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/method-constraint-dispatch::Badge"
       ],
       "constraints": [],
       "origin": {
@@ -77,6 +81,7 @@
     },
     {
       "identity": "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>",
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
       "trait": "Render",
       "arguments": [
         {
@@ -84,6 +89,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/method-constraint-dispatch::Badge"
       ],
       "constraints": [],
       "origin": {

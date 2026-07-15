@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-instance-dispatch::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-instance-dispatch::domain::Badge",
+      "namespace": "type",
+      "name": "Badge",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Badge",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-instance-dispatch::domain::Active",
+      "namespace": "value",
+      "name": "Active",
+      "constructorOf": "fixture/imported-instance-dispatch::domain::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 21,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-instance-dispatch::domain::trait(Ready)",
+      "namespace": "trait",
+      "name": "Ready",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 29,
+        "end": 81
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Ready",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "ready",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 52,
+            "end": 79
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/imported-instance-dispatch::domain::describe",
+      "namespace": "value",
+      "name": "describe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 163,
+        "end": 231
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Ready",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/imported-instance-dispatch::domain::trait(Ready)<fixture/imported-instance-dispatch::domain::Badge>",
+      "providerModule": "fixture/imported-instance-dispatch::domain",
+      "traitIdentity": "fixture/imported-instance-dispatch::domain::trait(Ready)",
+      "argumentIdentities": [
+        "fixture/imported-instance-dispatch::domain::Badge"
+      ],
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 83,
+        "end": 161
+      }
+    }
+  ]
+}

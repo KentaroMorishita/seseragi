@@ -177,6 +177,7 @@ pub struct TypedTraitDispatch {
 #[serde(rename_all = "camelCase")]
 pub struct TypedInstance {
     pub identity: String,
+    pub trait_identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -185,6 +186,10 @@ pub struct TypedInstance {
     /// Keeping all arguments prevents multi-parameter traits from collapsing
     /// into the first nominal type used by current runtime dictionaries.
     pub arguments: Vec<TypedType>,
+    /// Ordered canonical identities of `arguments`. These are retained for
+    /// module interface transport and imported instance selection; consumers
+    /// never recover them by parsing `identity`.
+    pub argument_identities: Vec<String>,
     /// Canonical primary nominal type used by specialized runtime consumers.
     /// General multi-parameter instances are identified by `identity` and
     /// `arguments` and do not have to invent a single primary type.

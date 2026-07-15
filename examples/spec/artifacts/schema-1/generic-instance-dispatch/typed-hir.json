@@ -12,6 +12,7 @@
   "instances": [
     {
       "identity": "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>",
+      "traitIdentity": "artifact/generic-instance-dispatch::trait(Tag)",
       "trait": "Tag",
       "typeParameters": [
         "T"
@@ -28,6 +29,9 @@
             }
           ]
         }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
       ],
       "constraints": [],
       "origin": {

@@ -151,6 +151,16 @@ pub struct InterfaceInstance {
     /// spellings while transporting transitive evidence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider_module: Option<String>,
+    /// Canonical identity of the trait declaration. This is separate from the
+    /// source spelling so two modules may export same-named traits without
+    /// collapsing their instance sets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trait_identity: Option<String>,
+    /// Ordered canonical identities of the instance head arguments. Keeping
+    /// this structural avoids parsing the display-oriented `identity` string
+    /// when an imported dictionary is selected.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub argument_identities: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
     #[serde(rename = "trait")]

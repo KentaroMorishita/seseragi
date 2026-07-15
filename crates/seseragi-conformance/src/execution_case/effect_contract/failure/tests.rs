@@ -45,6 +45,8 @@ fn show_instance(type_ref: InterfaceType) -> InterfaceInstance {
     InterfaceInstance {
         identity: Some("Show<artifact/example::AppError>".to_owned()),
         provider_module: Some("artifact/example".to_owned()),
+        trait_identity: Some("Show".to_owned()),
+        argument_identities: vec!["artifact/example::AppError".to_owned()],
         type_identity: Some("artifact/example::AppError".to_owned()),
         trait_name: "Show".to_owned(),
         type_parameters: Vec::new(),
@@ -121,6 +123,7 @@ fn generated_show(dictionary_export: &str) -> serde_json::Value {
     json!({
         "identity": "Show<artifact/example::AppError>",
         "trait": "Show",
+        "arguments": [{ "kind": "reference", "name": "AppError", "arguments": [] }],
         "head": { "kind": "reference", "name": "AppError", "arguments": [] },
         "typeIdentity": "artifact/example::AppError",
         "dictionaryExport": dictionary_export,

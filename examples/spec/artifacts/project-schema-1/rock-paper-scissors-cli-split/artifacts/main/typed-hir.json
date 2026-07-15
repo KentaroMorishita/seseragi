@@ -98,6 +98,7 @@
   "instances": [
     {
       "identity": "Show<fixture/rps-cli-split::main::AppError>",
+      "traitIdentity": "Show",
       "trait": "Show",
       "arguments": [
         {
@@ -105,6 +106,9 @@
           "name": "AppError",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "fixture/rps-cli-split::main::AppError"
       ],
       "typeIdentity": "fixture/rps-cli-split::main::AppError",
       "constraints": [],

@@ -48,6 +48,7 @@
   "instances": [
     {
       "identity": "Show<fixture/imported-effect-failure::main::AppError>",
+      "traitIdentity": "Show",
       "trait": "Show",
       "arguments": [
         {
@@ -55,6 +56,9 @@
           "name": "AppError",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-effect-failure::main::AppError"
       ],
       "typeIdentity": "fixture/imported-effect-failure::main::AppError",
       "constraints": [],

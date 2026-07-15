@@ -6,6 +6,7 @@
   "instances": [
     {
       "identity": "Show<fixture/transitive-effect-failure::provider::InputError>",
+      "traitIdentity": "Show",
       "trait": "Show",
       "arguments": [
         {
@@ -13,6 +14,9 @@
           "name": "InputError",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "fixture/transitive-effect-failure::provider::InputError"
       ],
       "typeIdentity": "fixture/transitive-effect-failure::provider::InputError",
       "constraints": [],

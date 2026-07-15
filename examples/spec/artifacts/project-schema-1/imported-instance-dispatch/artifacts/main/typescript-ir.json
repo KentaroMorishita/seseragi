@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-instance-dispatch::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.console.println",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-instance-dispatch::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Active",
+          "local": "Active",
+          "sourceLocal": "Active",
+          "canonical": "fixture/imported-instance-dispatch::domain::Active",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "describe",
+          "local": "describe",
+          "sourceLocal": "describe",
+          "canonical": "fixture/imported-instance-dispatch::domain::describe",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 25
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Ready$0",
+          "local": "__ssrg$instance$Ready$0",
+          "sourceLocal": "fixture/imported-instance-dispatch::domain::trait(Ready)<fixture/imported-instance-dispatch::domain::Badge>",
+          "canonical": "fixture/imported-instance-dispatch::domain::trait(Ready)<fixture/imported-instance-dispatch::domain::Badge>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 43
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 43
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "describe",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "Active"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Ready$0"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 45,
+        "end": 133
+      }
+    }
+  ]
+}

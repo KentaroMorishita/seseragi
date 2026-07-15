@@ -12,6 +12,7 @@
   "instances": [
     {
       "identity": "artifact/trait-method-candidates::trait(Render)<artifact/trait-method-candidates::Badge>",
+      "traitIdentity": "artifact/trait-method-candidates::trait(Render)",
       "trait": "Render",
       "arguments": [
         {
@@ -19,6 +20,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/trait-method-candidates::Badge"
       ],
       "constraints": [],
       "origin": {
@@ -156,6 +160,7 @@
     },
     {
       "identity": "artifact/trait-method-candidates::trait(Describe)<artifact/trait-method-candidates::Mode>",
+      "traitIdentity": "artifact/trait-method-candidates::trait(Describe)",
       "trait": "Describe",
       "arguments": [
         {
@@ -163,6 +168,9 @@
           "name": "Mode",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/trait-method-candidates::Mode"
       ],
       "constraints": [],
       "origin": {

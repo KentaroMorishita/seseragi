@@ -16,6 +16,8 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
         } => Some(InterfaceInstance {
             identity: None,
             provider_module: None,
+            trait_identity: None,
+            argument_identities: Vec::new(),
             type_identity: None,
             trait_name: trait_name.clone(),
             type_parameters,

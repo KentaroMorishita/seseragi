@@ -64,6 +64,7 @@
   "instances": [
     {
       "identity": "Show<fixture/rps-cli-split::input::InputError>",
+      "traitIdentity": "Show",
       "trait": "Show",
       "arguments": [
         {
@@ -71,6 +72,9 @@
           "name": "InputError",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "fixture/rps-cli-split::input::InputError"
       ],
       "typeIdentity": "fixture/rps-cli-split::input::InputError",
       "constraints": [],

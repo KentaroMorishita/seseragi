@@ -230,6 +230,10 @@
     {
       "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>",
       "providerModule": "artifact/user-instance-dictionary",
+      "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
+      "argumentIdentities": [
+        "artifact/user-instance-dictionary::Badge"
+      ],
       "trait": "Render",
       "typeParameters": [],
       "head": {

@@ -55,10 +55,12 @@ fn typed_instance(
 
     Some(TypedInstance {
         identity: canonical_instance_head_identity(&trait_identity, &canonical_arguments),
+        trait_identity,
         trait_name: trait_name.clone(),
         type_parameters: type_parameters.clone(),
         arguments: arguments.iter().map(typed_type_from_type_ref).collect(),
         type_identity: None,
+        argument_identities: canonical_arguments,
         constraints: constraints
             .iter()
             .map(|constraint| TypedConstraint {

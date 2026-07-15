@@ -187,6 +187,10 @@
     {
       "identity": "Show<artifact/effect-parse-hand::HandInputError>",
       "providerModule": "artifact/effect-parse-hand",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/effect-parse-hand::HandInputError"
+      ],
       "typeIdentity": "artifact/effect-parse-hand::HandInputError",
       "trait": "Show",
       "typeParameters": [],

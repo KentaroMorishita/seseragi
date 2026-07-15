@@ -104,6 +104,10 @@
     {
       "identity": "Show<fixture/imported-effect-failure::input::InputError>",
       "providerModule": "fixture/imported-effect-failure::input",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/imported-effect-failure::input::InputError"
+      ],
       "typeIdentity": "fixture/imported-effect-failure::input::InputError",
       "trait": "Show",
       "typeParameters": [],

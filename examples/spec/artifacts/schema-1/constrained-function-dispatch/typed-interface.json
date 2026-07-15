@@ -194,6 +194,10 @@
     {
       "identity": "artifact/constrained-function-dispatch::trait(Ready)<artifact/constrained-function-dispatch::Badge>",
       "providerModule": "artifact/constrained-function-dispatch",
+      "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
+      "argumentIdentities": [
+        "artifact/constrained-function-dispatch::Badge"
+      ],
       "trait": "Ready",
       "typeParameters": [],
       "head": {

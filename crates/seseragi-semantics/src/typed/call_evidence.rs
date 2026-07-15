@@ -4,6 +4,7 @@ use crate::{
 };
 use seseragi_syntax::SurfaceConstraint;
 
+mod imported;
 mod local;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -124,6 +125,7 @@ fn select_resolved_evidence(
         });
     }
     local::select_local_instance(trait_identity, constraint, resolution)
+        .or_else(|| imported::select_imported_instance(trait_identity, constraint, resolution))
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {

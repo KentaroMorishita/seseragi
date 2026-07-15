@@ -17,6 +17,15 @@ instance Ready<Badge> { fn ready value: Badge -> String = \"imported ready\" }
 pub fn status value: Badge -> String = describe value
 ";
 
+const DOMAIN_WITH_INSTANCE: &str = "\
+pub type Badge = | Active
+pub trait Ready<A> { fn ready value: A -> String }
+instance Ready<Badge> { fn ready value: Badge -> String = \"provider ready\" }
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  ready value
+";
+
 #[test]
 fn resolves_callable_scheme_constraints_to_provider_trait_identities() {
     let linked = linked_program(MAIN, [("./domain", "fixture/game::domain", DOMAIN)]);
@@ -62,6 +71,53 @@ fn passes_consumer_local_evidence_to_an_imported_constrained_function() {
                 && matches!(evidence.as_slice(), [call]
                     if matches!(&call.evidence, TypedInstanceEvidence::Local { identity, .. }
                         if identity == "fixture/game::domain::trait(Ready)<fixture/game::main::Badge>"))
+    ));
+}
+
+#[test]
+fn passes_provider_evidence_to_an_imported_constrained_function() {
+    let source = "\
+import { Active, describe } from \"./domain\"
+pub fn status value: Unit -> String = describe Active
+";
+    let linked = linked_program(
+        source,
+        [("./domain", "fixture/game::domain", DOMAIN_WITH_INSTANCE)],
+    );
+    let resolved = resolve_linked_module(linked.clone(), source);
+    assert!(matches!(
+        resolved.dependency_instances.as_slice(),
+        [instance]
+            if instance.trait_identity == "fixture/game::domain::trait(Ready)"
+                && instance.argument_identities == ["fixture/game::domain::Badge"]
+    ));
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", source),
+        linked,
+        source,
+    )
+    .unwrap();
+    let status = analyzed
+        .typed_hir
+        .declarations
+        .iter()
+        .find_map(|declaration| {
+            let TypedDecl::Fn { symbol, body, .. } = declaration else {
+                return None;
+            };
+            symbol.ends_with("::status").then_some(body)
+        });
+
+    assert!(matches!(
+        status,
+        Some(TypedExpr::Call { evidence, .. })
+            if matches!(evidence.as_slice(), [call]
+                if matches!(&call.evidence, TypedInstanceEvidence::Imported {
+                    identity,
+                    provider_module,
+                } if identity == "fixture/game::domain::trait(Ready)<fixture/game::domain::Badge>"
+                    && provider_module == "fixture/game::domain"))
     ));
 }
 

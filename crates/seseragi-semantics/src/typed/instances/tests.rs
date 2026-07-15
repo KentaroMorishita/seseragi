@@ -149,7 +149,15 @@ instance Identity<Badge> { fn identity value: Badge -> Badge = value }
         instance.identity,
         "artifact/user-instance::trait(Identity)<artifact/user-instance::Badge>"
     );
+    assert_eq!(
+        instance.trait_identity,
+        "artifact/user-instance::trait(Identity)"
+    );
     assert_eq!(instance.arguments, vec![named("Badge")]);
+    assert_eq!(
+        instance.argument_identities,
+        ["artifact/user-instance::Badge"]
+    );
     assert!(instance.type_identity.is_none());
     assert!(matches!(
         &instance.implementation,

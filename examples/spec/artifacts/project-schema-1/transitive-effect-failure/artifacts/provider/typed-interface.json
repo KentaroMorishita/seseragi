@@ -104,6 +104,10 @@
     {
       "identity": "Show<fixture/transitive-effect-failure::provider::InputError>",
       "providerModule": "fixture/transitive-effect-failure::provider",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/transitive-effect-failure::provider::InputError"
+      ],
       "typeIdentity": "fixture/transitive-effect-failure::provider::InputError",
       "trait": "Show",
       "typeParameters": [],

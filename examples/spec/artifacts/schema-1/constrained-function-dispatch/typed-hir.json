@@ -12,6 +12,7 @@
   "instances": [
     {
       "identity": "artifact/constrained-function-dispatch::trait(Ready)<artifact/constrained-function-dispatch::Badge>",
+      "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
       "trait": "Ready",
       "arguments": [
         {
@@ -19,6 +20,9 @@
           "name": "Badge",
           "arguments": []
         }
+      ],
+      "argumentIdentities": [
+        "artifact/constrained-function-dispatch::Badge"
       ],
       "constraints": [],
       "origin": {
