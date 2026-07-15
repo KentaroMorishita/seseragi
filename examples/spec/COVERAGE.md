@@ -17,7 +17,7 @@
 | pure / Effectful traversal short-circuit      | Lesson 04         | `compile/short-circuit-traversal.ssrg`         | covered |
 | Map / Set ordering and serialization          | Lesson 06         | seed / duplicate / canonical fixtures          | partial |
 | HKT / `Functor<F<_>>` / generic `map`          | Lessons 09-11     | `schema-1/{functor-maybe,type-constructor-kind-mismatch}` + `execution-schema-1/functor-maybe`; kind arity、constructor inference、parameter / local evidence、dictionary execution | partial |
-| ApplicativeとValidation accumulation          | Lesson 09         | Applicative law fixtures                       | partial |
+| ApplicativeとValidation accumulation          | Lesson 09         | `schema-1/applicative-maybe` + `execution-schema-1/applicative-maybe`; Functor supertrait、`pure` / `apply` / inherited `map` dictionary execution。law / validation accumulationは未接続 | partial |
 | Monad、`>>=`、do desugar                      | Lesson 10         | Monad law / invalid bind pattern fixtures      | partial |
 | Signalとtransaction                           | Lesson 15         | `projects/signal-transaction-lifetime`         | covered |
 | Effect / Stream requirement merge             | none              | compile / invalid-position fixtures            | partial |

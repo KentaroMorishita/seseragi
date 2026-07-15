@@ -39,6 +39,8 @@ pub struct TypeScriptInstance {
     pub type_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<TypeScriptInstanceConstraint>,
+    #[serde(default, skip_serializing_if = "super::is_zero")]
+    pub supertrait_count: usize,
     pub origin: SourceSpan,
     pub dictionary_export: String,
     pub implementation: TypeScriptInstanceImplementation,
@@ -268,6 +270,7 @@ fn lower_instance(
                     .collect(),
             })
             .collect(),
+        supertrait_count: instance.supertrait_count,
         origin: instance.origin.clone(),
         dictionary_export: dictionary_export_name(&instance.trait_name, index),
         implementation,

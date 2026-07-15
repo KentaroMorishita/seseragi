@@ -39,6 +39,19 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
                 primary: byte_range(*declaration),
             },
         ),
+        InstanceContractIssue::MissingSupertrait {
+            supertrait,
+            primary,
+            declaration,
+        } => (
+            "SES-T0201",
+            "trait.supertrait-instance-missing",
+            *primary,
+            RelatedDiagnostic {
+                message: format!("required supertrait instance {supertrait} is not available"),
+                primary: byte_range(*declaration),
+            },
+        ),
         InstanceContractIssue::MissingMethod {
             method,
             primary,

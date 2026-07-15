@@ -56,12 +56,19 @@ pub(super) fn type_application(
     } else {
         None
     };
-    let seeded_application = instantiated_application(&signature, expected_result, &[]);
     let mut arguments = Vec::with_capacity(argument_nodes.len());
     let mut semantic_arguments = Vec::with_capacity(argument_nodes.len());
     let mut child_analyses = Vec::with_capacity(argument_nodes.len());
     for (index, argument) in argument_nodes.iter().enumerate() {
-        let expected = seeded_application.parameters.get(index).cloned();
+        let partial_application =
+            instantiated_application(&signature, expected_result, &semantic_arguments);
+        let expected = partial_application
+            .parameters
+            .get(index)
+            .cloned()
+            .filter(|expected| {
+                !is_unresolved_parameter_expectation(&expected.type_ref, &signature.type_parameters)
+            });
         let argument_context = context.with_expected(expected);
         let analysis = type_surface_expression(argument, &argument_context);
         semantic_arguments.push(SemanticValueType {
@@ -183,6 +190,7 @@ fn call_issue(
             |(index, (((argument, actual_semantic), expected), source))| {
                 let actual = inferred_type_from_expr(argument);
                 (!typed_type_contains_hole(&actual)
+                    && expected.type_ref != actual
                     && !semantic_values_are_compatible(expected, actual_semantic))
                 .then(|| PureCallIssue::ArgumentType {
                     argument: source.span(),
@@ -206,4 +214,18 @@ fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceE
     }
     arguments.reverse();
     (callee, arguments)
+}
+
+fn is_unresolved_parameter_expectation(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+) -> bool {
+    match type_ref {
+        TypedType::Named { name, .. } => parameters.iter().any(|parameter| parameter.name == *name),
+        TypedType::Hole => true,
+        TypedType::ExternalNamed { .. }
+        | TypedType::Record { .. }
+        | TypedType::Tuple { .. }
+        | TypedType::Function { .. } => false,
+    }
 }

@@ -2,7 +2,8 @@ use super::TypedResolution;
 use crate::{
     SymbolNamespace, TypedCallEvidence, TypedConstraint, TypedInstanceEvidence, TypedType,
 };
-use seseragi_syntax::SurfaceConstraint;
+use seseragi_syntax::{SurfaceConstraint, SurfaceDecl};
+use std::collections::{BTreeMap, BTreeSet};
 
 mod imported;
 mod local;
@@ -12,6 +13,18 @@ pub(crate) struct ScopedCallEvidence {
     trait_identity: String,
     constraint: TypedConstraint,
     index: usize,
+}
+
+impl ScopedCallEvidence {
+    pub(crate) fn index(&self) -> usize {
+        self.index
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ResolvedCallConstraint {
+    pub(crate) trait_identity: String,
+    pub(crate) constraint: TypedConstraint,
 }
 
 pub(crate) fn scoped_call_evidence(
@@ -32,20 +45,186 @@ pub(crate) fn scoped_call_evidence_from(
         .filter_map(|(index, constraint)| {
             let target = resolution.target(constraint.name_span, SymbolNamespace::Trait)?;
             let trait_identity = resolution.symbol(target)?.canonical.clone()?;
-            Some(ScopedCallEvidence {
+            let typed = TypedConstraint {
+                name: constraint.name.clone(),
+                arguments: constraint
+                    .arguments
+                    .iter()
+                    .map(super::type_ref::typed_type_from_type_ref)
+                    .collect(),
+            };
+            let mut evidence = vec![ScopedCallEvidence {
                 trait_identity,
-                constraint: TypedConstraint {
-                    name: constraint.name.clone(),
-                    arguments: constraint
-                        .arguments
-                        .iter()
-                        .map(super::type_ref::typed_type_from_type_ref)
-                        .collect(),
-                },
+                constraint: typed.clone(),
                 index: start_index + index,
-            })
+            }];
+            evidence.extend(
+                expanded_supertrait_constraints(constraint.name_span, &typed.arguments, resolution)
+                    .into_iter()
+                    .map(|supertrait| ScopedCallEvidence {
+                        trait_identity: supertrait.trait_identity,
+                        constraint: supertrait.constraint,
+                        index: start_index + index,
+                    }),
+            );
+            Some(evidence)
+        })
+        .flatten()
+        .collect()
+}
+
+pub(crate) fn scoped_resolved_call_evidence(
+    constraints: &[ResolvedCallConstraint],
+    resolution: &TypedResolution<'_>,
+    start_index: usize,
+) -> Vec<ScopedCallEvidence> {
+    constraints
+        .iter()
+        .enumerate()
+        .flat_map(|(index, constraint)| {
+            let mut evidence = vec![ScopedCallEvidence {
+                trait_identity: constraint.trait_identity.clone(),
+                constraint: constraint.constraint.clone(),
+                index: start_index + index,
+            }];
+            if let Some(origin) = trait_origin(resolution, &constraint.trait_identity) {
+                evidence.extend(
+                    expanded_supertrait_constraints(
+                        origin,
+                        &constraint.constraint.arguments,
+                        resolution,
+                    )
+                    .into_iter()
+                    .map(|supertrait| ScopedCallEvidence {
+                        trait_identity: supertrait.trait_identity,
+                        constraint: supertrait.constraint,
+                        index: start_index + index,
+                    }),
+                );
+            }
+            evidence
         })
         .collect()
+}
+
+pub(crate) fn direct_supertrait_constraints(
+    trait_origin: seseragi_syntax::ByteSpan,
+    arguments: &[TypedType],
+    resolution: &TypedResolution<'_>,
+) -> Vec<ResolvedCallConstraint> {
+    direct_supertrait_constraints_inner(trait_origin, arguments, resolution).unwrap_or_default()
+}
+
+fn expanded_supertrait_constraints(
+    origin: seseragi_syntax::ByteSpan,
+    arguments: &[TypedType],
+    resolution: &TypedResolution<'_>,
+) -> Vec<ResolvedCallConstraint> {
+    fn visit(
+        origin: seseragi_syntax::ByteSpan,
+        arguments: &[TypedType],
+        resolution: &TypedResolution<'_>,
+        visited: &mut BTreeSet<String>,
+        output: &mut Vec<ResolvedCallConstraint>,
+    ) {
+        for supertrait in direct_supertrait_constraints(origin, arguments, resolution) {
+            if !visited.insert(supertrait.trait_identity.clone()) {
+                continue;
+            }
+            if let Some(origin) = trait_origin(resolution, &supertrait.trait_identity) {
+                visit(
+                    origin,
+                    &supertrait.constraint.arguments,
+                    resolution,
+                    visited,
+                    output,
+                );
+            }
+            output.push(supertrait);
+        }
+    }
+
+    let mut output = Vec::new();
+    visit(
+        origin,
+        arguments,
+        resolution,
+        &mut BTreeSet::new(),
+        &mut output,
+    );
+    output
+}
+
+fn direct_supertrait_constraints_inner(
+    trait_origin: seseragi_syntax::ByteSpan,
+    arguments: &[TypedType],
+    resolution: &TypedResolution<'_>,
+) -> Option<Vec<ResolvedCallConstraint>> {
+    let symbol = resolution
+        .target(trait_origin, SymbolNamespace::Trait)
+        .and_then(|target| resolution.symbol(target))
+        .or_else(|| {
+            resolution.resolved().symbols.iter().find(|symbol| {
+                symbol.namespace == SymbolNamespace::Trait && symbol.origin == trait_origin
+            })
+        })?;
+    let (parameters, constraints) = resolution.resolved().declarations.iter().find_map(|decl| {
+        let SurfaceDecl::Trait {
+            name_span,
+            type_parameters,
+            constraints,
+            ..
+        } = decl
+        else {
+            return None;
+        };
+        (*name_span == symbol.origin).then_some((type_parameters, constraints))
+    })?;
+    if parameters.len() != arguments.len() {
+        return None;
+    }
+    let substitutions = parameters
+        .iter()
+        .zip(arguments)
+        .map(|(parameter, argument)| (parameter.name.clone(), argument.clone()))
+        .collect::<BTreeMap<_, _>>();
+    Some(
+        constraints
+            .iter()
+            .filter_map(|constraint| {
+                let target = resolution.target(constraint.name_span, SymbolNamespace::Trait)?;
+                let trait_identity = resolution.symbol(target)?.canonical.clone()?;
+                Some(ResolvedCallConstraint {
+                    trait_identity,
+                    constraint: TypedConstraint {
+                        name: constraint.name.clone(),
+                        arguments: constraint
+                            .arguments
+                            .iter()
+                            .map(super::type_ref::typed_type_from_type_ref)
+                            .map(|argument| {
+                                super::functions::substitute_type_parameters(
+                                    &argument,
+                                    &substitutions,
+                                )
+                            })
+                            .collect(),
+                    },
+                })
+            })
+            .collect(),
+    )
+}
+
+fn trait_origin(
+    resolution: &TypedResolution<'_>,
+    trait_identity: &str,
+) -> Option<seseragi_syntax::ByteSpan> {
+    resolution.resolved().symbols.iter().find_map(|symbol| {
+        (symbol.namespace == SymbolNamespace::Trait
+            && symbol.canonical.as_deref() == Some(trait_identity))
+        .then_some(symbol.origin)
+    })
 }
 
 /// Selects evidence for constraints attached to a saturated function call.

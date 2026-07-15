@@ -38,7 +38,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor実行fixtureあり、law fixture不足    | `Functor<F<_>>` HKT推論 / local dictionary実行まで部分実装 |
+| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative実行fixtureあり、law fixture不足 | HKT推論 / local dictionary / Applicative supertrait実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
@@ -217,7 +217,13 @@ first-class partial constrained functionとgeneric / conditional imported dictio
 `type-constructor-kind-mismatch`は`Type -> Type`を要求するtrait parameterへ`Int : Type`を渡すinstanceを
 `trait.instance-kind-mismatch`で拒否します。TypeScriptはHKTを直接表せないため、型検査済みの`F<A>` parameter
 annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのkind、constraint、dictionary選択は消去しません。
-Applicativeのsupertrait evidence、`<$>` / `<*>`、Monadとgeneric doは次の独立gateです。
+`schema-1/applicative-maybe`は`Applicative<F>`が要求する`Functor<F>`をinstance contractとして検査し、
+親dictionaryをApplicative factoryへ渡して生成dictionaryへspreadします。したがって
+`where Applicative<F>`だけを持つgeneric functionでも、同じparameter evidenceから`map`、`pure`、`apply`を呼べます。
+`lifted increment`のような制約付きcallを別のHKT callの引数へ置いた場合も、外側の期待型と左から確定した引数型を
+使って`F = Maybe`を具体化し、内側と外側の両方へdictionaryを渡します。
+`execution-schema-1/applicative-maybe`は`mapped`、`lifted`、`applyWrapped`を組み合わせた`Just 42`を固定します。
+`<$>` / `<*>`、Applicative law、Monad dictionary、`>>=`とgeneric doは次の独立gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

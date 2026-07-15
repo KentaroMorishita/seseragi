@@ -1,4 +1,4 @@
-use crate::{ResolvedModule, SymbolKind, SymbolNamespace};
+use crate::{ResolvedModule, SymbolKind, SymbolNamespace, TypedConstraint, TypedType};
 use seseragi_syntax::{
     ByteSpan, InterfaceType, SurfaceDecl, SurfaceMethod, TypeParameter, TypeRef,
 };
@@ -10,7 +10,10 @@ mod types;
 pub(crate) use model::InstanceContractIssue;
 use model::{TraitContract, TraitMethodContract};
 
-pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<InstanceContractIssue> {
+pub(crate) fn analyze_instance_contracts(
+    resolved: &ResolvedModule,
+    resolution: &crate::typed::TypedResolution<'_>,
+) -> Vec<InstanceContractIssue> {
     resolved
         .declarations
         .iter()
@@ -20,6 +23,7 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
                 trait_name,
                 trait_name_span,
                 arguments,
+                constraints,
                 methods,
                 span,
                 ..
@@ -30,9 +34,12 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
             let contract = trait_contract(resolved, *trait_name_span)?;
             Some(validate_instance(
                 resolved,
+                resolution,
                 type_parameters,
                 trait_name,
+                *trait_name_span,
                 arguments,
+                constraints,
                 methods,
                 *span,
                 contract,
@@ -44,9 +51,12 @@ pub(crate) fn analyze_instance_contracts(resolved: &ResolvedModule) -> Vec<Insta
 
 fn validate_instance(
     resolved: &ResolvedModule,
+    resolution: &crate::typed::TypedResolution<'_>,
     instance_parameters: &[TypeParameter],
     trait_name: &str,
+    trait_name_span: ByteSpan,
     arguments: &[seseragi_syntax::TypeRef],
+    constraints: &[seseragi_syntax::SurfaceConstraint],
     methods: &[SurfaceMethod],
     instance_span: ByteSpan,
     contract: TraitContract<'_>,
@@ -82,6 +92,29 @@ fn validate_instance(
                 expected: parameter.arity,
                 actual,
                 primary: type_ref_span(argument),
+                declaration: contract_span,
+            });
+        }
+    }
+
+    let typed_arguments = arguments
+        .iter()
+        .map(crate::typed::typed_type_from_type_ref)
+        .collect::<Vec<_>>();
+    let scoped = crate::typed::scoped_call_evidence(constraints, resolution);
+    for required in
+        crate::typed::direct_supertrait_constraints(trait_name_span, &typed_arguments, resolution)
+    {
+        let selected = crate::typed::select_function_call_evidence(
+            std::slice::from_ref(&required.constraint),
+            &[Some(required.trait_identity)],
+            resolution,
+            &scoped,
+        );
+        if selected.is_err() {
+            issues.push(InstanceContractIssue::MissingSupertrait {
+                supertrait: render_constraint(&required.constraint),
+                primary: instance_span,
                 declaration: contract_span,
             });
         }
@@ -191,6 +224,62 @@ fn validate_instance(
         }
     }
     issues
+}
+
+fn render_constraint(constraint: &TypedConstraint) -> String {
+    if constraint.arguments.is_empty() {
+        return constraint.name.clone();
+    }
+    format!(
+        "{}<{}>",
+        constraint.name,
+        constraint
+            .arguments
+            .iter()
+            .map(render_typed_type)
+            .collect::<Vec<_>>()
+            .join(", ")
+    )
+}
+
+fn render_typed_type(type_ref: &TypedType) -> String {
+    match type_ref {
+        TypedType::Named { name, arguments }
+        | TypedType::ExternalNamed {
+            name, arguments, ..
+        } => {
+            if arguments.is_empty() {
+                name.clone()
+            } else {
+                format!(
+                    "{}<{}>",
+                    name,
+                    arguments
+                        .iter()
+                        .map(render_typed_type)
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            }
+        }
+        TypedType::Tuple { elements } => format!(
+            "({})",
+            elements
+                .iter()
+                .map(render_typed_type)
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
+        TypedType::Function { parameter, result } => {
+            format!(
+                "({} -> {})",
+                render_typed_type(parameter),
+                render_typed_type(result)
+            )
+        }
+        TypedType::Record { .. } => "record".to_owned(),
+        TypedType::Hole => "_".to_owned(),
+    }
 }
 
 fn type_ref_arity(

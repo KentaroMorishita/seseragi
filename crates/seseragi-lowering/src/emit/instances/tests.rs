@@ -328,3 +328,81 @@ pub fn status value: Maybe<Badge> -> String = render value
         bundle.typescript
     );
 }
+
+#[test]
+fn emits_applicative_dictionaries_with_inherited_functor_evidence() {
+    let source = "\
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+instance Applicative<Maybe> {
+  fn pure<A> value: A -> Maybe<A> = Just value
+  fn apply<A, B> wrapped: Maybe<A -> B> -> value: Maybe<A> -> Maybe<B> =
+    match (wrapped, value) {
+      (Just function, Just item) -> Just $ function item
+      _ -> Nothing
+    }
+}
+fn mapped<F<_>, A, B>
+  f: (A -> B) -> value: F<A> -> F<B>
+where Applicative<F> =
+  map f value
+fn ap<F<_>, A, B>
+  wrapped: F<A -> B> -> value: F<A> -> F<B>
+where Applicative<F> =
+  apply wrapped value
+fn lifted<F<_>, A>
+  value: A -> F<A>
+where Applicative<F> =
+  pure value
+fn increment value: Int -> Int = value + 1
+pub let answer: Maybe<Int> =
+  Just 40
+  |> mapped increment
+  |> ap (lifted increment)
+";
+    let typed = type_module("artifact/applicative-supertrait/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(
+        bundle.typescript.contains(
+            "(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0, \"pure\""
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("__ssrg$evidence$0[\"map\"](f)(value)"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "mapped(increment)(_ssrg_maybe_Just(40n))(__ssrg$instance$Applicative$1(__ssrg$instance$Functor$0))"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "lifted(increment)(__ssrg$instance$Applicative$1(__ssrg$instance$Functor$0))"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}

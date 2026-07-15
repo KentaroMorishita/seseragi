@@ -99,4 +99,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Generic Maybe: empty\nGeneric Maybe: present",
   },
+  {
+    id: "applicative-maybe",
+    label: "Applicativeの流れ",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg",
+    stdin: "",
+    expectedOutput: "Just 42",
+  },
 ]

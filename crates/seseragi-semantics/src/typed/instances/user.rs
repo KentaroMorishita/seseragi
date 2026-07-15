@@ -47,7 +47,19 @@ fn typed_instance(
         .iter()
         .map(|argument| canonical_type_ref(argument, resolution, &binders))
         .collect::<Option<Vec<_>>>()?;
-    let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
+    let typed_arguments = arguments
+        .iter()
+        .map(typed_type_from_type_ref)
+        .collect::<Vec<_>>();
+    let supertraits =
+        crate::typed::direct_supertrait_constraints(*trait_name_span, &typed_arguments, resolution);
+    let mut scoped_evidence =
+        crate::typed::scoped_resolved_call_evidence(&supertraits, resolution, 0);
+    scoped_evidence.extend(crate::typed::scoped_call_evidence_from(
+        constraints,
+        resolution,
+        supertraits.len(),
+    ));
     let methods = methods
         .iter()
         .map(|method| typed_method(method, resolution, &scoped_evidence))
@@ -61,20 +73,24 @@ fn typed_instance(
             .iter()
             .map(|parameter| parameter.name.clone())
             .collect(),
-        arguments: arguments.iter().map(typed_type_from_type_ref).collect(),
+        arguments: typed_arguments,
         type_identity: None,
         argument_identities: canonical_arguments,
-        constraints: constraints
+        constraints: supertraits
             .iter()
-            .map(|constraint| TypedConstraint {
-                name: constraint.name.clone(),
-                arguments: constraint
-                    .arguments
-                    .iter()
-                    .map(typed_type_from_type_ref)
-                    .collect(),
-            })
+            .map(|supertrait| supertrait.constraint.clone())
+            .chain(constraints.iter().map(|constraint| {
+                TypedConstraint {
+                    name: constraint.name.clone(),
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(typed_type_from_type_ref)
+                        .collect(),
+                }
+            }))
             .collect(),
+        supertrait_count: supertraits.len(),
         origin: *span,
         implementation: TypedInstanceImplementation::UserDefined { methods },
     })
@@ -88,10 +104,15 @@ fn typed_method(
     let body = method.body.as_ref()?;
     let parameters = typed_parameters_from_surface(&method.parameters);
     let mut method_evidence = scoped_evidence.to_vec();
+    let next_evidence_index = scoped_evidence
+        .iter()
+        .map(|evidence| evidence.index())
+        .max()
+        .map_or(0, |index| index + 1);
     method_evidence.extend(crate::typed::scoped_call_evidence_from(
         &method.constraints,
         resolution,
-        method_evidence.len(),
+        next_evidence_index,
     ));
     let context = PureExpressionContext::new(&parameters, resolution)
         .with_evidence_parameters(method_evidence)

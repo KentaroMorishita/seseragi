@@ -56,9 +56,10 @@ fn render_user_defined_instance(
     instance: &TypeScriptInstance,
     methods: &[TypeScriptInstanceMethod],
 ) -> String {
-    let body = methods
-        .iter()
-        .map(|method| {
+    let inherited = (0..instance.supertrait_count)
+        .map(|index| format!("...{}", crate::typescript::evidence_parameter_name(index)));
+    let body = inherited
+        .chain(methods.iter().map(|method| {
             let parameters = super::evidence_parameters(
                 &method.parameters,
                 instance.constraints.len(),
@@ -74,7 +75,7 @@ fn render_user_defined_instance(
                     method.is_async,
                 )
             )
-        })
+        }))
         .collect::<Vec<_>>()
         .join(", ");
     let dictionary = format!("{{ {body} }}");

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "case": "applicative-maybe",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/applicative-maybe",
+    "export": "main",
+    "compiledModule": "../../schema-1/applicative-maybe/generated-module.json",
+    "typedInterface": "../../schema-1/applicative-maybe/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.maybe",
+      "core.adt",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.int64",
+      "core.int64.add",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Just 42"],
+        "stdout": "Just 42\n"
+      }
+    ]
+  }
+}

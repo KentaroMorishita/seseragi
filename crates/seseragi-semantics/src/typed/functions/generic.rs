@@ -116,9 +116,18 @@ pub(crate) fn infer_type_parameters(
                 .any(|parameter| parameter.arity == 0 && parameter.name == *name)
         {
             if !typed_type_contains_hole(argument) {
-                substitutions
-                    .entry(name.clone())
-                    .or_insert_with(|| argument.clone());
+                match substitutions.entry(name.clone()) {
+                    std::collections::btree_map::Entry::Vacant(entry) => {
+                        entry.insert(argument.clone());
+                    }
+                    std::collections::btree_map::Entry::Occupied(mut entry)
+                        if contains_type_parameter(entry.get(), type_parameters)
+                            && !contains_type_parameter(argument, type_parameters) =>
+                    {
+                        entry.insert(argument.clone());
+                    }
+                    std::collections::btree_map::Entry::Occupied(_) => {}
+                }
             }
             return;
         }
@@ -226,6 +235,31 @@ pub(crate) fn infer_type_parameters(
             );
         }
         _ => {}
+    }
+}
+
+fn contains_type_parameter(type_ref: &TypedType, parameters: &[TypeParameter]) -> bool {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            parameters.iter().any(|parameter| parameter.name == *name)
+                || arguments
+                    .iter()
+                    .any(|argument| contains_type_parameter(argument, parameters))
+        }
+        TypedType::ExternalNamed { arguments, .. } => arguments
+            .iter()
+            .any(|argument| contains_type_parameter(argument, parameters)),
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| contains_type_parameter(&field.type_ref, parameters)),
+        TypedType::Tuple { elements } => elements
+            .iter()
+            .any(|element| contains_type_parameter(element, parameters)),
+        TypedType::Function { parameter, result } => {
+            contains_type_parameter(parameter, parameters)
+                || contains_type_parameter(result, parameters)
+        }
+        TypedType::Hole => true,
     }
 }
 

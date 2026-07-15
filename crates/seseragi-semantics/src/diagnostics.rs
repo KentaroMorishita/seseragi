@@ -106,18 +106,40 @@ fn collect_decl_diagnostics(
     }
 
     if let SurfaceDecl::Instance {
+        trait_name_span,
+        arguments,
         constraints,
         methods,
         ..
     } = declaration
     {
-        let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
+        let typed_arguments = arguments
+            .iter()
+            .map(crate::typed::typed_type_from_type_ref)
+            .collect::<Vec<_>>();
+        let supertraits = crate::typed::direct_supertrait_constraints(
+            *trait_name_span,
+            &typed_arguments,
+            resolution,
+        );
+        let mut scoped_evidence =
+            crate::typed::scoped_resolved_call_evidence(&supertraits, resolution, 0);
+        scoped_evidence.extend(crate::typed::scoped_call_evidence_from(
+            constraints,
+            resolution,
+            supertraits.len(),
+        ));
         for method in methods {
             let mut method_evidence = scoped_evidence.clone();
+            let next_evidence_index = method_evidence
+                .iter()
+                .map(|evidence| evidence.index())
+                .max()
+                .map_or(0, |index| index + 1);
             method_evidence.extend(crate::typed::scoped_call_evidence_from(
                 &method.constraints,
                 resolution,
-                method_evidence.len(),
+                next_evidence_index,
             ));
             collect_pure_body_diagnostics(
                 method.body.as_ref(),

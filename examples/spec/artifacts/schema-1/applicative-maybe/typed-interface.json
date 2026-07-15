@@ -1,0 +1,341 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/applicative-maybe",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/applicative-maybe::trait(Functor)",
+      "namespace": "trait",
+      "name": "Functor",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 77
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Functor",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "map",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 28,
+            "end": 75
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/applicative-maybe::trait(Applicative)",
+      "namespace": "trait",
+      "name": "Applicative",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 250,
+        "end": 387
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Functor",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Applicative",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "pure",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 299,
+            "end": 326
+          }
+        },
+        {
+          "name": "apply",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 329,
+            "end": 385
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/applicative-maybe::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1134,
+        "end": 1269
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "artifact/applicative-maybe::trait(Functor)<std/prelude::Maybe>",
+      "providerModule": "artifact/applicative-maybe",
+      "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
+      "argumentIdentities": [
+        "std/prelude::Maybe"
+      ],
+      "trait": "Functor",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 79,
+        "end": 248
+      }
+    },
+    {
+      "identity": "artifact/applicative-maybe::trait(Applicative)<std/prelude::Maybe>",
+      "providerModule": "artifact/applicative-maybe",
+      "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
+      "argumentIdentities": [
+        "std/prelude::Maybe"
+      ],
+      "trait": "Applicative",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Applicative",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 389,
+        "end": 652
+      }
+    }
+  ]
+}

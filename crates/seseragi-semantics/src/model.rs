@@ -198,6 +198,8 @@ pub struct TypedInstance {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
     pub constraints: Vec<TypedConstraint>,
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub supertrait_count: usize,
     pub origin: ByteSpan,
     pub implementation: TypedInstanceImplementation,
 }
@@ -563,4 +565,8 @@ pub(crate) fn unit_type() -> TypedType {
 
 fn is_false(value: &bool) -> bool {
     !*value
+}
+
+fn is_zero(value: &usize) -> bool {
+    *value == 0
 }

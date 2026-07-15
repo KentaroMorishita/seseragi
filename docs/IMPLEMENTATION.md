@@ -687,10 +687,24 @@ concrete call siteは既存のlocal generic instance selectionを使います。
 TypeScriptにはnative HKT applicationがないため、`F<A>`をそのまま不正なTypeScript型として生成しません。
 CoreIrはtype-constructor parameter名を保持し、backend parameter annotationだけを`unknown`へ消去します。
 これはSeseragiのkind / type / instance selectionをTypeScriptへ委譲するものではなく、意味確定後のtarget ABI消去です。
-concrete `Maybe<A>`などは従来どおりtagged union型を生成します。次のgateはFunctorをsupertraitとして要求する
-Applicative dictionary、続いてMonad dictionaryと型から選択するpure doです。
+concrete `Maybe<A>`などは従来どおりtagged union型を生成します。
 
-このgateは直接または一つのexpression内で飽和するconstrained function callを対象にします。
+`schema-1/applicative-maybe`はsupertraitを単なる宣言metadataにせず、dictionary ABIへ接続します。
+`instance Applicative<Maybe>`の選択時には`Functor<Maybe>` evidenceを再帰選択し、Applicative factoryは受け取った
+Functor dictionaryをspreadして`map`、`pure`、`apply`を一つのdictionaryとして公開します。instance定義時にも
+required supertrait instanceを検査し、欠けていれば`trait.supertrait-instance-missing`で拒否します。
+generic `where Applicative<F>` scopeは親`Functor<F>`を同じparameter indexへprojectするため、bodyは追加の暗黙引数なしで
+`map`を使えます。これは`Maybe`名やruntime tagによる分岐ではなく、resolverが確定したtrait identityとtyped constraintから
+構築したevidence treeです。
+
+同じfixtureは`mapped`、`lifted`、`applyWrapped`を一つのpipelineで合成します。引数を一括して未解決期待型で型付けせず、
+左から確定したsemantic argumentを後続引数の期待型へ反映します。また、rootが未解決type-constructor parameterの期待型は
+constructor expressionへ押し付けず、実引数または外側のconcrete resultから具体化します。これにより入れ子になった
+saturated constrained callの内側と外側へ、それぞれApplicative dictionaryを挿入できます。
+`execution-schema-1/applicative-maybe`は生成moduleとversioned runtimeで`Just 42`を観測します。
+次のgateはこのsupertrait chainをもう一段伸ばすMonad dictionaryと、型からMonadを選ぶpure doです。
+
+このgateは直接または入れ子のexpression内で飽和するconstrained function callを対象にします。
 partial applicationしたconstrained functionをlet / parameterなどfirst-class valueとして保持する場合は、
 未解決constraintをvalue schemeへ保持する一般機構が必要です。standard / imported dictionaryのparameter化は
 Phase 3の累積goal programで回収します。現在の飽和call ABIをそれらの完了と数えません。

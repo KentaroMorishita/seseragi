@@ -116,6 +116,44 @@ fn reports_a_higher_kinded_instance_argument_mismatch() {
 }
 
 #[test]
+fn rejects_an_instance_without_its_supertrait_instance() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-supertrait-missing/main.ssrg",
+        "trait Functor<F<_>> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> }\n\
+         trait Applicative<F<_>> where Functor<F> { fn pure<A> value: A -> F<A> }\n\
+         instance Applicative<Maybe> { fn pure<A> value: A -> Maybe<A> = Just value }\n",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0201"
+            && diagnostic.message_key == "trait.supertrait-instance-missing"
+            && diagnostic.related[0]
+                .message
+                .contains("required supertrait instance Functor<Maybe>")
+    }));
+}
+
+#[test]
+fn accepts_an_instance_when_its_supertrait_instance_is_available() {
+    let artifact = semantic_diagnostics(
+        "artifact/instance-supertrait/main.ssrg",
+        "trait Functor<F<_>> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> }\n\
+         instance Functor<Maybe> { fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> = match value {\n\
+           Nothing -> Nothing\n\
+           Just item -> Just (f item)\n\
+         } }\n\
+         trait Applicative<F<_>> where Functor<F> { fn pure<A> value: A -> F<A> }\n\
+         instance Applicative<Maybe> { fn pure<A> value: A -> Maybe<A> = Just value }\n",
+    );
+
+    assert!(
+        artifact.diagnostics.is_empty(),
+        "{:?}",
+        artifact.diagnostics
+    );
+}
+
+#[test]
 fn reports_an_instance_method_signature_mismatch() {
     let artifact = semantic_diagnostics(
         "artifact/instance-contract-mismatch/main.ssrg",

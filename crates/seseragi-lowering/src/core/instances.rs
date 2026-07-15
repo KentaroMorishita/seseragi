@@ -21,6 +21,8 @@ pub struct CoreInstance {
     pub type_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<CoreInstanceConstraint>,
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub supertrait_count: usize,
     pub origin: SourceSpan,
     pub implementation: CoreInstanceImplementation,
 }
@@ -119,6 +121,7 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
             .into_iter()
             .map(lower_constraint)
             .collect(),
+        supertrait_count: instance.supertrait_count,
         origin: source_span(source, instance.origin),
         implementation: match instance.implementation {
             TypedInstanceImplementation::DerivedShow {
@@ -141,6 +144,10 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
             }
         },
     }
+}
+
+fn is_zero(value: &usize) -> bool {
+    *value == 0
 }
 
 fn lower_method(source: &str, method: TypedInstanceMethod) -> CoreInstanceMethod {

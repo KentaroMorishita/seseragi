@@ -1,0 +1,1946 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/applicative-maybe",
+  "instances": [
+    {
+      "identity": "artifact/applicative-maybe::trait(Functor)<std/prelude::Maybe>",
+      "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 79,
+        "end": 248
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "f",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "start": 120,
+                  "end": 121
+                }
+              },
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 135,
+                  "end": 140
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 175,
+                  "end": 180
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 189,
+                      "end": 196
+                    }
+                  },
+                  "body": {
+                    "kind": "variable",
+                    "name": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 200,
+                      "end": 207
+                    }
+                  },
+                  "origin": {
+                    "start": 189,
+                    "end": 207
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Just",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 24,
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 219,
+                        "end": 223
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 214,
+                      "end": 223
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::Just",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 236,
+                              "end": 240
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 234,
+                          "end": 240
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 227,
+                      "end": 240
+                    }
+                  },
+                  "origin": {
+                    "start": 214,
+                    "end": 240
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 169,
+                "end": 246
+              }
+            },
+            "origin": {
+              "start": 107,
+              "end": 246
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/applicative-maybe::trait(Applicative)<std/prelude::Maybe>",
+      "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
+      "trait": "Applicative",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe"
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "start": 389,
+        "end": 652
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "pure",
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 432,
+                  "end": 437
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Just",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 460,
+                    "end": 465
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 455,
+                "end": 465
+              }
+            },
+            "origin": {
+              "start": 421,
+              "end": 465
+            }
+          },
+          {
+            "name": "apply",
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "wrapped",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 484,
+                  "end": 491
+                }
+              },
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 510,
+                  "end": 515
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "wrapped",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 551,
+                      "end": 558
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 560,
+                      "end": 565
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 550,
+                  "end": 566
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "constructor",
+                        "symbol": "std/prelude::Just",
+                        "argument": {
+                          "kind": "binding",
+                          "symbol": 38,
+                          "name": "function",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "start": 581,
+                            "end": 589
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "B",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 576,
+                          "end": 589
+                        }
+                      },
+                      {
+                        "kind": "constructor",
+                        "symbol": "std/prelude::Just",
+                        "argument": {
+                          "kind": "binding",
+                          "symbol": 39,
+                          "name": "item",
+                          "type": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 596,
+                            "end": 600
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 591,
+                          "end": 600
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "B",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 575,
+                      "end": 601
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::Just",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "function",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 621,
+                              "end": 625
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 612,
+                          "end": 625
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 605,
+                      "end": 625
+                    }
+                  },
+                  "origin": {
+                    "start": 575,
+                    "end": 625
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "wildcard",
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "B",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 632,
+                      "end": 633
+                    }
+                  },
+                  "body": {
+                    "kind": "variable",
+                    "name": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 637,
+                      "end": 644
+                    }
+                  },
+                  "origin": {
+                    "start": 632,
+                    "end": 644
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 544,
+                "end": 650
+              }
+            },
+            "origin": {
+              "start": 469,
+              "end": 650
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/applicative-maybe::mapped",
+      "visibility": "private",
+      "origin": {
+        "start": 654,
+        "end": 749
+      },
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "scheme": {
+        "typeParameters": [
+          "F",
+          "A",
+          "B"
+        ],
+        "constraints": [
+          {
+            "name": "Applicative",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "f",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 678,
+            "end": 679
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 693,
+            "end": 698
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/applicative-maybe::trait(Functor)::map",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "f",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 742,
+              "end": 743
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 744,
+              "end": 749
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Functor",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
+          "method": "map"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 738,
+          "end": 749
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/applicative-maybe::applyWrapped",
+      "visibility": "private",
+      "origin": {
+        "start": 751,
+        "end": 867
+      },
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "scheme": {
+        "typeParameters": [
+          "F",
+          "A",
+          "B"
+        ],
+        "constraints": [
+          {
+            "name": "Applicative",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "wrapped",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 781,
+            "end": 788
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 803,
+            "end": 808
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/applicative-maybe::trait(Applicative)::apply",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "wrapped",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 854,
+              "end": 861
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 862,
+              "end": 867
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
+          "method": "apply"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 848,
+          "end": 867
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/applicative-maybe::lifted",
+      "visibility": "private",
+      "origin": {
+        "start": 869,
+        "end": 942
+      },
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "scheme": {
+        "typeParameters": [
+          "F",
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Applicative",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 890,
+            "end": 895
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/applicative-maybe::trait(Applicative)::pure",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "start": 937,
+              "end": 942
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
+          "method": "pure"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 932,
+          "end": 942
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/applicative-maybe::increment",
+      "visibility": "private",
+      "origin": {
+        "start": 944,
+        "end": 986
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 957,
+            "end": 962
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 977,
+            "end": 982
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 985,
+            "end": 986
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 977,
+          "end": 986
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/applicative-maybe::render",
+      "visibility": "private",
+      "origin": {
+        "start": 988,
+        "end": 1132
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 998,
+            "end": 1003
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1036,
+            "end": 1041
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1048,
+                "end": 1055
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Nothing",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1059,
+                "end": 1068
+              }
+            },
+            "origin": {
+              "start": 1048,
+              "end": 1068
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "integer",
+                "value": "42",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1078,
+                  "end": 1080
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1073,
+                "end": 1080
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Just 42",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1084,
+                "end": 1093
+              }
+            },
+            "origin": {
+              "start": 1073,
+              "end": 1093
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1103,
+                  "end": 1104
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1098,
+                "end": 1104
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Just another value",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1108,
+                "end": 1128
+              }
+            },
+            "origin": {
+              "start": 1098,
+              "end": 1128
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 1030,
+          "end": 1132
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/applicative-maybe::main",
+      "visibility": "public",
+      "origin": {
+        "start": 1134,
+        "end": 1269
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/applicative-maybe::render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/applicative-maybe::applyWrapped",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/applicative-maybe::lifted",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "artifact/applicative-maybe::increment",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "start": 1226,
+                            "end": 1235
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Applicative",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "artifact/applicative-maybe::trait(Applicative)<std/prelude::Maybe>",
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Functor",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "local",
+                                  "identity": "artifact/applicative-maybe::trait(Functor)<std/prelude::Maybe>"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1219,
+                        "end": 1235
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "artifact/applicative-maybe::mapped",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "artifact/applicative-maybe::increment",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "start": 1188,
+                            "end": 1197
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Just",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "40",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1171,
+                                "end": 1173
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1166,
+                            "end": 1173
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Applicative",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "artifact/applicative-maybe::trait(Applicative)<std/prelude::Maybe>",
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Functor",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "local",
+                                  "identity": "artifact/applicative-maybe::trait(Functor)<std/prelude::Maybe>"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1166,
+                        "end": 1197
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Applicative",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "artifact/applicative-maybe::trait(Applicative)<std/prelude::Maybe>",
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Functor",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "artifact/applicative-maybe::trait(Functor)<std/prelude::Maybe>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1166,
+                    "end": 1236
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1166,
+                "end": 1250
+              }
+            }
+          ],
+          "origin": {
+            "start": 1166,
+            "end": 1265
+          }
+        },
+        "origin": {
+          "start": 1157,
+          "end": 1269
+        }
+      }
+    }
+  ]
+}

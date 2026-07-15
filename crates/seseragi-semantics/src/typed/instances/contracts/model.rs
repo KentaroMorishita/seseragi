@@ -48,6 +48,11 @@ pub(crate) enum InstanceContractIssue {
         primary: ByteSpan,
         declaration: ByteSpan,
     },
+    MissingSupertrait {
+        supertrait: String,
+        primary: ByteSpan,
+        declaration: ByteSpan,
+    },
     MissingMethod {
         method: String,
         primary: ByteSpan,

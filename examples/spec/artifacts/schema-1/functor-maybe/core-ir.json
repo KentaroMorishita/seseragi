@@ -741,7 +741,15 @@
                       }
                     ],
                     "type": {
-                      "kind": "hole"
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
                     },
                     "origin": {
                       "source": "main.ssrg",

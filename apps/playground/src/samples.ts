@@ -9,6 +9,7 @@ import seseragiQuiz from "../../../examples/spec/playground/03-seseragi-quiz.ssr
 import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboard.ssrg?raw"
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
+import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
 import {
   sampleCatalog,
   type PlaygroundSampleDefinition,
@@ -34,6 +35,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "array-scoreboard": arrayScoreboard,
   "trait-badges": traitBadges,
   "generic-instance": genericInstance,
+  "applicative-maybe": applicativeMaybe,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

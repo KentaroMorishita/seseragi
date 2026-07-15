@@ -23,7 +23,7 @@ pub(super) fn collect_trait_diagnostics(
             .map(diagnostic),
     );
     diagnostics.extend(
-        analyze_instance_contracts(resolved)
+        analyze_instance_contracts(resolved, resolution)
             .iter()
             .map(contracts::diagnostic),
     );

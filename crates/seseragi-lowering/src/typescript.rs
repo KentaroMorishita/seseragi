@@ -582,6 +582,10 @@ fn is_false(value: &bool) -> bool {
     !*value
 }
 
+fn is_zero(value: &usize) -> bool {
+    *value == 0
+}
+
 fn default_runtime_edge() -> bool {
     true
 }

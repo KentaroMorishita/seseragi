@@ -1,0 +1,60 @@
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+instance Applicative<Maybe> {
+  fn pure<A> value: A -> Maybe<A> = Just value
+
+  fn apply<A, B> wrapped: Maybe<A -> B> -> value: Maybe<A> -> Maybe<B> =
+    match (wrapped, value) {
+      (Just function, Just item) -> Just $ function item
+      _ -> Nothing
+    }
+}
+
+fn mapped<F<_>, A, B>
+  f: (A -> B) -> value: F<A> -> F<B>
+where Applicative<F> =
+  map f value
+
+fn applyWrapped<F<_>, A, B>
+  wrapped: F<A -> B> -> value: F<A> -> F<B>
+where Applicative<F> =
+  apply wrapped value
+
+fn lifted<F<_>, A>
+  value: A -> F<A>
+where Applicative<F> =
+  pure value
+
+fn increment value: Int -> Int = value + 1
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just 42 -> "Just 42"
+    Just _ -> "Just another value"
+  }
+
+pub effect fn main =
+  do {
+    Just 40
+    |> mapped increment
+    |> applyWrapped (lifted increment)
+    |> render
+    |> println
+  }

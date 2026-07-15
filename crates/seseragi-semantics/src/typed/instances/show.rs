@@ -184,6 +184,7 @@ fn typed_instance(
         argument_identities: vec![candidate.symbol.clone()],
         type_identity: Some(candidate.symbol.clone()),
         constraints: Vec::new(),
+        supertrait_count: 0,
         origin: candidate.origin,
         implementation: TypedInstanceImplementation::DerivedShow {
             adt_symbol: candidate.symbol,

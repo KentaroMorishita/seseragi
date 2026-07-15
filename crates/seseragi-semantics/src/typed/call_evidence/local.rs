@@ -106,28 +106,40 @@ fn match_instance(
         .iter()
         .map(|argument| canonical_type_ref(argument, resolution, &binders))
         .collect::<Option<Vec<_>>>()?;
-    let evidence_arguments = constraints
-        .iter()
-        .map(|required| {
-            let target = resolution.target(required.name_span, SymbolNamespace::Trait)?;
-            let required_trait = resolution.symbol(target)?.canonical.as_deref()?;
-            let constraint = TypedConstraint {
-                name: required.name.clone(),
-                arguments: required
-                    .arguments
-                    .iter()
-                    .map(typed_type_from_type_ref)
-                    .map(|argument| substitute_type_parameters(&argument, &substitutions))
-                    .collect(),
-            };
-            let evidence =
-                select_local_instance_with_stack(required_trait, &constraint, resolution, stack)?;
-            Some(TypedCallEvidence {
-                constraint,
-                evidence,
-            })
-        })
-        .collect::<Option<Vec<_>>>()?;
+    let supertraits =
+        super::direct_supertrait_constraints(*trait_name_span, &constraint.arguments, resolution);
+    let mut evidence_arguments = Vec::new();
+    for required in supertraits {
+        let evidence = select_local_instance_with_stack(
+            &required.trait_identity,
+            &required.constraint,
+            resolution,
+            stack,
+        )?;
+        evidence_arguments.push(TypedCallEvidence {
+            constraint: required.constraint,
+            evidence,
+        });
+    }
+    for required in constraints {
+        let target = resolution.target(required.name_span, SymbolNamespace::Trait)?;
+        let required_trait = resolution.symbol(target)?.canonical.clone()?;
+        let constraint = TypedConstraint {
+            name: required.name.clone(),
+            arguments: required
+                .arguments
+                .iter()
+                .map(typed_type_from_type_ref)
+                .map(|argument| substitute_type_parameters(&argument, &substitutions))
+                .collect(),
+        };
+        let evidence =
+            select_local_instance_with_stack(&required_trait, &constraint, resolution, stack)?;
+        evidence_arguments.push(TypedCallEvidence {
+            constraint,
+            evidence,
+        });
+    }
     Some(TypedInstanceEvidence::Local {
         identity: canonical_instance_head_identity(trait_identity, &canonical_arguments),
         type_arguments,
