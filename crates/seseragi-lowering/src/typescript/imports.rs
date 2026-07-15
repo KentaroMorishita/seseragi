@@ -119,7 +119,17 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             }
         }
         TypeScriptExpr::Call { arguments, .. }
-        | TypeScriptExpr::DictionaryCall { arguments, .. } => {
+        | TypeScriptExpr::TypeApplicationCall { arguments, .. } => {
+            for argument in arguments {
+                rewrite_expr(argument, renames);
+            }
+        }
+        TypeScriptExpr::DictionaryCall {
+            dictionary,
+            arguments,
+            ..
+        } => {
+            rewrite_expr(dictionary, renames);
             for argument in arguments {
                 rewrite_expr(argument, renames);
             }

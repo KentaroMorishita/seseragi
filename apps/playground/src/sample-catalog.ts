@@ -57,4 +57,11 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Status badge: active\nMode badge: automatic",
   },
+  {
+    id: "generic-instance",
+    label: "Generic instance",
+    sourcePath: "examples/spec/playground/06-generic-instance.ssrg",
+    stdin: "",
+    expectedOutput: "Generic Maybe: empty\nGeneric Maybe: present",
+  },
 ]

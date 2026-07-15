@@ -13,7 +13,7 @@ pub(super) fn resolve_show_dictionary(
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptShowDictionaryReference {
     match evidence {
-        CoreInstanceEvidence::Local { identity } => {
+        CoreInstanceEvidence::Local { identity, .. } => {
             let dictionary_export = dictionary_exports
                 .get(identity.as_str())
                 .expect("selected local instance identity must have a dictionary export");

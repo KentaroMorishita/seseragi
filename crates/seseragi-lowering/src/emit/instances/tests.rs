@@ -125,3 +125,23 @@ pub fn label value: Badge -> String = render value
         "export const label = (value: Badge) => __ssrg$instance$Render$0[\"render\"](value)"
     ));
 }
+
+#[test]
+fn invokes_an_unconstrained_generic_instance_dictionary_factory() {
+    let source = "\
+pub trait Tag<A> { fn tag value: A -> String }
+instance<T> Tag<Maybe<T>> { fn tag value: Maybe<T> -> String = \"maybe\" }
+pub fn label value: Maybe<Int> -> String = tag value
+";
+    let typed = type_module("artifact/generic-instance-dispatch/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(bundle.typescript.contains(
+        "export const __ssrg$instance$Tag$0 = <T,>() => ({ \"tag\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => \"maybe\" }) as const;"
+    ), "{}", bundle.typescript);
+    assert!(bundle.typescript.contains(
+        "export const label = (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => __ssrg$instance$Tag$0<bigint>()[\"tag\"](value)"
+    ), "{}", bundle.typescript);
+}

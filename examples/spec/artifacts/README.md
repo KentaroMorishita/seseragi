@@ -167,12 +167,18 @@ closed project compileで固定します。instance method dictionaryのlowering
 生成TypeScriptのcompiler-private dictionary objectまで固定します。final typed interfaceはshallow headをcanonical identity付き
 instanceへ置換し、custom dictionaryだけではderived `Show`用runtime importを要求しません。`label`の`render value`は
 argument型からselected local evidenceを固定し、TypeScriptIrの`dictionary-call`と生成dictionary method invocationまで通します。
-generic / constrained factoryとimported dictionaryは後続gateです。
+constrained factoryのevidence引数とimported dictionaryは後続gateです。
 
 `schema-1/trait-method-candidates`は同じ`present`を宣言する二つのlocal traitをresolverのcandidate集合に残し、
 argument型とlocal instance evidenceから一意なtraitを選びます。選択済みcanonical identityはTypedHir / CoreIrに残り、
 TypeScriptIrと生成moduleは対応する二つのdictionaryへ別々にdispatchします。型とinstanceを使っても一意に選べないcaseは
 `semantic-diagnostics-schema-1/trait-method-ambiguous`が`SES-T0202`として固定します。
+
+`schema-1/generic-instance-dispatch`は`instance<T> Tag<Maybe<T>>`を`Maybe<Int>`のmethod callへ選択し、
+推論した`Int`をselected evidenceのordered `typeArguments`としてTypedHir / CoreIrへ固定します。TypeScriptIrは
+dictionary factoryを`type-application-call`として表現し、生成moduleとCLI実行は`<bigint>()`で具体化したdictionaryから
+methodを呼びます。`execution-schema-1/generic-instance-dispatch`は同じ生成moduleをConsole hostで実行し、
+actual operation traceとstdoutを固定します。constraint付きinstanceのevidence引数はこのcaseのscope外です。
 
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する

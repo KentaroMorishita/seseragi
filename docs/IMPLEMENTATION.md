@@ -605,13 +605,19 @@ instance専用の小型parserや型推論経路を増やしません。
 `dictionary-call`と生成TSのdictionary method invocationまで接続します。backendはruntime tagやJS constructorを見て
 instanceを再選択しません。`schema-1/trait-method-candidates`では、resolverが同名methodを候補集合として保持し、
 型checkerがargument / expected typeと利用可能なinstance evidenceを照合してtraitを一意に選びます。二つ以上残るcaseは
-`semantic-diagnostics-schema-1/trait-method-ambiguous`で`SES-T0202`に固定します。generic / constrained instanceの
-dictionary factory ABIとcross-module dictionary selectionは、このlocal dispatch表現を再利用して別fixtureで固定します。
+`semantic-diagnostics-schema-1/trait-method-ambiguous`で`SES-T0202`に固定します。
+`schema-1/generic-instance-dispatch`は、constraintを持たないgeneric local instanceのheadからordered type argumentを推論し、
+selected evidenceをTypedHir / CoreIrへ保持してgeneric dictionary factoryをTypeScriptIrの式として呼び出します。
+backendはfactory適用をsource文字列へ連結せず、型引数と将来のevidence引数を持てる`type-application-call`として表現します。
+これにより`instance<T> Tag<Maybe<T>>`を`Maybe<Int>`へ使うと、生成TSは対応するfactoryを`<bigint>()`で具体化してから
+methodへdispatchします。`execution-schema-1/generic-instance-dispatch`は同じ生成moduleをConsole hostで実行し、
+operation traceとstdoutを固定します。constraint付きinstanceのrecursive evidence passingとcross-module dictionary selectionは、
+この式表現を再利用して別fixtureで固定します。
 
-ここまでで標準Array instanceとlocal concrete user-defined instanceの選択、evidence transport、dictionary dispatchを
-別々のfixtureで証明しました。generic / constrained / imported instance search、coherence、dictionary parameter passingは
-まだ完了gateではありません。それらはPhase 3の一般trait / instance goal programで、標準型名や単一concrete instanceだけを
-通る経路と区別して回収します。
+ここまでで標準Array instance、local concrete user-defined instance、unconstrained generic local instanceの選択、
+evidence transport、dictionary dispatchを別々のfixtureで証明しました。constrained / imported instance search、coherence、
+dictionary evidence parameter passingはまだ完了gateではありません。それらはPhase 3の一般trait / instance goal programで、
+標準型名やconstraintなしのlocal instanceだけを通る経路と区別して回収します。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。

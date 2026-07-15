@@ -238,6 +238,8 @@ pub struct TypedShowPayloadEvidence {
 pub enum TypedInstanceEvidence {
     Local {
         identity: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_arguments: Vec<TypedType>,
     },
     Imported {
         identity: String,

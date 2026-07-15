@@ -335,15 +335,31 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 format!("{call}({})", render_typescript_expr(argument))
             })
         }
+        TypeScriptExpr::TypeApplicationCall {
+            callee,
+            type_arguments,
+            arguments,
+        } => {
+            let rendered_types = type_arguments
+                .iter()
+                .map(render_typescript_type)
+                .collect::<Vec<_>>()
+                .join(", ");
+            let rendered_arguments = arguments
+                .iter()
+                .map(render_typescript_expr)
+                .collect::<Vec<_>>()
+                .join(", ");
+            format!("{callee}<{rendered_types}>({rendered_arguments})")
+        }
         TypeScriptExpr::DictionaryCall {
             dictionary,
             method,
             arguments,
-        } => arguments
-            .iter()
-            .fold(format!("{dictionary}[{method:?}]"), |call, argument| {
-                format!("{call}({})", render_typescript_expr(argument))
-            }),
+        } => arguments.iter().fold(
+            format!("{}[{method:?}]", render_typescript_expr(dictionary)),
+            |call, argument| format!("{call}({})", render_typescript_expr(argument)),
+        ),
         TypeScriptExpr::RuntimeCall { callee, arguments } => {
             let rendered_arguments = arguments
                 .iter()

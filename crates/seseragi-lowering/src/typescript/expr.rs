@@ -55,20 +55,37 @@ pub(super) fn lower_core_expr_to_typescript(
         } => {
             let arguments = lower_core_expressions(arguments, imported_values, imported_types);
             if let Some(dispatch) = trait_dispatch {
-                let identity = evidence
+                let selected = evidence
                     .iter()
                     .find_map(|selected| match &selected.evidence {
-                        crate::CoreInstanceEvidence::Local { identity } => Some(identity.as_str()),
+                        crate::CoreInstanceEvidence::Local {
+                            identity,
+                            type_arguments,
+                        } => Some((identity.as_str(), type_arguments.as_slice())),
                         _ => None,
                     });
-                let dictionary = identity
-                    .and_then(|identity| {
-                        imported_values.get(&local_instance_expression_key(identity))
-                    })
+                let (identity, type_arguments) = selected
+                    .expect("local trait dispatch requires selected local instance evidence");
+                let dictionary_name = imported_values
+                    .get(&local_instance_expression_key(identity))
                     .expect("local trait dispatch requires a generated dictionary")
                     .clone();
+                let dictionary = if type_arguments.is_empty() {
+                    TypeScriptExpr::Identifier {
+                        name: dictionary_name,
+                    }
+                } else {
+                    TypeScriptExpr::TypeApplicationCall {
+                        callee: dictionary_name,
+                        type_arguments: type_arguments
+                            .iter()
+                            .map(|type_ref| type_ref_from_core_type(type_ref, imported_types))
+                            .collect(),
+                        arguments: Vec::new(),
+                    }
+                };
                 TypeScriptExpr::DictionaryCall {
-                    dictionary,
+                    dictionary: Box::new(dictionary),
                     method: dispatch.method,
                     arguments,
                 }
@@ -221,9 +238,17 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
                 })
         }
         TypeScriptExpr::Call { arguments, .. }
-        | TypeScriptExpr::DictionaryCall { arguments, .. }
+        | TypeScriptExpr::TypeApplicationCall { arguments, .. }
         | TypeScriptExpr::RuntimeCall { arguments, .. } => {
             arguments.iter().any(typescript_expr_contains_await)
+        }
+        TypeScriptExpr::DictionaryCall {
+            dictionary,
+            arguments,
+            ..
+        } => {
+            typescript_expr_contains_await(dictionary)
+                || arguments.iter().any(typescript_expr_contains_await)
         }
         TypeScriptExpr::Sequence { statements, result } => {
             statements.iter().any(statement_contains_await)

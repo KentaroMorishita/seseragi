@@ -79,6 +79,8 @@ pub struct CoreShowPayloadEvidence {
 pub enum CoreInstanceEvidence {
     Local {
         identity: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_arguments: Vec<CoreType>,
     },
     Imported {
         identity: String,
@@ -157,7 +159,13 @@ fn lower_show_payload_evidence(evidence: TypedShowPayloadEvidence) -> CoreShowPa
         variant_symbol: evidence.variant_symbol,
         type_identity: evidence.type_identity,
         evidence: match evidence.evidence {
-            TypedInstanceEvidence::Local { identity } => CoreInstanceEvidence::Local { identity },
+            TypedInstanceEvidence::Local {
+                identity,
+                type_arguments,
+            } => CoreInstanceEvidence::Local {
+                identity,
+                type_arguments: type_arguments.into_iter().map(lower_typed_type).collect(),
+            },
             TypedInstanceEvidence::Imported {
                 identity,
                 provider_module,

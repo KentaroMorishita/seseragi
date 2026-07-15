@@ -202,7 +202,13 @@ fn lower_call_evidence(evidence: TypedCallEvidence) -> CoreCallEvidence {
     CoreCallEvidence {
         constraint: super::instances::lower_constraint(evidence.constraint),
         evidence: match evidence.evidence {
-            TypedInstanceEvidence::Local { identity } => CoreInstanceEvidence::Local { identity },
+            TypedInstanceEvidence::Local {
+                identity,
+                type_arguments,
+            } => CoreInstanceEvidence::Local {
+                identity,
+                type_arguments: type_arguments.into_iter().map(lower_typed_type).collect(),
+            },
             TypedInstanceEvidence::Imported {
                 identity,
                 provider_module,

@@ -68,7 +68,7 @@ fn accepts_payload_with_a_local_derived_show_instance() {
             payload_evidence.as_slice(),
             [evidence] if matches!(
                 &evidence.evidence,
-                TypedInstanceEvidence::Local { identity }
+                TypedInstanceEvidence::Local { identity, .. }
                     if identity == "Show<artifact/nested-derived-show::Detail>"
             )
         )
@@ -219,7 +219,7 @@ fn selects_local_instance_evidence_for_a_trait_method_call() {
         }) if trait_identity == "artifact/trait-method-call::trait(Render)"
             && method == "render"
             && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                evidence: TypedInstanceEvidence::Local { identity },
+                evidence: TypedInstanceEvidence::Local { identity, .. },
                 ..
             }] if identity == "artifact/trait-method-call::trait(Render)<artifact/trait-method-call::Badge>")
     ));
@@ -265,11 +265,45 @@ fn selects_one_same_named_trait_method_from_argument_instance_evidence() {
                 && badge_trait.ends_with("::trait(Render)")
                 && mode_trait.ends_with("::trait(Describe)")
                 && matches!(badge_evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Local { identity }, ..
+                    evidence: TypedInstanceEvidence::Local { identity, .. }, ..
                 }] if identity.ends_with("::trait(Render)<artifact/trait-method-candidates::Badge>"))
                 && matches!(mode_evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Local { identity }, ..
+                    evidence: TypedInstanceEvidence::Local { identity, .. }, ..
                 }] if identity.ends_with("::trait(Describe)<artifact/trait-method-candidates::Mode>"))
+    ));
+}
+
+#[test]
+fn selects_unconstrained_generic_local_instance_with_concrete_type_arguments() {
+    let typed = type_module(
+        "artifact/generic-instance-dispatch/main.ssrg",
+        "pub trait Tag<A> { fn tag value: A -> String }\n\
+         instance<T> Tag<Maybe<T>> { fn tag value: Maybe<T> -> String = \"maybe\" }\n\
+         pub fn label value: Maybe<Int> -> String = tag value\n",
+    );
+
+    let call = typed.declarations.iter().find_map(|declaration| {
+        let crate::TypedDecl::Fn { symbol, body, .. } = declaration else {
+            return None;
+        };
+        symbol.ends_with("::label").then_some(body)
+    });
+    assert!(matches!(
+        call,
+        Some(crate::TypedExpr::Call {
+            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity, method }),
+            evidence,
+            ..
+        }) if trait_identity == "artifact/generic-instance-dispatch::trait(Tag)"
+            && method == "tag"
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local {
+                    identity,
+                    type_arguments,
+                },
+                ..
+            }] if identity == "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>"
+                && type_arguments == &[named("Int")])
     ));
 }
 

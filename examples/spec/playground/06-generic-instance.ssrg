@@ -1,0 +1,21 @@
+pub trait Inspect<A> {
+  fn inspect value: A -> String
+}
+
+instance<T> Inspect<Maybe<T>> {
+  fn inspect value: Maybe<T> -> String =
+    match value {
+      Nothing -> "Generic Maybe: empty"
+      Just _ -> "Generic Maybe: present"
+    }
+}
+
+pub fn report value: Maybe<Int> -> String = inspect value
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    println (report Nothing)
+    println (report (Just 42))
+  }

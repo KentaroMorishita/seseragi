@@ -1,0 +1,328 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Tag",
+      "nameSpan": {
+        "start": 10,
+        "end": 13
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "tag",
+          "nameSpan": {
+            "start": 24,
+            "end": 27
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 28,
+                "end": 33
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 35,
+                  "end": 36
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 40,
+              "end": 46
+            }
+          },
+          "span": {
+            "start": 21,
+            "end": 46
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "kind": "instance",
+      "typeParameters": [
+        "T"
+      ],
+      "traitName": "Tag",
+      "traitNameSpan": {
+        "start": 62,
+        "end": 65
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 72,
+                "end": 73
+              }
+            }
+          ],
+          "span": {
+            "start": 66,
+            "end": 74
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "tag",
+          "nameSpan": {
+            "start": 83,
+            "end": 86
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 87,
+                "end": 92
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "span": {
+                      "start": 100,
+                      "end": 101
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 94,
+                  "end": 102
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 106,
+              "end": 112
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Generic dictionary: maybe\"",
+            "span": {
+              "start": 115,
+              "end": 142
+            }
+          },
+          "span": {
+            "start": 80,
+            "end": 142
+          }
+        }
+      ],
+      "span": {
+        "start": 50,
+        "end": 144
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "label",
+      "nameSpan": {
+        "start": 153,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 159,
+            "end": 164
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 172,
+                  "end": 175
+                }
+              }
+            ],
+            "span": {
+              "start": 166,
+              "end": 176
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 180,
+          "end": 186
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "tag",
+          "span": {
+            "start": 189,
+            "end": 192
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 193,
+            "end": 198
+          }
+        },
+        "span": {
+          "start": 189,
+          "end": 198
+        }
+      },
+      "span": {
+        "start": 146,
+        "end": 198
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 214,
+        "end": 218
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 222,
+          "end": 226
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 232,
+            "end": 239
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 246,
+          "end": 258
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 263,
+            "end": 270
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 272,
+                "end": 277
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "Just",
+                  "span": {
+                    "start": 279,
+                    "end": 283
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 284,
+                    "end": 285
+                  }
+                },
+                "span": {
+                  "start": 279,
+                  "end": 285
+                }
+              },
+              "span": {
+                "start": 278,
+                "end": 286
+              }
+            },
+            "span": {
+              "start": 272,
+              "end": 286
+            }
+          },
+          "span": {
+            "start": 271,
+            "end": 287
+          }
+        },
+        "span": {
+          "start": 263,
+          "end": 287
+        }
+      },
+      "span": {
+        "start": 200,
+        "end": 287
+      }
+    }
+  ]
+}

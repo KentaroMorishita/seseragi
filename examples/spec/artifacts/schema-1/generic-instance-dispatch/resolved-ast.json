@@ -1,0 +1,785 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/generic-instance-dispatch",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Tag",
+      "nameSpan": {
+        "start": 10,
+        "end": 13
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "tag",
+          "nameSpan": {
+            "start": 24,
+            "end": 27
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 28,
+                "end": 33
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 35,
+                  "end": 36
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 40,
+              "end": 46
+            }
+          },
+          "span": {
+            "start": 21,
+            "end": 46
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "kind": "instance",
+      "typeParameters": [
+        "T"
+      ],
+      "traitName": "Tag",
+      "traitNameSpan": {
+        "start": 62,
+        "end": 65
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 72,
+                "end": 73
+              }
+            }
+          ],
+          "span": {
+            "start": 66,
+            "end": 74
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "tag",
+          "nameSpan": {
+            "start": 83,
+            "end": 86
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 87,
+                "end": 92
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "span": {
+                      "start": 100,
+                      "end": 101
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 94,
+                  "end": 102
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 106,
+              "end": 112
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"Generic dictionary: maybe\"",
+            "span": {
+              "start": 115,
+              "end": 142
+            }
+          },
+          "span": {
+            "start": 80,
+            "end": 142
+          }
+        }
+      ],
+      "span": {
+        "start": 50,
+        "end": 144
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "label",
+      "nameSpan": {
+        "start": 153,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 159,
+            "end": 164
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 172,
+                  "end": 175
+                }
+              }
+            ],
+            "span": {
+              "start": 166,
+              "end": 176
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 180,
+          "end": 186
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "tag",
+          "span": {
+            "start": 189,
+            "end": 192
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 193,
+            "end": 198
+          }
+        },
+        "span": {
+          "start": 189,
+          "end": 198
+        }
+      },
+      "span": {
+        "start": 146,
+        "end": 198
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 214,
+        "end": 218
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 222,
+          "end": 226
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 232,
+            "end": 239
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 246,
+          "end": 258
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 263,
+            "end": 270
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 272,
+                "end": 277
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "Just",
+                  "span": {
+                    "start": 279,
+                    "end": 283
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 284,
+                    "end": 285
+                  }
+                },
+                "span": {
+                  "start": 279,
+                  "end": 285
+                }
+              },
+              "span": {
+                "start": 278,
+                "end": 286
+              }
+            },
+            "span": {
+              "start": 272,
+              "end": 286
+            }
+          },
+          "span": {
+            "start": 271,
+            "end": 287
+          }
+        },
+        "span": {
+          "start": 263,
+          "end": 287
+        }
+      },
+      "span": {
+        "start": 200,
+        "end": 287
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 287
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "function",
+      "origin": {
+        "start": 21,
+        "end": 46
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 50,
+        "end": 144
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "parent": 3,
+      "kind": "function",
+      "origin": {
+        "start": 80,
+        "end": 142
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 146,
+        "end": 198
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 200,
+        "end": 287
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Tag",
+      "canonical": "artifact/generic-instance-dispatch::trait(Tag)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 10,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "tag",
+      "canonical": "artifact/generic-instance-dispatch::trait(Tag)::tag",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 24,
+        "end": 27
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "label",
+      "canonical": "artifact/generic-instance-dispatch::label",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 153,
+        "end": 158
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "main",
+      "canonical": "artifact/generic-instance-dispatch::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 214,
+        "end": 218
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 48
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 28,
+        "end": 33
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "T",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 50,
+        "end": 144
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 87,
+        "end": 92
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 159,
+        "end": 164
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 35,
+        "end": 36
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 40,
+        "end": 46
+      }
+    },
+    {
+      "spelling": "Tag",
+      "namespace": "trait",
+      "target": 0,
+      "origin": {
+        "start": 62,
+        "end": 65
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 66,
+        "end": 74
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 72,
+        "end": 73
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 94,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 100,
+        "end": 101
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 106,
+        "end": 112
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 166,
+        "end": 176
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 172,
+        "end": 175
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 180,
+        "end": 186
+      }
+    },
+    {
+      "spelling": "tag",
+      "namespace": "value",
+      "target": 1,
+      "candidates": [
+        1
+      ],
+      "origin": {
+        "start": 189,
+        "end": 192
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 193,
+        "end": 198
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 222,
+        "end": 226
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 246,
+        "end": 258
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 263,
+        "end": 270
+      }
+    },
+    {
+      "spelling": "label",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 272,
+        "end": 277
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 279,
+        "end": 283
+      }
+    }
+  ],
+  "issues": []
+}

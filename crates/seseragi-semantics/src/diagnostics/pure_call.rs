@@ -147,6 +147,23 @@ mod tests {
     }
 
     #[test]
+    fn does_not_select_a_constrained_instance_without_required_evidence() {
+        let artifact = semantic_diagnostics(
+            "missing-instance-evidence.ssrg",
+            "trait Ready<A> { fn ready value: A -> String }\n\
+             trait Render<A> { fn render value: A -> String }\n\
+             instance<T> Render<Maybe<T>> where Ready<T> {\n\
+               fn render value: Maybe<T> -> String = \"ready\"\n\
+             }\n\
+             fn label value: Maybe<Int> -> String = render value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+    }
+
+    #[test]
     fn reports_same_named_trait_methods_when_type_and_instances_cannot_select_one() {
         let artifact = semantic_diagnostics(
             "ambiguous-trait-method.ssrg",

@@ -318,8 +318,13 @@ pub enum TypeScriptExpr {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
     },
+    TypeApplicationCall {
+        callee: String,
+        type_arguments: Vec<TypeScriptType>,
+        arguments: Vec<TypeScriptExpr>,
+    },
     DictionaryCall {
-        dictionary: String,
+        dictionary: Box<TypeScriptExpr>,
         method: String,
         arguments: Vec<TypeScriptExpr>,
     },

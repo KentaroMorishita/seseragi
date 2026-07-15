@@ -219,6 +219,9 @@ fn collect_expr_names(
             );
         }
         TypeScriptExpr::Call { callee, arguments }
+        | TypeScriptExpr::TypeApplicationCall {
+            callee, arguments, ..
+        }
         | TypeScriptExpr::RuntimeCall { callee, arguments } => {
             names.push(
                 helper_names
@@ -235,7 +238,10 @@ fn collect_expr_names(
             arguments,
             ..
         } => {
-            names.push(dictionary.clone());
+            match dictionary.as_ref() {
+                TypeScriptExpr::Identifier { name } => names.push(name.clone()),
+                expression => collect_expr_names(expression, helper_names, names),
+            }
             for argument in arguments {
                 collect_expr_names(argument, helper_names, names);
             }

@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/generic-instance-dispatch"
+  ],
+  "sourcesContent": [
+    "pub trait Tag<A> {\n  fn tag value: A -> String\n}\n\ninstance<T> Tag<Maybe<T>> {\n  fn tag value: Maybe<T> -> String = \"Generic dictionary: maybe\"\n}\n\npub fn label value: Maybe<Int> -> String = tag value\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (label (Just 1))\n"
+  ],
+  "names": [
+    "__ssrg$instance$Tag$0",
+    "label",
+    "__ssrg$instance$Tag$0",
+    "main",
+    "println",
+    "label",
+    "Just"
+  ],
+  "mappings": ";;;AAIAA;AAIAC;AAEAE"
+}

@@ -73,7 +73,7 @@ fn carries_local_show_payload_evidence_into_core_ir() {
             [CoreShowPayloadEvidence {
                 variant_symbol,
                 type_identity,
-                evidence: CoreInstanceEvidence::Local { identity },
+                evidence: CoreInstanceEvidence::Local { identity, .. },
             }] if variant_symbol == "artifact/local-show::Wrapped"
                 && type_identity == "artifact/local-show::Detail"
                 && identity == "Show<artifact/local-show::Detail>"

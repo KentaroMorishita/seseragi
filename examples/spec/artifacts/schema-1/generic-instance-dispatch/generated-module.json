@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "module": "artifact/generic-instance-dispatch",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.string",
+      "core.int64",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ]
+  },
+  "exports": [
+    "label",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>",
+      "trait": "Tag",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Tag$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -1,0 +1,14 @@
+pub trait Tag<A> {
+  fn tag value: A -> String
+}
+
+instance<T> Tag<Maybe<T>> {
+  fn tag value: Maybe<T> -> String = "Generic dictionary: maybe"
+}
+
+pub fn label value: Maybe<Int> -> String = tag value
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (label (Just 1))

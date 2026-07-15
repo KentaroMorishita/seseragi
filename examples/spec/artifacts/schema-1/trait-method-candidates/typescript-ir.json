@@ -249,7 +249,10 @@
       ],
       "body": {
         "kind": "dictionary-call",
-        "dictionary": "__ssrg$instance$Render$0",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$instance$Render$0"
+        },
         "method": "present",
         "arguments": [
           {
@@ -277,7 +280,10 @@
       ],
       "body": {
         "kind": "dictionary-call",
-        "dictionary": "__ssrg$instance$Describe$1",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$instance$Describe$1"
+        },
         "method": "present",
         "arguments": [
           {

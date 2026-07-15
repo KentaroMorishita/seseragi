@@ -100,7 +100,7 @@ pub(crate) fn instantiated_application_result_type(
     )
 }
 
-fn infer_type_parameters(
+pub(crate) fn infer_type_parameters(
     parameter: &TypedType,
     argument: &TypedType,
     type_parameters: &[String],
@@ -196,7 +196,7 @@ fn infer_type_parameters(
     }
 }
 
-fn substitute_type_parameters(
+pub(crate) fn substitute_type_parameters(
     type_ref: &TypedType,
     substitutions: &BTreeMap<String, TypedType>,
 ) -> TypedType {

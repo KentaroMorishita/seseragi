@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/generic-instance-dispatch",
+  "runtimeRequirements": [
+    "core.maybe",
+    "core.string",
+    "core.int64",
+    "core.unit",
+    "effect.console.println",
+    "core.maybe.just"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/generic-instance-dispatch::trait(Tag)<std/prelude::Maybe<$0>>",
+      "trait": "Tag",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 144
+      },
+      "dictionaryExport": "__ssrg$instance$Tag$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "tag",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "Generic dictionary: maybe"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 80,
+              "end": 142
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "label",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Tag$0",
+          "typeArguments": [
+            {
+              "kind": "bigint"
+            }
+          ],
+          "arguments": []
+        },
+        "method": "tag",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 146,
+        "end": 198
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "label",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 200,
+        "end": 287
+      }
+    }
+  ]
+}

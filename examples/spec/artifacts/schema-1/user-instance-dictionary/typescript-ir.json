@@ -138,7 +138,10 @@
       ],
       "body": {
         "kind": "dictionary-call",
-        "dictionary": "__ssrg$instance$Render$0",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$instance$Render$0"
+        },
         "method": "render",
         "arguments": [
           {
