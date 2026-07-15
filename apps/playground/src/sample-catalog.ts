@@ -69,6 +69,6 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     label: "Constraint付きinstance",
     sourcePath: "examples/spec/playground/07-constrained-instance.ssrg",
     stdin: "",
-    expectedOutput: "Constrained Maybe: empty\nConstrained Maybe: present",
+    expectedOutput: "Constrained Maybe: empty\nBadge is ready",
   },
 ]

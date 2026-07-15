@@ -19,7 +19,7 @@ where Ready<T> {
   fn inspect value: Maybe<T> -> String =
     match value {
       Nothing -> "Constrained Maybe: empty"
-      Just _ -> "Constrained Maybe: present"
+      Just item -> ready item
     }
 }
 
