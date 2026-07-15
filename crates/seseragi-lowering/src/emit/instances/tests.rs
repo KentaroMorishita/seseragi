@@ -85,3 +85,25 @@ fn emits_runtime_imports_and_keeps_dictionary_exports_out_of_source_exports() {
         "__ssrg$instance$Show$0"
     );
 }
+
+#[test]
+fn emits_user_defined_dictionary_without_show_runtime_support() {
+    let source = "\
+pub type Badge = | Active
+pub trait Render<A> { fn render value: A -> String }
+instance Render<Badge> { fn render value: Badge -> String = \"active\" }
+";
+    let typed = type_module("artifact/user-instance/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+
+    assert!(!typescript
+        .runtime_requirements
+        .iter()
+        .any(|requirement| requirement.starts_with("core.show")));
+    assert!(typescript.type_imports.is_empty());
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(bundle.typescript.contains(
+        "export const __ssrg$instance$Render$0 = { \"render\": (value: Badge) => \"active\" } as const;"
+    ));
+}

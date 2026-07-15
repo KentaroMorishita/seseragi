@@ -54,7 +54,10 @@ pub type AppError deriving Show =
         }]
     );
     let TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } =
-        &detail.implementation;
+        &detail.implementation
+    else {
+        panic!("expected derived Show instance");
+    };
     assert_eq!(adt_name, "Detail");
     let payload = variants[0].payload.as_ref().unwrap();
     assert_eq!(payload.type_ref, TypeScriptType::String);
@@ -70,7 +73,10 @@ pub type AppError deriving Show =
     let app_error = &typescript.instances[1];
     assert_eq!(app_error.dictionary_export, "__ssrg$instance$Show$1");
     let TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } =
-        &app_error.implementation;
+        &app_error.implementation
+    else {
+        panic!("expected derived Show instance");
+    };
     assert_eq!(adt_name, "AppError");
     assert_eq!(variants[0].name, "Wrapped");
     assert_eq!(variants[0].tag, "Wrapped");
@@ -121,7 +127,10 @@ pub type Detail deriving Show =
         }]
     );
     let TypeScriptInstanceImplementation::DerivedShow { variants, .. } =
-        &typescript.instances[0].implementation;
+        &typescript.instances[0].implementation
+    else {
+        panic!("expected derived Show instance");
+    };
     assert_eq!(
         variants[0].payload.as_ref().unwrap().dictionary,
         TypeScriptShowDictionaryReference::Runtime {

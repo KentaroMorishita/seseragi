@@ -18,7 +18,7 @@ use expr::{lower_effect_body, lower_expr, lower_parameter};
 use instances::lower_instances;
 pub use instances::{
     CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation,
-    CoreShowPayloadEvidence,
+    CoreInstanceMethod, CoreShowPayloadEvidence,
 };
 pub use types::{CoreRecordField, CoreType};
 

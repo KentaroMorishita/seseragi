@@ -1,0 +1,460 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/user-instance-dictionary",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 21,
+            "end": 27
+          },
+          "span": {
+            "start": 19,
+            "end": 27
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Render",
+      "nameSpan": {
+        "start": 39,
+        "end": 45
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 56,
+            "end": 62
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 63,
+                "end": 68
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 70,
+                  "end": 71
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 75,
+              "end": 81
+            }
+          },
+          "span": {
+            "start": 53,
+            "end": 81
+          }
+        }
+      ],
+      "span": {
+        "start": 29,
+        "end": 83
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 94,
+        "end": 100
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 101,
+            "end": 106
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 115,
+            "end": 121
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 122,
+                "end": 127
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 129,
+                  "end": 134
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 138,
+              "end": 144
+            }
+          },
+          "body": {
+            "kind": "string",
+            "raw": "\"active\"",
+            "span": {
+              "start": 147,
+              "end": 155
+            }
+          },
+          "span": {
+            "start": 112,
+            "end": 155
+          }
+        }
+      ],
+      "span": {
+        "start": 85,
+        "end": 157
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "status",
+      "nameSpan": {
+        "start": 166,
+        "end": 172
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 173,
+            "end": 177
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 179,
+              "end": 183
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 187,
+          "end": 193
+        }
+      },
+      "body": {
+        "kind": "string",
+        "raw": "\"ready\"",
+        "span": {
+          "start": 196,
+          "end": 203
+        }
+      },
+      "span": {
+        "start": 159,
+        "end": 203
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 203
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 27
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 29,
+        "end": 83
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 53,
+        "end": 81
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 85,
+        "end": 157
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "function",
+      "origin": {
+        "start": 112,
+        "end": 155
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 159,
+        "end": 203
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Badge",
+      "canonical": "artifact/user-instance-dictionary::Badge",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 9,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Active",
+      "canonical": "artifact/user-instance-dictionary::Active",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 21,
+        "end": 27
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Render",
+      "canonical": "artifact/user-instance-dictionary::trait(Render)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 39,
+        "end": 45
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "status",
+      "canonical": "artifact/user-instance-dictionary::status",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 166,
+        "end": 172
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 29,
+        "end": 83
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 63,
+        "end": 68
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 122,
+        "end": 127
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 173,
+        "end": 177
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 70,
+        "end": 71
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 75,
+        "end": 81
+      }
+    },
+    {
+      "spelling": "Render",
+      "namespace": "trait",
+      "target": 2,
+      "origin": {
+        "start": 94,
+        "end": 100
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 101,
+        "end": 106
+      }
+    },
+    {
+      "spelling": "Badge",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 129,
+        "end": 134
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 138,
+        "end": 144
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 179,
+        "end": 183
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 187,
+        "end": 193
+      }
+    }
+  ],
+  "issues": []
+}

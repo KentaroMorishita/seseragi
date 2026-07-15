@@ -2,9 +2,10 @@ use crate::{source_span, CoreType, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{
     TypedConstraint, TypedInstance, TypedInstanceEvidence, TypedInstanceImplementation,
-    TypedShowPayloadEvidence,
+    TypedInstanceMethod, TypedShowPayloadEvidence,
 };
 
+use super::expr::{lower_expr, lower_parameter};
 use super::types::lower_typed_type;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -13,6 +14,8 @@ pub struct CoreInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<String>,
     pub arguments: Vec<CoreType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
@@ -41,6 +44,22 @@ pub enum CoreInstanceImplementation {
         adt_symbol: String,
         payload_evidence: Vec<CoreShowPayloadEvidence>,
     },
+    UserDefined {
+        methods: Vec<CoreInstanceMethod>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreInstanceMethod {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub constraints: Vec<CoreInstanceConstraint>,
+    pub parameters: Vec<super::CoreParameter>,
+    pub body: super::CoreExpr,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -81,6 +100,7 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
     CoreInstance {
         identity: instance.identity,
         trait_name: instance.trait_name,
+        type_parameters: instance.type_parameters,
         arguments: instance
             .arguments
             .into_iter()
@@ -104,7 +124,31 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
                     .map(lower_show_payload_evidence)
                     .collect(),
             },
+            TypedInstanceImplementation::UserDefined { methods } => {
+                CoreInstanceImplementation::UserDefined {
+                    methods: methods
+                        .into_iter()
+                        .map(|method| lower_method(source, method))
+                        .collect(),
+                }
+            }
         },
+    }
+}
+
+fn lower_method(source: &str, method: TypedInstanceMethod) -> CoreInstanceMethod {
+    CoreInstanceMethod {
+        name: method.name,
+        type_parameters: method.scheme.type_parameters,
+        constraints: method
+            .scheme
+            .constraints
+            .into_iter()
+            .map(lower_constraint)
+            .collect(),
+        parameters: method.parameters.iter().map(lower_parameter).collect(),
+        body: lower_expr(source, method.body),
+        origin: source_span(source, method.origin),
     }
 }
 

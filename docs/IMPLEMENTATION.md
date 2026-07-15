@@ -576,7 +576,7 @@ local user-defined instanceは、resolved trait identityから対応するtrait 
 再解析せずresolved type / trait symbol identityを使い、method genericはalpha normalize、record fieldとconstraint順はcanonicalize、
 `F<A>`と`Either<E, _>`のような型構築子適用はhole substitution後に比較します。
 `semantic-diagnostics-schema-1/{instance-contract,instance-contract-mismatch}`がpositive / negative diagnosticを固定します。これはlocal契約検査のgateであり、
-instance bodyのTypedHir化、dictionary生成・dispatchはまだ完了扱いしません。
+instance searchとmethod call dispatchのgateとは分離します。
 
 named importで得たpublic traitは、`ModuleInterface`に保持したmethod schemeを同じcontract modelへ正規化して照合します。
 trait / method type parameterはinstance headで置換・alpha normalizeし、prelude type / traitとprovider nominal typeはcanonical identityで
@@ -591,10 +591,19 @@ instance headのTypedHir以降のschemaは`trait`とordered `arguments`を分離
 derived `Show<A>`のprimary typeしか表現できず、`Add<L, R, O>`や`Iterable<C, A>`を第一引数へ潰すため廃止しました。
 `typeIdentity`はruntimeがnominal dictionary ownerを検証する場合だけ存在するoptional metadataです。coherenceとinstance selectionは
 最終的に全argumentを含むcanonical `identity`とstructured headを正とし、`typeIdentity`へ意味判断を委譲しません。
-現時点ではderived `Show`がこのschemaを全IRとexecutionで通すconsumerであり、user-defined method body / general dictionaryは次のsliceです。
+`schema-1/user-instance-dictionary`では、local custom traitのconcrete instanceをcanonicalなtrait / type identityで
+TypedHirへ選び、method parameterとbodyをCoreIr、TypeScriptIrへ運び、compiler-privateなdictionary objectとして生成します。
+shallow interfaceのinstance headはfinal typed interfaceでcanonical evidenceへ置換し、一つのsource instanceを二重公開しません。
+またcustom dictionaryだけでは`core.show.dictionary`を要求しないため、derived `Show`専用runtime ABIを一般instanceへ漏らしません。
+instance type parameter、ordered head argument、constraintは各IRに独立して残し、単一primary typeや標準trait名へ一般機構を固定しません。
 その前段として、instance method bodyはtop-level pure functionと同じresolved-expression analyzerとdiagnostic collectorを共有します。
 `semantic-diagnostics-schema-1/instance-method-body`がdeclared `String`に対する`Int` bodyを`SES-T0101`として固定し、
 instance専用の小型parserや型推論経路を増やしません。
+
+このsliceだけではtrait method callをdictionary evidence付きcallへlowerしていません。次のgateはcall siteでlocal instanceを
+型引数から一意に選択し、TypedHirのcall evidence、CoreIrのdictionary引数、生成TSのmethod invocationまで接続します。
+generic / constrained instanceのdictionary factory ABIとcross-module dictionary selectionは、そのlocal dispatch表現を再利用して
+別fixtureで固定します。
 
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、

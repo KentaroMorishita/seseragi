@@ -9,6 +9,7 @@ pub(super) fn imported_instance_evidence(module: &CoreModule) -> BTreeSet<(Strin
             CoreInstanceImplementation::DerivedShow {
                 payload_evidence, ..
             } => payload_evidence.as_slice(),
+            CoreInstanceImplementation::UserDefined { .. } => &[],
         })
         .filter_map(|payload| match &payload.evidence {
             CoreInstanceEvidence::Imported {

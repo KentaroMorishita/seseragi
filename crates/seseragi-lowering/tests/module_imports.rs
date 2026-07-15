@@ -259,7 +259,10 @@ fn imports_selected_derived_show_evidence_by_semantic_identity() {
         "Show<fixture/game::domain::ImportedError>"
     );
     let TypeScriptInstanceImplementation::DerivedShow { variants, .. } =
-        &typescript.instances[0].implementation;
+        &typescript.instances[0].implementation
+    else {
+        panic!("expected derived Show instance");
+    };
     assert!(matches!(
         &variants[0].payload.as_ref().unwrap().dictionary,
         TypeScriptShowDictionaryReference::Imported {

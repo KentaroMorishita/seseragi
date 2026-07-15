@@ -279,12 +279,16 @@ impl Resolver {
         spelling: &str,
         origin: ByteSpan,
     ) -> SymbolId {
+        let canonical = match namespace {
+            SymbolNamespace::Trait => format!("{}::trait({spelling})", self.module),
+            _ => format!("{}::{spelling}", self.module),
+        };
         self.register(
             self.module_scope(),
             namespace,
             kind,
             spelling,
-            Some(format!("{}::{spelling}", self.module)),
+            Some(canonical),
             origin,
         )
     }

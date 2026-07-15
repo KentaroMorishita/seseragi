@@ -159,7 +159,10 @@ TypedHir / CoreIr / TypeScriptIr / generated moduleのinstance headは、単一`
 instance method bodyにはtop-level pure `fn`と同じreturn type / call / conditional / array / match diagnosticsを適用し、
 契約signatureだけ正しい不正bodyがTypedHir以降へ流れる経路を閉じています。
 `project-schema-1/imported-trait-instance-contract`がclosed multi-module compilerの全IR / generated TypeScript gateを固定します。
-instance method bodyの型付け / IR / dictionary化は未接続です。
+local concrete user-defined instanceはmethod parameter / bodyをTypedHir、CoreIr、TypeScriptIrへ保持し、
+`schema-1/user-instance-dictionary`でcustom dictionary objectを生成します。custom dictionaryはderived `Show`のruntime type importを
+要求せず、canonical identityは全head argumentから構成します。未接続なのはtrait method callに対するinstance selection / evidence、
+dictionary dispatch、generic / constrained dictionary factoryの実行、cross-module dictionary selectionです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -207,8 +210,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
-6. imported trait method contractはnamed importとclosed project compileまで接続済み。次はinstance method bodyをTypedHirへ上げ、
-   dictionary生成・dispatchへ繋ぐ。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
+6. imported trait method contractとlocal concrete dictionary生成は接続済み。次はtrait method callをlocal instanceの
+   selected evidenceとdictionary dispatchへ繋ぎ、その表現をcross-module selectionへ拡張する。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
    一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと

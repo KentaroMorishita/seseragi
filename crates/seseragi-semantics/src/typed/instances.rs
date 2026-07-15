@@ -8,11 +8,14 @@ mod show;
 #[cfg(test)]
 mod tests;
 mod traits;
+mod user;
 
-pub(crate) use crate::instance_identity::canonical_instance_identity;
+pub(crate) use crate::instance_identity::{
+    canonical_instance_head_identity, canonical_instance_identity,
+};
 pub(crate) use contracts::{analyze_instance_contracts, InstanceContractIssue};
 
-pub(crate) struct DerivedInstanceAnalysis {
+pub(crate) struct InstanceAnalysis {
     pub(crate) instances: Vec<TypedInstance>,
     pub(crate) issues: Vec<DerivedInstanceIssue>,
 }
@@ -42,18 +45,17 @@ pub(crate) enum DerivedInstanceIssue {
     },
 }
 
-pub(crate) fn analyze_derived_instances(
+pub(crate) fn analyze_instances(
     resolved: &ResolvedModule,
     resolution: &TypedResolution<'_>,
-) -> DerivedInstanceAnalysis {
+) -> InstanceAnalysis {
     let mut issues = traits::unknown_trait_issues(&resolved.declarations);
     let show = show::analyze_derived_show(resolved, resolution);
+    let mut instances = show.instances;
+    instances.extend(user::analyze_user_defined_instances(resolved, resolution));
     issues.extend(show.issues);
-    issues.extend(local_dependency_conflicts(resolved, &show.instances));
-    DerivedInstanceAnalysis {
-        instances: show.instances,
-        issues,
-    }
+    issues.extend(local_dependency_conflicts(resolved, &instances));
+    InstanceAnalysis { instances, issues }
 }
 
 fn local_dependency_conflicts(

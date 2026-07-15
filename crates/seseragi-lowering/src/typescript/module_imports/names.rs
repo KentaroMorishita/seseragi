@@ -37,7 +37,9 @@ pub(super) fn local_value_names(module: &CoreModule) -> BTreeSet<String> {
                 .instances
                 .iter()
                 .enumerate()
-                .map(|(index, _)| format!("__ssrg$instance$Show${index}")),
+                .map(|(index, instance)| {
+                    format!("__ssrg$instance${}${index}", instance.trait_name)
+                }),
         )
         .map(|name| safe_identifier(&name))
         .collect::<BTreeSet<_>>();
@@ -46,6 +48,17 @@ pub(super) fn local_value_names(module: &CoreModule) -> BTreeSet<String> {
             names.insert(safe_identifier(&parameter.id));
         }
         collect_local_expr_names(&function.body, &mut names);
+    }
+    for instance in &module.instances {
+        if let crate::CoreInstanceImplementation::UserDefined { methods } = &instance.implementation
+        {
+            for method in methods {
+                for parameter in &method.parameters {
+                    names.insert(safe_identifier(&parameter.id));
+                }
+                collect_local_expr_names(&method.body, &mut names);
+            }
+        }
     }
     names
 }

@@ -32,7 +32,9 @@ pub(crate) fn typed_interface_from_modules(
             .collect::<Vec<_>>(),
     );
 
-    let mut instances = shallow.instances;
+    // A final typed interface replaces shallow instance heads with canonical
+    // evidence. Retaining both would expose one source declaration twice.
+    let mut instances = Vec::new();
     instances.extend(
         typed
             .instances
@@ -67,7 +69,7 @@ fn interface_instance_from_typed(
         provider_module: Some(module.to_owned()),
         type_identity: instance.type_identity.clone(),
         trait_name: instance.trait_name.clone(),
-        type_parameters: Vec::new(),
+        type_parameters: instance.type_parameters.clone(),
         head: InterfaceType::Apply {
             constructor: instance.trait_name.clone(),
             arguments: instance

@@ -226,8 +226,10 @@ fn carries_selected_derived_show_evidence_into_generated_metadata() {
     assert_eq!(compiled.typescript_ir.instances.len(), 1);
     assert_eq!(compiled.generated.metadata.instances.len(), 1);
     assert_eq!(
-        compiled.generated.metadata.instances[0].type_identity,
-        "artifact/driver-show::AppError"
+        compiled.generated.metadata.instances[0]
+            .type_identity
+            .as_deref(),
+        Some("artifact/driver-show::AppError")
     );
     assert_eq!(
         compiled.generated.metadata.instances[0].dictionary_export,

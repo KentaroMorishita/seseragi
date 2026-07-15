@@ -175,6 +175,7 @@ fn typed_instance(
     TypedInstance {
         identity,
         trait_name: "Show".to_owned(),
+        type_parameters: Vec::new(),
         arguments: vec![TypedType::Named {
             name: candidate.name,
             arguments: Vec::new(),

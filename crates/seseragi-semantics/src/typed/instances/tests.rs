@@ -134,6 +134,66 @@ fn assigns_distinct_identities_to_same_spelling_in_different_modules() {
     assert_ne!(left.instances[0].identity, right.instances[0].identity);
 }
 
+#[test]
+fn types_user_defined_instance_methods_without_duplicating_the_interface_head() {
+    let source = "\
+pub type Badge = | Active
+pub trait Identity<A> { fn identity value: A -> A }
+instance Identity<Badge> { fn identity value: Badge -> Badge = value }
+";
+    let typed = type_module("artifact/user-instance/main.ssrg", source);
+
+    assert_eq!(typed.instances.len(), 1);
+    let instance = &typed.instances[0];
+    assert_eq!(
+        instance.identity,
+        "artifact/user-instance::trait(Identity)<artifact/user-instance::Badge>"
+    );
+    assert_eq!(instance.arguments, vec![named("Badge")]);
+    assert!(instance.type_identity.is_none());
+    assert!(matches!(
+        &instance.implementation,
+        TypedInstanceImplementation::UserDefined { methods }
+            if matches!(
+                methods.as_slice(),
+                [method]
+                    if method.name == "identity"
+                        && matches!(
+                            &method.body,
+                            crate::TypedExpr::Variable { name, type_ref, .. }
+                                if name == "value" && type_ref == &named("Badge")
+                        )
+            )
+    ));
+
+    let interface = type_module_public_interface("artifact/user-instance/main.ssrg", source);
+    assert_eq!(interface.instances.len(), 1);
+    assert_eq!(
+        interface.instances[0].identity.as_deref(),
+        Some("artifact/user-instance::trait(Identity)<artifact/user-instance::Badge>")
+    );
+}
+
+#[test]
+fn alpha_normalizes_generic_instance_binders_in_canonical_identity() {
+    let source_for = |binder: &str| {
+        format!(
+            "trait Identity<A> {{ fn identity value: A -> A }}\n\
+             instance<{binder}> Identity<{binder}> {{ fn identity value: {binder} -> {binder} = value }}\n"
+        )
+    };
+    let left = type_module("artifact/generic-instance/main.ssrg", &source_for("T"));
+    let right = type_module("artifact/generic-instance/main.ssrg", &source_for("Value"));
+
+    assert_eq!(
+        left.instances[0].identity,
+        "artifact/generic-instance::trait(Identity)<$0>"
+    );
+    assert_eq!(left.instances[0].identity, right.instances[0].identity);
+    assert_eq!(left.instances[0].type_parameters, vec!["T"]);
+    assert_eq!(right.instances[0].type_parameters, vec!["Value"]);
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

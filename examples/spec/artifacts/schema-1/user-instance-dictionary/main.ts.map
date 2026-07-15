@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/user-instance-dictionary"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n\npub trait Render<A> {\n  fn render value: A -> String\n}\n\ninstance Render<Badge> {\n  fn render value: Badge -> String = \"active\"\n}\n\npub fn status unit: Unit -> String = \"ready\"\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "__ssrg$instance$Render$0",
+    "status"
+  ],
+  "mappings": "AAAAA;;AACIC;AAMJC;AAIAC"
+}

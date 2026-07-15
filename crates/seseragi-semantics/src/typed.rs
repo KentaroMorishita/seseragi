@@ -113,7 +113,7 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         .collect();
     let external_type_bindings = resolution.external_type_bindings();
     let module_dependencies = resolution.module_dependencies();
-    let instances = instances::analyze_derived_instances(&resolved, &resolution).instances;
+    let instances = instances::analyze_instances(&resolved, &resolution).instances;
 
     TypedModule {
         schema: 1,

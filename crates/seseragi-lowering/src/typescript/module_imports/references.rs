@@ -9,6 +9,14 @@ pub(super) fn referenced_value_symbols(module: &CoreModule) -> BTreeSet<String> 
     for function in &module.functions {
         collect_expr_value_symbols(&function.body, &mut values);
     }
+    for instance in &module.instances {
+        if let crate::CoreInstanceImplementation::UserDefined { methods } = &instance.implementation
+        {
+            for method in methods {
+                collect_expr_value_symbols(&method.body, &mut values);
+            }
+        }
+    }
     values
 }
 
@@ -115,6 +123,20 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
     for instance in &module.instances {
         for argument in &instance.arguments {
             collect_type_names(argument, &mut references);
+        }
+        for constraint in &instance.constraints {
+            for argument in &constraint.arguments {
+                collect_type_names(argument, &mut references);
+            }
+        }
+        if let crate::CoreInstanceImplementation::UserDefined { methods } = &instance.implementation
+        {
+            for method in methods {
+                for parameter in &method.parameters {
+                    collect_type_names(&parameter.type_ref, &mut references);
+                }
+                collect_expr_type_names(&method.body, &mut references);
+            }
         }
     }
     for binding in &module.bindings {

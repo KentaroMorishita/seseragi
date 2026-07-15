@@ -1,6 +1,6 @@
 use crate::{
     typed::{
-        instances::analyze_derived_instances, instances::analyze_instance_contracts,
+        instances::analyze_instance_contracts, instances::analyze_instances,
         instances::DerivedInstanceIssue, TypedResolution,
     },
     ResolvedModule,
@@ -17,7 +17,7 @@ pub(super) fn collect_trait_diagnostics(
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     diagnostics.extend(
-        analyze_derived_instances(resolved, resolution)
+        analyze_instances(resolved, resolution)
             .issues
             .iter()
             .map(diagnostic),

@@ -84,6 +84,11 @@ fn rewrite_instance_imports(
                 }
             }
         }
+        TypeScriptInstanceImplementation::UserDefined { methods } => {
+            for method in methods {
+                rewrite_expr(&mut method.body, renames);
+            }
+        }
     }
 }
 

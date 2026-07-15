@@ -13,8 +13,9 @@ pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreCallEvidence,
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr,
     CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
-    CoreInstanceImplementation, CoreModule, CoreModuleDependency, CoreModuleImport, CoreParameter,
-    CoreRecordField, CoreShowPayloadEvidence, CoreStatement, CoreType,
+    CoreInstanceImplementation, CoreInstanceMethod, CoreModule, CoreModuleDependency,
+    CoreModuleImport, CoreParameter, CoreRecordField, CoreShowPayloadEvidence, CoreStatement,
+    CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -29,8 +30,8 @@ pub use typescript::{
     TypeScriptDecisionBranch, TypeScriptDecisionProjection, TypeScriptDecisionTest,
     TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptFunction,
     TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
-    TypeScriptInstanceImplementation, TypeScriptLoweringError, TypeScriptModule,
-    TypeScriptOutputPlan, TypeScriptParameter, TypeScriptShowDictionaryReference,
+    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
+    TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptShowDictionaryReference,
     TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptType,
     TypeScriptTypeImport,
 };

@@ -20,7 +20,7 @@ use imports::freshen_runtime_imports;
 use instances::lower_core_instances_to_typescript;
 pub use instances::{
     TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptInstance,
-    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
+    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptInstanceMethod,
     TypeScriptShowDictionaryReference,
 };
 use module_imports::lower_module_imports;
@@ -438,6 +438,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         &module.instances,
         &module.adts,
         &module_imports.instance_names,
+        &module_imports.value_names,
         &module_imports.type_names,
         &mut runtime_requirements,
         &mut imports,

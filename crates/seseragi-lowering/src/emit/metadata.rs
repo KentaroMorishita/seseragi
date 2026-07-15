@@ -23,6 +23,8 @@ pub struct GeneratedInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<String>,
     pub arguments: Vec<TypeScriptType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
@@ -76,6 +78,7 @@ fn generated_instance_from_typescript(instance: &TypeScriptInstance) -> Generate
     GeneratedInstance {
         identity: instance.identity.clone(),
         trait_name: instance.trait_name.clone(),
+        type_parameters: instance.type_parameters.clone(),
         arguments: instance.arguments.clone(),
         type_identity: instance.type_identity.clone(),
         dictionary_export: instance.dictionary_export.clone(),

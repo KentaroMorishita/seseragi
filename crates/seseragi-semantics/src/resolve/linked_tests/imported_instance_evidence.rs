@@ -78,7 +78,10 @@ fn selects_by_canonical_payload_identity_when_modules_share_a_type_spelling() {
     .unwrap();
     let TypedInstanceImplementation::DerivedShow {
         payload_evidence, ..
-    } = &analyzed.typed_hir.instances[0].implementation;
+    } = &analyzed.typed_hir.instances[0].implementation
+    else {
+        panic!("expected derived Show instance");
+    };
     let [evidence] = payload_evidence.as_slice() else {
         panic!("expected one selected payload evidence");
     };

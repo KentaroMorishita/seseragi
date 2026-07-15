@@ -1,0 +1,12 @@
+pub type Badge =
+  | Active
+
+pub trait Render<A> {
+  fn render value: A -> String
+}
+
+instance Render<Badge> {
+  fn render value: Badge -> String = "active"
+}
+
+pub fn status unit: Unit -> String = "ready"

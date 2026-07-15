@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/user-instance-dictionary",
+  "adts": [
+    {
+      "symbol": "artifact/user-instance-dictionary::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/user-instance-dictionary::Active",
+          "name": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 85,
+        "end": 157
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "active",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 147,
+                "end": 155
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 112,
+              "end": 155
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/user-instance-dictionary::status",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 159,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "string",
+        "value": "ready",
+        "origin": {
+          "source": "main.ssrg",
+          "start": 196,
+          "end": 203
+        }
+      }
+    }
+  ]
+}

@@ -172,6 +172,8 @@ pub struct TypedInstance {
     pub identity: String,
     #[serde(rename = "trait")]
     pub trait_name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<String>,
     /// Ordered arguments of the trait application in the instance head.
     /// Keeping all arguments prevents multi-parameter traits from collapsing
     /// into the first nominal type used by current runtime dictionaries.
@@ -197,6 +199,19 @@ pub enum TypedInstanceImplementation {
         adt_symbol: String,
         payload_evidence: Vec<TypedShowPayloadEvidence>,
     },
+    UserDefined {
+        methods: Vec<TypedInstanceMethod>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedInstanceMethod {
+    pub name: String,
+    pub scheme: TypedScheme,
+    pub parameters: Vec<TypedParameter>,
+    pub body: TypedExpr,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
