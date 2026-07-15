@@ -118,22 +118,13 @@ impl<'a> PureExpressionContext<'a> {
         &self,
         constraints: &[crate::TypedConstraint],
         constraint_identities: &[Option<String>],
-        trait_identity: Option<&str>,
     ) -> Result<Vec<crate::TypedCallEvidence>, crate::TypedConstraint> {
-        match trait_identity {
-            Some(trait_identity) => super::call_evidence::select_trait_call_evidence(
-                constraints,
-                trait_identity,
-                self.resolution,
-                &self.evidence_parameters,
-            ),
-            None => super::call_evidence::select_function_call_evidence(
-                constraints,
-                constraint_identities,
-                self.resolution,
-                &self.evidence_parameters,
-            ),
-        }
+        super::call_evidence::select_function_call_evidence(
+            constraints,
+            constraint_identities,
+            self.resolution,
+            &self.evidence_parameters,
+        )
     }
 
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {

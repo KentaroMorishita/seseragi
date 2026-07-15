@@ -61,12 +61,11 @@ pub(super) fn select_trait_method_candidate(
         _ => {
             let evidence_matches = type_matches
                 .iter()
-                .filter(|(signature, application)| {
+                .filter(|(_, application)| {
                     context
                         .select_call_evidence(
                             &application.constraints,
                             &application.constraint_identities,
-                            signature.trait_identity.as_deref(),
                         )
                         .is_ok()
                 })

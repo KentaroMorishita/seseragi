@@ -92,3 +92,47 @@ where Ready<T> {
 
     assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
 }
+
+#[test]
+fn accepts_a_trait_method_with_a_satisfied_method_constraint() {
+    let source = "\
+type Badge = | Active
+trait Labeled<A> { fn label value: A -> String }
+trait Render<A> {
+  fn render value: A -> String where Labeled<A>
+}
+instance Labeled<Badge> { fn label value: Badge -> String = \"active\" }
+instance Render<Badge> {
+  fn render value: Badge -> String where Labeled<Badge> = label value
+}
+fn status value: Badge -> String = render value
+";
+
+    let diagnostics = semantic_diagnostics("artifact/method-constraint-valid/main.ssrg", source);
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn reports_missing_method_constraint_evidence_at_the_call_site() {
+    let source = "\
+type Badge = | Active
+trait Labeled<A> { fn label value: A -> String }
+trait Render<A> {
+  fn render value: A -> String where Labeled<A>
+}
+instance Render<Badge> {
+  fn render value: Badge -> String where Labeled<Badge> = \"active\"
+}
+fn status value: Badge -> String = render value
+";
+
+    let diagnostics = semantic_diagnostics("artifact/method-constraint-missing/main.ssrg", source);
+
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(
+        diagnostics.diagnostics[0].code, "SES-T0101",
+        "{diagnostics:#?}"
+    );
+    assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
+}

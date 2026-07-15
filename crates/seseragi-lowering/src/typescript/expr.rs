@@ -55,18 +55,19 @@ pub(super) fn lower_core_expr_to_typescript(
         } => {
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
             if let Some(dispatch) = trait_dispatch {
-                let selected = evidence
-                    .iter()
-                    .find_map(|selected| {
-                        local_dictionary_expression(
-                            &selected.evidence,
-                            imported_values,
-                            imported_types,
-                        )
-                    })
-                    .expect(
-                        "local trait dispatch requires recursively materialized local evidence",
-                    );
+                let (selected, method_evidence) = evidence
+                    .split_first()
+                    .expect("trait dispatch requires primary instance evidence");
+                let selected = local_dictionary_expression(
+                    &selected.evidence,
+                    imported_values,
+                    imported_types,
+                )
+                .expect("local trait dispatch requires materialized primary evidence");
+                arguments.extend(method_evidence.iter().map(|selected| {
+                    local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                        .expect("trait method constraint requires materialized evidence")
+                }));
                 TypeScriptExpr::DictionaryCall {
                     dictionary: Box::new(selected),
                     method: dispatch.method,

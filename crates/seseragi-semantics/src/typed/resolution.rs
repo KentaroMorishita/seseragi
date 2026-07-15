@@ -365,6 +365,33 @@ fn collect_local_trait_methods(
             };
             let mut callable_type_parameters = type_parameters.clone();
             callable_type_parameters.extend(method.type_parameters.clone());
+            let mut constraints = vec![crate::TypedConstraint {
+                name: name.clone(),
+                arguments: type_parameters
+                    .iter()
+                    .map(|parameter| TypedType::Named {
+                        name: parameter.clone(),
+                        arguments: Vec::new(),
+                    })
+                    .collect(),
+            }];
+            constraints.extend(method.constraints.iter().map(|constraint| {
+                crate::TypedConstraint {
+                    name: constraint.name.clone(),
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(typed_type_from_type_ref)
+                        .collect(),
+                }
+            }));
+            let mut constraint_identities = vec![Some(trait_identity.clone())];
+            constraint_identities.extend(
+                method
+                    .constraints
+                    .iter()
+                    .map(|constraint| constraint_identity(resolved, constraint.name_span)),
+            );
             callables.insert(
                 symbol.id,
                 TopLevelPureFunction {
@@ -372,17 +399,8 @@ fn collect_local_trait_methods(
                     trait_identity: Some(trait_identity.clone()),
                     trait_method: Some(method.name.clone()),
                     type_parameters: callable_type_parameters,
-                    constraints: vec![crate::TypedConstraint {
-                        name: name.clone(),
-                        arguments: type_parameters
-                            .iter()
-                            .map(|parameter| TypedType::Named {
-                                name: parameter.clone(),
-                                arguments: Vec::new(),
-                            })
-                            .collect(),
-                    }],
-                    constraint_identities: vec![Some(trait_identity.clone())],
+                    constraints,
+                    constraint_identities,
                     parameters: method
                         .parameters
                         .iter()

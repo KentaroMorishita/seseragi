@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/method-constraint-dispatch"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n\npub trait Labeled<A> {\n  fn label value: A -> String\n}\n\npub trait Render<A> {\n  fn render value: A -> String\n  where Labeled<A>\n}\n\ninstance Labeled<Badge> {\n  fn label value: Badge -> String = \"active\"\n}\n\ninstance Render<Badge> {\n  fn render value: Badge -> String\n  where Labeled<Badge> =\n    label value\n}\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (render Active)\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "__ssrg$instance$Labeled$0",
+    "__ssrg$instance$Render$1",
+    "main",
+    "println",
+    "__ssrg$instance$Render$1"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAWJC;AAIAC;AAMAC"
+}

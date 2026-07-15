@@ -17,6 +17,14 @@ pub(crate) fn scoped_call_evidence(
     constraints: &[SurfaceConstraint],
     resolution: &TypedResolution<'_>,
 ) -> Vec<ScopedCallEvidence> {
+    scoped_call_evidence_from(constraints, resolution, 0)
+}
+
+pub(crate) fn scoped_call_evidence_from(
+    constraints: &[SurfaceConstraint],
+    resolution: &TypedResolution<'_>,
+    start_index: usize,
+) -> Vec<ScopedCallEvidence> {
     constraints
         .iter()
         .enumerate()
@@ -33,7 +41,7 @@ pub(crate) fn scoped_call_evidence(
                         .map(super::type_ref::typed_type_from_type_ref)
                         .collect(),
                 },
-                index,
+                index: start_index + index,
             })
         })
         .collect()
@@ -57,27 +65,6 @@ pub(crate) fn select_call_evidence(
             Ok(TypedCallEvidence {
                 constraint,
                 evidence: TypedInstanceEvidence::Standard { identity },
-            })
-        })
-        .collect()
-}
-
-pub(crate) fn select_trait_call_evidence(
-    constraints: &[TypedConstraint],
-    trait_identity: &str,
-    resolution: &TypedResolution<'_>,
-    scoped: &[ScopedCallEvidence],
-) -> Result<Vec<TypedCallEvidence>, TypedConstraint> {
-    constraints
-        .iter()
-        .cloned()
-        .map(|constraint| {
-            let evidence =
-                select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
-                    .ok_or_else(|| constraint.clone())?;
-            Ok(TypedCallEvidence {
-                constraint,
-                evidence,
             })
         })
         .collect()

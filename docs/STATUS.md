@@ -169,12 +169,14 @@ TypeScriptのdictionary factory具体化とmethod callまで生成します。
 `schema-1/constrained-instance-dispatch`はconstraint付きgeneric local instanceに必要なlocal evidenceを再帰選択し、
 TypedHir / CoreIrのevidence tree、TypeScriptIrのfactory argument、生成TSのdictionary引数、actual executionまで接続します。
 instance method bodyのtrait callもresolved constraint scopeから`parameter` evidenceを選び、factory closureのdictionaryを
-実際に消費します。循環evidenceは`instance.missing`で停止します。未接続なのはmethod固有constraint、
-standard / imported evidenceのfactory引数化、cross-module dictionary selectionです。
+実際に消費します。循環evidenceは`instance.missing`で停止します。trait method固有の`where`も
+`schema-1/method-constraint-dispatch`でprimary dictionaryの後ろへordered evidenceとして選択し、method closureの
+compiler-private parameterから消費してactual executionまで接続済みです。instance-levelとmethod-levelのparameter indexは
+offsetで分離します。未接続なのはstandard / imported evidenceのfactory引数化とcross-module dictionary selectionです。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained function、imported constrained function、method固有constraintは未接続です。
+first-class partial constrained functionとimported constrained functionは未接続です。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -229,8 +231,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、
-   unconstrained generic local dictionary factoryの具体化は接続済み。次はconstrained evidence passingを固定し、
-   その表現をcross-module selectionへ拡張する。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
+   unconstrained / constrained generic local dictionary factory、local constrained function、method固有constraintは接続済み。
+   次は同じordered evidence表現をcross-module selectionへ拡張する。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
    一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと

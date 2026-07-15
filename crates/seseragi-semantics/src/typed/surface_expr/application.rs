@@ -82,11 +82,9 @@ pub(super) fn type_application(
     );
     let saturated = arguments.len() >= signature.parameters.len();
     let evidence = if issue.is_none() && (saturated || signature.trait_identity.is_some()) {
-        match context.select_call_evidence(
-            &application.constraints,
-            &application.constraint_identities,
-            signature.trait_identity.as_deref(),
-        ) {
+        match context
+            .select_call_evidence(&application.constraints, &application.constraint_identities)
+        {
             Ok(evidence) => evidence,
             Err(constraint) => {
                 if saturated || signature.trait_identity.is_some() {

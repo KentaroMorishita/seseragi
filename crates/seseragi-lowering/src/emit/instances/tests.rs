@@ -249,3 +249,82 @@ pub fn label value: Maybe<Badge> -> String = inspect value
         bundle.typescript
     );
 }
+
+#[test]
+fn passes_method_constraint_evidence_after_the_method_arguments() {
+    let source = "\
+pub type Badge = | Active
+pub trait Labeled<A> { fn label value: A -> String }
+pub trait Render<A> {
+  fn render value: A -> String where Labeled<A>
+}
+instance Labeled<Badge> { fn label value: Badge -> String = \"active\" }
+instance Render<Badge> {
+  fn render value: Badge -> String where Labeled<Badge> = label value
+}
+pub fn status value: Badge -> String = render value
+";
+    let typed = type_module("artifact/method-constraint-dispatch/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle.typescript.contains(
+            "\"render\": (value: Badge) => (__ssrg$evidence$0: unknown) => __ssrg$evidence$0[\"label\"](value)"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("__ssrg$instance$Render$1[\"render\"](value)(__ssrg$instance$Labeled$0)"),
+        "{}",
+        bundle.typescript
+    );
+}
+
+#[test]
+fn keeps_instance_and_method_evidence_parameter_indexes_distinct() {
+    let source = "\
+pub type Badge = | Active
+pub trait Ready<A> { fn ready value: A -> String }
+pub trait Labeled<A> { fn label value: A -> String }
+pub trait Render<A> {
+  fn render value: A -> String where Labeled<A>
+}
+instance Ready<Badge> { fn ready value: Badge -> String = \"ready\" }
+instance Labeled<Maybe<Badge>> { fn label value: Maybe<Badge> -> String = \"active\" }
+instance<T> Render<Maybe<T>> where Ready<T> {
+  fn render value: Maybe<T> -> String where Labeled<Maybe<T>> = label value
+}
+pub fn status value: Maybe<Badge> -> String = render value
+";
+    let typed = type_module("artifact/method-constraint-offset/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle.typescript.contains(
+            "<T,>(__ssrg$evidence$0: unknown) => ({ \"render\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => (__ssrg$evidence$1: unknown) =>"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("__ssrg$evidence$1[\"label\"](value)"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$instance$Render$2<Badge>(__ssrg$instance$Ready$0)[\"render\"](value)(__ssrg$instance$Labeled$1)"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}

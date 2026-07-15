@@ -1,0 +1,316 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/method-constraint-dispatch",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/method-constraint-dispatch::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/method-constraint-dispatch::Active",
+          "name": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>",
+      "trait": "Labeled",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 160,
+        "end": 232
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "label",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "active",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 222,
+                "end": 230
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 188,
+              "end": 230
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 234,
+        "end": 336
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "constraints": [
+              {
+                "name": "Labeled",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Badge",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "artifact/method-constraint-dispatch::trait(Labeled)::label",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Badge",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 329,
+                    "end": 334
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Labeled",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
+                "method": "label"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 323,
+                "end": 334
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 261,
+              "end": 334
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/method-constraint-dispatch::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 338,
+        "end": 424
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/method-constraint-dispatch::trait(Render)::render",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "artifact/method-constraint-dispatch::Active",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 417,
+                  "end": 423
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Render",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>"
+                }
+              },
+              {
+                "constraint": {
+                  "name": "Labeled",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>"
+                }
+              }
+            ],
+            "traitDispatch": {
+              "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
+              "method": "render"
+            },
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 410,
+              "end": 423
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 401,
+          "end": 424
+        }
+      }
+    }
+  ]
+}

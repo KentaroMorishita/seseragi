@@ -134,7 +134,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 if *exported {
                     output.push_str("export ");
                 }
-                let parameters = constrained_function_parameters(parameters, constraints.len());
+                let parameters = evidence_parameters(parameters, 0, constraints.len());
                 let rendered_body =
                     render_function_body(type_parameters, &parameters, body, *is_async);
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
@@ -144,15 +144,18 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     output
 }
 
-fn constrained_function_parameters(
+pub(super) fn evidence_parameters(
     parameters: &[crate::TypeScriptParameter],
+    start_index: usize,
     evidence_count: usize,
 ) -> Vec<crate::TypeScriptParameter> {
     let mut rendered = parameters.to_vec();
-    rendered.extend((0..evidence_count).map(|index| crate::TypeScriptParameter {
-        name: crate::typescript::evidence_parameter_name(index),
-        type_name: "unknown".to_owned(),
-        implicit: true,
+    rendered.extend((start_index..start_index + evidence_count).map(|index| {
+        crate::TypeScriptParameter {
+            name: crate::typescript::evidence_parameter_name(index),
+            type_name: "unknown".to_owned(),
+            implicit: true,
+        }
     }));
     rendered
 }

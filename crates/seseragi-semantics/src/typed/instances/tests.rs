@@ -385,6 +385,58 @@ fn uses_instance_constraint_evidence_inside_a_method_body() {
     ));
 }
 
+#[test]
+fn selects_method_constraint_evidence_for_the_call_and_method_body() {
+    let typed = type_module(
+        "artifact/method-constraint-dispatch/main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Labeled<A> { fn label value: A -> String }\n\
+         pub trait Render<A> {\n\
+           fn render value: A -> String where Labeled<A>\n\
+         }\n\
+         instance Labeled<Badge> { fn label value: Badge -> String = \"active\" }\n\
+         instance Render<Badge> {\n\
+           fn render value: Badge -> String where Labeled<Badge> = label value\n\
+         }\n\
+         pub fn status value: Badge -> String = render value\n",
+    );
+
+    assert!(matches!(
+        &typed.instances[1].implementation,
+        TypedInstanceImplementation::UserDefined { methods }
+            if matches!(methods.as_slice(), [method]
+                if matches!(&method.body, crate::TypedExpr::Call { evidence, .. }
+                    if matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Parameter { index: 0 },
+                        ..
+                    }])))
+    ));
+
+    let call = typed.declarations.iter().find_map(|declaration| {
+        let crate::TypedDecl::Fn { symbol, body, .. } = declaration else {
+            return None;
+        };
+        symbol.ends_with("::status").then_some(body)
+    });
+    assert!(matches!(
+        call,
+        Some(crate::TypedExpr::Call {
+            evidence,
+            ..
+        }) if matches!(evidence.as_slice(), [
+            crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local { identity: render, .. },
+                ..
+            },
+            crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local { identity: labeled, .. },
+                ..
+            },
+        ] if render == "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>"
+            && labeled == "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>")
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

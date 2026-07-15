@@ -112,13 +112,19 @@ fn collect_decl_diagnostics(
     {
         let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
         for method in methods {
+            let mut method_evidence = scoped_evidence.clone();
+            method_evidence.extend(crate::typed::scoped_call_evidence_from(
+                &method.constraints,
+                resolution,
+                method_evidence.len(),
+            ));
             collect_pure_body_diagnostics(
                 method.body.as_ref(),
                 &method.parameters,
                 &method.return_type,
                 method.span,
                 resolution,
-                &scoped_evidence,
+                &method_evidence,
                 diagnostics,
             );
         }

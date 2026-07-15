@@ -1,0 +1,26 @@
+pub type Badge =
+  | Active
+
+pub trait Labeled<A> {
+  fn label value: A -> String
+}
+
+pub trait Render<A> {
+  fn render value: A -> String
+  where Labeled<A>
+}
+
+instance Labeled<Badge> {
+  fn label value: Badge -> String = "active"
+}
+
+instance Render<Badge> {
+  fn render value: Badge -> String
+  where Labeled<Badge> =
+    label value
+}
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (render Active)

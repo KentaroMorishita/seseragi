@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "case": "method-constraint-dispatch",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/method-constraint-dispatch",
+    "export": "main",
+    "compiledModule": "../../schema-1/method-constraint-dispatch/generated-module.json",
+    "typedInterface": "../../schema-1/method-constraint-dispatch/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["active"],
+        "stdout": "active\n"
+      }
+    ]
+  }
+}

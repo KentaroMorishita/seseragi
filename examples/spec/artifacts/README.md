@@ -187,15 +187,19 @@ actual operation traceとstdoutを固定します。
 Console hostで実行します。`Render` methodの`Just item -> ready item`はinstance constraintを
 `parameter` evidenceとしてTypedHir / CoreIrへ保持し、生成TSではfactory closureのcompiler-private evidence名からdispatchします。
 このcaseはcall siteでのlocal evidence materializationとmethod bodyでの消費を両方固定するgateです。
-method固有constraint / first-classまたはimported constrained functionのevidence ABIと、standard / imported evidenceのfactory引数化は
-独立した後続gateです。
+first-classまたはimported constrained functionのevidence ABIと、standard / imported evidenceのfactory引数化は独立した後続gateです。
+
+`schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
+method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く
+`Labeled<Badge>` dictionaryとして運びます。生成TSは通常のmethod引数の後ろへcompiler-private evidence parameterを追加し、
+`execution-schema-1/method-constraint-dispatch`がinner dictionary callの結果をConsole traceとstdoutで固定します。
 
 `schema-1/constrained-function-dispatch`はlocal generic pure functionの`where Ready<T>`をbody scopeと
 飽和call siteの両方へ接続します。TypedHir / CoreIrはbodyのtrait callへ`parameter` evidence、
 callerへ具体的なlocal evidenceを保持します。TypeScriptIrと生成TSはcurried value parameterの後ろへ
 compiler-private dictionary parameterを追加し、`execution-schema-1/constrained-function-dispatch`が
 actual dictionary methodの結果をConsole traceとstdoutで固定します。first-class partial constrained function、
-imported constrained function、method固有constraintはこのfixtureの完了条件に含みません。
+imported constrained functionはこのfixtureの完了条件に含みません。
 
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する

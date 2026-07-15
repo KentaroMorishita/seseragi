@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "module": "artifact/method-constraint-dispatch",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "Active",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>",
+      "trait": "Labeled",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Labeled$0"
+    },
+    {
+      "identity": "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Render$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -59,12 +59,17 @@ fn render_user_defined_instance(
     let body = methods
         .iter()
         .map(|method| {
+            let parameters = super::evidence_parameters(
+                &method.parameters,
+                instance.constraints.len(),
+                method.constraints.len(),
+            );
             format!(
                 "{:?}: {}",
                 method.name,
                 super::render_function_body(
                     &method.type_parameters,
-                    &method.parameters,
+                    &parameters,
                     &method.body,
                     method.is_async,
                 )

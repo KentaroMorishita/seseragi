@@ -82,8 +82,14 @@ fn typed_method(
 ) -> Option<TypedInstanceMethod> {
     let body = method.body.as_ref()?;
     let parameters = typed_parameters_from_surface(&method.parameters);
+    let mut method_evidence = scoped_evidence.to_vec();
+    method_evidence.extend(crate::typed::scoped_call_evidence_from(
+        &method.constraints,
+        resolution,
+        method_evidence.len(),
+    ));
     let context = PureExpressionContext::new(&parameters, resolution)
-        .with_evidence_parameters(scoped_evidence.to_vec())
+        .with_evidence_parameters(method_evidence)
         .with_expected(Some(
             resolution.semantic_value_from_type_ref(&method.return_type),
         ));
