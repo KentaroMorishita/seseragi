@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "module": "artifact/monad-maybe",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.adt",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.int64",
+      "core.int64.add",
+      "core.bool",
+      "core.string",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    },
+    {
+      "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
+      "trait": "Applicative",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Applicative$1"
+    },
+    {
+      "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
+      "trait": "Monad",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Monad$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

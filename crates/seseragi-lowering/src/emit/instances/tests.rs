@@ -335,6 +335,7 @@ fn emits_applicative_dictionaries_with_inherited_functor_evidence() {
 pub trait Functor<F<_>> {
   fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
 }
+
 instance Functor<Maybe> {
   fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
     match value {
@@ -401,6 +402,44 @@ pub let answer: Maybe<Int> =
     assert!(
         bundle.typescript.contains(
             "lifted(increment)(__ssrg$instance$Applicative$1(__ssrg$instance$Functor$0))"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}
+
+#[test]
+fn emits_monad_dictionaries_with_transitive_supertrait_evidence() {
+    let source =
+        include_str!("../../../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg");
+    let typed = type_module("artifact/monad-supertrait/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(
+        bundle.typescript.contains(
+            "(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0, \"flatMap\""
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("__ssrg$evidence$0[\"pure\"](value)"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("__ssrg$evidence$0[\"flatMap\"](f)"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$instance$Monad$2(__ssrg$instance$Applicative$1(__ssrg$instance$Functor$0))"
         ),
         "{}",
         bundle.typescript

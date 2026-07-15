@@ -1,0 +1,957 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/monad-maybe",
+  "runtimeRequirements": [
+    "core.maybe",
+    "core.adt",
+    "core.maybe.nothing",
+    "core.maybe.just",
+    "core.int64",
+    "core.int64.add",
+    "core.bool",
+    "core.string",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 79,
+        "end": 248
+      },
+      "dictionaryExport": "__ssrg$instance$Functor$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "f",
+                "type": "(argument: A) => B",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: A }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Nothing"
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_maybe_Nothing"
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_maybe_Just",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 107,
+              "end": 246
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
+      "trait": "Applicative",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 389,
+        "end": 652
+      },
+      "dictionaryExport": "__ssrg$instance$Applicative$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "pure",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_maybe_Just",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 421,
+              "end": 465
+            }
+          },
+          {
+            "name": "apply",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "wrapped",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: (argument: A) => B }",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: A }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "identifier",
+                    "name": "wrapped"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Just"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "_function",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "reference",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_maybe_Just",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "_function",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_maybe_Nothing"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 469,
+              "end": 650
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
+      "trait": "Monad",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Applicative",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Maybe",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 759,
+        "end": 930
+      },
+      "dictionaryExport": "__ssrg$instance$Monad$2",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "flatMap",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "f",
+                "type": "(argument: A) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: B }",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: A }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Nothing"
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_maybe_Nothing"
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "f",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "item"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 785,
+              "end": 928
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "bind",
+      "typeParameters": [
+        "M",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        {
+          "name": "Monad",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "f",
+          "type": "(argument: A) => unknown",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "flatMap",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "f"
+          },
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 932,
+        "end": 1026
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "liftAndBind",
+      "typeParameters": [
+        "M",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        {
+          "name": "Monad",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "f",
+          "type": "(argument: A) => unknown",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "flatMap",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "f"
+          },
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1028,
+        "end": 1136
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "incrementMaybe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_maybe_Just",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_add",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1138,
+        "end": 1199
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "stopAfter42",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "identifier",
+            "name": "value"
+          },
+          "right": {
+            "kind": "bigint",
+            "value": "42"
+          }
+        },
+        "thenBranch": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_maybe_Just",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "elseBranch": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_maybe_Nothing"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1201,
+        "end": 1288
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "bigint"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Nothing"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "44"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Just 44"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Just another value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1290,
+        "end": 1434
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "bind",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "incrementMaybe"
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "liftAndBind",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "incrementMaybe"
+                            },
+                            {
+                              "kind": "bigint",
+                              "value": "40"
+                            },
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Monad$2",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "__ssrg$instance$Applicative$1",
+                                  "typeArguments": [],
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "__ssrg$instance$Functor$0"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Monad$2",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Applicative$1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Functor$0"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "liftAndBind",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "stopAfter42"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "43"
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Monad$2",
+                      "typeArguments": [],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Applicative$1",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Functor$0"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1436,
+        "end": 1632
+      }
+    }
+  ]
+}

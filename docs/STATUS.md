@@ -38,7 +38,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative実行fixtureあり、law fixture不足 | HKT推論 / local dictionary / Applicative supertrait実行まで部分実装 |
+| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行fixtureあり、law fixture不足 | HKT推論 / local dictionary / transitive supertrait実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
@@ -223,7 +223,12 @@ annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのk
 `lifted increment`のような制約付きcallを別のHKT callの引数へ置いた場合も、外側の期待型と左から確定した引数型を
 使って`F = Maybe`を具体化し、内側と外側の両方へdictionaryを渡します。
 `execution-schema-1/applicative-maybe`は`mapped`、`lifted`、`applyWrapped`を組み合わせた`Just 42`を固定します。
-`<$>` / `<*>`、Applicative law、Monad dictionary、`>>=`とgeneric doは次の独立gateです。
+`schema-1/monad-maybe`はsupertrait chainを`Monad<M> -> Applicative<M> -> Functor<M>`へ伸ばします。
+Monad factoryは具体化済みApplicative dictionaryを継承し、`where Monad<M>`だけを持つgeneric functionから
+`pure`と`flatMap`を同じparameter evidenceで呼び出せます。calleeとcallerの型構築子parameterが同じ綴りでも
+別scopeに属する場合、実引数で確定したsubstitutionを明示的に保持するため、入れ子の`pure value |> flatMap f`も
+未解決型へ戻りません。`execution-schema-1/monad-maybe`は成功するbind列と`Nothing`のshort-circuitを実行します。
+`<$>` / `<*>`、Applicative / Monad law、`>>=`とgeneric doは次の独立gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

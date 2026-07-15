@@ -67,7 +67,11 @@ pub(super) fn type_application(
             .get(index)
             .cloned()
             .filter(|expected| {
-                !is_unresolved_parameter_expectation(&expected.type_ref, &signature.type_parameters)
+                !is_unresolved_parameter_expectation(
+                    &expected.type_ref,
+                    &signature.type_parameters,
+                    &partial_application.resolved_type_parameters,
+                )
             });
         let argument_context = context.with_expected(expected);
         let analysis = type_surface_expression(argument, &argument_context);
@@ -219,9 +223,12 @@ fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceE
 fn is_unresolved_parameter_expectation(
     type_ref: &TypedType,
     parameters: &[seseragi_syntax::TypeParameter],
+    resolved: &std::collections::BTreeSet<String>,
 ) -> bool {
     match type_ref {
-        TypedType::Named { name, .. } => parameters.iter().any(|parameter| parameter.name == *name),
+        TypedType::Named { name, .. } => {
+            parameters.iter().any(|parameter| parameter.name == *name) && !resolved.contains(name)
+        }
         TypedType::Hole => true,
         TypedType::ExternalNamed { .. }
         | TypedType::Record { .. }

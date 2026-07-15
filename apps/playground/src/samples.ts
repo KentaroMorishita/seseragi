@@ -10,6 +10,7 @@ import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboa
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
 import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
+import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
 import {
   sampleCatalog,
   type PlaygroundSampleDefinition,
@@ -36,6 +37,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "trait-badges": traitBadges,
   "generic-instance": genericInstance,
   "applicative-maybe": applicativeMaybe,
+  "monad-maybe": monadMaybe,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

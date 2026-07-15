@@ -18,7 +18,7 @@
 | Map / Set ordering and serialization          | Lesson 06         | seed / duplicate / canonical fixtures          | partial |
 | HKT / `Functor<F<_>>` / generic `map`          | Lessons 09-11     | `schema-1/{functor-maybe,type-constructor-kind-mismatch}` + `execution-schema-1/functor-maybe`; kind arity、constructor inference、parameter / local evidence、dictionary execution | partial |
 | ApplicativeとValidation accumulation          | Lesson 09         | `schema-1/applicative-maybe` + `execution-schema-1/applicative-maybe`; Functor supertrait、`pure` / `apply` / inherited `map` dictionary execution。law / validation accumulationは未接続 | partial |
-| Monad、`>>=`、do desugar                      | Lesson 10         | Monad law / invalid bind pattern fixtures      | partial |
+| Monad、`>>=`、do desugar                      | Lesson 10         | `schema-1/monad-maybe` + `execution-schema-1/monad-maybe`; transitive supertrait、generic `pure` / `flatMap` dictionary、Maybe short-circuit。`>>=` / do / lawは未接続 | partial |
 | Signalとtransaction                           | Lesson 15         | `projects/signal-transaction-lifetime`         | covered |
 | Effect / Stream requirement merge             | none              | compile / invalid-position fixtures            | partial |
 | cross-module Effect function / cold invocation | module guide      | `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | covered |

@@ -1,0 +1,77 @@
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+instance Applicative<Maybe> {
+  fn pure<A> value: A -> Maybe<A> = Just value
+
+  fn apply<A, B> wrapped: Maybe<A -> B> -> value: Maybe<A> -> Maybe<B> =
+    match (wrapped, value) {
+      (Just function, Just item) -> Just $ function item
+      _ -> Nothing
+    }
+}
+
+pub trait Monad<M<_>>
+where Applicative<M> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
+
+instance Monad<Maybe> {
+  fn flatMap<A, B> f: (A -> Maybe<B>) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> f item
+    }
+}
+
+fn bind<M<_>, A, B>
+  f: (A -> M<B>) -> value: M<A> -> M<B>
+where Monad<M> =
+  flatMap f value
+
+fn liftAndBind<M<_>, A, B>
+  f: (A -> M<B>) -> value: A -> M<B>
+where Monad<M> =
+  pure value
+  |> flatMap f
+
+fn incrementMaybe value: Int -> Maybe<Int> = Just $ value + 2
+
+fn stopAfter42 value: Int -> Maybe<Int> =
+  if value <= 42 then Just value else Nothing
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just 44 -> "Just 44"
+    Just _ -> "Just another value"
+  }
+
+pub effect fn main =
+  do {
+    40
+    |> liftAndBind incrementMaybe
+    |> bind incrementMaybe
+    |> render
+    |> println
+
+    43
+    |> liftAndBind stopAfter42
+    |> render
+    |> println
+  }

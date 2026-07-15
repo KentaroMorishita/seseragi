@@ -1,6 +1,6 @@
 use crate::{TypedConstraint, TypedRecordField, TypedType};
 use seseragi_syntax::TypeParameter;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use super::{application_result_type_from, TopLevelPureFunction};
 use crate::typed::semantic_types::{instantiate_callable, SemanticValueType};
@@ -12,6 +12,7 @@ pub(crate) struct InstantiatedApplication {
     pub(crate) result: SemanticValueType,
     pub(crate) constraints: Vec<TypedConstraint>,
     pub(crate) constraint_identities: Vec<Option<String>>,
+    pub(crate) resolved_type_parameters: BTreeSet<String>,
 }
 
 pub(crate) fn instantiated_application(
@@ -85,6 +86,7 @@ pub(crate) fn instantiated_application(
         },
         constraints,
         constraint_identities: signature.constraint_identities.clone(),
+        resolved_type_parameters: substitutions.keys().cloned().collect(),
     }
 }
 

@@ -107,4 +107,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Just 42",
   },
+  {
+    id: "monad-maybe",
+    label: "Monadの流れ",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/monad-maybe/main.ssrg",
+    stdin: "",
+    expectedOutput: "Just 44\nNothing",
+  },
 ]
