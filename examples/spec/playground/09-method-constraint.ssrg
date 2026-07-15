@@ -1,0 +1,44 @@
+pub type Badge =
+  | Active
+
+pub type Device =
+  | Online
+
+pub trait Labeled<A> {
+  fn label value: A -> String
+}
+
+// Renderの実装には、対象型のLabeled instanceも必要です。
+pub trait Render<A> {
+  fn render value: A -> String
+  where Labeled<A>
+}
+
+instance Labeled<Badge> {
+  fn label value: Badge -> String = "Badge label: active"
+}
+
+instance Labeled<Device> {
+  fn label value: Device -> String = "Device label: online"
+}
+
+// renderのbodyは、call siteから渡されたLabeled dictionaryを使います。
+instance Render<Badge> {
+  fn render value: Badge -> String
+  where Labeled<Badge> =
+    label value
+}
+
+instance Render<Device> {
+  fn render value: Device -> String
+  where Labeled<Device> =
+    label value
+}
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    println (render Active)
+    println (render Online)
+  }

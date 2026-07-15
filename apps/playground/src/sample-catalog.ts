@@ -78,4 +78,11 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Badge is ready\nDevice is online",
   },
+  {
+    id: "method-constraint",
+    label: "Method固有constraint",
+    sourcePath: "examples/spec/playground/09-method-constraint.ssrg",
+    stdin: "",
+    expectedOutput: "Badge label: active\nDevice label: online",
+  },
 ]

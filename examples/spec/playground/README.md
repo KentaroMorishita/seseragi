@@ -12,6 +12,8 @@
 | `05-trait-badges.ssrg` | なし | local trait、concrete instance、dictionary dispatch |
 | `06-generic-instance.ssrg` | なし | generic instance、`Maybe<T>`、dictionary factory |
 | `07-constrained-instance.ssrg` | なし | constraint付きgeneric instance、local evidence passing |
+| `08-constrained-function.ssrg` | なし | constraint付きgeneric pure function、dictionary parameter |
+| `09-method-constraint.ssrg` | なし | trait method固有constraint、ordered evidence passing |
 
 各sourceは`apps/playground/tests/playground.integration.test.ts`からshared WASM driverでcompileし、generated
 TypeScriptとbrowser runtimeを通した実行結果まで固定します。

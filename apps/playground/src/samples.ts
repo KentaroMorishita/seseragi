@@ -7,6 +7,8 @@ import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboa
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
 import constrainedInstance from "../../../examples/spec/playground/07-constrained-instance.ssrg?raw"
+import constrainedFunction from "../../../examples/spec/playground/08-constrained-function.ssrg?raw"
+import methodConstraint from "../../../examples/spec/playground/09-method-constraint.ssrg?raw"
 import { sampleCatalog } from "./sample-catalog"
 
 export type PlaygroundSample = {
@@ -26,6 +28,8 @@ const sourceById: Readonly<Record<string, string>> = {
   "trait-badges": traitBadges,
   "generic-instance": genericInstance,
   "constrained-instance": constrainedInstance,
+  "constrained-function": constrainedFunction,
+  "method-constraint": methodConstraint,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
