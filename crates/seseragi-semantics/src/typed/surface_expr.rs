@@ -80,6 +80,8 @@ impl<'a> PureExpressionContext<'a> {
         }
         Some(TopLevelPureFunction {
             symbol: symbol.spelling.clone(),
+            trait_identity: None,
+            trait_method: None,
             type_parameters: Vec::new(),
             constraints: Vec::new(),
             semantic_parameters: parameters
@@ -98,6 +100,21 @@ impl<'a> PureExpressionContext<'a> {
 
     pub(super) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
         self.resolution.semantic_value_from_typed_type(type_ref)
+    }
+
+    pub(super) fn select_call_evidence(
+        &self,
+        constraints: &[crate::TypedConstraint],
+        trait_identity: Option<&str>,
+    ) -> Result<Vec<crate::TypedCallEvidence>, crate::TypedConstraint> {
+        match trait_identity {
+            Some(trait_identity) => super::call_evidence::select_trait_call_evidence(
+                constraints,
+                trait_identity,
+                self.resolution,
+            ),
+            None => super::call_evidence::select_call_evidence(constraints),
+        }
     }
 
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {

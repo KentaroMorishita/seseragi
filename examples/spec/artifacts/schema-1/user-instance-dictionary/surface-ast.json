@@ -21,11 +21,22 @@
             "start": 19,
             "end": 27
           }
+        },
+        {
+          "name": "Paused",
+          "nameSpan": {
+            "start": 32,
+            "end": 38
+          },
+          "span": {
+            "start": 30,
+            "end": 38
+          }
         }
       ],
       "span": {
         "start": 0,
-        "end": 27
+        "end": 38
       }
     },
     {
@@ -33,8 +44,8 @@
       "visibility": "public",
       "name": "Render",
       "nameSpan": {
-        "start": 39,
-        "end": 45
+        "start": 50,
+        "end": 56
       },
       "typeParameters": [
         "A"
@@ -43,22 +54,22 @@
         {
           "name": "render",
           "nameSpan": {
-            "start": 56,
-            "end": 62
+            "start": 67,
+            "end": 73
           },
           "parameters": [
             {
               "name": "value",
               "nameSpan": {
-                "start": 63,
-                "end": 68
+                "start": 74,
+                "end": 79
               },
               "type": {
                 "kind": "named",
                 "name": "A",
                 "span": {
-                  "start": 70,
-                  "end": 71
+                  "start": 81,
+                  "end": 82
                 }
               }
             }
@@ -67,35 +78,35 @@
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 75,
-              "end": 81
+              "start": 86,
+              "end": 92
             }
           },
           "span": {
-            "start": 53,
-            "end": 81
+            "start": 64,
+            "end": 92
           }
         }
       ],
       "span": {
-        "start": 29,
-        "end": 83
+        "start": 40,
+        "end": 94
       }
     },
     {
       "kind": "instance",
       "traitName": "Render",
       "traitNameSpan": {
-        "start": 94,
-        "end": 100
+        "start": 105,
+        "end": 111
       },
       "arguments": [
         {
           "kind": "named",
           "name": "Badge",
           "span": {
-            "start": 101,
-            "end": 106
+            "start": 112,
+            "end": 117
           }
         }
       ],
@@ -103,22 +114,22 @@
         {
           "name": "render",
           "nameSpan": {
-            "start": 115,
-            "end": 121
+            "start": 126,
+            "end": 132
           },
           "parameters": [
             {
               "name": "value",
               "nameSpan": {
-                "start": 122,
-                "end": 127
+                "start": 133,
+                "end": 138
               },
               "type": {
                 "kind": "named",
                 "name": "Badge",
                 "span": {
-                  "start": 129,
-                  "end": 134
+                  "start": 140,
+                  "end": 145
                 }
               }
             }
@@ -127,50 +138,111 @@
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 138,
-              "end": 144
-            }
-          },
-          "body": {
-            "kind": "string",
-            "raw": "\"active\"",
-            "span": {
-              "start": 147,
+              "start": 149,
               "end": 155
             }
           },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 168,
+                "end": 173
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 182,
+                    "end": 188
+                  },
+                  "span": {
+                    "start": 182,
+                    "end": 188
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"active\"",
+                  "span": {
+                    "start": 192,
+                    "end": 200
+                  }
+                },
+                "span": {
+                  "start": 182,
+                  "end": 200
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 207,
+                    "end": 213
+                  },
+                  "span": {
+                    "start": 207,
+                    "end": 213
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"paused\"",
+                  "span": {
+                    "start": 217,
+                    "end": 225
+                  }
+                },
+                "span": {
+                  "start": 207,
+                  "end": 225
+                }
+              }
+            ],
+            "span": {
+              "start": 162,
+              "end": 231
+            }
+          },
           "span": {
-            "start": 112,
-            "end": 155
+            "start": 123,
+            "end": 231
           }
         }
       ],
       "span": {
-        "start": 85,
-        "end": 157
+        "start": 96,
+        "end": 233
       }
     },
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "status",
+      "name": "label",
       "nameSpan": {
-        "start": 166,
-        "end": 172
+        "start": 242,
+        "end": 247
       },
       "parameters": [
         {
-          "name": "unit",
+          "name": "value",
           "nameSpan": {
-            "start": 173,
-            "end": 177
+            "start": 248,
+            "end": 253
           },
           "type": {
             "kind": "named",
-            "name": "Unit",
+            "name": "Badge",
             "span": {
-              "start": 179,
-              "end": 183
+              "start": 255,
+              "end": 260
             }
           }
         }
@@ -179,21 +251,166 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 187,
-          "end": 193
+          "start": 264,
+          "end": 270
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "render",
+          "span": {
+            "start": 273,
+            "end": 279
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 280,
+            "end": 285
+          }
+        },
+        "span": {
+          "start": 273,
+          "end": 285
+        }
+      },
+      "span": {
+        "start": 235,
+        "end": 285
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "status",
+      "nameSpan": {
+        "start": 294,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 301,
+            "end": 305
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 307,
+              "end": 311
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 315,
+          "end": 321
         }
       },
       "body": {
         "kind": "string",
         "raw": "\"ready\"",
         "span": {
-          "start": 196,
-          "end": 203
+          "start": 324,
+          "end": 331
         }
       },
       "span": {
-        "start": 159,
-        "end": 203
+        "start": 287,
+        "end": 331
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 347,
+        "end": 351
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 355,
+          "end": 359
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 365,
+            "end": 372
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 379,
+          "end": 391
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 396,
+            "end": 403
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 405,
+                "end": 410
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "Active",
+              "span": {
+                "start": 411,
+                "end": 417
+              }
+            },
+            "span": {
+              "start": 405,
+              "end": 417
+            }
+          },
+          "span": {
+            "start": 404,
+            "end": 418
+          }
+        },
+        "span": {
+          "start": 396,
+          "end": 418
+        }
+      },
+      "span": {
+        "start": 333,
+        "end": 418
       }
     }
   ]

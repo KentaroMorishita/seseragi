@@ -6,6 +6,7 @@ use crate::{CoreExpr, CoreStatement, CoreType};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
+use super::instances::local_instance_expression_key;
 use super::names::{local_name, safe_identifier};
 use super::types::type_ref_from_core_type;
 use super::{TypeScriptExpr, TypeScriptStatement};
@@ -49,10 +50,29 @@ pub(super) fn lower_core_expr_to_typescript(
             callee,
             arguments,
             evidence,
+            trait_dispatch,
             ..
         } => {
             let arguments = lower_core_expressions(arguments, imported_values, imported_types);
-            if let Some(operation) = runtime_collection_operation(&callee, &evidence) {
+            if let Some(dispatch) = trait_dispatch {
+                let identity = evidence
+                    .iter()
+                    .find_map(|selected| match &selected.evidence {
+                        crate::CoreInstanceEvidence::Local { identity } => Some(identity.as_str()),
+                        _ => None,
+                    });
+                let dictionary = identity
+                    .and_then(|identity| {
+                        imported_values.get(&local_instance_expression_key(identity))
+                    })
+                    .expect("local trait dispatch requires a generated dictionary")
+                    .clone();
+                TypeScriptExpr::DictionaryCall {
+                    dictionary,
+                    method: dispatch.method,
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_collection_operation(&callee, &evidence) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,
@@ -200,7 +220,9 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
                         || typescript_expr_contains_await(&branch.value)
                 })
         }
-        TypeScriptExpr::Call { arguments, .. } | TypeScriptExpr::RuntimeCall { arguments, .. } => {
+        TypeScriptExpr::Call { arguments, .. }
+        | TypeScriptExpr::DictionaryCall { arguments, .. }
+        | TypeScriptExpr::RuntimeCall { arguments, .. } => {
             arguments.iter().any(typescript_expr_contains_await)
         }
         TypeScriptExpr::Sequence { statements, result } => {

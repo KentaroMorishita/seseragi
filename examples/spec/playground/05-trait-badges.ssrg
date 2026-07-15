@@ -1,0 +1,26 @@
+// データと表示処理を分離し、custom traitのinstanceを型から選ぶサンプルです。
+// renderはBadge専用global関数ではなく、Render<Badge>のdictionaryを通して呼ばれます。
+
+pub type Badge =
+  | Active
+  | Paused
+
+pub trait Render<A> {
+  fn render value: A -> String
+}
+
+instance Render<Badge> {
+  fn render value: Badge -> String =
+    match value {
+      Active -> "Status badge: active"
+      Paused -> "Status badge: paused"
+    }
+}
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (render Active)
+
+// Expected stdout:
+// Status badge: active

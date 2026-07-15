@@ -2,7 +2,6 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
-use crate::typed::call_evidence::select_call_evidence;
 use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
@@ -57,14 +56,20 @@ pub(super) fn type_application(
         &arguments,
         &semantic_arguments,
     );
-    let evidence = if issue.is_none() && arguments.len() >= signature.parameters.len() {
-        match select_call_evidence(&application.constraints) {
+    let saturated = arguments.len() >= signature.parameters.len();
+    let evidence = if issue.is_none() && (saturated || signature.trait_identity.is_some()) {
+        match context.select_call_evidence(
+            &application.constraints,
+            signature.trait_identity.as_deref(),
+        ) {
             Ok(evidence) => evidence,
             Err(constraint) => {
-                issue = Some(PureCallIssue::MissingInstance {
-                    callee: *callee_span,
-                    constraint,
-                });
+                if saturated || signature.trait_identity.is_some() {
+                    issue = Some(PureCallIssue::MissingInstance {
+                        callee: *callee_span,
+                        constraint,
+                    });
+                }
                 Vec::new()
             }
         }
@@ -88,6 +93,14 @@ pub(super) fn type_application(
             callee: signature.symbol.clone(),
             arguments,
             evidence,
+            trait_dispatch: signature
+                .trait_identity
+                .clone()
+                .zip(signature.trait_method.clone())
+                .map(|(trait_identity, method)| crate::TypedTraitDispatch {
+                    trait_identity,
+                    method,
+                }),
             type_ref,
             origin: expression.span(),
         },

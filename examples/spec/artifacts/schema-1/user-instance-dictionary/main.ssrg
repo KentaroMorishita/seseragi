@@ -1,12 +1,24 @@
 pub type Badge =
   | Active
+  | Paused
 
 pub trait Render<A> {
   fn render value: A -> String
 }
 
 instance Render<Badge> {
-  fn render value: Badge -> String = "active"
+  fn render value: Badge -> String =
+    match value {
+      Active -> "active"
+      Paused -> "paused"
+    }
 }
 
+pub fn label value: Badge -> String = render value
+
 pub fn status unit: Unit -> String = "ready"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println (label Active)

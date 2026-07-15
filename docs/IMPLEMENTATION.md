@@ -600,14 +600,17 @@ instance type parameter、ordered head argument、constraintは各IRに独立し
 `semantic-diagnostics-schema-1/instance-method-body`がdeclared `String`に対する`Int` bodyを`SES-T0101`として固定し、
 instance専用の小型parserや型推論経路を増やしません。
 
-このsliceだけではtrait method callをdictionary evidence付きcallへlowerしていません。次のgateはcall siteでlocal instanceを
-型引数から一意に選択し、TypedHirのcall evidence、CoreIrのdictionary引数、生成TSのmethod invocationまで接続します。
-generic / constrained instanceのdictionary factory ABIとcross-module dictionary selectionは、そのlocal dispatch表現を再利用して
-別fixtureで固定します。
+同fixtureの`label`はscope内の`render value`を通常のcurried callとして解決し、argument型からconcrete local instanceを
+一意に選択します。選択済みtrait identity、method、instance evidenceをTypedHirとCoreIrへ保持し、TypeScriptIrの
+`dictionary-call`と生成TSのdictionary method invocationまで接続します。backendはruntime tagやJS constructorを見て
+instanceを再選択しません。同名trait methodはresolverが候補集合として保持し、現時点では型によるoverload選択を未接続のため
+`SES-T0202`で保守的に拒否します。generic / constrained instanceのdictionary factory ABI、同名methodの型選択、
+cross-module dictionary selectionは、このlocal dispatch表現を再利用して別fixtureで固定します。
 
-このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
-coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、
-標準型名だけを通る経路と区別して回収します。
+ここまでで標準Array instanceとlocal concrete user-defined instanceの選択、evidence transport、dictionary dispatchを
+別々のfixtureで証明しました。generic / constrained / imported instance search、coherence、dictionary parameter passingは
+まだ完了gateではありません。それらはPhase 3の一般trait / instance goal programで、標準型名や単一concrete instanceだけを
+通る経路と区別して回収します。
 
 続くlocal package loader sliceでは、`seseragi.toml`の`layout.source`と`run.entry`からsource moduleを読み、
 既存syntax frontendが返すraw import occurrenceだけを使ってrelative / `self/` importを再帰発見します。

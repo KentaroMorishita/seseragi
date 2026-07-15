@@ -12,7 +12,7 @@
       "declarationKind": "type",
       "declaration": {
         "start": 0,
-        "end": 27
+        "end": 38
       },
       "scheme": {
         "typeParameters": [],
@@ -46,14 +46,35 @@
       }
     },
     {
+      "symbol": "artifact/user-instance-dictionary::Paused",
+      "namespace": "value",
+      "name": "Paused",
+      "constructorOf": "artifact/user-instance-dictionary::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 32,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
       "symbol": "artifact/user-instance-dictionary::trait(Render)",
       "namespace": "trait",
       "name": "Render",
       "visibility": "public",
       "declarationKind": "trait",
       "declaration": {
-        "start": 29,
-        "end": 83
+        "start": 40,
+        "end": 94
       },
       "scheme": {
         "typeParameters": [
@@ -87,11 +108,39 @@
             }
           },
           "origin": {
-            "start": 53,
-            "end": 81
+            "start": 64,
+            "end": 92
           }
         }
       ]
+    },
+    {
+      "symbol": "artifact/user-instance-dictionary::label",
+      "namespace": "value",
+      "name": "label",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 235,
+        "end": 285
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
     },
     {
       "symbol": "artifact/user-instance-dictionary::status",
@@ -100,8 +149,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 159,
-        "end": 203
+        "start": 287,
+        "end": 331
       },
       "scheme": {
         "typeParameters": [],
@@ -118,6 +167,25 @@
             "name": "String",
             "arguments": []
           }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-instance-dictionary::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 333,
+        "end": 418
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
         }
       }
     }
@@ -140,8 +208,8 @@
       },
       "constraints": [],
       "origin": {
-        "start": 85,
-        "end": 157
+        "start": 96,
+        "end": 233
       }
     }
   ]

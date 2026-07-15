@@ -2,6 +2,12 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "artifact/user-instance-dictionary",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
   "adts": [
     {
       "symbol": "artifact/user-instance-dictionary::Badge",
@@ -18,12 +24,21 @@
             "start": 21,
             "end": 27
           }
+        },
+        {
+          "symbol": "artifact/user-instance-dictionary::Paused",
+          "name": "Paused",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 32,
+            "end": 38
+          }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 27
+        "end": 38
       }
     }
   ],
@@ -40,8 +55,8 @@
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 85,
-        "end": 157
+        "start": 96,
+        "end": 233
       },
       "implementation": {
         "kind": "user-defined",
@@ -60,18 +75,89 @@
               }
             ],
             "body": {
-              "kind": "string",
-              "value": "active",
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 168,
+                  "end": 173
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/user-instance-dictionary::Active",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 182,
+                        "end": 188
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "active",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 192,
+                      "end": 200
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 182,
+                    "end": 200
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "paused",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 217,
+                      "end": 225
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 207,
+                    "end": 225
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
               "origin": {
                 "source": "main.ssrg",
-                "start": 147,
-                "end": 155
+                "start": 162,
+                "end": 231
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 112,
-              "end": 155
+              "start": 123,
+              "end": 231
             }
           }
         ]
@@ -80,12 +166,84 @@
   ],
   "functions": [
     {
+      "symbol": "artifact/user-instance-dictionary::label",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 235,
+        "end": 285
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/user-instance-dictionary::trait(Render)::render",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 280,
+              "end": 285
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
+          "method": "render"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 273,
+          "end": 285
+        }
+      }
+    },
+    {
       "symbol": "artifact/user-instance-dictionary::status",
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 159,
-        "end": 203
+        "start": 287,
+        "end": 331
       },
       "parameters": [
         {
@@ -103,8 +261,93 @@
         "value": "ready",
         "origin": {
           "source": "main.ssrg",
-          "start": 196,
-          "end": 203
+          "start": 324,
+          "end": 331
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-instance-dictionary::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 333,
+        "end": 418
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/user-instance-dictionary::label",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "artifact/user-instance-dictionary::Active",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 411,
+                  "end": 417
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 405,
+              "end": 417
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 396,
+          "end": 418
         }
       }
     }

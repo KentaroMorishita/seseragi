@@ -6,13 +6,19 @@
     "seseragi://artifact/user-instance-dictionary"
   ],
   "sourcesContent": [
-    "pub type Badge =\n  | Active\n\npub trait Render<A> {\n  fn render value: A -> String\n}\n\ninstance Render<Badge> {\n  fn render value: Badge -> String = \"active\"\n}\n\npub fn status unit: Unit -> String = \"ready\"\n"
+    "pub type Badge =\n  | Active\n  | Paused\n\npub trait Render<A> {\n  fn render value: A -> String\n}\n\ninstance Render<Badge> {\n  fn render value: Badge -> String =\n    match value {\n      Active -> \"active\"\n      Paused -> \"paused\"\n    }\n}\n\npub fn label value: Badge -> String = render value\n\npub fn status unit: Unit -> String = \"ready\"\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (label Active)\n"
   ],
   "names": [
     "Badge",
     "Active",
+    "Paused",
     "__ssrg$instance$Render$0",
-    "status"
+    "label",
+    "__ssrg$instance$Render$0",
+    "status",
+    "main",
+    "println",
+    "label"
   ],
-  "mappings": "AAAAA;;AACIC;AAMJC;AAIAC"
+  "mappings": ";;AAAAA;;;AACIC;AACAC;AAMJC;AAQAC;AAEAE;AAEAC"
 }

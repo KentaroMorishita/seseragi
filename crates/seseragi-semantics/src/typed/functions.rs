@@ -11,6 +11,8 @@ pub(crate) use generic::{instantiated_application, instantiated_application_resu
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct TopLevelPureFunction {
     pub(crate) symbol: String,
+    pub(crate) trait_identity: Option<String>,
+    pub(crate) trait_method: Option<String>,
     pub(crate) type_parameters: Vec<String>,
     pub(crate) constraints: Vec<TypedConstraint>,
     pub(crate) parameters: Vec<TypedType>,

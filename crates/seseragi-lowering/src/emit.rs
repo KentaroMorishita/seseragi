@@ -335,6 +335,15 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 format!("{call}({})", render_typescript_expr(argument))
             })
         }
+        TypeScriptExpr::DictionaryCall {
+            dictionary,
+            method,
+            arguments,
+        } => arguments
+            .iter()
+            .fold(format!("{dictionary}[{method:?}]"), |call, argument| {
+                format!("{call}({})", render_typescript_expr(argument))
+            }),
         TypeScriptExpr::RuntimeCall { callee, arguments } => {
             let rendered_arguments = arguments
                 .iter()

@@ -90,12 +90,17 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             callee,
             arguments,
             evidence,
+            trait_dispatch,
             type_ref,
             origin,
         } => CoreExpr::Call {
             callee,
             arguments: lower_exprs(source, arguments),
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
+            trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
+                trait_identity: dispatch.trait_identity,
+                method: dispatch.method,
+            }),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },

@@ -14,6 +14,7 @@ pub(crate) use crate::instance_identity::{
     canonical_instance_head_identity, canonical_instance_identity,
 };
 pub(crate) use contracts::{analyze_instance_contracts, InstanceContractIssue};
+pub(crate) use user::canonical_type_ref;
 
 pub(crate) struct InstanceAnalysis {
     pub(crate) instances: Vec<TypedInstance>,

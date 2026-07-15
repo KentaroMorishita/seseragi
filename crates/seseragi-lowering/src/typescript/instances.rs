@@ -315,8 +315,12 @@ fn lower_method(
     }
 }
 
-fn dictionary_export_name(trait_name: &str, index: usize) -> String {
+pub(super) fn dictionary_export_name(trait_name: &str, index: usize) -> String {
     format!("__ssrg$instance${}${index}", safe_identifier(trait_name))
+}
+
+pub(super) fn local_instance_expression_key(identity: &str) -> String {
+    format!("@seseragi-instance::{identity}")
 }
 
 fn push_type_import_unique(imports: &mut Vec<TypeScriptTypeImport>, import: TypeScriptTypeImport) {

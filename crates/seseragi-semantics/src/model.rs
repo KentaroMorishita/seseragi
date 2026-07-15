@@ -168,6 +168,13 @@ pub struct TypedCallEvidence {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TypedTraitDispatch {
+    pub trait_identity: String,
+    pub method: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TypedInstance {
     pub identity: String,
     #[serde(rename = "trait")]
@@ -351,6 +358,8 @@ pub enum TypedExpr {
         arguments: Vec<TypedExpr>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<TypedCallEvidence>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        trait_dispatch: Option<TypedTraitDispatch>,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,

@@ -15,7 +15,7 @@ pub use core::{
     CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
     CoreInstanceImplementation, CoreInstanceMethod, CoreModule, CoreModuleDependency,
     CoreModuleImport, CoreParameter, CoreRecordField, CoreShowPayloadEvidence, CoreStatement,
-    CoreType,
+    CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -399,6 +399,7 @@ type Internal =
                         origin: origin.clone(),
                     }],
                     evidence: Vec::new(),
+                    trait_dispatch: None,
                     type_ref: int_type,
                     origin,
                 },

@@ -165,8 +165,9 @@ closed project compileで固定します。instance method dictionaryのlowering
 
 `schema-1/user-instance-dictionary`はlocal custom traitのconcrete instance methodをTypedHir、CoreIr、TypeScriptIrへ運び、
 生成TypeScriptのcompiler-private dictionary objectまで固定します。final typed interfaceはshallow headをcanonical identity付き
-instanceへ置換し、custom dictionaryだけではderived `Show`用runtime importを要求しません。trait method callからのinstance selection、
-dictionary dispatch、generic / constrained factory、imported dictionaryは後続gateです。
+instanceへ置換し、custom dictionaryだけではderived `Show`用runtime importを要求しません。`label`の`render value`は
+argument型からselected local evidenceを固定し、TypeScriptIrの`dictionary-call`と生成dictionary method invocationまで通します。
+同名methodの型選択、generic / constrained factory、imported dictionaryは後続gateです。
 
 `schema-1/*/typed-hir.json`は`resolved-ast.json`の後続stageとして単独で追加できます。TypedHir producerを
 Rust conformance runnerへ接続するとき、同じfixtureに`core-ir.json`や`typescript-ir.json`を同時に固定する

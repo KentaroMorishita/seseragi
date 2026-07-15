@@ -101,6 +101,13 @@ pub struct CoreCallEvidence {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreTraitDispatch {
+    pub trait_identity: String,
+    pub method: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "kebab-case",
@@ -135,6 +142,8 @@ pub enum CoreExpr {
         arguments: Vec<CoreExpr>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<CoreCallEvidence>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        trait_dispatch: Option<CoreTraitDispatch>,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,

@@ -3,6 +3,12 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "artifact/user-instance-dictionary",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
   "instances": [
     {
       "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>",
@@ -16,8 +22,8 @@
       ],
       "constraints": [],
       "origin": {
-        "start": 85,
-        "end": 157
+        "start": 96,
+        "end": 233
       },
       "implementation": {
         "kind": "user-defined",
@@ -43,27 +49,106 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 122,
-                  "end": 127
+                  "start": 133,
+                  "end": 138
                 }
               }
             ],
             "body": {
-              "kind": "string",
-              "value": "active",
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 168,
+                  "end": 173
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/user-instance-dictionary::Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 182,
+                      "end": 188
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "active",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 192,
+                      "end": 200
+                    }
+                  },
+                  "origin": {
+                    "start": 182,
+                    "end": 200
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/user-instance-dictionary::Paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 207,
+                      "end": 213
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 217,
+                      "end": 225
+                    }
+                  },
+                  "origin": {
+                    "start": 207,
+                    "end": 225
+                  }
+                }
+              ],
+              "exhaustive": true,
               "type": {
                 "kind": "named",
                 "name": "String",
                 "arguments": []
               },
               "origin": {
-                "start": 147,
-                "end": 155
+                "start": 162,
+                "end": 231
               }
             },
             "origin": {
-              "start": 112,
-              "end": 155
+              "start": 123,
+              "end": 231
             }
           }
         ]
@@ -95,11 +180,111 @@
             "start": 21,
             "end": 27
           }
+        },
+        {
+          "symbol": "artifact/user-instance-dictionary::Paused",
+          "name": "Paused",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 32,
+            "end": 38
+          }
         }
       ],
       "origin": {
         "start": 0,
-        "end": 27
+        "end": 38
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/user-instance-dictionary::label",
+      "visibility": "public",
+      "origin": {
+        "start": 235,
+        "end": 285
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          },
+          "origin": {
+            "start": 248,
+            "end": 253
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/user-instance-dictionary::trait(Render)::render",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            },
+            "origin": {
+              "start": 280,
+              "end": 285
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/user-instance-dictionary::trait(Render)<artifact/user-instance-dictionary::Badge>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
+          "method": "render"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 273,
+          "end": 285
+        }
       }
     },
     {
@@ -107,8 +292,8 @@
       "symbol": "artifact/user-instance-dictionary::status",
       "visibility": "public",
       "origin": {
-        "start": 159,
-        "end": 203
+        "start": 287,
+        "end": 331
       },
       "scheme": {
         "typeParameters": [],
@@ -129,8 +314,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 173,
-            "end": 177
+            "start": 301,
+            "end": 305
           }
         }
       ],
@@ -143,8 +328,117 @@
           "arguments": []
         },
         "origin": {
-          "start": 196,
-          "end": 203
+          "start": 324,
+          "end": 331
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/user-instance-dictionary::main",
+      "visibility": "public",
+      "origin": {
+        "start": 333,
+        "end": 418
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/user-instance-dictionary::label",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "artifact/user-instance-dictionary::Active",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 411,
+                  "end": 417
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 405,
+              "end": 417
+            }
+          }
+        ],
+        "origin": {
+          "start": 396,
+          "end": 418
         }
       }
     }

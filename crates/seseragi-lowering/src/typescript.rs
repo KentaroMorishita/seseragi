@@ -17,7 +17,9 @@ pub(crate) mod types;
 use adt::lower_core_adt_to_typescript;
 use expr::{lower_core_expr_to_typescript, typescript_expr_contains_await};
 use imports::freshen_runtime_imports;
-use instances::lower_core_instances_to_typescript;
+use instances::{
+    dictionary_export_name, local_instance_expression_key, lower_core_instances_to_typescript,
+};
 pub use instances::{
     TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptInstance,
     TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptInstanceMethod,
@@ -316,6 +318,11 @@ pub enum TypeScriptExpr {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
     },
+    DictionaryCall {
+        dictionary: String,
+        method: String,
+        arguments: Vec<TypeScriptExpr>,
+    },
     RuntimeCall {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
@@ -434,11 +441,18 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             lower_core_adt_to_typescript(adt, &module_imports.type_names, &mut runtime_requirements)
         })
         .collect();
+    let mut expression_value_names = module_imports.value_names.clone();
+    for (index, instance) in module.instances.iter().enumerate() {
+        expression_value_names.insert(
+            local_instance_expression_key(&instance.identity),
+            dictionary_export_name(&instance.trait_name, index),
+        );
+    }
     let instances = lower_core_instances_to_typescript(
         &module.instances,
         &module.adts,
         &module_imports.instance_names,
-        &module_imports.value_names,
+        &expression_value_names,
         &module_imports.type_names,
         &mut runtime_requirements,
         &mut imports,
@@ -456,7 +470,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                 type_ref: type_ref_from_core_expr(&binding.value, &module_imports.type_names),
                 initializer: lower_core_expr_to_typescript(
                     binding.value,
-                    &module_imports.value_names,
+                    &expression_value_names,
                     &module_imports.type_names,
                 ),
                 origin: binding.origin,
@@ -474,7 +488,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             collect_expr_runtime_imports(&function.body, &mut imports);
             let body = lower_core_expr_to_typescript(
                 function.body,
-                &module_imports.value_names,
+                &expression_value_names,
                 &module_imports.type_names,
             );
             TypeScriptFunction::ConstFunction {

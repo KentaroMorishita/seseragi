@@ -194,6 +194,37 @@ fn alpha_normalizes_generic_instance_binders_in_canonical_identity() {
     assert_eq!(right.instances[0].type_parameters, vec!["Value"]);
 }
 
+#[test]
+fn selects_local_instance_evidence_for_a_trait_method_call() {
+    let typed = type_module(
+        "artifact/trait-method-call/main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Render<A> { fn render value: A -> String }\n\
+         instance Render<Badge> { fn render value: Badge -> String = \"active\" }\n\
+         pub fn label value: Badge -> String = render value\n",
+    );
+
+    let call = typed.declarations.iter().find_map(|declaration| {
+        let crate::TypedDecl::Fn { symbol, body, .. } = declaration else {
+            return None;
+        };
+        symbol.ends_with("::label").then_some(body)
+    });
+    assert!(matches!(
+        call,
+        Some(crate::TypedExpr::Call {
+            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity, method }),
+            evidence,
+            ..
+        }) if trait_identity == "artifact/trait-method-call::trait(Render)"
+            && method == "render"
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local { identity },
+                ..
+            }] if identity == "artifact/trait-method-call::trait(Render)<artifact/trait-method-call::Badge>")
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

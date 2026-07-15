@@ -57,6 +57,7 @@ pub(super) fn type_imported_effect_application(
             callee: signature.symbol.clone(),
             arguments,
             evidence: Vec::new(),
+            trait_dispatch: None,
             type_ref: application_result_type_from(
                 &signature
                     .parameters

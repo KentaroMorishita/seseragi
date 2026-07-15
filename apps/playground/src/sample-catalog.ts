@@ -50,4 +50,11 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Score total: 108 — perfect checksum!",
   },
+  {
+    id: "trait-badges",
+    label: "Traitバッジ",
+    sourcePath: "examples/spec/playground/05-trait-badges.ssrg",
+    stdin: "",
+    expectedOutput: "Status badge: active",
+  },
 ]

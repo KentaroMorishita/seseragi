@@ -8,12 +8,16 @@
     "requirements": [
       "core.adt",
       "core.string",
-      "core.unit"
+      "core.unit",
+      "effect.console.println"
     ]
   },
   "exports": [
     "Active",
-    "status"
+    "Paused",
+    "label",
+    "status",
+    "main"
   ],
   "instances": [
     {

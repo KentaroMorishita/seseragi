@@ -230,6 +230,16 @@ fn collect_expr_names(
                 collect_expr_names(argument, helper_names, names);
             }
         }
+        TypeScriptExpr::DictionaryCall {
+            dictionary,
+            arguments,
+            ..
+        } => {
+            names.push(dictionary.clone());
+            for argument in arguments {
+                collect_expr_names(argument, helper_names, names);
+            }
+        }
         TypeScriptExpr::Await { value } => collect_expr_names(value, helper_names, names),
         TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             for element in elements {

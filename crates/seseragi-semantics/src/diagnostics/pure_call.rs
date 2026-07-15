@@ -116,4 +116,18 @@ mod tests {
         assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
     }
+
+    #[test]
+    fn reports_a_missing_local_trait_instance_at_the_call_site() {
+        let artifact = semantic_diagnostics(
+            "missing-render.ssrg",
+            "type Badge = | Active\n\
+             trait Render<A> { fn render value: A -> String }\n\
+             fn label value: Badge -> String = render value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+    }
 }

@@ -1,4 +1,10 @@
 use crate::{TypedCallEvidence, TypedConstraint, TypedInstanceEvidence, TypedType};
+use seseragi_syntax::SurfaceDecl;
+use std::collections::BTreeMap;
+
+use super::instances::{canonical_instance_head_identity, canonical_type_ref};
+use super::semantic_types::semantic_values_are_compatible;
+use super::TypedResolution;
 
 /// Selects evidence for constraints attached to a saturated function call.
 ///
@@ -21,6 +27,91 @@ pub(crate) fn select_call_evidence(
             })
         })
         .collect()
+}
+
+pub(crate) fn select_trait_call_evidence(
+    constraints: &[TypedConstraint],
+    trait_identity: &str,
+    resolution: &TypedResolution<'_>,
+) -> Result<Vec<TypedCallEvidence>, TypedConstraint> {
+    constraints
+        .iter()
+        .cloned()
+        .map(|constraint| {
+            let evidence = if let Some(identity) =
+                local_instance_identity(trait_identity, &constraint, resolution)
+            {
+                TypedInstanceEvidence::Local { identity }
+            } else if let Some(identity) = standard_instance_identity(&constraint) {
+                TypedInstanceEvidence::Standard {
+                    identity: identity.to_owned(),
+                }
+            } else {
+                return Err(constraint);
+            };
+            Ok(TypedCallEvidence {
+                constraint,
+                evidence,
+            })
+        })
+        .collect()
+}
+
+fn local_instance_identity(
+    trait_identity: &str,
+    constraint: &TypedConstraint,
+    resolution: &TypedResolution<'_>,
+) -> Option<String> {
+    let actual_arguments = constraint
+        .arguments
+        .iter()
+        .map(|argument| resolution.semantic_value_from_typed_type(argument))
+        .collect::<Vec<_>>();
+    let binders = BTreeMap::new();
+    let mut matches = resolution
+        .resolved()
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            let SurfaceDecl::Instance {
+                type_parameters,
+                trait_name_span,
+                arguments,
+                ..
+            } = declaration
+            else {
+                return None;
+            };
+            if !type_parameters.is_empty() || arguments.len() != actual_arguments.len() {
+                return None;
+            }
+            let target = resolution.target(*trait_name_span, crate::SymbolNamespace::Trait)?;
+            let symbol = resolution.symbol(target)?;
+            if symbol.canonical.as_deref() != Some(trait_identity) {
+                return None;
+            }
+            let expected_arguments = arguments
+                .iter()
+                .map(|argument| resolution.semantic_value_from_type_ref(argument))
+                .collect::<Vec<_>>();
+            if !expected_arguments
+                .iter()
+                .zip(&actual_arguments)
+                .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+            {
+                return None;
+            }
+            let canonical_arguments = arguments
+                .iter()
+                .map(|argument| canonical_type_ref(argument, resolution, &binders))
+                .collect::<Option<Vec<_>>>()?;
+            Some(canonical_instance_head_identity(
+                trait_identity,
+                &canonical_arguments,
+            ))
+        });
+    let selected = matches.next()?;
+    matches.next().is_none().then_some(selected)
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {

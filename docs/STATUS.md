@@ -161,8 +161,9 @@ instance method bodyにはtop-level pure `fn`と同じreturn type / call / condi
 `project-schema-1/imported-trait-instance-contract`がclosed multi-module compilerの全IR / generated TypeScript gateを固定します。
 local concrete user-defined instanceはmethod parameter / bodyをTypedHir、CoreIr、TypeScriptIrへ保持し、
 `schema-1/user-instance-dictionary`でcustom dictionary objectを生成します。custom dictionaryはderived `Show`のruntime type importを
-要求せず、canonical identityは全head argumentから構成します。未接続なのはtrait method callに対するinstance selection / evidence、
-dictionary dispatch、generic / constrained dictionary factoryの実行、cross-module dictionary selectionです。
+要求せず、canonical identityは全head argumentから構成します。同fixtureの`render value`はargument型からlocal concrete instanceを
+選び、selected evidenceをTypedHir / CoreIrへ保持してTypeScriptのdictionary method callまで生成します。未接続なのは同名trait methodの
+型によるcandidate選択、generic / constrained dictionary factoryの実行、cross-module dictionary selectionです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -170,6 +171,8 @@ mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、
 deployment configは新surfaceを正とします。
 2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
 <https://seseragi.vercel.app/>で確認しました。
+local custom traitのvertical sliceは`Traitバッジ`としてsample catalogにも追加し、同じWASM driverとbrowser runtimeで
+dictionary dispatchの実行結果を確認できます。
 
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
@@ -210,8 +213,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    import / driver output planまで保持済み。次はtransitive provider chainを含む実行gateでinstance closureを完成させる。
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
-6. imported trait method contractとlocal concrete dictionary生成は接続済み。次はtrait method callをlocal instanceの
-   selected evidenceとdictionary dispatchへ繋ぎ、その表現をcross-module selectionへ拡張する。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
+6. imported trait method contractとlocal concrete dictionary dispatchは接続済み。次は同名trait methodのcandidate選択と
+   generic / constrained evidence passingを固定し、その表現をcross-module selectionへ拡張する。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
    一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと

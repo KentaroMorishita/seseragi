@@ -87,6 +87,10 @@ impl<'a> TypedResolution<'a> {
         &self.semantic_types
     }
 
+    pub(crate) fn resolved(&self) -> &ResolvedModule {
+        self.resolved
+    }
+
     pub(crate) fn dependency_instance(
         &self,
         trait_name: &str,
@@ -214,6 +218,8 @@ fn collect_callables(
                     symbol.id,
                     TopLevelPureFunction {
                         symbol: canonical,
+                        trait_identity: None,
+                        trait_method: None,
                         type_parameters: type_parameters.clone(),
                         constraints: Vec::new(),
                         parameters,
@@ -231,6 +237,8 @@ fn collect_callables(
             constructor,
             TopLevelPureFunction {
                 symbol: signature.symbol,
+                trait_identity: None,
+                trait_method: None,
                 type_parameters: signature.type_parameters,
                 constraints: Vec::new(),
                 parameters: signature
@@ -248,6 +256,7 @@ fn collect_callables(
             },
         );
     }
+    collect_local_trait_methods(resolved, semantic_types, &mut callables);
     callables.extend(imports::collect_imported_callables(resolved));
     for symbol in &resolved.symbols {
         if symbol.canonical.as_deref() == Some("std/prelude::reduce") {
@@ -272,6 +281,8 @@ fn standard_reduce_callable() -> TopLevelPureFunction {
     };
     TopLevelPureFunction {
         symbol: "std/prelude::reduce".to_owned(),
+        trait_identity: None,
+        trait_method: None,
         type_parameters: vec!["C".to_owned(), "A".to_owned(), "B".to_owned()],
         constraints: vec![crate::TypedConstraint {
             name: "Reducible".to_owned(),
@@ -291,6 +302,78 @@ fn standard_reduce_callable() -> TopLevelPureFunction {
         semantic_parameters: vec![SemanticTypeKey::Other; 3],
         result: accumulator,
         semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn collect_local_trait_methods(
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+    callables: &mut BTreeMap<SymbolId, TopLevelPureFunction>,
+) {
+    for declaration in &resolved.declarations {
+        let SurfaceDecl::Trait {
+            name,
+            name_span,
+            type_parameters,
+            methods,
+            ..
+        } = declaration
+        else {
+            continue;
+        };
+        let Some(trait_identity) = resolved.symbols.iter().find_map(|symbol| {
+            (symbol.kind == SymbolKind::Trait && symbol.origin == *name_span)
+                .then(|| symbol.canonical.clone())
+                .flatten()
+        }) else {
+            continue;
+        };
+        for method in methods {
+            let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                symbol.kind == SymbolKind::TraitMethod && symbol.origin == method.name_span
+            }) else {
+                continue;
+            };
+            let Some(canonical) = symbol.canonical.clone() else {
+                continue;
+            };
+            let mut callable_type_parameters = type_parameters.clone();
+            callable_type_parameters.extend(method.type_parameters.clone());
+            callables.insert(
+                symbol.id,
+                TopLevelPureFunction {
+                    symbol: canonical,
+                    trait_identity: Some(trait_identity.clone()),
+                    trait_method: Some(method.name.clone()),
+                    type_parameters: callable_type_parameters,
+                    constraints: vec![crate::TypedConstraint {
+                        name: name.clone(),
+                        arguments: type_parameters
+                            .iter()
+                            .map(|parameter| TypedType::Named {
+                                name: parameter.clone(),
+                                arguments: Vec::new(),
+                            })
+                            .collect(),
+                    }],
+                    parameters: method
+                        .parameters
+                        .iter()
+                        .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                        .collect(),
+                    semantic_parameters: method
+                        .parameters
+                        .iter()
+                        .map(|parameter| {
+                            semantic_types.key_from_type_ref(resolved, &parameter.type_ref)
+                        })
+                        .collect(),
+                    result: typed_type_from_type_ref(&method.return_type),
+                    semantic_result: semantic_types
+                        .key_from_type_ref(resolved, &method.return_type),
+                },
+            );
+        }
     }
 }
 
@@ -340,6 +423,21 @@ fn collect_semantic_value_types(
                         symbol.id,
                         semantic_types.key_from_type_ref(resolved, return_type),
                     );
+                }
+            }
+            SurfaceDecl::Trait { methods, .. } | SurfaceDecl::Instance { methods, .. } => {
+                for method in methods {
+                    for parameter in &method.parameters {
+                        if let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                            symbol.kind == SymbolKind::Parameter
+                                && symbol.origin == parameter.name_span
+                        }) {
+                            values.insert(
+                                symbol.id,
+                                semantic_types.key_from_type_ref(resolved, &parameter.type_ref),
+                            );
+                        }
+                    }
                 }
             }
             _ => {}

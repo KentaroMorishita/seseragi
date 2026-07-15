@@ -122,7 +122,7 @@ fn canonical_reference(
         .or_else(|| Some(symbol.spelling.clone()))
 }
 
-fn canonical_type_ref(
+pub(crate) fn canonical_type_ref(
     type_ref: &TypeRef,
     resolution: &TypedResolution<'_>,
     binders: &BTreeMap<&str, usize>,

@@ -107,3 +107,21 @@ instance Render<Badge> { fn render value: Badge -> String = \"active\" }
         "export const __ssrg$instance$Render$0 = { \"render\": (value: Badge) => \"active\" } as const;"
     ));
 }
+
+#[test]
+fn dispatches_a_trait_method_call_through_selected_local_evidence() {
+    let source = "\
+pub type Badge = | Active
+pub trait Render<A> { fn render value: A -> String }
+instance Render<Badge> { fn render value: Badge -> String = \"active\" }
+pub fn label value: Badge -> String = render value
+";
+    let typed = type_module("artifact/trait-dispatch/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(bundle.typescript.contains(
+        "export const label = (value: Badge) => __ssrg$instance$Render$0[\"render\"](value)"
+    ));
+}
