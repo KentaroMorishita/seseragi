@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/transitive-instance-dispatch::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.console.println",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/transitive-instance-dispatch::facade",
+      "specifier": "./facade.js",
+      "bindings": [
+        {
+          "imported": "active",
+          "local": "active",
+          "sourceLocal": "active",
+          "canonical": "fixture/transitive-instance-dispatch::facade::active",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "describe",
+          "local": "describe",
+          "sourceLocal": "describe",
+          "canonical": "fixture/transitive-instance-dispatch::facade::describe",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 25
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 43
+      }
+    },
+    {
+      "module": "fixture/transitive-instance-dispatch::provider",
+      "specifier": "./provider.js",
+      "runtimeEdge": false,
+      "bindings": [
+        {
+          "imported": "__ssrg$instance$Ready$0",
+          "local": "__ssrg$instance$Ready$0",
+          "sourceLocal": "fixture/transitive-instance-dispatch::provider::trait(Ready)<fixture/transitive-instance-dispatch::provider::Badge>",
+          "canonical": "fixture/transitive-instance-dispatch::provider::trait(Ready)<fixture/transitive-instance-dispatch::provider::Badge>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 45,
+            "end": 138
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 45,
+        "end": 138
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "describe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "active",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Ready$0"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 45,
+        "end": 138
+      }
+    }
+  ]
+}

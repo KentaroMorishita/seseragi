@@ -130,6 +130,67 @@ pub fn status value: Unit -> String = describe Active
 }
 
 #[test]
+fn imports_provider_evidence_outside_the_direct_source_edge() {
+    let domain_source = "\
+pub type Badge = | Active
+pub trait Ready<A> { fn ready value: A -> String }
+instance Ready<Badge> { fn ready value: Badge -> String = \"provider ready\" }
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  ready value
+";
+    let main_source = "\
+import { Active, describe } from \"./facade\"
+pub fn status value: Unit -> String = describe Active
+";
+    let mut core = linked_core(
+        main_source,
+        [("./facade", "fixture/game::domain", domain_source)],
+    );
+    // The facade transports provider-owned canonical symbols and evidence.
+    // The source edge remains the facade while the selected dictionary comes
+    // from the provider's generated module.
+    core.module_dependencies[0].module = "fixture/game::facade".to_owned();
+    let identity = "fixture/game::domain::trait(Ready)<fixture/game::domain::Badge>";
+    let output_plan = plan([
+        ("fixture/game::facade", "./facade.js"),
+        ("fixture/game::domain", "./domain.js"),
+    ])
+    .with_instance_exports([(
+        ("fixture/game::domain".to_owned(), identity.to_owned()),
+        "__ssrg$instance$Ready$0".to_owned(),
+    )]);
+
+    let typescript =
+        lower_core_module_to_typescript_ir_with_plan(core.clone(), &output_plan).unwrap();
+    let generated = emit_typescript_module(typescript, main_source);
+
+    assert!(generated
+        .typescript
+        .contains("import { Active, describe } from \"./facade.js\""));
+    assert!(generated
+        .typescript
+        .contains("import { __ssrg$instance$Ready$0 } from \"./domain.js\""));
+    assert!(generated.typescript.contains(
+        "export const status = (value: undefined) => describe(Active)(__ssrg$instance$Ready$0)"
+    ));
+
+    let missing =
+        TypeScriptOutputPlan::new([("fixture/game::facade".to_owned(), "./facade.js".to_owned())])
+            .with_instance_exports([(
+                ("fixture/game::domain".to_owned(), identity.to_owned()),
+                "__ssrg$instance$Ready$0".to_owned(),
+            )]);
+    assert_eq!(
+        lower_core_module_to_typescript_ir_with_plan(core, &missing).unwrap_err(),
+        TypeScriptLoweringError::MissingInstanceOutputSpecifier {
+            module: "fixture/game::domain".to_owned(),
+            identity: identity.to_owned(),
+        }
+    );
+}
+
+#[test]
 fn lowers_a_namespace_member_call_to_a_selected_named_import() {
     let domain_source = "pub fn identity<A> value: A -> A = value\n";
     let main_source = "import * as domain from \"./domain\"\n\npub fn run value: String -> String = domain.identity value\n";

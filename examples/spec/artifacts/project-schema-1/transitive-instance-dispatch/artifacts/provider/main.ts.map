@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "dist/transitive-instance-dispatch/provider.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-instance-dispatch::provider"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n\npub trait Ready<A> {\n  fn ready value: A -> String\n}\n\ninstance Ready<Badge> {\n  fn ready value: Badge -> String = \"provider ready\"\n}\n\npub fn describe<T> value: T -> String\nwhere Ready<T> =\n  ready value\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "__ssrg$instance$Ready$0",
+    "describe",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAAAA;;AACIC;AAMJC;AAIAC"
+}

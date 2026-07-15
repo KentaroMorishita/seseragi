@@ -178,12 +178,14 @@ public constrained pure functionはmodule interfaceのconstraintをprovider-loca
 consumer側のlocal instanceをimported callへ渡せます。`project-schema-1/imported-constrained-function`はproviderの
 `describe<T> where Ready<T>`とconsumerの`Ready<Badge>`を通常project pipelineへ通し、生成ESMのclosed TypeScript check、
 Console trace、stdoutまで固定します。`project-schema-1/imported-instance-dispatch`はproviderがexportしたconcrete
-`Ready<Badge>` dictionaryを同じcallへ選択し、TypeScript source importとactual dispatchまで固定します。generic imported
-instance、constraint evidenceを持つimported factory、facade越しのtransitive closureは未接続です。
+`Ready<Badge>` dictionaryを同じcallへ選択し、TypeScript source importとactual dispatchまで固定します。
+`project-schema-1/transitive-instance-dispatch`はsource上はfacadeだけをimportするmainへoriginal provider dictionaryを計画し、
+三moduleのclosed TypeScript checkとactual dispatchまで固定します。generic imported instanceとconstraint evidenceを持つ
+imported factoryは未接続です。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained functionとgeneric / transitive imported dictionary selectionは未接続です。
+first-class partial constrained functionとgeneric / conditional imported dictionary selectionは未接続です。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを
@@ -235,9 +237,9 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    Int算術とoperator sectionは`Add<Int, Int, Int>`等のevidenceを全IRへ保持済み。次は標準名専用の経路を
    一般instance機構の完了と誤認せず、user-defined / imported instance searchへ進む。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
-4. direct dependencyのderived `Show`とconcrete user-defined evidenceはcanonical trait / argument identitiesでResolvedAstから
-   TypedHir / CoreIr / TypeScript source import / driver output planまで保持済み。次はgeneric constraint materializationと
-   transitive provider chainを含む実行gateでinstance closureを完成させる。
+4. direct dependencyとfacade越しのconcrete user-defined evidenceはcanonical trait / argument identitiesでResolvedAstから
+   TypedHir / CoreIr / TypeScript source import / driver output plan、actual executionまで保持済み。次はgeneric substitutionと
+   constraint materializationでimported dictionary factoryを完成させる。
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、

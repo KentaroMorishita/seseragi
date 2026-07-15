@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-instance-dispatch::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "effect.console.println",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-instance-dispatch/main.ts",
+    "sourceMap": "dist/transitive-instance-dispatch/main.ts.map"
+  }
+}

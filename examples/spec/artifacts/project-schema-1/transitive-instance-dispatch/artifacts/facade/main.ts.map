@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/transitive-instance-dispatch/facade.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-instance-dispatch::facade"
+  ],
+  "sourcesContent": [
+    "import { Active, Badge, Ready, describe as providerDescribe } from \"./provider\"\n\npub fn active value: Unit -> Badge = Active\n\npub fn describe<T> value: T -> String\nwhere Ready<T> =\n  providerDescribe value\n"
+  ],
+  "names": [
+    "active",
+    "describe",
+    "providerDescribe"
+  ],
+  "mappings": ";;AAEAA;AAEAC"
+}

@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "facade.ssrg",
+  "module": "fixture/transitive-instance-dispatch::facade",
+  "moduleDependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-instance-dispatch::provider",
+      "origin": {
+        "start": 0,
+        "end": 79
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "Active",
+          "local": "Active",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Active",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Badge",
+          "local": "Badge",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+          "origin": {
+            "start": 17,
+            "end": 22
+          }
+        },
+        {
+          "namespace": "trait",
+          "imported": "Ready",
+          "local": "Ready",
+          "canonical": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
+          "origin": {
+            "start": 24,
+            "end": 29
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "describe",
+          "local": "providerDescribe",
+          "canonical": "fixture/transitive-instance-dispatch::provider::describe",
+          "origin": {
+            "start": 43,
+            "end": 59
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/transitive-instance-dispatch::facade::active",
+      "visibility": "public",
+      "origin": {
+        "start": 81,
+        "end": 124
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 95,
+            "end": 100
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "fixture/transitive-instance-dispatch::provider::Active",
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        },
+        "origin": {
+          "start": 118,
+          "end": 124
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/transitive-instance-dispatch::facade::describe",
+      "visibility": "public",
+      "origin": {
+        "start": 126,
+        "end": 205
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Ready",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 145,
+            "end": 150
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/transitive-instance-dispatch::provider::describe",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "start": 200,
+              "end": 205
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ready",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 183,
+          "end": 205
+        }
+      }
+    }
+  ]
+}

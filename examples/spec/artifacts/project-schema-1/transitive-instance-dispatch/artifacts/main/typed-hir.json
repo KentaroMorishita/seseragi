@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/transitive-instance-dispatch::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "Badge",
+      "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+      "provider": {
+        "module": "fixture/transitive-instance-dispatch::provider",
+        "export": "Badge"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./facade",
+      "module": "fixture/transitive-instance-dispatch::facade",
+      "origin": {
+        "start": 0,
+        "end": 43
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "active",
+          "local": "active",
+          "canonical": "fixture/transitive-instance-dispatch::facade::active",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "describe",
+          "local": "describe",
+          "canonical": "fixture/transitive-instance-dispatch::facade::describe",
+          "origin": {
+            "start": 17,
+            "end": 25
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/transitive-instance-dispatch::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 45,
+        "end": 138
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/transitive-instance-dispatch::facade::describe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/transitive-instance-dispatch::facade::active",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "type": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 134,
+                      "end": 136
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "external-named",
+                  "name": "Badge",
+                  "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 127,
+                  "end": 136
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Ready",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "Badge",
+                      "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "imported",
+                  "identity": "fixture/transitive-instance-dispatch::provider::trait(Ready)<fixture/transitive-instance-dispatch::provider::Badge>",
+                  "providerModule": "fixture/transitive-instance-dispatch::provider"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 117,
+              "end": 137
+            }
+          }
+        ],
+        "origin": {
+          "start": 108,
+          "end": 138
+        }
+      }
+    }
+  ]
+}

@@ -97,7 +97,7 @@ pub(super) fn lower_external_type_imports(
     Ok(names)
 }
 
-fn inferred_import_origin(module: &CoreModule) -> SourceSpan {
+pub(super) fn inferred_import_origin(module: &CoreModule) -> SourceSpan {
     module
         .adts
         .first()

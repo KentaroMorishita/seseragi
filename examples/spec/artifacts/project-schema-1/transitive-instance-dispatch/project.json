@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/transitive-instance-dispatch::provider",
+    "fixture/transitive-instance-dispatch::facade",
+    "fixture/transitive-instance-dispatch::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/transitive-instance-dispatch::provider",
+      "source": "src/provider.ssrg",
+      "output": "dist/transitive-instance-dispatch/provider.js",
+      "artifacts": "artifacts/provider",
+      "imports": []
+    },
+    {
+      "id": "fixture/transitive-instance-dispatch::facade",
+      "source": "src/facade.ssrg",
+      "output": "dist/transitive-instance-dispatch/facade.js",
+      "artifacts": "artifacts/facade",
+      "imports": [
+        {
+          "specifier": "./provider",
+          "module": "fixture/transitive-instance-dispatch::provider"
+        }
+      ]
+    },
+    {
+      "id": "fixture/transitive-instance-dispatch::main",
+      "source": "src/main.ssrg",
+      "output": "dist/transitive-instance-dispatch/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./facade",
+          "module": "fixture/transitive-instance-dispatch::facade"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/transitive-instance-dispatch::facade",
+  "source": "facade.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-instance-dispatch::provider",
+      "origin": {
+        "start": 0,
+        "end": 79
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "Active",
+          "symbol": "fixture/transitive-instance-dispatch::provider::Active"
+        },
+        {
+          "namespace": "type",
+          "name": "Badge",
+          "symbol": "fixture/transitive-instance-dispatch::provider::Badge"
+        },
+        {
+          "namespace": "trait",
+          "name": "Ready",
+          "symbol": "fixture/transitive-instance-dispatch::provider::trait(Ready)"
+        },
+        {
+          "namespace": "value",
+          "name": "describe",
+          "symbol": "fixture/transitive-instance-dispatch::provider::describe",
+          "localName": "providerDescribe"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/transitive-instance-dispatch::facade::active",
+      "namespace": "value",
+      "name": "active",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 81,
+        "end": 124
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/transitive-instance-dispatch::facade::describe",
+      "namespace": "value",
+      "name": "describe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 126,
+        "end": 205
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Ready",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/transitive-instance-dispatch::provider::trait(Ready)<fixture/transitive-instance-dispatch::provider::Badge>",
+      "providerModule": "fixture/transitive-instance-dispatch::provider",
+      "traitIdentity": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
+      "argumentIdentities": [
+        "fixture/transitive-instance-dispatch::provider::Badge"
+      ],
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 83,
+        "end": 161
+      }
+    }
+  ]
+}

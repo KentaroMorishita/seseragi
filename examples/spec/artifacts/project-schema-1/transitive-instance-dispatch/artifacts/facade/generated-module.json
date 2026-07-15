@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-instance-dispatch::facade",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "active",
+    "describe"
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-instance-dispatch/facade.ts",
+    "sourceMap": "dist/transitive-instance-dispatch/facade.ts.map"
+  }
+}

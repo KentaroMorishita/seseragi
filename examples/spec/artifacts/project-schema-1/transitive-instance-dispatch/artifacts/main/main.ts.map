@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/transitive-instance-dispatch/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-instance-dispatch::main"
+  ],
+  "sourcesContent": [
+    "import { active, describe } from \"./facade\"\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println (describe (active ()))\n"
+  ],
+  "names": [
+    "main",
+    "println",
+    "describe",
+    "active"
+  ],
+  "mappings": ";;;;AAEAA"
+}

@@ -1,8 +1,14 @@
 use crate::{
     CoreCallEvidence, CoreDecisionBranch, CoreExpr, CoreInstanceEvidence,
-    CoreInstanceImplementation, CoreModule, CoreStatement,
+    CoreInstanceImplementation, CoreModule, CoreStatement, TypeScriptLoweringError,
+    TypeScriptOutputPlan, TypeScriptSourceImport, TypeScriptSourceImportBinding,
 };
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
+
+use super::super::names::safe_identifier;
+use super::names::fresh_name;
+use super::push_binding;
+use super::types::inferred_import_origin;
 
 pub(super) fn imported_instance_evidence(module: &CoreModule) -> BTreeSet<(String, String)> {
     let mut imported = BTreeSet::new();
@@ -29,6 +35,60 @@ pub(super) fn imported_instance_evidence(module: &CoreModule) -> BTreeSet<(Strin
         }
     }
     imported
+}
+
+pub(super) fn lower_imported_instance_imports(
+    module: &CoreModule,
+    imported: &BTreeSet<(String, String)>,
+    plan: &TypeScriptOutputPlan,
+    imports: &mut Vec<TypeScriptSourceImport>,
+    used_values: &mut BTreeSet<String>,
+) -> Result<BTreeMap<(String, String), String>, TypeScriptLoweringError> {
+    let mut names = BTreeMap::new();
+    for (provider_module, identity) in imported {
+        let specifier = plan.specifier_for(provider_module).ok_or_else(|| {
+            TypeScriptLoweringError::MissingInstanceOutputSpecifier {
+                module: provider_module.clone(),
+                identity: identity.clone(),
+            }
+        })?;
+        let dictionary_export = plan
+            .instance_export_for(provider_module, identity)
+            .ok_or_else(|| TypeScriptLoweringError::MissingInstanceOutput {
+                module: provider_module.clone(),
+                identity: identity.clone(),
+            })?;
+        let local = fresh_name(&safe_identifier(dictionary_export), used_values);
+        used_values.insert(local.clone());
+        names.insert((provider_module.clone(), identity.clone()), local.clone());
+
+        let index = imports
+            .iter()
+            .position(|group| group.module == *provider_module)
+            .unwrap_or_else(|| {
+                imports.push(TypeScriptSourceImport {
+                    module: provider_module.clone(),
+                    specifier: specifier.to_owned(),
+                    runtime_edge: false,
+                    bindings: Vec::new(),
+                    origin: inferred_import_origin(module),
+                });
+                imports.len() - 1
+            });
+        let origin = imports[index].origin.clone();
+        push_binding(
+            &mut imports[index],
+            TypeScriptSourceImportBinding {
+                imported: dictionary_export.to_owned(),
+                local,
+                source_local: identity.clone(),
+                canonical: identity.clone(),
+                type_only: false,
+                origin,
+            },
+        );
+    }
+    Ok(names)
 }
 
 fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {

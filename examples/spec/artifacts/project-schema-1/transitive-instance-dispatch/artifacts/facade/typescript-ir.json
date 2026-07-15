@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/transitive-instance-dispatch::facade",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/transitive-instance-dispatch::provider",
+      "specifier": "./provider.js",
+      "bindings": [
+        {
+          "imported": "Active",
+          "local": "Active",
+          "sourceLocal": "Active",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Active",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "Badge",
+          "local": "Badge",
+          "sourceLocal": "Badge",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 17,
+            "end": 22
+          }
+        },
+        {
+          "imported": "describe",
+          "local": "providerDescribe",
+          "sourceLocal": "providerDescribe",
+          "canonical": "fixture/transitive-instance-dispatch::provider::describe",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 43,
+            "end": 59
+          }
+        }
+      ],
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 79
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "active",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "Active"
+      },
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 81,
+        "end": 124
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "describe",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "providerDescribe",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          }
+        ]
+      },
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 126,
+        "end": 205
+      }
+    }
+  ]
+}

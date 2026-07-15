@@ -164,6 +164,10 @@ pub enum TypeScriptLoweringError {
         module: String,
         identity: String,
     },
+    MissingInstanceOutputSpecifier {
+        module: String,
+        identity: String,
+    },
     MissingExternalTypeBinding {
         canonical: String,
     },

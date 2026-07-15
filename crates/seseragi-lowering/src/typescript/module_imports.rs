@@ -12,7 +12,7 @@ mod names;
 mod references;
 mod types;
 
-use instances::imported_instance_evidence;
+use instances::{imported_instance_evidence, lower_imported_instance_imports};
 use names::{fresh_name, local_type_names, local_value_names};
 use references::{referenced_types, referenced_value_symbols};
 use types::lower_external_type_imports;
@@ -34,7 +34,6 @@ pub(super) fn lower_module_imports(
     let mut used_values = local_value_names(module);
     let mut used_types = local_type_names(module);
     let mut value_names = BTreeMap::new();
-    let mut instance_names = BTreeMap::new();
     let mut imports: Vec<TypeScriptSourceImport> = Vec::new();
 
     for dependency in &module.module_dependencies {
@@ -105,37 +104,15 @@ pub(super) fn lower_module_imports(
                 _ => {}
             }
         }
-
-        for (_, identity) in imported_instances
-            .iter()
-            .filter(|(provider_module, _)| provider_module == &dependency.module)
-        {
-            let key = (dependency.module.clone(), identity.clone());
-            if instance_names.contains_key(&key) {
-                continue;
-            }
-            let dictionary_export = plan
-                .instance_export_for(&dependency.module, identity)
-                .ok_or_else(|| TypeScriptLoweringError::MissingInstanceOutput {
-                    module: dependency.module.clone(),
-                    identity: identity.clone(),
-                })?;
-            let local = fresh_name(&safe_identifier(dictionary_export), &used_values);
-            used_values.insert(local.clone());
-            instance_names.insert(key, local.clone());
-            push_binding(
-                group,
-                TypeScriptSourceImportBinding {
-                    imported: dictionary_export.to_owned(),
-                    local,
-                    source_local: identity.clone(),
-                    canonical: identity.clone(),
-                    type_only: false,
-                    origin: dependency.origin.clone(),
-                },
-            );
-        }
     }
+
+    let instance_names = lower_imported_instance_imports(
+        module,
+        &imported_instances,
+        plan,
+        &mut imports,
+        &mut used_values,
+    )?;
 
     let type_names = lower_external_type_imports(
         module,

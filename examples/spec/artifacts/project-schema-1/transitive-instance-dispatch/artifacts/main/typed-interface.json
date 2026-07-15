@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/transitive-instance-dispatch::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./facade",
+      "module": "fixture/transitive-instance-dispatch::facade",
+      "origin": {
+        "start": 0,
+        "end": 43
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "active",
+          "symbol": "fixture/transitive-instance-dispatch::facade::active"
+        },
+        {
+          "namespace": "value",
+          "name": "describe",
+          "symbol": "fixture/transitive-instance-dispatch::facade::describe"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/transitive-instance-dispatch::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 45,
+        "end": 138
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/transitive-instance-dispatch::provider::trait(Ready)<fixture/transitive-instance-dispatch::provider::Badge>",
+      "providerModule": "fixture/transitive-instance-dispatch::provider",
+      "traitIdentity": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
+      "argumentIdentities": [
+        "fixture/transitive-instance-dispatch::provider::Badge"
+      ],
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 83,
+        "end": 161
+      }
+    }
+  ]
+}

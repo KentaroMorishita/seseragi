@@ -21,7 +21,7 @@
 | Effect / Stream requirement merge             | none              | compile / invalid-position fixtures            | partial |
 | cross-module Effect function / cold invocation | module guide      | `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | covered |
 | imported public scheme nominal provenance     | module guide      | direct / transitive / namespace / same-spelling compiler tests | covered |
-| direct imported user instance dispatch        | module guide      | `project-schema-1/imported-instance-dispatch`   | covered |
+| direct / transitive imported user instance dispatch | module guide | `project-schema-1/{imported-instance-dispatch,transitive-instance-dispatch}` | covered |
 | multi-case project execution / closed descriptor | module guide   | `project-schema-1/rock-paper-scissors-cli-split/executions/*` | covered |
 | Fiber、Deferred、cancellation                 | Lesson 16         | `projects/effect-stream-simultaneous-failure`  | partial |
 | Streamとbackpressure                          | Lesson 17         | `projects/stream-*`, `effect-stream-*`         | partial |

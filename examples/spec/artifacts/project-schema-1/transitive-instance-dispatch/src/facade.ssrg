@@ -1,0 +1,7 @@
+import { Active, Badge, Ready, describe as providerDescribe } from "./provider"
+
+pub fn active value: Unit -> Badge = Active
+
+pub fn describe<T> value: T -> String
+where Ready<T> =
+  providerDescribe value
