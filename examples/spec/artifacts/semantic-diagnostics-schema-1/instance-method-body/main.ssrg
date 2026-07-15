@@ -1,0 +1,7 @@
+trait Render<A> {
+  fn render value: A -> String
+}
+
+instance Render<Int> {
+  fn render value: Int -> String = 42
+}

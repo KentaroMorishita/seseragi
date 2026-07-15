@@ -592,6 +592,9 @@ derived `Show<A>`のprimary typeしか表現できず、`Add<L, R, O>`や`Iterab
 `typeIdentity`はruntimeがnominal dictionary ownerを検証する場合だけ存在するoptional metadataです。coherenceとinstance selectionは
 最終的に全argumentを含むcanonical `identity`とstructured headを正とし、`typeIdentity`へ意味判断を委譲しません。
 現時点ではderived `Show`がこのschemaを全IRとexecutionで通すconsumerであり、user-defined method body / general dictionaryは次のsliceです。
+その前段として、instance method bodyはtop-level pure functionと同じresolved-expression analyzerとdiagnostic collectorを共有します。
+`semantic-diagnostics-schema-1/instance-method-body`がdeclared `String`に対する`Int` bodyを`SES-T0101`として固定し、
+instance専用の小型parserや型推論経路を増やしません。
 
 このsliceは標準Array instanceの選択とevidence transportを証明するもので、user-defined / imported instance search、
 coherence、dictionary parameter passingの完了gateではありません。それらはPhase 3の一般trait / instance goal programで、

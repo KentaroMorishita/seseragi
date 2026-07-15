@@ -5,6 +5,8 @@ mod array;
 mod conditional;
 mod effect;
 mod function_body;
+#[cfg(test)]
+mod instance_method_tests;
 mod let_binding;
 mod match_expression;
 mod pure_call;
@@ -88,24 +90,56 @@ fn collect_decl_diagnostics(
         ..
     } = declaration
     {
-        let analysis = analyze_pure_function(body.as_ref(), parameters, return_type, resolution);
-        array::collect_array_diagnostic(analysis.array_issue.as_ref(), *span, diagnostics);
-        conditional::collect_conditional_diagnostics(
-            analysis.conditional_issue.as_ref(),
+        collect_pure_body_diagnostics(
+            body.as_ref(),
+            parameters,
+            return_type,
             *span,
+            resolution,
             diagnostics,
         );
-        function_body::collect_function_body_diagnostics(
-            analysis.function_body_issue.as_ref(),
-            *span,
-            diagnostics,
-        );
-        pure_call::collect_pure_function_diagnostics(&analysis, *span, diagnostics);
-        match_expression::collect_match_diagnostics(&analysis.match_issues, diagnostics);
+        return;
+    }
+
+    if let SurfaceDecl::Instance { methods, .. } = declaration {
+        for method in methods {
+            collect_pure_body_diagnostics(
+                method.body.as_ref(),
+                &method.parameters,
+                &method.return_type,
+                method.span,
+                resolution,
+                diagnostics,
+            );
+        }
         return;
     }
 
     effect::collect_effect_fn_diagnostics(declaration, tokens, resolution, diagnostics);
+}
+
+fn collect_pure_body_diagnostics(
+    body: Option<&seseragi_syntax::SurfaceExpr>,
+    parameters: &[seseragi_syntax::SurfaceParameter],
+    return_type: &seseragi_syntax::TypeRef,
+    span: seseragi_syntax::ByteSpan,
+    resolution: &TypedResolution<'_>,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let analysis = analyze_pure_function(body, parameters, return_type, resolution);
+    array::collect_array_diagnostic(analysis.array_issue.as_ref(), span, diagnostics);
+    conditional::collect_conditional_diagnostics(
+        analysis.conditional_issue.as_ref(),
+        span,
+        diagnostics,
+    );
+    function_body::collect_function_body_diagnostics(
+        analysis.function_body_issue.as_ref(),
+        span,
+        diagnostics,
+    );
+    pure_call::collect_pure_function_diagnostics(&analysis, span, diagnostics);
+    match_expression::collect_match_diagnostics(&analysis.match_issues, diagnostics);
 }
 
 #[cfg(test)]

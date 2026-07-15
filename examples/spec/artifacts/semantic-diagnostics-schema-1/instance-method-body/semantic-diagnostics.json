@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "function.return-type-mismatch",
+      "primary": {
+        "start": 110,
+        "end": 112
+      },
+      "related": [
+        {
+          "message": "declared String, body produces Int",
+          "primary": {
+            "start": 77,
+            "end": 112
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

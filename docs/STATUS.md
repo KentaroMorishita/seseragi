@@ -156,6 +156,8 @@ TypedHir / CoreIr / TypeScriptIr / generated moduleのinstance headは、単一`
 これにより`Show<A>`の現在のdictionary経路を維持しながら、`Add<L, R, O>`や`Iterable<C, A>`を第一引数へ潰さず後続へ運べます。
 `typeIdentity`はderived `Show`などprimary nominal typeを必要とする専用runtime consumer向けのoptional metadataであり、
 一般instance identityの代用にはしません。
+instance method bodyにはtop-level pure `fn`と同じreturn type / call / conditional / array / match diagnosticsを適用し、
+契約signatureだけ正しい不正bodyがTypedHir以降へ流れる経路を閉じています。
 `project-schema-1/imported-trait-instance-contract`がclosed multi-module compilerの全IR / generated TypeScript gateを固定します。
 instance method bodyの型付け / IR / dictionary化は未接続です。
 
