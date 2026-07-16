@@ -15,6 +15,7 @@ import genericInstance from "../../../examples/spec/playground/06-generic-instan
 import partialFunctorValue from "../../../examples/spec/artifacts/schema-1/polymorphic-partial-functor/main.ssrg?raw"
 import partialConstrainedFunction from "../../../examples/spec/artifacts/schema-1/partial-constrained-function/main.ssrg?raw"
 import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
+import applicativeValidation from "../../../examples/spec/artifacts/schema-1/applicative-validation/main.ssrg?raw"
 import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
 import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
 import {
@@ -48,6 +49,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "partial-functor-value": partialFunctorValue,
   "partial-constrained-function": partialConstrainedFunction,
   "applicative-maybe": applicativeMaybe,
+  "applicative-validation": applicativeValidation,
   "monad-maybe": monadMaybe,
   "monad-either": monadEither,
 }

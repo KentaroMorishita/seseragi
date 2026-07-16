@@ -1,0 +1,1669 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/applicative-validation",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.int64",
+    "core.bool",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Errors",
+      "typeParameters": [
+        "E"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "One",
+          "tag": "One",
+          "payload": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 25,
+            "end": 28
+          }
+        },
+        {
+          "exported": true,
+          "name": "More",
+          "tag": "More",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 35,
+            "end": 39
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "exported": true,
+      "name": "Validation",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Valid",
+          "tag": "Valid",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 93
+          }
+        },
+        {
+          "exported": true,
+          "name": "Invalid",
+          "tag": "Invalid",
+          "payload": {
+            "kind": "reference",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 100,
+            "end": 107
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 56,
+        "end": 119
+      }
+    },
+    {
+      "exported": true,
+      "name": "FormError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "NameRequired",
+          "tag": "NameRequired",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1241,
+            "end": 1253
+          }
+        },
+        {
+          "exported": true,
+          "name": "AgeMustBePositive",
+          "tag": "AgeMustBePositive",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1258,
+            "end": 1275
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1216,
+        "end": 1275
+      }
+    },
+    {
+      "exported": true,
+      "name": "User",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "User",
+          "tag": "User",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "string"
+              },
+              {
+                "kind": "bigint"
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1297,
+            "end": 1301
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1277,
+        "end": 1315
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
+      "trait": "Functor",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 200,
+        "end": 415
+      },
+      "dictionaryExport": "__ssrg$instance$Functor$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "f",
+                "type": "(argument: A) => B",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "Validation<E, A>",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Valid"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Valid",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Invalid"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "errors",
+                      "type": {
+                        "kind": "reference",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Invalid",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "errors"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 242,
+              "end": 413
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
+      "trait": "Applicative",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            }
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "unknown"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 747,
+        "end": 1214
+      },
+      "dictionaryExport": "__ssrg$instance$Applicative$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "pure",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "Valid",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 793,
+              "end": 846
+            }
+          },
+          {
+            "name": "apply",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "wrapped",
+                "type": "Validation<E, (argument: A) => B>",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "Validation<E, A>",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "identifier",
+                    "name": "wrapped"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Validation",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "reference",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Validation",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Valid"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Valid"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "_function",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "reference",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Valid",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "_function",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Invalid"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Invalid"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "reference",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "reference",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Invalid",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "appendErrors",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "left"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "right"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Invalid"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "errors",
+                      "type": {
+                        "kind": "reference",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Invalid",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "errors"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Invalid"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "errors",
+                      "type": {
+                        "kind": "reference",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Invalid",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "errors"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 850,
+              "end": 1212
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendErrors",
+      "typeParameters": [
+        "E"
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "Errors<E>",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "Errors<E>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "left"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "One"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "More",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "error"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "right"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "More"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "rest",
+                "type": {
+                  "kind": "reference",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "More",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "error"
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "appendErrors",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "rest"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "right"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 556,
+        "end": 745
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "makeUser",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "age",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "User",
+        "arguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "identifier",
+                "name": "name"
+              },
+              {
+                "kind": "identifier",
+                "name": "age"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1317,
+        "end": 1382
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "validateName",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "binary",
+          "operator": "===",
+          "left": {
+            "kind": "identifier",
+            "name": "name"
+          },
+          "right": {
+            "kind": "string",
+            "value": ""
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "Invalid",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "One",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "NameRequired"
+                }
+              ]
+            }
+          ]
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "Valid",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "name"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1384,
+        "end": 1511
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "validateAge",
+      "parameters": [
+        {
+          "name": "age",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "binary",
+          "operator": ">",
+          "left": {
+            "kind": "identifier",
+            "name": "age"
+          },
+          "right": {
+            "kind": "bigint",
+            "value": "0"
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "Valid",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "age"
+            }
+          ]
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "Invalid",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "One",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "AgeMustBePositive"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1513,
+        "end": 1633
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "validateUser",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "age",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Applicative$1",
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Functor$0",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "FormError",
+                  "arguments": []
+                }
+              ],
+              "arguments": []
+            }
+          ]
+        },
+        "method": "apply",
+        "arguments": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Applicative$1",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "FormError",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Functor$0",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": []
+                }
+              ]
+            },
+            "method": "apply",
+            "arguments": [
+              {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Applicative$1",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Functor$0",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "FormError",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": []
+                    }
+                  ]
+                },
+                "method": "pure",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "makeUser"
+                  }
+                ]
+              },
+              {
+                "kind": "call",
+                "callee": "validateName",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "name"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "validateAge",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "age"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1635,
+        "end": 1770
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderRemainingErrors",
+      "parameters": [
+        {
+          "name": "errors",
+          "type": "Errors<FormError>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "errors"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "One"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "tag": "AgeMustBePositive"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "NameRequired, AgeMustBePositive"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Multiple validation errors"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1772,
+        "end": 1956
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderErrors",
+      "parameters": [
+        {
+          "name": "errors",
+          "type": "Errors<FormError>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "errors"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "More"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "NameRequired"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "remaining",
+                "type": {
+                  "kind": "reference",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "renderRemainingErrors",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "remaining"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "One validation error"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1958,
+        "end": 2134
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "Validation<FormError, User>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "User",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Valid"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Valid user"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Invalid"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "errors",
+                "type": {
+                  "kind": "reference",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "renderErrors",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "errors"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2136,
+        "end": 2284
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "validateUser",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": ""
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "validateUser",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Mio"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "20"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2286,
+        "end": 2424
+      }
+    }
+  ]
+}

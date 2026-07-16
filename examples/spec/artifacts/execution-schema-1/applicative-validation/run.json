@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "case": "applicative-validation",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/applicative-validation",
+    "export": "main",
+    "compiledModule": "../../schema-1/applicative-validation/generated-module.json",
+    "typedInterface": "../../schema-1/applicative-validation/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.int64",
+      "core.bool",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["NameRequired, AgeMustBePositive"],
+        "stdout": "NameRequired, AgeMustBePositive\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Valid user"],
+        "stdout": "Valid user\n"
+      }
+    ]
+  }
+}

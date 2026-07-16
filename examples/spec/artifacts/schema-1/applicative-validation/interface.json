@@ -1,0 +1,634 @@
+{
+  "schema": 1,
+  "module": "artifact/applicative-validation",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/applicative-validation::Errors",
+      "namespace": "type",
+      "name": "Errors",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 54
+      },
+      "scheme": {
+        "typeParameters": [
+          "E"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Errors",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::One",
+      "namespace": "value",
+      "name": "One",
+      "constructorOf": "artifact/applicative-validation::Errors",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 25,
+        "end": 28
+      },
+      "scheme": {
+        "typeParameters": [
+          "E"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "E",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::More",
+      "namespace": "value",
+      "name": "More",
+      "constructorOf": "artifact/applicative-validation::Errors",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 35,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [
+          "E"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::Validation",
+      "namespace": "type",
+      "name": "Validation",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 56,
+        "end": 119
+      },
+      "scheme": {
+        "typeParameters": [
+          "E",
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Validation",
+          "arity": 2
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::Valid",
+      "namespace": "value",
+      "name": "Valid",
+      "constructorOf": "artifact/applicative-validation::Validation",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 88,
+        "end": 93
+      },
+      "scheme": {
+        "typeParameters": [
+          "E",
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::Invalid",
+      "namespace": "value",
+      "name": "Invalid",
+      "constructorOf": "artifact/applicative-validation::Validation",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 100,
+        "end": 107
+      },
+      "scheme": {
+        "typeParameters": [
+          "E",
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::trait(Functor)",
+      "namespace": "trait",
+      "name": "Functor",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 121,
+        "end": 198
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Functor",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "map",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 149,
+            "end": 196
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/applicative-validation::trait(Applicative)",
+      "namespace": "trait",
+      "name": "Applicative",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 417,
+        "end": 554
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Functor",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Applicative",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "pure",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 466,
+            "end": 493
+          }
+        },
+        {
+          "name": "apply",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 496,
+            "end": 552
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/applicative-validation::FormError",
+      "namespace": "type",
+      "name": "FormError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 1216,
+        "end": 1275
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "FormError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::NameRequired",
+      "namespace": "value",
+      "name": "NameRequired",
+      "constructorOf": "artifact/applicative-validation::FormError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 1241,
+        "end": 1253
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "FormError",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::AgeMustBePositive",
+      "namespace": "value",
+      "name": "AgeMustBePositive",
+      "constructorOf": "artifact/applicative-validation::FormError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 1258,
+        "end": 1275
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "FormError",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::User",
+      "namespace": "type",
+      "name": "User",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 1277,
+        "end": 1315
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "User",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::User",
+      "namespace": "value",
+      "name": "User",
+      "constructorOf": "artifact/applicative-validation::User",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 1297,
+        "end": 1301
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "User",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Functor",
+      "typeParameters": [
+        "E"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "hole"
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 200,
+        "end": 415
+      }
+    },
+    {
+      "trait": "Applicative",
+      "typeParameters": [
+        "E"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Applicative",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "hole"
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 747,
+        "end": 1214
+      }
+    }
+  ]
+}

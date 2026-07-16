@@ -1,0 +1,96 @@
+pub type Errors<E> =
+  | One E
+  | More (E, Errors<E>)
+
+pub type Validation<E, A> =
+  | Valid A
+  | Invalid (Errors<E>)
+
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance<E> Functor<Validation<E, _>> {
+  fn map<A, B> f: (A -> B) -> value: Validation<E, A> -> Validation<E, B> =
+    match value {
+      Valid item -> Valid $ f item
+      Invalid errors -> Invalid errors
+    }
+}
+
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+fn appendErrors<E> left: Errors<E> -> right: Errors<E> -> Errors<E> =
+  match left {
+    One error -> More (error, right)
+    More (error, rest) -> More (error, appendErrors rest right)
+  }
+
+instance<E> Applicative<Validation<E, _>> {
+  fn pure<A> value: A -> Validation<E, A> = Valid value
+
+  fn apply<A, B>
+    wrapped: Validation<E, A -> B>
+    -> value: Validation<E, A>
+    -> Validation<E, B> =
+    match (wrapped, value) {
+      (Valid function, Valid item) -> Valid $ function item
+      (Invalid left, Invalid right) -> Invalid $ appendErrors left right
+      (Invalid errors, _) -> Invalid errors
+      (_, Invalid errors) -> Invalid errors
+    }
+}
+
+pub type FormError =
+  | NameRequired
+  | AgeMustBePositive
+
+pub type User =
+  | User (String, Int)
+
+fn makeUser name: String -> age: Int -> User =
+  User (name, age)
+
+fn validateName name: String -> Validation<FormError, String> =
+  if name == "" then Invalid $ One NameRequired else Valid name
+
+fn validateAge age: Int -> Validation<FormError, Int> =
+  if age > 0 then Valid age else Invalid $ One AgeMustBePositive
+
+fn validateUser name: String -> age: Int -> Validation<FormError, User> =
+  pure makeUser
+  <*> validateName name
+  <*> validateAge age
+
+fn renderRemainingErrors errors: Errors<FormError> -> String =
+  match errors {
+    One AgeMustBePositive -> "NameRequired, AgeMustBePositive"
+    _ -> "Multiple validation errors"
+  }
+
+fn renderErrors errors: Errors<FormError> -> String =
+  match errors {
+    More (NameRequired, remaining) -> renderRemainingErrors remaining
+    _ -> "One validation error"
+  }
+
+fn render result: Validation<FormError, User> -> String =
+  match result {
+    Valid _ -> "Valid user"
+    Invalid errors -> renderErrors errors
+  }
+
+pub effect fn main =
+  do {
+    validateUser "" 0
+    |> render
+    |> println
+
+    validateUser "Mio" 20
+    |> render
+    |> println
+  }

@@ -241,6 +241,10 @@ consumerはimported generic `bind`とconsumer-local pure `do`の両方で`Monad<
 Functor -> Applicative -> Monad dictionary factory chainを実行します。executionは両経路の
 `Imported Box Monad: 42`を固定します。
 
+`schema-1/applicative-validation`はuser-defined `Validation<E, A>`とrecursive `Errors<E>`を使います。
+`pure makeUser <*> validateName name <*> validateAge age`がgeneric Applicative dictionaryを通り、両入力がInvalidなら
+left-to-rightにerrorを蓄積します。同名execution fixtureは二errorの順序とValid側の両方を固定します。
+
 `schema-1/comprehension-pattern-filter`はArray generatorの`Just value`と`(1, value)`を通常のpattern decisionへlowerし、
 不一致要素を除外してからpayload / tuple bindingをelement式とguardへ渡します。
 `execution-schema-1/comprehension-pattern-filter`はconstructor filterの合計4とtuple filterの合計40をConsole traceまで固定し、

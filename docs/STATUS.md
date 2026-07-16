@@ -281,6 +281,11 @@ annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのk
 `lifted increment`のような制約付きcallを別のHKT callの引数へ置いた場合も、外側の期待型と左から確定した引数型を
 使って`F = Maybe`を具体化し、内側と外側の両方へdictionaryを渡します。
 `execution-schema-1/applicative-maybe`は`mapped`、`lifted`、`applyWrapped`を組み合わせた`Just 42`を固定します。
+`schema-1/applicative-validation`はuser-defined `Validation<E, _>`とrecursive `Errors<E>`を使い、二つの独立validatorを
+`pure makeUser <*> validateName name <*> validateAge age`で合成します。両側Invalidの`apply`はleftからrightの順でerrorを
+連結し、actual executionは`NameRequired, AgeMustBePositive`と成功側の`Valid user`を固定します。ValidationへMonadを
+定義せず、Applicativeの蓄積とMonadの依存・短絡を別の意味として保ちます。同じprogramはPlayground sampleにも公開済みです。
+標準`std/validation` moduleと`NonEmptyList<E>` ABIは別のstdlib gateです。
 `schema-1/monad-maybe`はsupertrait chainを`Monad<M> -> Applicative<M> -> Functor<M>`へ伸ばします。
 Monad factoryは具体化済みApplicative dictionaryを継承し、`where Monad<M>`だけを持つgeneric functionから
 `pure`と`flatMap`を同じparameter evidenceで呼び出せます。calleeとcallerの型構築子parameterが同じ綴りでも

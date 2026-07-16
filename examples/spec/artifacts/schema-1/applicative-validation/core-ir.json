@@ -1,0 +1,3535 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/applicative-validation",
+  "adts": [
+    {
+      "symbol": "artifact/applicative-validation::Errors",
+      "name": "Errors",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "E"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/applicative-validation::One",
+          "name": "One",
+          "payload": {
+            "kind": "named",
+            "name": "E",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 25,
+            "end": 28
+          }
+        },
+        {
+          "symbol": "artifact/applicative-validation::More",
+          "name": "More",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 35,
+            "end": 39
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::Validation",
+      "name": "Validation",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/applicative-validation::Valid",
+          "name": "Valid",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 93
+          }
+        },
+        {
+          "symbol": "artifact/applicative-validation::Invalid",
+          "name": "Invalid",
+          "payload": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 100,
+            "end": 107
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 56,
+        "end": 119
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::FormError",
+      "name": "FormError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/applicative-validation::NameRequired",
+          "name": "NameRequired",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1241,
+            "end": 1253
+          }
+        },
+        {
+          "symbol": "artifact/applicative-validation::AgeMustBePositive",
+          "name": "AgeMustBePositive",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1258,
+            "end": 1275
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1216,
+        "end": 1275
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::User",
+      "name": "User",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/applicative-validation::User",
+          "name": "User",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1297,
+            "end": 1301
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1277,
+        "end": 1315
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
+      "trait": "Functor",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "hole"
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 200,
+        "end": 415
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "f",
+                "kind": "named",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 326,
+                  "end": 331
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/applicative-validation::Valid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 340,
+                        "end": 350
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 346,
+                        "end": 350
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/applicative-validation::Valid",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 364,
+                              "end": 368
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 362,
+                          "end": 368
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 354,
+                      "end": 368
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 340,
+                    "end": 368
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/applicative-validation::Invalid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 375,
+                        "end": 389
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "errors",
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 383,
+                        "end": 389
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/applicative-validation::Invalid",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "errors",
+                        "type": {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 401,
+                          "end": 407
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 393,
+                      "end": 407
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 375,
+                    "end": 407
+                  }
+                }
+              ],
+              "exhaustive": false,
+              "type": {
+                "kind": "named",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 320,
+                "end": 413
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 242,
+              "end": 413
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
+      "trait": "Applicative",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "hole"
+            }
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "hole"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 747,
+        "end": 1214
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "pure",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::Valid",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 841,
+                    "end": 846
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 835,
+                "end": 846
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 793,
+              "end": 846
+            }
+          },
+          {
+            "name": "apply",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "wrapped",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "wrapped",
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 968,
+                      "end": 975
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 977,
+                      "end": 982
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 967,
+                  "end": 983
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/applicative-validation::Valid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 993,
+                        "end": 1007
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/applicative-validation::Valid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1009,
+                        "end": 1019
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "function",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 999,
+                        "end": 1007
+                      }
+                    },
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1015,
+                        "end": 1019
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/applicative-validation::Valid",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "function",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1041,
+                              "end": 1045
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1032,
+                          "end": 1045
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1024,
+                      "end": 1045
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 992,
+                    "end": 1045
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/applicative-validation::Invalid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1053,
+                        "end": 1065
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/applicative-validation::Invalid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1067,
+                        "end": 1080
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1061,
+                        "end": 1065
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1075,
+                        "end": 1080
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/applicative-validation::Invalid",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "artifact/applicative-validation::appendErrors",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "left",
+                            "type": {
+                              "kind": "named",
+                              "name": "Errors",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1108,
+                              "end": 1112
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "right",
+                            "type": {
+                              "kind": "named",
+                              "name": "Errors",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1113,
+                              "end": 1118
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1095,
+                          "end": 1118
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1085,
+                      "end": 1118
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1052,
+                    "end": 1118
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/applicative-validation::Invalid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1126,
+                        "end": 1140
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "errors",
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1134,
+                        "end": 1140
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/applicative-validation::Invalid",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "errors",
+                        "type": {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1156,
+                          "end": 1162
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1148,
+                      "end": 1162
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1125,
+                    "end": 1162
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/applicative-validation::Invalid",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1173,
+                        "end": 1187
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "errors",
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1181,
+                        "end": 1187
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/applicative-validation::Invalid",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "errors",
+                        "type": {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1200,
+                          "end": 1206
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1192,
+                      "end": 1206
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1169,
+                    "end": 1206
+                  }
+                }
+              ],
+              "exhaustive": false,
+              "type": {
+                "kind": "named",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 961,
+                "end": 1212
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 850,
+              "end": 1212
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/applicative-validation::appendErrors",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 556,
+        "end": 745
+      },
+      "typeParameters": [
+        "E"
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 634,
+            "end": 638
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/applicative-validation::One",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 645,
+                  "end": 654
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 649,
+                  "end": 654
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::More",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "error",
+                      "type": {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 664,
+                        "end": 669
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 671,
+                        "end": 676
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 663,
+                    "end": 677
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 658,
+                "end": 677
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 645,
+              "end": 677
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/applicative-validation::More",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 682,
+                  "end": 700
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 688,
+                  "end": 693
+                }
+              },
+              {
+                "name": "rest",
+                "type": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 695,
+                  "end": 699
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::More",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "error",
+                      "type": {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 710,
+                        "end": 715
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "artifact/applicative-validation::appendErrors",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "rest",
+                          "type": {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 730,
+                            "end": 734
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "right",
+                          "type": {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 735,
+                            "end": 740
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 717,
+                        "end": 740
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 709,
+                    "end": 741
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 704,
+                "end": 741
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 682,
+              "end": 741
+            }
+          }
+        ],
+        "exhaustive": false,
+        "type": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 628,
+          "end": 745
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::makeUser",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1317,
+        "end": 1382
+      },
+      "parameters": [
+        {
+          "id": "name",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "age",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/applicative-validation::User",
+        "arguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1372,
+                  "end": 1376
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "age",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1378,
+                  "end": 1381
+                }
+              }
+            ],
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1371,
+              "end": 1382
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "User",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1366,
+          "end": 1382
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::validateName",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1384,
+        "end": 1511
+      },
+      "parameters": [
+        {
+          "id": "name",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "==",
+          "left": {
+            "kind": "variable",
+            "name": "name",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1453,
+              "end": 1457
+            }
+          },
+          "right": {
+            "kind": "string",
+            "value": "",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1461,
+              "end": 1463
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Eq",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/string::Eq"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1453,
+            "end": 1463
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "artifact/applicative-validation::Invalid",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::One",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/applicative-validation::NameRequired",
+                  "type": {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1483,
+                    "end": 1495
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1479,
+                "end": 1495
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1469,
+            "end": 1495
+          }
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "artifact/applicative-validation::Valid",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1507,
+                "end": 1511
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1501,
+            "end": 1511
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1450,
+          "end": 1511
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::validateAge",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1513,
+        "end": 1633
+      },
+      "parameters": [
+        {
+          "id": "age",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": ">",
+          "left": {
+            "kind": "variable",
+            "name": "age",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1574,
+              "end": 1577
+            }
+          },
+          "right": {
+            "kind": "int64",
+            "value": "0",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1580,
+              "end": 1581
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1574,
+            "end": 1581
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "artifact/applicative-validation::Valid",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "age",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1593,
+                "end": 1596
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1587,
+            "end": 1596
+          }
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "artifact/applicative-validation::Invalid",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::One",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/applicative-validation::AgeMustBePositive",
+                  "type": {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1616,
+                    "end": 1633
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1612,
+                "end": 1633
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1602,
+            "end": 1633
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1571,
+          "end": 1633
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::validateUser",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1635,
+        "end": 1770
+      },
+      "parameters": [
+        {
+          "id": "name",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "age",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/applicative-validation::trait(Applicative)::apply",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/applicative-validation::trait(Applicative)::apply",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/applicative-validation::trait(Applicative)::pure",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/applicative-validation::makeUser",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "User",
+                          "arguments": []
+                        }
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1716,
+                      "end": 1724
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Applicative",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Validation",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "FormError",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "local",
+                      "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
+                      "typeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "FormError",
+                          "arguments": []
+                        }
+                      ],
+                      "evidenceArguments": [
+                        {
+                          "constraint": {
+                            "name": "Functor",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Validation",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "FormError",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
+                            "typeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "FormError",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "traitDispatch": {
+                  "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
+                  "method": "pure"
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "FormError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "User",
+                          "arguments": []
+                        }
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1711,
+                  "end": 1724
+                }
+              },
+              {
+                "kind": "call",
+                "callee": "artifact/applicative-validation::validateName",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1744,
+                      "end": 1748
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "FormError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1731,
+                  "end": 1748
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Applicative",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "FormError",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
+                  "typeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ],
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Functor",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Validation",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "FormError",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "FormError",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "traitDispatch": {
+              "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
+              "method": "apply"
+            },
+            "type": {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "FormError",
+                  "arguments": []
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "User",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1711,
+              "end": 1748
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/applicative-validation::validateAge",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "age",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1767,
+                  "end": 1770
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "FormError",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1755,
+              "end": 1770
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "FormError",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Functor",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "FormError",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "FormError",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
+          "method": "apply"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "User",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1711,
+          "end": 1770
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::renderRemainingErrors",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1772,
+        "end": 1956
+      },
+      "parameters": [
+        {
+          "id": "errors",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "errors",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1843,
+            "end": 1849
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/applicative-validation::One",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1856,
+                  "end": 1877
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "constructor": "artifact/applicative-validation::AgeMustBePositive",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1860,
+                  "end": 1877
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "NameRequired, AgeMustBePositive",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1881,
+                "end": 1914
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1856,
+              "end": 1914
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Multiple validation errors",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1924,
+                "end": 1952
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1919,
+              "end": 1952
+            }
+          }
+        ],
+        "exhaustive": false,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1837,
+          "end": 1956
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::renderErrors",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1958,
+        "end": 2134
+      },
+      "parameters": [
+        {
+          "id": "errors",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "errors",
+          "type": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 2020,
+            "end": 2026
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/applicative-validation::More",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2033,
+                  "end": 2063
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "constructor": "artifact/applicative-validation::NameRequired",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2039,
+                  "end": 2051
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "remaining",
+                "type": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2053,
+                  "end": 2062
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::renderRemainingErrors",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "remaining",
+                  "type": {
+                    "kind": "named",
+                    "name": "Errors",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "FormError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2089,
+                    "end": 2098
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2067,
+                "end": 2098
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2033,
+              "end": 2098
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "One validation error",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2108,
+                "end": 2130
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2103,
+              "end": 2130
+            }
+          }
+        ],
+        "exhaustive": false,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 2014,
+          "end": 2134
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2136,
+        "end": 2284
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "User",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "User",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 2202,
+            "end": 2208
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "User",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/applicative-validation::Valid",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2215,
+                  "end": 2222
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Valid user",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2226,
+                "end": 2238
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2215,
+              "end": 2238
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "artifact/applicative-validation::Invalid",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2243,
+                  "end": 2257
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "errors",
+                "type": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "FormError",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2251,
+                  "end": 2257
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::renderErrors",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "errors",
+                  "type": {
+                    "kind": "named",
+                    "name": "Errors",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "FormError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2274,
+                    "end": 2280
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2261,
+                "end": 2280
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2243,
+              "end": 2280
+            }
+          }
+        ],
+        "exhaustive": false,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 2196,
+          "end": 2284
+        }
+      }
+    },
+    {
+      "symbol": "artifact/applicative-validation::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2286,
+        "end": 2424
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/applicative-validation::render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/applicative-validation::validateUser",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2331,
+                            "end": 2333
+                          }
+                        },
+                        {
+                          "kind": "int64",
+                          "value": "0",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2334,
+                            "end": 2335
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "FormError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "User",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2318,
+                        "end": 2335
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2318,
+                    "end": 2349
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2318,
+                "end": 2364
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/applicative-validation::render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/applicative-validation::validateUser",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Mio",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2383,
+                        "end": 2388
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "20",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2389,
+                        "end": 2391
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "FormError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "User",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2370,
+                    "end": 2391
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2370,
+                "end": 2405
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 2370,
+            "end": 2420
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 2309,
+          "end": 2424
+        }
+      }
+    }
+  ]
+}

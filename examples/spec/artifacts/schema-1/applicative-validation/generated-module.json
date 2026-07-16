@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "module": "artifact/applicative-validation",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.int64",
+      "core.bool",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "One",
+    "More",
+    "Valid",
+    "Invalid",
+    "NameRequired",
+    "AgeMustBePositive",
+    "User",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
+      "trait": "Functor",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            }
+          ]
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    },
+    {
+      "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
+      "trait": "Applicative",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            }
+          ]
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Applicative$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

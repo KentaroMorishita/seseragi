@@ -745,6 +745,13 @@ constructor expressionへ押し付けず、実引数または外側のconcrete r
 saturated constrained callの内側と外側へ、それぞれApplicative dictionaryを挿入できます。
 `execution-schema-1/applicative-maybe`は生成moduleとversioned runtimeで`Just 42`を観測します。
 
+`schema-1/applicative-validation`はApplicativeを単なるMaybeの成功経路で終わらせず、独立error accumulationへ接続します。
+user-defined `Validation<E, A>`とrecursive `Errors<E>`を定義し、`instance<E> Applicative<Validation<E, _>>`の`apply`が
+両側Invalidならordered error列を連結します。`pure makeUser <*> validateName name <*> validateAge age`は同じgeneric
+dictionary selection / partial HKT applicationだけを通り、生成TSのactual executionで二errorの順序とValid側を固定します。
+Monad instanceは意図的に存在しません。標準`Validation<E, A> = Invalid (NonEmptyList<E>) | Valid A`の公開moduleとruntime
+ABIはこの意味gateを再利用する後続stdlib sliceであり、user-defined型名をcompiler builtinへ昇格させません。
+
 `schema-1/monad-maybe`は同じ仕組みを`Monad<M> where Applicative<M>`へ一般化します。local Monad instanceの
 factory argumentは具体化済みApplicative dictionaryで、その内部にFunctor dictionaryも含まれるため、生成Monad
 dictionaryは`map`、`pure`、`apply`、`flatMap`を同じevidence objectとして公開します。`where Monad<M>` scopeでも

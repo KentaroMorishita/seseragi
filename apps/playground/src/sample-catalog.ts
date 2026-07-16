@@ -153,6 +153,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Just 42",
   },
   {
+    id: "applicative-validation",
+    label: "Validationでエラーを集める",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/applicative-validation/main.ssrg",
+    stdin: "",
+    expectedOutput: "NameRequired, AgeMustBePositive\nValid user",
+  },
+  {
     id: "monad-maybe",
     label: "Monadの流れ",
     category: "型と抽象化",
