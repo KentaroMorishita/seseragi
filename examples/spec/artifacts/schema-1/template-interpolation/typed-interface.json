@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/template-interpolation",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/template-interpolation::Badge",
+      "namespace": "type",
+      "name": "Badge",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 41
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Badge",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/template-interpolation::Active",
+      "namespace": "value",
+      "name": "Active",
+      "constructorOf": "artifact/template-interpolation::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 35,
+        "end": 41
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/template-interpolation::render",
+      "namespace": "value",
+      "name": "render",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 43,
+        "end": 126
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/template-interpolation::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 128,
+        "end": 188
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<artifact/template-interpolation::Badge>",
+      "providerModule": "artifact/template-interpolation",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/template-interpolation::Badge"
+      ],
+      "typeIdentity": "artifact/template-interpolation::Badge",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    }
+  ]
+}

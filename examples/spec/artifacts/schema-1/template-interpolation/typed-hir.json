@@ -1,0 +1,340 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/template-interpolation",
+  "instances": [
+    {
+      "identity": "Show<artifact/template-interpolation::Badge>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/template-interpolation::Badge"
+      ],
+      "typeIdentity": "artifact/template-interpolation::Badge",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/template-interpolation::Badge",
+        "payloadEvidence": []
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/template-interpolation::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/template-interpolation::Active",
+          "name": "Active",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 35,
+            "end": 41
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/template-interpolation::render",
+      "visibility": "public",
+      "origin": {
+        "start": 43,
+        "end": 126
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 57,
+            "end": 61
+          }
+        },
+        {
+          "kind": "named",
+          "name": "badge",
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          },
+          "origin": {
+            "start": 73,
+            "end": 78
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "text",
+            "value": "Hello, ",
+            "origin": {
+              "start": 101,
+              "end": 108
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 110,
+                "end": 114
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::String>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 108,
+              "end": 115
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "origin": {
+              "start": 115,
+              "end": 117
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "badge",
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "arguments": []
+              },
+              "origin": {
+                "start": 119,
+                "end": 124
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Badge",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "local",
+                "identity": "Show<artifact/template-interpolation::Badge>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 117,
+              "end": 125
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 100,
+          "end": 126
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/template-interpolation::main",
+      "visibility": "public",
+      "origin": {
+        "start": 128,
+        "end": 188
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/template-interpolation::render",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "Seseragi",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 158,
+                  "end": 168
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "artifact/template-interpolation::Active",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 169,
+                  "end": 175
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 151,
+              "end": 175
+            }
+          }
+        ],
+        "origin": {
+          "start": 151,
+          "end": 188
+        }
+      }
+    }
+  ]
+}

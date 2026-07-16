@@ -15,11 +15,12 @@ pub(super) fn collect_let_binding_diagnostics(
     resolution: &TypedResolution<'_>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
-    let (Some(annotation), Some(body)) = (annotation, body) else {
+    let Some(body) = body else {
         return;
     };
-    let context = PureExpressionContext::new(&[], resolution)
-        .with_expected(Some(resolution.semantic_value_from_type_ref(annotation)));
+    let context = PureExpressionContext::new(&[], resolution).with_expected(
+        annotation.map(|annotation| resolution.semantic_value_from_type_ref(annotation)),
+    );
     let analysis = analyze_resolved_expression(body, &context);
     if analysis.array_issue.is_some()
         || analysis.range_issue.is_some()
@@ -36,8 +37,15 @@ pub(super) fn collect_let_binding_diagnostics(
             declaration,
             diagnostics,
         );
+        if let Some(issue) = analysis.pure_call_issue {
+            diagnostics.push(super::pure_call::call_diagnostic(issue, declaration));
+        }
         return;
     }
+
+    let Some(annotation) = annotation else {
+        return;
+    };
 
     let expected = typed_type_from_type_ref(annotation);
     let actual = inferred_type_from_expr(&analysis.value);

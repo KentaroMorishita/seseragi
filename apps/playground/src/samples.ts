@@ -1,6 +1,7 @@
 import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
 import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipeline-application/main.ssrg?raw"
 import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
+import templateInterpolation from "../../../examples/spec/artifacts/schema-1/template-interpolation/main.ssrg?raw"
 import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-comprehension/main.ssrg?raw"
 import comprehensionPatternFilter from "../../../examples/spec/artifacts/schema-1/comprehension-pattern-filter/main.ssrg?raw"
 import userIterableComprehension from "../../../examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg?raw"
@@ -35,6 +36,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "hello-world": helloWorld,
   "pipeline-application": pipelineApplication,
   "string-add": stringAdd,
+  "template-interpolation": templateInterpolation,
   "range-comprehension": rangeComprehension,
   "comprehension-pattern-filter": comprehensionPatternFilter,
   "user-iterable-comprehension": userIterableComprehension,

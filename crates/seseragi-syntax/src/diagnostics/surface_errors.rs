@@ -1,5 +1,7 @@
 use super::{ByteRange, Diagnostic, DiagnosticFix, DiagnosticSeverity, RelatedDiagnostic};
-use crate::{SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr};
+use crate::{
+    SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceTemplatePart,
+};
 use std::collections::BTreeSet;
 
 pub(super) fn diagnostics(
@@ -44,6 +46,13 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         | SurfaceExpr::List { elements, .. } => {
             for element in elements {
                 collect_expression_errors(element, errors);
+            }
+        }
+        SurfaceExpr::Template { parts, .. } => {
+            for part in parts {
+                if let SurfaceTemplatePart::Interpolation { value, .. } = part {
+                    collect_expression_errors(value, errors);
+                }
             }
         }
         SurfaceExpr::ArrayComprehension {
@@ -115,8 +124,8 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
 fn covered_by_existing_error(range: ByteRange, existing: &[Diagnostic]) -> bool {
     existing.iter().any(|diagnostic| {
         diagnostic.severity == DiagnosticSeverity::Error
-            && diagnostic.primary.start <= range.start
-            && diagnostic.primary.end >= range.end
+            && ((diagnostic.primary.start <= range.start && diagnostic.primary.end >= range.end)
+                || (diagnostic.primary.start >= range.start && diagnostic.primary.end <= range.end))
     })
 }
 

@@ -1,0 +1,5 @@
+type Token =
+  | Token
+
+pub fn render value: Token -> String =
+  `token: ${value}`

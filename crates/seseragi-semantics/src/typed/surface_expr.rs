@@ -1,5 +1,8 @@
-use crate::{SymbolId, SymbolKind, SymbolNamespace, TypedExpr, TypedParameter, TypedType};
-use seseragi_syntax::{ByteSpan, SurfaceExpr};
+use crate::{
+    SymbolId, SymbolKind, SymbolNamespace, TypedConstraint, TypedExpr, TypedParameter,
+    TypedTemplatePart, TypedType,
+};
+use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceTemplatePart};
 use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
@@ -144,6 +147,30 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
+    pub(super) fn select_show_evidence(
+        &self,
+        value: TypedType,
+    ) -> Result<(String, crate::TypedCallEvidence), TypedConstraint> {
+        let constraint = TypedConstraint {
+            name: "Show".to_owned(),
+            arguments: vec![value],
+        };
+        let trait_identity = self
+            .trait_identity("Show")
+            .unwrap_or_else(|| "std/prelude::Show".to_owned());
+        let selected = super::call_evidence::select_function_call_evidence(
+            std::slice::from_ref(&constraint),
+            &[Some(trait_identity.clone())],
+            self.resolution,
+            &self.evidence_parameters,
+        )
+        .map_err(|_| constraint.clone())?
+        .into_iter()
+        .next()
+        .ok_or(constraint)?;
+        Ok((trait_identity, selected))
+    }
+
     pub(super) fn trait_identity(&self, name: &str) -> Option<String> {
         let mut identities = self
             .resolution
@@ -245,6 +272,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
         SurfaceExpr::Unit { .. } => Some(named_type("Unit")),
         SurfaceExpr::Integer { .. } => Some(named_type("Int")),
         SurfaceExpr::String { .. } => Some(named_type("String")),
+        SurfaceExpr::Template { .. } => Some(named_type("String")),
         SurfaceExpr::Boolean { .. } => Some(named_type("Bool")),
         SurfaceExpr::Tuple { elements, .. } => Some(TypedType::Tuple {
             elements: elements
@@ -323,6 +351,7 @@ pub(super) fn type_surface_expression(
             type_ref: named_type("String"),
             origin: *span,
         }),
+        SurfaceExpr::Template { parts, span } => type_template(parts, *span, context),
         SurfaceExpr::Boolean { value, span } => {
             SurfaceExpressionAnalysis::valid(TypedExpr::Boolean {
                 value: *value,
@@ -379,6 +408,65 @@ pub(super) fn type_surface_expression(
             SemanticTypeKey::Invalid,
         ),
     }
+}
+
+fn type_template(
+    parts: &[SurfaceTemplatePart],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let mut typed_parts = Vec::with_capacity(parts.len());
+    let mut children = Vec::new();
+    let mut missing_instance = None;
+    for part in parts {
+        match part {
+            SurfaceTemplatePart::Text { value, span } => {
+                typed_parts.push(TypedTemplatePart::Text {
+                    value: value.clone(),
+                    origin: *span,
+                });
+            }
+            SurfaceTemplatePart::Interpolation { value, span } => {
+                let analysis = type_surface_expression(value, &context.without_expected());
+                let type_ref = super::type_ref::inferred_type_from_expr(&analysis.value);
+                let selected = context.select_show_evidence(type_ref.clone());
+                let (trait_identity, evidence) = match selected {
+                    Ok(selected) => (selected.0, Some(selected.1)),
+                    Err(constraint) => {
+                        missing_instance.get_or_insert(PureCallIssue::MissingInstance {
+                            callee: value.span(),
+                            constraint,
+                        });
+                        ("std/prelude::Show".to_owned(), None)
+                    }
+                };
+                typed_parts.push(TypedTemplatePart::Interpolation {
+                    value: Box::new(analysis.value.clone()),
+                    evidence,
+                    trait_identity,
+                    origin: *span,
+                });
+                children.push(analysis);
+            }
+        }
+    }
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Template {
+            parts: typed_parts,
+            type_ref: named_type("String"),
+            origin: span,
+        },
+        if missing_instance.is_some() {
+            SemanticTypeKey::Invalid
+        } else {
+            SemanticTypeKey::Other
+        },
+    );
+    result.pure_call_issue = missing_instance;
+    for child in children {
+        result.merge_issues_from(child);
+    }
+    result
 }
 
 fn type_name(

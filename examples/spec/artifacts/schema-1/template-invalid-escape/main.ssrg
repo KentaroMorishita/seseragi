@@ -1,0 +1,1 @@
+pub let message: String = `bad\qescape`

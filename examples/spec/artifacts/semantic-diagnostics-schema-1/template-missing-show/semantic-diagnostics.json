@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "primary": {
+        "start": 75,
+        "end": 80
+      },
+      "related": [
+        {
+          "message": "no Show instance matches the inferred call arguments",
+          "primary": {
+            "start": 24,
+            "end": 82
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 use crate::{
     CoreComprehensionClause, CoreDecisionBranch, CoreExpr, CoreModule, CorePattern, CoreStatement,
-    CoreType,
+    CoreTemplatePart, CoreType,
 };
 use std::collections::BTreeSet;
 
@@ -41,6 +41,13 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
         | CoreExpr::List { elements, .. } => {
             for element in elements {
                 collect_expr_value_symbols(element, values);
+            }
+        }
+        CoreExpr::Template { parts, .. } => {
+            for part in parts {
+                if let CoreTemplatePart::Interpolation { value, .. } = part {
+                    collect_expr_value_symbols(value, values);
+                }
             }
         }
         CoreExpr::ArrayComprehension {
@@ -188,6 +195,13 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
     match expr {
         CoreExpr::Variable { type_ref, .. } | CoreExpr::Call { type_ref, .. } => {
             collect_type_names(type_ref, references);
+        }
+        CoreExpr::Template { parts, .. } => {
+            for part in parts {
+                if let CoreTemplatePart::Interpolation { value, .. } = part {
+                    collect_expr_type_names(value, references);
+                }
+            }
         }
         CoreExpr::Tuple {
             elements, type_ref, ..

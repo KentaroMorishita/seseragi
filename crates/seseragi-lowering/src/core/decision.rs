@@ -216,6 +216,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         TypedExpr::Unit { type_ref, .. }
         | TypedExpr::Integer { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
+        | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }
         | TypedExpr::Call { type_ref, .. }

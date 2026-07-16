@@ -2,6 +2,7 @@ use crate::cst::parse_cst_from_tokens;
 use crate::lexer::lex;
 use crate::surface::parse_surface_ast;
 use crate::surface_model::SurfaceDecl;
+use crate::template::{decode_template_text, scan_template, TemplateChunk};
 use crate::{CstArtifact, CstError, CstMissing, CstNode, Token, TokenKind};
 use serde::Serialize;
 
@@ -66,6 +67,7 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     let source_name = source_name.into();
     let tokens = lex(source_name.clone(), source);
     let literal_diagnostics = integer_literal_diagnostics(&tokens.tokens);
+    let template_diagnostics = template_literal_diagnostics(&tokens.tokens);
     let source_tokens = tokens.tokens.clone();
     let surface = parse_surface_ast(source_name, source);
     let cst = parse_cst_from_tokens(tokens);
@@ -83,11 +85,44 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
         &artifact.diagnostics,
     );
     append_diagnostics(&mut artifact, surface_diagnostics);
+    let mut surface_error_context = artifact.diagnostics.clone();
+    surface_error_context.extend(template_diagnostics.iter().cloned());
     let nested_surface_diagnostics =
-        surface_errors::diagnostics(&surface.declarations, &artifact.diagnostics);
+        surface_errors::diagnostics(&surface.declarations, &surface_error_context);
     append_diagnostics(&mut artifact, nested_surface_diagnostics);
+    append_diagnostics(&mut artifact, template_diagnostics);
     append_diagnostics(&mut artifact, literal_diagnostics);
     artifact
+}
+
+fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    let mut diagnostics = Vec::new();
+    for token in tokens
+        .iter()
+        .filter(|token| token.kind == TokenKind::LiteralTemplate)
+    {
+        for chunk in scan_template(&token.raw).chunks {
+            let TemplateChunk::Text(range) = chunk else {
+                continue;
+            };
+            let Err(error) = decode_template_text(&token.raw[range.clone()]) else {
+                continue;
+            };
+            diagnostics.push(Diagnostic {
+                id: String::new(),
+                code: "SES-P0201".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "literal.invalid-escape".to_owned(),
+                primary: ByteRange {
+                    start: token.start + range.start + error.range.start,
+                    end: token.start + range.start + error.range.end,
+                },
+                related: Vec::new(),
+                fixes: Vec::new(),
+            });
+        }
+    }
+    diagnostics
 }
 
 fn append_diagnostics(artifact: &mut DiagnosticArtifact, diagnostics: Vec<Diagnostic>) {
@@ -376,6 +411,7 @@ fn primary_range_for_error(
 fn message_key_for_code(code: &str) -> &str {
     match code {
         "SES-P0001" => "parser.expected-expression",
+        "SES-P0201" => "literal.invalid-escape",
         "SES-P0203" => "literal.int-outside-range",
         _ => "parser.error",
     }
@@ -409,6 +445,26 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 21, end: 21 }
+        );
+    }
+
+    #[test]
+    fn reports_an_invalid_template_escape() {
+        let diagnostics = parse_diagnostics(
+            "main.ssrg",
+            r#"pub let message: String = `bad\qescape`
+"#,
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "literal.invalid-escape"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 30, end: 32 }
         );
     }
 

@@ -115,6 +115,26 @@ pub struct CoreTraitDispatch {
     rename_all = "kebab-case",
     rename_all_fields = "camelCase"
 )]
+pub enum CoreTemplatePart {
+    Text {
+        value: String,
+        origin: SourceSpan,
+    },
+    Interpolation {
+        value: CoreExpr,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        evidence: Option<CoreCallEvidence>,
+        trait_identity: String,
+        origin: SourceSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
 pub enum CoreComprehensionClause {
     Generator {
         pattern: CorePattern,
@@ -199,6 +219,10 @@ pub enum CoreExpr {
     },
     String {
         value: String,
+        origin: SourceSpan,
+    },
+    Template {
+        parts: Vec<CoreTemplatePart>,
         origin: SourceSpan,
     },
     Boolean {

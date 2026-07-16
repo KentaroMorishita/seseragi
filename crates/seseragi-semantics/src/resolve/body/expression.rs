@@ -1,6 +1,8 @@
 use super::Resolver;
 use crate::{ScopeId, ScopeKind, SymbolNamespace};
-use seseragi_syntax::{SurfaceComprehensionClause, SurfaceDoItem, SurfaceExpr};
+use seseragi_syntax::{
+    SurfaceComprehensionClause, SurfaceDoItem, SurfaceExpr, SurfaceTemplatePart,
+};
 
 use super::pattern::resolve_pattern;
 
@@ -29,6 +31,13 @@ pub(super) fn resolve_expression(
         | SurfaceExpr::List { elements, .. } => {
             for element in elements {
                 resolve_expression(resolver, scope, element);
+            }
+        }
+        SurfaceExpr::Template { parts, .. } => {
+            for part in parts {
+                if let SurfaceTemplatePart::Interpolation { value, .. } = part {
+                    resolve_expression(resolver, scope, value);
+                }
             }
         }
         SurfaceExpr::ArrayComprehension {

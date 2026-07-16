@@ -92,6 +92,7 @@ fn collect_intrinsic_issues(
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Template { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
         | TypedExpr::ArrayComprehension { .. }

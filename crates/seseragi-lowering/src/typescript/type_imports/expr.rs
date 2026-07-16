@@ -1,4 +1,4 @@
-use crate::{CoreComprehensionClause, CoreExpr, CorePattern, CoreStatement};
+use crate::{CoreComprehensionClause, CoreExpr, CorePattern, CoreStatement, CoreTemplatePart};
 use seseragi_semantics::ExternalTypeBinding;
 
 use super::super::TypeScriptTypeImport;
@@ -15,6 +15,13 @@ pub(super) fn collect_expr_type_imports(
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
+        CoreExpr::Template { parts, .. } => {
+            for part in parts {
+                if let CoreTemplatePart::Interpolation { value, .. } = part {
+                    collect_expr_type_imports(value, bindings, requirements, imports);
+                }
+            }
+        }
         CoreExpr::Variable { type_ref, .. } => {
             collect_type_imports(type_ref, bindings, requirements, imports);
         }

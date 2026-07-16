@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 9,
+        "end": 14
+      },
+      "deriving": [
+        "Show"
+      ],
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 35,
+            "end": 41
+          },
+          "span": {
+            "start": 33,
+            "end": 41
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "render",
+      "nameSpan": {
+        "start": 50,
+        "end": 56
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "nameSpan": {
+            "start": 57,
+            "end": 61
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 63,
+              "end": 69
+            }
+          }
+        },
+        {
+          "name": "badge",
+          "nameSpan": {
+            "start": 73,
+            "end": 78
+          },
+          "type": {
+            "kind": "named",
+            "name": "Badge",
+            "span": {
+              "start": 80,
+              "end": 85
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 89,
+          "end": 95
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "text",
+            "value": "Hello, ",
+            "span": {
+              "start": 101,
+              "end": 108
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "name",
+              "span": {
+                "start": 110,
+                "end": 114
+              }
+            },
+            "span": {
+              "start": 108,
+              "end": 115
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "span": {
+              "start": 115,
+              "end": 117
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "badge",
+              "span": {
+                "start": 119,
+                "end": 124
+              }
+            },
+            "span": {
+              "start": 117,
+              "end": 125
+            }
+          }
+        ],
+        "span": {
+          "start": 100,
+          "end": 126
+        }
+      },
+      "span": {
+        "start": 43,
+        "end": 126
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 142,
+        "end": 146
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 181,
+            "end": 188
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "render",
+              "span": {
+                "start": 151,
+                "end": 157
+              }
+            },
+            "argument": {
+              "kind": "string",
+              "raw": "\"Seseragi\"",
+              "span": {
+                "start": 158,
+                "end": 168
+              }
+            },
+            "span": {
+              "start": 151,
+              "end": 168
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "Active",
+            "span": {
+              "start": 169,
+              "end": 175
+            }
+          },
+          "span": {
+            "start": 151,
+            "end": 175
+          }
+        },
+        "span": {
+          "start": 151,
+          "end": 188
+        }
+      },
+      "span": {
+        "start": 128,
+        "end": 188
+      }
+    }
+  ]
+}

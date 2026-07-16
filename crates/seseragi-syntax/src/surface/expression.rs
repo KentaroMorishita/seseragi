@@ -6,6 +6,7 @@ mod array;
 mod do_block;
 mod match_expression;
 mod parenthesized;
+mod template;
 #[cfg(test)]
 mod tests;
 
@@ -140,6 +141,7 @@ impl ExpressionParser<'_> {
                 raw: token.raw.clone(),
                 span: token_span(token),
             }),
+            TokenKind::LiteralTemplate => template::parse(token),
             TokenKind::LiteralBoolean => Some(SurfaceExpr::Boolean {
                 value: token.raw == "True",
                 span: token_span(token),
@@ -238,6 +240,7 @@ impl ExpressionParser<'_> {
             Some(
                 TokenKind::LiteralInteger
                     | TokenKind::LiteralString
+                    | TokenKind::LiteralTemplate
                     | TokenKind::LiteralBoolean
                     | TokenKind::IdentifierLower
                     | TokenKind::IdentifierUpper

@@ -238,6 +238,9 @@ fn type_pure_expression(
     if let Some(issue) = analysis.range_issue {
         issues.ranges.push(issue);
     }
+    if let Some(issue) = analysis.pure_call_issue {
+        issues.calls.push(issue);
+    }
     analysis.value
 }
 

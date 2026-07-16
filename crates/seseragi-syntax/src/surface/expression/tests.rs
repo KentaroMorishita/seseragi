@@ -38,6 +38,58 @@ fn parses_curried_application_left_associatively_before_binary_operators() {
 }
 
 #[test]
+fn parses_template_text_and_interpolated_expressions() {
+    let source = "pub fn greet name: String -> String = `Hello, ${name |> identity}!`\n";
+    let body = first_body(source);
+
+    let SurfaceExpr::Template { parts, .. } = body else {
+        panic!("expected template expression");
+    };
+    assert!(matches!(
+        &parts[0],
+        crate::SurfaceTemplatePart::Text { value, .. } if value == "Hello, "
+    ));
+    assert!(matches!(
+        &parts[1],
+        crate::SurfaceTemplatePart::Interpolation { value, .. }
+            if matches!(value.as_ref(), SurfaceExpr::Application { .. })
+    ));
+    assert!(matches!(
+        &parts[2],
+        crate::SurfaceTemplatePart::Text { value, .. } if value == "!"
+    ));
+}
+
+#[test]
+fn parses_multiline_templates_and_literal_interpolation_markers() {
+    let body = first_body("pub let message: String = `first\\${value}\r\nsecond ${\"ok\"}`\n");
+
+    let SurfaceExpr::Template { parts, .. } = body else {
+        panic!("expected template expression");
+    };
+    assert!(matches!(
+        &parts[0],
+        crate::SurfaceTemplatePart::Text { value, .. }
+            if value == "first${value}\nsecond "
+    ));
+    assert!(matches!(
+        &parts[1],
+        crate::SurfaceTemplatePart::Interpolation { value, .. }
+            if matches!(value.as_ref(), SurfaceExpr::String { raw, .. } if raw == "\"ok\"")
+    ));
+}
+
+#[test]
+fn rejects_invalid_template_escapes_instead_of_erasing_text() {
+    let body = first_body(
+        r#"pub let message: String = `bad\qescape`
+"#,
+    );
+
+    assert!(matches!(body, SurfaceExpr::Error { .. }));
+}
+
+#[test]
 fn preserves_grouped_expression_boundaries() {
     let body = first_body("pub fn grouped value: Int -> Int = add (value + 1) 2\n");
 

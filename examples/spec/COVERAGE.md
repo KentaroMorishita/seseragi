@@ -9,6 +9,7 @@
 | --------------------------------------------- | ----------------- | ---------------------------------------------- | ------- |
 | program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics / `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | partial |
 | literal、application、`$`、pipeline           | Lessons 01-05     | `schema-1/pipeline-application` + `execution-schema-1/pipeline-application` + literal / diagnostic fixtures | partial |
+| template interpolation / `Show<A>` evidence  | Lessons 01-05     | `schema-1/{template-interpolation,template-invalid-escape}` + `semantic-diagnostics-schema-1/template-missing-show` + `execution-schema-1/template-interpolation`; Stringとlocal derived ADTのdictionary dispatch、複数行 / escaped `${` frontend | covered |
 | optional record field / presence              | Lesson 27         | `compile/optional-record-field.ssrg`           | partial |
 | match、tuple、effectful for                   | Lessons 03 and 05 | RPS artifacts + exhaustiveness diagnostics      | partial |
 | `Range<Int>` literal / standard `Reducible`  | Lessons 05 and 12 | `schema-1/{range-reduce,range-invalid-endpoint}` + `execution-schema-1/range-reduce` | covered |

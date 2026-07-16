@@ -344,6 +344,10 @@ pub enum SurfaceExpr {
         raw: String,
         span: ByteSpan,
     },
+    Template {
+        parts: Vec<SurfaceTemplatePart>,
+        span: ByteSpan,
+    },
     Boolean {
         value: bool,
         span: ByteSpan,
@@ -418,6 +422,7 @@ impl SurfaceExpr {
             Self::Unit { span }
             | Self::Integer { span, .. }
             | Self::String { span, .. }
+            | Self::Template { span, .. }
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
             | Self::Application { span, .. }
@@ -434,6 +439,23 @@ impl SurfaceExpr {
             | Self::Error { span } => *span,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceTemplatePart {
+    Text {
+        value: String,
+        span: ByteSpan,
+    },
+    Interpolation {
+        value: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

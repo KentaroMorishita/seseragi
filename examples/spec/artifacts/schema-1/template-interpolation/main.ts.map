@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/template-interpolation"
+  ],
+  "sourcesContent": [
+    "pub type Badge deriving Show =\n  | Active\n\npub fn render name: String -> badge: Badge -> String =\n  `Hello, ${name}: ${badge}`\n\npub effect fn main =\n  render \"Seseragi\" Active\n  |> println\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "__ssrg$instance$Show$0",
+    "render",
+    "stringShow",
+    "__ssrg$instance$Show$0",
+    "main",
+    "println",
+    "render"
+  ],
+  "mappings": ";;;AAAAA;;AACIC;AADJC;AAGAC;AAGAG"
+}

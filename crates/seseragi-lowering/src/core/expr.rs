@@ -1,14 +1,14 @@
 use crate::source_span;
 use seseragi_semantics::{
     TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
-    TypedMonadDoStatement, TypedParameter, TypedPattern,
+    TypedMonadDoStatement, TypedParameter, TypedPattern, TypedTemplatePart,
 };
 
 use super::decision::lower_match;
 use super::types::lower_typed_type;
 use super::{
     CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreMonadDoStatement, CoreParameter,
-    CorePattern, CoreStatement,
+    CorePattern, CoreStatement, CoreTemplatePart,
 };
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
@@ -73,6 +73,13 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         },
         TypedExpr::String { value, origin, .. } => CoreExpr::String {
             value,
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Template { parts, origin, .. } => CoreExpr::Template {
+            parts: parts
+                .into_iter()
+                .map(|part| lower_template_part(source, part))
+                .collect(),
             origin: source_span(source, origin),
         },
         TypedExpr::Boolean { value, origin, .. } => CoreExpr::Boolean {
@@ -257,6 +264,26 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             result: Box::new(lower_expr(source, *result)),
             evidence: lower_call_evidence(evidence),
             type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+    }
+}
+
+fn lower_template_part(source: &str, part: TypedTemplatePart) -> CoreTemplatePart {
+    match part {
+        TypedTemplatePart::Text { value, origin } => CoreTemplatePart::Text {
+            value,
+            origin: source_span(source, origin),
+        },
+        TypedTemplatePart::Interpolation {
+            value,
+            evidence,
+            trait_identity,
+            origin,
+        } => CoreTemplatePart::Interpolation {
+            value: lower_expr(source, *value),
+            evidence: evidence.map(lower_call_evidence),
+            trait_identity,
             origin: source_span(source, origin),
         },
     }

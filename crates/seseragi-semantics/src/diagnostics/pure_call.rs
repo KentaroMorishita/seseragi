@@ -147,6 +147,34 @@ mod tests {
     }
 
     #[test]
+    fn reports_missing_show_evidence_at_a_template_interpolation() {
+        let artifact = semantic_diagnostics(
+            "missing-template-show.ssrg",
+            "type Badge = | Active\nfn label value: Badge -> String = `badge: ${value}`\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+        assert_eq!(
+            artifact.diagnostics[0].related[0].message,
+            "no Show instance matches the inferred call arguments"
+        );
+    }
+
+    #[test]
+    fn reports_missing_show_evidence_in_an_unannotated_let() {
+        let artifact = semantic_diagnostics(
+            "missing-let-template-show.ssrg",
+            "type Badge = | Active\nlet label = `badge: ${Active}`\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+    }
+
+    #[test]
     fn does_not_select_a_constrained_instance_without_required_evidence() {
         let artifact = semantic_diagnostics(
             "missing-instance-evidence.ssrg",

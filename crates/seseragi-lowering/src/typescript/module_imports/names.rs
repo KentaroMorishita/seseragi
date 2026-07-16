@@ -1,4 +1,6 @@
-use crate::{CoreComprehensionClause, CoreExpr, CoreModule, CorePattern, CoreStatement};
+use crate::{
+    CoreComprehensionClause, CoreExpr, CoreModule, CorePattern, CoreStatement, CoreTemplatePart,
+};
 use std::collections::BTreeSet;
 
 use super::super::names::safe_identifier;
@@ -83,6 +85,13 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         CoreExpr::Call { arguments, .. } => {
             for argument in arguments {
                 collect_local_expr_names(argument, names);
+            }
+        }
+        CoreExpr::Template { parts, .. } => {
+            for part in parts {
+                if let CoreTemplatePart::Interpolation { value, .. } = part {
+                    collect_local_expr_names(value, names);
+                }
             }
         }
         CoreExpr::ArrayComprehension {

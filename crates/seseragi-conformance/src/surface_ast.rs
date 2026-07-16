@@ -37,6 +37,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
+        "template" => validate_template(expression, path),
         "arrayComprehension" | "listComprehension" => validate_comprehension(expression, path),
         "grouped" => validate_child(expression, "value", path),
         "application" => {
@@ -58,6 +59,32 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             "SurfaceAst {path} has unknown expression kind {other}"
         )),
     }
+}
+
+fn validate_template(expression: &Value, path: &str) -> Result<(), String> {
+    let parts = expression
+        .get("parts")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.parts must be an array"))?;
+    for (index, part) in parts.iter().enumerate() {
+        let part_path = format!("{path}.parts[{index}]");
+        require_span(part, &part_path)?;
+        match part.get("kind").and_then(Value::as_str) {
+            Some("text") => {
+                if part.get("value").and_then(Value::as_str).is_none() {
+                    return Err(format!("SurfaceAst {part_path}.value must be a string"));
+                }
+            }
+            Some("interpolation") => validate_child(part, "value", &part_path)?,
+            Some(other) => {
+                return Err(format!(
+                    "SurfaceAst {part_path} has unknown template part kind {other}"
+                ));
+            }
+            None => return Err(format!("SurfaceAst {part_path}.kind must be a string")),
+        }
+    }
+    Ok(())
 }
 
 fn validate_comprehension(expression: &Value, path: &str) -> Result<(), String> {
@@ -301,6 +328,59 @@ mod tests {
         });
 
         assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_template_text_and_nested_interpolation_expressions() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "template",
+                    "parts": [
+                        {
+                            "kind": "text",
+                            "value": "answer: ",
+                            "span": { "start": 1, "end": 9 }
+                        },
+                        {
+                            "kind": "interpolation",
+                            "value": {
+                                "kind": "application",
+                                "function": { "kind": "name", "span": { "start": 11, "end": 17 } },
+                                "argument": { "kind": "integer", "span": { "start": 18, "end": 20 } },
+                                "span": { "start": 11, "end": 20 }
+                            },
+                            "span": { "start": 9, "end": 21 }
+                        }
+                    ],
+                    "span": { "start": 0, "end": 22 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn rejects_unknown_template_part_kinds() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "template",
+                    "parts": [{
+                        "kind": "mystery",
+                        "span": { "start": 1, "end": 2 }
+                    }],
+                    "span": { "start": 0, "end": 3 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module)
+            .unwrap_err()
+            .contains("unknown template part kind mystery"));
     }
 
     #[test]

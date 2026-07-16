@@ -61,7 +61,7 @@ impl Lexer<'_> {
                 '`' if self.starts_with("`[") => {
                     self.bump_fixed_raw(TokenKind::PunctuationListLeft, start, "`[")
                 }
-                '`' => self.scan_quoted(TokenKind::LiteralTemplate, '`'),
+                '`' => self.scan_template(),
                 '\\' => self.bump_fixed(TokenKind::OperatorLambda, start, char),
                 '0'..='9' => self.scan_run(TokenKind::LiteralInteger, |char| char.is_ascii_digit()),
                 '_' | 'a'..='z' | 'A'..='Z' => self.scan_identifier(),
@@ -156,6 +156,12 @@ impl Lexer<'_> {
             }
         }
         self.push(kind, start, self.cursor);
+    }
+
+    fn scan_template(&mut self) {
+        let start = self.cursor;
+        self.cursor = crate::template::template_end(self.source, start);
+        self.push(TokenKind::LiteralTemplate, start, self.cursor);
     }
 
     fn scan_operator_run(&mut self) {

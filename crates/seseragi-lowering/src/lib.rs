@@ -18,7 +18,8 @@ pub use core::{
     CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
     CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
-    CoreRecordField, CoreShowPayloadEvidence, CoreStatement, CoreTraitDispatch, CoreType,
+    CoreRecordField, CoreShowPayloadEvidence, CoreStatement, CoreTemplatePart, CoreTraitDispatch,
+    CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -124,6 +125,55 @@ mod tests {
         assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
         assert_eq!(typescript.bindings.len(), 1);
         assert!(typescript.functions.is_empty());
+    }
+
+    #[test]
+    fn lowers_templates_through_show_dictionaries_and_string_concatenation() {
+        let source = "pub type Badge deriving Show = | Active\n\
+                      pub fn label name: String -> badge: Badge -> String = `Hello ${name}: ${badge}`\n";
+        let typed = type_module("artifact/template-show/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        assert!(matches!(
+            &core.functions[0].body,
+            CoreExpr::Template { parts, .. }
+                if matches!(
+                    &parts[3],
+                    CoreTemplatePart::Interpolation {
+                        evidence: Some(CoreCallEvidence {
+                            evidence: CoreInstanceEvidence::Local { identity, .. },
+                            ..
+                        }),
+                        ..
+                    } if identity == "Show<artifact/template-show::Badge>"
+                )
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert_eq!(
+            typescript.runtime_requirements,
+            vec![
+                "core.adt",
+                "core.show.dictionary",
+                "core.string",
+                "core.string.show"
+            ]
+        );
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                body: TypeScriptExpr::Binary { .. },
+                ..
+            }
+        ));
+
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle
+            .typescript
+            .contains("_ssrg_show_stringShow[\"show\"](name)"));
+        assert!(bundle
+            .typescript
+            .contains("__ssrg$instance$Show$0[\"show\"](badge)"));
+        assert!(bundle.typescript.contains("\"Hello \" +"));
     }
 
     #[test]

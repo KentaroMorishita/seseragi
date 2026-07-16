@@ -12,6 +12,7 @@ pub(super) fn type_ref_from_core_expr(
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
         CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
         CoreExpr::String { .. } => TypeScriptType::String,
+        CoreExpr::Template { .. } => TypeScriptType::String,
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
         CoreExpr::Variable { type_ref, .. }
         | CoreExpr::Call { type_ref, .. }

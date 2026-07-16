@@ -1,7 +1,8 @@
 use crate::{
     CoreCallEvidence, CoreComprehensionClause, CoreDecisionBranch, CoreExpr, CoreInstanceEvidence,
-    CoreInstanceImplementation, CoreModule, CoreStatement, TypeScriptLoweringError,
-    TypeScriptOutputPlan, TypeScriptSourceImport, TypeScriptSourceImportBinding,
+    CoreInstanceImplementation, CoreModule, CoreStatement, CoreTemplatePart,
+    TypeScriptLoweringError, TypeScriptOutputPlan, TypeScriptSourceImport,
+    TypeScriptSourceImportBinding,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -109,6 +110,19 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
         | CoreExpr::List { elements, .. } => {
             for element in elements {
                 collect_expr(element, imported);
+            }
+        }
+        CoreExpr::Template { parts, .. } => {
+            for part in parts {
+                if let CoreTemplatePart::Interpolation {
+                    value, evidence, ..
+                } = part
+                {
+                    if let Some(evidence) = evidence {
+                        collect_call_evidence(std::slice::from_ref(evidence), imported);
+                    }
+                    collect_expr(value, imported);
+                }
             }
         }
         CoreExpr::ArrayComprehension {

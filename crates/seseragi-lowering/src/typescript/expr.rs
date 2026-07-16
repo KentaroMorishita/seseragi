@@ -5,7 +5,7 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
-use crate::{CoreExpr, CoreMonadDoStatement, CoreStatement, CoreType};
+use crate::{CoreExpr, CoreMonadDoStatement, CoreStatement, CoreTemplatePart, CoreType};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
@@ -29,6 +29,7 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
+        CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types),
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Variable {
             name,
@@ -275,6 +276,48 @@ pub(super) fn lower_core_expr_to_typescript(
             )),
         },
     }
+}
+
+fn lower_template(
+    parts: Vec<CoreTemplatePart>,
+    imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptExpr {
+    parts
+        .into_iter()
+        .map(|part| match part {
+            CoreTemplatePart::Text { value, .. } => TypeScriptExpr::String { value },
+            CoreTemplatePart::Interpolation {
+                value, evidence, ..
+            } => {
+                let evidence = evidence.expect(
+                    "template interpolation must select Show evidence before TypeScript lowering",
+                );
+                let dictionary = local_dictionary_expression(
+                    &evidence.evidence,
+                    imported_values,
+                    imported_types,
+                )
+                .expect("template interpolation requires materializable Show evidence");
+                TypeScriptExpr::DictionaryCall {
+                    dictionary: Box::new(dictionary),
+                    method: "show".to_owned(),
+                    arguments: vec![lower_core_expr_to_typescript(
+                        value,
+                        imported_values,
+                        imported_types,
+                    )],
+                }
+            }
+        })
+        .reduce(|left, right| TypeScriptExpr::Binary {
+            operator: "+".to_owned(),
+            left: Box::new(left),
+            right: Box::new(right),
+        })
+        .unwrap_or(TypeScriptExpr::String {
+            value: String::new(),
+        })
 }
 
 fn lower_constrained_call(

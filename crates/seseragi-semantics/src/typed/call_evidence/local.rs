@@ -119,6 +119,7 @@ fn select_local_instance_with_stack(
         .iter()
         .filter_map(|declaration| {
             match_instance(declaration, trait_identity, constraint, resolution, stack)
+                .or_else(|| match_derived_show(declaration, trait_identity, constraint, resolution))
         })
         .take(2)
         .collect::<Vec<_>>();
@@ -127,6 +128,49 @@ fn select_local_instance_with_stack(
         [selected] => Some(selected.clone()),
         _ => None,
     }
+}
+
+fn match_derived_show(
+    declaration: &SurfaceDecl,
+    trait_identity: &str,
+    constraint: &TypedConstraint,
+    resolution: &TypedResolution<'_>,
+) -> Option<TypedInstanceEvidence> {
+    if trait_identity != "std/prelude::Show" || constraint.name != "Show" {
+        return None;
+    }
+    let SurfaceDecl::Type {
+        name,
+        name_span,
+        type_parameters,
+        deriving,
+        ..
+    } = declaration
+    else {
+        return None;
+    };
+    if !type_parameters.is_empty() || !deriving.iter().any(|derived| derived == "Show") {
+        return None;
+    }
+    let [TypedType::Named {
+        name: actual,
+        arguments,
+    }] = constraint.arguments.as_slice()
+    else {
+        return None;
+    };
+    if actual != name || !arguments.is_empty() {
+        return None;
+    }
+    let canonical = resolution
+        .declaration_symbol(*name_span, crate::SymbolKind::Type)?
+        .canonical
+        .as_deref()?;
+    Some(TypedInstanceEvidence::Local {
+        identity: format!("Show<{canonical}>"),
+        type_arguments: Vec::new(),
+        evidence_arguments: Vec::new(),
+    })
 }
 
 fn match_instance(

@@ -361,6 +361,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Template {
+        parts: Vec<TypedTemplatePart>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Boolean {
         value: bool,
         #[serde(rename = "type")]
@@ -472,6 +478,26 @@ pub enum TypedExpr {
         evidence: TypedCallEvidence,
         #[serde(rename = "type")]
         type_ref: TypedType,
+        origin: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedTemplatePart {
+    Text {
+        value: String,
+        origin: ByteSpan,
+    },
+    Interpolation {
+        value: Box<TypedExpr>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        evidence: Option<TypedCallEvidence>,
+        trait_identity: String,
         origin: ByteSpan,
     },
 }

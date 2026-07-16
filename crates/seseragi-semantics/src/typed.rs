@@ -190,6 +190,46 @@ mod tests {
     use seseragi_syntax::Visibility;
 
     #[test]
+    fn types_template_interpolation_with_selected_show_evidence() {
+        let typed = type_module(
+            "artifact/template-show/main.ssrg",
+            "pub type Badge deriving Show = | Active\n\
+             pub fn label name: String -> badge: Badge -> String = `Hello ${name}: ${badge}`\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::Template { parts, .. } = body else {
+            panic!("expected typed template");
+        };
+        assert!(matches!(
+            &parts[1],
+            crate::TypedTemplatePart::Interpolation {
+                evidence: Some(crate::TypedCallEvidence {
+                    evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    ..
+                }),
+                ..
+            } if identity == "Show<std/prelude::String>"
+        ));
+        assert!(
+            matches!(
+                &parts[3],
+                crate::TypedTemplatePart::Interpolation {
+                    evidence: Some(crate::TypedCallEvidence {
+                        evidence: crate::TypedInstanceEvidence::Local { identity, .. },
+                        ..
+                    }),
+                    ..
+                } if identity == "Show<artifact/template-show::Badge>"
+            ),
+            "unexpected derived Show evidence: {:?}",
+            &parts[3]
+        );
+    }
+
+    #[test]
     fn types_basic_public_let() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
 

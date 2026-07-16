@@ -8,6 +8,7 @@ mod line_continuation;
 mod source;
 mod surface;
 mod surface_model;
+mod template;
 mod token;
 
 pub use cst::{parse_cst, parse_cst_from_tokens, CstArtifact, CstError, CstMissing, CstNode};
@@ -26,7 +27,7 @@ pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
     SurfaceDoItem, SurfaceExpr, SurfaceImport, SurfaceImportItem, SurfaceMatchArm, SurfaceMethod,
-    SurfaceModule, SurfaceParameter, SurfacePattern, SurfaceRequirement, SurfaceVariant,
-    TypeParameter, TypeRef, Visibility,
+    SurfaceModule, SurfaceParameter, SurfacePattern, SurfaceRequirement, SurfaceTemplatePart,
+    SurfaceVariant, TypeParameter, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

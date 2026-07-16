@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/template-interpolation",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.show.dictionary",
+    "core.string",
+    "core.string.show",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Badge",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Active",
+          "tag": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 35,
+            "end": 41
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/template-interpolation::Badge>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/template-interpolation::Badge",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Badge",
+        "variants": [
+          {
+            "name": "Active",
+            "tag": "Active"
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "badge",
+          "type": "Badge",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "string",
+              "value": "Hello, "
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_stringShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "name"
+                }
+              ]
+            }
+          },
+          "right": {
+            "kind": "string",
+            "value": ": "
+          }
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "identifier",
+            "name": "__ssrg$instance$Show$0"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "badge"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 43,
+        "end": 126
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "Seseragi"
+              },
+              {
+                "kind": "identifier",
+                "name": "Active"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 128,
+        "end": 188
+      }
+    }
+  ]
+}

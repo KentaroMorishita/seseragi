@@ -96,6 +96,7 @@ fn collect_effect_contract(
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Template { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
         | TypedExpr::Call { .. }

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "module": "artifact/template-interpolation",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/template-interpolation::Badge",
+      "namespace": "type",
+      "name": "Badge",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 41
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Badge",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/template-interpolation::Active",
+      "namespace": "value",
+      "name": "Active",
+      "constructorOf": "artifact/template-interpolation::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 35,
+        "end": 41
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/template-interpolation::render",
+      "namespace": "value",
+      "name": "render",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 43,
+        "end": 126
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

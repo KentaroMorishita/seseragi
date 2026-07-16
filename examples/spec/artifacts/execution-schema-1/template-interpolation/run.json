@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "case": "template-interpolation",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/template-interpolation",
+    "export": "main",
+    "compiledModule": "../../schema-1/template-interpolation/generated-module.json",
+    "typedInterface": "../../schema-1/template-interpolation/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.show.dictionary",
+      "core.string",
+      "core.string.show",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Hello, Seseragi: Active"
+        ],
+        "stdout": "Hello, Seseragi: Active\n"
+      }
+    ]
+  }
+}

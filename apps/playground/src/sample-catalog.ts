@@ -34,6 +34,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Hello, Mio! Welcome to Seseragi Night.",
   },
   {
+    id: "template-interpolation",
+    label: "型安全なtemplate",
+    category: "基本",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/template-interpolation/main.ssrg",
+    stdin: "",
+    expectedOutput: "Hello, Seseragi: Active",
+  },
+  {
     id: "array-scoreboard",
     label: "Arrayスコア集計",
     category: "基本",

@@ -7,7 +7,7 @@ use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence,
     show_ops::runtime_show_dictionary_for_identity, CoreCallEvidence, CoreComprehensionClause,
-    CoreExpr, CoreInstanceEvidence, CoreStatement, CoreType,
+    CoreExpr, CoreInstanceEvidence, CoreStatement, CoreTemplatePart, CoreType,
 };
 
 use super::{push_import_unique, push_unique, TypeScriptImport};
@@ -17,6 +17,23 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
         CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
+        CoreExpr::Template { parts, .. } => {
+            push_unique(requirements, "core.string");
+            for part in parts {
+                if let CoreTemplatePart::Interpolation {
+                    value, evidence, ..
+                } = part
+                {
+                    if let Some(evidence) = evidence {
+                        collect_evidence_runtime_requirements(
+                            std::slice::from_ref(evidence),
+                            requirements,
+                        );
+                    }
+                    collect_expr_runtime_requirements(value, requirements);
+                }
+            }
+        }
         CoreExpr::Boolean { .. } => push_unique(requirements, "core.bool"),
         CoreExpr::Variable {
             name,
@@ -295,6 +312,19 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
+        CoreExpr::Template { parts, .. } => {
+            for part in parts {
+                if let CoreTemplatePart::Interpolation {
+                    value, evidence, ..
+                } = part
+                {
+                    if let Some(evidence) = evidence {
+                        collect_evidence_runtime_imports(std::slice::from_ref(evidence), imports);
+                    }
+                    collect_expr_runtime_imports(value, imports);
+                }
+            }
+        }
         CoreExpr::Variable {
             name,
             evidence,
