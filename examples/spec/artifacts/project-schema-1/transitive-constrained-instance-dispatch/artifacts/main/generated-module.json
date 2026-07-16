@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-constrained-instance-dispatch::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "effect.console.println",
+      "core.string",
+      "core.maybe.just",
+      "core.maybe",
+      "core.int64"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-constrained-instance-dispatch/main.ts",
+    "sourceMap": "dist/transitive-constrained-instance-dispatch/main.ts.map"
+  }
+}

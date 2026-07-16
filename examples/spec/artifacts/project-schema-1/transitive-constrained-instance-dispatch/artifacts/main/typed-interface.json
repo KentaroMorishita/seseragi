@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/transitive-constrained-instance-dispatch::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./facade",
+      "module": "fixture/transitive-constrained-instance-dispatch::facade",
+      "origin": {
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "report",
+          "symbol": "fixture/transitive-constrained-instance-dispatch::facade::report"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/transitive-constrained-instance-dispatch::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 35,
+        "end": 87
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "providerModule": "fixture/transitive-constrained-instance-dispatch::provider",
+      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Inspect",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Ready",
+          "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 202,
+        "end": 374
+      }
+    },
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)<std/prelude::Int>",
+      "providerModule": "fixture/transitive-constrained-instance-dispatch::provider",
+      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+      "argumentIdentities": [
+        "std/prelude::Int"
+      ],
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 112,
+        "end": 200
+      }
+    }
+  ]
+}

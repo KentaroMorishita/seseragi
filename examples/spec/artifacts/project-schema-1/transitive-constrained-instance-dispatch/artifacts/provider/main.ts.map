@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/transitive-constrained-instance-dispatch/provider.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-constrained-instance-dispatch::provider"
+  ],
+  "sourcesContent": [
+    "pub trait Ready<A> {\n  fn ready value: A -> String\n}\n\npub trait Inspect<A> {\n  fn inspect value: A -> String\n}\n\ninstance Ready<Int> {\n  fn ready value: Int -> String = \"transitive constrained ready\"\n}\n\ninstance<T> Inspect<Maybe<T>>\nwhere Ready<T> {\n  fn inspect value: Maybe<T> -> String =\n    match value {\n      Nothing -> \"not ready\"\n      Just item -> ready item\n    }\n}\n\npub fn report<T> value: T -> String\nwhere Inspect<T> =\n  inspect value\n"
+  ],
+  "names": [
+    "__ssrg$instance$Ready$0",
+    "__ssrg$instance$Inspect$1",
+    "report",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAQAA;AAIAC;AASAC"
+}

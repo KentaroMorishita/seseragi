@@ -1,0 +1,421 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "provider.ssrg",
+  "module": "fixture/transitive-constrained-instance-dispatch::provider",
+  "instances": [
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)<std/prelude::Int>",
+      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Int"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 112,
+        "end": 200
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 145,
+                  "end": 150
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "transitive constrained ready",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 168,
+                "end": 198
+              }
+            },
+            "origin": {
+              "start": 136,
+              "end": 198
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)"
+      ],
+      "origin": {
+        "start": 202,
+        "end": 374
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "inspect",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 262,
+                  "end": 267
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 300,
+                  "end": 305
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 314,
+                      "end": 321
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "not ready",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 325,
+                      "end": 336
+                    }
+                  },
+                  "origin": {
+                    "start": 314,
+                    "end": 336
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Just",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 18,
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 348,
+                        "end": 352
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 343,
+                      "end": 352
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)::ready",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "item",
+                        "type": {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 362,
+                          "end": 366
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Ready",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "T",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+                      "method": "ready"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 356,
+                      "end": 366
+                    }
+                  },
+                  "origin": {
+                    "start": 343,
+                    "end": 366
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 294,
+                "end": 372
+              }
+            },
+            "origin": {
+              "start": 251,
+              "end": 372
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/transitive-constrained-instance-dispatch::provider::report",
+      "visibility": "public",
+      "origin": {
+        "start": 376,
+        "end": 446
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Inspect",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 393,
+            "end": 398
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)::inspect",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "start": 441,
+              "end": 446
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Inspect",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+          "method": "inspect"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 433,
+          "end": 446
+        }
+      }
+    }
+  ]
+}

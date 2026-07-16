@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/transitive-constrained-instance-dispatch::main",
+    "export": "main"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.string",
+      "core.maybe",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "transitive constrained ready"
+        ],
+        "stdout": "transitive constrained ready\n"
+      }
+    ]
+  }
+}

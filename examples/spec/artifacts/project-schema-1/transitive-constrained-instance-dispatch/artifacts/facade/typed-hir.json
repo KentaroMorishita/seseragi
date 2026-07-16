@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "facade.ssrg",
+  "module": "fixture/transitive-constrained-instance-dispatch::facade",
+  "moduleDependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-constrained-instance-dispatch::provider",
+      "origin": {
+        "start": 0,
+        "end": 62
+      },
+      "imports": [
+        {
+          "namespace": "trait",
+          "imported": "Inspect",
+          "local": "Inspect",
+          "canonical": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+          "origin": {
+            "start": 9,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "report",
+          "local": "providerReport",
+          "canonical": "fixture/transitive-constrained-instance-dispatch::provider::report",
+          "origin": {
+            "start": 28,
+            "end": 42
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/transitive-constrained-instance-dispatch::facade::report",
+      "visibility": "public",
+      "origin": {
+        "start": 64,
+        "end": 141
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Inspect",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 81,
+            "end": 86
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/transitive-constrained-instance-dispatch::provider::report",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "start": 136,
+              "end": 141
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Inspect",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 121,
+          "end": 141
+        }
+      }
+    }
+  ]
+}

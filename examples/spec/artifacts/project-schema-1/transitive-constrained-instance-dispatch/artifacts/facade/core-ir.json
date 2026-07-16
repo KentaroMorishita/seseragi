@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/transitive-constrained-instance-dispatch::facade",
+  "moduleDependencies": [
+    {
+      "specifier": "./provider",
+      "module": "fixture/transitive-constrained-instance-dispatch::provider",
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 62
+      },
+      "imports": [
+        {
+          "namespace": "trait",
+          "imported": "Inspect",
+          "local": "Inspect",
+          "canonical": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 9,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "report",
+          "local": "providerReport",
+          "canonical": "fixture/transitive-constrained-instance-dispatch::provider::report",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 28,
+            "end": 42
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/transitive-constrained-instance-dispatch::facade::report",
+      "visibility": "public",
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 64,
+        "end": 141
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Inspect",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/transitive-constrained-instance-dispatch::provider::report",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "source": "facade.ssrg",
+              "start": 136,
+              "end": 141
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Inspect",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "facade.ssrg",
+          "start": 121,
+          "end": 141
+        }
+      }
+    }
+  ]
+}

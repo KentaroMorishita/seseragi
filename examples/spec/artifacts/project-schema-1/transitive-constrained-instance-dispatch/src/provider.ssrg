@@ -1,0 +1,24 @@
+pub trait Ready<A> {
+  fn ready value: A -> String
+}
+
+pub trait Inspect<A> {
+  fn inspect value: A -> String
+}
+
+instance Ready<Int> {
+  fn ready value: Int -> String = "transitive constrained ready"
+}
+
+instance<T> Inspect<Maybe<T>>
+where Ready<T> {
+  fn inspect value: Maybe<T> -> String =
+    match value {
+      Nothing -> "not ready"
+      Just item -> ready item
+    }
+}
+
+pub fn report<T> value: T -> String
+where Inspect<T> =
+  inspect value

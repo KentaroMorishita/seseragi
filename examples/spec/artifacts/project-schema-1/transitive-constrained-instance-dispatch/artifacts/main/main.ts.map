@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "dist/transitive-constrained-instance-dispatch/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-constrained-instance-dispatch::main"
+  ],
+  "sourcesContent": [
+    "import { report } from \"./facade\"\n\npub effect fn main =\n  report (Just 42)\n  |> println\n"
+  ],
+  "names": [
+    "main",
+    "println",
+    "report",
+    "Just",
+    "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)<std/prelude::Maybe<$0>>"
+  ],
+  "mappings": ";;;;;AAEAA"
+}

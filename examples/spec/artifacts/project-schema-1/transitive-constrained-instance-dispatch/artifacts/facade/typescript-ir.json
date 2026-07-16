@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/transitive-constrained-instance-dispatch::facade",
+  "runtimeRequirements": [
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/transitive-constrained-instance-dispatch::provider",
+      "specifier": "./provider.js",
+      "bindings": [
+        {
+          "imported": "report",
+          "local": "providerReport",
+          "sourceLocal": "providerReport",
+          "canonical": "fixture/transitive-constrained-instance-dispatch::provider::report",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 28,
+            "end": 42
+          }
+        }
+      ],
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 62
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "report",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Inspect",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "providerReport",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          }
+        ]
+      },
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 64,
+        "end": 141
+      }
+    }
+  ]
+}

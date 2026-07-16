@@ -210,11 +210,15 @@ Console trace、stdoutまで固定します。`project-schema-1/imported-instanc
 `instance<T> Inspect<Maybe<T>> where Ready<T>`を選び、final interfaceへ保存したconstraintのcanonical trait identityから
 `Ready<Int>` evidenceを再帰materializeします。consumer ESMはInspect factoryとReady dictionaryをともにimportし、
 `Inspect<Int>(Ready<Int>)`のactual dispatchまで固定します。missing requirementは`instance.missing`で停止します。
+`project-schema-1/transitive-constrained-instance-dispatch`はmainのsource edgeをfacadeだけに保ちながら、facade final interfaceが
+transportしたgeneric / constraint付きinstance metadataからoriginal providerのInspect factoryとReady dictionaryを計画します。
+生成main ESMはfacadeのvalueとproviderのnested dictionariesを別々にimportし、三moduleのclosed TypeScript checkとactual
+dispatchまで固定します。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained functionは未接続です。conditional imported dictionary selectionはdirect providerまで接続済みで、
-transitive generic providerとstandard evidenceのfactory引数化が残ります。
+first-class partial constrained functionは未接続です。conditional imported dictionary selectionはdirect / transitive providerまで
+接続済みで、standard evidenceのfactory引数化が残ります。
 
 `F<_>`は通常type parameterとは別にarityを持つtype-constructor parameterとしてSurfaceAstとModuleInterfaceへ
 保持します。`schema-1/functor-maybe`は`F<A> ~ Maybe<Int>`から`F = Maybe`と要素型を推論し、generic
@@ -303,10 +307,9 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    Int算術とoperator sectionは`Add<Int, Int, Int>`等のevidenceを全IRへ保持済み。次は標準名専用の経路を
    一般instance機構の完了と誤認せず、user-defined / imported instance searchへ進む。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
-4. direct dependencyとfacade越しのconcrete user-defined evidence、およびdirect providerのgeneric / constraint付きfactoryは
+4. direct dependencyとfacade越しのconcrete user-defined evidence、およびdirect / facade越しproviderのgeneric / constraint付きfactoryは
    canonical trait / argument / constraint identitiesでResolvedAstからTypedHir / CoreIr / TypeScript source import /
-   driver output plan、actual executionまで保持済み。次はtransitive generic providerとstandard evidence factory引数を
-   独立gateで確認する。
+   driver output plan、actual executionまで保持済み。次はstandard evidence factory引数を独立gateで確認する。
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、

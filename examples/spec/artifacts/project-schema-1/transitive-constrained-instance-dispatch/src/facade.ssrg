@@ -1,0 +1,5 @@
+import { Inspect, report as providerReport } from "./provider"
+
+pub fn report<T> value: T -> String
+where Inspect<T> =
+  providerReport value

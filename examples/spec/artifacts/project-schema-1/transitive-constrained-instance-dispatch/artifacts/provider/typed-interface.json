@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/transitive-constrained-instance-dispatch::provider",
+  "source": "provider.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+      "namespace": "trait",
+      "name": "Ready",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 52
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Ready",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "ready",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 23,
+            "end": 50
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+      "namespace": "trait",
+      "name": "Inspect",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 54,
+        "end": 110
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Inspect",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "inspect",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 79,
+            "end": 108
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/transitive-constrained-instance-dispatch::provider::report",
+      "namespace": "value",
+      "name": "report",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 376,
+        "end": 446
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Inspect",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)<std/prelude::Int>",
+      "providerModule": "fixture/transitive-constrained-instance-dispatch::provider",
+      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+      "argumentIdentities": [
+        "std/prelude::Int"
+      ],
+      "trait": "Ready",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ready",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 112,
+        "end": 200
+      }
+    },
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "providerModule": "fixture/transitive-constrained-instance-dispatch::provider",
+      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Inspect",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Ready",
+          "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 202,
+        "end": 374
+      }
+    }
+  ]
+}

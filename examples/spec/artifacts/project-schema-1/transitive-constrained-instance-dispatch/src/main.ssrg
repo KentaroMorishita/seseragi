@@ -1,0 +1,5 @@
+import { report } from "./facade"
+
+pub effect fn main =
+  report (Just 42)
+  |> println

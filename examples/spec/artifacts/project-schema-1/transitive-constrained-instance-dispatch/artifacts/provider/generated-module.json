@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "module": "fixture/transitive-constrained-instance-dispatch::provider",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.string",
+      "core.maybe",
+      "core.adt"
+    ]
+  },
+  "exports": [
+    "report"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)<std/prelude::Int>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "bigint"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Ready$0"
+    },
+    {
+      "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Inspect$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/transitive-constrained-instance-dispatch/provider.ts",
+    "sourceMap": "dist/transitive-constrained-instance-dispatch/provider.ts.map"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/transitive-constrained-instance-dispatch/facade.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/transitive-constrained-instance-dispatch::facade"
+  ],
+  "sourcesContent": [
+    "import { Inspect, report as providerReport } from \"./provider\"\n\npub fn report<T> value: T -> String\nwhere Inspect<T> =\n  providerReport value\n"
+  ],
+  "names": [
+    "report",
+    "providerReport"
+  ],
+  "mappings": ";;AAEAA"
+}
