@@ -1,5 +1,21 @@
 import { describe, expect, test } from "bun:test"
-import { classifyIdentifier } from "../src/editor/seseragi-language"
+import { classHighlighter, highlightTree } from "@lezer/highlight"
+import {
+  classifyIdentifier,
+  seseragiLanguage,
+} from "../src/editor/seseragi-language"
+
+function highlightedTokens(source: string) {
+  const tokens: Array<{ text: string; classes: string }> = []
+  highlightTree(
+    seseragiLanguage.parser.parse(source),
+    classHighlighter,
+    (from, to, classes) => {
+      tokens.push({ text: source.slice(from, to), classes })
+    }
+  )
+  return tokens
+}
 
 describe("Seseragi syntax classification", () => {
   test("classifies language declarations and Effect keywords", () => {
@@ -21,5 +37,23 @@ describe("Seseragi syntax classification", () => {
     expect(classifyIdentifier("Player1Wins")).toBe("type-name")
     expect(classifyIdentifier("True")).toBe("bool")
     expect(classifyIdentifier("decide")).toBe("variable")
+  })
+
+  test("highlights List literals without swallowing them as templates", () => {
+    expect(highlightedTokens("`[1, value + 2]")).toEqual([
+      { text: "`[", classes: "tok-punctuation" },
+      { text: "1", classes: "tok-number" },
+      { text: ",", classes: "tok-punctuation" },
+      { text: "value", classes: "tok-variableName" },
+      { text: "+", classes: "tok-keyword" },
+      { text: "2", classes: "tok-number" },
+      { text: "]", classes: "tok-punctuation" },
+    ])
+  })
+
+  test("keeps actual template literals highlighted as strings", () => {
+    expect(highlightedTokens("`hello ${name}`")).toEqual([
+      { text: "`hello ${name}`", classes: "tok-string" },
+    ])
   })
 })

@@ -92,6 +92,10 @@ const parser: StreamParser<State> = {
       state.inBlockComment = true
       return "comment"
     }
+    // A backtick directly before `[` selects Seseragi's persistent List
+    // literal/comprehension syntax. Consume only the sigil here so the
+    // collection contents keep their normal number, name, and operator tags.
+    if (stream.match(/^`(?=\[)/u)) return "punctuation"
     if (stream.match(/^`(?:[^`\\]|\\.)*`?/u)) return "string"
     if (stream.match(/^"(?:[^"\\]|\\.)*"?/u)) return "string"
     if (stream.match(/^'(?:[^'\\]|\\.)*'?/u)) return "string"
