@@ -16,7 +16,7 @@
   ],
   "instances": [
     {
-      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
       "trait": "Add",
       "arguments": [
         {
@@ -25,9 +25,7 @@
           "arguments": []
         },
         {
-          "kind": "reference",
-          "name": "Score",
-          "arguments": []
+          "kind": "bigint"
         },
         {
           "kind": "reference",

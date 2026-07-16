@@ -44,6 +44,26 @@ pub(super) fn lower_core_expr_to_typescript(
                         arity: 2,
                     };
                 }
+                if let Some(method) = operator_trait_method(&name) {
+                    if let Some(dictionary) = evidence.first().and_then(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                    }) {
+                        return curried_dictionary_method_reference(dictionary, method);
+                    }
+                    if name == "+"
+                        && matches!(
+                            evidence.first().map(|selected| &selected.evidence),
+                            Some(crate::CoreInstanceEvidence::Standard { identity })
+                                if identity == "std/string::Add"
+                        )
+                    {
+                        return curried_binary_reference("+");
+                    }
+                }
             }
             runtime_sum_constructor(&name)
                 .map(|constructor| TypeScriptExpr::RuntimeReference {
@@ -492,6 +512,41 @@ fn operator_trait_method(operator: &str) -> Option<&'static str> {
         "%" => Some("rem"),
         "**" => Some("pow"),
         _ => None,
+    }
+}
+
+fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str) -> TypeScriptExpr {
+    let left = "_argument0".to_owned();
+    let right = "_argument1".to_owned();
+    TypeScriptExpr::Lambda {
+        parameter: left.clone(),
+        body: Box::new(TypeScriptExpr::Lambda {
+            parameter: right.clone(),
+            body: Box::new(TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(dictionary),
+                method: method.to_owned(),
+                arguments: vec![
+                    TypeScriptExpr::Identifier { name: left },
+                    TypeScriptExpr::Identifier { name: right },
+                ],
+            }),
+        }),
+    }
+}
+
+fn curried_binary_reference(operator: &str) -> TypeScriptExpr {
+    let left = "_argument0".to_owned();
+    let right = "_argument1".to_owned();
+    TypeScriptExpr::Lambda {
+        parameter: left.clone(),
+        body: Box::new(TypeScriptExpr::Lambda {
+            parameter: right.clone(),
+            body: Box::new(TypeScriptExpr::Binary {
+                operator: operator.to_owned(),
+                left: Box::new(TypeScriptExpr::Identifier { name: left }),
+                right: Box::new(TypeScriptExpr::Identifier { name: right }),
+            }),
+        }),
     }
 }
 

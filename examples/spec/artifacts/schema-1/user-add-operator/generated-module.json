@@ -9,6 +9,7 @@
       "core.adt",
       "core.int64",
       "core.int64.add",
+      "core.array.reduce",
       "core.string",
       "core.unit",
       "effect.console.println"
@@ -20,7 +21,7 @@
   ],
   "instances": [
     {
-      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>",
+      "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>",
       "trait": "Add",
       "arguments": [
         {
@@ -29,9 +30,7 @@
           "arguments": []
         },
         {
-          "kind": "reference",
-          "name": "Score",
-          "arguments": []
+          "kind": "bigint"
         },
         {
           "kind": "reference",

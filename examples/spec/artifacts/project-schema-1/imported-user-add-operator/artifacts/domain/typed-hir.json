@@ -5,7 +5,7 @@
   "module": "fixture/imported-user-add-operator::domain",
   "instances": [
     {
-      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
       "traitIdentity": "std/prelude::Add",
       "trait": "Add",
       "arguments": [
@@ -16,7 +16,7 @@
         },
         {
           "kind": "named",
-          "name": "Score",
+          "name": "Int",
           "arguments": []
         },
         {
@@ -27,13 +27,13 @@
       ],
       "argumentIdentities": [
         "fixture/imported-user-add-operator::domain::Score",
-        "fixture/imported-user-add-operator::domain::Score",
+        "std/prelude::Int",
         "fixture/imported-user-add-operator::domain::Score"
       ],
       "constraints": [],
       "origin": {
         "start": 33,
-        "end": 229
+        "end": 182
       },
       "implementation": {
         "kind": "user-defined",
@@ -59,8 +59,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 78,
-                  "end": 82
+                  "start": 76,
+                  "end": 80
                 }
               },
               {
@@ -68,145 +68,57 @@
                 "name": "right",
                 "type": {
                   "kind": "named",
-                  "name": "Score",
+                  "name": "Int",
                   "arguments": []
                 },
                 "origin": {
-                  "start": 93,
-                  "end": 98
+                  "start": 91,
+                  "end": 96
                 }
               }
             ],
             "body": {
               "kind": "match",
               "scrutinee": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "variable",
-                    "name": "left",
-                    "type": {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 128,
-                      "end": 132
-                    }
-                  },
-                  {
-                    "kind": "variable",
-                    "name": "right",
-                    "type": {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 134,
-                      "end": 139
-                    }
-                  }
-                ],
+                "kind": "variable",
+                "name": "left",
                 "type": {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    }
-                  ]
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
                 },
                 "origin": {
-                  "start": 127,
-                  "end": 140
+                  "start": 123,
+                  "end": 127
                 }
               },
               "arms": [
                 {
                   "pattern": {
-                    "kind": "tuple",
-                    "elements": [
-                      {
-                        "kind": "constructor",
-                        "symbol": "fixture/imported-user-add-operator::domain::Points",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 6,
-                          "name": "leftValue",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 157,
-                            "end": 166
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 150,
-                          "end": 166
-                        }
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-user-add-operator::domain::Points",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 6,
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
                       },
-                      {
-                        "kind": "constructor",
-                        "symbol": "fixture/imported-user-add-operator::domain::Points",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 7,
-                          "name": "rightValue",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 175,
-                            "end": 185
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 168,
-                          "end": 185
-                        }
+                      "origin": {
+                        "start": 143,
+                        "end": 148
                       }
-                    ],
+                    },
                     "type": {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        }
-                      ]
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
                     },
                     "origin": {
-                      "start": 149,
-                      "end": 186
+                      "start": 136,
+                      "end": 148
                     }
                   },
                   "body": {
@@ -218,28 +130,28 @@
                         "operator": "+",
                         "left": {
                           "kind": "variable",
-                          "name": "leftValue",
+                          "name": "value",
                           "type": {
                             "kind": "named",
                             "name": "Int",
                             "arguments": []
                           },
                           "origin": {
-                            "start": 198,
-                            "end": 207
+                            "start": 160,
+                            "end": 165
                           }
                         },
                         "right": {
                           "kind": "variable",
-                          "name": "rightValue",
+                          "name": "right",
                           "type": {
                             "kind": "named",
                             "name": "Int",
                             "arguments": []
                           },
                           "origin": {
-                            "start": 210,
-                            "end": 220
+                            "start": 168,
+                            "end": 173
                           }
                         },
                         "evidence": [
@@ -276,8 +188,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 198,
-                          "end": 220
+                          "start": 160,
+                          "end": 173
                         }
                       }
                     ],
@@ -287,13 +199,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 190,
-                      "end": 221
+                      "start": 152,
+                      "end": 174
                     }
                   },
                   "origin": {
-                    "start": 149,
-                    "end": 221
+                    "start": 136,
+                    "end": 174
                   }
                 }
               ],
@@ -304,13 +216,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 121,
-                "end": 227
+                "start": 117,
+                "end": 180
               }
             },
             "origin": {
-              "start": 71,
-              "end": 227
+              "start": 69,
+              "end": 180
             }
           }
         ]

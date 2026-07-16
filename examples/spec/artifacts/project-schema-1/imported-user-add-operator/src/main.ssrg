@@ -1,8 +1,12 @@
 import { Points, Score } from "./domain"
 
-fn combine<T> left: T -> right: T -> T
-where Add<T, T, T> =
-  left + right
+fn addBonus bonus: Int -> score: Score -> Score =
+  score + bonus
+
+fn total values: Array<Int> -> Score =
+  values
+  |> reduce (Points 0) (+)
+  |> addBonus 0
 
 fn render score: Score -> String =
   match score {
@@ -11,7 +15,7 @@ fn render score: Score -> String =
   }
 
 pub effect fn main =
-  Points 20
-  |> combine (Points 22)
+  [10, 12, 20]
+  |> total
   |> render
   |> println

@@ -61,8 +61,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 487,
-        "end": 567
+        "start": 523,
+        "end": 594
       },
       "scheme": {
         "typeParameters": [],
@@ -111,12 +111,12 @@
   "operators": [],
   "instances": [
     {
-      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>",
+      "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>",
       "providerModule": "artifact/user-add-operator",
       "traitIdentity": "std/prelude::Add",
       "argumentIdentities": [
         "artifact/user-add-operator::Score",
-        "artifact/user-add-operator::Score",
+        "std/prelude::Int",
         "artifact/user-add-operator::Score"
       ],
       "trait": "Add",
@@ -132,7 +132,7 @@
           },
           {
             "kind": "named",
-            "name": "Score",
+            "name": "Int",
             "arguments": []
           },
           {
@@ -145,7 +145,7 @@
       "constraints": [],
       "origin": {
         "start": 101,
-        "end": 294
+        "end": 248
       }
     }
   ]

@@ -188,6 +188,25 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
+    pub(super) fn select_binary_operator_reference_evidence(
+        &self,
+        trait_name: &str,
+        left: TypedType,
+        right: TypedType,
+        output: TypedType,
+    ) -> Result<([TypedType; 3], crate::TypedCallEvidence), TypedConstraint> {
+        let trait_identity = self.trait_identity(trait_name);
+        super::call_evidence::select_binary_operator_reference_evidence(
+            trait_name,
+            left,
+            right,
+            output,
+            trait_identity.as_deref(),
+            self.resolution,
+            &self.evidence_parameters,
+        )
+    }
+
     pub(super) fn trait_identity(&self, name: &str) -> Option<String> {
         let mut identities = self
             .resolution
@@ -577,40 +596,96 @@ fn type_arithmetic_operator_reference(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let type_ref = curried_binary_type(named_type("Int"), named_type("Int"));
     let valid = context.operator_target(span).is_some();
-    let evidence = if valid {
-        super::call_evidence::select_arithmetic_evidence(
-            name,
-            named_type("Int"),
-            named_type("Int"),
-            named_type("Int"),
-        )
+    let (left, right, output) = context
+        .expected()
+        .and_then(|expected| curried_binary_parts(&expected.type_ref))
+        .unwrap_or_else(|| (named_type("Int"), named_type("Int"), named_type("Int")));
+    let mut missing_instance = None;
+    let (type_ref, evidence) = if valid {
+        match context.select_binary_operator_reference_evidence(
+            arithmetic_trait_name(name),
+            left,
+            right,
+            output,
+        ) {
+            Ok(([left, right, output], evidence)) => (
+                curried_binary_type_with_parameters(left, right, output),
+                vec![evidence],
+            ),
+            Err(constraint) => {
+                missing_instance = Some(super::pure_issues::PureCallIssue::MissingInstance {
+                    callee: span,
+                    constraint,
+                });
+                (TypedType::Hole, Vec::new())
+            }
+        }
     } else {
-        Vec::new()
+        (TypedType::Hole, Vec::new())
     };
-    SurfaceExpressionAnalysis::valid_with_semantic_type(
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
             name: name.to_owned(),
             evidence,
-            type_ref: if valid { type_ref } else { TypedType::Hole },
+            type_ref,
             origin: span,
         },
-        if valid {
+        if valid && missing_instance.is_none() {
             SemanticTypeKey::Other
         } else {
             SemanticTypeKey::Invalid
         },
-    )
+    );
+    result.pure_call_issue = missing_instance;
+    result
 }
 
-fn curried_binary_type(parameter: TypedType, result: TypedType) -> TypedType {
+fn curried_binary_type_with_parameters(
+    left: TypedType,
+    right: TypedType,
+    result: TypedType,
+) -> TypedType {
     TypedType::Function {
-        parameter: Box::new(parameter.clone()),
+        parameter: Box::new(left),
         result: Box::new(TypedType::Function {
-            parameter: Box::new(parameter),
+            parameter: Box::new(right),
             result: Box::new(result),
         }),
+    }
+}
+
+fn curried_binary_parts(type_ref: &TypedType) -> Option<(TypedType, TypedType, TypedType)> {
+    let TypedType::Function {
+        parameter: left,
+        result,
+    } = type_ref
+    else {
+        return None;
+    };
+    let TypedType::Function {
+        parameter: right,
+        result: output,
+    } = result.as_ref()
+    else {
+        return None;
+    };
+    Some((
+        left.as_ref().clone(),
+        right.as_ref().clone(),
+        output.as_ref().clone(),
+    ))
+}
+
+fn arithmetic_trait_name(operator: &str) -> &'static str {
+    match operator {
+        "+" => "Add",
+        "-" => "Sub",
+        "*" => "Mul",
+        "/" => "Div",
+        "%" => "Rem",
+        "**" => "Pow",
+        _ => unreachable!("arithmetic operator reference must have a standard trait"),
     }
 }
 

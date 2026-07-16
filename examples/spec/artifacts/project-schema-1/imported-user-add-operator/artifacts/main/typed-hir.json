@@ -38,69 +38,46 @@
   "declarations": [
     {
       "kind": "fn",
-      "symbol": "fixture/imported-user-add-operator::main::combine",
+      "symbol": "fixture/imported-user-add-operator::main::addBonus",
       "visibility": "private",
       "origin": {
         "start": 42,
-        "end": 116
+        "end": 107
       },
       "scheme": {
-        "typeParameters": [
-          "T"
-        ],
-        "constraints": [
-          {
-            "name": "Add",
-            "arguments": [
-              {
-                "kind": "named",
-                "name": "T",
-                "arguments": []
-              },
-              {
-                "kind": "named",
-                "name": "T",
-                "arguments": []
-              },
-              {
-                "kind": "named",
-                "name": "T",
-                "arguments": []
-              }
-            ]
-          }
-        ],
+        "typeParameters": [],
+        "constraints": [],
         "type": {
           "kind": "named",
-          "name": "T",
+          "name": "Score",
           "arguments": []
         }
       },
       "parameters": [
         {
           "kind": "named",
-          "name": "left",
+          "name": "bonus",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Int",
             "arguments": []
           },
           "origin": {
-            "start": 56,
-            "end": 60
+            "start": 54,
+            "end": 59
           }
         },
         {
           "kind": "named",
-          "name": "right",
+          "name": "score",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Score",
             "arguments": []
           },
           "origin": {
-            "start": 67,
-            "end": 72
+            "start": 68,
+            "end": 73
           }
         }
       ],
@@ -109,28 +86,28 @@
         "operator": "+",
         "left": {
           "kind": "variable",
-          "name": "left",
+          "name": "score",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Score",
             "arguments": []
           },
           "origin": {
-            "start": 104,
-            "end": 108
+            "start": 94,
+            "end": 99
           }
         },
         "right": {
           "kind": "variable",
-          "name": "right",
+          "name": "bonus",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Int",
             "arguments": []
           },
           "origin": {
-            "start": 111,
-            "end": 116
+            "start": 102,
+            "end": 107
           }
         },
         "evidence": [
@@ -140,35 +117,252 @@
               "arguments": [
                 {
                   "kind": "named",
-                  "name": "T",
+                  "name": "Score",
                   "arguments": []
                 },
                 {
                   "kind": "named",
-                  "name": "T",
+                  "name": "Int",
                   "arguments": []
                 },
                 {
                   "kind": "named",
-                  "name": "T",
+                  "name": "Score",
                   "arguments": []
                 }
               ]
             },
             "evidence": {
-              "kind": "parameter",
-              "index": 0
+              "kind": "imported",
+              "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
+              "providerModule": "fixture/imported-user-add-operator::domain"
             }
           }
         ],
         "type": {
           "kind": "named",
-          "name": "T",
+          "name": "Score",
           "arguments": []
         },
         "origin": {
-          "start": 104,
-          "end": 116
+          "start": 94,
+          "end": 107
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-user-add-operator::main::total",
+      "visibility": "private",
+      "origin": {
+        "start": 109,
+        "end": 199
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 118,
+            "end": 124
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-user-add-operator::main::addBonus",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "0",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 198,
+              "end": 199
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "std/prelude::reduce",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/imported-user-add-operator::domain::Points",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "0",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 177,
+                      "end": 178
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 170,
+                  "end": 178
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "+",
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "imported",
+                      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
+                      "providerModule": "fixture/imported-user-add-operator::domain"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    }
+                  }
+                },
+                "origin": {
+                  "start": 181,
+                  "end": 182
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 150,
+                  "end": 156
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "origin": {
+              "start": 150,
+              "end": 183
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        "origin": {
+          "start": 150,
+          "end": 199
         }
       }
     },
@@ -177,8 +371,8 @@
       "symbol": "fixture/imported-user-add-operator::main::render",
       "visibility": "private",
       "origin": {
-        "start": 118,
-        "end": 236
+        "start": 201,
+        "end": 319
       },
       "scheme": {
         "typeParameters": [],
@@ -199,8 +393,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 128,
-            "end": 133
+            "start": 211,
+            "end": 216
           }
         }
       ],
@@ -215,8 +409,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 161,
-            "end": 166
+            "start": 244,
+            "end": 249
           }
         },
         "arms": [
@@ -233,8 +427,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 180,
-                  "end": 182
+                  "start": 263,
+                  "end": 265
                 }
               },
               "type": {
@@ -243,8 +437,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 173,
-                "end": 182
+                "start": 256,
+                "end": 265
               }
             },
             "body": {
@@ -256,13 +450,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 186,
-                "end": 204
+                "start": 269,
+                "end": 287
               }
             },
             "origin": {
-              "start": 173,
-              "end": 204
+              "start": 256,
+              "end": 287
             }
           },
           {
@@ -274,8 +468,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 209,
-                "end": 210
+                "start": 292,
+                "end": 293
               }
             },
             "body": {
@@ -287,13 +481,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 214,
-                "end": 232
+                "start": 297,
+                "end": 315
               }
             },
             "origin": {
-              "start": 209,
-              "end": 232
+              "start": 292,
+              "end": 315
             }
           }
         ],
@@ -304,8 +498,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 155,
-          "end": 236
+          "start": 238,
+          "end": 319
         }
       }
     },
@@ -314,8 +508,8 @@
       "symbol": "fixture/imported-user-add-operator::main::main",
       "visibility": "public",
       "origin": {
-        "start": 238,
-        "end": 320
+        "start": 321,
+        "end": 392
       },
       "inferredContract": true,
       "parameters": [
@@ -390,40 +584,37 @@
             "arguments": [
               {
                 "kind": "call",
-                "callee": "fixture/imported-user-add-operator::main::combine",
+                "callee": "fixture/imported-user-add-operator::main::total",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "fixture/imported-user-add-operator::domain::Points",
-                    "arguments": [
+                    "kind": "array",
+                    "elements": [
                       {
                         "kind": "integer",
-                        "value": "22",
+                        "value": "10",
                         "type": {
                           "kind": "named",
                           "name": "Int",
                           "arguments": []
                         },
                         "origin": {
-                          "start": 292,
-                          "end": 294
+                          "start": 345,
+                          "end": 347
                         }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 285,
-                      "end": 294
-                    }
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "fixture/imported-user-add-operator::domain::Points",
-                    "arguments": [
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "12",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 349,
+                          "end": 351
+                        }
+                      },
                       {
                         "kind": "integer",
                         "value": "20",
@@ -433,48 +624,25 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 268,
-                          "end": 270
+                          "start": 353,
+                          "end": 355
                         }
                       }
                     ],
                     "type": {
                       "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 261,
-                      "end": 270
-                    }
-                  }
-                ],
-                "evidence": [
-                  {
-                    "constraint": {
-                      "name": "Add",
+                      "name": "Array",
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Score",
+                          "name": "Int",
                           "arguments": []
                         }
                       ]
                     },
-                    "evidence": {
-                      "kind": "imported",
-                      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
-                      "providerModule": "fixture/imported-user-add-operator::domain"
+                    "origin": {
+                      "start": 344,
+                      "end": 356
                     }
                   }
                 ],
@@ -484,8 +652,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 261,
-                  "end": 295
+                  "start": 344,
+                  "end": 367
                 }
               }
             ],
@@ -495,14 +663,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 261,
-              "end": 307
+              "start": 344,
+              "end": 379
             }
           }
         ],
         "origin": {
-          "start": 261,
-          "end": 320
+          "start": 344,
+          "end": 392
         }
       }
     }

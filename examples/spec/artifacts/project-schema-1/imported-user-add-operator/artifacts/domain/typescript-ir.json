@@ -42,7 +42,7 @@
   ],
   "instances": [
     {
-      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
       "trait": "Add",
       "arguments": [
         {
@@ -51,9 +51,7 @@
           "arguments": []
         },
         {
-          "kind": "reference",
-          "name": "Score",
-          "arguments": []
+          "kind": "bigint"
         },
         {
           "kind": "reference",
@@ -64,7 +62,7 @@
       "origin": {
         "source": "domain.ssrg",
         "start": 33,
-        "end": 229
+        "end": 182
       },
       "dictionaryExport": "__ssrg$instance$Add$0",
       "implementation": {
@@ -80,90 +78,37 @@
               },
               {
                 "name": "right",
-                "type": "Score",
+                "type": "bigint",
                 "implicit": false
               }
             ],
             "body": {
               "kind": "decision",
               "scrutinee": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "identifier",
-                    "name": "left"
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "right"
-                  }
-                ]
+                "kind": "identifier",
+                "name": "left"
               },
               "scrutineeType": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  }
-                ]
+                "kind": "reference",
+                "name": "Score",
+                "arguments": []
               },
               "branches": [
                 {
                   "tests": [
                     {
                       "kind": "tag-equals",
-                      "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 0
-                        }
-                      ],
-                      "tag": "Points"
-                    },
-                    {
-                      "kind": "tag-equals",
-                      "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 1
-                        }
-                      ],
+                      "path": [],
                       "tag": "Points"
                     }
                   ],
                   "bindings": [
                     {
-                      "name": "leftValue",
+                      "name": "value",
                       "type": {
                         "kind": "bigint"
                       },
                       "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 0
-                        },
-                        {
-                          "kind": "adt-payload"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "rightValue",
-                      "type": {
-                        "kind": "bigint"
-                      },
-                      "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 1
-                        },
                         {
                           "kind": "adt-payload"
                         }
@@ -180,11 +125,11 @@
                         "arguments": [
                           {
                             "kind": "identifier",
-                            "name": "leftValue"
+                            "name": "value"
                           },
                           {
                             "kind": "identifier",
-                            "name": "rightValue"
+                            "name": "right"
                           }
                         ]
                       }
@@ -200,8 +145,8 @@
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 71,
-              "end": 227
+              "start": 69,
+              "end": 180
             }
           }
         ]

@@ -75,10 +75,12 @@ pure Unit entryをEffect runnerへ渡さず直接呼び、生成値のJSONをrun
 複数の左結合`+`をString連結へlowerします。`execution-schema-1/string-add/`はcurried invitation functionと
 `$`、Consoleを組み合わせ、暗黙の数値変換やInt runtime helperなしでactual outputを固定します。
 
-`schema-1/user-add-operator/`はlocal `Add<Score, Score, Score>`をoperand型から選び、binary `+`を生成dictionaryの
-`add` method callへlowerします。`execution-schema-1/user-add-operator/`はactual outputを固定し、
-`project-schema-1/imported-user-add-operator/`はprovider dictionary exportのimportとproject executionまで固定します。
-`semantic-diagnostics-schema-1/user-add-missing/`は対応instanceのないconcrete operandを`instance.missing`で拒否します。
+`schema-1/user-add-operator/`はlocal `Add<Score, Int, Score>`を期待関数型から選び、operator section `(+)`を
+生成dictionaryのcurried `add` callbackへlowerしてstandard Array `reduce`へ渡します。
+`execution-schema-1/user-add-operator/`はactual outputを固定し、`project-schema-1/imported-user-add-operator/`は
+provider dictionary exportのimportとproject executionまで固定します。
+`semantic-diagnostics-schema-1/{user-add-missing,operator-reference-missing}/`は対応instanceのないbinary / sectionを
+`instance.missing`で拒否します。
 
 `schema-1/pure-comparison/`はInt、Bool、Stringの比較へstandard `Eq<A>` evidenceを保持します。
 `execution-schema-1/pure-comparison-string/`は二引数のpure curried entryを実行し、String `!=`のBool結果を

@@ -2,16 +2,20 @@
 pub type Score =
   | Score Int
 
-instance Add<Score, Score, Score> {
-  fn add left: Score -> right: Score -> Score =
-    match (left, right) {
-      (Score leftValue, Score rightValue) -> Score (leftValue + rightValue)
+instance Add<Score, Int, Score> {
+  fn add left: Score -> right: Int -> Score =
+    match left {
+      Score value -> Score (value + right)
     }
 }
 
-fn combine<T> left: T -> right: T -> T
-where Add<T, T, T> =
-  left + right
+fn addBonus bonus: Int -> score: Score -> Score =
+  score + bonus
+
+fn total values: Array<Int> -> Score =
+  values
+  |> reduce (Score 0) (+)
+  |> addBonus 0
 
 fn render score: Score -> String =
   match score {
@@ -20,7 +24,7 @@ fn render score: Score -> String =
   }
 
 pub effect fn main =
-  Score 20
-  |> combine (Score 22)
+  [10, 12, 20]
+  |> total
   |> render
   |> println

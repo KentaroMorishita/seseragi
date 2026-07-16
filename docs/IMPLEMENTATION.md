@@ -541,9 +541,12 @@ constraint付きcallableとcross-module higher-order schemeはinstance / interfa
 
 `schema-1/operator-reference`では、parenthesized arithmetic operator `(+)`を通常のcurried function valueとして
 SurfaceAst、name resolution、TypedHir、CoreIr、TypeScriptIrへ接続しました。backendはinlineの素の`bigint`演算へ
-戻さず、通常のbinary expressionと同じchecked Int runtime helperを参照します。このsliceが証明するのは現在実装済みの
-Int arithmetic operator sectionだけです。仕様上の`Add<L, R, O>` constraintとcustom instance dispatchはgeneric
-`reduce`と同じ後続gateで回収し、`+`をInt専用の言語機構として固定しません。
+戻さず、通常のbinary expressionと同じchecked Int runtime helperを参照します。さらに
+`schema-1/user-add-operator`では期待される`L -> R -> O`からlocal / imported / scoped `Add<L,R,O>`を一意に選び、
+dictionaryの`add` methodをcurried callbackへlowerします。期待型の一部がcalleeの未解決scheme parameterでも、
+instance headの既知部分とfunctional dependencyにより一意な候補だけを採用します。fixtureは
+`Add<Score,Int,Score>`を`Array<Int>`の`reduce`へ渡し、左右同型という仮定へ固定されていないことも証明します。
+期待型がないoperator sectionへ未解決constraintを残すgeneralized value schemeは別gateです。
 
 `schema-1/pipeline-application`では、低優先順位適用`f $ x`とpipeline`x |> f`を型検査前に通常のcurried
 applicationへdesugarします。pipelineの右辺には部分適用済みfunctionを置けるため、`value |> add offset`は
@@ -574,14 +577,17 @@ TypeScriptのString連結へ表現します。`execution-schema-1/string-add`は
 `$`、Consoleを組み合わせ、実際の出力まで固定します。これは`+`をoperand型から選ぶ最初の非Int standard
 instanceです。
 
-`schema-1/user-add-operator`はこの境界をuser-defined instanceへ開きます。型checkerは`+`の左右operandから
+`schema-1/user-add-operator`はこの境界をuser-defined instanceへ開きます。型checkerはbinary `+`の左右operand、または
+operator section `(+)`の期待関数型から
 標準traitのfunctional dependency `(L, R) -> O`を解き、local / imported / scoped evidenceを通常のinstance
 selection順で選択します。TypedHir / CoreIrはordered `Add<L, R, O>` constraintと選択済みevidenceを保持し、
-TypeScriptIrはlocal dictionaryの`add` method callを生成します。
+TypeScriptIrはlocal dictionaryの`add` method call、またはそのcurried function adapterを生成します。
 `project-schema-1/imported-user-add-operator`ではconsumerがproviderのdictionary exportをimportして同じcallを実行し、
 型名やJavaScript tagをbackendで再判定しません。`semantic-diagnostics-schema-1/user-add-missing`は対応instanceがない
-concrete operandを`SES-T0201 instance.missing`で拒否します。operator sectionとstruct / newtype `operator`糖衣は
-このbinary dispatchを再利用する独立sliceとして残します。
+concrete operandを、`operator-reference-missing`は対応instanceがないsectionを`SES-T0201 instance.missing`で拒否します。
+standard `Reducible<Array<Int>,Int>`とuser `Add<Score,Int,Score>` callbackの組合せは実行済みですが、generic
+`where Reducible<C,A>` evidenceからuser dictionaryの`reduce` methodを呼ぶ経路は未接続です。これはoperator selectionへ
+特例を足さず、collection trait method dispatchの独立sliceで回収します。struct / newtype `operator`糖衣も後続です。
 
 `schema-1/pure-comparison`はInt、Bool、Stringの`==` / `!=`で、それぞれのstandard `Eq<A>` evidenceを
 TypedHirとCoreIrへ保持します。backendのstrict equality表現は変えませんが、型検査後にoperand spellingから

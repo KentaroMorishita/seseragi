@@ -3,13 +3,18 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-user-add-operator::main",
   "runtimeRequirements": [
+    "core.int64",
+    "core.array.reduce",
     "core.string",
     "core.adt",
     "core.unit",
-    "effect.console.println",
-    "core.int64"
+    "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
+    },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
@@ -47,8 +52,8 @@
         {
           "imported": "__ssrg$instance$Add$0",
           "local": "__ssrg$instance$Add$0",
-          "sourceLocal": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
-          "canonical": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+          "sourceLocal": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
+          "canonical": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
           "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
@@ -68,41 +73,16 @@
     {
       "kind": "const-function",
       "exported": false,
-      "name": "combine",
-      "typeParameters": [
-        "T"
-      ],
-      "constraints": [
-        {
-          "name": "Add",
-          "arguments": [
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            }
-          ]
-        }
-      ],
+      "name": "addBonus",
       "parameters": [
         {
-          "name": "left",
-          "type": "T",
+          "name": "bonus",
+          "type": "bigint",
           "implicit": false
         },
         {
-          "name": "right",
-          "type": "T",
+          "name": "score",
+          "type": "Score",
           "implicit": false
         }
       ],
@@ -110,24 +90,97 @@
         "kind": "dictionary-call",
         "dictionary": {
           "kind": "identifier",
-          "name": "__ssrg$evidence$0"
+          "name": "__ssrg$instance$Add$0"
         },
         "method": "add",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "score"
           },
           {
             "kind": "identifier",
-            "name": "right"
+            "name": "bonus"
           }
         ]
       },
       "origin": {
         "source": "main.ssrg",
         "start": 42,
-        "end": 116
+        "end": 107
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "total",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "addBonus",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_array_reduce",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "Points",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "kind": "lambda",
+                "parameter": "_argument0",
+                "body": {
+                  "kind": "lambda",
+                  "parameter": "_argument1",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Add$0"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "_argument0"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "_argument1"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "identifier",
+                "name": "values"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 109,
+        "end": 199
       }
     },
     {
@@ -189,8 +242,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 118,
-        "end": 236
+        "start": 201,
+        "end": 319
       }
     },
     {
@@ -214,31 +267,27 @@
             "arguments": [
               {
                 "kind": "call",
-                "callee": "combine",
+                "callee": "total",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "Points",
-                    "arguments": [
+                    "kind": "array",
+                    "elements": [
                       {
                         "kind": "bigint",
-                        "value": "22"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "Points",
-                    "arguments": [
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "12"
+                      },
                       {
                         "kind": "bigint",
                         "value": "20"
                       }
-                    ]
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Add$0"
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
                   }
                 ]
               }
@@ -248,8 +297,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 238,
-        "end": 320
+        "start": 321,
+        "end": 392
       }
     }
   ]

@@ -6,11 +6,12 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
+      "core.int64",
+      "core.array.reduce",
       "core.string",
       "core.adt",
       "core.unit",
-      "effect.console.println",
-      "core.int64"
+      "effect.console.println"
     ]
   },
   "exports": [

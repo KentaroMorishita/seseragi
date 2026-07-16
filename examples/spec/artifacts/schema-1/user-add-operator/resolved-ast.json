@@ -57,18 +57,18 @@
         },
         {
           "kind": "named",
-          "name": "Score",
+          "name": "Int",
           "span": {
             "start": 121,
-            "end": 126
+            "end": 124
           }
         },
         {
           "kind": "named",
           "name": "Score",
           "span": {
-            "start": 128,
-            "end": 133
+            "start": 126,
+            "end": 131
           }
         }
       ],
@@ -76,37 +76,37 @@
         {
           "name": "add",
           "nameSpan": {
-            "start": 142,
-            "end": 145
+            "start": 140,
+            "end": 143
           },
           "parameters": [
             {
               "name": "left",
               "nameSpan": {
-                "start": 146,
-                "end": 150
+                "start": 144,
+                "end": 148
               },
               "type": {
                 "kind": "named",
                 "name": "Score",
                 "span": {
-                  "start": 152,
-                  "end": 157
+                  "start": 150,
+                  "end": 155
                 }
               }
             },
             {
               "name": "right",
               "nameSpan": {
-                "start": 161,
-                "end": 166
+                "start": 159,
+                "end": 164
               },
               "type": {
                 "kind": "named",
-                "name": "Score",
+                "name": "Int",
                 "span": {
-                  "start": 168,
-                  "end": 173
+                  "start": 166,
+                  "end": 169
                 }
               }
             }
@@ -115,94 +115,44 @@
             "kind": "named",
             "name": "Score",
             "span": {
-              "start": 177,
-              "end": 182
+              "start": 173,
+              "end": 178
             }
           },
           "body": {
             "kind": "match",
             "scrutinee": {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "name",
-                  "name": "left",
-                  "span": {
-                    "start": 196,
-                    "end": 200
-                  }
-                },
-                {
-                  "kind": "name",
-                  "name": "right",
-                  "span": {
-                    "start": 202,
-                    "end": 207
-                  }
-                }
-              ],
+              "kind": "name",
+              "name": "left",
               "span": {
-                "start": 195,
-                "end": 208
+                "start": 191,
+                "end": 195
               }
             },
             "arms": [
               {
                 "pattern": {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "constructor",
-                      "name": "Score",
-                      "nameSpan": {
-                        "start": 218,
-                        "end": 223
-                      },
-                      "argument": {
-                        "kind": "name",
-                        "name": "leftValue",
-                        "nameSpan": {
-                          "start": 224,
-                          "end": 233
-                        },
-                        "span": {
-                          "start": 224,
-                          "end": 233
-                        }
-                      },
-                      "span": {
-                        "start": 218,
-                        "end": 233
-                      }
+                  "kind": "constructor",
+                  "name": "Score",
+                  "nameSpan": {
+                    "start": 204,
+                    "end": 209
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "value",
+                    "nameSpan": {
+                      "start": 210,
+                      "end": 215
                     },
-                    {
-                      "kind": "constructor",
-                      "name": "Score",
-                      "nameSpan": {
-                        "start": 235,
-                        "end": 240
-                      },
-                      "argument": {
-                        "kind": "name",
-                        "name": "rightValue",
-                        "nameSpan": {
-                          "start": 241,
-                          "end": 251
-                        },
-                        "span": {
-                          "start": 241,
-                          "end": 251
-                        }
-                      },
-                      "span": {
-                        "start": 235,
-                        "end": 251
-                      }
+                    "span": {
+                      "start": 210,
+                      "end": 215
                     }
-                  ],
+                  },
                   "span": {
-                    "start": 217,
-                    "end": 252
+                    "start": 204,
+                    "end": 215
                   }
                 },
                 "body": {
@@ -211,8 +161,8 @@
                     "kind": "name",
                     "name": "Score",
                     "span": {
-                      "start": 256,
-                      "end": 261
+                      "start": 219,
+                      "end": 224
                     }
                   },
                   "argument": {
@@ -221,335 +171,223 @@
                       "kind": "binary",
                       "operator": "+",
                       "operatorSpan": {
-                        "start": 273,
-                        "end": 274
+                        "start": 232,
+                        "end": 233
                       },
                       "left": {
                         "kind": "name",
-                        "name": "leftValue",
+                        "name": "value",
                         "span": {
-                          "start": 263,
-                          "end": 272
+                          "start": 226,
+                          "end": 231
                         }
                       },
                       "right": {
                         "kind": "name",
-                        "name": "rightValue",
+                        "name": "right",
                         "span": {
-                          "start": 275,
-                          "end": 285
+                          "start": 234,
+                          "end": 239
                         }
                       },
                       "span": {
-                        "start": 263,
-                        "end": 285
+                        "start": 226,
+                        "end": 239
                       }
                     },
                     "span": {
-                      "start": 262,
-                      "end": 286
+                      "start": 225,
+                      "end": 240
                     }
                   },
                   "span": {
-                    "start": 256,
-                    "end": 286
+                    "start": 219,
+                    "end": 240
                   }
                 },
                 "span": {
-                  "start": 217,
-                  "end": 286
+                  "start": 204,
+                  "end": 240
                 }
               }
             ],
             "span": {
-              "start": 189,
-              "end": 292
+              "start": 185,
+              "end": 246
             }
           },
           "span": {
-            "start": 139,
-            "end": 292
+            "start": 137,
+            "end": 246
           }
         }
       ],
       "span": {
         "start": 101,
-        "end": 294
+        "end": 248
       }
     },
     {
       "kind": "fn",
       "visibility": "private",
-      "name": "combine",
+      "name": "addBonus",
       "nameSpan": {
-        "start": 299,
-        "end": 306
+        "start": 253,
+        "end": 261
       },
-      "typeParameters": [
-        "T"
-      ],
       "parameters": [
         {
-          "name": "left",
+          "name": "bonus",
           "nameSpan": {
-            "start": 310,
-            "end": 314
+            "start": 262,
+            "end": 267
           },
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Int",
             "span": {
-              "start": 316,
-              "end": 317
+              "start": 269,
+              "end": 272
             }
           }
         },
-        {
-          "name": "right",
-          "nameSpan": {
-            "start": 321,
-            "end": 326
-          },
-          "type": {
-            "kind": "named",
-            "name": "T",
-            "span": {
-              "start": 328,
-              "end": 329
-            }
-          }
-        }
-      ],
-      "returnType": {
-        "kind": "named",
-        "name": "T",
-        "span": {
-          "start": 333,
-          "end": 334
-        }
-      },
-      "constraints": [
-        {
-          "name": "Add",
-          "nameSpan": {
-            "start": 341,
-            "end": 344
-          },
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "T",
-              "span": {
-                "start": 345,
-                "end": 346
-              }
-            },
-            {
-              "kind": "named",
-              "name": "T",
-              "span": {
-                "start": 348,
-                "end": 349
-              }
-            },
-            {
-              "kind": "named",
-              "name": "T",
-              "span": {
-                "start": 351,
-                "end": 352
-              }
-            }
-          ],
-          "span": {
-            "start": 341,
-            "end": 353
-          }
-        }
-      ],
-      "body": {
-        "kind": "binary",
-        "operator": "+",
-        "operatorSpan": {
-          "start": 363,
-          "end": 364
-        },
-        "left": {
-          "kind": "name",
-          "name": "left",
-          "span": {
-            "start": 358,
-            "end": 362
-          }
-        },
-        "right": {
-          "kind": "name",
-          "name": "right",
-          "span": {
-            "start": 365,
-            "end": 370
-          }
-        },
-        "span": {
-          "start": 358,
-          "end": 370
-        }
-      },
-      "span": {
-        "start": 296,
-        "end": 370
-      }
-    },
-    {
-      "kind": "fn",
-      "visibility": "private",
-      "name": "render",
-      "nameSpan": {
-        "start": 375,
-        "end": 381
-      },
-      "parameters": [
         {
           "name": "score",
           "nameSpan": {
-            "start": 382,
-            "end": 387
+            "start": 276,
+            "end": 281
           },
           "type": {
             "kind": "named",
             "name": "Score",
             "span": {
-              "start": 389,
-              "end": 394
+              "start": 283,
+              "end": 288
             }
           }
         }
       ],
       "returnType": {
         "kind": "named",
-        "name": "String",
+        "name": "Score",
         "span": {
-          "start": 398,
-          "end": 404
+          "start": 292,
+          "end": 297
         }
       },
       "body": {
-        "kind": "match",
-        "scrutinee": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 308,
+          "end": 309
+        },
+        "left": {
           "kind": "name",
           "name": "score",
           "span": {
-            "start": 415,
-            "end": 420
+            "start": 302,
+            "end": 307
           }
         },
-        "arms": [
-          {
-            "pattern": {
-              "kind": "constructor",
-              "name": "Score",
-              "nameSpan": {
-                "start": 427,
-                "end": 432
-              },
-              "argument": {
-                "kind": "integer",
-                "raw": "42",
-                "span": {
-                  "start": 433,
-                  "end": 435
-                }
-              },
-              "span": {
-                "start": 427,
-                "end": 435
-              }
-            },
-            "body": {
-              "kind": "string",
-              "raw": "\"User Add: 42\"",
-              "span": {
-                "start": 439,
-                "end": 453
-              }
-            },
-            "span": {
-              "start": 427,
-              "end": 453
-            }
-          },
-          {
-            "pattern": {
-              "kind": "wildcard",
-              "span": {
-                "start": 458,
-                "end": 459
-              }
-            },
-            "body": {
-              "kind": "string",
-              "raw": "\"unexpected score\"",
-              "span": {
-                "start": 463,
-                "end": 481
-              }
-            },
-            "span": {
-              "start": 458,
-              "end": 481
-            }
+        "right": {
+          "kind": "name",
+          "name": "bonus",
+          "span": {
+            "start": 310,
+            "end": 315
           }
-        ],
+        },
         "span": {
-          "start": 409,
-          "end": 485
+          "start": 302,
+          "end": 315
         }
       },
       "span": {
-        "start": 372,
-        "end": 485
+        "start": 250,
+        "end": 315
       }
     },
     {
-      "kind": "effectFn",
-      "visibility": "public",
-      "name": "main",
+      "kind": "fn",
+      "visibility": "private",
+      "name": "total",
       "nameSpan": {
-        "start": 501,
-        "end": 505
+        "start": 320,
+        "end": 325
       },
-      "inferredContract": true,
-      "returnType": null,
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 326,
+            "end": 332
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 340,
+                  "end": 343
+                }
+              }
+            ],
+            "span": {
+              "start": 334,
+              "end": 344
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Score",
+        "span": {
+          "start": 348,
+          "end": 353
+        }
+      },
       "body": {
         "kind": "application",
         "function": {
-          "kind": "name",
-          "name": "println",
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "addBonus",
+            "span": {
+              "start": 396,
+              "end": 404
+            }
+          },
+          "argument": {
+            "kind": "integer",
+            "raw": "0",
+            "span": {
+              "start": 405,
+              "end": 406
+            }
+          },
           "span": {
-            "start": 560,
-            "end": 567
+            "start": 396,
+            "end": 406
           }
         },
         "argument": {
           "kind": "application",
           "function": {
-            "kind": "name",
-            "name": "render",
-            "span": {
-              "start": 548,
-              "end": 554
-            }
-          },
-          "argument": {
             "kind": "application",
             "function": {
               "kind": "application",
               "function": {
                 "kind": "name",
-                "name": "combine",
+                "name": "reduce",
                 "span": {
-                  "start": 524,
-                  "end": 531
+                  "start": 370,
+                  "end": 376
                 }
               },
               "argument": {
@@ -560,74 +398,277 @@
                     "kind": "name",
                     "name": "Score",
                     "span": {
-                      "start": 533,
-                      "end": 538
+                      "start": 378,
+                      "end": 383
                     }
                   },
                   "argument": {
                     "kind": "integer",
-                    "raw": "22",
+                    "raw": "0",
                     "span": {
-                      "start": 539,
-                      "end": 541
+                      "start": 384,
+                      "end": 385
                     }
                   },
                   "span": {
-                    "start": 533,
-                    "end": 541
+                    "start": 378,
+                    "end": 385
                   }
                 },
                 "span": {
-                  "start": 532,
-                  "end": 542
+                  "start": 377,
+                  "end": 386
                 }
               },
               "span": {
-                "start": 524,
-                "end": 542
+                "start": 370,
+                "end": 386
               }
             },
             "argument": {
-              "kind": "application",
-              "function": {
+              "kind": "grouped",
+              "value": {
                 "kind": "name",
-                "name": "Score",
+                "name": "+",
                 "span": {
-                  "start": 510,
-                  "end": 515
-                }
-              },
-              "argument": {
-                "kind": "integer",
-                "raw": "20",
-                "span": {
-                  "start": 516,
-                  "end": 518
+                  "start": 388,
+                  "end": 389
                 }
               },
               "span": {
-                "start": 510,
-                "end": 518
+                "start": 387,
+                "end": 390
               }
             },
             "span": {
-              "start": 510,
-              "end": 542
+              "start": 370,
+              "end": 390
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "values",
+            "span": {
+              "start": 358,
+              "end": 364
             }
           },
           "span": {
-            "start": 510,
-            "end": 554
+            "start": 358,
+            "end": 390
           }
         },
         "span": {
-          "start": 510,
-          "end": 567
+          "start": 358,
+          "end": 406
         }
       },
       "span": {
-        "start": 487,
-        "end": 567
+        "start": 317,
+        "end": 406
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 411,
+        "end": 417
+      },
+      "parameters": [
+        {
+          "name": "score",
+          "nameSpan": {
+            "start": 418,
+            "end": 423
+          },
+          "type": {
+            "kind": "named",
+            "name": "Score",
+            "span": {
+              "start": 425,
+              "end": 430
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 434,
+          "end": 440
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "score",
+          "span": {
+            "start": 451,
+            "end": 456
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Score",
+              "nameSpan": {
+                "start": 463,
+                "end": 468
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "42",
+                "span": {
+                  "start": 469,
+                  "end": 471
+                }
+              },
+              "span": {
+                "start": 463,
+                "end": 471
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"User Add: 42\"",
+              "span": {
+                "start": 475,
+                "end": 489
+              }
+            },
+            "span": {
+              "start": 463,
+              "end": 489
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 494,
+                "end": 495
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected score\"",
+              "span": {
+                "start": 499,
+                "end": 517
+              }
+            },
+            "span": {
+              "start": 494,
+              "end": 517
+            }
+          }
+        ],
+        "span": {
+          "start": 445,
+          "end": 521
+        }
+      },
+      "span": {
+        "start": 408,
+        "end": 521
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 537,
+        "end": 541
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 587,
+            "end": 594
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 575,
+              "end": 581
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "total",
+              "span": {
+                "start": 564,
+                "end": 569
+              }
+            },
+            "argument": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "10",
+                  "span": {
+                    "start": 547,
+                    "end": 549
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "12",
+                  "span": {
+                    "start": 551,
+                    "end": 553
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "20",
+                  "span": {
+                    "start": 555,
+                    "end": 557
+                  }
+                }
+              ],
+              "span": {
+                "start": 546,
+                "end": 558
+              }
+            },
+            "span": {
+              "start": 546,
+              "end": 569
+            }
+          },
+          "span": {
+            "start": 546,
+            "end": 581
+          }
+        },
+        "span": {
+          "start": 546,
+          "end": 594
+        }
+      },
+      "span": {
+        "start": 523,
+        "end": 594
       }
     }
   ],
@@ -637,7 +678,7 @@
       "kind": "module",
       "origin": {
         "start": 69,
-        "end": 567
+        "end": 594
       }
     },
     {
@@ -655,7 +696,7 @@
       "kind": "declaration",
       "origin": {
         "start": 101,
-        "end": 294
+        "end": 248
       }
     },
     {
@@ -663,8 +704,8 @@
       "parent": 2,
       "kind": "function",
       "origin": {
-        "start": 139,
-        "end": 292
+        "start": 137,
+        "end": 246
       }
     },
     {
@@ -672,8 +713,8 @@
       "parent": 3,
       "kind": "match-arm",
       "origin": {
-        "start": 217,
-        "end": 286
+        "start": 204,
+        "end": 240
       }
     },
     {
@@ -681,8 +722,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 296,
-        "end": 370
+        "start": 250,
+        "end": 315
       }
     },
     {
@@ -690,35 +731,44 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 372,
-        "end": 485
+        "start": 317,
+        "end": 406
       }
     },
     {
       "id": 7,
-      "parent": 6,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 427,
-        "end": 453
+        "start": 408,
+        "end": 521
       }
     },
     {
       "id": 8,
-      "parent": 6,
+      "parent": 7,
       "kind": "match-arm",
       "origin": {
-        "start": 458,
-        "end": 481
+        "start": 463,
+        "end": 489
       }
     },
     {
       "id": 9,
+      "parent": 7,
+      "kind": "match-arm",
+      "origin": {
+        "start": 494,
+        "end": 517
+      }
+    },
+    {
+      "id": 10,
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 487,
-        "end": 567
+        "start": 523,
+        "end": 594
       }
     }
   ],
@@ -749,42 +799,54 @@
     },
     {
       "id": 2,
-      "spelling": "combine",
-      "canonical": "artifact/user-add-operator::combine",
+      "spelling": "addBonus",
+      "canonical": "artifact/user-add-operator::addBonus",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 299,
-        "end": 306
+        "start": 253,
+        "end": 261
       }
     },
     {
       "id": 3,
+      "spelling": "total",
+      "canonical": "artifact/user-add-operator::total",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 320,
+        "end": 325
+      }
+    },
+    {
+      "id": 4,
       "spelling": "render",
       "canonical": "artifact/user-add-operator::render",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 375,
-        "end": 381
+        "start": 411,
+        "end": 417
       }
     },
     {
-      "id": 4,
+      "id": 5,
       "spelling": "main",
       "canonical": "artifact/user-add-operator::main",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 501,
-        "end": 505
+        "start": 537,
+        "end": 541
       }
     },
     {
-      "id": 5,
+      "id": 6,
       "spelling": "Int",
       "canonical": "std/prelude::Int",
       "namespace": "type",
@@ -796,7 +858,7 @@
       }
     },
     {
-      "id": 6,
+      "id": 7,
       "spelling": "Add",
       "canonical": "std/prelude::Add",
       "namespace": "trait",
@@ -808,47 +870,36 @@
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "spelling": "left",
       "namespace": "value",
       "kind": "parameter",
       "scope": 3,
       "origin": {
-        "start": 146,
-        "end": 150
+        "start": 144,
+        "end": 148
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "spelling": "right",
       "namespace": "value",
       "kind": "parameter",
       "scope": 3,
       "origin": {
-        "start": 161,
-        "end": 166
-      }
-    },
-    {
-      "id": 9,
-      "spelling": "leftValue",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 4,
-      "origin": {
-        "start": 224,
-        "end": 233
+        "start": 159,
+        "end": 164
       }
     },
     {
       "id": 10,
-      "spelling": "rightValue",
+      "spelling": "value",
       "namespace": "value",
       "kind": "pattern-binding",
       "scope": 4,
       "origin": {
-        "start": 241,
-        "end": 251
+        "start": 210,
+        "end": 215
       }
     },
     {
@@ -865,50 +916,74 @@
     },
     {
       "id": 12,
-      "spelling": "T",
-      "namespace": "type",
-      "kind": "type-parameter",
+      "spelling": "bonus",
+      "namespace": "value",
+      "kind": "parameter",
       "scope": 5,
       "origin": {
-        "start": 296,
-        "end": 370
+        "start": 262,
+        "end": 267
       }
     },
     {
       "id": 13,
-      "spelling": "left",
+      "spelling": "score",
       "namespace": "value",
       "kind": "parameter",
       "scope": 5,
       "origin": {
-        "start": 310,
-        "end": 314
+        "start": 276,
+        "end": 281
       }
     },
     {
       "id": 14,
-      "spelling": "right",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 5,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
       "origin": {
-        "start": 321,
-        "end": 326
+        "start": 0,
+        "end": 0
       }
     },
     {
       "id": 15,
-      "spelling": "score",
+      "spelling": "values",
       "namespace": "value",
       "kind": "parameter",
       "scope": 6,
       "origin": {
-        "start": 382,
-        "end": 387
+        "start": 326,
+        "end": 332
       }
     },
     {
       "id": 16,
+      "spelling": "reduce",
+      "canonical": "std/prelude::reduce",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "score",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 418,
+        "end": 423
+      }
+    },
+    {
+      "id": 18,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -920,7 +995,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 19,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -936,7 +1011,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 5,
+      "target": 6,
       "origin": {
         "start": 96,
         "end": 99
@@ -945,7 +1020,7 @@
     {
       "spelling": "Add",
       "namespace": "trait",
-      "target": 6,
+      "target": 7,
       "origin": {
         "start": 110,
         "end": 113
@@ -961,12 +1036,12 @@
       }
     },
     {
-      "spelling": "Score",
+      "spelling": "Int",
       "namespace": "type",
-      "target": 0,
+      "target": 6,
       "origin": {
         "start": 121,
-        "end": 126
+        "end": 124
       }
     },
     {
@@ -974,8 +1049,8 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 128,
-        "end": 133
+        "start": 126,
+        "end": 131
       }
     },
     {
@@ -983,8 +1058,17 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 152,
-        "end": 157
+        "start": 150,
+        "end": 155
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 166,
+        "end": 169
       }
     },
     {
@@ -992,179 +1076,80 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 168,
-        "end": 173
-      }
-    },
-    {
-      "spelling": "Score",
-      "namespace": "type",
-      "target": 0,
-      "origin": {
-        "start": 177,
-        "end": 182
+        "start": 173,
+        "end": 178
       }
     },
     {
       "spelling": "left",
       "namespace": "value",
-      "target": 7,
+      "target": 8,
       "origin": {
-        "start": 196,
-        "end": 200
+        "start": 191,
+        "end": 195
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 204,
+        "end": 209
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 219,
+        "end": 224
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 226,
+        "end": 231
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 232,
+        "end": 233
       }
     },
     {
       "spelling": "right",
       "namespace": "value",
-      "target": 8,
-      "origin": {
-        "start": 202,
-        "end": 207
-      }
-    },
-    {
-      "spelling": "Score",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 218,
-        "end": 223
-      }
-    },
-    {
-      "spelling": "Score",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 235,
-        "end": 240
-      }
-    },
-    {
-      "spelling": "Score",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 256,
-        "end": 261
-      }
-    },
-    {
-      "spelling": "leftValue",
-      "namespace": "value",
       "target": 9,
       "origin": {
-        "start": 263,
+        "start": 234,
+        "end": 239
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 269,
         "end": 272
       }
     },
     {
-      "spelling": "+",
-      "namespace": "operator",
-      "target": 11,
-      "origin": {
-        "start": 273,
-        "end": 274
-      }
-    },
-    {
-      "spelling": "rightValue",
-      "namespace": "value",
-      "target": 10,
-      "origin": {
-        "start": 275,
-        "end": 285
-      }
-    },
-    {
-      "spelling": "T",
+      "spelling": "Score",
       "namespace": "type",
-      "target": 12,
+      "target": 0,
       "origin": {
-        "start": 316,
-        "end": 317
-      }
-    },
-    {
-      "spelling": "T",
-      "namespace": "type",
-      "target": 12,
-      "origin": {
-        "start": 328,
-        "end": 329
-      }
-    },
-    {
-      "spelling": "T",
-      "namespace": "type",
-      "target": 12,
-      "origin": {
-        "start": 333,
-        "end": 334
-      }
-    },
-    {
-      "spelling": "Add",
-      "namespace": "trait",
-      "target": 6,
-      "origin": {
-        "start": 341,
-        "end": 344
-      }
-    },
-    {
-      "spelling": "T",
-      "namespace": "type",
-      "target": 12,
-      "origin": {
-        "start": 345,
-        "end": 346
-      }
-    },
-    {
-      "spelling": "T",
-      "namespace": "type",
-      "target": 12,
-      "origin": {
-        "start": 348,
-        "end": 349
-      }
-    },
-    {
-      "spelling": "T",
-      "namespace": "type",
-      "target": 12,
-      "origin": {
-        "start": 351,
-        "end": 352
-      }
-    },
-    {
-      "spelling": "left",
-      "namespace": "value",
-      "target": 13,
-      "origin": {
-        "start": 358,
-        "end": 362
-      }
-    },
-    {
-      "spelling": "+",
-      "namespace": "operator",
-      "target": 11,
-      "origin": {
-        "start": 363,
-        "end": 364
-      }
-    },
-    {
-      "spelling": "right",
-      "namespace": "value",
-      "target": 14,
-      "origin": {
-        "start": 365,
-        "end": 370
+        "start": 283,
+        "end": 288
       }
     },
     {
@@ -1172,26 +1157,80 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 389,
-        "end": 394
-      }
-    },
-    {
-      "spelling": "String",
-      "namespace": "type",
-      "target": 16,
-      "origin": {
-        "start": 398,
-        "end": 404
+        "start": 292,
+        "end": 297
       }
     },
     {
       "spelling": "score",
       "namespace": "value",
-      "target": 15,
+      "target": 13,
       "origin": {
-        "start": 415,
-        "end": 420
+        "start": 302,
+        "end": 307
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 308,
+        "end": 309
+      }
+    },
+    {
+      "spelling": "bonus",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 310,
+        "end": 315
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 334,
+        "end": 344
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 340,
+        "end": 343
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 348,
+        "end": 353
+      }
+    },
+    {
+      "spelling": "addBonus",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 396,
+        "end": 404
+      }
+    },
+    {
+      "spelling": "reduce",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 370,
+        "end": 376
       }
     },
     {
@@ -1199,53 +1238,89 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 427,
-        "end": 432
+        "start": 378,
+        "end": 383
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 388,
+        "end": 389
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 358,
+        "end": 364
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 425,
+        "end": 430
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 434,
+        "end": 440
+      }
+    },
+    {
+      "spelling": "score",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 451,
+        "end": 456
+      }
+    },
+    {
+      "spelling": "Score",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 463,
+        "end": 468
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 17,
+      "target": 19,
       "origin": {
-        "start": 560,
-        "end": 567
+        "start": 587,
+        "end": 594
       }
     },
     {
       "spelling": "render",
       "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 575,
+        "end": 581
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
       "target": 3,
       "origin": {
-        "start": 548,
-        "end": 554
-      }
-    },
-    {
-      "spelling": "combine",
-      "namespace": "value",
-      "target": 2,
-      "origin": {
-        "start": 524,
-        "end": 531
-      }
-    },
-    {
-      "spelling": "Score",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 533,
-        "end": 538
-      }
-    },
-    {
-      "spelling": "Score",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 510,
-        "end": 515
+        "start": 564,
+        "end": 569
       }
     }
   ],

@@ -46,9 +46,10 @@ language semanticsをtarget adapterへ委譲しません。
   全source rootのNFC / case / symlink / physical alias auditもentry discovery前に接続済みです。registry / lockfile resolutionと
   full collection fixtureは未完了です。immutable Array literal、generic higher-order callback、checked Int arithmetic
   operator section `(+)`に加え、標準`Reducible<Array<A>, A>` evidenceを選択するgeneric `reduce`を全compiler stageと
-  actual executionへ接続済みです。binary `+`は`Add<L, R, O>`のlocal / imported user instanceを一般的なselection /
-  coherence / dictionary passingへ接続済みです。次はoperator sectionのpolymorphic evidenceとstruct / newtypeの
-  `operator`糖衣を同じdispatchへ接続し、標準型名だけで通る偽の完了条件を排除します。
+  actual executionへ接続済みです。binary `+`と期待型を持つoperator section `(+)`は`Add<L, R, O>`のlocal / imported /
+  scoped user instanceを一般的なselection / dictionary passingへ接続し、user `Add` callbackをstandard Array
+  `reduce`でactual executionします。次はgeneric `Reducible<C,A>` parameter evidenceのdictionary method dispatch、
+  struct / newtypeの`operator`糖衣、user-defined Eqを同じ一般機構へ接続し、標準型名だけで通る偽の完了条件を排除します。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS

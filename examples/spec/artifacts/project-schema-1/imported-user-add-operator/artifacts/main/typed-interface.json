@@ -33,8 +33,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 238,
-        "end": 320
+        "start": 321,
+        "end": 392
       },
       "scheme": {
         "typeParameters": [],
@@ -83,12 +83,12 @@
   "operators": [],
   "instances": [
     {
-      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
       "providerModule": "fixture/imported-user-add-operator::domain",
       "traitIdentity": "std/prelude::Add",
       "argumentIdentities": [
         "fixture/imported-user-add-operator::domain::Score",
-        "fixture/imported-user-add-operator::domain::Score",
+        "std/prelude::Int",
         "fixture/imported-user-add-operator::domain::Score"
       ],
       "trait": "Add",
@@ -104,7 +104,7 @@
           },
           {
             "kind": "named",
-            "name": "Score",
+            "name": "Int",
             "arguments": []
           },
           {
@@ -117,7 +117,7 @@
       "constraints": [],
       "origin": {
         "start": 33,
-        "end": 229
+        "end": 182
       }
     }
   ]

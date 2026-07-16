@@ -5,7 +5,7 @@
   "module": "artifact/user-add-operator",
   "instances": [
     {
-      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>",
+      "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>",
       "traitIdentity": "std/prelude::Add",
       "trait": "Add",
       "arguments": [
@@ -16,7 +16,7 @@
         },
         {
           "kind": "named",
-          "name": "Score",
+          "name": "Int",
           "arguments": []
         },
         {
@@ -27,13 +27,13 @@
       ],
       "argumentIdentities": [
         "artifact/user-add-operator::Score",
-        "artifact/user-add-operator::Score",
+        "std/prelude::Int",
         "artifact/user-add-operator::Score"
       ],
       "constraints": [],
       "origin": {
         "start": 101,
-        "end": 294
+        "end": 248
       },
       "implementation": {
         "kind": "user-defined",
@@ -59,8 +59,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 146,
-                  "end": 150
+                  "start": 144,
+                  "end": 148
                 }
               },
               {
@@ -68,145 +68,57 @@
                 "name": "right",
                 "type": {
                   "kind": "named",
-                  "name": "Score",
+                  "name": "Int",
                   "arguments": []
                 },
                 "origin": {
-                  "start": 161,
-                  "end": 166
+                  "start": 159,
+                  "end": 164
                 }
               }
             ],
             "body": {
               "kind": "match",
               "scrutinee": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "variable",
-                    "name": "left",
-                    "type": {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 196,
-                      "end": 200
-                    }
-                  },
-                  {
-                    "kind": "variable",
-                    "name": "right",
-                    "type": {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 202,
-                      "end": 207
-                    }
-                  }
-                ],
+                "kind": "variable",
+                "name": "left",
                 "type": {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    }
-                  ]
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
                 },
                 "origin": {
-                  "start": 195,
-                  "end": 208
+                  "start": 191,
+                  "end": 195
                 }
               },
               "arms": [
                 {
                   "pattern": {
-                    "kind": "tuple",
-                    "elements": [
-                      {
-                        "kind": "constructor",
-                        "symbol": "artifact/user-add-operator::Score",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 9,
-                          "name": "leftValue",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 224,
-                            "end": 233
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 218,
-                          "end": 233
-                        }
+                    "kind": "constructor",
+                    "symbol": "artifact/user-add-operator::Score",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 10,
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
                       },
-                      {
-                        "kind": "constructor",
-                        "symbol": "artifact/user-add-operator::Score",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 10,
-                          "name": "rightValue",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 241,
-                            "end": 251
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 235,
-                          "end": 251
-                        }
+                      "origin": {
+                        "start": 210,
+                        "end": 215
                       }
-                    ],
+                    },
                     "type": {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        }
-                      ]
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
                     },
                     "origin": {
-                      "start": 217,
-                      "end": 252
+                      "start": 204,
+                      "end": 215
                     }
                   },
                   "body": {
@@ -218,28 +130,28 @@
                         "operator": "+",
                         "left": {
                           "kind": "variable",
-                          "name": "leftValue",
+                          "name": "value",
                           "type": {
                             "kind": "named",
                             "name": "Int",
                             "arguments": []
                           },
                           "origin": {
-                            "start": 263,
-                            "end": 272
+                            "start": 226,
+                            "end": 231
                           }
                         },
                         "right": {
                           "kind": "variable",
-                          "name": "rightValue",
+                          "name": "right",
                           "type": {
                             "kind": "named",
                             "name": "Int",
                             "arguments": []
                           },
                           "origin": {
-                            "start": 275,
-                            "end": 285
+                            "start": 234,
+                            "end": 239
                           }
                         },
                         "evidence": [
@@ -276,8 +188,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 263,
-                          "end": 285
+                          "start": 226,
+                          "end": 239
                         }
                       }
                     ],
@@ -287,13 +199,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 256,
-                      "end": 286
+                      "start": 219,
+                      "end": 240
                     }
                   },
                   "origin": {
-                    "start": 217,
-                    "end": 286
+                    "start": 204,
+                    "end": 240
                   }
                 }
               ],
@@ -304,13 +216,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 189,
-                "end": 292
+                "start": 185,
+                "end": 246
               }
             },
             "origin": {
-              "start": 139,
-              "end": 292
+              "start": 137,
+              "end": 246
             }
           }
         ]
@@ -364,69 +276,46 @@
     },
     {
       "kind": "fn",
-      "symbol": "artifact/user-add-operator::combine",
+      "symbol": "artifact/user-add-operator::addBonus",
       "visibility": "private",
       "origin": {
-        "start": 296,
-        "end": 370
+        "start": 250,
+        "end": 315
       },
       "scheme": {
-        "typeParameters": [
-          "T"
-        ],
-        "constraints": [
-          {
-            "name": "Add",
-            "arguments": [
-              {
-                "kind": "named",
-                "name": "T",
-                "arguments": []
-              },
-              {
-                "kind": "named",
-                "name": "T",
-                "arguments": []
-              },
-              {
-                "kind": "named",
-                "name": "T",
-                "arguments": []
-              }
-            ]
-          }
-        ],
+        "typeParameters": [],
+        "constraints": [],
         "type": {
           "kind": "named",
-          "name": "T",
+          "name": "Score",
           "arguments": []
         }
       },
       "parameters": [
         {
           "kind": "named",
-          "name": "left",
+          "name": "bonus",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Int",
             "arguments": []
           },
           "origin": {
-            "start": 310,
-            "end": 314
+            "start": 262,
+            "end": 267
           }
         },
         {
           "kind": "named",
-          "name": "right",
+          "name": "score",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Score",
             "arguments": []
           },
           "origin": {
-            "start": 321,
-            "end": 326
+            "start": 276,
+            "end": 281
           }
         }
       ],
@@ -435,28 +324,28 @@
         "operator": "+",
         "left": {
           "kind": "variable",
-          "name": "left",
+          "name": "score",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Score",
             "arguments": []
           },
           "origin": {
-            "start": 358,
-            "end": 362
+            "start": 302,
+            "end": 307
           }
         },
         "right": {
           "kind": "variable",
-          "name": "right",
+          "name": "bonus",
           "type": {
             "kind": "named",
-            "name": "T",
+            "name": "Int",
             "arguments": []
           },
           "origin": {
-            "start": 365,
-            "end": 370
+            "start": 310,
+            "end": 315
           }
         },
         "evidence": [
@@ -466,35 +355,250 @@
               "arguments": [
                 {
                   "kind": "named",
-                  "name": "T",
+                  "name": "Score",
                   "arguments": []
                 },
                 {
                   "kind": "named",
-                  "name": "T",
+                  "name": "Int",
                   "arguments": []
                 },
                 {
                   "kind": "named",
-                  "name": "T",
+                  "name": "Score",
                   "arguments": []
                 }
               ]
             },
             "evidence": {
-              "kind": "parameter",
-              "index": 0
+              "kind": "local",
+              "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>"
             }
           }
         ],
         "type": {
           "kind": "named",
-          "name": "T",
+          "name": "Score",
+          "arguments": []
+        },
+        "origin": {
+          "start": 302,
+          "end": 315
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/user-add-operator::total",
+      "visibility": "private",
+      "origin": {
+        "start": 317,
+        "end": 406
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 326,
+            "end": 332
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/user-add-operator::addBonus",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "0",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 405,
+              "end": 406
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "std/prelude::reduce",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/user-add-operator::Score",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "0",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 384,
+                      "end": 385
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 378,
+                  "end": 385
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "+",
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "local",
+                      "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    }
+                  }
+                },
+                "origin": {
+                  "start": 388,
+                  "end": 389
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 358,
+                  "end": 364
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "origin": {
+              "start": 358,
+              "end": 390
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Score",
           "arguments": []
         },
         "origin": {
           "start": 358,
-          "end": 370
+          "end": 406
         }
       }
     },
@@ -503,8 +607,8 @@
       "symbol": "artifact/user-add-operator::render",
       "visibility": "private",
       "origin": {
-        "start": 372,
-        "end": 485
+        "start": 408,
+        "end": 521
       },
       "scheme": {
         "typeParameters": [],
@@ -525,8 +629,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 382,
-            "end": 387
+            "start": 418,
+            "end": 423
           }
         }
       ],
@@ -541,8 +645,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 415,
-            "end": 420
+            "start": 451,
+            "end": 456
           }
         },
         "arms": [
@@ -559,8 +663,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 433,
-                  "end": 435
+                  "start": 469,
+                  "end": 471
                 }
               },
               "type": {
@@ -569,8 +673,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 427,
-                "end": 435
+                "start": 463,
+                "end": 471
               }
             },
             "body": {
@@ -582,13 +686,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 439,
-                "end": 453
+                "start": 475,
+                "end": 489
               }
             },
             "origin": {
-              "start": 427,
-              "end": 453
+              "start": 463,
+              "end": 489
             }
           },
           {
@@ -600,8 +704,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 458,
-                "end": 459
+                "start": 494,
+                "end": 495
               }
             },
             "body": {
@@ -613,13 +717,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 463,
-                "end": 481
+                "start": 499,
+                "end": 517
               }
             },
             "origin": {
-              "start": 458,
-              "end": 481
+              "start": 494,
+              "end": 517
             }
           }
         ],
@@ -630,8 +734,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 409,
-          "end": 485
+          "start": 445,
+          "end": 521
         }
       }
     },
@@ -640,8 +744,8 @@
       "symbol": "artifact/user-add-operator::main",
       "visibility": "public",
       "origin": {
-        "start": 487,
-        "end": 567
+        "start": 523,
+        "end": 594
       },
       "inferredContract": true,
       "parameters": [
@@ -716,40 +820,37 @@
             "arguments": [
               {
                 "kind": "call",
-                "callee": "artifact/user-add-operator::combine",
+                "callee": "artifact/user-add-operator::total",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "artifact/user-add-operator::Score",
-                    "arguments": [
+                    "kind": "array",
+                    "elements": [
                       {
                         "kind": "integer",
-                        "value": "22",
+                        "value": "10",
                         "type": {
                           "kind": "named",
                           "name": "Int",
                           "arguments": []
                         },
                         "origin": {
-                          "start": 539,
-                          "end": 541
+                          "start": 547,
+                          "end": 549
                         }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 533,
-                      "end": 541
-                    }
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "artifact/user-add-operator::Score",
-                    "arguments": [
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "12",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 551,
+                          "end": 553
+                        }
+                      },
                       {
                         "kind": "integer",
                         "value": "20",
@@ -759,47 +860,25 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 516,
-                          "end": 518
+                          "start": 555,
+                          "end": 557
                         }
                       }
                     ],
                     "type": {
                       "kind": "named",
-                      "name": "Score",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 510,
-                      "end": 518
-                    }
-                  }
-                ],
-                "evidence": [
-                  {
-                    "constraint": {
-                      "name": "Add",
+                      "name": "Array",
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Score",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Score",
+                          "name": "Int",
                           "arguments": []
                         }
                       ]
                     },
-                    "evidence": {
-                      "kind": "local",
-                      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>"
+                    "origin": {
+                      "start": 546,
+                      "end": 558
                     }
                   }
                 ],
@@ -809,8 +888,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 510,
-                  "end": 542
+                  "start": 546,
+                  "end": 569
                 }
               }
             ],
@@ -820,14 +899,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 510,
-              "end": 554
+              "start": 546,
+              "end": 581
             }
           }
         ],
         "origin": {
-          "start": 510,
-          "end": 567
+          "start": 546,
+          "end": 594
         }
       }
     }

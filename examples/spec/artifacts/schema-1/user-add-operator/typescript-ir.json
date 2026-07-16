@@ -6,6 +6,7 @@
     "core.adt",
     "core.int64",
     "core.int64.add",
+    "core.array.reduce",
     "core.string",
     "core.unit",
     "effect.console.println"
@@ -14,6 +15,10 @@
     {
       "feature": "core.int64.add",
       "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
     },
     {
       "feature": "effect.console.println",
@@ -49,7 +54,7 @@
   ],
   "instances": [
     {
-      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>",
+      "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>",
       "trait": "Add",
       "arguments": [
         {
@@ -58,9 +63,7 @@
           "arguments": []
         },
         {
-          "kind": "reference",
-          "name": "Score",
-          "arguments": []
+          "kind": "bigint"
         },
         {
           "kind": "reference",
@@ -71,7 +74,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 101,
-        "end": 294
+        "end": 248
       },
       "dictionaryExport": "__ssrg$instance$Add$0",
       "implementation": {
@@ -87,90 +90,37 @@
               },
               {
                 "name": "right",
-                "type": "Score",
+                "type": "bigint",
                 "implicit": false
               }
             ],
             "body": {
               "kind": "decision",
               "scrutinee": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "identifier",
-                    "name": "left"
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "right"
-                  }
-                ]
+                "kind": "identifier",
+                "name": "left"
               },
               "scrutineeType": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  }
-                ]
+                "kind": "reference",
+                "name": "Score",
+                "arguments": []
               },
               "branches": [
                 {
                   "tests": [
                     {
                       "kind": "tag-equals",
-                      "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 0
-                        }
-                      ],
-                      "tag": "Score"
-                    },
-                    {
-                      "kind": "tag-equals",
-                      "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 1
-                        }
-                      ],
+                      "path": [],
                       "tag": "Score"
                     }
                   ],
                   "bindings": [
                     {
-                      "name": "leftValue",
+                      "name": "value",
                       "type": {
                         "kind": "bigint"
                       },
                       "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 0
-                        },
-                        {
-                          "kind": "adt-payload"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "rightValue",
-                      "type": {
-                        "kind": "bigint"
-                      },
-                      "path": [
-                        {
-                          "kind": "tuple-element",
-                          "index": 1
-                        },
                         {
                           "kind": "adt-payload"
                         }
@@ -187,11 +137,11 @@
                         "arguments": [
                           {
                             "kind": "identifier",
-                            "name": "leftValue"
+                            "name": "value"
                           },
                           {
                             "kind": "identifier",
-                            "name": "rightValue"
+                            "name": "right"
                           }
                         ]
                       }
@@ -207,8 +157,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 139,
-              "end": 292
+              "start": 137,
+              "end": 246
             }
           }
         ]
@@ -219,41 +169,16 @@
     {
       "kind": "const-function",
       "exported": false,
-      "name": "combine",
-      "typeParameters": [
-        "T"
-      ],
-      "constraints": [
-        {
-          "name": "Add",
-          "arguments": [
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "T",
-              "arguments": []
-            }
-          ]
-        }
-      ],
+      "name": "addBonus",
       "parameters": [
         {
-          "name": "left",
-          "type": "T",
+          "name": "bonus",
+          "type": "bigint",
           "implicit": false
         },
         {
-          "name": "right",
-          "type": "T",
+          "name": "score",
+          "type": "Score",
           "implicit": false
         }
       ],
@@ -261,24 +186,97 @@
         "kind": "dictionary-call",
         "dictionary": {
           "kind": "identifier",
-          "name": "__ssrg$evidence$0"
+          "name": "__ssrg$instance$Add$0"
         },
         "method": "add",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "left"
+            "name": "score"
           },
           {
             "kind": "identifier",
-            "name": "right"
+            "name": "bonus"
           }
         ]
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 296,
-        "end": 370
+        "start": 250,
+        "end": 315
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "total",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "addBonus",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_array_reduce",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "Score",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "0"
+                  }
+                ]
+              },
+              {
+                "kind": "lambda",
+                "parameter": "_argument0",
+                "body": {
+                  "kind": "lambda",
+                  "parameter": "_argument1",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Add$0"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "_argument0"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "_argument1"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "identifier",
+                "name": "values"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 317,
+        "end": 406
       }
     },
     {
@@ -340,8 +338,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 372,
-        "end": 485
+        "start": 408,
+        "end": 521
       }
     },
     {
@@ -365,31 +363,27 @@
             "arguments": [
               {
                 "kind": "call",
-                "callee": "combine",
+                "callee": "total",
                 "arguments": [
                   {
-                    "kind": "call",
-                    "callee": "Score",
-                    "arguments": [
+                    "kind": "array",
+                    "elements": [
                       {
                         "kind": "bigint",
-                        "value": "22"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "Score",
-                    "arguments": [
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "12"
+                      },
                       {
                         "kind": "bigint",
                         "value": "20"
                       }
-                    ]
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Add$0"
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
                   }
                 ]
               }
@@ -399,8 +393,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 487,
-        "end": 567
+        "start": 523,
+        "end": 594
       }
     }
   ]

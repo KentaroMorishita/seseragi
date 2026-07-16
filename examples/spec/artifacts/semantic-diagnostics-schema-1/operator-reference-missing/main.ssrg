@@ -1,0 +1,5 @@
+fn apply step: (Bool -> Bool -> Bool) -> Bool =
+  step True False
+
+pub fn invalid unit: Unit -> Bool =
+  apply (+)

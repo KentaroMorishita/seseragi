@@ -6,18 +6,21 @@
     "seseragi://fixture/imported-user-add-operator::main"
   ],
   "sourcesContent": [
-    "import { Points, Score } from \"./domain\"\n\nfn combine<T> left: T -> right: T -> T\nwhere Add<T, T, T> =\n  left + right\n\nfn render score: Score -> String =\n  match score {\n    Points 42 -> \"Imported Add: 42\"\n    _ -> \"unexpected score\"\n  }\n\npub effect fn main =\n  Points 20\n  |> combine (Points 22)\n  |> render\n  |> println\n"
+    "import { Points, Score } from \"./domain\"\n\nfn addBonus bonus: Int -> score: Score -> Score =\n  score + bonus\n\nfn total values: Array<Int> -> Score =\n  values\n  |> reduce (Points 0) (+)\n  |> addBonus 0\n\nfn render score: Score -> String =\n  match score {\n    Points 42 -> \"Imported Add: 42\"\n    _ -> \"unexpected score\"\n  }\n\npub effect fn main =\n  [10, 12, 20]\n  |> total\n  |> render\n  |> println\n"
   ],
   "names": [
-    "combine",
-    "__ssrg$evidence$0",
+    "addBonus",
+    "__ssrg$instance$Add$0",
+    "total",
+    "addBonus",
+    "_ssrg_array_reduce",
+    "Points",
+    "__ssrg$instance$Add$0",
     "render",
     "main",
     "println",
     "render",
-    "combine",
-    "Points",
-    "Points"
+    "total"
   ],
-  "mappings": ";;;AAEAA;AAIAE;AAMAC"
+  "mappings": ";;;;AAEAA;AAGAE;AAKAK;AAMAC"
 }

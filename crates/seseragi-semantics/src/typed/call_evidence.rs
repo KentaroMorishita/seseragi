@@ -560,6 +560,174 @@ pub(crate) fn select_binary_operator_evidence(
         .map_err(|_| constraint)
 }
 
+/// Selects a concrete binary operator head from the known parts of an
+/// expected curried function type. Holes are wildcards produced by generic
+/// application inference; ambiguity is rejected instead of guessing a type.
+pub(crate) fn select_binary_operator_reference_evidence(
+    trait_name: &str,
+    left: TypedType,
+    right: TypedType,
+    output: TypedType,
+    trait_identity: Option<&str>,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<([TypedType; 3], TypedCallEvidence), TypedConstraint> {
+    let requested = [left, right, output];
+    let expected = requested
+        .each_ref()
+        .map(|type_ref| (!matches!(type_ref, TypedType::Hole)).then_some(type_ref));
+    let missing = || TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: requested.to_vec(),
+    };
+    if let Some(trait_identity) = trait_identity {
+        let scoped_matches = scoped
+            .iter()
+            .filter(|available| {
+                available.trait_identity == trait_identity
+                    && matches!(available.constraint.arguments.as_slice(), [left, right, output]
+                    if partial_binary_head_matches(
+                        &[left.clone(), right.clone(), output.clone()],
+                        &expected,
+                        resolution,
+                    ))
+            })
+            .take(2)
+            .collect::<Vec<_>>();
+        if let [available] = scoped_matches.as_slice() {
+            let head: [TypedType; 3] = available
+                .constraint
+                .arguments
+                .clone()
+                .try_into()
+                .expect("binary operator constraint must have three arguments");
+            return Ok((
+                head,
+                TypedCallEvidence {
+                    constraint: available.constraint.clone(),
+                    evidence: TypedInstanceEvidence::Parameter {
+                        index: available.index,
+                    },
+                },
+            ));
+        }
+        if let Some((head, evidence)) = local::infer_local_binary_instance_from_partial(
+            trait_identity,
+            trait_name,
+            &expected,
+            resolution,
+        ) {
+            return Ok((
+                head.clone(),
+                TypedCallEvidence {
+                    constraint: TypedConstraint {
+                        name: trait_name.to_owned(),
+                        arguments: head.to_vec(),
+                    },
+                    evidence,
+                },
+            ));
+        }
+        if let Some((head, evidence)) = imported::infer_imported_binary_instance_from_partial(
+            trait_identity,
+            trait_name,
+            &expected,
+            resolution,
+            scoped,
+        ) {
+            return Ok((
+                head.clone(),
+                TypedCallEvidence {
+                    constraint: TypedConstraint {
+                        name: trait_name.to_owned(),
+                        arguments: head.to_vec(),
+                    },
+                    evidence,
+                },
+            ));
+        }
+    }
+    let matches = standard_binary_heads(trait_name)
+        .into_iter()
+        .filter(|head| partial_binary_head_matches(head, &expected, resolution))
+        .take(2)
+        .collect::<Vec<_>>();
+    let [head] = matches.as_slice() else {
+        return Err(missing());
+    };
+    let constraint = TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: head.to_vec(),
+    };
+    let evidence = select_call_evidence(std::slice::from_ref(&constraint))
+        .map_err(|_| constraint.clone())?
+        .remove(0);
+    Ok((head.clone(), evidence))
+}
+
+fn partial_binary_head_matches(
+    candidate: &[TypedType],
+    expected: &[Option<&TypedType>; 3],
+    resolution: &TypedResolution<'_>,
+) -> bool {
+    candidate.iter().zip(expected).all(|(candidate, expected)| {
+        expected.is_none_or(|expected| {
+            super::semantic_types::semantic_values_are_compatible(
+                &resolution.semantic_value_from_typed_type(expected),
+                &resolution.semantic_value_from_typed_type(candidate),
+            )
+        })
+    })
+}
+
+fn standard_binary_heads(trait_name: &str) -> Vec<[TypedType; 3]> {
+    let mut heads = Vec::new();
+    if matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow") {
+        let int = named_type("Int");
+        heads.push([int.clone(), int.clone(), int]);
+    }
+    if trait_name == "Add" {
+        let string = named_type("String");
+        heads.push([string.clone(), string.clone(), string]);
+    }
+    heads
+}
+
+fn named_type(name: &str) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments: Vec::new(),
+    }
+}
+
+fn contains_declared_type_parameter(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+) -> bool {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            parameters.iter().any(|parameter| parameter.name == *name)
+                || arguments
+                    .iter()
+                    .any(|argument| contains_declared_type_parameter(argument, parameters))
+        }
+        TypedType::ExternalNamed { arguments, .. } => arguments
+            .iter()
+            .any(|argument| contains_declared_type_parameter(argument, parameters)),
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| contains_declared_type_parameter(&field.type_ref, parameters)),
+        TypedType::Tuple { elements } => elements
+            .iter()
+            .any(|element| contains_declared_type_parameter(element, parameters)),
+        TypedType::Function { parameter, result } => {
+            contains_declared_type_parameter(parameter, parameters)
+                || contains_declared_type_parameter(result, parameters)
+        }
+        TypedType::Hole => false,
+    }
+}
+
 fn standard_binary_output(
     trait_name: &str,
     left: &TypedType,
@@ -636,28 +804,6 @@ fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static
         "Pow" => Some("std/int::Pow"),
         _ => None,
     }
-}
-
-pub(crate) fn select_arithmetic_evidence(
-    operator: &str,
-    left: TypedType,
-    right: TypedType,
-    output: TypedType,
-) -> Vec<TypedCallEvidence> {
-    let name = match operator {
-        "+" => "Add",
-        "-" => "Sub",
-        "*" => "Mul",
-        "/" => "Div",
-        "%" => "Rem",
-        "**" => "Pow",
-        _ => return Vec::new(),
-    };
-    select_call_evidence(&[TypedConstraint {
-        name: name.to_owned(),
-        arguments: vec![left, right, output],
-    }])
-    .unwrap_or_default()
 }
 
 pub(crate) fn select_equality_evidence(
@@ -785,7 +931,11 @@ mod tests {
 
     #[test]
     fn selects_standard_int_add_evidence() {
-        let evidence = select_arithmetic_evidence("+", named("Int"), named("Int"), named("Int"));
+        let evidence = select_call_evidence(&[TypedConstraint {
+            name: "Add".to_owned(),
+            arguments: vec![named("Int"), named("Int"), named("Int")],
+        }])
+        .expect("standard Int Add evidence");
         assert!(matches!(
             evidence.as_slice(),
             [TypedCallEvidence {
@@ -797,8 +947,11 @@ mod tests {
 
     #[test]
     fn selects_standard_string_add_evidence() {
-        let evidence =
-            select_arithmetic_evidence("+", named("String"), named("String"), named("String"));
+        let evidence = select_call_evidence(&[TypedConstraint {
+            name: "Add".to_owned(),
+            arguments: vec![named("String"), named("String"), named("String")],
+        }])
+        .expect("standard String Add evidence");
         assert!(matches!(
             evidence.as_slice(),
             [TypedCallEvidence {

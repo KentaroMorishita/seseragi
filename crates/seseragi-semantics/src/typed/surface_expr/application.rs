@@ -72,6 +72,14 @@ pub(super) fn type_application(
                     &signature.type_parameters,
                     &partial_application.resolved_type_parameters,
                 )
+            })
+            .map(|mut expected| {
+                expected.type_ref = mask_unresolved_type_parameters(
+                    &expected.type_ref,
+                    &signature.type_parameters,
+                    &partial_application.resolved_type_parameters,
+                );
+                expected
             });
         let argument_context = context.with_expected(expected);
         let analysis = type_surface_expression(argument, &argument_context);
@@ -295,6 +303,70 @@ fn is_unresolved_parameter_expectation(
         | TypedType::Record { .. }
         | TypedType::Tuple { .. }
         | TypedType::Function { .. } => false,
+    }
+}
+
+fn mask_unresolved_type_parameters(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+    resolved: &std::collections::BTreeSet<String>,
+) -> TypedType {
+    match type_ref {
+        TypedType::Named { name, .. }
+            if parameters.iter().any(|parameter| parameter.name == *name)
+                && !resolved.contains(name) =>
+        {
+            TypedType::Hole
+        }
+        TypedType::Named { name, arguments } => TypedType::Named {
+            name: name.clone(),
+            arguments: arguments
+                .iter()
+                .map(|argument| mask_unresolved_type_parameters(argument, parameters, resolved))
+                .collect(),
+        },
+        TypedType::ExternalNamed {
+            canonical,
+            name,
+            arguments,
+        } => TypedType::ExternalNamed {
+            canonical: canonical.clone(),
+            name: name.clone(),
+            arguments: arguments
+                .iter()
+                .map(|argument| mask_unresolved_type_parameters(argument, parameters, resolved))
+                .collect(),
+        },
+        TypedType::Record { closed, fields } => TypedType::Record {
+            closed: *closed,
+            fields: fields
+                .iter()
+                .map(|field| crate::TypedRecordField {
+                    name: field.name.clone(),
+                    optional: field.optional,
+                    type_ref: mask_unresolved_type_parameters(
+                        &field.type_ref,
+                        parameters,
+                        resolved,
+                    ),
+                })
+                .collect(),
+        },
+        TypedType::Tuple { elements } => TypedType::Tuple {
+            elements: elements
+                .iter()
+                .map(|element| mask_unresolved_type_parameters(element, parameters, resolved))
+                .collect(),
+        },
+        TypedType::Function { parameter, result } => TypedType::Function {
+            parameter: Box::new(mask_unresolved_type_parameters(
+                parameter, parameters, resolved,
+            )),
+            result: Box::new(mask_unresolved_type_parameters(
+                result, parameters, resolved,
+            )),
+        },
+        TypedType::Hole => TypedType::Hole,
     }
 }
 

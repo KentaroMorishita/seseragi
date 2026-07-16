@@ -34,6 +34,7 @@
       "core.adt",
       "core.int64",
       "core.int64.add",
+      "core.array.reduce",
       "core.string",
       "core.unit",
       "effect.console.println"
