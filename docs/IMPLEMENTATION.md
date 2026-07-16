@@ -732,7 +732,15 @@ pure letはcontinuation内の通常constであり、Effect runtime importやrequ
 `do.missing-final-expression`として固定します。いずれも`SES-T0101`ですが、trait method選択失敗へ偽装せず、
 原因となるpattern / expression / do blockのsource rangeをprimaryにします。
 
-次のgateは`Either<E, _>`のような部分適用型構築子でも同じdo loweringを証明することです。
+`schema-1/monad-either`は`Either<String, Int>`を、固定prefix `Either<String, _>`と最後のpayload `Int`へ
+分解します。`F<A> ~ Either<String, Int>`のHKT inferenceは`F = Either<String, _>`を保持し、substitution時は
+固定prefixの後ろへ新しいpayloadを適用します。local instance head `Either<E, _>`は値の型へholeを残さず、
+constructor constraintとの照合時だけtrailing holeを正規化して`E = String`を求めます。
+これによりFunctor / Applicative / Monadの三factoryとdo loweringはMaybe専用分岐なしで再利用され、
+`execution-schema-1/monad-either`がRightの成功とLeftの短絡を実行します。
+
+次のgateはFunctor / Applicative / Monad lawを小さいfixtureで固定し、generic / constrained imported instance
+factoryをmodule境界でmaterializeすることです。
 
 このgateは直接または入れ子のexpression内で飽和するconstrained function callを対象にします。
 partial applicationしたconstrained functionをlet / parameterなどfirst-class valueとして保持する場合は、

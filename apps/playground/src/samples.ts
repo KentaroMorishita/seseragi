@@ -11,6 +11,7 @@ import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
 import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
 import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
+import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
 import {
   sampleCatalog,
   type PlaygroundSampleDefinition,
@@ -38,6 +39,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "generic-instance": genericInstance,
   "applicative-maybe": applicativeMaybe,
   "monad-maybe": monadMaybe,
+  "monad-either": monadEither,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

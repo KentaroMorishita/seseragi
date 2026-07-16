@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "module": "artifact/monad-either",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.either",
+      "core.adt",
+      "core.either.left",
+      "core.either.right",
+      "core.string",
+      "core.int64",
+      "core.int64.add",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
+      "trait": "Functor",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    },
+    {
+      "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
+      "trait": "Applicative",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Applicative$1"
+    },
+    {
+      "identity": "artifact/monad-either::trait(Monad)<std/prelude::Either<$0,_>>",
+      "trait": "Monad",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Monad$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

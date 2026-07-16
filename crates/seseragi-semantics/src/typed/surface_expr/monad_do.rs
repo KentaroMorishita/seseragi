@@ -227,24 +227,24 @@ fn monad_payload(constructor: &TypedType, applied: &TypedType) -> Option<TypedTy
 
 fn monad_parts(type_ref: &TypedType) -> Option<(TypedType, TypedType)> {
     match type_ref {
-        TypedType::Named { name, arguments } if arguments.len() == 1 => Some((
+        TypedType::Named { name, arguments } if !arguments.is_empty() => Some((
             TypedType::Named {
                 name: name.clone(),
-                arguments: Vec::new(),
+                arguments: arguments[..arguments.len() - 1].to_vec(),
             },
-            arguments[0].clone(),
+            arguments.last()?.clone(),
         )),
         TypedType::ExternalNamed {
             name,
             canonical,
             arguments,
-        } if arguments.len() == 1 => Some((
+        } if !arguments.is_empty() => Some((
             TypedType::ExternalNamed {
                 name: name.clone(),
                 canonical: canonical.clone(),
-                arguments: Vec::new(),
+                arguments: arguments[..arguments.len() - 1].to_vec(),
             },
-            arguments[0].clone(),
+            arguments.last()?.clone(),
         )),
         _ => None,
     }
@@ -252,17 +252,27 @@ fn monad_parts(type_ref: &TypedType) -> Option<(TypedType, TypedType)> {
 
 fn apply_constructor(constructor: &TypedType, argument: TypedType) -> TypedType {
     match constructor {
-        TypedType::Named { name, .. } => TypedType::Named {
-            name: name.clone(),
-            arguments: vec![argument],
-        },
+        TypedType::Named { name, arguments } => {
+            let mut applied = arguments.clone();
+            applied.push(argument);
+            TypedType::Named {
+                name: name.clone(),
+                arguments: applied,
+            }
+        }
         TypedType::ExternalNamed {
-            name, canonical, ..
-        } => TypedType::ExternalNamed {
-            name: name.clone(),
-            canonical: canonical.clone(),
-            arguments: vec![argument],
-        },
+            name,
+            canonical,
+            arguments,
+        } => {
+            let mut applied = arguments.clone();
+            applied.push(argument);
+            TypedType::ExternalNamed {
+                name: name.clone(),
+                canonical: canonical.clone(),
+                arguments: applied,
+            }
+        }
         _ => TypedType::Hole,
     }
 }

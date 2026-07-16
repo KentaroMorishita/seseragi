@@ -1,0 +1,1060 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/monad-either",
+  "runtimeRequirements": [
+    "core.either",
+    "core.adt",
+    "core.either.left",
+    "core.either.right",
+    "core.string",
+    "core.int64",
+    "core.int64.add",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
+      "trait": "Functor",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 79,
+        "end": 274
+      },
+      "dictionaryExport": "__ssrg$instance$Functor$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "f",
+                "type": "(argument: A) => B",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Left\"; readonly value: E } | { readonly tag: \"Right\"; readonly value: A }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "value": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Left"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "error",
+                      "type": {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "error"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Right"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Right",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "value": {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 117,
+              "end": 272
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
+      "trait": "Applicative",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "either",
+              "error": {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              "value": {
+                "kind": "unknown"
+              }
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 415,
+        "end": 761
+      },
+      "dictionaryExport": "__ssrg$instance$Applicative$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "pure",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 457,
+              "end": 506
+            }
+          },
+          {
+            "name": "apply",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "wrapped",
+                "type": "{ readonly tag: \"Left\"; readonly value: E } | { readonly tag: \"Right\"; readonly value: (argument: A) => B }",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Left\"; readonly value: E } | { readonly tag: \"Right\"; readonly value: A }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "identifier",
+                    "name": "wrapped"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "either",
+                    "error": {
+                      "kind": "reference",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    "value": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  {
+                    "kind": "either",
+                    "error": {
+                      "kind": "reference",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    "value": {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Right"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Right"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "_function",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "reference",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Right",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "_function",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Left"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "error",
+                      "type": {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "error"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Left"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "error",
+                      "type": {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "error"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "value": {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 510,
+              "end": 759
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/monad-either::trait(Monad)<std/prelude::Either<$0,_>>",
+      "trait": "Monad",
+      "typeParameters": [
+        "E"
+      ],
+      "arguments": [
+        {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Applicative",
+          "arguments": [
+            {
+              "kind": "either",
+              "error": {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              "value": {
+                "kind": "unknown"
+              }
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 868,
+        "end": 1068
+      },
+      "dictionaryExport": "__ssrg$instance$Monad$2",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "flatMap",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "f",
+                "type": "(argument: A) => { readonly tag: \"Left\"; readonly value: E } | { readonly tag: \"Right\"; readonly value: B }",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Left\"; readonly value: E } | { readonly tag: \"Right\"; readonly value: A }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "value": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Left"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "error",
+                      "type": {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_either_Left",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "error"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Right"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "f",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "item"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                "value": {
+                  "kind": "reference",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 904,
+              "end": 1066
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "addEither",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Monad$2",
+          "typeArguments": [
+            {
+              "kind": "string"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Applicative$1",
+              "typeArguments": [
+                {
+                  "kind": "string"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Functor$0",
+                  "typeArguments": [
+                    {
+                      "kind": "string"
+                    }
+                  ],
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "left"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1181,
+              "end": 1194
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "right"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1199,
+              "end": 1214
+            }
+          }
+        ],
+        "result": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Applicative$1",
+            "typeArguments": [
+              {
+                "kind": "string"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Functor$0",
+                "typeArguments": [
+                  {
+                    "kind": "string"
+                  }
+                ],
+                "arguments": []
+              }
+            ]
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "first"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "second"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1070,
+        "end": 1244
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "string"
+          },
+          "value": {
+            "kind": "bigint"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Left "
+              },
+              "right": {
+                "kind": "identifier",
+                "name": "error"
+              }
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Right 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Right another value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1246,
+        "end": 1412
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "addEither",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_either_Right",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "20"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_either_Right",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "22"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "addEither",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_either_Left",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "stopped"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_either_Right",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "22"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1414,
+        "end": 1582
+      }
+    }
+  ]
+}

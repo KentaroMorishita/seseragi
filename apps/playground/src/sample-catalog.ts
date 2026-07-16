@@ -115,4 +115,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Just 42\nJust 42\nJust 44\nNothing\nJust 42\nNothing",
   },
+  {
+    id: "monad-either",
+    label: "MonadとEither",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/monad-either/main.ssrg",
+    stdin: "",
+    expectedOutput: "Right 42\nLeft stopped",
+  },
 ]

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "case": "monad-either",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/monad-either",
+    "export": "main",
+    "compiledModule": "../../schema-1/monad-either/generated-module.json",
+    "typedInterface": "../../schema-1/monad-either/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.either",
+      "core.adt",
+      "core.either.left",
+      "core.either.right",
+      "core.string",
+      "core.int64",
+      "core.int64.add",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Right 42"],
+        "stdout": "Right 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Left stopped"],
+        "stdout": "Left stopped\n"
+      }
+    ]
+  }
+}

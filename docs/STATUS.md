@@ -237,7 +237,10 @@ TypedHir / CoreIr / TypeScriptIrへ保持します。bindは選択済みdictiona
 `addMaybe (Just 20) (Just 22)`と`addMaybe (Just 20) Nothing`のactual executionが成功と短絡を固定します。
 `semantic-diagnostics-schema-1/monad-do-invalid`はrefutable bind pattern、異なるmonad constructor、
 final monadic expression欠落を、それぞれ専用の`do.*` diagnosticとsource rangeで固定します。
-Applicative / Monad law、部分適用型構築子を使うdoは次の独立gateです。
+`schema-1/monad-either`は`instance<E> Monad<Either<E, _>>`を選び、`Either<String, A>`から
+`M = Either<String, _>`とpayload `A`を分離します。do loweringは同じdictionary `flatMap`を使い、
+`Right 42`と`Left "stopped"`の短絡をactual executionで固定します。Maybeという標準型名やruntime tagへの
+専用分岐ではありません。Applicative / Monad lawは次の独立gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

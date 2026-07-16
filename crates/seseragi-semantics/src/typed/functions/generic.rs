@@ -138,21 +138,12 @@ pub(crate) fn infer_type_parameters(
             .iter()
             .find(|type_parameter| type_parameter.arity > 0 && type_parameter.name == *name)
         {
-            if let TypedType::Named {
-                name: argument_name,
-                arguments: argument_arguments,
-            } = argument
-            {
-                if arguments.len() == constructor_parameter.arity as usize
-                    && argument_arguments.len() == arguments.len()
+            if arguments.len() == constructor_parameter.arity as usize {
+                if let Some((constructor, applied_arguments)) =
+                    split_constructor_application(argument, arguments.len())
                 {
-                    substitutions
-                        .entry(name.clone())
-                        .or_insert_with(|| TypedType::Named {
-                            name: argument_name.clone(),
-                            arguments: Vec::new(),
-                        });
-                    for (parameter, argument) in arguments.iter().zip(argument_arguments) {
+                    substitutions.entry(name.clone()).or_insert(constructor);
+                    for (parameter, argument) in arguments.iter().zip(applied_arguments) {
                         infer_type_parameters(parameter, argument, type_parameters, substitutions);
                     }
                 }
@@ -172,6 +163,24 @@ pub(crate) fn infer_type_parameters(
                 arguments: argument_arguments,
             },
         ) if parameter_name == argument_name
+            && parameter_arguments.len() == argument_arguments.len() =>
+        {
+            for (parameter, argument) in parameter_arguments.iter().zip(argument_arguments) {
+                infer_type_parameters(parameter, argument, type_parameters, substitutions);
+            }
+        }
+        (
+            TypedType::ExternalNamed {
+                canonical: parameter_canonical,
+                arguments: parameter_arguments,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: argument_canonical,
+                arguments: argument_arguments,
+                ..
+            },
+        ) if parameter_canonical == argument_canonical
             && parameter_arguments.len() == argument_arguments.len() =>
         {
             for (parameter, argument) in parameter_arguments.iter().zip(argument_arguments) {
@@ -240,6 +249,41 @@ pub(crate) fn infer_type_parameters(
     }
 }
 
+fn split_constructor_application(
+    argument: &TypedType,
+    application_arity: usize,
+) -> Option<(TypedType, &[TypedType])> {
+    let argument_count = match argument {
+        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+            arguments.len()
+        }
+        _ => return None,
+    };
+    let prefix_len = argument_count.checked_sub(application_arity)?;
+    match argument {
+        TypedType::Named { name, arguments } => Some((
+            TypedType::Named {
+                name: name.clone(),
+                arguments: arguments[..prefix_len].to_vec(),
+            },
+            &arguments[prefix_len..],
+        )),
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => Some((
+            TypedType::ExternalNamed {
+                name: name.clone(),
+                canonical: canonical.clone(),
+                arguments: arguments[..prefix_len].to_vec(),
+            },
+            &arguments[prefix_len..],
+        )),
+        _ => None,
+    }
+}
+
 fn contains_type_parameter(type_ref: &TypedType, parameters: &[TypeParameter]) -> bool {
     match type_ref {
         TypedType::Named { name, arguments } => {
@@ -291,6 +335,19 @@ pub(crate) fn substitute_type_parameters(
                         arguments: applied,
                     }
                 }
+                Some(TypedType::ExternalNamed {
+                    name: constructor,
+                    canonical,
+                    arguments: existing,
+                }) => {
+                    let mut applied = existing.clone();
+                    applied.extend(arguments);
+                    TypedType::ExternalNamed {
+                        name: constructor.clone(),
+                        canonical: canonical.clone(),
+                        arguments: applied,
+                    }
+                }
                 _ => TypedType::Named {
                     name: name.clone(),
                     arguments,
@@ -331,5 +388,64 @@ pub(crate) fn substitute_type_parameters(
             parameter: Box::new(substitute_type_parameters(parameter, substitutions)),
             result: Box::new(substitute_type_parameters(result, substitutions)),
         },
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn named(name: &str, arguments: Vec<TypedType>) -> TypedType {
+        TypedType::Named {
+            name: name.to_owned(),
+            arguments,
+        }
+    }
+
+    #[test]
+    fn infers_a_partially_applied_constructor_from_its_fixed_prefix() {
+        let mut substitutions = BTreeMap::new();
+        let parameters = vec![
+            TypeParameter {
+                name: "M".to_owned(),
+                arity: 1,
+            },
+            TypeParameter {
+                name: "A".to_owned(),
+                arity: 0,
+            },
+        ];
+
+        infer_type_parameters(
+            &named("M", vec![named("A", Vec::new())]),
+            &named(
+                "Either",
+                vec![named("String", Vec::new()), named("Int", Vec::new())],
+            ),
+            &parameters,
+            &mut substitutions,
+        );
+
+        assert_eq!(
+            substitutions.get("M"),
+            Some(&named("Either", vec![named("String", Vec::new())]))
+        );
+        assert_eq!(substitutions.get("A"), Some(&named("Int", Vec::new())));
+    }
+
+    #[test]
+    fn reapplies_an_inferred_constructor_after_its_fixed_prefix() {
+        let substitutions = BTreeMap::from([(
+            "M".to_owned(),
+            named("Either", vec![named("String", Vec::new())]),
+        )]);
+
+        assert_eq!(
+            substitute_type_parameters(&named("M", vec![named("A", Vec::new())]), &substitutions,),
+            named(
+                "Either",
+                vec![named("String", Vec::new()), named("A", Vec::new())],
+            )
+        );
     }
 }

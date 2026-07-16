@@ -1,0 +1,69 @@
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance<E> Functor<Either<E, _>> {
+  fn map<A, B> f: (A -> B) -> value: Either<E, A> -> Either<E, B> =
+    match value {
+      Left error -> Left error
+      Right item -> Right $ f item
+    }
+}
+
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+instance<E> Applicative<Either<E, _>> {
+  fn pure<A> value: A -> Either<E, A> = Right value
+
+  fn apply<A, B> wrapped: Either<E, A -> B> -> value: Either<E, A> -> Either<E, B> =
+    match (wrapped, value) {
+      (Right function, Right item) -> Right $ function item
+      (Left error, _) -> Left error
+      (_, Left error) -> Left error
+    }
+}
+
+pub trait Monad<M<_>>
+where Applicative<M> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
+
+instance<E> Monad<Either<E, _>> {
+  fn flatMap<A, B> f: (A -> Either<E, B>) -> value: Either<E, A> -> Either<E, B> =
+    match value {
+      Left error -> Left error
+      Right item -> f item
+    }
+}
+
+fn addEither
+  left: Either<String, Int>
+  -> right: Either<String, Int>
+  -> Either<String, Int> =
+  do {
+    first <- left
+    second <- right
+    pure $ first + second
+  }
+
+fn render value: Either<String, Int> -> String =
+  match value {
+    Left error -> "Left " + error
+    Right 42 -> "Right 42"
+    Right _ -> "Right another value"
+  }
+
+pub effect fn main =
+  do {
+    addEither (Right 20) (Right 22)
+    |> render
+    |> println
+
+    addEither (Left "stopped") (Right 22)
+    |> render
+    |> println
+  }

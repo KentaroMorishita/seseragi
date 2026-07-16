@@ -75,15 +75,20 @@ fn match_instance(
         .iter()
         .map(typed_type_from_type_ref)
         .collect::<Vec<_>>();
+    let matching_templates = templates
+        .iter()
+        .zip(&constraint.arguments)
+        .map(|(template, actual)| normalize_partial_constructor_template(template, actual))
+        .collect::<Vec<_>>();
     let mut substitutions = BTreeMap::<String, TypedType>::new();
-    for (template, actual) in templates.iter().zip(&constraint.arguments) {
+    for (template, actual) in matching_templates.iter().zip(&constraint.arguments) {
         infer_type_parameters(template, actual, type_parameters, &mut substitutions);
     }
     let type_arguments = type_parameters
         .iter()
         .map(|parameter| substitutions.get(&parameter.name).cloned())
         .collect::<Option<Vec<_>>>()?;
-    let matches = templates
+    let matches = matching_templates
         .iter()
         .map(|template| substitute_type_parameters(template, &substitutions))
         .zip(&constraint.arguments)
@@ -145,4 +150,39 @@ fn match_instance(
         type_arguments,
         evidence_arguments,
     })
+}
+
+fn normalize_partial_constructor_template(template: &TypedType, actual: &TypedType) -> TypedType {
+    let (template_name, template_arguments, actual_name, actual_arguments) =
+        match (template, actual) {
+            (
+                TypedType::Named {
+                    name: template_name,
+                    arguments: template_arguments,
+                },
+                TypedType::Named {
+                    name: actual_name,
+                    arguments: actual_arguments,
+                },
+            ) => (
+                template_name,
+                template_arguments,
+                actual_name,
+                actual_arguments,
+            ),
+            _ => return template.clone(),
+        };
+    if template_name != actual_name || template_arguments.len() <= actual_arguments.len() {
+        return template.clone();
+    }
+    let fixed = &template_arguments[..actual_arguments.len()];
+    let unfilled = &template_arguments[actual_arguments.len()..];
+    if unfilled.iter().all(|argument| *argument == TypedType::Hole) {
+        TypedType::Named {
+            name: template_name.clone(),
+            arguments: fixed.to_vec(),
+        }
+    } else {
+        template.clone()
+    }
 }
