@@ -382,6 +382,8 @@ pub enum TypedExpr {
         evidence: Vec<TypedCallEvidence>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         deferred_evidence_parameters: Vec<TypedType>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        deferred_evidence_type_constructor_parameters: Vec<String>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         trait_dispatch: Option<TypedTraitDispatch>,
         #[serde(rename = "type")]

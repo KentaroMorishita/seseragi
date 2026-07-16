@@ -694,6 +694,14 @@ concrete call siteは既存のlocal generic instance selectionを使います。
 保持し、TypeScriptIrは通常のdictionary callを返すため、Functor専用closure nodeやruntime tag判定を追加しません。
 execution fixtureが`Just 42`を観測します。
 
+`schema-1/polymorphic-partial-constrained-function`は、concrete instanceをその場で選べないgeneric callerでも、outer
+`where Ready<T>`のparameter evidenceを部分適用closureへ捕捉します。`schema-1/polymorphic-partial-functor`は同じ機構を
+`where Functor<F>`と`transform f : F<A> -> F<B>`へ適用し、higher-order `applyMapper`へ渡します。TypedHir / CoreIrの
+`deferredEvidenceTypeConstructorParameters`はdeferred parameterに含まれるHKT parameter名を明示し、backendだけが
+`F<A>`を`unknown`へ消去します。constraint selection、kind、evidenceはTypeScript checkerへ委譲しません。二つの同名
+execution fixtureはouter dictionary捕捉をactual dispatchで固定します。なお、outer evidenceを捕捉するvalueと、
+constraint付きvalue schemeを独立してgeneralizeし後からdictionaryを受け取るvalueは区別し、後者は別gateに残します。
+
 TypeScriptにはnative HKT applicationがないため、`F<A>`をそのまま不正なTypeScript型として生成しません。
 CoreIrはtype-constructor parameter名を保持し、backend parameter annotationだけを`unknown`へ消去します。
 これはSeseragiのkind / type / instance selectionをTypeScriptへ委譲するものではなく、意味確定後のtarget ABI消去です。
@@ -762,10 +770,11 @@ partial trait methodは期待関数型からevidenceを選び、`partial-functor
 `partial-constrained-function`は通常のtop-level `where Ready<T>` callでも、TypedHir / CoreIrへ残りのvalue parameter型を
 明示します。TypeScript backendはそのparameterを受け取るeta-expanded closureを生成し、全value argumentの後ろへ
 dictionaryを渡す既存ABIを維持します。飽和callの結果自体がfunction型である場合はこのmetadataが空なので、誤って
-eta expansionしません。一方、未解決constraintを持つpolymorphic function valueはschemeへconstraintを保持する
-一般機構が必要です。runtime dictionaryが実在するstandard `Show<String>`は
+eta expansionしません。outer generic scopeのunresolved type parameterに対応するdictionary captureはpolymorphic partial
+fixtureで接続済みです。一方、constraint付きvalueをouter evidenceなしで独立してgeneralizeするにはschemeへconstraintを
+保持する一般機構が必要です。runtime dictionaryが実在するstandard `Show<String>`は
 factory引数へ接続済みですが、operation-only standard traitは別gateです。Phase 3の累積goal programでは
-unresolved polymorphic constrained valueを回収します。concrete partialだけをその完了と数えません。
+generalized constrained value schemeを回収します。scoped captureだけをその完了と数えません。
 
 `project-schema-1/imported-constrained-function`はproviderのpublic `where Ready<T>`をfinal interfaceから
 consumerへ運び、constraint argumentのnominal型とtraitをそれぞれcanonical identityへ解決します。consumerは
@@ -920,7 +929,7 @@ namespace-qualified value call / type reference / constructor expression / const
 facade越しに選択したconcrete imported evidenceはdictionary export metadataとTypeScript source importまで接続済みです。
 direct / facade越しproviderのgeneric / constraint付きimported factoryもdictionary export metadata、nested evidence、
 TypeScript source importまで接続済みです。materializableなstandard `Show<String>`もlocal factory引数へ接続済みです。
-一方、trait namespaceとunresolved polymorphic constrained valueは未接続のため、
+一方、trait namespaceとgeneralized constrained value schemeは未接続のため、
 P2-4全体の完了とは扱いません。projectが選んだPOSIX形式の生成先pathから
 importer相対specifierを作る小さなdriver helperも追加
 しました。pathのcanonical性、依存module / 出力pathの重複、entry自身との衝突をdriver境界で検証し、backendは確定済み

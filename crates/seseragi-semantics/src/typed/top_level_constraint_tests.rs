@@ -89,3 +89,42 @@ fn defers_selected_evidence_until_remaining_value_parameters_are_applied() {
         )
     ));
 }
+
+#[test]
+fn captures_scoped_evidence_in_a_polymorphic_partial_function_value() {
+    let typed = type_module(
+        "artifact/polymorphic-partial-constrained-function/main.ssrg",
+        "pub trait Ready<A> { fn ready value: A -> String }\n\
+         fn describe<T> value: T -> suffix: String -> String\n\
+         where Ready<T> =\n\
+           ready value + suffix\n\
+         fn applyLabel labeler: (String -> String) -> String = labeler \"!\"\n\
+         pub fn label<T> value: T -> String\n\
+         where Ready<T> =\n\
+           applyLabel (describe value)\n",
+    );
+    let TypedDecl::Fn { body, .. } = &typed.declarations[2] else {
+        panic!("expected generic label function");
+    };
+    let TypedExpr::Call { arguments, .. } = body else {
+        panic!("expected higher-order call");
+    };
+
+    assert!(matches!(
+        arguments.as_slice(),
+        [TypedExpr::Call {
+            evidence,
+            deferred_evidence_parameters,
+            ..
+        }] if matches!(
+            evidence.as_slice(),
+            [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Parameter { index: 0 },
+                ..
+            }]
+        ) && matches!(
+            deferred_evidence_parameters.as_slice(),
+            [crate::TypedType::Named { name, arguments }] if name == "String" && arguments.is_empty()
+        )
+    ));
+}

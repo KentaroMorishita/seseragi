@@ -91,3 +91,63 @@ pub fn label value: Badge -> String = applyLabel (describe value)
         bundle.typescript
     );
 }
+
+#[test]
+fn captures_scoped_evidence_in_a_polymorphic_partial_function_value() {
+    let source = "\
+pub trait Ready<A> { fn ready value: A -> String }
+fn describe<T> value: T -> suffix: String -> String
+where Ready<T> =
+  ready value + suffix
+fn applyLabel labeler: (String -> String) -> String = labeler \"!\"
+pub fn label<T> value: T -> String
+where Ready<T> =
+  applyLabel (describe value)
+";
+    let typed = type_module(
+        "artifact/polymorphic-partial-constrained-function/main.ssrg",
+        source,
+    );
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle.typescript.contains(
+            "applyLabel((__ssrg$partial$0: string) => describe(value)(__ssrg$partial$0)(__ssrg$evidence$0))"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}
+
+#[test]
+fn captures_scoped_hkt_evidence_in_a_partial_functor_function() {
+    let source = "\
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+fn transform<F<_>, A, B> f: (A -> B) -> value: F<A> -> F<B>
+where Functor<F> =
+  map f value
+fn applyMapper<F<_>, A, B>
+  mapper: (F<A> -> F<B>) -> value: F<A> -> F<B> =
+  mapper value
+pub fn transformWith<F<_>, A, B>
+  f: (A -> B) -> value: F<A> -> F<B>
+where Functor<F> =
+  applyMapper (transform f) value
+";
+    let typed = type_module("artifact/polymorphic-partial-functor/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle.typescript.contains(
+            "applyMapper((__ssrg$partial$0: unknown) => transform(f)(__ssrg$partial$0)(__ssrg$evidence$0))(value)"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}

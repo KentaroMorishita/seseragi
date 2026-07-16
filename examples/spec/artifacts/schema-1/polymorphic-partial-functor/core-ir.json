@@ -1,0 +1,1119 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/polymorphic-partial-functor",
+  "instances": [
+    {
+      "identity": "artifact/polymorphic-partial-functor::trait(Functor)<std/prelude::Maybe>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 79,
+        "end": 248
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "f",
+                "kind": "named",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 175,
+                  "end": 180
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Nothing",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 189,
+                        "end": 196
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 200,
+                      "end": 207
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 189,
+                    "end": 207
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Just",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 214,
+                        "end": 223
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 219,
+                        "end": 223
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::Just",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 236,
+                              "end": 240
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 234,
+                          "end": 240
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 227,
+                      "end": 240
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 214,
+                    "end": 240
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 169,
+                "end": 246
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 107,
+              "end": 246
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/polymorphic-partial-functor::transform",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 250,
+        "end": 348
+      },
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/polymorphic-partial-functor::trait(Functor)::map",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "f",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 341,
+              "end": 342
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 343,
+              "end": 348
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Functor",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/polymorphic-partial-functor::trait(Functor)",
+          "method": "map"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 337,
+          "end": 348
+        }
+      }
+    },
+    {
+      "symbol": "artifact/polymorphic-partial-functor::applyMapper",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 350,
+        "end": 445
+      },
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "parameters": [
+        {
+          "id": "mapper",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "result": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "mapper",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 440,
+              "end": 445
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 433,
+          "end": 445
+        }
+      }
+    },
+    {
+      "symbol": "artifact/polymorphic-partial-functor::transformWith",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 447,
+        "end": 569
+      },
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/polymorphic-partial-functor::applyMapper",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/polymorphic-partial-functor::transform",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "f",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 561,
+                  "end": 562
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Functor",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "parameter",
+                  "index": 0
+                }
+              }
+            ],
+            "deferredEvidenceParameters": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "deferredEvidenceTypeConstructorParameters": [
+              "F"
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 551,
+              "end": 562
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 564,
+              "end": 569
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 538,
+          "end": 569
+        }
+      }
+    },
+    {
+      "symbol": "artifact/polymorphic-partial-functor::increment",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 571,
+        "end": 613
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 604,
+            "end": 609
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "1",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 612,
+            "end": 613
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 604,
+          "end": 613
+        }
+      }
+    },
+    {
+      "symbol": "artifact/polymorphic-partial-functor::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 615,
+        "end": 759
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 663,
+            "end": 668
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Nothing",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 675,
+                  "end": 682
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Nothing",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 686,
+                "end": 695
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 675,
+              "end": 695
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 700,
+                  "end": 707
+                }
+              },
+              {
+                "kind": "integer",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 705,
+                  "end": 707
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Just 42",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 711,
+                "end": 720
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 700,
+              "end": 720
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Just another value",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 735,
+                "end": 755
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 725,
+              "end": 755
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 657,
+          "end": 759
+        }
+      }
+    },
+    {
+      "symbol": "artifact/polymorphic-partial-functor::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 761,
+        "end": 845
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/polymorphic-partial-functor::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/polymorphic-partial-functor::transformWith",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/polymorphic-partial-functor::increment",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 811,
+                      "end": 820
+                    }
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "std/prelude::Just",
+                    "arguments": [
+                      {
+                        "kind": "int64",
+                        "value": "41",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 789,
+                          "end": 791
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 784,
+                      "end": 791
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Functor",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "local",
+                      "identity": "artifact/polymorphic-partial-functor::trait(Functor)<std/prelude::Maybe>"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 784,
+                  "end": 820
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 784,
+              "end": 832
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 784,
+          "end": 845
+        }
+      }
+    }
+  ]
+}

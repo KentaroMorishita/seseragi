@@ -219,7 +219,10 @@ TypeScriptIrのdictionary call、生成TS、`execution-schema-1/partial-functor-
 残りの`String -> String`をhigher-order関数へ渡します。選択済みdictionaryは全value parameterの後ろへ置く既存ABIを
 維持するため、TypedHir / CoreIrの`deferredEvidenceParameters`を使って生成TSをeta-expandします。
 `execution-schema-1/partial-constrained-function`が`Badge is ready!`を固定し、dictionaryを早く渡す誤生成を拒否します。
-未解決constraintを保持するpolymorphic value schemeは独立した後続gateです。
+`schema-1/polymorphic-partial-constrained-function`はouter generic constraintのparameter evidenceをpartial closureへ捕捉し、
+`schema-1/polymorphic-partial-functor`は同じ経路で`Functor<F>`とdeferred `F<A>`を運びます。execution fixtureはそれぞれ
+actual dictionary dispatchを固定し、HKT parameter annotationは生成TypeScriptだけ`unknown`へ消去します。
+outer evidenceなしでconstraintを保持するgeneralized value schemeは独立した後続gateです。
 
 `schema-1/comprehension-pattern-filter`はArray generatorの`Just value`と`(1, value)`を通常のpattern decisionへlowerし、
 不一致要素を除外してからpayload / tuple bindingをelement式とguardへ渡します。

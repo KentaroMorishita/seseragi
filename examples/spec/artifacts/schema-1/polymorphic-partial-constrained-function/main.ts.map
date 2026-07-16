@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/polymorphic-partial-constrained-function"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n\npub trait Ready<A> {\n  fn ready value: A -> String\n}\n\ninstance Ready<Badge> {\n  fn ready value: Badge -> String = \"Badge is ready\"\n}\n\nfn describe<T>\n  value: T\n  -> suffix: String\n  -> String\nwhere Ready<T> =\n  ready value + suffix\n\nfn applyLabel\n  labeler: (String -> String)\n  -> String =\n  labeler \"!\"\n\nfn label<T>\n  value: T\n  -> String\nwhere Ready<T> =\n  applyLabel (describe value)\n\npub effect fn main =\n  Active\n  |> label\n  |> println\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "__ssrg$instance$Ready$0",
+    "describe",
+    "__ssrg$evidence$0",
+    "applyLabel",
+    "labeler",
+    "label",
+    "applyLabel",
+    "describe",
+    "main",
+    "println",
+    "label"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAMJC;AAIAC;AAOAE;AAKAE;AAMAG"
+}

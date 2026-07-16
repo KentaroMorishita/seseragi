@@ -404,6 +404,7 @@ type Internal =
                     }],
                     evidence: Vec::new(),
                     deferred_evidence_parameters: Vec::new(),
+                    deferred_evidence_type_constructor_parameters: Vec::new(),
                     trait_dispatch: None,
                     type_ref: int_type,
                     origin,

@@ -109,12 +109,33 @@ pub(super) fn type_application(
                 )
             })
         });
-    let requires_evidence =
-        saturated || signature.trait_identity.is_some() || concrete_partial_constraints;
+    let scoped_partial_evidence = (!saturated
+        && signature.trait_identity.is_none()
+        && !application.constraints.is_empty()
+        && !concrete_partial_constraints)
+        .then(|| {
+            context
+                .select_call_evidence(&application.constraints, &application.constraint_identities)
+                .ok()
+                .filter(|evidence| {
+                    evidence.iter().all(|item| {
+                        matches!(
+                            item.evidence,
+                            crate::TypedInstanceEvidence::Parameter { .. }
+                        )
+                    })
+                })
+        })
+        .flatten();
+    let requires_evidence = saturated
+        || signature.trait_identity.is_some()
+        || concrete_partial_constraints
+        || scoped_partial_evidence.is_some();
     let evidence = if issue.is_none() && requires_evidence {
-        match context
-            .select_call_evidence(&application.constraints, &application.constraint_identities)
-        {
+        match scoped_partial_evidence.map(Ok).unwrap_or_else(|| {
+            context
+                .select_call_evidence(&application.constraints, &application.constraint_identities)
+        }) {
             Ok(evidence) => evidence,
             Err(constraint) => {
                 issue = Some(PureCallIssue::MissingInstance {
@@ -150,12 +171,23 @@ pub(super) fn type_application(
         } else {
             Vec::new()
         };
+    let deferred_evidence_type_constructor_parameters = if deferred_evidence_parameters.is_empty() {
+        Vec::new()
+    } else {
+        signature
+            .type_parameters
+            .iter()
+            .filter(|parameter| parameter.is_constructor())
+            .map(|parameter| parameter.name.clone())
+            .collect()
+    };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Call {
             callee: signature.symbol.clone(),
             arguments,
             evidence,
             deferred_evidence_parameters,
+            deferred_evidence_type_constructor_parameters,
             trait_dispatch: signature
                 .trait_identity
                 .clone()

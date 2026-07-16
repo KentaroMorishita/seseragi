@@ -58,7 +58,7 @@ pub(super) fn type_ref_from_core_type(
     type_ref_from_core_type_with_erasure(type_ref, imported_types, &[])
 }
 
-fn type_ref_from_core_type_with_erasure(
+pub(super) fn type_ref_from_core_type_with_erasure(
     type_ref: &CoreType,
     imported_types: &BTreeMap<String, String>,
     type_constructor_parameters: &[String],

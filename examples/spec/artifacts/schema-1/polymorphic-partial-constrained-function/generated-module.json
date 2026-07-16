@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "artifact/polymorphic-partial-constrained-function",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "Active",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/polymorphic-partial-constrained-function::trait(Ready)<artifact/polymorphic-partial-constrained-function::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Ready$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

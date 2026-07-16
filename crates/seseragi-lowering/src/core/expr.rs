@@ -95,6 +95,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             arguments,
             evidence,
             deferred_evidence_parameters,
+            deferred_evidence_type_constructor_parameters,
             trait_dispatch,
             type_ref,
             origin,
@@ -106,6 +107,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
                 .into_iter()
                 .map(lower_typed_type)
                 .collect(),
+            deferred_evidence_type_constructor_parameters,
             trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
                 trait_identity: dispatch.trait_identity,
                 method: dispatch.method,

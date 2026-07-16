@@ -131,7 +131,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     label: "Functorを渡す",
     category: "型と抽象化",
     sourcePath:
-      "examples/spec/artifacts/schema-1/partial-functor-value/main.ssrg",
+      "examples/spec/artifacts/schema-1/polymorphic-partial-functor/main.ssrg",
     stdin: "",
     expectedOutput: "Just 42",
   },

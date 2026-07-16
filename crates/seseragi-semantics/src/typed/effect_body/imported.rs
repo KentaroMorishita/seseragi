@@ -62,6 +62,7 @@ pub(super) fn type_imported_effect_application(
             arguments,
             evidence: Vec::new(),
             deferred_evidence_parameters: Vec::new(),
+            deferred_evidence_type_constructor_parameters: Vec::new(),
             trait_dispatch: None,
             type_ref: application_result_type_from(
                 &signature
