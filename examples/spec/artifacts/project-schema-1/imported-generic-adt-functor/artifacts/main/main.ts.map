@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-adt-functor/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-adt-functor::main"
+  ],
+  "sourcesContent": [
+    "import { Box, Boxed, transform } from \"./domain\"\n\nfn increment value: Int -> Int = value + 1\n\nfn render value: Box<Int> -> String =\n  match value {\n    Boxed 42 -> \"Imported Box Functor: 42\"\n    Boxed _ -> \"Imported Box Functor: another value\"\n  }\n\npub effect fn main =\n  Boxed 41\n  |> transform increment\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "increment",
+    "add",
+    "render",
+    "main",
+    "println",
+    "render",
+    "transform",
+    "Boxed"
+  ],
+  "mappings": ";;;;AAEAA;AAEAE;AAMAC"
+}

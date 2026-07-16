@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-generic-adt-functor::domain",
+  "runtimeRequirements": [
+    "core.adt"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Box",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Boxed",
+          "tag": "Boxed",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 110,
+        "end": 250
+      },
+      "dictionaryExport": "__ssrg$instance$Functor$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "f",
+                "type": "(argument: A) => B",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "Box<A>",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Boxed"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "Boxed",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "item"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 136,
+              "end": 248
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "transform",
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "f",
+          "type": "(argument: A) => B",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "map",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "f"
+          },
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 252,
+        "end": 354
+      }
+    }
+  ]
+}

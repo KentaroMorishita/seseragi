@@ -1,0 +1,401 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-generic-adt-functor::domain",
+  "adts": [
+    {
+      "symbol": "fixture/imported-generic-adt-functor::domain::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "fixture/imported-generic-adt-functor::domain::Boxed",
+          "name": "Boxed",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 110,
+        "end": 250
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "f",
+                "kind": "named",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 200,
+                  "end": 205
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-functor::domain::Boxed",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 214,
+                        "end": 224
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 220,
+                        "end": 224
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "fixture/imported-generic-adt-functor::domain::Boxed",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "domain.ssrg",
+                              "start": 238,
+                              "end": 242
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 236,
+                          "end": 242
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 228,
+                      "end": 242
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 214,
+                    "end": 242
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 194,
+                "end": 248
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 136,
+              "end": 248
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-generic-adt-functor::domain::transform",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 252,
+        "end": 354
+      },
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "typeConstructorParameters": [
+        "F"
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-generic-adt-functor::domain::trait(Functor)::map",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "f",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 347,
+              "end": 348
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 349,
+              "end": 354
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Functor",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-generic-adt-functor::domain::trait(Functor)",
+          "method": "map"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 343,
+          "end": 354
+        }
+      }
+    }
+  ]
+}

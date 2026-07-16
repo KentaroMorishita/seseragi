@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-generic-adt-functor::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.string",
+    "core.adt",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-generic-adt-functor::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/imported-generic-adt-functor::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "imported": "Boxed",
+          "local": "Boxed",
+          "sourceLocal": "Boxed",
+          "canonical": "fixture/imported-generic-adt-functor::domain::Boxed",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 14,
+            "end": 19
+          }
+        },
+        {
+          "imported": "transform",
+          "local": "transform",
+          "sourceLocal": "transform",
+          "canonical": "fixture/imported-generic-adt-functor::domain::transform",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 30
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Functor$0",
+          "local": "__ssrg$instance$Functor$0",
+          "sourceLocal": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",
+          "canonical": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 48
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 48
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "increment",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "bigint",
+            "value": "1"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 92
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Box<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "bigint"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Boxed"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported Box Functor: 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Imported Box Functor: another value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 247
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "transform",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "increment"
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "Boxed",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "41"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Functor$0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 249,
+        "end": 330
+      }
+    }
+  ]
+}

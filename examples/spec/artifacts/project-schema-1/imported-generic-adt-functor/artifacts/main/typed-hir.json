@@ -1,0 +1,516 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-generic-adt-functor::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-generic-adt-functor::domain",
+      "origin": {
+        "start": 0,
+        "end": 48
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/imported-generic-adt-functor::domain::Box",
+          "origin": {
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Boxed",
+          "local": "Boxed",
+          "canonical": "fixture/imported-generic-adt-functor::domain::Boxed",
+          "origin": {
+            "start": 14,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "transform",
+          "local": "transform",
+          "canonical": "fixture/imported-generic-adt-functor::domain::transform",
+          "origin": {
+            "start": 21,
+            "end": 30
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-adt-functor::main::increment",
+      "visibility": "private",
+      "origin": {
+        "start": 50,
+        "end": 92
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 63,
+            "end": 68
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 83,
+            "end": 88
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 91,
+            "end": 92
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 83,
+          "end": 92
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-adt-functor::main::render",
+      "visibility": "private",
+      "origin": {
+        "start": 94,
+        "end": 247
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 104,
+            "end": 109
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 140,
+            "end": 145
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/imported-generic-adt-functor::domain::Boxed",
+              "argument": {
+                "kind": "integer",
+                "value": "42",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 158,
+                  "end": 160
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 152,
+                "end": 160
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Imported Box Functor: 42",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 164,
+                "end": 190
+              }
+            },
+            "origin": {
+              "start": 152,
+              "end": 190
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/imported-generic-adt-functor::domain::Boxed",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 201,
+                  "end": 202
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 195,
+                "end": 202
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Imported Box Functor: another value",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 206,
+                "end": 243
+              }
+            },
+            "origin": {
+              "start": 195,
+              "end": 243
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 134,
+          "end": 247
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-generic-adt-functor::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 249,
+        "end": 330
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-generic-adt-functor::main::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/imported-generic-adt-functor::domain::transform",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "fixture/imported-generic-adt-functor::main::increment",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    "origin": {
+                      "start": 296,
+                      "end": 305
+                    }
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "fixture/imported-generic-adt-functor::domain::Boxed",
+                    "arguments": [
+                      {
+                        "kind": "integer",
+                        "value": "41",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 278,
+                          "end": 280
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 272,
+                      "end": 280
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Functor",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Box",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "imported",
+                      "identity": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",
+                      "providerModule": "fixture/imported-generic-adt-functor::domain"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 272,
+                  "end": 305
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 272,
+              "end": 317
+            }
+          }
+        ],
+        "origin": {
+          "start": 272,
+          "end": 330
+        }
+      }
+    }
+  ]
+}

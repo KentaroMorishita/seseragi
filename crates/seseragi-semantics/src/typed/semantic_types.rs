@@ -252,8 +252,8 @@ impl SemanticTypeCatalog {
                 adt.variants = semantic_variants;
             }
         }
-        catalog.collect_imported_adts(resolved);
         catalog.collect_prelude_sum_types(resolved);
+        catalog.collect_imported_adts(resolved);
         catalog
     }
 

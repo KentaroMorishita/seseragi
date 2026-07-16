@@ -136,6 +136,14 @@ fn add_dependency_adt_members(
     for owner in dependency.interface.exports.iter().filter(|export| {
         export.namespace == "type" && export.declaration_kind.as_deref() == Some("type")
     }) {
+        for parameter in &owner.scheme.type_parameters {
+            resolver.dependency_symbol(
+                SymbolNamespace::Type,
+                SymbolKind::TypeParameter,
+                &parameter.name,
+                format!("{}::{}", owner.symbol, parameter.name),
+            );
+        }
         ensure_dependency_member(resolver, dependency, owner, resolved);
         for constructor in dependency
             .interface

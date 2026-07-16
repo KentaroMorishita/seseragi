@@ -1,0 +1,15 @@
+import { Box, Boxed, transform } from "./domain"
+
+fn increment value: Int -> Int = value + 1
+
+fn render value: Box<Int> -> String =
+  match value {
+    Boxed 42 -> "Imported Box Functor: 42"
+    Boxed _ -> "Imported Box Functor: another value"
+  }
+
+pub effect fn main =
+  Boxed 41
+  |> transform increment
+  |> render
+  |> println

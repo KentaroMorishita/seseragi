@@ -133,6 +133,96 @@ fn treats_named_and_namespace_qualified_imports_as_the_same_type() {
 }
 
 #[test]
+fn types_an_imported_generic_adt_constructor_and_exhaustive_match() {
+    let domain_source = "pub type Box<A> =\n  | Boxed A\n";
+    let main_source = "import { Box, Boxed } from \"./domain\"\n\npub fn unwrap value: Box<Int> -> Int =\n  match value {\n    Boxed item -> item\n  }\n\npub fn answer unit: Unit -> Int = unwrap $ Boxed 42\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let [TypedDecl::Fn {
+        body: crate::TypedExpr::Match { exhaustive, .. },
+        ..
+    }, TypedDecl::Fn { body, .. }] = analyzed.typed_hir.declarations.as_slice()
+    else {
+        panic!("expected generic ADT consumer functions");
+    };
+    assert!(*exhaustive);
+    assert!(matches!(
+        body,
+        crate::TypedExpr::Call {
+            callee,
+            type_ref: TypedType::Named { name, arguments },
+            ..
+        } if callee == "fixture/game::main::unwrap"
+            && name == "Int"
+            && arguments.is_empty()
+    ));
+}
+
+#[test]
+fn rejects_an_incompatible_imported_generic_adt_payload() {
+    let domain_source = "pub type Box<A> =\n  | Boxed A\n";
+    let main_source = "import { Box, Boxed } from \"./domain\"\n\npub fn invalid unit: Unit -> Box<Int> = Boxed \"wrong\"\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0101" && diagnostic.message_key == "call.argument-type-mismatch"
+    }));
+}
+
+#[test]
+fn substitutes_an_imported_generic_parameter_nested_in_a_payload_type() {
+    let domain_source = "pub type Envelope<A> =\n  | Wrapped Maybe<A>\n";
+    let main_source = "import { Envelope, Wrapped } from \"./domain\"\n\npub fn unwrap value: Envelope<Int> -> Maybe<Int> =\n  match value {\n    Wrapped item -> item\n  }\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let TypedDecl::Fn {
+        body: crate::TypedExpr::Match { arms, .. },
+        ..
+    } = &analyzed.typed_hir.declarations[0]
+    else {
+        panic!("expected nested generic payload match");
+    };
+    assert!(matches!(
+        &arms[0].body,
+        crate::TypedExpr::Variable {
+            type_ref: TypedType::Named { name, arguments },
+            ..
+        } if name == "Maybe"
+            && matches!(arguments.as_slice(), [TypedType::Named { name, arguments }] if name == "Int" && arguments.is_empty())
+    ));
+}
+
+#[test]
 fn reports_a_missing_namespace_type_member_as_an_unresolved_export() {
     let domain_source = "pub type Hand =\n  | Rock\n";
     let main_source = "import * as domain from \"./domain\"\n\npub fn keep value: domain.Missing -> domain.Missing = value\n";

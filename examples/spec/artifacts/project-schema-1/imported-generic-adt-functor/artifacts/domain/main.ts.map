@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-adt-functor/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-adt-functor::domain"
+  ],
+  "sourcesContent": [
+    "pub type Box<A> =\n  | Boxed A\n\npub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance Functor<Box> {\n  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> =\n    match value {\n      Boxed item -> Boxed $ f item\n    }\n}\n\npub fn transform<F<_>, A, B>\n  f: (A -> B)\n  -> value: F<A>\n  -> F<B>\nwhere Functor<F> =\n  map f value\n"
+  ],
+  "names": [
+    "Box",
+    "Boxed",
+    "__ssrg$instance$Functor$0",
+    "transform",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAAAA;;AACIC;AAMJC;AAOAC"
+}

@@ -1,0 +1,454 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-generic-adt-functor::domain",
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-adt-functor::domain::trait(Functor)<fixture/imported-generic-adt-functor::domain::Box>",
+      "traitIdentity": "fixture/imported-generic-adt-functor::domain::trait(Functor)",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-generic-adt-functor::domain::Box"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 110,
+        "end": 250
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "f",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "start": 149,
+                  "end": 150
+                }
+              },
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 164,
+                  "end": 169
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 200,
+                  "end": 205
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-generic-adt-functor::domain::Boxed",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 15,
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 220,
+                        "end": 224
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 214,
+                      "end": 224
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "fixture/imported-generic-adt-functor::domain::Boxed",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 238,
+                              "end": 242
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 236,
+                          "end": 242
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 228,
+                      "end": 242
+                    }
+                  },
+                  "origin": {
+                    "start": 214,
+                    "end": 242
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 194,
+                "end": 248
+              }
+            },
+            "origin": {
+              "start": 136,
+              "end": 248
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-generic-adt-functor::domain::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "fixture/imported-generic-adt-functor::domain::Boxed",
+          "name": "Boxed",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 22,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 29
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-adt-functor::domain::transform",
+      "visibility": "public",
+      "origin": {
+        "start": 252,
+        "end": 354
+      },
+      "typeConstructorParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "scheme": {
+        "typeParameters": [
+          "F",
+          "A",
+          "B"
+        ],
+        "constraints": [
+          {
+            "name": "Functor",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "f",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 283,
+            "end": 284
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 300,
+            "end": 305
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-generic-adt-functor::domain::trait(Functor)::map",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "f",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 347,
+              "end": 348
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 349,
+              "end": 354
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Functor",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-generic-adt-functor::domain::trait(Functor)",
+          "method": "map"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 343,
+          "end": 354
+        }
+      }
+    }
+  ]
+}

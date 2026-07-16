@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-generic-adt-functor::domain",
+    "fixture/imported-generic-adt-functor::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-generic-adt-functor::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/imported-generic-adt-functor/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-generic-adt-functor::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-generic-adt-functor/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-generic-adt-functor::domain"
+        }
+      ]
+    }
+  ]
+}

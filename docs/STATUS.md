@@ -264,6 +264,9 @@ executionが`Imported Functor: Just 42`を固定するため、single-fileだけ
 `project-schema-1/imported-higher-order-functor`はさらにpublic `transform`の`(A -> B)` parameterをmodule interfaceから
 consumerのcallable catalogへ復元します。consumer-local `increment`をfunction valueとして渡し、`Maybe<Int>`と
 provider dictionaryを同時に具体化したactual executionが`Imported mapper: Just 42`を固定します。
+`project-schema-1/imported-generic-adt-functor`はuser-defined `Box<A>`、`Boxed A` constructor、`Functor<Box>`をproviderに
+置き、consumerの`Boxed 41 |> transform increment`をactual executionまで通します。imported ADT parameterはowner由来の
+canonical symbolを持ち、direct / nested payload substitutionとexhaustivenessをconsumer側で再構築します。
 `type-constructor-kind-mismatch`は`Type -> Type`を要求するtrait parameterへ`Int : Type`を渡すinstanceを
 `trait.instance-kind-mismatch`で拒否します。TypeScriptはHKTを直接表せないため、型検査済みの`F<A>` parameter
 annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのkind、constraint、dictionary選択は消去しません。
@@ -355,8 +358,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、
    unconstrained / constrained generic local / imported dictionary factory、local constrained function、method固有constraintは接続済み。
-   nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
-   一般機構を証明する独立gateで回収する。
+   constraint付きhigher-order callableとgeneric imported ADTもmodule executionへ接続済み。nested namespaceと
+   generalized constrained value schemeは独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと
 `project-schema-1/namespace-generic-call`の実行経路まで接続済みです。このため次の累積goalではnamespace機能を増やすこと自体を

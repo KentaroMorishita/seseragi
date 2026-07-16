@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/imported-generic-adt-functor::main",
+    "export": "main"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.int64",
+      "core.int64.add",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Imported Box Functor: 42"
+        ],
+        "stdout": "Imported Box Functor: 42\n"
+      }
+    ]
+  }
+}
