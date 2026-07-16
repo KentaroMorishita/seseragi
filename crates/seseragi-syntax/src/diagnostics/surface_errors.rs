@@ -41,11 +41,17 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
             collect_expression_errors(function, errors);
             collect_expression_errors(argument, errors);
         }
+        SurfaceExpr::Member { receiver, .. } => collect_expression_errors(receiver, errors),
         SurfaceExpr::Tuple { elements, .. }
         | SurfaceExpr::Array { elements, .. }
         | SurfaceExpr::List { elements, .. } => {
             for element in elements {
                 collect_expression_errors(element, errors);
+            }
+        }
+        SurfaceExpr::Record { fields, .. } => {
+            for field in fields {
+                collect_expression_errors(&field.value, errors);
             }
         }
         SurfaceExpr::Template { parts, .. } => {

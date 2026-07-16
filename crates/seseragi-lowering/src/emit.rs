@@ -303,6 +303,23 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
+        TypeScriptExpr::FieldAccess { receiver, field } => format!(
+            "({})[{}]",
+            render_typescript_expr(receiver),
+            format!("{field:?}")
+        ),
+        TypeScriptExpr::Record { fields } => format!(
+            "({{ {} }} as const)",
+            fields
+                .iter()
+                .map(|field| format!(
+                    "{}: {}",
+                    format!("{:?}", field.name),
+                    render_typescript_expr(&field.value)
+                ))
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
         TypeScriptExpr::Array {
             elements,
             element_type,

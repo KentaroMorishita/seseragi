@@ -110,6 +110,14 @@ pub struct CoreTraitDispatch {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreRecordValueField {
+    pub name: String,
+    pub value: CoreExpr,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "kebab-case",
@@ -254,6 +262,19 @@ pub enum CoreExpr {
     },
     Tuple {
         elements: Vec<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    FieldAccess {
+        receiver: Box<CoreExpr>,
+        field: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    Record {
+        fields: Vec<CoreRecordValueField>,
         #[serde(rename = "type")]
         type_ref: CoreType,
         origin: SourceSpan,

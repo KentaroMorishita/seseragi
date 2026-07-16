@@ -12,6 +12,7 @@ mod match_expression;
 mod monad_do;
 mod pure_call;
 mod range;
+mod record;
 mod resolution;
 mod traits;
 mod type_labels;
@@ -170,6 +171,7 @@ fn collect_pure_body_diagnostics(
     let analysis =
         analyze_pure_function(body, parameters, return_type, resolution, scoped_evidence);
     array::collect_array_diagnostic(analysis.array_issue.as_ref(), span, diagnostics);
+    record::collect_record_diagnostic(analysis.record_issue.as_ref(), span, diagnostics);
     range::collect_range_diagnostic(analysis.range_issue.as_ref(), span, diagnostics);
     conditional::collect_conditional_diagnostics(
         analysis.conditional_issue.as_ref(),

@@ -18,8 +18,8 @@ pub use core::{
     CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
     CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
-    CoreRecordField, CoreShowPayloadEvidence, CoreStatement, CoreTemplatePart, CoreTraitDispatch,
-    CoreType,
+    CoreRecordField, CoreRecordValueField, CoreShowPayloadEvidence, CoreStatement,
+    CoreTemplatePart, CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -35,9 +35,9 @@ pub use typescript::{
     TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptFunction,
     TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
     TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
-    TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptShowDictionaryReference,
-    TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptType,
-    TypeScriptTypeImport,
+    TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
+    TypeScriptRecordValueField, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
+    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptType, TypeScriptTypeImport,
 };
 
 #[cfg(test)]
@@ -56,6 +56,32 @@ mod tests {
         assert_eq!(core.bindings.len(), 1);
         assert!(matches!(core.bindings[0].value, CoreExpr::Int64 { .. }));
         assert!(core.functions.is_empty());
+    }
+
+    #[test]
+    fn lowers_structural_record_values_and_required_field_access() {
+        let source = concat!(
+            "fn profile name: String -> score: Int -> { name: String, score: Int } = { name, score }\n",
+            "pub fn displayName user: { name: String } -> String = user.name\n",
+            "pub fn answer -> String = displayName (profile \"Mio\" 42)\n",
+        );
+        let typed = type_module("artifact/record-profile/main.ssrg", source);
+        let core = lower_typed_module(typed);
+
+        assert!(matches!(core.functions[0].body, CoreExpr::Record { .. }));
+        assert!(matches!(
+            core.functions[1].body,
+            CoreExpr::FieldAccess { ref field, .. } if field == "name"
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle.typescript.contains(
+            "const profile = (name: string) => (score: bigint) => ({ \"name\": name, \"score\": score } as const)"
+        ), "{}", bundle.typescript);
+        assert!(bundle.typescript.contains(
+            "export const displayName = (user: { readonly \"name\": string }) => (user)[\"name\"]"
+        ), "{}", bundle.typescript);
     }
 
     #[test]

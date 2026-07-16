@@ -17,6 +17,8 @@ pub(super) fn type_ref_from_core_expr(
         CoreExpr::Variable { type_ref, .. }
         | CoreExpr::Call { type_ref, .. }
         | CoreExpr::Tuple { type_ref, .. }
+        | CoreExpr::FieldAccess { type_ref, .. }
+        | CoreExpr::Record { type_ref, .. }
         | CoreExpr::Array { type_ref, .. }
         | CoreExpr::List { type_ref, .. }
         | CoreExpr::ArrayComprehension { type_ref, .. }
@@ -184,6 +186,20 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 })
                 .collect(),
         },
+        CoreType::Record { fields, .. } => TypeScriptType::Record {
+            fields: fields
+                .iter()
+                .map(|field| super::TypeScriptRecordTypeField {
+                    name: field.name.clone(),
+                    optional: field.optional,
+                    type_ref: type_ref_from_core_type_with_erasure(
+                        &field.type_ref,
+                        imported_types,
+                        type_constructor_parameters,
+                    ),
+                })
+                .collect(),
+        },
         CoreType::Function { parameter, result } => TypeScriptType::Function {
             parameter: Box::new(type_ref_from_core_type_with_erasure(
                 parameter,
@@ -196,7 +212,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 type_constructor_parameters,
             )),
         },
-        CoreType::Hole | CoreType::Record { .. } => TypeScriptType::Unknown,
+        CoreType::Hole => TypeScriptType::Unknown,
     }
 }
 
@@ -236,6 +252,19 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
                 .map(render_typescript_type)
                 .collect::<Vec<_>>()
                 .join(", ")
+        ),
+        TypeScriptType::Record { fields } => format!(
+            "{{ {} }}",
+            fields
+                .iter()
+                .map(|field| format!(
+                    "readonly {}{}: {}",
+                    format!("{:?}", field.name),
+                    if field.optional { "?" } else { "" },
+                    render_typescript_type(&field.type_ref)
+                ))
+                .collect::<Vec<_>>()
+                .join("; ")
         ),
         TypeScriptType::Array { element } => {
             format!("ReadonlyArray<{}>", render_typescript_type(element))

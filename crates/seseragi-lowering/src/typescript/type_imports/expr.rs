@@ -42,6 +42,20 @@ pub(super) fn collect_expr_type_imports(
             collect_type_imports(type_ref, bindings, requirements, imports);
             collect_exprs(elements, bindings, requirements, imports);
         }
+        CoreExpr::FieldAccess {
+            receiver, type_ref, ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            collect_expr_type_imports(receiver, bindings, requirements, imports);
+        }
+        CoreExpr::Record {
+            fields, type_ref, ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            for field in fields {
+                collect_expr_type_imports(&field.value, bindings, requirements, imports);
+            }
+        }
         CoreExpr::List { elements, .. } => {
             // List literals are constructed through `fromArray`, whose result
             // type is inferred. A runtime `List` type import is only needed

@@ -1,0 +1,5 @@
+fn duplicate -> { name: String } =
+  { name: "A", name: "B" }
+
+fn missing user: { name: String } -> String =
+  user.age

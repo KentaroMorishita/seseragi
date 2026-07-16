@@ -311,6 +311,14 @@ pub struct TypedRecordField {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedRecordValueField {
+    pub name: String,
+    pub value: TypedExpr,
+    pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "kebab-case",
@@ -381,6 +389,13 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    FieldAccess {
+        receiver: Box<TypedExpr>,
+        field: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Call {
         callee: String,
         arguments: Vec<TypedExpr>,
@@ -410,6 +425,12 @@ pub enum TypedExpr {
     },
     List {
         elements: Vec<TypedExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Record {
+        fields: Vec<TypedRecordValueField>,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,

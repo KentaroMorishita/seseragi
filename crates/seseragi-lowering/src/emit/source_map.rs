@@ -265,6 +265,14 @@ fn collect_expr_names(
                 collect_expr_names(element, helper_names, names);
             }
         }
+        TypeScriptExpr::FieldAccess { receiver, .. } => {
+            collect_expr_names(receiver, helper_names, names);
+        }
+        TypeScriptExpr::Record { fields } => {
+            for field in fields {
+                collect_expr_names(&field.value, helper_names, names);
+            }
+        }
         TypeScriptExpr::Binary { left, right, .. } => {
             collect_expr_names(left, helper_names, names);
             collect_expr_names(right, helper_names, names);

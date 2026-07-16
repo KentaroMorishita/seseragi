@@ -92,6 +92,20 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 collect_expr_runtime_requirements(element, requirements);
             }
         }
+        CoreExpr::FieldAccess {
+            receiver, type_ref, ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            collect_expr_runtime_requirements(receiver, requirements);
+        }
+        CoreExpr::Record {
+            fields, type_ref, ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            for field in fields {
+                collect_expr_runtime_requirements(&field.value, requirements);
+            }
+        }
         CoreExpr::ArrayComprehension {
             element,
             clauses,
@@ -380,6 +394,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr_runtime_imports(element, imports);
+            }
+        }
+        CoreExpr::FieldAccess { receiver, .. } => {
+            collect_expr_runtime_imports(receiver, imports);
+        }
+        CoreExpr::Record { fields, .. } => {
+            for field in fields {
+                collect_expr_runtime_imports(&field.value, imports);
             }
         }
         CoreExpr::List { elements, .. } => {

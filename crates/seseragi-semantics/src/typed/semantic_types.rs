@@ -38,6 +38,19 @@ pub(crate) fn semantic_values_are_compatible(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
 ) -> bool {
+    if let (
+        TypedType::Record {
+            fields: expected_fields,
+            ..
+        },
+        TypedType::Record {
+            fields: actual_fields,
+            ..
+        },
+    ) = (&expected.type_ref, &actual.type_ref)
+    {
+        return record_is_compatible(expected_fields, actual_fields);
+    }
     match (&expected.key, &actual.key) {
         (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => true,
         (
@@ -114,6 +127,19 @@ pub(crate) fn semantic_values_are_compatible(
         (SemanticTypeKey::Tuple(_), _) | (_, SemanticTypeKey::Tuple(_)) => false,
         _ => expected.type_ref == actual.type_ref,
     }
+}
+
+fn record_is_compatible(
+    expected: &[crate::TypedRecordField],
+    actual: &[crate::TypedRecordField],
+) -> bool {
+    expected.iter().all(|required| {
+        let found = actual.iter().find(|field| field.name == required.name);
+        if required.optional {
+            return found.is_none_or(|field| field.type_ref == required.type_ref);
+        }
+        found.is_some_and(|field| !field.optional && field.type_ref == required.type_ref)
+    })
 }
 
 #[derive(Clone, Debug)]

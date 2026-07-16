@@ -112,6 +112,12 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
                 collect_expr(element, imported);
             }
         }
+        CoreExpr::FieldAccess { receiver, .. } => collect_expr(receiver, imported),
+        CoreExpr::Record { fields, .. } => {
+            for field in fields {
+                collect_expr(&field.value, imported);
+            }
+        }
         CoreExpr::Template { parts, .. } => {
             for part in parts {
                 if let CoreTemplatePart::Interpolation {

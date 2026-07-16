@@ -89,6 +89,14 @@ fn collect_intrinsic_issues(
             collect_intrinsic_issues(then_branch, resolution, issues);
             collect_intrinsic_issues(else_branch, resolution, issues);
         }
+        TypedExpr::FieldAccess { receiver, .. } => {
+            collect_intrinsic_issues(receiver, resolution, issues);
+        }
+        TypedExpr::Record { fields, .. } => {
+            for field in fields {
+                collect_intrinsic_issues(&field.value, resolution, issues);
+            }
+        }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
         | TypedExpr::String { .. }

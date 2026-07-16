@@ -238,8 +238,13 @@ fn parses_effect_do_surface_decl() {
                         span: ByteSpan { start: 72, end: 77 },
                     },
                     value: SurfaceExpr::Application {
-                        function: Box::new(SurfaceExpr::Name {
-                            name: "console.readLine".to_owned(),
+                        function: Box::new(SurfaceExpr::Member {
+                            receiver: Box::new(SurfaceExpr::Name {
+                                name: "console".to_owned(),
+                                span: ByteSpan { start: 81, end: 88 },
+                            }),
+                            field: "readLine".to_owned(),
+                            field_span: ByteSpan { start: 89, end: 97 },
                             span: ByteSpan { start: 81, end: 97 },
                         }),
                         argument: Box::new(SurfaceExpr::Unit {

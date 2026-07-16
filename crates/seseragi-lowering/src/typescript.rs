@@ -235,6 +235,22 @@ pub struct TypeScriptParameter {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptRecordTypeField {
+    pub name: String,
+    pub optional: bool,
+    #[serde(rename = "type")]
+    pub type_ref: TypeScriptType,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptRecordValueField {
+    pub name: String,
+    pub value: TypeScriptExpr,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "kebab-case",
@@ -259,6 +275,9 @@ pub enum TypeScriptType {
     },
     Tuple {
         elements: Vec<TypeScriptType>,
+    },
+    Record {
+        fields: Vec<TypeScriptRecordTypeField>,
     },
     Array {
         element: Box<TypeScriptType>,
@@ -302,6 +321,13 @@ pub enum TypeScriptExpr {
     },
     Tuple {
         elements: Vec<TypeScriptExpr>,
+    },
+    FieldAccess {
+        receiver: Box<TypeScriptExpr>,
+        field: String,
+    },
+    Record {
+        fields: Vec<TypeScriptRecordValueField>,
     },
     Array {
         elements: Vec<TypeScriptExpr>,

@@ -5,7 +5,7 @@ use crate::{
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
 use std::collections::BTreeMap;
 
-use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue};
+use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
 use super::semantic_types::SemanticValueType;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
@@ -20,12 +20,14 @@ pub(crate) struct EffectBodyAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) call_issues: Vec<PureCallIssue>,
     pub(crate) array_issues: Vec<ArrayIssue>,
+    pub(crate) record_issues: Vec<RecordIssue>,
     pub(crate) range_issues: Vec<RangeIssue>,
 }
 
 pub(super) struct EffectBodyIssues<'a> {
     pub(super) calls: &'a mut Vec<PureCallIssue>,
     pub(super) arrays: &'a mut Vec<ArrayIssue>,
+    pub(super) records: &'a mut Vec<RecordIssue>,
     pub(super) ranges: &'a mut Vec<RangeIssue>,
 }
 
@@ -37,6 +39,7 @@ pub(crate) fn analyze_effect_body(
     let context = PureExpressionContext::new(parameters, resolution);
     let mut call_issues = Vec::new();
     let mut array_issues = Vec::new();
+    let mut record_issues = Vec::new();
     let mut range_issues = Vec::new();
     let value = type_effect_expression(
         body,
@@ -45,6 +48,7 @@ pub(crate) fn analyze_effect_body(
         &mut EffectBodyIssues {
             calls: &mut call_issues,
             arrays: &mut array_issues,
+            records: &mut record_issues,
             ranges: &mut range_issues,
         },
     );
@@ -52,6 +56,7 @@ pub(crate) fn analyze_effect_body(
         value,
         call_issues,
         array_issues,
+        record_issues,
         range_issues,
     }
 }
@@ -189,6 +194,9 @@ fn type_do_block(
                 if let Some(issue) = analysis.array_issue.clone() {
                     issues.arrays.push(issue);
                 }
+                if let Some(issue) = analysis.record_issue.clone() {
+                    issues.records.push(issue);
+                }
                 if let Some(issue) = analysis.range_issue.clone() {
                     issues.ranges.push(issue);
                 }
@@ -234,6 +242,9 @@ fn type_pure_expression(
     let analysis = analyze_resolved_expression(expression, context);
     if let Some(issue) = analysis.array_issue {
         issues.arrays.push(issue);
+    }
+    if let Some(issue) = analysis.record_issue {
+        issues.records.push(issue);
     }
     if let Some(issue) = analysis.range_issue {
         issues.ranges.push(issue);

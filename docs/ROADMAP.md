@@ -50,8 +50,10 @@ language semanticsをtarget adapterへ委譲しません。
   scoped user instanceを一般的なselection / dictionary passingへ接続し、user `Add` callbackをstandard Array
   `reduce`でactual executionします。generic `Reducible<C,A>` parameter evidenceもlocal / imported user dictionaryの
   `reduce` methodへdispatchし、標準Array / Range / Listは専用operation ABIを維持します。newtype valueはlocal / generic /
-  imported constructor、pattern unwrap、nominal non-coercion、actual executionまで接続済みです。次はrecord literal / field accessを
-  resolver境界から通し、その上へstruct constructor / fieldとstruct / newtypeの`operator`糖衣を接続します。
+  imported constructor、pattern unwrap、nominal non-coercion、actual executionまで接続済みです。structural Recordは
+  explicit / shorthand literal、required field access、width subtypingをresolver境界からactual executionまで接続済みです。
+  次はoptional field accessの`Maybe` semantics、spread、record patternを同じvalue modelへ追加し、その上へnominal structの
+  constructor / field / visibilityを接続します。struct / newtypeの`operator`糖衣はこのvalue基盤の後に扱います。
   user-defined `Eq<A>`は`==` / `!=`からlocal / scoped / imported dictionaryへdispatch済みで、標準型名だけで通る
   偽の完了条件を排除しています。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの

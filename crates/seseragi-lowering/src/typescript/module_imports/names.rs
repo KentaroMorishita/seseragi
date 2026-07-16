@@ -87,6 +87,12 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
                 collect_local_expr_names(argument, names);
             }
         }
+        CoreExpr::FieldAccess { receiver, .. } => collect_local_expr_names(receiver, names),
+        CoreExpr::Record { fields, .. } => {
+            for field in fields {
+                collect_local_expr_names(&field.value, names);
+            }
+        }
         CoreExpr::Template { parts, .. } => {
             for part in parts {
                 if let CoreTemplatePart::Interpolation { value, .. } = part {

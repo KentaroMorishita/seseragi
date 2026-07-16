@@ -14,7 +14,7 @@ use super::names::{local_name, safe_identifier};
 use super::types::{
     render_typescript_type, type_ref_from_core_type, type_ref_from_core_type_with_erasure,
 };
-use super::{TypeScriptExpr, TypeScriptStatement};
+use super::{TypeScriptExpr, TypeScriptRecordValueField, TypeScriptStatement};
 
 mod comprehension;
 
@@ -162,6 +162,29 @@ pub(super) fn lower_core_expr_to_typescript(
         }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
             elements: lower_core_expressions(elements, imported_values, imported_types),
+        },
+        CoreExpr::FieldAccess {
+            receiver, field, ..
+        } => TypeScriptExpr::FieldAccess {
+            receiver: Box::new(lower_core_expr_to_typescript(
+                *receiver,
+                imported_values,
+                imported_types,
+            )),
+            field,
+        },
+        CoreExpr::Record { fields, .. } => TypeScriptExpr::Record {
+            fields: fields
+                .into_iter()
+                .map(|field| TypeScriptRecordValueField {
+                    name: field.name,
+                    value: lower_core_expr_to_typescript(
+                        field.value,
+                        imported_values,
+                        imported_types,
+                    ),
+                })
+                .collect(),
         },
         CoreExpr::Array {
             elements, type_ref, ..
@@ -398,6 +421,10 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             elements.iter().any(typescript_expr_contains_await)
         }
+        TypeScriptExpr::FieldAccess { receiver, .. } => typescript_expr_contains_await(receiver),
+        TypeScriptExpr::Record { fields } => fields
+            .iter()
+            .any(|field| typescript_expr_contains_await(&field.value)),
         TypeScriptExpr::Lambda { body, .. } => typescript_expr_contains_await(body),
         TypeScriptExpr::Binary { left, right, .. } => {
             typescript_expr_contains_await(left) || typescript_expr_contains_await(right)

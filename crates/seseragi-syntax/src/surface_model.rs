@@ -356,6 +356,12 @@ pub enum SurfaceExpr {
         name: String,
         span: ByteSpan,
     },
+    Member {
+        receiver: Box<SurfaceExpr>,
+        field: String,
+        field_span: ByteSpan,
+        span: ByteSpan,
+    },
     Application {
         function: Box<SurfaceExpr>,
         argument: Box<SurfaceExpr>,
@@ -371,6 +377,10 @@ pub enum SurfaceExpr {
     },
     List {
         elements: Vec<SurfaceExpr>,
+        span: ByteSpan,
+    },
+    Record {
+        fields: Vec<SurfaceRecordField>,
         span: ByteSpan,
     },
     ArrayComprehension {
@@ -425,10 +435,12 @@ impl SurfaceExpr {
             | Self::Template { span, .. }
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
+            | Self::Member { span, .. }
             | Self::Application { span, .. }
             | Self::Tuple { span, .. }
             | Self::Array { span, .. }
             | Self::List { span, .. }
+            | Self::Record { span, .. }
             | Self::ArrayComprehension { span, .. }
             | Self::ListComprehension { span, .. }
             | Self::Binary { span, .. }
@@ -439,6 +451,15 @@ impl SurfaceExpr {
             | Self::Error { span } => *span,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceRecordField {
+    pub name: String,
+    pub name_span: ByteSpan,
+    pub value: SurfaceExpr,
+    pub span: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -1,0 +1,741 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/record-profile",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "profile",
+      "nameSpan": {
+        "start": 3,
+        "end": 10
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "nameSpan": {
+            "start": 11,
+            "end": 15
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 17,
+              "end": 23
+            }
+          }
+        },
+        {
+          "name": "score",
+          "nameSpan": {
+            "start": 27,
+            "end": 32
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 34,
+              "end": 37
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "name",
+            "nameSpan": {
+              "start": 43,
+              "end": 47
+            },
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "span": {
+                "start": 49,
+                "end": 55
+              }
+            }
+          },
+          {
+            "name": "score",
+            "nameSpan": {
+              "start": 57,
+              "end": 62
+            },
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 64,
+                "end": 67
+              }
+            }
+          }
+        ],
+        "span": {
+          "start": 41,
+          "end": 69
+        }
+      },
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "name",
+            "nameSpan": {
+              "start": 76,
+              "end": 80
+            },
+            "value": {
+              "kind": "name",
+              "name": "name",
+              "span": {
+                "start": 76,
+                "end": 80
+              }
+            },
+            "span": {
+              "start": 76,
+              "end": 80
+            }
+          },
+          {
+            "name": "score",
+            "nameSpan": {
+              "start": 82,
+              "end": 87
+            },
+            "value": {
+              "kind": "name",
+              "name": "score",
+              "span": {
+                "start": 82,
+                "end": 87
+              }
+            },
+            "span": {
+              "start": 82,
+              "end": 87
+            }
+          }
+        ],
+        "span": {
+          "start": 74,
+          "end": 89
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 89
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "displayName",
+      "nameSpan": {
+        "start": 94,
+        "end": 105
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "nameSpan": {
+            "start": 106,
+            "end": 110
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "name",
+                "nameSpan": {
+                  "start": 114,
+                  "end": 118
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 120,
+                    "end": 126
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 112,
+              "end": 128
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 132,
+          "end": 138
+        }
+      },
+      "body": {
+        "kind": "member",
+        "receiver": {
+          "kind": "name",
+          "name": "user",
+          "span": {
+            "start": 143,
+            "end": 147
+          }
+        },
+        "field": "name",
+        "fieldSpan": {
+          "start": 148,
+          "end": 152
+        },
+        "span": {
+          "start": 143,
+          "end": 152
+        }
+      },
+      "span": {
+        "start": 91,
+        "end": 152
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderProfile",
+      "nameSpan": {
+        "start": 157,
+        "end": 170
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "nameSpan": {
+            "start": 171,
+            "end": 175
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "name",
+                "nameSpan": {
+                  "start": 179,
+                  "end": 183
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 185,
+                    "end": 191
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 177,
+              "end": 193
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 197,
+          "end": 203
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 227,
+          "end": 228
+        },
+        "left": {
+          "kind": "string",
+          "raw": "\"Record profile: \"",
+          "span": {
+            "start": 208,
+            "end": 226
+          }
+        },
+        "right": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "displayName",
+            "span": {
+              "start": 229,
+              "end": 240
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "user",
+            "span": {
+              "start": 241,
+              "end": 245
+            }
+          },
+          "span": {
+            "start": 229,
+            "end": 245
+          }
+        },
+        "span": {
+          "start": 208,
+          "end": 245
+        }
+      },
+      "span": {
+        "start": 154,
+        "end": 245
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 261,
+        "end": 265
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 311,
+            "end": 318
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "renderProfile",
+            "span": {
+              "start": 292,
+              "end": 305
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "profile",
+                "span": {
+                  "start": 270,
+                  "end": 277
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"Mio\"",
+                "span": {
+                  "start": 278,
+                  "end": 283
+                }
+              },
+              "span": {
+                "start": 270,
+                "end": 283
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 284,
+                "end": 286
+              }
+            },
+            "span": {
+              "start": 270,
+              "end": 286
+            }
+          },
+          "span": {
+            "start": 270,
+            "end": 305
+          }
+        },
+        "span": {
+          "start": 270,
+          "end": 318
+        }
+      },
+      "span": {
+        "start": 247,
+        "end": 318
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 318
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 89
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 91,
+        "end": 152
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 154,
+        "end": 245
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 247,
+        "end": 318
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "profile",
+      "canonical": "artifact/record-profile::profile",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 10
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "displayName",
+      "canonical": "artifact/record-profile::displayName",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 94,
+        "end": 105
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "renderProfile",
+      "canonical": "artifact/record-profile::renderProfile",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 157,
+        "end": 170
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "main",
+      "canonical": "artifact/record-profile::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 261,
+        "end": 265
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "name",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 11,
+        "end": 15
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "score",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 27,
+        "end": 32
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "user",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 106,
+        "end": 110
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "user",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 171,
+        "end": 175
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 17,
+        "end": 23
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 34,
+        "end": 37
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 49,
+        "end": 55
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 64,
+        "end": 67
+      }
+    },
+    {
+      "spelling": "name",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 76,
+        "end": 80
+      }
+    },
+    {
+      "spelling": "score",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 82,
+        "end": 87
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 120,
+        "end": 126
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 132,
+        "end": 138
+      }
+    },
+    {
+      "spelling": "user",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 143,
+        "end": 147
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 185,
+        "end": 191
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 197,
+        "end": 203
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 10,
+      "origin": {
+        "start": 227,
+        "end": 228
+      }
+    },
+    {
+      "spelling": "displayName",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 229,
+        "end": 240
+      }
+    },
+    {
+      "spelling": "user",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 241,
+        "end": 245
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 311,
+        "end": 318
+      }
+    },
+    {
+      "spelling": "renderProfile",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 292,
+        "end": 305
+      }
+    },
+    {
+      "spelling": "profile",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 270,
+        "end": 277
+      }
+    }
+  ],
+  "issues": []
+}

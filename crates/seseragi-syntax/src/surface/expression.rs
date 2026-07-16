@@ -6,6 +6,7 @@ mod array;
 mod do_block;
 mod match_expression;
 mod parenthesized;
+mod record;
 mod template;
 #[cfg(test)]
 mod tests;
@@ -57,6 +58,39 @@ impl ExpressionParser<'_> {
             self.skip_trivia();
             if self.cursor >= self.end || self.at_stop(stops) {
                 break;
+            }
+
+            if self.kind_at_cursor() == Some(TokenKind::PunctuationDot) {
+                const MEMBER_BP: u8 = 90;
+                if MEMBER_BP < min_bp {
+                    break;
+                }
+                let saved = self.cursor;
+                self.cursor += 1;
+                self.skip_trivia();
+                let Some(field) = self.tokens.get(self.cursor).cloned() else {
+                    self.cursor = saved;
+                    break;
+                };
+                if field.kind != TokenKind::IdentifierLower
+                    && field.kind != TokenKind::IdentifierUpper
+                {
+                    self.cursor = saved;
+                    break;
+                }
+                self.cursor += 1;
+                let span = ByteSpan {
+                    start: left.span().start,
+                    end: field.end,
+                };
+                let field_span = token_span(&field);
+                left = SurfaceExpr::Member {
+                    receiver: Box::new(left),
+                    field: field.raw,
+                    field_span,
+                    span,
+                };
+                continue;
             }
 
             if self.can_start_application_argument() {
@@ -146,11 +180,15 @@ impl ExpressionParser<'_> {
                 value: token.raw == "True",
                 span: token_span(token),
             }),
-            TokenKind::IdentifierLower | TokenKind::IdentifierUpper => Some(self.parse_name(index)),
+            TokenKind::IdentifierLower | TokenKind::IdentifierUpper => Some(SurfaceExpr::Name {
+                name: token.raw.clone(),
+                span: token_span(token),
+            }),
             TokenKind::KeywordIf => self.parse_if(token, stops),
             TokenKind::KeywordMatch => match_expression::parse(self, token),
             TokenKind::KeywordDo => self.parse_do(token),
             TokenKind::PunctuationParenLeft => parenthesized::parse(self, token),
+            TokenKind::PunctuationBraceLeft => record::parse(self, token),
             TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => {
                 array::parse(self, token)
             }
@@ -158,43 +196,6 @@ impl ExpressionParser<'_> {
                 span: token_span(token),
             }),
             _ => None,
-        }
-    }
-
-    fn parse_name(&mut self, first: usize) -> SurfaceExpr {
-        let mut name = self.tokens[first].raw.clone();
-        let mut end = self.tokens[first].end;
-        loop {
-            let saved = self.cursor;
-            self.skip_trivia();
-            if self.kind_at_cursor() != Some(TokenKind::PunctuationDot) {
-                self.cursor = saved;
-                break;
-            }
-            self.cursor += 1;
-            self.skip_trivia();
-            let Some(next) = self.tokens.get(self.cursor) else {
-                self.cursor = saved;
-                break;
-            };
-            if !matches!(
-                next.kind,
-                TokenKind::IdentifierLower | TokenKind::IdentifierUpper
-            ) {
-                self.cursor = saved;
-                break;
-            }
-            name.push('.');
-            name.push_str(&next.raw);
-            end = next.end;
-            self.cursor += 1;
-        }
-        SurfaceExpr::Name {
-            name,
-            span: ByteSpan {
-                start: self.tokens[first].start,
-                end,
-            },
         }
     }
 
@@ -248,6 +249,7 @@ impl ExpressionParser<'_> {
                     | TokenKind::KeywordMatch
                     | TokenKind::KeywordDo
                     | TokenKind::PunctuationParenLeft
+                    | TokenKind::PunctuationBraceLeft
                     | TokenKind::PunctuationListLeft
                     | TokenKind::PunctuationSquareLeft
             )

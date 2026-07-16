@@ -20,6 +20,23 @@ pub(super) fn resolve_expression(
             };
             resolver.reference(scope, namespace, name, *span, true);
         }
+        SurfaceExpr::Member {
+            receiver,
+            field,
+            span,
+            ..
+        } => match receiver.as_ref() {
+            SurfaceExpr::Name { name: alias, .. } if resolver.is_module_binding(scope, alias) => {
+                resolver.reference(
+                    scope,
+                    SymbolNamespace::Value,
+                    &format!("{alias}.{field}"),
+                    *span,
+                    true,
+                );
+            }
+            _ => resolve_expression(resolver, scope, receiver),
+        },
         SurfaceExpr::Application {
             function, argument, ..
         } => {
@@ -31,6 +48,11 @@ pub(super) fn resolve_expression(
         | SurfaceExpr::List { elements, .. } => {
             for element in elements {
                 resolve_expression(resolver, scope, element);
+            }
+        }
+        SurfaceExpr::Record { fields, .. } => {
+            for field in fields {
+                resolve_expression(resolver, scope, &field.value);
             }
         }
         SurfaceExpr::Template { parts, .. } => {

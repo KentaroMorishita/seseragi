@@ -64,6 +64,26 @@ pub(crate) enum ArrayIssue {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) enum RecordIssue {
+    DuplicateField {
+        field: ByteSpan,
+        name: String,
+    },
+    MissingField {
+        field: ByteSpan,
+        name: String,
+    },
+    AccessOnNonRecord {
+        receiver: ByteSpan,
+        actual: TypedType,
+    },
+    OptionalAccessUnsupported {
+        field: ByteSpan,
+        name: String,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct RangeIssue {
     pub(crate) endpoint: ByteSpan,
     pub(crate) position: &'static str,

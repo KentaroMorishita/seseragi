@@ -127,6 +127,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "UserId keeps its nominal boundary: 42",
   },
   {
+    id: "record-profile",
+    label: "Recordでプロフィール",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/record-profile/main.ssrg",
+    stdin: "",
+    expectedOutput: "Record profile: Mio",
+  },
+  {
     id: "user-add-operator",
     label: "自作の足し算",
     category: "型と抽象化",

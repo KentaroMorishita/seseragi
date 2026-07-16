@@ -37,7 +37,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 領域                                       | 仕様          | example / fixture                          | 新仕様実装         |
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
-| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
+| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record valueまで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
@@ -199,7 +199,13 @@ constructor適用、irrefutableなpayload pattern、TypedHir / CoreIr / TypeScri
 同名execution fixtureがactual outputを検証し、`semantic-diagnostics-schema-1/newtype-no-coercion`は`UserId`から`Int`への
 暗黙unwrapを拒否します。generic newtypeのpayload inferenceもlowering testで固定しています。
 `project-schema-1/imported-newtype`は公開newtypeのtype / constructorを一つのnamed importから導入し、consumerでconstruct / unwrapして
-actual executionします。Playgroundの`newtypeでUserId`でも同じsourceを実行できます。record value、struct field、newtype derivingは後続です。
+actual executionします。Playgroundの`newtypeでUserId`でも同じsourceを実行できます。newtype derivingは後続です。
+`schema-1/record-profile`はstructural Recordのexplicit / shorthand literal、required field access、width subtypingを
+SurfaceAst / resolver / TypedHir / CoreIr / TypeScriptIr / readonly TypeScript objectへ接続します。resolverは同じ`.`構文を、
+左辺がmodule bindingならnamespace-qualified value、通常値ならrecord memberとして分離し、型付け層へ新しい名前解決を
+持ち込みません。同名execution fixtureとPlaygroundの`Recordでプロフィール`が、余分な`score` fieldを持つ値を
+`{ name: String }`へ渡し、`user.name`を実行して表示する経路を固定します。duplicate / missing / non-record accessは
+`SES-T0101`で停止します。optional fieldを`Maybe`へ接続するaccess、spread、record patternは後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は
 standard `Reducible` runtimeへこのuser-defined callbackを渡し、actual executionで42を固定します。

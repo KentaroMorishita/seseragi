@@ -37,6 +37,8 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
+        "member" => validate_child(expression, "receiver", path),
+        "record" => validate_record(expression, path),
         "template" => validate_template(expression, path),
         "arrayComprehension" | "listComprehension" => validate_comprehension(expression, path),
         "grouped" => validate_child(expression, "value", path),
@@ -59,6 +61,22 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             "SurfaceAst {path} has unknown expression kind {other}"
         )),
     }
+}
+
+fn validate_record(expression: &Value, path: &str) -> Result<(), String> {
+    let fields = expression
+        .get("fields")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.fields must be an array"))?;
+    for (index, field) in fields.iter().enumerate() {
+        let field_path = format!("{path}.fields[{index}]");
+        require_span(field, &field_path)?;
+        if field.get("name").and_then(Value::as_str).is_none() {
+            return Err(format!("SurfaceAst {field_path}.name must be a string"));
+        }
+        validate_child(field, "value", &field_path)?;
+    }
+    Ok(())
 }
 
 fn validate_template(expression: &Value, path: &str) -> Result<(), String> {
@@ -323,6 +341,39 @@ mod tests {
                         "span": { "start": 7, "end": 14 }
                     },
                     "span": { "start": 0, "end": 14 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_record_values_and_nested_member_access() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "member",
+                    "receiver": {
+                        "kind": "record",
+                        "fields": [{
+                            "name": "profile",
+                            "value": {
+                                "kind": "record",
+                                "fields": [{
+                                    "name": "name",
+                                    "value": { "kind": "string", "span": { "start": 4, "end": 9 } },
+                                    "span": { "start": 0, "end": 9 }
+                                }],
+                                "span": { "start": 0, "end": 11 }
+                            },
+                            "span": { "start": 0, "end": 11 }
+                        }],
+                        "span": { "start": 0, "end": 13 }
+                    },
+                    "field": "profile",
+                    "span": { "start": 0, "end": 21 }
                 }
             }]
         });

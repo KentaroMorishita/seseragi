@@ -7,7 +7,7 @@ use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
 use super::pure_issues::{
-    ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue,
+    ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue, RecordIssue,
 };
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
@@ -19,6 +19,7 @@ mod comprehension;
 mod conditional;
 mod match_expression;
 mod monad_do;
+mod record;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
@@ -264,6 +265,7 @@ pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) value: TypedExpr,
     pub(crate) conditional_issue: Option<ConditionalIssue>,
     pub(crate) array_issue: Option<ArrayIssue>,
+    pub(crate) record_issue: Option<RecordIssue>,
     pub(crate) range_issue: Option<RangeIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
     pub(crate) monad_do_issue: Option<MonadDoIssue>,
@@ -277,6 +279,7 @@ impl SurfaceExpressionAnalysis {
             value,
             conditional_issue: None,
             array_issue: None,
+            record_issue: None,
             range_issue: None,
             pure_call_issue: None,
             monad_do_issue: None,
@@ -293,6 +296,7 @@ impl SurfaceExpressionAnalysis {
             value,
             conditional_issue: None,
             array_issue: None,
+            record_issue: None,
             range_issue: None,
             pure_call_issue: None,
             monad_do_issue: None,
@@ -304,6 +308,7 @@ impl SurfaceExpressionAnalysis {
     pub(super) fn merge_issues_from(&mut self, child: Self) {
         self.conditional_issue = self.conditional_issue.take().or(child.conditional_issue);
         self.array_issue = self.array_issue.take().or(child.array_issue);
+        self.record_issue = self.record_issue.take().or(child.record_issue);
         self.range_issue = self.range_issue.take().or(child.range_issue);
         self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
         self.monad_do_issue = self.monad_do_issue.take().or(child.monad_do_issue);
@@ -329,6 +334,19 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             elements: elements
                 .iter()
                 .map(surface_expression_type_hint)
+                .collect::<Option<Vec<_>>>()?,
+        }),
+        SurfaceExpr::Record { fields, .. } => Some(TypedType::Record {
+            closed: true,
+            fields: fields
+                .iter()
+                .map(|field| {
+                    Some(crate::TypedRecordField {
+                        name: field.name.clone(),
+                        optional: false,
+                        type_ref: surface_expression_type_hint(&field.value)?,
+                    })
+                })
                 .collect::<Option<Vec<_>>>()?,
         }),
         SurfaceExpr::Array { elements, .. } => {
@@ -374,6 +392,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             .first()
             .and_then(|arm| surface_expression_type_hint(&arm.body)),
         SurfaceExpr::Name { .. }
+        | SurfaceExpr::Member { .. }
         | SurfaceExpr::Application { .. }
         | SurfaceExpr::Binary { .. }
         | SurfaceExpr::Do { .. }
@@ -411,11 +430,18 @@ pub(super) fn type_surface_expression(
             })
         }
         SurfaceExpr::Name { name, span } => type_name(name, *span, context),
+        SurfaceExpr::Member {
+            receiver,
+            field,
+            field_span,
+            span,
+        } => record::type_member(receiver, field, *field_span, *span, context),
         SurfaceExpr::Grouped { value, .. } => type_surface_expression(value, context),
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
         SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
         SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),
         SurfaceExpr::List { elements, span } => array::type_list(elements, *span, context),
+        SurfaceExpr::Record { fields, span } => record::type_record(fields, *span, context),
         SurfaceExpr::ArrayComprehension {
             element,
             clauses,

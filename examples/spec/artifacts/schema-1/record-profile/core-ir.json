@@ -1,0 +1,419 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/record-profile",
+  "functions": [
+    {
+      "symbol": "artifact/record-profile::profile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 89
+      },
+      "parameters": [
+        {
+          "id": "name",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "score",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "name",
+            "value": {
+              "kind": "variable",
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 76,
+                "end": 80
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 76,
+              "end": 80
+            }
+          },
+          {
+            "name": "score",
+            "value": {
+              "kind": "variable",
+              "name": "score",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 82,
+                "end": 87
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 82,
+              "end": 87
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            {
+              "name": "score",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 74,
+          "end": 89
+        }
+      }
+    },
+    {
+      "symbol": "artifact/record-profile::displayName",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "id": "user",
+          "kind": "named",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "user",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 143,
+            "end": 147
+          }
+        },
+        "field": "name",
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 143,
+          "end": 152
+        }
+      }
+    },
+    {
+      "symbol": "artifact/record-profile::renderProfile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 154,
+        "end": 245
+      },
+      "parameters": [
+        {
+          "id": "user",
+          "kind": "named",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "string",
+          "value": "Record profile: ",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 208,
+            "end": 226
+          }
+        },
+        "right": {
+          "kind": "call",
+          "callee": "artifact/record-profile::displayName",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "user",
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 241,
+                "end": 245
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 229,
+            "end": 245
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 208,
+          "end": 245
+        }
+      }
+    },
+    {
+      "symbol": "artifact/record-profile::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 247,
+        "end": 318
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/record-profile::renderProfile",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/record-profile::profile",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "Mio",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 278,
+                      "end": 283
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "42",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 284,
+                      "end": 286
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 270,
+                  "end": 286
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 270,
+              "end": 305
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 270,
+          "end": 318
+        }
+      }
+    }
+  ]
+}

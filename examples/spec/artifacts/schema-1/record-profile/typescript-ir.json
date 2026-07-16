@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/record-profile",
+  "runtimeRequirements": [
+    "core.string",
+    "core.int64",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "profile",
+      "parameters": [
+        {
+          "name": "name",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "score",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "name",
+            "value": {
+              "kind": "identifier",
+              "name": "name"
+            }
+          },
+          {
+            "name": "score",
+            "value": {
+              "kind": "identifier",
+              "name": "score"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 89
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "displayName",
+      "parameters": [
+        {
+          "name": "user",
+          "type": "{ readonly \"name\": string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "identifier",
+          "name": "user"
+        },
+        "field": "name"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 152
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderProfile",
+      "parameters": [
+        {
+          "name": "user",
+          "type": "{ readonly \"name\": string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "string",
+          "value": "Record profile: "
+        },
+        "right": {
+          "kind": "call",
+          "callee": "displayName",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "user"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 154,
+        "end": 245
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "renderProfile",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "profile",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "Mio"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "42"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 247,
+        "end": 318
+      }
+    }
+  ]
+}

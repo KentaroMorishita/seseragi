@@ -139,6 +139,12 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 rewrite_expr(element, renames);
             }
         }
+        TypeScriptExpr::FieldAccess { receiver, .. } => rewrite_expr(receiver, renames),
+        TypeScriptExpr::Record { fields } => {
+            for field in fields {
+                rewrite_expr(&mut field.value, renames);
+            }
+        }
         TypeScriptExpr::Binary { left, right, .. } => {
             rewrite_expr(left, renames);
             rewrite_expr(right, renames);

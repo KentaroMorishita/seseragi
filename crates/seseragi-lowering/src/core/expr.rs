@@ -8,7 +8,7 @@ use super::decision::lower_match;
 use super::types::lower_typed_type;
 use super::{
     CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreMonadDoStatement, CoreParameter,
-    CorePattern, CoreStatement, CoreTemplatePart,
+    CorePattern, CoreRecordValueField, CoreStatement, CoreTemplatePart,
 };
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
@@ -128,6 +128,33 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin,
         } => CoreExpr::Tuple {
             elements: lower_exprs(source, elements),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::FieldAccess {
+            receiver,
+            field,
+            type_ref,
+            origin,
+        } => CoreExpr::FieldAccess {
+            receiver: Box::new(lower_expr(source, *receiver)),
+            field,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Record {
+            fields,
+            type_ref,
+            origin,
+        } => CoreExpr::Record {
+            fields: fields
+                .into_iter()
+                .map(|field| CoreRecordValueField {
+                    name: field.name,
+                    value: lower_expr(source, field.value),
+                    origin: source_span(source, field.origin),
+                })
+                .collect(),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },

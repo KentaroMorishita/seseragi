@@ -168,6 +168,11 @@ impl Resolver {
         ScopeId(0)
     }
 
+    pub(super) fn is_module_binding(&self, scope: ScopeId, spelling: &str) -> bool {
+        self.lookup(scope, SymbolNamespace::Module, spelling)
+            .is_some()
+    }
+
     pub(super) fn new_scope(
         &mut self,
         parent: ScopeId,

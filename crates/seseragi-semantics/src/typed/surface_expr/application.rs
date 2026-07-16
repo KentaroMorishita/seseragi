@@ -18,19 +18,14 @@ pub(super) fn type_application(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let (callee, argument_nodes) = flatten_application(expression);
-    let SurfaceExpr::Name {
-        span: callee_span, ..
-    } = callee
-    else {
-        return type_unknown_application(callee, &argument_nodes, expression.span(), context);
-    };
-    let signature = if let Some(target) = context.target(*callee_span) {
+    let callee_span = callee.span();
+    let signature = if let Some(target) = context.target(callee_span) {
         let Some(signature) = context.callable_value(target) else {
             return type_unknown_application(callee, &argument_nodes, expression.span(), context);
         };
         signature
-    } else {
-        match select_trait_method_candidate(*callee_span, &argument_nodes, context) {
+    } else if matches!(callee, SurfaceExpr::Name { .. }) {
+        match select_trait_method_candidate(callee_span, &argument_nodes, context) {
             Some(Ok(signature)) => signature,
             Some(Err(issue)) => {
                 return type_trait_method_selection_error(
@@ -49,6 +44,8 @@ pub(super) fn type_application(
                 );
             }
         }
+    } else {
+        return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
     let expected_application = context.expected();
@@ -97,7 +94,7 @@ pub(super) fn type_application(
         &semantic_arguments,
     );
     let mut issue = call_issue(
-        *callee_span,
+        callee_span,
         signature.parameters.len(),
         &application.parameters,
         &argument_nodes,
@@ -147,7 +144,7 @@ pub(super) fn type_application(
             Ok(evidence) => evidence,
             Err(constraint) => {
                 issue = Some(PureCallIssue::MissingInstance {
-                    callee: *callee_span,
+                    callee: callee_span,
                     constraint,
                 });
                 Vec::new()

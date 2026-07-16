@@ -15,10 +15,8 @@ pub(super) fn type_imported_effect_application(
     issues: &mut EffectBodyIssues<'_>,
 ) -> Option<TypedExpr> {
     let (callee, argument_nodes) = flatten_application(expression);
-    let seseragi_syntax::SurfaceExpr::Name { span: callee, .. } = callee else {
-        return None;
-    };
-    let target = resolution.target(*callee, SymbolNamespace::Value)?;
+    let callee = callee.span();
+    let target = resolution.target(callee, SymbolNamespace::Value)?;
     let signature = resolution.imported_effect(target)?;
     let analyses = argument_nodes
         .iter()
@@ -34,6 +32,11 @@ pub(super) fn type_imported_effect_application(
             .iter()
             .filter_map(|analysis| analysis.array_issue.clone()),
     );
+    issues.records.extend(
+        analyses
+            .iter()
+            .filter_map(|analysis| analysis.record_issue.clone()),
+    );
     issues.ranges.extend(
         analyses
             .iter()
@@ -42,7 +45,7 @@ pub(super) fn type_imported_effect_application(
 
     if argument_nodes.len() > signature.parameters.len() {
         issues.calls.push(PureCallIssue::Arity {
-            callee: *callee,
+            callee,
             expected: signature.parameters.len(),
             actual: argument_nodes.len(),
         });

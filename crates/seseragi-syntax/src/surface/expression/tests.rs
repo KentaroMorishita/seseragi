@@ -80,6 +80,40 @@ fn parses_multiline_templates_and_literal_interpolation_markers() {
 }
 
 #[test]
+fn parses_record_literals_with_explicit_and_shorthand_fields() {
+    let body = first_body(
+        "pub fn profile name: String -> score: Int -> { name: String, score: Int } = { name, score: score }\n",
+    );
+
+    let SurfaceExpr::Record { fields, .. } = body else {
+        panic!("expected record expression");
+    };
+    assert_eq!(fields.len(), 2);
+    assert_eq!(fields[0].name, "name");
+    assert!(matches!(
+        &fields[0].value,
+        SurfaceExpr::Name { name, .. } if name == "name"
+    ));
+    assert_eq!(fields[1].name, "score");
+    assert!(matches!(
+        &fields[1].value,
+        SurfaceExpr::Name { name, .. } if name == "score"
+    ));
+}
+
+#[test]
+fn parses_required_record_field_access_without_baking_in_namespace_resolution() {
+    let body = first_body("pub fn name user: { name: String } -> String = user.name\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Member { receiver, field, .. }
+            if field == "name"
+                && matches!(receiver.as_ref(), SurfaceExpr::Name { name, .. } if name == "user")
+    ));
+}
+
+#[test]
 fn rejects_invalid_template_escapes_instead_of_erasing_text() {
     let body = first_body(
         r#"pub let message: String = `bad\qescape`

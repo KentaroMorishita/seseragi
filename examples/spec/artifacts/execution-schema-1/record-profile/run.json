@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "case": "record-profile",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/record-profile",
+    "export": "main",
+    "compiledModule": "../../schema-1/record-profile/generated-module.json",
+    "typedInterface": "../../schema-1/record-profile/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.string",
+      "core.int64",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Record profile: Mio"],
+        "stdout": "Record profile: Mio\n"
+      }
+    ]
+  }
+}

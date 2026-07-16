@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/record-profile"
+  ],
+  "sourcesContent": [
+    "fn profile name: String -> score: Int -> { name: String, score: Int } =\n  { name, score }\n\nfn displayName user: { name: String } -> String =\n  user.name\n\nfn renderProfile user: { name: String } -> String =\n  \"Record profile: \" + displayName user\n\npub effect fn main =\n  profile \"Mio\" 42\n  |> renderProfile\n  |> println\n"
+  ],
+  "names": [
+    "profile",
+    "displayName",
+    "renderProfile",
+    "displayName",
+    "main",
+    "println",
+    "renderProfile",
+    "profile"
+  ],
+  "mappings": ";;AAAAA;AAGAC;AAGAC;AAGAE"
+}

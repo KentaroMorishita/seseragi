@@ -93,6 +93,14 @@ fn collect_effect_contract(
                 collect_effect_contract(&arm.body, requirements, failure);
             }
         }
+        TypedExpr::FieldAccess { receiver, .. } => {
+            collect_effect_contract(receiver, requirements, failure);
+        }
+        TypedExpr::Record { fields, .. } => {
+            for field in fields {
+                collect_effect_contract(&field.value, requirements, failure);
+            }
+        }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
         | TypedExpr::String { .. }

@@ -99,11 +99,13 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             arguments: Vec::new(),
         },
         TypedExpr::Variable { type_ref, .. }
+        | TypedExpr::FieldAccess { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Call { type_ref, .. }
         | TypedExpr::Tuple { type_ref, .. }
         | TypedExpr::Array { type_ref, .. }
         | TypedExpr::List { type_ref, .. }
+        | TypedExpr::Record { type_ref, .. }
         | TypedExpr::ArrayComprehension { type_ref, .. }
         | TypedExpr::ListComprehension { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }

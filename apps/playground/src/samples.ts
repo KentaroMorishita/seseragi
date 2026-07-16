@@ -16,6 +16,7 @@ import genericInstance from "../../../examples/spec/playground/06-generic-instan
 import userAddOperator from "../../../examples/spec/artifacts/schema-1/user-add-operator/main.ssrg?raw"
 import userEqOperator from "../../../examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg?raw"
 import newtypeUserId from "../../../examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg?raw"
+import recordProfile from "../../../examples/spec/artifacts/schema-1/record-profile/main.ssrg?raw"
 import partialFunctorValue from "../../../examples/spec/artifacts/schema-1/polymorphic-partial-functor/main.ssrg?raw"
 import partialConstrainedFunction from "../../../examples/spec/artifacts/schema-1/partial-constrained-function/main.ssrg?raw"
 import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
@@ -54,6 +55,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "user-add-operator": userAddOperator,
   "user-eq-operator": userEqOperator,
   "newtype-user-id": newtypeUserId,
+  "record-profile": recordProfile,
   "partial-functor-value": partialFunctorValue,
   "partial-constrained-function": partialConstrainedFunction,
   "applicative-maybe": applicativeMaybe,

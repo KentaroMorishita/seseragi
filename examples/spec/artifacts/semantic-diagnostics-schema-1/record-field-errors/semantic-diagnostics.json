@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.duplicate-field",
+      "primary": {
+        "start": 50,
+        "end": 54
+      },
+      "related": [
+        {
+          "message": "record field `name` is declared more than once",
+          "primary": {
+            "start": 0,
+            "end": 61
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.field-unresolved",
+      "primary": {
+        "start": 116,
+        "end": 119
+      },
+      "related": [
+        {
+          "message": "record type has no required field `age`",
+          "primary": {
+            "start": 63,
+            "end": 119
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}
