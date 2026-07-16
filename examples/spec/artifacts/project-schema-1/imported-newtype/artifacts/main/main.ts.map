@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "dist/imported-newtype/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-newtype::main"
+  ],
+  "sourcesContent": [
+    "import { UserId } from \"./domain\"\n\nfn raw id: UserId -> Int =\n  match id {\n    UserId value -> value\n  }\n\nfn render id: UserId -> String =\n  match raw id {\n    42 -> \"Imported newtype: 42\"\n    _ -> \"unexpected imported newtype\"\n  }\n\npub effect fn main =\n  42\n  |> UserId\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "raw",
+    "value",
+    "render",
+    "raw",
+    "main",
+    "println",
+    "render",
+    "UserId"
+  ],
+  "mappings": ";;;AAEAA;AAKAE;AAMAE"
+}

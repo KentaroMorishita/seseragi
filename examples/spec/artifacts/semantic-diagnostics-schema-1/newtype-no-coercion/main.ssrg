@@ -1,0 +1,4 @@
+newtype UserId = Int
+
+fn broken id: UserId -> Int =
+  id

@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-newtype::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.adt",
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-newtype::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "UserId",
+          "local": "UserId",
+          "sourceLocal": "UserId",
+          "canonical": "fixture/imported-newtype::domain::UserId",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "raw",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "UserId",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "id"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "UserId"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 104
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "UserId",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "raw",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "id"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "bigint"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported newtype: 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected imported newtype"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 106,
+        "end": 231
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "UserId",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "42"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 233,
+        "end": 295
+      }
+    }
+  ]
+}

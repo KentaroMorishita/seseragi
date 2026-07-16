@@ -1,0 +1,18 @@
+pub newtype UserId = Int
+
+fn raw id: UserId -> Int =
+  match id {
+    UserId value -> value
+  }
+
+fn render id: UserId -> String =
+  match raw id {
+    42 -> "UserId keeps its nominal boundary: 42"
+    _ -> "unexpected UserId"
+  }
+
+pub effect fn main =
+  42
+  |> UserId
+  |> render
+  |> println

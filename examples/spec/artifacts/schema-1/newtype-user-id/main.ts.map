@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/newtype-user-id"
+  ],
+  "sourcesContent": [
+    "pub newtype UserId = Int\n\nfn raw id: UserId -> Int =\n  match id {\n    UserId value -> value\n  }\n\nfn render id: UserId -> String =\n  match raw id {\n    42 -> \"UserId keeps its nominal boundary: 42\"\n    _ -> \"unexpected UserId\"\n  }\n\npub effect fn main =\n  42\n  |> UserId\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "UserId",
+    "UserId",
+    "raw",
+    "value",
+    "render",
+    "raw",
+    "main",
+    "println",
+    "render",
+    "UserId"
+  ],
+  "mappings": ";;AAAAA;;AAAYC;AAEZC;AAKAE;AAMAE"
+}

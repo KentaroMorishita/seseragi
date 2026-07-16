@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "case": "newtype-user-id",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/newtype-user-id",
+    "export": "main",
+    "compiledModule": "../../schema-1/newtype-user-id/generated-module.json",
+    "typedInterface": "../../schema-1/newtype-user-id/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.int64",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["UserId keeps its nominal boundary: 42"],
+        "stdout": "UserId keeps its nominal boundary: 42\n"
+      }
+    ]
+  }
+}

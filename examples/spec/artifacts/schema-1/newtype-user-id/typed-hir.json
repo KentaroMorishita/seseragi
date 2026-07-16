@@ -1,0 +1,423 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/newtype-user-id",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/newtype-user-id::UserId",
+      "name": "UserId",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/newtype-user-id::UserId",
+          "name": "UserId",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/newtype-user-id::raw",
+      "visibility": "private",
+      "origin": {
+        "start": 26,
+        "end": 95
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          },
+          "origin": {
+            "start": 33,
+            "end": 35
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          },
+          "origin": {
+            "start": 61,
+            "end": 63
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "artifact/newtype-user-id::UserId",
+              "argument": {
+                "kind": "binding",
+                "symbol": 7,
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 77,
+                  "end": 82
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              },
+              "origin": {
+                "start": 70,
+                "end": 82
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 86,
+                "end": 91
+              }
+            },
+            "origin": {
+              "start": 70,
+              "end": 91
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 55,
+          "end": 95
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/newtype-user-id::render",
+      "visibility": "private",
+      "origin": {
+        "start": 97,
+        "end": 229
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          },
+          "origin": {
+            "start": 107,
+            "end": 109
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "artifact/newtype-user-id::raw",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "id",
+              "type": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              },
+              "origin": {
+                "start": 142,
+                "end": 144
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 138,
+            "end": 144
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "integer",
+              "value": "42",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 151,
+                "end": 153
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "UserId keeps its nominal boundary: 42",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 157,
+                "end": 196
+              }
+            },
+            "origin": {
+              "start": 151,
+              "end": 196
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 201,
+                "end": 202
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "unexpected UserId",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 206,
+                "end": 225
+              }
+            },
+            "origin": {
+              "start": 201,
+              "end": 225
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 132,
+          "end": 229
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/newtype-user-id::main",
+      "visibility": "public",
+      "origin": {
+        "start": 231,
+        "end": 293
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/newtype-user-id::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/newtype-user-id::UserId",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "42",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 254,
+                      "end": 256
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 254,
+                  "end": 268
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 254,
+              "end": 280
+            }
+          }
+        ],
+        "origin": {
+          "start": 254,
+          "end": 293
+        }
+      }
+    }
+  ]
+}

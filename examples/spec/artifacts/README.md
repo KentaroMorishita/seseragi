@@ -89,6 +89,12 @@ provider dictionary exportのimportとproject executionまで固定します。
 標準Array / Range / Listのreduceは従来のoperation ABIを使い、user collectionを標準型名やruntime shapeで分岐しません。
 `semantic-diagnostics-schema-1/reducible-missing/`は対応instanceのないconcrete callを`SES-T0201`で拒否します。
 
+`schema-1/newtype-user-id/`は`newtype UserId = Int`をaliasへ潰さず、一constructorのnominal valueとして
+constructor適用、payload pattern、全IR、tagged TypeScript表現へ接続します。同名execution fixtureがactual outputを固定し、
+`semantic-diagnostics-schema-1/newtype-no-coercion/`はrepresentation型への暗黙unwrapを拒否します。
+`project-schema-1/imported-newtype/`は一つのnamed importがtype / constructor両namespaceを導入し、consumer側でconstruct / unwrapして
+actual executionすることを固定します。generic newtypeのpayload inferenceはlowering regression testで検証します。
+
 `schema-1/pure-comparison/`はInt、Bool、Stringの比較へstandard `Eq<A>` evidenceを保持します。
 `execution-schema-1/pure-comparison-string/`は二引数のpure curried entryを実行し、String `!=`のBool結果を
 JSON outputで固定します。`schema-1/user-eq-operator/`はlocal `Eq<Status>` dictionaryを`==`から呼び、generic

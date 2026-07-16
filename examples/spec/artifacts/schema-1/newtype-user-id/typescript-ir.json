@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/newtype-user-id",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.int64",
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "UserId",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "UserId",
+          "tag": "UserId",
+          "payload": {
+            "kind": "bigint"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 24
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "raw",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "UserId",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "id"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "UserId"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 26,
+        "end": 95
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "UserId",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "raw",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "id"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "bigint"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "UserId keeps its nominal boundary: 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected UserId"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 229
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "UserId",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "42"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 231,
+        "end": 293
+      }
+    }
+  ]
+}

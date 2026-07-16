@@ -11,7 +11,10 @@ impl SemanticTypeCatalog {
     pub(super) fn collect_imported_adts(&mut self, resolved: &ResolvedModule) {
         for owner_import in resolved.imports.iter().filter(|import| {
             import.export.namespace == "type"
-                && import.export.declaration_kind.as_deref() == Some("type")
+                && matches!(
+                    import.export.declaration_kind.as_deref(),
+                    Some("type" | "newtype")
+                )
         }) {
             let owner = owner_import.symbol;
             let owner_canonical = &owner_import.export.symbol;

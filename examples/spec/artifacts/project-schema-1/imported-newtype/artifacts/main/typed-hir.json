@@ -1,0 +1,411 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-newtype::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-newtype::domain",
+      "origin": {
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "UserId",
+          "local": "UserId",
+          "canonical": "fixture/imported-newtype::domain::UserId",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "UserId",
+          "local": "UserId",
+          "canonical": "fixture/imported-newtype::domain::UserId",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-newtype::main::raw",
+      "visibility": "private",
+      "origin": {
+        "start": 35,
+        "end": 104
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          },
+          "origin": {
+            "start": 42,
+            "end": 44
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          },
+          "origin": {
+            "start": 70,
+            "end": 72
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/imported-newtype::domain::UserId",
+              "argument": {
+                "kind": "binding",
+                "symbol": 7,
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 86,
+                  "end": 91
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              },
+              "origin": {
+                "start": 79,
+                "end": 91
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 95,
+                "end": 100
+              }
+            },
+            "origin": {
+              "start": 79,
+              "end": 100
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 64,
+          "end": 104
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-newtype::main::render",
+      "visibility": "private",
+      "origin": {
+        "start": 106,
+        "end": 231
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          },
+          "origin": {
+            "start": 116,
+            "end": 118
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "fixture/imported-newtype::main::raw",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "id",
+              "type": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              },
+              "origin": {
+                "start": 151,
+                "end": 153
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 147,
+            "end": 153
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "integer",
+              "value": "42",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 160,
+                "end": 162
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Imported newtype: 42",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 166,
+                "end": 188
+              }
+            },
+            "origin": {
+              "start": 160,
+              "end": 188
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 193,
+                "end": 194
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "unexpected imported newtype",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 198,
+                "end": 227
+              }
+            },
+            "origin": {
+              "start": 193,
+              "end": 227
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 141,
+          "end": 231
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-newtype::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 233,
+        "end": 295
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-newtype::main::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/imported-newtype::domain::UserId",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "42",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 256,
+                      "end": 258
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 256,
+                  "end": 270
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 256,
+              "end": 282
+            }
+          }
+        ],
+        "origin": {
+          "start": 256,
+          "end": 295
+        }
+      }
+    }
+  ]
+}

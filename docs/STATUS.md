@@ -194,6 +194,12 @@ pure comparisonをactual executionへ接続済みです。`schema-1/user-eq-oper
 同名execution fixtureと`project-schema-1/imported-user-eq-operator`がlocal / parameter / imported evidenceを実行し、
 `semantic-diagnostics-schema-1/eq-missing`はinstanceのないADT比較を`SES-T0201`で拒否します。
 Playgroundの`自作の等価比較`でも同じsourceを実行できます。`deriving Eq`は後続gateです。
+`schema-1/newtype-user-id`は`newtype UserId = Int`を一constructorのnominal valueとして通常pipelineへ接続し、
+constructor適用、irrefutableなpayload pattern、TypedHir / CoreIr / TypeScriptIr、tagged TypeScript表現を固定します。
+同名execution fixtureがactual outputを検証し、`semantic-diagnostics-schema-1/newtype-no-coercion`は`UserId`から`Int`への
+暗黙unwrapを拒否します。generic newtypeのpayload inferenceもlowering testで固定しています。
+`project-schema-1/imported-newtype`は公開newtypeのtype / constructorを一つのnamed importから導入し、consumerでconstruct / unwrapして
+actual executionします。Playgroundの`newtypeでUserId`でも同じsourceを実行できます。record value、struct field、newtype derivingは後続です。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は
 standard `Reducible` runtimeへこのuser-defined callbackを渡し、actual executionで42を固定します。

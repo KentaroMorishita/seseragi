@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-newtype::domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.int64"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "UserId",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "UserId",
+          "tag": "UserId",
+          "payload": {
+            "kind": "bigint"
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 24
+      }
+    }
+  ]
+}

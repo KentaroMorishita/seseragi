@@ -922,9 +922,13 @@ imported effect functionは、このcatalogを一般化する後続gateです。
 同じcanonical spellingをtype / value namespaceへ持てるため、interface consumerはexportをsymbol文字列だけでkeyにせず、
 `(namespace, symbol)`で識別します。non-opaqueな公開newtypeは型schemeと、一引数constructor schemeの両方をinterfaceへ
 出し、一つのnamed importが両namespaceを導入します。opaque newtypeは型だけを公開します。
-このinterface / resolver contractに対し、newtypeのTypedHir value representationとTypeScript loweringはまだ未接続です。
-そのためbackendまで通すtrait project fixtureは、同じlocal nominal identityを表せるADTを使います。newtypeを単なるaliasへ
-潰さずconstructor境界を保つvertical sliceで回収でき、現在のtrait evidence ABIを作り直す必要はありません。
+`schema-1/newtype-user-id`はこのinterface / resolver contractを一constructorのnominal valueとしてTypedHir / CoreIr /
+TypeScriptIrへ接続します。constructor適用はtagged wrapperを生成し、constructor patternだけがpayloadを取り出します。
+`semantic-diagnostics-schema-1/newtype-no-coercion`はnewtypeをrepresentation型へ暗黙変換しない境界を固定します。
+generic `Tagged<A> = A`もpayloadから`A`を推論するlowering testを持ち、特定newtype名の分岐ではありません。
+`project-schema-1/imported-newtype`は一つのnamed importからtype / constructor両namespaceを導入し、consumer側のconstructor適用、
+pattern unwrap、type-only / value import、actual executionまで固定します。現在のbackendは観測可能なconstructor境界を保つtagged
+representationを選びます。将来のerasure最適化は同じ意味を保つ場合だけ許され、alias化を型検査の代用にはしません。
 
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ

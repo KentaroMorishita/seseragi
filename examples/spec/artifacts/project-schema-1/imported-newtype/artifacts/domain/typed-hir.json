@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-newtype::domain",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-newtype::domain::UserId",
+      "name": "UserId",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-newtype::domain::UserId",
+          "name": "UserId",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 24
+      }
+    }
+  ]
+}

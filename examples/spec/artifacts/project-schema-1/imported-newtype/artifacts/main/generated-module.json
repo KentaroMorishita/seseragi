@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-newtype::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.adt",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-newtype/main.ts",
+    "sourceMap": "dist/imported-newtype/main.ts.map"
+  }
+}

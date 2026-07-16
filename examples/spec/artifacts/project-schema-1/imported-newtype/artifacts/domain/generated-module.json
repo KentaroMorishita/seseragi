@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-newtype::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.int64"
+    ]
+  },
+  "exports": [
+    "UserId"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-newtype/domain.ts",
+    "sourceMap": "dist/imported-newtype/domain.ts.map"
+  }
+}

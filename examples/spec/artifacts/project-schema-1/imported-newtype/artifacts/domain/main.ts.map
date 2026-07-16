@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/imported-newtype/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-newtype::domain"
+  ],
+  "sourcesContent": [
+    "pub newtype UserId = Int\n"
+  ],
+  "names": [
+    "UserId",
+    "UserId"
+  ],
+  "mappings": "AAAAA;;AAAYC"
+}

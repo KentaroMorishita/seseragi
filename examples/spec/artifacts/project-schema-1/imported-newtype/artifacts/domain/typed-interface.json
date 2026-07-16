@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-newtype::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-newtype::domain::UserId",
+      "namespace": "type",
+      "name": "UserId",
+      "visibility": "public",
+      "declarationKind": "newtype",
+      "declaration": {
+        "start": 0,
+        "end": 24
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "UserId",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Int",
+        "arguments": []
+      }
+    },
+    {
+      "symbol": "fixture/imported-newtype::domain::UserId",
+      "namespace": "value",
+      "name": "UserId",
+      "constructorOf": "fixture/imported-newtype::domain::UserId",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 12,
+        "end": 18
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -152,14 +152,20 @@ impl SemanticTypeCatalog {
             .declarations
             .iter()
             .filter_map(|declaration| {
-                let SurfaceDecl::Type {
-                    name_span,
-                    type_parameters,
-                    span,
-                    ..
-                } = declaration
-                else {
-                    return None;
+                let (name_span, type_parameters, span) = match declaration {
+                    SurfaceDecl::Type {
+                        name_span,
+                        type_parameters,
+                        span,
+                        ..
+                    }
+                    | SurfaceDecl::Newtype {
+                        name_span,
+                        type_parameters,
+                        span,
+                        ..
+                    } => (name_span, type_parameters, span),
+                    _ => return None,
                 };
                 let symbol = resolved.symbols.iter().find(|symbol| {
                     symbol.kind == SymbolKind::Type && symbol.origin == *name_span
@@ -214,29 +220,40 @@ impl SemanticTypeCatalog {
             );
         }
         for declaration in &resolved.declarations {
-            let SurfaceDecl::Type {
-                name_span,
-                variants,
-                ..
-            } = declaration
-            else {
-                continue;
+            let (name_span, variants) = match declaration {
+                SurfaceDecl::Type {
+                    name_span,
+                    variants,
+                    ..
+                } => (
+                    name_span,
+                    variants
+                        .iter()
+                        .map(|variant| (variant.name_span, variant.payload.as_ref()))
+                        .collect::<Vec<_>>(),
+                ),
+                SurfaceDecl::Newtype {
+                    name_span,
+                    representation,
+                    ..
+                } => (name_span, vec![(*name_span, Some(representation))]),
+                _ => continue,
             };
             let Some((owner, ..)) = declarations.get(&(name_span.start, name_span.end)) else {
                 continue;
             };
             let owner = *owner;
             let mut semantic_variants = Vec::new();
-            for variant in variants {
+            for (variant_span, payload) in variants {
                 let Some(symbol) = resolved.symbols.iter().find(|symbol| {
-                    symbol.kind == SymbolKind::Constructor && symbol.origin == variant.name_span
+                    symbol.kind == SymbolKind::Constructor && symbol.origin == variant_span
                 }) else {
                     continue;
                 };
                 let Some(canonical) = symbol.canonical.clone() else {
                     continue;
                 };
-                let payload = variant.payload.as_ref().map(|payload| SemanticValueType {
+                let payload = payload.map(|payload| SemanticValueType {
                     type_ref: typed_type_from_type_ref(payload),
                     key: semantic_key_from_type_ref(resolved, &owners, payload),
                 });

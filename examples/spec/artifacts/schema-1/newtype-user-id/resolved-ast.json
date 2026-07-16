@@ -1,0 +1,628 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/newtype-user-id",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "newtype",
+      "visibility": "public",
+      "name": "UserId",
+      "nameSpan": {
+        "start": 12,
+        "end": 18
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 21,
+          "end": 24
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "raw",
+      "nameSpan": {
+        "start": 29,
+        "end": 32
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "nameSpan": {
+            "start": 33,
+            "end": 35
+          },
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "span": {
+              "start": 37,
+              "end": 43
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 47,
+          "end": 50
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "id",
+          "span": {
+            "start": 61,
+            "end": 63
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "UserId",
+              "nameSpan": {
+                "start": 70,
+                "end": 76
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 77,
+                  "end": 82
+                },
+                "span": {
+                  "start": 77,
+                  "end": 82
+                }
+              },
+              "span": {
+                "start": 70,
+                "end": 82
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 86,
+                "end": 91
+              }
+            },
+            "span": {
+              "start": 70,
+              "end": 91
+            }
+          }
+        ],
+        "span": {
+          "start": 55,
+          "end": 95
+        }
+      },
+      "span": {
+        "start": 26,
+        "end": 95
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 100,
+        "end": 106
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "nameSpan": {
+            "start": 107,
+            "end": 109
+          },
+          "type": {
+            "kind": "named",
+            "name": "UserId",
+            "span": {
+              "start": 111,
+              "end": 117
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 121,
+          "end": 127
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "raw",
+            "span": {
+              "start": 138,
+              "end": 141
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "id",
+            "span": {
+              "start": 142,
+              "end": 144
+            }
+          },
+          "span": {
+            "start": 138,
+            "end": 144
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 151,
+                "end": 153
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"UserId keeps its nominal boundary: 42\"",
+              "span": {
+                "start": 157,
+                "end": 196
+              }
+            },
+            "span": {
+              "start": 151,
+              "end": 196
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 201,
+                "end": 202
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected UserId\"",
+              "span": {
+                "start": 206,
+                "end": 225
+              }
+            },
+            "span": {
+              "start": 201,
+              "end": 225
+            }
+          }
+        ],
+        "span": {
+          "start": 132,
+          "end": 229
+        }
+      },
+      "span": {
+        "start": 97,
+        "end": 229
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 245,
+        "end": 249
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 286,
+            "end": 293
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 274,
+              "end": 280
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "UserId",
+              "span": {
+                "start": 262,
+                "end": 268
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 254,
+                "end": 256
+              }
+            },
+            "span": {
+              "start": 254,
+              "end": 268
+            }
+          },
+          "span": {
+            "start": 254,
+            "end": 280
+          }
+        },
+        "span": {
+          "start": 254,
+          "end": 293
+        }
+      },
+      "span": {
+        "start": 231,
+        "end": 293
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 293
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 24
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 26,
+        "end": 95
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "match-arm",
+      "origin": {
+        "start": 70,
+        "end": 91
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 97,
+        "end": 229
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 151,
+        "end": 196
+      }
+    },
+    {
+      "id": 6,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 201,
+        "end": 225
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 231,
+        "end": 293
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "UserId",
+      "canonical": "artifact/newtype-user-id::UserId",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 12,
+        "end": 18
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "UserId",
+      "canonical": "artifact/newtype-user-id::UserId",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 12,
+        "end": 18
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "raw",
+      "canonical": "artifact/newtype-user-id::raw",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 29,
+        "end": 32
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "render",
+      "canonical": "artifact/newtype-user-id::render",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 100,
+        "end": 106
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "main",
+      "canonical": "artifact/newtype-user-id::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 245,
+        "end": 249
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "id",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 33,
+        "end": 35
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 3,
+      "origin": {
+        "start": 77,
+        "end": 82
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "id",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 107,
+        "end": 109
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 21,
+        "end": 24
+      }
+    },
+    {
+      "spelling": "UserId",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 37,
+        "end": 43
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 47,
+        "end": 50
+      }
+    },
+    {
+      "spelling": "id",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 61,
+        "end": 63
+      }
+    },
+    {
+      "spelling": "UserId",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 70,
+        "end": 76
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 86,
+        "end": 91
+      }
+    },
+    {
+      "spelling": "UserId",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 111,
+        "end": 117
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 121,
+        "end": 127
+      }
+    },
+    {
+      "spelling": "raw",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 138,
+        "end": 141
+      }
+    },
+    {
+      "spelling": "id",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 142,
+        "end": 144
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 286,
+        "end": 293
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 274,
+        "end": 280
+      }
+    },
+    {
+      "spelling": "UserId",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 262,
+        "end": 268
+      }
+    }
+  ],
+  "issues": []
+}

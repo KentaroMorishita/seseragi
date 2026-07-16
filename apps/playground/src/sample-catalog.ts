@@ -118,6 +118,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Generic Maybe: empty\nGeneric Maybe: present",
   },
   {
+    id: "newtype-user-id",
+    label: "newtypeでUserId",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg",
+    stdin: "",
+    expectedOutput: "UserId keeps its nominal boundary: 42",
+  },
+  {
     id: "user-add-operator",
     label: "自作の足し算",
     category: "型と抽象化",
