@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "do.refutable-bind-pattern",
+      "primary": {
+        "start": 734,
+        "end": 743
+      },
+      "related": [
+        {
+          "message": "do bind patterns must be irrefutable; use an exhaustive match after binding",
+          "primary": {
+            "start": 676,
+            "end": 770
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "do.monad-constructor-mismatch",
+      "primary": {
+        "start": 836,
+        "end": 844
+      },
+      "related": [
+        {
+          "message": "all do expressions must use Maybe<unknown>; received Either<E, Int>",
+          "primary": {
+            "start": 772,
+            "end": 848
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "do.missing-final-expression",
+      "primary": {
+        "start": 900,
+        "end": 926
+      },
+      "related": [
+        {
+          "message": "do block requires a final monadic expression",
+          "primary": {
+            "start": 850,
+            "end": 926
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

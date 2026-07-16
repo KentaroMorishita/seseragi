@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 use super::{
     type_surface_expression, PureExpressionContext, SemanticTypeKey, SurfaceExpressionAnalysis,
 };
-use crate::typed::pure_issues::PureCallIssue;
+use crate::typed::pure_issues::{MonadDoIssue, PureCallIssue};
 use crate::typed::type_ref::inferred_type_from_expr;
 
 pub(super) fn type_monad_do(
@@ -15,10 +15,22 @@ pub(super) fn type_monad_do(
     base_context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let Some(expected) = base_context.expected().cloned() else {
-        return invalid_do(origin, PureCallIssue::TraitMethodNoMatch { callee: origin });
+        return invalid_monad_do(
+            origin,
+            MonadDoIssue::ResultTypeNotMonadic {
+                expression: origin,
+                actual: TypedType::Hole,
+            },
+        );
     };
     let Some((constructor, _)) = monad_parts(&expected.type_ref) else {
-        return invalid_do(origin, PureCallIssue::TraitMethodNoMatch { callee: origin });
+        return invalid_monad_do(
+            origin,
+            MonadDoIssue::ResultTypeNotMonadic {
+                expression: origin,
+                actual: expected.type_ref,
+            },
+        );
     };
     let constraint = TypedConstraint {
         name: "Monad".to_owned(),
@@ -58,7 +70,7 @@ pub(super) fn type_monad_do(
                     &constructor,
                     &inferred_type_from_expr(&analysis.value),
                 ) {
-                    merged.pure_call_issue = merged.pure_call_issue.take().or(Some(issue));
+                    merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
                 }
                 statements.push(TypedMonadDoStatement::Expression {
                     value: analysis.value.clone(),
@@ -74,8 +86,8 @@ pub(super) fn type_monad_do(
                 let actual = inferred_type_from_expr(&analysis.value);
                 let payload = monad_payload(&constructor, &actual);
                 if payload.is_none() {
-                    merged.pure_call_issue = merged
-                        .pure_call_issue
+                    merged.monad_do_issue = merged
+                        .monad_do_issue
                         .take()
                         .or_else(|| monad_type_issue(value.span(), &constructor, &actual));
                 }
@@ -98,11 +110,8 @@ pub(super) fn type_monad_do(
                         });
                     }
                     _ => {
-                        merged.pure_call_issue = merged.pure_call_issue.take().or(Some(
-                            PureCallIssue::TraitMethodNoMatch {
-                                callee: pattern.span(),
-                            },
-                        ));
+                        let issue = binding_pattern_issue(pattern);
+                        merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
                     }
                 }
                 merged.merge_issues_from(analysis);
@@ -126,13 +135,8 @@ pub(super) fn type_monad_do(
                         origin: *span,
                     });
                 } else {
-                    merged.pure_call_issue =
-                        merged
-                            .pure_call_issue
-                            .take()
-                            .or(Some(PureCallIssue::TraitMethodNoMatch {
-                                callee: pattern.span(),
-                            }));
+                    let issue = binding_pattern_issue(pattern);
+                    merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
                 }
                 merged.merge_issues_from(analysis);
             }
@@ -140,7 +144,14 @@ pub(super) fn type_monad_do(
     }
 
     let Some(result) = result else {
-        return invalid_do(origin, PureCallIssue::TraitMethodNoMatch { callee: origin });
+        merged.monad_do_issue =
+            merged
+                .monad_do_issue
+                .take()
+                .or(Some(MonadDoIssue::MissingFinalExpression {
+                    do_block: origin,
+                }));
+        return merged;
     };
     let result_context = base_context
         .with_locals(locals)
@@ -148,7 +159,7 @@ pub(super) fn type_monad_do(
     let result_analysis = type_surface_expression(result, &result_context);
     let result_type = inferred_type_from_expr(&result_analysis.value);
     if let Some(issue) = monad_type_issue(result.span(), &constructor, &result_type) {
-        merged.pure_call_issue = merged.pure_call_issue.take().or(Some(issue));
+        merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
     }
     let result_value = result_analysis.value.clone();
     merged.merge_issues_from(result_analysis);
@@ -180,15 +191,33 @@ fn monad_type_issue(
     origin: ByteSpan,
     constructor: &TypedType,
     actual: &TypedType,
-) -> Option<PureCallIssue> {
+) -> Option<MonadDoIssue> {
     monad_payload(constructor, actual)
         .is_none()
-        .then(|| PureCallIssue::ArgumentType {
-            argument: origin,
-            index: 0,
+        .then(|| MonadDoIssue::ConstructorMismatch {
+            expression: origin,
             expected: apply_constructor(constructor, TypedType::Hole),
             actual: actual.clone(),
         })
+}
+
+fn binding_pattern_issue(pattern: &SurfacePattern) -> MonadDoIssue {
+    match pattern {
+        SurfacePattern::Integer { .. }
+        | SurfacePattern::String { .. }
+        | SurfacePattern::Boolean { .. }
+        | SurfacePattern::Constructor { .. } => MonadDoIssue::RefutableBindPattern {
+            pattern: pattern.span(),
+        },
+        SurfacePattern::Tuple { .. } | SurfacePattern::Error { .. } => {
+            MonadDoIssue::UnsupportedBindPattern {
+                pattern: pattern.span(),
+            }
+        }
+        SurfacePattern::Name { .. } | SurfacePattern::Wildcard { .. } => {
+            unreachable!("supported do binding patterns are handled before diagnostics")
+        }
+    }
 }
 
 fn monad_payload(constructor: &TypedType, applied: &TypedType) -> Option<TypedType> {
@@ -242,6 +271,13 @@ fn invalid_do(origin: ByteSpan, issue: PureCallIssue) -> SurfaceExpressionAnalys
     let mut analysis =
         SurfaceExpressionAnalysis::valid_with_semantic_type(hole(origin), SemanticTypeKey::Invalid);
     analysis.pure_call_issue = Some(issue);
+    analysis
+}
+
+fn invalid_monad_do(origin: ByteSpan, issue: MonadDoIssue) -> SurfaceExpressionAnalysis {
+    let mut analysis =
+        SurfaceExpressionAnalysis::valid_with_semantic_type(hole(origin), SemanticTypeKey::Invalid);
+    analysis.monad_do_issue = Some(issue);
     analysis
 }
 

@@ -9,6 +9,7 @@ mod function_body;
 mod instance_method_tests;
 mod let_binding;
 mod match_expression;
+mod monad_do;
 mod pure_call;
 mod range;
 mod resolution;
@@ -181,6 +182,7 @@ fn collect_pure_body_diagnostics(
         diagnostics,
     );
     pure_call::collect_pure_function_diagnostics(&analysis, span, diagnostics);
+    monad_do::collect_monad_do_diagnostic(analysis.monad_do_issue.as_ref(), span, diagnostics);
     match_expression::collect_match_diagnostics(&analysis.match_issues, diagnostics);
 }
 

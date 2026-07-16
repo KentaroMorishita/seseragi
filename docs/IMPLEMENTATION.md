@@ -727,8 +727,12 @@ pure letはcontinuation内の通常constであり、Effect runtime importやrequ
 片方が`Nothing`なら後続continuationを実行せず`Nothing`になることをexecution fixtureで固定します。
 この経路は`Maybe`のtagや型名をbackendで検査せず、選択済みuser dictionaryだけを呼びます。
 
-次のgateはdo bind patternとconstructor mismatchの専用diagnosticを固定し、`Either<E, _>`のような
-部分適用型構築子でも同じdo loweringを証明することです。
+`semantic-diagnostics-schema-1/monad-do-invalid`はdo bindのrefutable patternを
+`do.refutable-bind-pattern`、異なる型構築子の混在を`do.monad-constructor-mismatch`、final expression欠落を
+`do.missing-final-expression`として固定します。いずれも`SES-T0101`ですが、trait method選択失敗へ偽装せず、
+原因となるpattern / expression / do blockのsource rangeをprimaryにします。
+
+次のgateは`Either<E, _>`のような部分適用型構築子でも同じdo loweringを証明することです。
 
 このgateは直接または入れ子のexpression内で飽和するconstrained function callを対象にします。
 partial applicationしたconstrained functionをlet / parameterなどfirst-class valueとして保持する場合は、

@@ -3,7 +3,9 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr};
 use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
-use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue, RangeIssue};
+use super::pure_issues::{
+    ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue,
+};
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
 
@@ -170,6 +172,7 @@ pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) array_issue: Option<ArrayIssue>,
     pub(crate) range_issue: Option<RangeIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
+    pub(crate) monad_do_issue: Option<MonadDoIssue>,
     pub(crate) match_issues: Vec<MatchIssue>,
     pub(crate) semantic_type: SemanticTypeKey,
 }
@@ -182,6 +185,7 @@ impl SurfaceExpressionAnalysis {
             array_issue: None,
             range_issue: None,
             pure_call_issue: None,
+            monad_do_issue: None,
             match_issues: Vec::new(),
             semantic_type: SemanticTypeKey::Other,
         }
@@ -197,6 +201,7 @@ impl SurfaceExpressionAnalysis {
             array_issue: None,
             range_issue: None,
             pure_call_issue: None,
+            monad_do_issue: None,
             match_issues: Vec::new(),
             semantic_type,
         }
@@ -207,6 +212,7 @@ impl SurfaceExpressionAnalysis {
         self.array_issue = self.array_issue.take().or(child.array_issue);
         self.range_issue = self.range_issue.take().or(child.range_issue);
         self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
+        self.monad_do_issue = self.monad_do_issue.take().or(child.monad_do_issue);
         self.match_issues.extend(child.match_issues);
     }
 }

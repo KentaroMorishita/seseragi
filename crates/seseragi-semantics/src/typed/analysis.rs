@@ -3,7 +3,9 @@ use seseragi_syntax::{SurfaceExpr, SurfaceParameter, TypeRef};
 
 use super::function_body::{function_body_issue, FunctionBodyIssue};
 use super::functions::typed_parameters_from_surface;
-use super::pure_issues::{ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue, RangeIssue};
+use super::pure_issues::{
+    ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue,
+};
 use super::semantic_types::{semantic_values_are_compatible, SemanticValueType};
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
@@ -15,6 +17,7 @@ pub(crate) struct PureFunctionAnalysis {
     pub(crate) range_issue: Option<RangeIssue>,
     pub(crate) function_body_issue: Option<FunctionBodyIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
+    pub(crate) monad_do_issue: Option<MonadDoIssue>,
     pub(crate) match_issues: Vec<MatchIssue>,
 }
 
@@ -32,6 +35,7 @@ pub(crate) fn analyze_pure_function(
             range_issue: None,
             function_body_issue: None,
             pure_call_issue: None,
+            monad_do_issue: None,
             match_issues: Vec::new(),
         };
     };
@@ -50,6 +54,7 @@ pub(crate) fn analyze_pure_function(
         && expression.array_issue.is_none()
         && expression.range_issue.is_none()
         && expression.pure_call_issue.is_none()
+        && expression.monad_do_issue.is_none()
         && expression.match_issues.is_empty())
     .then(|| {
         function_body_issue(
@@ -67,6 +72,7 @@ pub(crate) fn analyze_pure_function(
         range_issue: expression.range_issue,
         function_body_issue,
         pure_call_issue: expression.pure_call_issue,
+        monad_do_issue: expression.monad_do_issue,
         match_issues: expression.match_issues,
     }
 }

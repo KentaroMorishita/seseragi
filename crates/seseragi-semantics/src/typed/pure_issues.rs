@@ -27,6 +27,28 @@ pub(crate) enum PureCallIssue {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) enum MonadDoIssue {
+    ResultTypeNotMonadic {
+        expression: ByteSpan,
+        actual: TypedType,
+    },
+    ConstructorMismatch {
+        expression: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
+    },
+    RefutableBindPattern {
+        pattern: ByteSpan,
+    },
+    UnsupportedBindPattern {
+        pattern: ByteSpan,
+    },
+    MissingFinalExpression {
+        do_block: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum ArrayIssue {
     EmptyWithoutExpectedType {
         array: ByteSpan,

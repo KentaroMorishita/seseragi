@@ -235,7 +235,9 @@ pure functionの`do`は宣言済みreturn typeから`M<_>`を求め、`Monad<M>`
 TypedHir / CoreIr / TypeScriptIrへ保持します。bindは選択済みdictionaryの`flatMap`、pure letはcontinuation内の
 通常のbindingへlowerするため、Effect専用`Sequence`やeffect runtime helperを再利用しません。
 `addMaybe (Just 20) (Just 22)`と`addMaybe (Just 20) Nothing`のactual executionが成功と短絡を固定します。
-Applicative / Monad law、refutable bind diagnostic、部分適用型構築子を使うdoは次の独立gateです。
+`semantic-diagnostics-schema-1/monad-do-invalid`はrefutable bind pattern、異なるmonad constructor、
+final monadic expression欠落を、それぞれ専用の`do.*` diagnosticとsource rangeで固定します。
+Applicative / Monad law、部分適用型構築子を使うdoは次の独立gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

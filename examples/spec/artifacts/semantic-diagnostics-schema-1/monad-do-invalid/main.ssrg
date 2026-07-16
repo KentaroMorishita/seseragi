@@ -1,0 +1,50 @@
+trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+}
+
+trait Monad<M<_>>
+where Applicative<M> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
+
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+
+instance Applicative<Maybe> {
+  fn pure<A> value: A -> Maybe<A> = Just value
+}
+
+instance Monad<Maybe> {
+  fn flatMap<A, B> f: (A -> Maybe<B>) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> f item
+    }
+}
+
+fn refutable value: Maybe<Int> -> Maybe<Int> =
+  do {
+    Just item <- value
+    pure item
+  }
+
+fn mixed value: Maybe<Int> -> Maybe<Int> =
+  do {
+    value
+    Right 42
+  }
+
+fn unfinished value: Maybe<Int> -> Maybe<Int> =
+  do {
+    item <- value
+  }
