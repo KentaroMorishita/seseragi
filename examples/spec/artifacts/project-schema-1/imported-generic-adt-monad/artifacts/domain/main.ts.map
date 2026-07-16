@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-adt-monad/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-adt-monad::domain"
+  ],
+  "sourcesContent": [
+    "pub type Box<A> =\n  | Boxed A\n\npub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance Functor<Box> {\n  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> =\n    match value {\n      Boxed item -> Boxed $ f item\n    }\n}\n\npub trait Applicative<F<_>>\nwhere Functor<F> {\n  fn pure<A> value: A -> F<A>\n  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>\n}\n\ninstance Applicative<Box> {\n  fn pure<A> value: A -> Box<A> = Boxed value\n\n  fn apply<A, B> wrapped: Box<A -> B> -> value: Box<A> -> Box<B> =\n    match (wrapped, value) {\n      (Boxed function, Boxed item) -> Boxed $ function item\n    }\n}\n\npub trait Monad<M<_>>\nwhere Applicative<M> {\n  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>\n}\n\ninstance Monad<Box> {\n  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> =\n    match value {\n      Boxed item -> f item\n    }\n}\n\npub fn bind<M<_>, A, B>\n  f: (A -> M<B>)\n  -> value: M<A>\n  -> M<B>\nwhere Monad<M> =\n  flatMap f value\n"
+  ],
+  "names": [
+    "Box",
+    "Boxed",
+    "__ssrg$instance$Functor$0",
+    "__ssrg$instance$Applicative$1",
+    "__ssrg$instance$Monad$2",
+    "bind",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAAAA;;AACIC;AAMJC;AAaAC;AAcAC;AAOAC"
+}

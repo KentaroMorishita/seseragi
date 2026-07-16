@@ -719,6 +719,13 @@ resolverはimported ADT parameterへowner由来のcanonical symbolを与え、se
 `Functor<Box>` dictionary、type-only `Box` import、runtime constructor importをclosed compileとexecutionで同時に固定します。
 直接payloadだけでなく`Wrapped Maybe<A>`のnested substitutionもunit regressionで保持します。
 
+`project-schema-1/imported-generic-adt-monad`はこのmodule ABIをFunctorだけで止めません。providerのuser-defined
+`Box<A>`へFunctor / Applicative / Monadを積み、consumerはpublic `bind<M<_>, A, B> where Monad<M>`とconsumer-local
+pure `do`を同じimported `Monad<Box>` evidenceで具体化します。evidence import planningはMonad factoryだけを孤立して
+呼ばず、providerのApplicative factory、その親Functor dictionaryを順にmaterializeします。pure `do`はconsumerの
+TypedHirでこのnested evidenceを保持し、生成TSは選択済みdictionaryの`flatMap`だけを呼びます。二経路のactual executionが
+同じ42を出すため、local-only HKT、standard type name、backend tag分岐のいずれでも完了扱いできません。
+
 TypeScriptにはnative HKT applicationがないため、`F<A>`をそのまま不正なTypeScript型として生成しません。
 CoreIrはtype-constructor parameter名を保持し、backend parameter annotationだけを`unknown`へ消去します。
 これはSeseragiのkind / type / instance selectionをTypeScriptへ委譲するものではなく、意味確定後のtarget ABI消去です。

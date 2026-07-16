@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-generic-adt-monad::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.string",
+      "core.adt",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-generic-adt-monad/main.ts",
+    "sourceMap": "dist/imported-generic-adt-monad/main.ts.map"
+  }
+}

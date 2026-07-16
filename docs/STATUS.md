@@ -267,6 +267,11 @@ provider dictionaryを同時に具体化したactual executionが`Imported mappe
 `project-schema-1/imported-generic-adt-functor`はuser-defined `Box<A>`、`Boxed A` constructor、`Functor<Box>`をproviderに
 置き、consumerの`Boxed 41 |> transform increment`をactual executionまで通します。imported ADT parameterはowner由来の
 canonical symbolを持ち、direct / nested payload substitutionとexhaustivenessをconsumer側で再構築します。
+`project-schema-1/imported-generic-adt-monad`は同じ`Box<A>`へFunctor / Applicative / Monadをproviderで定義し、consumerへ
+三段のsupertrait dictionary factoryを運びます。consumerはimported `bind`にlocal higher-order functionを渡す経路と、
+imported `Monad<Box>`を選ぶpure `do`の両方を実行します。生成ESMは
+`Monad(Applicative(Functor))` evidence treeの`flatMap`を呼び、二つの`Imported Box Monad: 42`をactual executionで固定します。
+したがってMonad gateはMaybe / Eitherというprelude型やsingle-fileのlocal dictionaryだけには閉じていません。
 `type-constructor-kind-mismatch`は`Type -> Type`を要求するtrait parameterへ`Int : Type`を渡すinstanceを
 `trait.instance-kind-mismatch`で拒否します。TypeScriptはHKTを直接表せないため、型検査済みの`F<A>` parameter
 annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのkind、constraint、dictionary選択は消去しません。

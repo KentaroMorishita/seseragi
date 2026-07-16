@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-adt-monad/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-adt-monad::main"
+  ],
+  "sourcesContent": [
+    "import { Box, Boxed, Monad, bind } from \"./domain\"\n\nfn incrementBox value: Int -> Box<Int> =\n  Boxed $ value + 1\n\nfn render value: Box<Int> -> String =\n  match value {\n    Boxed 42 -> \"Imported Box Monad: 42\"\n    Boxed _ -> \"Imported Box Monad: another value\"\n  }\n\nfn addBox left: Box<Int> -> right: Box<Int> -> Box<Int> =\n  do {\n    first <- left\n    second <- right\n    Boxed $ first + second\n  }\n\npub effect fn main =\n  do {\n    Boxed 41\n    |> bind incrementBox\n    |> render\n    |> println\n\n    addBox (Boxed 20) (Boxed 22)\n    |> render\n    |> println\n  }\n"
+  ],
+  "names": [
+    "incrementBox",
+    "Boxed",
+    "add",
+    "render",
+    "addBox",
+    "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+    "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+    "first",
+    "second",
+    "Boxed",
+    "add",
+    "main",
+    "println",
+    "render",
+    "bind",
+    "Boxed",
+    "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+    "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+    "println",
+    "render",
+    "addBox",
+    "Boxed",
+    "Boxed"
+  ],
+  "mappings": ";;;;;AAEAA;AAGAG;AAMAC;AAOAO"
+}

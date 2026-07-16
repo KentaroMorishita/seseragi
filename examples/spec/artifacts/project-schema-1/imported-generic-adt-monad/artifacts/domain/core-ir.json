@@ -1,0 +1,1066 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-generic-adt-monad::domain",
+  "adts": [
+    {
+      "symbol": "fixture/imported-generic-adt-monad::domain::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
+          "name": "Boxed",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 110,
+        "end": 250
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "f",
+                "kind": "named",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 200,
+                  "end": 205
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 214,
+                        "end": 224
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 220,
+                        "end": 224
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "domain.ssrg",
+                              "start": 238,
+                              "end": 242
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 236,
+                          "end": 242
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 228,
+                      "end": 242
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 214,
+                    "end": 242
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 194,
+                "end": 248
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 136,
+              "end": 248
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+      "trait": "Applicative",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Box",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 391,
+        "end": 629
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "pure",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 459,
+                    "end": 464
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 453,
+                "end": 464
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 421,
+              "end": 464
+            }
+          },
+          {
+            "name": "apply",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "wrapped",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "wrapped",
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 544,
+                      "end": 551
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 553,
+                      "end": 558
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 543,
+                  "end": 559
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 569,
+                        "end": 583
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 585,
+                        "end": 595
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "function",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 575,
+                        "end": 583
+                      }
+                    },
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 591,
+                        "end": 595
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "function",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "domain.ssrg",
+                              "start": 617,
+                              "end": 621
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 608,
+                          "end": 621
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 600,
+                      "end": 621
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 568,
+                    "end": 621
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 537,
+                "end": 627
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 468,
+              "end": 627
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+      "trait": "Monad",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Applicative",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Box",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 736,
+        "end": 875
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "flatMap",
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "f",
+                "kind": "named",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 833,
+                  "end": 838
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 847,
+                        "end": 857
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 853,
+                        "end": 857
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "f",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "item",
+                        "type": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 863,
+                          "end": 867
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 861,
+                      "end": 867
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 847,
+                    "end": 867
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 827,
+                "end": 873
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 760,
+              "end": 873
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-generic-adt-monad::domain::bind",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 877,
+        "end": 979
+      },
+      "typeParameters": [
+        "M",
+        "A",
+        "B"
+      ],
+      "typeConstructorParameters": [
+        "M"
+      ],
+      "constraints": [
+        {
+          "name": "Monad",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "M",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "M",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-generic-adt-monad::domain::trait(Monad)::flatMap",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "f",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "M",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 972,
+              "end": 973
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "M",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 974,
+              "end": 979
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Monad",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
+          "method": "flatMap"
+        },
+        "type": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 964,
+          "end": 979
+        }
+      }
+    }
+  ]
+}

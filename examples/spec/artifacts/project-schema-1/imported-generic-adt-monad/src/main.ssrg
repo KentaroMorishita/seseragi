@@ -1,0 +1,29 @@
+import { Box, Boxed, Monad, bind } from "./domain"
+
+fn incrementBox value: Int -> Box<Int> =
+  Boxed $ value + 1
+
+fn render value: Box<Int> -> String =
+  match value {
+    Boxed 42 -> "Imported Box Monad: 42"
+    Boxed _ -> "Imported Box Monad: another value"
+  }
+
+fn addBox left: Box<Int> -> right: Box<Int> -> Box<Int> =
+  do {
+    first <- left
+    second <- right
+    Boxed $ first + second
+  }
+
+pub effect fn main =
+  do {
+    Boxed 41
+    |> bind incrementBox
+    |> render
+    |> println
+
+    addBox (Boxed 20) (Boxed 22)
+    |> render
+    |> println
+  }

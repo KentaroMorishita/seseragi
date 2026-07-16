@@ -1,0 +1,1040 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-generic-adt-monad::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-generic-adt-monad::domain",
+      "origin": {
+        "start": 0,
+        "end": 50
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+          "origin": {
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Boxed",
+          "local": "Boxed",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Boxed",
+          "origin": {
+            "start": 14,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "trait",
+          "imported": "Monad",
+          "local": "Monad",
+          "canonical": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
+          "origin": {
+            "start": 21,
+            "end": 26
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "bind",
+          "local": "bind",
+          "canonical": "fixture/imported-generic-adt-monad::domain::bind",
+          "origin": {
+            "start": 28,
+            "end": 32
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-adt-monad::main::incrementBox",
+      "visibility": "private",
+      "origin": {
+        "start": 52,
+        "end": 112
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 68,
+            "end": 73
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 103,
+                "end": 108
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "value": "1",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 111,
+                "end": 112
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 103,
+              "end": 112
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 95,
+          "end": 112
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-adt-monad::main::render",
+      "visibility": "private",
+      "origin": {
+        "start": 114,
+        "end": 263
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 124,
+            "end": 129
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 160,
+            "end": 165
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
+              "argument": {
+                "kind": "integer",
+                "value": "42",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 178,
+                  "end": 180
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 172,
+                "end": 180
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Imported Box Monad: 42",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 184,
+                "end": 208
+              }
+            },
+            "origin": {
+              "start": 172,
+              "end": 208
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 219,
+                  "end": 220
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 213,
+                "end": 220
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Imported Box Monad: another value",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 224,
+                "end": 259
+              }
+            },
+            "origin": {
+              "start": 213,
+              "end": 259
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 154,
+          "end": 263
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-adt-monad::main::addBox",
+      "visibility": "private",
+      "origin": {
+        "start": 265,
+        "end": 398
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 275,
+            "end": 279
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 293,
+            "end": 298
+          }
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "first",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 343,
+                "end": 347
+              }
+            },
+            "origin": {
+              "start": 334,
+              "end": 347
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "second",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 362,
+                "end": 367
+              }
+            },
+            "origin": {
+              "start": 352,
+              "end": 367
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "first",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 380,
+                  "end": 385
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "second",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 388,
+                  "end": 394
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 380,
+                "end": 394
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 372,
+            "end": 394
+          }
+        },
+        "evidence": {
+          "constraint": {
+            "name": "Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Box",
+                "arguments": []
+              }
+            ]
+          },
+          "evidence": {
+            "kind": "imported",
+            "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+            "providerModule": "fixture/imported-generic-adt-monad::domain",
+            "evidenceArguments": [
+              {
+                "constraint": {
+                  "name": "Applicative",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "imported",
+                  "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+                  "providerModule": "fixture/imported-generic-adt-monad::domain",
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Functor",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Box",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "imported",
+                        "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+                        "providerModule": "fixture/imported-generic-adt-monad::domain"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 325,
+          "end": 398
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-generic-adt-monad::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 400,
+        "end": 561
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-generic-adt-monad::main::render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-generic-adt-monad::domain::bind",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "fixture/imported-generic-adt-monad::main::incrementBox",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Box",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "start": 453,
+                            "end": 465
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "41",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 438,
+                                "end": 440
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Box",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 432,
+                            "end": 440
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Monad",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Box",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "imported",
+                            "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+                            "providerModule": "fixture/imported-generic-adt-monad::domain",
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Applicative",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Box",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "imported",
+                                  "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+                                  "providerModule": "fixture/imported-generic-adt-monad::domain",
+                                  "evidenceArguments": [
+                                    {
+                                      "constraint": {
+                                        "name": "Functor",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Box",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "imported",
+                                        "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+                                        "providerModule": "fixture/imported-generic-adt-monad::domain"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 432,
+                        "end": 465
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 432,
+                    "end": 479
+                  }
+                }
+              ],
+              "origin": {
+                "start": 432,
+                "end": 494
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "fixture/imported-generic-adt-monad::main::render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-generic-adt-monad::main::addBox",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "20",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 514,
+                            "end": 516
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 508,
+                        "end": 516
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "22",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 525,
+                            "end": 527
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 519,
+                        "end": 527
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 500,
+                    "end": 528
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 500,
+                "end": 542
+              }
+            }
+          ],
+          "origin": {
+            "start": 500,
+            "end": 557
+          }
+        },
+        "origin": {
+          "start": 423,
+          "end": 561
+        }
+      }
+    }
+  ]
+}

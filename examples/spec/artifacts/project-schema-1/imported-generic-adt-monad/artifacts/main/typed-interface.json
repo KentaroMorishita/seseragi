@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-generic-adt-monad::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-generic-adt-monad::domain",
+      "origin": {
+        "start": 0,
+        "end": 50
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Box",
+          "symbol": "fixture/imported-generic-adt-monad::domain::Box"
+        },
+        {
+          "namespace": "value",
+          "name": "Boxed",
+          "symbol": "fixture/imported-generic-adt-monad::domain::Boxed"
+        },
+        {
+          "namespace": "trait",
+          "name": "Monad",
+          "symbol": "fixture/imported-generic-adt-monad::domain::trait(Monad)"
+        },
+        {
+          "namespace": "value",
+          "name": "bind",
+          "symbol": "fixture/imported-generic-adt-monad::domain::bind"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-generic-adt-monad::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 400,
+        "end": 561
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+      "providerModule": "fixture/imported-generic-adt-monad::domain",
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
+      "argumentIdentities": [
+        "fixture/imported-generic-adt-monad::domain::Box"
+      ],
+      "trait": "Applicative",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Applicative",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Functor",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Box",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 391,
+        "end": 629
+      }
+    },
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+      "providerModule": "fixture/imported-generic-adt-monad::domain",
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
+      "argumentIdentities": [
+        "fixture/imported-generic-adt-monad::domain::Box"
+      ],
+      "trait": "Functor",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 110,
+        "end": 250
+      }
+    },
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+      "providerModule": "fixture/imported-generic-adt-monad::domain",
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
+      "argumentIdentities": [
+        "fixture/imported-generic-adt-monad::domain::Box"
+      ],
+      "trait": "Monad",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Monad",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Applicative",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Box",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 736,
+        "end": 875
+      }
+    }
+  ]
+}

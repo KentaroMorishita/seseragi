@@ -1,0 +1,47 @@
+pub type Box<A> =
+  | Boxed A
+
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> =
+    match value {
+      Boxed item -> Boxed $ f item
+    }
+}
+
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Boxed value
+
+  fn apply<A, B> wrapped: Box<A -> B> -> value: Box<A> -> Box<B> =
+    match (wrapped, value) {
+      (Boxed function, Boxed item) -> Boxed $ function item
+    }
+}
+
+pub trait Monad<M<_>>
+where Applicative<M> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
+
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> =
+    match value {
+      Boxed item -> f item
+    }
+}
+
+pub fn bind<M<_>, A, B>
+  f: (A -> M<B>)
+  -> value: M<A>
+  -> M<B>
+where Monad<M> =
+  flatMap f value

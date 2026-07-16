@@ -1,0 +1,429 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-generic-adt-monad::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.string",
+    "core.adt",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-generic-adt-monad::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "imported": "Boxed",
+          "local": "Boxed",
+          "sourceLocal": "Boxed",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Boxed",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 14,
+            "end": 19
+          }
+        },
+        {
+          "imported": "bind",
+          "local": "bind",
+          "sourceLocal": "bind",
+          "canonical": "fixture/imported-generic-adt-monad::domain::bind",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 32
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Applicative$1",
+          "local": "__ssrg$instance$Applicative$1",
+          "sourceLocal": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+          "canonical": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 50
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Functor$0",
+          "local": "__ssrg$instance$Functor$0",
+          "sourceLocal": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+          "canonical": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 50
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Monad$2",
+          "local": "__ssrg$instance$Monad$2",
+          "sourceLocal": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+          "canonical": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 50
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 50
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "incrementBox",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "Boxed",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_add",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "bigint",
+                "value": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 52,
+        "end": 112
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Box<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "bigint"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Boxed"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported Box Monad: 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Imported Box Monad: another value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 114,
+        "end": 263
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "addBox",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "Box<bigint>",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "Box<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Monad$2",
+          "typeArguments": [],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Applicative$1",
+              "typeArguments": [],
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Functor$0"
+                }
+              ]
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "left"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 334,
+              "end": 347
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "right"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 352,
+              "end": 367
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "Boxed",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "first"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "second"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 265,
+        "end": 398
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "bind",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "incrementBox"
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "Boxed",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "41"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Monad$2",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Applicative$1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Functor$0"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "addBox",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "Boxed",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "20"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "Boxed",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "22"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 400,
+        "end": 561
+      }
+    }
+  ]
+}

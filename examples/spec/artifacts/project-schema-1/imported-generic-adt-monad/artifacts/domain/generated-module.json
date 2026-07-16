@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-generic-adt-monad::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt"
+    ]
+  },
+  "exports": [
+    "Boxed",
+    "bind"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    },
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+      "trait": "Applicative",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Applicative$1"
+    },
+    {
+      "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+      "trait": "Monad",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Monad$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-generic-adt-monad/domain.ts",
+    "sourceMap": "dist/imported-generic-adt-monad/domain.ts.map"
+  }
+}
