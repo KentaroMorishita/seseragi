@@ -1,0 +1,12 @@
+pub type Status =
+  | Ready
+  | Waiting
+
+instance Eq<Status> {
+  fn eq left: Status -> right: Status -> Bool =
+    match (left, right) {
+      (Ready, Ready) -> True
+      (Waiting, Waiting) -> True
+      _ -> False
+    }
+}

@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/user-eq-operator",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/user-eq-operator::Status",
+      "namespace": "type",
+      "name": "Status",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Status",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-eq-operator::Ready",
+      "namespace": "value",
+      "name": "Ready",
+      "constructorOf": "artifact/user-eq-operator::Status",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 22,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-eq-operator::Waiting",
+      "namespace": "value",
+      "name": "Waiting",
+      "constructorOf": "artifact/user-eq-operator::Status",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 32,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-eq-operator::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 510,
+        "end": 601
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/user-eq-operator::Status>",
+      "providerModule": "artifact/user-eq-operator",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/user-eq-operator::Status"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Status",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 41,
+        "end": 223
+      }
+    }
+  ]
+}

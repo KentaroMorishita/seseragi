@@ -91,7 +91,10 @@ provider dictionary exportのimportとproject executionまで固定します。
 
 `schema-1/pure-comparison/`はInt、Bool、Stringの比較へstandard `Eq<A>` evidenceを保持します。
 `execution-schema-1/pure-comparison-string/`は二引数のpure curried entryを実行し、String `!=`のBool結果を
-JSON outputで固定します。strict equalityのbackend表現だけをEq instance選択の代用にはしません。
+JSON outputで固定します。`schema-1/user-eq-operator/`はlocal `Eq<Status>` dictionaryを`==`から呼び、generic
+`where Eq<T>`の`!=`はparameter dictionaryの同じ`eq`結果を否定します。同名executionと
+`project-schema-1/imported-user-eq-operator/`がlocal / scoped / imported dispatchを固定し、`eq-missing/`は
+instanceのないADT比較を拒否します。strict equalityやJavaScript object identityをEq instance選択の代用にはしません。
 
 `schema-1/parse-hand-either/`はString literal matchの結果をstandard `Either<HandInputError, Hand>`で返します。
 `execution-schema-1/parse-hand-either-valid/`と`parse-hand-either-invalid/`はpure entryへtyped String引数を渡し、

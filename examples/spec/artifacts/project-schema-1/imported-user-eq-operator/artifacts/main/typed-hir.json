@@ -1,0 +1,714 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-user-eq-operator::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-user-eq-operator::domain",
+      "origin": {
+        "start": 0,
+        "end": 49
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "Ready",
+          "local": "Ready",
+          "canonical": "fixture/imported-user-eq-operator::domain::Ready",
+          "origin": {
+            "start": 9,
+            "end": 14
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Status",
+          "local": "Status",
+          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+          "origin": {
+            "start": 16,
+            "end": 22
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Waiting",
+          "local": "Waiting",
+          "canonical": "fixture/imported-user-eq-operator::domain::Waiting",
+          "origin": {
+            "start": 24,
+            "end": 31
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-user-eq-operator::main::same",
+      "visibility": "private",
+      "origin": {
+        "start": 51,
+        "end": 119
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Eq",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 62,
+            "end": 66
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 73,
+            "end": 78
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 106,
+            "end": 110
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 114,
+            "end": 119
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 106,
+          "end": 119
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-user-eq-operator::main::different",
+      "visibility": "private",
+      "origin": {
+        "start": 121,
+        "end": 194
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Eq",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 137,
+            "end": 141
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 148,
+            "end": 153
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!=",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 181,
+            "end": 185
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 189,
+            "end": 194
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 181,
+          "end": 194
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-user-eq-operator::main::render",
+      "visibility": "private",
+      "origin": {
+        "start": 196,
+        "end": 352
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "checks",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 206,
+            "end": 212
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "checks",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 247,
+            "end": 253
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "boolean",
+                  "value": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 261,
+                    "end": 265
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 267,
+                    "end": 271
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 260,
+                "end": 272
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Imported Eq: same / different",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 276,
+                "end": 307
+              }
+            },
+            "origin": {
+              "start": 260,
+              "end": 307
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 312,
+                "end": 313
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "unexpected imported Eq result",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 317,
+                "end": 348
+              }
+            },
+            "origin": {
+              "start": 312,
+              "end": 348
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 241,
+          "end": 352
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-user-eq-operator::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 354,
+        "end": 445
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-user-eq-operator::main::render",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/imported-user-eq-operator::main::same",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "fixture/imported-user-eq-operator::domain::Ready",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 383,
+                          "end": 388
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "fixture/imported-user-eq-operator::domain::Ready",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 389,
+                          "end": 394
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Status",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "imported",
+                          "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+                          "providerModule": "fixture/imported-user-eq-operator::domain"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 378,
+                      "end": 394
+                    }
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "fixture/imported-user-eq-operator::main::different",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "fixture/imported-user-eq-operator::domain::Ready",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 406,
+                          "end": 411
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "fixture/imported-user-eq-operator::domain::Waiting",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 412,
+                          "end": 419
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Status",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "imported",
+                          "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+                          "providerModule": "fixture/imported-user-eq-operator::domain"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 396,
+                      "end": 419
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 377,
+                  "end": 420
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 377,
+              "end": 432
+            }
+          }
+        ],
+        "origin": {
+          "start": 377,
+          "end": 445
+        }
+      }
+    }
+  ]
+}

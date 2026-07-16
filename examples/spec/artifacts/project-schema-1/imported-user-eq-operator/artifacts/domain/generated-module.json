@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-user-eq-operator::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "Ready",
+    "Waiting"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Status",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-user-eq-operator/domain.ts",
+    "sourceMap": "dist/imported-user-eq-operator/domain.ts.map"
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-user-eq-operator::domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.bool"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Status",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Ready",
+          "tag": "Ready",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        },
+        {
+          "exported": true,
+          "name": "Waiting",
+          "tag": "Waiting",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 39
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Status",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 41,
+        "end": 223
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Status",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Status",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Status",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Status",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Ready"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Ready"
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Waiting"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Waiting"
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 65,
+              "end": 221
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

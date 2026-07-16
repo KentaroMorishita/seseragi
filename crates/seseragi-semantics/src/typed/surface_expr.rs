@@ -188,6 +188,21 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
+    pub(super) fn select_binary_equality_evidence(
+        &self,
+        left: TypedType,
+        right: TypedType,
+    ) -> Result<crate::TypedCallEvidence, TypedConstraint> {
+        let trait_identity = self.trait_identity("Eq");
+        super::call_evidence::select_binary_equality_evidence(
+            left,
+            right,
+            trait_identity.as_deref(),
+            self.resolution,
+            &self.evidence_parameters,
+        )
+    }
+
     pub(super) fn select_binary_operator_reference_evidence(
         &self,
         trait_name: &str,

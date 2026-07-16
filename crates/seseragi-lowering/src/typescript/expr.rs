@@ -499,6 +499,26 @@ fn lower_binary(
             };
         }
     }
+    if matches!(operator.as_str(), "==" | "!=") {
+        if let Some(selected) = evidence.first().and_then(|selected| {
+            local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+        }) {
+            let equals = TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(selected),
+                method: "eq".to_owned(),
+                arguments: vec![left, right],
+            };
+            return if operator == "==" {
+                equals
+            } else {
+                TypeScriptExpr::Binary {
+                    operator: "===".to_owned(),
+                    left: Box::new(equals),
+                    right: Box::new(TypeScriptExpr::Boolean { value: false }),
+                }
+            };
+        }
+    }
     if let Some(method) = operator_trait_method(&operator) {
         if let Some(selected) = evidence.first().and_then(|selected| {
             local_dictionary_expression(&selected.evidence, imported_values, imported_types)

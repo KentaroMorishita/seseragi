@@ -5,7 +5,6 @@ use super::{
     named_type, named_type_is, type_surface_expression, PureExpressionContext,
     SurfaceExpressionAnalysis,
 };
-use crate::typed::call_evidence::select_equality_evidence;
 use crate::typed::pure_issues::{PureCallIssue, RangeIssue};
 use crate::typed::type_ref::inferred_type_from_expr;
 
@@ -42,14 +41,33 @@ pub(super) fn type_binary(
                 (TypedType::Hole, Vec::new())
             }
         }
+    } else if matches!(operator, "==" | "!=") {
+        if left_type != TypedType::Hole && right_type != TypedType::Hole && left_type != right_type
+        {
+            missing_instance = Some(PureCallIssue::ArgumentType {
+                argument: right_span,
+                index: 1,
+                expected: left_type.clone(),
+                actual: right_type.clone(),
+            });
+            (TypedType::Hole, Vec::new())
+        } else {
+            match context.select_binary_equality_evidence(left_type.clone(), right_type.clone()) {
+                Ok(evidence) => (named_type("Bool"), vec![evidence]),
+                Err(constraint) => {
+                    if left_type != TypedType::Hole && right_type != TypedType::Hole {
+                        missing_instance = Some(PureCallIssue::MissingInstance {
+                            callee: operator_span,
+                            constraint,
+                        });
+                    }
+                    (TypedType::Hole, Vec::new())
+                }
+            }
+        }
     } else {
         let result_type = binary_result_type(operator, &left.value, &right.value);
-        let evidence = if matches!(operator, "==" | "!=") {
-            select_equality_evidence(operator, left_type.clone(), right_type.clone())
-        } else {
-            Vec::new()
-        };
-        (result_type, evidence)
+        (result_type, Vec::new())
     };
     let range_issue = range_issue(operator, left_span, &left_type, right_span, &right_type);
     let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Binary {
@@ -102,13 +120,6 @@ fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> Ty
         && named_type_is(&right_type, "String")
     {
         return named_type("String");
-    }
-    if matches!(operator, "==" | "!=")
-        && ["Int", "Bool", "String"]
-            .iter()
-            .any(|name| named_type_is(&left_type, name) && named_type_is(&right_type, name))
-    {
-        return named_type("Bool");
     }
     if matches!(operator, "<" | "<=" | ">" | ">=")
         && named_type_is(&left_type, "Int")

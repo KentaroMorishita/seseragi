@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "case": "user-eq-operator",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/user-eq-operator",
+    "export": "main",
+    "compiledModule": "../../schema-1/user-eq-operator/generated-module.json",
+    "typedInterface": "../../schema-1/user-eq-operator/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.bool",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["User Eq: same / different"],
+        "stdout": "User Eq: same / different\n"
+      }
+    ]
+  }
+}

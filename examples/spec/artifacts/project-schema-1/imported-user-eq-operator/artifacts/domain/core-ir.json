@@ -1,0 +1,287 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-user-eq-operator::domain",
+  "adts": [
+    {
+      "symbol": "fixture/imported-user-eq-operator::domain::Status",
+      "name": "Status",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-user-eq-operator::domain::Ready",
+          "name": "Ready",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        },
+        {
+          "symbol": "fixture/imported-user-eq-operator::domain::Waiting",
+          "name": "Waiting",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 39
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 41,
+        "end": 223
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Status",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Status",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 122,
+                      "end": 126
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 128,
+                      "end": 133
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 121,
+                  "end": 134
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Status",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Status",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "fixture/imported-user-eq-operator::domain::Ready",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 144,
+                        "end": 149
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "fixture/imported-user-eq-operator::domain::Ready",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 151,
+                        "end": 156
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 161,
+                      "end": 165
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 143,
+                    "end": 165
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "fixture/imported-user-eq-operator::domain::Waiting",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 173,
+                        "end": 180
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "fixture/imported-user-eq-operator::domain::Waiting",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 182,
+                        "end": 189
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 194,
+                      "end": 198
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 172,
+                    "end": 198
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 210,
+                      "end": 215
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 205,
+                    "end": 215
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 115,
+                "end": 221
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 65,
+              "end": 221
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

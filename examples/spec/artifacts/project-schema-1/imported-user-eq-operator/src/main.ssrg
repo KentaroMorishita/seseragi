@@ -1,0 +1,20 @@
+import { Ready, Status, Waiting } from "./domain"
+
+fn same<T> left: T -> right: T -> Bool
+where Eq<T> =
+  left == right
+
+fn different<T> left: T -> right: T -> Bool
+where Eq<T> =
+  left != right
+
+fn render checks: (Bool, Bool) -> String =
+  match checks {
+    (True, True) -> "Imported Eq: same / different"
+    _ -> "unexpected imported Eq result"
+  }
+
+pub effect fn main =
+  (same Ready Ready, different Ready Waiting)
+  |> render
+  |> println

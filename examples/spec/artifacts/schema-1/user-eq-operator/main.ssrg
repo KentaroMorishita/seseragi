@@ -1,0 +1,30 @@
+pub type Status =
+  | Ready
+  | Waiting
+
+instance Eq<Status> {
+  fn eq left: Status -> right: Status -> Bool =
+    match (left, right) {
+      (Ready, Ready) -> True
+      (Waiting, Waiting) -> True
+      _ -> False
+    }
+}
+
+fn same left: Status -> right: Status -> Bool =
+  left == right
+
+fn different<T> left: T -> right: T -> Bool
+where Eq<T> =
+  left != right
+
+fn render checks: (Bool, Bool) -> String =
+  match checks {
+    (True, True) -> "User Eq: same / different"
+    _ -> "unexpected Eq result"
+  }
+
+pub effect fn main =
+  (same Ready Ready, different Ready Waiting)
+  |> render
+  |> println

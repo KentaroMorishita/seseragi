@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "module": "artifact/user-eq-operator",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.bool",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "Ready",
+    "Waiting",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/user-eq-operator::Status>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Status",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

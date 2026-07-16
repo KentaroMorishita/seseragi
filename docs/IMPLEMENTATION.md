@@ -594,8 +594,13 @@ struct / newtype `operator`糖衣は後続です。
 `schema-1/pure-comparison`はInt、Bool、Stringの`==` / `!=`で、それぞれのstandard `Eq<A>` evidenceを
 TypedHirとCoreIrへ保持します。backendのstrict equality表現は変えませんが、型検査後にoperand spellingから
 instanceを再発見しません。`execution-schema-1/pure-comparison-string`はcurried pure entryを二つのStringで
-実行し、`!=`の結果をJSON Boolとして固定します。derived / user-defined Eqの構造比較とdictionary dispatchは
-同じevidence境界へ追加でき、primitive名だけの分岐を一般Eq完成とは扱いません。
+実行し、`!=`の結果をJSON Boolとして固定します。
+
+`schema-1/user-eq-operator`は同じ境界をuser-defined `Eq<A>`へ開きます。`==`は選択済みlocal dictionaryの`eq`を呼び、
+`!=`は別instanceを選ばず同じ`eq`結果を否定します。generic `where Eq<T>` bodyではparameter evidenceを保持し、
+具体callはlocal dictionaryを渡します。`project-schema-1/imported-user-eq-operator`はprovider dictionary exportのimportと
+closed TypeScript check、actual executionまで固定します。`semantic-diagnostics-schema-1/eq-missing`はinstanceのない
+ADT比較を`instance.missing`で停止するため、JavaScript object identityへ黙ってfallbackしません。`deriving Eq`は後続gateです。
 
 user-defined instanceへ進む前提として、SurfaceAstの`instance`はhead / constraintだけでなく、各methodの型parameter、
 parameter、戻り型、constraint、body、source spanを保持します。resolverもinstance scopeを親にmethod scopeを作り、

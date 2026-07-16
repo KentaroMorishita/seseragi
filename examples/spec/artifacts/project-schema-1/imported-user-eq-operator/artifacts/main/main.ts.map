@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "file": "dist/imported-user-eq-operator/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-user-eq-operator::main"
+  ],
+  "sourcesContent": [
+    "import { Ready, Status, Waiting } from \"./domain\"\n\nfn same<T> left: T -> right: T -> Bool\nwhere Eq<T> =\n  left == right\n\nfn different<T> left: T -> right: T -> Bool\nwhere Eq<T> =\n  left != right\n\nfn render checks: (Bool, Bool) -> String =\n  match checks {\n    (True, True) -> \"Imported Eq: same / different\"\n    _ -> \"unexpected imported Eq result\"\n  }\n\npub effect fn main =\n  (same Ready Ready, different Ready Waiting)\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "same",
+    "__ssrg$evidence$0",
+    "different",
+    "__ssrg$evidence$0",
+    "render",
+    "main",
+    "println",
+    "render",
+    "same",
+    "different"
+  ],
+  "mappings": ";;;AAEAA;AAIAE;AAIAE;AAMAC"
+}

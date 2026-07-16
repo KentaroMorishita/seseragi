@@ -813,7 +813,8 @@ fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static
     }
 }
 
-pub(crate) fn select_equality_evidence(
+#[cfg(test)]
+fn select_equality_evidence(
     operator: &str,
     left: TypedType,
     right: TypedType,
@@ -826,6 +827,36 @@ pub(crate) fn select_equality_evidence(
         arguments: vec![left],
     }])
     .unwrap_or_default()
+}
+
+pub(crate) fn select_binary_equality_evidence(
+    left: TypedType,
+    right: TypedType,
+    trait_identity: Option<&str>,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<TypedCallEvidence, TypedConstraint> {
+    let missing = || TypedConstraint {
+        name: "Eq".to_owned(),
+        arguments: vec![left.clone()],
+    };
+    if left != right || matches!(left, TypedType::Hole) {
+        return Err(missing());
+    }
+    let constraint = missing();
+    let evidence = trait_identity
+        .and_then(|trait_identity| {
+            select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
+        })
+        .or_else(|| {
+            standard_instance_identity(&constraint)
+                .map(|identity| TypedInstanceEvidence::Standard { identity })
+        })
+        .ok_or_else(|| constraint.clone())?;
+    Ok(TypedCallEvidence {
+        constraint,
+        evidence,
+    })
 }
 
 #[cfg(test)]

@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-user-eq-operator::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-user-eq-operator::domain::Status",
+      "namespace": "type",
+      "name": "Status",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Status",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-user-eq-operator::domain::Ready",
+      "namespace": "value",
+      "name": "Ready",
+      "constructorOf": "fixture/imported-user-eq-operator::domain::Status",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 22,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-user-eq-operator::domain::Waiting",
+      "namespace": "value",
+      "name": "Waiting",
+      "constructorOf": "fixture/imported-user-eq-operator::domain::Status",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 32,
+        "end": 39
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+      "providerModule": "fixture/imported-user-eq-operator::domain",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "fixture/imported-user-eq-operator::domain::Status"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Status",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 41,
+        "end": 223
+      }
+    }
+  ]
+}

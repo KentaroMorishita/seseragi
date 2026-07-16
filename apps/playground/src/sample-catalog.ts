@@ -127,6 +127,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "User Add: 42",
   },
   {
+    id: "user-eq-operator",
+    label: "自作の等価比較",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg",
+    stdin: "",
+    expectedOutput: "User Eq: same / different",
+  },
+  {
     id: "user-iterable-comprehension",
     label: "自作Collectionの流れ",
     category: "型と抽象化",

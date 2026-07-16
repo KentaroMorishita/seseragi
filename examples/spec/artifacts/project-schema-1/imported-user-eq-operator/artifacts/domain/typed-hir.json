@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-user-eq-operator::domain",
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+      "traitIdentity": "std/prelude::Eq",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-user-eq-operator::domain::Status"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 41,
+        "end": 223
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Status",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 71,
+                  "end": 75
+                }
+              },
+              {
+                "kind": "named",
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "Status",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 87,
+                  "end": 92
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 122,
+                      "end": 126
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 128,
+                      "end": 133
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Status",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 121,
+                  "end": 134
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "constructor",
+                        "symbol": "fixture/imported-user-eq-operator::domain::Ready",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 144,
+                          "end": 149
+                        }
+                      },
+                      {
+                        "kind": "constructor",
+                        "symbol": "fixture/imported-user-eq-operator::domain::Ready",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 151,
+                          "end": 156
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 143,
+                      "end": 157
+                    }
+                  },
+                  "body": {
+                    "kind": "boolean",
+                    "value": true,
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 161,
+                      "end": 165
+                    }
+                  },
+                  "origin": {
+                    "start": 143,
+                    "end": 165
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "constructor",
+                        "symbol": "fixture/imported-user-eq-operator::domain::Waiting",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 173,
+                          "end": 180
+                        }
+                      },
+                      {
+                        "kind": "constructor",
+                        "symbol": "fixture/imported-user-eq-operator::domain::Waiting",
+                        "type": {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 182,
+                          "end": 189
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 172,
+                      "end": 190
+                    }
+                  },
+                  "body": {
+                    "kind": "boolean",
+                    "value": true,
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 194,
+                      "end": 198
+                    }
+                  },
+                  "origin": {
+                    "start": 172,
+                    "end": 198
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "wildcard",
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Status",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 205,
+                      "end": 206
+                    }
+                  },
+                  "body": {
+                    "kind": "boolean",
+                    "value": false,
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 210,
+                      "end": 215
+                    }
+                  },
+                  "origin": {
+                    "start": 205,
+                    "end": 215
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 115,
+                "end": 221
+              }
+            },
+            "origin": {
+              "start": 65,
+              "end": 221
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-user-eq-operator::domain::Status",
+      "name": "Status",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-user-eq-operator::domain::Ready",
+          "name": "Ready",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Status",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 22,
+            "end": 27
+          }
+        },
+        {
+          "symbol": "fixture/imported-user-eq-operator::domain::Waiting",
+          "name": "Waiting",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Status",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 32,
+            "end": 39
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 39
+      }
+    }
+  ]
+}

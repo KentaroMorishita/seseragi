@@ -1,0 +1,717 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Status",
+      "nameSpan": {
+        "start": 9,
+        "end": 15
+      },
+      "variants": [
+        {
+          "name": "Ready",
+          "nameSpan": {
+            "start": 22,
+            "end": 27
+          },
+          "span": {
+            "start": 20,
+            "end": 27
+          }
+        },
+        {
+          "name": "Waiting",
+          "nameSpan": {
+            "start": 32,
+            "end": 39
+          },
+          "span": {
+            "start": 30,
+            "end": 39
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 39
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Eq",
+      "traitNameSpan": {
+        "start": 50,
+        "end": 52
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Status",
+          "span": {
+            "start": 53,
+            "end": 59
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "eq",
+          "nameSpan": {
+            "start": 68,
+            "end": 70
+          },
+          "parameters": [
+            {
+              "name": "left",
+              "nameSpan": {
+                "start": 71,
+                "end": 75
+              },
+              "type": {
+                "kind": "named",
+                "name": "Status",
+                "span": {
+                  "start": 77,
+                  "end": 83
+                }
+              }
+            },
+            {
+              "name": "right",
+              "nameSpan": {
+                "start": 87,
+                "end": 92
+              },
+              "type": {
+                "kind": "named",
+                "name": "Status",
+                "span": {
+                  "start": 94,
+                  "end": 100
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 104,
+              "end": 108
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "name",
+                  "name": "left",
+                  "span": {
+                    "start": 122,
+                    "end": 126
+                  }
+                },
+                {
+                  "kind": "name",
+                  "name": "right",
+                  "span": {
+                    "start": 128,
+                    "end": 133
+                  }
+                }
+              ],
+              "span": {
+                "start": 121,
+                "end": 134
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "constructor",
+                      "name": "Ready",
+                      "nameSpan": {
+                        "start": 144,
+                        "end": 149
+                      },
+                      "span": {
+                        "start": 144,
+                        "end": 149
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "name": "Ready",
+                      "nameSpan": {
+                        "start": 151,
+                        "end": 156
+                      },
+                      "span": {
+                        "start": 151,
+                        "end": 156
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 143,
+                    "end": 157
+                  }
+                },
+                "body": {
+                  "kind": "boolean",
+                  "value": true,
+                  "span": {
+                    "start": 161,
+                    "end": 165
+                  }
+                },
+                "span": {
+                  "start": 143,
+                  "end": 165
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "constructor",
+                      "name": "Waiting",
+                      "nameSpan": {
+                        "start": 173,
+                        "end": 180
+                      },
+                      "span": {
+                        "start": 173,
+                        "end": 180
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "name": "Waiting",
+                      "nameSpan": {
+                        "start": 182,
+                        "end": 189
+                      },
+                      "span": {
+                        "start": 182,
+                        "end": 189
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 172,
+                    "end": 190
+                  }
+                },
+                "body": {
+                  "kind": "boolean",
+                  "value": true,
+                  "span": {
+                    "start": 194,
+                    "end": 198
+                  }
+                },
+                "span": {
+                  "start": 172,
+                  "end": 198
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "wildcard",
+                  "span": {
+                    "start": 205,
+                    "end": 206
+                  }
+                },
+                "body": {
+                  "kind": "boolean",
+                  "value": false,
+                  "span": {
+                    "start": 210,
+                    "end": 215
+                  }
+                },
+                "span": {
+                  "start": 205,
+                  "end": 215
+                }
+              }
+            ],
+            "span": {
+              "start": 115,
+              "end": 221
+            }
+          },
+          "span": {
+            "start": 65,
+            "end": 221
+          }
+        }
+      ],
+      "span": {
+        "start": 41,
+        "end": 223
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "same",
+      "nameSpan": {
+        "start": 228,
+        "end": 232
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 233,
+            "end": 237
+          },
+          "type": {
+            "kind": "named",
+            "name": "Status",
+            "span": {
+              "start": 239,
+              "end": 245
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 249,
+            "end": 254
+          },
+          "type": {
+            "kind": "named",
+            "name": "Status",
+            "span": {
+              "start": 256,
+              "end": 262
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 266,
+          "end": 270
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 280,
+          "end": 282
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 275,
+            "end": 279
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 283,
+            "end": 288
+          }
+        },
+        "span": {
+          "start": 275,
+          "end": 288
+        }
+      },
+      "span": {
+        "start": 225,
+        "end": 288
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "different",
+      "nameSpan": {
+        "start": 293,
+        "end": 302
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 306,
+            "end": 310
+          },
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "span": {
+              "start": 312,
+              "end": 313
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 317,
+            "end": 322
+          },
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "span": {
+              "start": 324,
+              "end": 325
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 329,
+          "end": 333
+        }
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "nameSpan": {
+            "start": 340,
+            "end": 342
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 343,
+                "end": 344
+              }
+            }
+          ],
+          "span": {
+            "start": 340,
+            "end": 345
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!=",
+        "operatorSpan": {
+          "start": 355,
+          "end": 357
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 350,
+            "end": 354
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 358,
+            "end": 363
+          }
+        },
+        "span": {
+          "start": 350,
+          "end": 363
+        }
+      },
+      "span": {
+        "start": 290,
+        "end": 363
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 368,
+        "end": 374
+      },
+      "parameters": [
+        {
+          "name": "checks",
+          "nameSpan": {
+            "start": 375,
+            "end": 381
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "span": {
+                  "start": 384,
+                  "end": 388
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Bool",
+                "span": {
+                  "start": 390,
+                  "end": 394
+                }
+              }
+            ],
+            "span": {
+              "start": 383,
+              "end": 395
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 399,
+          "end": 405
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "checks",
+          "span": {
+            "start": 416,
+            "end": 422
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "boolean",
+                  "value": true,
+                  "span": {
+                    "start": 430,
+                    "end": 434
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": true,
+                  "span": {
+                    "start": 436,
+                    "end": 440
+                  }
+                }
+              ],
+              "span": {
+                "start": 429,
+                "end": 441
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"User Eq: same / different\"",
+              "span": {
+                "start": 445,
+                "end": 472
+              }
+            },
+            "span": {
+              "start": 429,
+              "end": 472
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 477,
+                "end": 478
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected Eq result\"",
+              "span": {
+                "start": 482,
+                "end": 504
+              }
+            },
+            "span": {
+              "start": 477,
+              "end": 504
+            }
+          }
+        ],
+        "span": {
+          "start": 410,
+          "end": 508
+        }
+      },
+      "span": {
+        "start": 365,
+        "end": 508
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 524,
+        "end": 528
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 594,
+            "end": 601
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 582,
+              "end": 588
+            }
+          },
+          "argument": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "same",
+                    "span": {
+                      "start": 534,
+                      "end": 538
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "Ready",
+                    "span": {
+                      "start": 539,
+                      "end": 544
+                    }
+                  },
+                  "span": {
+                    "start": 534,
+                    "end": 544
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "Ready",
+                  "span": {
+                    "start": 545,
+                    "end": 550
+                  }
+                },
+                "span": {
+                  "start": 534,
+                  "end": 550
+                }
+              },
+              {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "different",
+                    "span": {
+                      "start": 552,
+                      "end": 561
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "Ready",
+                    "span": {
+                      "start": 562,
+                      "end": 567
+                    }
+                  },
+                  "span": {
+                    "start": 552,
+                    "end": 567
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "Waiting",
+                  "span": {
+                    "start": 568,
+                    "end": 575
+                  }
+                },
+                "span": {
+                  "start": 552,
+                  "end": 575
+                }
+              }
+            ],
+            "span": {
+              "start": 533,
+              "end": 576
+            }
+          },
+          "span": {
+            "start": 533,
+            "end": 588
+          }
+        },
+        "span": {
+          "start": 533,
+          "end": 601
+        }
+      },
+      "span": {
+        "start": 510,
+        "end": 601
+      }
+    }
+  ]
+}

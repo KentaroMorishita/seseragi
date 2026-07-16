@@ -50,7 +50,8 @@ language semanticsをtarget adapterへ委譲しません。
   scoped user instanceを一般的なselection / dictionary passingへ接続し、user `Add` callbackをstandard Array
   `reduce`でactual executionします。generic `Reducible<C,A>` parameter evidenceもlocal / imported user dictionaryの
   `reduce` methodへdispatchし、標準Array / Range / Listは専用operation ABIを維持します。次はstruct / newtypeの
-  `operator`糖衣、user-defined Eqを同じ一般機構へ接続し、標準型名だけで通る偽の完了条件を排除します。
+  `operator`糖衣を同じ一般機構へ接続します。user-defined `Eq<A>`は`==` / `!=`からlocal / scoped / imported
+  dictionaryへdispatch済みで、標準型名だけで通る偽の完了条件を排除しています。
 - LSP-0: `seseragi-lsp`がstdio JSON-RPC、position encoding negotiation、open / full-change / closeの
   diagnosticsをshared driver上で提供済み。hover、completion、module graphはこのgateに含めません。
 - Playground-0: `seseragi-wasm`がshared driverとentry contractをbrowserへ公開し、playgroundのRunは旧TS

@@ -1,0 +1,5 @@
+type Status =
+  | Ready
+
+fn same left: Status -> right: Status -> Bool =
+  left == right

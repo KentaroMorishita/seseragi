@@ -1,0 +1,331 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-user-eq-operator::main",
+  "runtimeRequirements": [
+    "core.bool",
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-user-eq-operator::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Ready",
+          "local": "Ready",
+          "sourceLocal": "Ready",
+          "canonical": "fixture/imported-user-eq-operator::domain::Ready",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 14
+          }
+        },
+        {
+          "imported": "Waiting",
+          "local": "Waiting",
+          "sourceLocal": "Waiting",
+          "canonical": "fixture/imported-user-eq-operator::domain::Waiting",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 24,
+            "end": 31
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Eq$0",
+          "local": "__ssrg$instance$Eq$0",
+          "sourceLocal": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+          "canonical": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 49
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 49
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "same",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "T",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "eq",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 51,
+        "end": 119
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "different",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "T",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "left"
+            },
+            {
+              "kind": "identifier",
+              "name": "right"
+            }
+          ]
+        },
+        "right": {
+          "kind": "boolean",
+          "value": false
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 194
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "checks",
+          "type": "readonly [boolean, boolean]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "checks"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "boolean"
+            },
+            {
+              "kind": "boolean"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "value": true
+              },
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": true
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported Eq: same / different"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected imported Eq result"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 196,
+        "end": 352
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "call",
+                    "callee": "same",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Ready"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Ready"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Eq$0"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "different",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Ready"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Waiting"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Eq$0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 354,
+        "end": 445
+      }
+    }
+  ]
+}

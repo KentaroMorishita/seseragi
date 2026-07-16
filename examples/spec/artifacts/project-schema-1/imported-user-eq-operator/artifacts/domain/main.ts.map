@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/imported-user-eq-operator/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-user-eq-operator::domain"
+  ],
+  "sourcesContent": [
+    "pub type Status =\n  | Ready\n  | Waiting\n\ninstance Eq<Status> {\n  fn eq left: Status -> right: Status -> Bool =\n    match (left, right) {\n      (Ready, Ready) -> True\n      (Waiting, Waiting) -> True\n      _ -> False\n    }\n}\n"
+  ],
+  "names": [
+    "Status",
+    "Ready",
+    "Waiting",
+    "__ssrg$instance$Eq$0"
+  ],
+  "mappings": "AAAAA;;;AACIC;AACAC;AAEJC"
+}

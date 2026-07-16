@@ -147,6 +147,25 @@ mod tests {
     }
 
     #[test]
+    fn reports_mixed_equality_operands_as_an_argument_type_mismatch() {
+        let artifact = semantic_diagnostics(
+            "mixed-equality.ssrg",
+            "fn broken left: Int -> right: String -> Bool = left == right\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        assert_eq!(
+            artifact.diagnostics[0].related[0].message,
+            "argument 2 expected Int, received String"
+        );
+    }
+
+    #[test]
     fn reports_missing_show_evidence_at_a_template_interpolation() {
         let artifact = semantic_diagnostics(
             "missing-template-show.ssrg",

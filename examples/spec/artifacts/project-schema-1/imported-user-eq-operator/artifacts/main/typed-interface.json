@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-user-eq-operator::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-user-eq-operator::domain",
+      "origin": {
+        "start": 0,
+        "end": 49
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "Ready",
+          "symbol": "fixture/imported-user-eq-operator::domain::Ready"
+        },
+        {
+          "namespace": "type",
+          "name": "Status",
+          "symbol": "fixture/imported-user-eq-operator::domain::Status"
+        },
+        {
+          "namespace": "value",
+          "name": "Waiting",
+          "symbol": "fixture/imported-user-eq-operator::domain::Waiting"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-user-eq-operator::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 354,
+        "end": 445
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-eq-operator::domain::Status>",
+      "providerModule": "fixture/imported-user-eq-operator::domain",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "fixture/imported-user-eq-operator::domain::Status"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Status",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 41,
+        "end": 223
+      }
+    }
+  ]
+}
