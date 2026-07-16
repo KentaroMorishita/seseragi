@@ -46,7 +46,9 @@ impl Lexer<'_> {
                 '.' => self.bump_fixed(TokenKind::PunctuationDot, start, char),
                 '<' if self.starts_with("<-")
                     || self.starts_with("<=")
-                    || self.starts_with("<<") =>
+                    || self.starts_with("<<")
+                    || self.starts_with("<$>")
+                    || self.starts_with("<*>") =>
                 {
                     self.scan_operator_run()
                 }
@@ -273,6 +275,19 @@ mod tests {
             ]
         );
         assert_eq!(stream.reconstructed_text(), "pub let answer: Int = 42\n");
+    }
+
+    #[test]
+    fn keeps_type_class_operators_as_single_tokens() {
+        let stream = lex("main.ssrg", "value >>= next <$> mapped <*> applied");
+        let operators = stream
+            .tokens
+            .iter()
+            .filter(|token| token.kind == TokenKind::OperatorCustom)
+            .map(|token| token.raw.as_str())
+            .collect::<Vec<_>>();
+
+        assert_eq!(operators, vec![">>=", "<$>", "<*>"]);
     }
 
     #[test]

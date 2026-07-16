@@ -28,6 +28,7 @@ fn is_leading_operator(kind: TokenKind) -> bool {
     matches!(
         kind,
         TokenKind::OperatorPipeline
+            | TokenKind::OperatorCustom
             | TokenKind::OperatorArithmetic
             | TokenKind::OperatorComparison
             | TokenKind::OperatorApply
@@ -80,5 +81,12 @@ mod tests {
         let stream = lex("main.ssrg", "input <-  // continue\n");
 
         assert!(ends_after_operator(&stream.tokens, 0, stream.tokens.len()));
+    }
+
+    #[test]
+    fn continues_a_type_class_operator_on_the_next_line() {
+        let stream = lex("main.ssrg", "\n  >>= next");
+
+        assert!(starts_with_operator(&stream.tokens, 0, stream.tokens.len()));
     }
 }

@@ -6,7 +6,7 @@
     "seseragi://artifact/monad-maybe"
   ],
   "sourcesContent": [
-    "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance Functor<Maybe> {\n  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =\n    match value {\n      Nothing -> Nothing\n      Just item -> Just $ f item\n    }\n}\n\npub trait Applicative<F<_>>\nwhere Functor<F> {\n  fn pure<A> value: A -> F<A>\n  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>\n}\n\ninstance Applicative<Maybe> {\n  fn pure<A> value: A -> Maybe<A> = Just value\n\n  fn apply<A, B> wrapped: Maybe<A -> B> -> value: Maybe<A> -> Maybe<B> =\n    match (wrapped, value) {\n      (Just function, Just item) -> Just $ function item\n      _ -> Nothing\n    }\n}\n\npub trait Monad<M<_>>\nwhere Applicative<M> {\n  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>\n}\n\ninstance Monad<Maybe> {\n  fn flatMap<A, B> f: (A -> Maybe<B>) -> value: Maybe<A> -> Maybe<B> =\n    match value {\n      Nothing -> Nothing\n      Just item -> f item\n    }\n}\n\nfn bind<M<_>, A, B>\n  f: (A -> M<B>) -> value: M<A> -> M<B>\nwhere Monad<M> =\n  flatMap f value\n\nfn liftAndBind<M<_>, A, B>\n  f: (A -> M<B>) -> value: A -> M<B>\nwhere Monad<M> =\n  pure value\n  |> flatMap f\n\nfn incrementMaybe value: Int -> Maybe<Int> = Just $ value + 2\n\nfn stopAfter42 value: Int -> Maybe<Int> =\n  if value <= 42 then Just value else Nothing\n\nfn render value: Maybe<Int> -> String =\n  match value {\n    Nothing -> \"Nothing\"\n    Just 44 -> \"Just 44\"\n    Just _ -> \"Just another value\"\n  }\n\npub effect fn main =\n  do {\n    40\n    |> liftAndBind incrementMaybe\n    |> bind incrementMaybe\n    |> render\n    |> println\n\n    43\n    |> liftAndBind stopAfter42\n    |> render\n    |> println\n  }\n"
+    "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance Functor<Maybe> {\n  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =\n    match value {\n      Nothing -> Nothing\n      Just item -> Just $ f item\n    }\n}\n\npub trait Applicative<F<_>>\nwhere Functor<F> {\n  fn pure<A> value: A -> F<A>\n  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>\n}\n\ninstance Applicative<Maybe> {\n  fn pure<A> value: A -> Maybe<A> = Just value\n\n  fn apply<A, B> wrapped: Maybe<A -> B> -> value: Maybe<A> -> Maybe<B> =\n    match (wrapped, value) {\n      (Just function, Just item) -> Just $ function item\n      _ -> Nothing\n    }\n}\n\npub trait Monad<M<_>>\nwhere Applicative<M> {\n  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>\n}\n\ninstance Monad<Maybe> {\n  fn flatMap<A, B> f: (A -> Maybe<B>) -> value: Maybe<A> -> Maybe<B> =\n    match value {\n      Nothing -> Nothing\n      Just item -> f item\n    }\n}\n\nfn bind<M<_>, A, B>\n  f: (A -> M<B>) -> value: M<A> -> M<B>\nwhere Monad<M> =\n  flatMap f value\n\nfn liftAndBind<M<_>, A, B>\n  f: (A -> M<B>) -> value: A -> M<B>\nwhere Monad<M> =\n  pure value\n  |> flatMap f\n\nfn incrementMaybe value: Int -> Maybe<Int> = Just $ value + 2\nfn increment value: Int -> Int = value + 2\n\nfn stopAfter42 value: Int -> Maybe<Int> =\n  if value <= 42 then Just value else Nothing\n\nfn render value: Maybe<Int> -> String =\n  match value {\n    Nothing -> \"Nothing\"\n    Just 42 -> \"Just 42\"\n    Just 44 -> \"Just 44\"\n    Just _ -> \"Just another value\"\n  }\n\npub effect fn main =\n  do {\n    increment <$> Just 40\n    |> render\n    |> println\n\n    Just increment <*> Just 40\n    |> render\n    |> println\n\n    40\n    |> liftAndBind incrementMaybe\n    >>= incrementMaybe\n    |> render\n    |> println\n\n    43\n    |> liftAndBind stopAfter42\n    |> render\n    |> println\n  }\n"
   ],
   "names": [
     "__ssrg$instance$Functor$0",
@@ -20,6 +20,8 @@
     "incrementMaybe",
     "Just",
     "add",
+    "increment",
+    "add",
     "stopAfter42",
     "Just",
     "Nothing",
@@ -27,10 +29,18 @@
     "main",
     "println",
     "render",
-    "bind",
-    "liftAndBind",
+    "__ssrg$instance$Functor$0",
+    "Just",
+    "println",
+    "render",
+    "__ssrg$instance$Applicative$1",
+    "Just",
+    "Just",
+    "println",
+    "render",
     "__ssrg$instance$Monad$2",
     "__ssrg$instance$Applicative$1",
+    "liftAndBind",
     "__ssrg$instance$Monad$2",
     "__ssrg$instance$Applicative$1",
     "println",
@@ -39,5 +49,5 @@
     "__ssrg$instance$Monad$2",
     "__ssrg$instance$Applicative$1"
   ],
-  "mappings": ";;;;;AAIAA;AAcAC;AAeAC;AAQAC;AAKAE;AAMAG;AAEAG;AAGAG;AAOAC"
+  "mappings": ";;;;;AAIAA;AAcAC;AAeAC;AAQAC;AAKAE;AAMAG;AACAG;AAEAE;AAGAG;AAQAC"
 }

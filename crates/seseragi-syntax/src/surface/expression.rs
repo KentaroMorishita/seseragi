@@ -101,6 +101,14 @@ impl ExpressionParser<'_> {
                     argument: Box::new(left),
                     span,
                 },
+                ParsedOperator::TraitMethod { method, flipped } => trait_method_application(
+                    method,
+                    token_span(operator),
+                    left,
+                    right,
+                    flipped,
+                    span,
+                ),
                 ParsedOperator::Binary => SurfaceExpr::Binary {
                     operator: operator.raw.clone(),
                     operator_span: token_span(operator),
@@ -279,6 +287,7 @@ impl ExpressionParser<'_> {
 enum ParsedOperator {
     Apply,
     Pipeline,
+    TraitMethod { method: &'static str, flipped: bool },
     Binary,
 }
 
@@ -286,6 +295,30 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
     let (precedence, right_associative, kind) = match (token.kind, token.raw.as_str()) {
         (TokenKind::OperatorApply, "$") => (5, true, ParsedOperator::Apply),
         (TokenKind::OperatorPipeline, "|>") => (10, false, ParsedOperator::Pipeline),
+        (TokenKind::OperatorCustom, ">>=") => (
+            10,
+            false,
+            ParsedOperator::TraitMethod {
+                method: "flatMap",
+                flipped: true,
+            },
+        ),
+        (TokenKind::OperatorCustom, "<$>") => (
+            10,
+            false,
+            ParsedOperator::TraitMethod {
+                method: "map",
+                flipped: false,
+            },
+        ),
+        (TokenKind::OperatorCustom, "<*>") => (
+            10,
+            false,
+            ParsedOperator::TraitMethod {
+                method: "apply",
+                flipped: false,
+            },
+        ),
         (TokenKind::OperatorComparison, _) => (30, false, ParsedOperator::Binary),
         (TokenKind::OperatorRangeExclusive | TokenKind::OperatorRangeInclusive, _) => {
             (35, false, ParsedOperator::Binary)
@@ -304,6 +337,37 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
         },
         kind,
     ))
+}
+
+fn trait_method_application(
+    method: &str,
+    operator_span: ByteSpan,
+    left: SurfaceExpr,
+    right: SurfaceExpr,
+    flipped: bool,
+    span: ByteSpan,
+) -> SurfaceExpr {
+    let (first, second) = if flipped {
+        (right, left)
+    } else {
+        (left, right)
+    };
+    let first_span = ByteSpan {
+        start: operator_span.start.min(first.span().start),
+        end: operator_span.end.max(first.span().end),
+    };
+    SurfaceExpr::Application {
+        function: Box::new(SurfaceExpr::Application {
+            function: Box::new(SurfaceExpr::Name {
+                name: method.to_owned(),
+                span: operator_span,
+            }),
+            argument: Box::new(first),
+            span: first_span,
+        }),
+        argument: Box::new(second),
+        span,
+    }
 }
 
 fn find_matching_brace(tokens: &[Token], open: usize, end: usize) -> Option<usize> {

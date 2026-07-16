@@ -51,6 +51,7 @@ where Monad<M> =
   |> flatMap f
 
 fn incrementMaybe value: Int -> Maybe<Int> = Just $ value + 2
+fn increment value: Int -> Int = value + 2
 
 fn stopAfter42 value: Int -> Maybe<Int> =
   if value <= 42 then Just value else Nothing
@@ -58,15 +59,24 @@ fn stopAfter42 value: Int -> Maybe<Int> =
 fn render value: Maybe<Int> -> String =
   match value {
     Nothing -> "Nothing"
+    Just 42 -> "Just 42"
     Just 44 -> "Just 44"
     Just _ -> "Just another value"
   }
 
 pub effect fn main =
   do {
+    increment <$> Just 40
+    |> render
+    |> println
+
+    Just increment <*> Just 40
+    |> render
+    |> println
+
     40
     |> liftAndBind incrementMaybe
-    |> bind incrementMaybe
+    >>= incrementMaybe
     |> render
     |> println
 

@@ -712,7 +712,12 @@ transitive supertraitを同じparameter indexへprojectし、`pure value |> flat
 application inferenceは「置換後の表示名」だけで未解決判定せず、どのtype parameterが実引数または期待結果から
 確定したかを保持します。これによりouter `M`でinner `M`を具体化した期待型をconstructor inferenceへ渡せます。
 `execution-schema-1/monad-maybe`は`liftAndBind`と`bind`を通る`Just 44`、および`Nothing` short-circuitを観測します。
-次のgateは`>>=`を同じtrait dispatchへdesugarし、その後に型からMonadを選ぶpure doを接続することです。
+`<$>`、`<*>`、`>>=`は専用TypedHir/CoreIr nodeを増やしません。Surface ASTで順に`map f value`、
+`apply wrapped value`、`flatMap f value`へdesugarし、operator tokenのrangeを合成したmethod nameへ保持します。
+その後は通常のtrait method候補選択、constraint具体化、evidence挿入、dictionary emitを通ります。
+lexerは3演算子を単一custom-operator tokenとして保持し、`|>`と同じ低優先順位・左結合でparseします。
+line continuationもcustom operatorを認識するため、`value`の次行から`>>= next`を続けられます。
+次のgateは型からMonadを選ぶpure doを接続することです。
 
 このgateは直接または入れ子のexpression内で飽和するconstrained function callを対象にします。
 partial applicationしたconstrained functionをlet / parameterなどfirst-class valueとして保持する場合は、

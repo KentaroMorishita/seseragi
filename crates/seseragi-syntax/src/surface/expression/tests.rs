@@ -471,6 +471,45 @@ fn desugars_pipeline_chains_into_left_associative_application() {
 }
 
 #[test]
+fn desugars_functor_applicative_and_monad_operators_to_trait_methods() {
+    let mapped = first_body("fn mapped value: Maybe<Int> -> Maybe<Int> = increment <$> value\n");
+    assert_trait_operator_application(&mapped, "map", "increment", "value");
+
+    let applied = first_body("fn applied value: Maybe<Int> -> Maybe<Int> = wrapped <*> value\n");
+    assert_trait_operator_application(&applied, "apply", "wrapped", "value");
+
+    let bound = first_body("fn bound value: Maybe<Int> -> Maybe<Int> = value >>= incrementMaybe\n");
+    assert_trait_operator_application(&bound, "flatMap", "incrementMaybe", "value");
+}
+
+#[test]
+fn keeps_multiline_monad_bind_in_one_expression() {
+    let body =
+        first_body("fn bound value: Maybe<Int> -> Maybe<Int> =\n  value\n  >>= incrementMaybe\n");
+
+    assert_trait_operator_application(&body, "flatMap", "incrementMaybe", "value");
+}
+
+fn assert_trait_operator_application(
+    expression: &SurfaceExpr,
+    method: &str,
+    first: &str,
+    second: &str,
+) {
+    assert!(matches!(
+        expression,
+        SurfaceExpr::Application { function, argument, .. }
+            if matches!(argument.as_ref(), SurfaceExpr::Name { name, .. } if name == second)
+                && matches!(
+                    function.as_ref(),
+                    SurfaceExpr::Application { function, argument, .. }
+                        if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == method)
+                            && matches!(argument.as_ref(), SurfaceExpr::Name { name, .. } if name == first)
+                )
+    ));
+}
+
+#[test]
 fn low_precedence_application_wraps_a_pipeline_chain() {
     let body = first_body("fn renderAnswer value: Int -> String = render $ value |> double\n");
 

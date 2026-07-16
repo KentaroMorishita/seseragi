@@ -124,4 +124,18 @@ mod tests {
         assert!(!formatted.changed);
         assert_eq!(formatted.text, source);
     }
+
+    #[test]
+    fn preserves_multiline_type_class_operator_chains() {
+        let source = concat!(
+            "fn transform value: Maybe<Int> -> Maybe<Int> =\n",
+            "  increment <$> value\n",
+            "  >>= validate\n",
+        );
+
+        let formatted = format(source);
+
+        assert!(!formatted.changed);
+        assert_eq!(formatted.text, source);
+    }
 }

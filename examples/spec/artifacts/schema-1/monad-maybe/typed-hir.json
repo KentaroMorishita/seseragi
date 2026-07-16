@@ -160,7 +160,7 @@
                     "symbol": "std/prelude::Just",
                     "argument": {
                       "kind": "binding",
-                      "symbol": 26,
+                      "symbol": 27,
                       "name": "item",
                       "type": {
                         "kind": "named",
@@ -545,7 +545,7 @@
                         "symbol": "std/prelude::Just",
                         "argument": {
                           "kind": "binding",
-                          "symbol": 40,
+                          "symbol": 41,
                           "name": "function",
                           "type": {
                             "kind": "function",
@@ -594,7 +594,7 @@
                         "symbol": "std/prelude::Just",
                         "argument": {
                           "kind": "binding",
-                          "symbol": 41,
+                          "symbol": 42,
                           "name": "item",
                           "type": {
                             "kind": "named",
@@ -984,7 +984,7 @@
                     "symbol": "std/prelude::Just",
                     "argument": {
                       "kind": "binding",
-                      "symbol": 51,
+                      "symbol": 52,
                       "name": "item",
                       "type": {
                         "kind": "named",
@@ -1597,11 +1597,111 @@
     },
     {
       "kind": "fn",
+      "symbol": "artifact/monad-maybe::increment",
+      "visibility": "private",
+      "origin": {
+        "start": 1200,
+        "end": 1242
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 1213,
+            "end": 1218
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 1233,
+            "end": 1238
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "2",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 1241,
+            "end": 1242
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 1233,
+          "end": 1242
+        }
+      }
+    },
+    {
+      "kind": "fn",
       "symbol": "artifact/monad-maybe::stopAfter42",
       "visibility": "private",
       "origin": {
-        "start": 1201,
-        "end": 1288
+        "start": 1244,
+        "end": 1331
       },
       "scheme": {
         "typeParameters": [],
@@ -1628,8 +1728,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1216,
-            "end": 1221
+            "start": 1259,
+            "end": 1264
           }
         }
       ],
@@ -1647,8 +1747,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 1248,
-              "end": 1253
+              "start": 1291,
+              "end": 1296
             }
           },
           "right": {
@@ -1660,8 +1760,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 1257,
-              "end": 1259
+              "start": 1300,
+              "end": 1302
             }
           },
           "type": {
@@ -1670,8 +1770,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1248,
-            "end": 1259
+            "start": 1291,
+            "end": 1302
           }
         },
         "thenBranch": {
@@ -1687,8 +1787,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1270,
-                "end": 1275
+                "start": 1313,
+                "end": 1318
               }
             }
           ],
@@ -1704,8 +1804,8 @@
             ]
           },
           "origin": {
-            "start": 1265,
-            "end": 1275
+            "start": 1308,
+            "end": 1318
           }
         },
         "elseBranch": {
@@ -1723,8 +1823,8 @@
             ]
           },
           "origin": {
-            "start": 1281,
-            "end": 1288
+            "start": 1324,
+            "end": 1331
           }
         },
         "type": {
@@ -1739,8 +1839,8 @@
           ]
         },
         "origin": {
-          "start": 1245,
-          "end": 1288
+          "start": 1288,
+          "end": 1331
         }
       }
     },
@@ -1749,8 +1849,8 @@
       "symbol": "artifact/monad-maybe::render",
       "visibility": "private",
       "origin": {
-        "start": 1290,
-        "end": 1434
+        "start": 1333,
+        "end": 1502
       },
       "scheme": {
         "typeParameters": [],
@@ -1777,8 +1877,8 @@
             ]
           },
           "origin": {
-            "start": 1300,
-            "end": 1305
+            "start": 1343,
+            "end": 1348
           }
         }
       ],
@@ -1799,8 +1899,8 @@
             ]
           },
           "origin": {
-            "start": 1338,
-            "end": 1343
+            "start": 1381,
+            "end": 1386
           }
         },
         "arms": [
@@ -1820,8 +1920,8 @@
                 ]
               },
               "origin": {
-                "start": 1350,
-                "end": 1357
+                "start": 1393,
+                "end": 1400
               }
             },
             "body": {
@@ -1833,13 +1933,64 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1361,
-                "end": 1370
+                "start": 1404,
+                "end": 1413
               }
             },
             "origin": {
-              "start": 1350,
-              "end": 1370
+              "start": 1393,
+              "end": 1413
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "integer",
+                "value": "42",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1423,
+                  "end": 1425
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1418,
+                "end": 1425
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Just 42",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1429,
+                "end": 1438
+              }
+            },
+            "origin": {
+              "start": 1418,
+              "end": 1438
             }
           },
           {
@@ -1855,8 +2006,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1380,
-                  "end": 1382
+                  "start": 1448,
+                  "end": 1450
                 }
               },
               "type": {
@@ -1871,8 +2022,8 @@
                 ]
               },
               "origin": {
-                "start": 1375,
-                "end": 1382
+                "start": 1443,
+                "end": 1450
               }
             },
             "body": {
@@ -1884,13 +2035,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1386,
-                "end": 1395
+                "start": 1454,
+                "end": 1463
               }
             },
             "origin": {
-              "start": 1375,
-              "end": 1395
+              "start": 1443,
+              "end": 1463
             }
           },
           {
@@ -1905,8 +2056,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1405,
-                  "end": 1406
+                  "start": 1473,
+                  "end": 1474
                 }
               },
               "type": {
@@ -1921,8 +2072,8 @@
                 ]
               },
               "origin": {
-                "start": 1400,
-                "end": 1406
+                "start": 1468,
+                "end": 1474
               }
             },
             "body": {
@@ -1934,13 +2085,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1410,
-                "end": 1430
+                "start": 1478,
+                "end": 1498
               }
             },
             "origin": {
-              "start": 1400,
-              "end": 1430
+              "start": 1468,
+              "end": 1498
             }
           }
         ],
@@ -1951,8 +2102,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1332,
-          "end": 1434
+          "start": 1375,
+          "end": 1502
         }
       }
     },
@@ -1961,8 +2112,8 @@
       "symbol": "artifact/monad-maybe::main",
       "visibility": "public",
       "origin": {
-        "start": 1436,
-        "end": 1632
+        "start": 1504,
+        "end": 1813
       },
       "inferredContract": true,
       "parameters": [
@@ -2042,7 +2193,358 @@
                   "arguments": [
                     {
                       "kind": "call",
-                      "callee": "artifact/monad-maybe::bind",
+                      "callee": "artifact/monad-maybe::trait(Functor)::map",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "artifact/monad-maybe::increment",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "start": 1536,
+                            "end": 1545
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Just",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "40",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1555,
+                                "end": 1557
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1550,
+                            "end": 1557
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Functor",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "artifact/monad-maybe::trait(Functor)",
+                        "method": "map"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1536,
+                        "end": 1557
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1536,
+                    "end": 1571
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1536,
+                "end": 1586
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/monad-maybe::render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/monad-maybe::trait(Applicative)::apply",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Just",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "artifact/monad-maybe::increment",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              "origin": {
+                                "start": 1597,
+                                "end": 1606
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1592,
+                            "end": 1606
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Just",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "40",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1616,
+                                "end": 1618
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1611,
+                            "end": 1618
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Applicative",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Functor",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "local",
+                                  "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
+                        "method": "apply"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1592,
+                        "end": 1618
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1592,
+                    "end": 1632
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1592,
+                "end": 1647
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/monad-maybe::render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/monad-maybe::trait(Monad)::flatMap",
                       "arguments": [
                         {
                           "kind": "variable",
@@ -2067,8 +2569,8 @@
                             }
                           },
                           "origin": {
-                            "start": 1517,
-                            "end": 1531
+                            "start": 1698,
+                            "end": 1712
                           }
                         },
                         {
@@ -2098,8 +2600,8 @@
                                 }
                               },
                               "origin": {
-                                "start": 1490,
-                                "end": 1504
+                                "start": 1675,
+                                "end": 1689
                               }
                             },
                             {
@@ -2111,8 +2613,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1468,
-                                "end": 1470
+                                "start": 1653,
+                                "end": 1655
                               }
                             }
                           ],
@@ -2182,8 +2684,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1468,
-                            "end": 1504
+                            "start": 1653,
+                            "end": 1689
                           }
                         }
                       ],
@@ -2241,6 +2743,10 @@
                           }
                         }
                       ],
+                      "traitDispatch": {
+                        "traitIdentity": "artifact/monad-maybe::trait(Monad)",
+                        "method": "flatMap"
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -2253,8 +2759,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1468,
-                        "end": 1531
+                        "start": 1653,
+                        "end": 1712
                       }
                     }
                   ],
@@ -2264,14 +2770,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1468,
-                    "end": 1545
+                    "start": 1653,
+                    "end": 1726
                   }
                 }
               ],
               "origin": {
-                "start": 1468,
-                "end": 1560
+                "start": 1653,
+                "end": 1741
               }
             }
           }
@@ -2337,8 +2843,8 @@
                         }
                       },
                       "origin": {
-                        "start": 1588,
-                        "end": 1599
+                        "start": 1769,
+                        "end": 1780
                       }
                     },
                     {
@@ -2350,8 +2856,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1566,
-                        "end": 1568
+                        "start": 1747,
+                        "end": 1749
                       }
                     }
                   ],
@@ -2421,8 +2927,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1566,
-                    "end": 1599
+                    "start": 1747,
+                    "end": 1780
                   }
                 }
               ],
@@ -2432,19 +2938,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1566,
-                "end": 1613
+                "start": 1747,
+                "end": 1794
               }
             }
           ],
           "origin": {
-            "start": 1566,
-            "end": 1628
+            "start": 1747,
+            "end": 1809
           }
         },
         "origin": {
-          "start": 1459,
-          "end": 1632
+          "start": 1527,
+          "end": 1813
         }
       }
     }

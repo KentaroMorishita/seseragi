@@ -228,7 +228,10 @@ Monad factoryは具体化済みApplicative dictionaryを継承し、`where Monad
 `pure`と`flatMap`を同じparameter evidenceで呼び出せます。calleeとcallerの型構築子parameterが同じ綴りでも
 別scopeに属する場合、実引数で確定したsubstitutionを明示的に保持するため、入れ子の`pure value |> flatMap f`も
 未解決型へ戻りません。`execution-schema-1/monad-maybe`は成功するbind列と`Nothing`のshort-circuitを実行します。
-`<$>` / `<*>`、Applicative / Monad law、`>>=`とgeneric doは次の独立gateです。
+同じfixtureで`f <$> value`、`wrapped <*> value`、`value >>= f`をそれぞれ`map f value`、
+`apply wrapped value`、`flatMap f value`へSurface ASTでdesugarし、通常の名前解決・型検査・dictionary dispatchを
+再利用します。3演算子は`|>`と同じ低優先順位・左結合で、先頭演算子による複数行継続もformatterまで固定済みです。
+Applicative / Monad lawと、型からMonadを選択するgeneric doは次の独立gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

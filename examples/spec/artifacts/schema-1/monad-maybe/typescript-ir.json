@@ -692,6 +692,37 @@
     {
       "kind": "const-function",
       "exported": false,
+      "name": "increment",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "bigint",
+            "value": "2"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1200,
+        "end": 1242
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
       "name": "stopAfter42",
       "parameters": [
         {
@@ -731,8 +762,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1201,
-        "end": 1288
+        "start": 1244,
+        "end": 1331
       }
     },
     {
@@ -786,6 +817,28 @@
                     "kind": "adt-payload"
                   }
                 ],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Just 42"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
                 "value": "44"
               }
             ],
@@ -808,8 +861,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1290,
-        "end": 1434
+        "start": 1333,
+        "end": 1502
       }
     },
     {
@@ -837,8 +890,117 @@
                   "callee": "render",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "bind",
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Functor$0"
+                      },
+                      "method": "map",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "increment"
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "40"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Applicative$1",
+                        "typeArguments": [],
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Functor$0"
+                          }
+                        ]
+                      },
+                      "method": "apply",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "increment"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "40"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Monad$2",
+                        "typeArguments": [],
+                        "arguments": [
+                          {
+                            "kind": "type-application-call",
+                            "callee": "__ssrg$instance$Applicative$1",
+                            "typeArguments": [],
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$instance$Functor$0"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "method": "flatMap",
                       "arguments": [
                         {
                           "kind": "identifier",
@@ -871,24 +1033,6 @@
                                       "name": "__ssrg$instance$Functor$0"
                                     }
                                   ]
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "type-application-call",
-                          "callee": "__ssrg$instance$Monad$2",
-                          "typeArguments": [],
-                          "arguments": [
-                            {
-                              "kind": "type-application-call",
-                              "callee": "__ssrg$instance$Applicative$1",
-                              "typeArguments": [],
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$instance$Functor$0"
                                 }
                               ]
                             }
@@ -949,8 +1093,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1436,
-        "end": 1632
+        "start": 1504,
+        "end": 1813
       }
     }
   ]

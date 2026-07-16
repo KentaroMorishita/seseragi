@@ -52,6 +52,18 @@
       {
         "service": "console",
         "operation": "println",
+        "arguments": ["Just 42"],
+        "stdout": "Just 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Just 42"],
+        "stdout": "Just 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
         "arguments": ["Just 44"],
         "stdout": "Just 44\n"
       },
