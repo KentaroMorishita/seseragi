@@ -24,6 +24,7 @@ pub(super) fn interface_constraint_from_surface(
 ) -> InterfaceConstraint {
     InterfaceConstraint {
         name: constraint.name.clone(),
+        trait_identity: None,
         arguments: constraint
             .arguments
             .iter()

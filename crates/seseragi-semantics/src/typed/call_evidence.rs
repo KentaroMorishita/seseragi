@@ -303,8 +303,9 @@ fn select_resolved_evidence(
             index: parameter.index,
         });
     }
-    local::select_local_instance(trait_identity, constraint, resolution)
-        .or_else(|| imported::select_imported_instance(trait_identity, constraint, resolution))
+    local::select_local_instance(trait_identity, constraint, resolution).or_else(|| {
+        imported::select_imported_instance(trait_identity, constraint, resolution, scoped)
+    })
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {

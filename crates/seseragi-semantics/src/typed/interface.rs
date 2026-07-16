@@ -88,8 +88,10 @@ fn interface_instance_from_typed(
         constraints: instance
             .constraints
             .iter()
-            .map(|constraint| InterfaceConstraint {
+            .zip(&instance.constraint_identities)
+            .map(|(constraint, trait_identity)| InterfaceConstraint {
                 name: constraint.name.clone(),
+                trait_identity: trait_identity.clone(),
                 arguments: constraint
                     .arguments
                     .iter()
@@ -167,6 +169,7 @@ fn typed_value_export(
                     .iter()
                     .map(|constraint| InterfaceConstraint {
                         name: constraint.name.clone(),
+                        trait_identity: None,
                         arguments: constraint
                             .arguments
                             .iter()
@@ -230,6 +233,7 @@ fn interface_scheme_from_typed_scheme(
             .iter()
             .map(|constraint| InterfaceConstraint {
                 name: constraint.name.clone(),
+                trait_identity: None,
                 arguments: constraint
                     .arguments
                     .iter()

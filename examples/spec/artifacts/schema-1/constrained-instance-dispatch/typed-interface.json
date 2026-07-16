@@ -289,6 +289,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
           "arguments": [
             {
               "kind": "named",

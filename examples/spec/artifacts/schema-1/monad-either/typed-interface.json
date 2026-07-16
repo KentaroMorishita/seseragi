@@ -444,6 +444,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/monad-either::trait(Functor)",
           "arguments": [
             {
               "kind": "named",
@@ -501,6 +502,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/monad-either::trait(Applicative)",
           "arguments": [
             {
               "kind": "named",

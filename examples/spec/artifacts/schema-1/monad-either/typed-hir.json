@@ -396,6 +396,9 @@
           ]
         }
       ],
+      "constraintIdentities": [
+        "artifact/monad-either::trait(Functor)"
+      ],
       "supertraitCount": 1,
       "origin": {
         "start": 415,
@@ -1302,6 +1305,9 @@
             }
           ]
         }
+      ],
+      "constraintIdentities": [
+        "artifact/monad-either::trait(Applicative)"
       ],
       "supertraitCount": 1,
       "origin": {

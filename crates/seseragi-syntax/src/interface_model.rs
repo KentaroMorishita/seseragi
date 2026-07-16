@@ -72,6 +72,11 @@ pub struct InterfaceScheme {
 #[serde(rename_all = "camelCase")]
 pub struct InterfaceConstraint {
     pub name: String,
+    /// Canonical trait identity is attached by the final typed interface.
+    /// Shallow syntax interfaces leave it absent because name resolution has
+    /// not run yet.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trait_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub arguments: Vec<InterfaceType>,
 }

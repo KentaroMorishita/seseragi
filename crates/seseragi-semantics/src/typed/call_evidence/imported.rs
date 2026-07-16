@@ -1,4 +1,4 @@
-use crate::{TypedConstraint, TypedInstanceEvidence, TypedType};
+use crate::{TypedCallEvidence, TypedConstraint, TypedInstanceEvidence, TypedType};
 use seseragi_syntax::InterfaceType;
 use std::collections::BTreeMap;
 
@@ -13,16 +13,46 @@ pub(super) fn select_imported_instance(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<TypedInstanceEvidence> {
-    let matches = resolution
-        .resolved()
-        .dependency_instances
-        .iter()
-        .filter_map(|instance| {
-            match_imported_instance(instance, trait_identity, constraint, resolution)
-        })
-        .take(2)
-        .collect::<Vec<_>>();
+    select_imported_instance_with_stack(
+        trait_identity,
+        constraint,
+        resolution,
+        scoped,
+        &mut Vec::new(),
+    )
+}
+
+fn select_imported_instance_with_stack(
+    trait_identity: &str,
+    constraint: &TypedConstraint,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
+) -> Option<TypedInstanceEvidence> {
+    let key = (trait_identity.to_owned(), constraint.arguments.clone());
+    if stack.contains(&key) {
+        return None;
+    }
+    stack.push(key);
+    let mut matches = Vec::new();
+    for instance in &resolution.resolved().dependency_instances {
+        if let Some(evidence) = match_imported_instance(
+            instance,
+            trait_identity,
+            constraint,
+            resolution,
+            scoped,
+            stack,
+        ) {
+            matches.push(evidence);
+            if matches.len() == 2 {
+                break;
+            }
+        }
+    }
+    stack.pop();
     let [selected] = matches.as_slice() else {
         return None;
     };
@@ -34,73 +64,153 @@ fn match_imported_instance(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
-    if instance.trait_identity != trait_identity || !instance.constraints.is_empty() {
+    if instance.trait_identity != trait_identity {
         return None;
     }
-    if instance.type_parameters.is_empty() {
+    let (type_arguments, substitutions) = if instance.type_parameters.is_empty() {
         let argument_identities = constraint
             .arguments
             .iter()
             .map(|argument| canonical_typed_type(argument, resolution))
             .collect::<Option<Vec<_>>>()?;
-        return (instance.argument_identities == argument_identities).then(|| {
-            TypedInstanceEvidence::Imported {
-                identity: instance.identity.clone(),
-                provider_module: instance.provider_module.clone(),
-                type_arguments: Vec::new(),
-                evidence_arguments: Vec::new(),
-            }
-        });
-    }
-    let InterfaceType::Apply { arguments, .. } = &instance.head else {
-        return None;
+        if instance.argument_identities != argument_identities {
+            return None;
+        }
+        (Vec::new(), BTreeMap::new())
+    } else {
+        let InterfaceType::Apply { arguments, .. } = &instance.head else {
+            return None;
+        };
+        if arguments.len() != constraint.arguments.len() {
+            return None;
+        }
+        let templates = arguments
+            .iter()
+            .cloned()
+            .map(typed_type_from_interface_type)
+            .collect::<Option<Vec<_>>>()?;
+        let matching_templates = templates
+            .iter()
+            .zip(&constraint.arguments)
+            .map(|(template, actual)| {
+                super::local::normalize_partial_constructor_template(template, actual)
+            })
+            .collect::<Vec<_>>();
+        let mut substitutions = BTreeMap::<String, TypedType>::new();
+        for (template, actual) in matching_templates.iter().zip(&constraint.arguments) {
+            infer_type_parameters(
+                template,
+                actual,
+                &instance.type_parameters,
+                &mut substitutions,
+            );
+        }
+        let type_arguments = instance
+            .type_parameters
+            .iter()
+            .map(|parameter| substitutions.get(&parameter.name).cloned())
+            .collect::<Option<Vec<_>>>()?;
+        let matches = matching_templates
+            .iter()
+            .map(|template| substitute_type_parameters(template, &substitutions))
+            .zip(&constraint.arguments)
+            .all(|(expected, actual)| {
+                semantic_values_are_compatible(
+                    &resolution.semantic_value_from_typed_type(&expected),
+                    &resolution.semantic_value_from_typed_type(actual),
+                )
+            });
+        if !matches {
+            return None;
+        }
+        (type_arguments, substitutions)
     };
-    if arguments.len() != constraint.arguments.len() {
-        return None;
-    }
-    let templates = arguments
+
+    let evidence_arguments = instance
+        .constraints
         .iter()
-        .cloned()
-        .map(typed_type_from_interface_type)
-        .collect::<Option<Vec<_>>>()?;
-    let matching_templates = templates
-        .iter()
-        .zip(&constraint.arguments)
-        .map(|(template, actual)| {
-            super::local::normalize_partial_constructor_template(template, actual)
+        .map(|required| {
+            let constraint = TypedConstraint {
+                name: required.name.clone(),
+                arguments: required
+                    .arguments
+                    .iter()
+                    .cloned()
+                    .map(typed_type_from_interface_type)
+                    .map(|argument| {
+                        argument
+                            .map(|argument| substitute_type_parameters(&argument, &substitutions))
+                    })
+                    .collect::<Option<Vec<_>>>()?,
+            };
+            let evidence = select_required_evidence(
+                required.trait_identity.as_deref(),
+                &constraint,
+                resolution,
+                scoped,
+                stack,
+            )?;
+            Some(TypedCallEvidence {
+                constraint,
+                evidence,
+            })
         })
-        .collect::<Vec<_>>();
-    let mut substitutions = BTreeMap::<String, TypedType>::new();
-    for (template, actual) in matching_templates.iter().zip(&constraint.arguments) {
-        infer_type_parameters(
-            template,
-            actual,
-            &instance.type_parameters,
-            &mut substitutions,
-        );
-    }
-    let type_arguments = instance
-        .type_parameters
-        .iter()
-        .map(|parameter| substitutions.get(&parameter.name).cloned())
         .collect::<Option<Vec<_>>>()?;
-    let matches = matching_templates
-        .iter()
-        .map(|template| substitute_type_parameters(template, &substitutions))
-        .zip(&constraint.arguments)
-        .all(|(expected, actual)| {
-            semantic_values_are_compatible(
-                &resolution.semantic_value_from_typed_type(&expected),
-                &resolution.semantic_value_from_typed_type(actual),
-            )
-        });
-    matches.then(|| TypedInstanceEvidence::Imported {
+    Some(TypedInstanceEvidence::Imported {
         identity: instance.identity.clone(),
         provider_module: instance.provider_module.clone(),
         type_arguments,
-        evidence_arguments: Vec::new(),
+        evidence_arguments,
     })
+}
+
+fn select_required_evidence(
+    trait_identity: Option<&str>,
+    constraint: &TypedConstraint,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
+) -> Option<TypedInstanceEvidence> {
+    if let Some(trait_identity) = trait_identity {
+        if let Some(parameter) = scoped.iter().find(|available| {
+            available.trait_identity == trait_identity
+                && available.constraint.arguments.len() == constraint.arguments.len()
+                && available
+                    .constraint
+                    .arguments
+                    .iter()
+                    .zip(&constraint.arguments)
+                    .all(|(available, required)| {
+                        semantic_values_are_compatible(
+                            &resolution.semantic_value_from_typed_type(available),
+                            &resolution.semantic_value_from_typed_type(required),
+                        )
+                    })
+        }) {
+            return Some(TypedInstanceEvidence::Parameter {
+                index: parameter.index,
+            });
+        }
+        if let Some(local) =
+            super::local::select_local_instance(trait_identity, constraint, resolution)
+        {
+            return Some(local);
+        }
+        if let Some(imported) = select_imported_instance_with_stack(
+            trait_identity,
+            constraint,
+            resolution,
+            scoped,
+            stack,
+        ) {
+            return Some(imported);
+        }
+    }
+    super::standard_instance_identity(constraint)
+        .map(|identity| TypedInstanceEvidence::Standard { identity })
 }
 
 fn canonical_typed_type(type_ref: &TypedType, resolution: &TypedResolution<'_>) -> Option<String> {
@@ -224,8 +334,17 @@ fn canonical_named(
     arguments: &[TypedType],
     resolution: &TypedResolution<'_>,
 ) -> Option<String> {
+    let constructor =
+        if crate::prelude::is_standalone_symbol(crate::SymbolNamespace::Type, constructor)
+            || crate::prelude::sum_type_for_symbol(crate::SymbolNamespace::Type, constructor)
+                .is_some()
+        {
+            format!("std/prelude::{constructor}")
+        } else {
+            constructor.to_owned()
+        };
     if arguments.is_empty() {
-        return Some(constructor.to_owned());
+        return Some(constructor);
     }
     Some(format!(
         "{constructor}<{}>",

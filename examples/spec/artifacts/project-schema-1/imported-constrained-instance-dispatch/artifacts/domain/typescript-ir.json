@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-constrained-instance-dispatch::domain",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.string",
+    "core.maybe",
+    "core.adt"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)<std/prelude::Int>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "bigint"
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 112,
+        "end": 198
+      },
+      "dictionaryExport": "__ssrg$instance$Ready$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "bigint",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported constrained ready"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 136,
+              "end": 196
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 200,
+        "end": 372
+      },
+      "dictionaryExport": "__ssrg$instance$Inspect$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "inspect",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "T",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Nothing"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "not ready"
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "ready",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "item"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 249,
+              "end": 370
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "report",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Inspect",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "inspect",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 374,
+        "end": 444
+      }
+    }
+  ]
+}

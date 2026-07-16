@@ -294,6 +294,9 @@
           ]
         }
       ],
+      "constraintIdentities": [
+        "artifact/monad-maybe::trait(Functor)"
+      ],
       "supertraitCount": 1,
       "origin": {
         "start": 389,
@@ -835,6 +838,9 @@
             }
           ]
         }
+      ],
+      "constraintIdentities": [
+        "artifact/monad-maybe::trait(Applicative)"
       ],
       "supertraitCount": 1,
       "origin": {

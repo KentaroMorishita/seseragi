@@ -1,0 +1,5 @@
+import { report } from "./domain"
+
+pub effect fn main =
+  report (Just 42)
+  |> println

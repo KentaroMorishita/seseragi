@@ -195,7 +195,7 @@ instance method bodyのtrait callもresolved constraint scopeから`parameter` e
 実際に消費します。循環evidenceは`instance.missing`で停止します。trait method固有の`where`も
 `schema-1/method-constraint-dispatch`でprimary dictionaryの後ろへordered evidenceとして選択し、method closureの
 compiler-private parameterから消費してactual executionまで接続済みです。instance-levelとmethod-levelのparameter indexは
-offsetで分離します。未接続なのはstandard evidenceのfactory引数化とconstraint付きimported factoryです。
+offsetで分離します。未接続なのはstandard evidenceのfactory引数化です。
 public constrained pure functionはmodule interfaceのconstraintをprovider-local canonical trait identityとともに運び、
 consumer側のlocal instanceをimported callへ渡せます。`project-schema-1/imported-constrained-function`はproviderの
 `describe<T> where Ready<T>`とconsumerの`Ready<Badge>`を通常project pipelineへ通し、生成ESMのclosed TypeScript check、
@@ -206,11 +206,15 @@ Console trace、stdoutまで固定します。`project-schema-1/imported-instanc
 `project-schema-1/imported-generic-instance-dispatch`はproviderの`instance<T> Inspect<Maybe<T>>`をconsumerの
 `Inspect<Maybe<Int>>`へsubstituteし、template identityのdictionary exportをimportして`<bigint>()`でfactoryを
 具体化します。TypedHir / CoreIrはordered type argumentsを保持し、closed TypeScript checkとactual dispatchまで
-接続済みです。constraint evidenceを持つimported factoryは未接続です。
+接続済みです。`project-schema-1/imported-constrained-instance-dispatch`はさらにproviderの
+`instance<T> Inspect<Maybe<T>> where Ready<T>`を選び、final interfaceへ保存したconstraintのcanonical trait identityから
+`Ready<Int>` evidenceを再帰materializeします。consumer ESMはInspect factoryとReady dictionaryをともにimportし、
+`Inspect<Int>(Ready<Int>)`のactual dispatchまで固定します。missing requirementは`instance.missing`で停止します。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained functionとconditional imported dictionary selectionは未接続です。
+first-class partial constrained functionは未接続です。conditional imported dictionary selectionはdirect providerまで接続済みで、
+transitive generic providerとstandard evidenceのfactory引数化が残ります。
 
 `F<_>`は通常type parameterとは別にarityを持つtype-constructor parameterとしてSurfaceAstとModuleInterfaceへ
 保持します。`schema-1/functor-maybe`は`F<A> ~ Maybe<Int>`から`F = Maybe`と要素型を推論し、generic
@@ -299,14 +303,15 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    Int算術とoperator sectionは`Add<Int, Int, Int>`等のevidenceを全IRへ保持済み。次は標準名専用の経路を
    一般instance機構の完了と誤認せず、user-defined / imported instance searchへ進む。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
-4. direct dependencyとfacade越しのconcrete user-defined evidenceはcanonical trait / argument identitiesでResolvedAstから
-   TypedHir / CoreIr / TypeScript source import / driver output plan、actual executionまで保持済み。次はgeneric substitutionと
-   constraint materializationでimported dictionary factoryを完成させる。
+4. direct dependencyとfacade越しのconcrete user-defined evidence、およびdirect providerのgeneric / constraint付きfactoryは
+   canonical trait / argument / constraint identitiesでResolvedAstからTypedHir / CoreIr / TypeScript source import /
+   driver output plan、actual executionまで保持済み。次はtransitive generic providerとstandard evidence factory引数を
+   独立gateで確認する。
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、
-   unconstrained / constrained generic local dictionary factory、local constrained function、method固有constraintは接続済み。
-   次は同じordered evidence表現をcross-module selectionへ拡張する。nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
+   unconstrained / constrained generic local / imported dictionary factory、local constrained function、method固有constraintは接続済み。
+   nested namespace、constraint付きhigher-order callable、generic imported ADTは、それぞれ
    一般機構を証明する独立gateで回収する。
 
 namespace-qualified constructor expression / patternとimported ADT exhaustivenessは、小さいsemantics / lowering fixtureと

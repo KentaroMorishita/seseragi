@@ -198,6 +198,8 @@ pub struct TypedInstance {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
     pub constraints: Vec<TypedConstraint>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub constraint_identities: Vec<Option<String>>,
     #[serde(default, skip_serializing_if = "is_zero")]
     pub supertrait_count: usize,
     pub origin: ByteSpan,

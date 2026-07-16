@@ -422,6 +422,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/monad-maybe::trait(Functor)",
           "arguments": [
             {
               "kind": "named",
@@ -459,6 +460,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
           "arguments": [
             {
               "kind": "named",

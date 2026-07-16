@@ -294,6 +294,9 @@
           ]
         }
       ],
+      "constraintIdentities": [
+        "artifact/applicative-maybe::trait(Functor)"
+      ],
       "supertraitCount": 1,
       "origin": {
         "start": 389,

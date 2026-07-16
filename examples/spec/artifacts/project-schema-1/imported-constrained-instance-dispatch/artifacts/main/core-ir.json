@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-constrained-instance-dispatch::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-constrained-instance-dispatch::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "report",
+          "local": "report",
+          "canonical": "fixture/imported-constrained-instance-dispatch::domain::report",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-constrained-instance-dispatch::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 87
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-constrained-instance-dispatch::domain::report",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/prelude::Just",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "42",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 71,
+                      "end": 73
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 66,
+                  "end": 73
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Inspect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "imported",
+                  "identity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+                  "providerModule": "fixture/imported-constrained-instance-dispatch::domain",
+                  "typeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ],
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Ready",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "imported",
+                        "identity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)<std/prelude::Int>",
+                        "providerModule": "fixture/imported-constrained-instance-dispatch::domain"
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 58,
+              "end": 74
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 58,
+          "end": 87
+        }
+      }
+    }
+  ]
+}

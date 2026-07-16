@@ -53,6 +53,13 @@ fn typed_instance(
         .collect::<Vec<_>>();
     let supertraits =
         crate::typed::direct_supertrait_constraints(*trait_name_span, &typed_arguments, resolution);
+    let constraint_identities = supertraits
+        .iter()
+        .map(|supertrait| Some(supertrait.trait_identity.clone()))
+        .chain(constraints.iter().map(|constraint| {
+            canonical_reference(resolution, constraint.name_span, SymbolNamespace::Trait)
+        }))
+        .collect();
     let mut scoped_evidence =
         crate::typed::scoped_resolved_call_evidence(&supertraits, resolution, 0);
     scoped_evidence.extend(crate::typed::scoped_call_evidence_from(
@@ -90,6 +97,7 @@ fn typed_instance(
                 }
             }))
             .collect(),
+        constraint_identities,
         supertrait_count: supertraits.len(),
         origin: *span,
         implementation: TypedInstanceImplementation::UserDefined { methods },

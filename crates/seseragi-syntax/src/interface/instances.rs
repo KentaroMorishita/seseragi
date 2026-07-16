@@ -29,6 +29,7 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
                 .iter()
                 .map(|constraint| InterfaceConstraint {
                     name: constraint.name.clone(),
+                    trait_identity: None,
                     arguments: constraint
                         .arguments
                         .iter()

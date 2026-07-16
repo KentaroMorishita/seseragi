@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "dist/imported-constrained-instance-dispatch/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-constrained-instance-dispatch::main"
+  ],
+  "sourcesContent": [
+    "import { report } from \"./domain\"\n\npub effect fn main =\n  report (Just 42)\n  |> println\n"
+  ],
+  "names": [
+    "main",
+    "println",
+    "report",
+    "Just",
+    "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>"
+  ],
+  "mappings": ";;;;AAEAA"
+}

@@ -210,6 +210,7 @@ fn rejects_generic_or_conditional_external_show_evidence() {
         .constraints
         .push(seseragi_syntax::InterfaceConstraint {
             name: "Show<payload>".to_owned(),
+            trait_identity: None,
             arguments: Vec::new(),
         });
     let conditional = interface_with_exports(Vec::new(), vec![conditional]);

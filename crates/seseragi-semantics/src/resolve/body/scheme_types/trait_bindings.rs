@@ -122,6 +122,7 @@ mod tests {
             "Render",
             vec![InterfaceConstraint {
                 name: "Labeled".to_owned(),
+                trait_identity: None,
                 arguments: vec![named("A")],
             }],
         );
@@ -140,6 +141,7 @@ mod tests {
             "Render",
             vec![InterfaceConstraint {
                 name: "Named".to_owned(),
+                trait_identity: None,
                 arguments: vec![named("A")],
             }],
         );
@@ -169,6 +171,7 @@ mod tests {
         let mut describe = function_export("describe");
         describe.scheme.constraints.push(InterfaceConstraint {
             name: "Ready".to_owned(),
+            trait_identity: None,
             arguments: vec![named("T")],
         });
         let provider = module(vec![ready, describe.clone()]);
@@ -186,6 +189,7 @@ mod tests {
         let mut describe = function_export("describe");
         describe.scheme.constraints.push(InterfaceConstraint {
             name: "Show".to_owned(),
+            trait_identity: None,
             arguments: vec![named("T")],
         });
         let provider = module(vec![show, describe.clone()]);

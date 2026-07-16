@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-constrained-instance-dispatch::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "effect.console.println",
+    "core.string",
+    "core.maybe.just",
+    "core.maybe",
+    "core.int64"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-constrained-instance-dispatch::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "report",
+          "local": "report",
+          "sourceLocal": "report",
+          "canonical": "fixture/imported-constrained-instance-dispatch::domain::report",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Inspect$1",
+          "local": "__ssrg$instance$Inspect$1",
+          "sourceLocal": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+          "canonical": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 33
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Ready$0",
+          "local": "__ssrg$instance$Ready$0",
+          "sourceLocal": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)<std/prelude::Int>",
+          "canonical": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)<std/prelude::Int>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 33
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "report",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "42"
+                  }
+                ]
+              },
+              {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Inspect$1",
+                "typeArguments": [
+                  {
+                    "kind": "bigint"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Ready$0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 87
+      }
+    }
+  ]
+}

@@ -114,6 +114,9 @@
           ]
         }
       ],
+      "constraintIdentities": [
+        "artifact/constrained-instance-dispatch::trait(Ready)"
+      ],
       "origin": {
         "start": 234,
         "end": 424
