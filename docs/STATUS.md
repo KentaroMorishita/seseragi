@@ -160,7 +160,12 @@ diagnosticやruntime defectではなくgenerator filterとして扱います。p
 `unfold` / `next`とともに通常pipeline、versioned runtime ABI、Node executionへ接続済みです。
 `schema-1/iterator-unfold`はstepの状態型と要素型を別々に具体化し、同じIteratorを複数回観測しても同じ先頭を返すこと、
 restから次の値へ進めることを固定します。runtime probeは`unfold`がeagerにstepを呼ばず、各`next`がちょうど一度
-stepを呼ぶことも検証します。user-defined Iterable dictionary dispatchはこのIterator境界を使う次のgateです。
+stepを呼ぶことも検証します。user-defined `Iterable<C, A>`もこのIterator境界へ接続済みです。
+`schema-1/user-iterable-comprehension`はlocal instanceからelement型を推論し、選択済みdictionaryの`iterate`を呼んで
+返されたIteratorを共通collectorへ流します。generic `where Iterable<C, A>`はparameter evidenceを同じTypedHir / CoreIr
+shapeで保持し、`project-schema-1/imported-iterable-comprehension`はprovider moduleのdictionary exportをconsumerへimportして
+actual executionします。Array / Rangeだけをruntime shapeで判定する経路はuser collectionには使いません。
+Playgroundの`自作Iterableの流れ`でも同じschema sourceとbrowser runtimeを実行できます。
 Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
 backendはそのevidenceを確認してchecked runtime helperを選択します。
 `String + String`も`Add<String, String, String>`のstandard instanceとして全IRとactual executionへ接続済みで、

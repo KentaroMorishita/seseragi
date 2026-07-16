@@ -1005,8 +1005,8 @@ binding / wildcard generator、guard、複数generatorを通常pipelineへ接続
 `schema-1/comprehension-pattern-filter`はmatchと共有するTypeScript decision表現へconstructor / tuple patternをlowerし、
 predicateで構造照合とguardを評価してから、transformで同じprojectionからbindingを復元します。runtime helperは
 predicateが通った要素にだけtransformを呼ぶため、pattern不一致は仕様どおりfilterになり、暗黙の`MonadFail`や例外へ
-変換しません。binding / wildcardだけの既存caseは直接lambdaの軽い形を維持します。次のgateではlocal / imported
-user-defined Iterable dictionaryを同じCore shapeから呼び出します。
+変換しません。binding / wildcardだけの既存caseは直接lambdaの軽い形を維持し、local / imported
+user-defined Iterable dictionaryも同じCore shapeから呼び出します。
 
 その前提となる仕様10.7の`Iterator<A>`は、standard opaque external nominal typeと`unfold` / `next` callableとして
 SurfaceAst以降の通常pipelineへ接続しました。runtime表現はimmutableな`next` closureだけを公開し、`unfold`は構築時に
@@ -1014,6 +1014,15 @@ stepを評価せず、`next`ごとに一度だけ評価して新しいrest Itera
 fixtureはnested `Maybe<(A, Iterator<A>)>`内のgeneric substitution、runtime type import、persistent observationを固定します。
 conformanceのruntime package probeも遅延性と非破壊性を直接検査するため、user-defined IterableをArray / Rangeの
 runtime shapeへ寄せず、dictionaryの`iterate`結果をこの共通pull境界へ流せます。
+
+このgateは`schema-1/user-iterable-comprehension`で接続済みです。comprehension typingはsource collectionだけから
+local `Iterable<C, A>` headを照合して`A`を推論し、generic関数では`where Iterable<C, A>`のscoped parameter evidenceを
+優先します。imported headはprovider側のinterface typeをconsumerのcanonical type bindingへlocalizeしてから照合します。
+backendはstandard Array / Range evidenceだけ既存collectorへ直接送り、それ以外は選択済みLocal / Imported / Parameter
+dictionaryの`iterate`を呼び、`Iterator<A>`用`collectMap` / `collectFlatMap`へ渡します。
+`project-schema-1/imported-iterable-comprehension`はdictionary provider import、type-only Iterator import、複数moduleの
+runtime requirement closureとNode executionを固定します。これにより標準collection名のhardcodeだけでgreenになる経路を
+排除しました。
 
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head

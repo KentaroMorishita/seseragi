@@ -109,6 +109,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Generic Maybe: empty\nGeneric Maybe: present",
   },
   {
+    id: "user-iterable-comprehension",
+    label: "自作Iterableの流れ",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg",
+    stdin: "",
+    expectedOutput: "user Iterable total: 35",
+  },
+  {
     id: "partial-functor-value",
     label: "Functorを渡す",
     category: "型と抽象化",

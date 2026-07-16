@@ -3,6 +3,7 @@ import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipel
 import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
 import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-comprehension/main.ssrg?raw"
 import comprehensionPatternFilter from "../../../examples/spec/artifacts/schema-1/comprehension-pattern-filter/main.ssrg?raw"
+import userIterableComprehension from "../../../examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg?raw"
 import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
 import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
 import shippingAdvisor from "../../../examples/spec/playground/02-shipping-advisor.ssrg?raw"
@@ -34,6 +35,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "string-add": stringAdd,
   "range-comprehension": rangeComprehension,
   "comprehension-pattern-filter": comprehensionPatternFilter,
+  "user-iterable-comprehension": userIterableComprehension,
   "rock-paper-scissors": rockPaperScissors,
   "mini-adventure": miniAdventure,
   "shipping-advisor": shippingAdvisor,
