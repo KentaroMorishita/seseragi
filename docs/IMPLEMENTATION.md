@@ -739,8 +739,13 @@ constructor constraintとの照合時だけtrailing holeを正規化して`E = S
 これによりFunctor / Applicative / Monadの三factoryとdo loweringはMaybe専用分岐なしで再利用され、
 `execution-schema-1/monad-either`がRightの成功とLeftの短絡を実行します。
 
-次のgateはFunctor / Applicative / Monad lawを小さいfixtureで固定し、generic / constrained imported instance
-factoryをmodule境界でmaterializeすることです。
+`schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
+right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。
+`execution-schema-1/monad-laws`は七つの比較結果をConsole traceとstdoutまで固定し、selected dictionary、supertrait
+factory chain、生成TypeScriptの意味がlawfulな代表instanceを壊していないことを検査します。これは任意の
+user-defined instanceのlawfulnessを静的に証明する機能ではありません。
+
+次のgateはgeneric / constrained imported instance factoryをmodule境界でmaterializeすることです。
 
 このgateは直接または入れ子のexpression内で飽和するconstrained function callを対象にします。
 partial applicationしたconstrained functionをlet / parameterなどfirst-class valueとして保持する場合は、

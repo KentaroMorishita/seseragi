@@ -1,0 +1,86 @@
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+
+pub trait Applicative<F<_>>
+where Functor<F> {
+  fn pure<A> value: A -> F<A>
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+instance Applicative<Maybe> {
+  fn pure<A> value: A -> Maybe<A> = Just value
+
+  fn apply<A, B> wrapped: Maybe<A -> B> -> value: Maybe<A> -> Maybe<B> =
+    match (wrapped, value) {
+      (Just function, Just item) -> Just $ function item
+      _ -> Nothing
+    }
+}
+
+pub trait Monad<M<_>>
+where Applicative<M> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
+
+instance Monad<Maybe> {
+  fn flatMap<A, B> f: (A -> Maybe<B>) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> f item
+    }
+}
+
+fn identityInt value: Int -> Int = value
+fn increment value: Int -> Int = value + 1
+fn double value: Int -> Int = value * 2
+fn incrementThenDouble value: Int -> Int = double $ increment value
+fn wrapMaybe value: Int -> Maybe<Int> = Just value
+fn stepA value: Int -> Maybe<Int> = Just $ value + 1
+fn stepB value: Int -> Maybe<Int> = Just $ value * 2
+fn stepAB value: Int -> Maybe<Int> = flatMap stepB $ stepA value
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just 21 -> "Just 21"
+    Just 41 -> "Just 41"
+    Just 42 -> "Just 42"
+    Just 82 -> "Just 82"
+    Just _ -> "Just another value"
+  }
+
+fn report label: String -> left: Maybe<Int> -> right: Maybe<Int> -> String =
+  if render left == render right then label + ": ok" else label + ": failed"
+
+pub effect fn main =
+  do {
+    report "Functor identity" (map identityInt $ Just 21) (Just 21)
+    |> println
+
+    report "Functor composition" (map incrementThenDouble $ Just 20) (map double $ map increment $ Just 20)
+    |> println
+
+    report "Applicative identity" (apply (pure identityInt) $ Just 21) (Just 21)
+    |> println
+
+    report "Applicative homomorphism" (apply (pure increment) $ pure 41) (pure 42)
+    |> println
+
+    report "Monad left identity" (flatMap stepA $ pure 40) (stepA 40)
+    |> println
+
+    report "Monad right identity" (flatMap wrapMaybe $ Just 41) (Just 41)
+    |> println
+
+    report "Monad associativity" (flatMap stepB $ flatMap stepA $ Just 40) (flatMap stepAB $ Just 40)
+    |> println
+  }

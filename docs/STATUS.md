@@ -38,7 +38,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / standard sum / rank-1 generic fnまで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行fixtureあり、law fixture不足 | HKT推論 / local dictionary / transitive supertrait実行まで部分実装 |
+| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
@@ -240,7 +240,11 @@ final monadic expression欠落を、それぞれ専用の`do.*` diagnosticとsou
 `schema-1/monad-either`は`instance<E> Monad<Either<E, _>>`を選び、`Either<String, A>`から
 `M = Either<String, _>`とpayload `A`を分離します。do loweringは同じdictionary `flatMap`を使い、
 `Right 42`と`Left "stopped"`の短絡をactual executionで固定します。Maybeという標準型名やruntime tagへの
-専用分岐ではありません。Applicative / Monad lawは次の独立gateです。
+専用分岐ではありません。`schema-1/monad-laws`と`execution-schema-1/monad-laws`は同じuser-defined
+Maybe dictionaryを使い、Functorのidentity / composition、Applicativeのidentity / homomorphism、
+Monadのleft identity / right identity / associativityをactual executionで固定します。これは全instanceのlawfulnessを
+compilerが証明する機能ではなく、現在のdictionary selectionと生成コードが代表的なlawful instanceの意味を壊さないための
+回帰gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

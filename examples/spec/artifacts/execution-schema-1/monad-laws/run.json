@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "case": "monad-laws",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/monad-laws",
+    "export": "main",
+    "compiledModule": "../../schema-1/monad-laws/generated-module.json",
+    "typedInterface": "../../schema-1/monad-laws/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.maybe",
+      "core.adt",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.int64",
+      "core.int64.add",
+      "core.int64.multiply",
+      "core.string",
+      "core.bool",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Functor identity: ok"],
+        "stdout": "Functor identity: ok\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Functor composition: ok"],
+        "stdout": "Functor composition: ok\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Applicative identity: ok"],
+        "stdout": "Applicative identity: ok\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Applicative homomorphism: ok"],
+        "stdout": "Applicative homomorphism: ok\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Monad left identity: ok"],
+        "stdout": "Monad left identity: ok\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Monad right identity: ok"],
+        "stdout": "Monad right identity: ok\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Monad associativity: ok"],
+        "stdout": "Monad associativity: ok\n"
+      }
+    ]
+  }
+}

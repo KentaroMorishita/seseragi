@@ -1,0 +1,383 @@
+{
+  "schema": 1,
+  "module": "artifact/monad-laws",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/monad-laws::trait(Functor)",
+      "namespace": "trait",
+      "name": "Functor",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 77
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Functor",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "map",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 28,
+            "end": 75
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/monad-laws::trait(Applicative)",
+      "namespace": "trait",
+      "name": "Applicative",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 250,
+        "end": 387
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Functor",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Applicative",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "pure",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 299,
+            "end": 326
+          }
+        },
+        {
+          "name": "apply",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 329,
+            "end": 385
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/monad-laws::trait(Monad)",
+      "namespace": "trait",
+      "name": "Monad",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 654,
+        "end": 757
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "M",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Applicative",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Monad",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "flatMap",
+          "scheme": {
+            "typeParameters": [
+              "A",
+              "B"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 701,
+            "end": 755
+          }
+        }
+      ]
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Functor",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 79,
+        "end": 248
+      }
+    },
+    {
+      "trait": "Applicative",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Applicative",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 389,
+        "end": 652
+      }
+    },
+    {
+      "trait": "Monad",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Monad",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 759,
+        "end": 930
+      }
+    }
+  ]
+}
