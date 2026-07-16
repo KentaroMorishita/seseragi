@@ -1,6 +1,6 @@
 use crate::{
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr,
-    CoreType,
+    CorePattern, CoreType,
 };
 use std::collections::BTreeMap;
 
@@ -11,6 +11,34 @@ use super::{
     TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
     TypeScriptDecisionTest, TypeScriptExpr,
 };
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(super) struct TypeScriptPatternDecision {
+    pub(super) scrutinee_type: super::TypeScriptType,
+    pub(super) tests: Vec<TypeScriptDecisionTest>,
+    pub(super) bindings: Vec<TypeScriptDecisionBinding>,
+}
+
+pub(super) fn lower_core_pattern_decision(
+    pattern: CorePattern,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptPatternDecision {
+    let scrutinee_type = type_ref_from_core_type(&core_pattern_type(&pattern), imported_types);
+    let mut tests = Vec::new();
+    let mut bindings = Vec::new();
+    lower_pattern(
+        pattern,
+        &mut Vec::new(),
+        &mut tests,
+        &mut bindings,
+        imported_types,
+    );
+    TypeScriptPatternDecision {
+        scrutinee_type,
+        tests,
+        bindings,
+    }
+}
 
 pub(super) fn lower_core_decision(
     scrutinee: CoreExpr,
@@ -95,5 +123,70 @@ fn lower_projection(projection: CoreDecisionProjection) -> TypeScriptDecisionPro
             TypeScriptDecisionProjection::TupleElement { index }
         }
         CoreDecisionProjection::AdtPayload => TypeScriptDecisionProjection::AdtPayload,
+    }
+}
+
+fn core_pattern_type(pattern: &CorePattern) -> CoreType {
+    match pattern {
+        CorePattern::Integer { type_ref, .. }
+        | CorePattern::String { type_ref, .. }
+        | CorePattern::Boolean { type_ref, .. }
+        | CorePattern::Binding { type_ref, .. }
+        | CorePattern::Wildcard { type_ref, .. }
+        | CorePattern::Constructor { type_ref, .. }
+        | CorePattern::Tuple { type_ref, .. } => type_ref.clone(),
+        CorePattern::Invalid { .. } => CoreType::Hole,
+    }
+}
+
+fn lower_pattern(
+    pattern: CorePattern,
+    path: &mut Vec<TypeScriptDecisionProjection>,
+    tests: &mut Vec<TypeScriptDecisionTest>,
+    bindings: &mut Vec<TypeScriptDecisionBinding>,
+    imported_types: &BTreeMap<String, String>,
+) {
+    match pattern {
+        CorePattern::Integer { value, .. } => tests.push(TypeScriptDecisionTest::BigintEquals {
+            path: path.clone(),
+            value,
+        }),
+        CorePattern::String { value, .. } => tests.push(TypeScriptDecisionTest::StringEquals {
+            path: path.clone(),
+            value,
+        }),
+        CorePattern::Boolean { value, .. } => {
+            tests.push(TypeScriptDecisionTest::BooleanEquals {
+                path: path.clone(),
+                value,
+            });
+        }
+        CorePattern::Binding { name, type_ref, .. } => bindings.push(TypeScriptDecisionBinding {
+            name: safe_identifier(&name),
+            type_ref: type_ref_from_core_type(&type_ref, imported_types),
+            path: path.clone(),
+        }),
+        CorePattern::Wildcard { .. } => {}
+        CorePattern::Constructor {
+            symbol, argument, ..
+        } => {
+            tests.push(TypeScriptDecisionTest::TagEquals {
+                path: path.clone(),
+                tag: local_name(&symbol),
+            });
+            if let Some(argument) = argument {
+                path.push(TypeScriptDecisionProjection::AdtPayload);
+                lower_pattern(*argument, path, tests, bindings, imported_types);
+                path.pop();
+            }
+        }
+        CorePattern::Tuple { elements, .. } => {
+            for (index, element) in elements.into_iter().enumerate() {
+                path.push(TypeScriptDecisionProjection::TupleElement { index });
+                lower_pattern(element, path, tests, bindings, imported_types);
+                path.pop();
+            }
+        }
+        CorePattern::Invalid { .. } => tests.push(TypeScriptDecisionTest::Invalid),
     }
 }

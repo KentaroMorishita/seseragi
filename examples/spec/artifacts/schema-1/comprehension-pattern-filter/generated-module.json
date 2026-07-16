@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/comprehension-pattern-filter",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.int64",
+      "core.array.comprehend",
+      "core.maybe",
+      "core.maybe.just",
+      "core.maybe.nothing",
+      "core.bool",
+      "core.int64.remainder",
+      "core.array.reduce",
+      "core.int64.add",
+      "core.string",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

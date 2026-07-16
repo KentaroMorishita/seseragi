@@ -1,0 +1,656 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/comprehension-pattern-filter",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.int64",
+    "core.array.comprehend",
+    "core.maybe",
+    "core.maybe.just",
+    "core.maybe.nothing",
+    "core.bool",
+    "core.int64.remainder",
+    "core.array.reduce",
+    "core.int64.add",
+    "core.string",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "presentValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_comprehend",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_maybe_Nothing"
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "3"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "4"
+                  }
+                ]
+              }
+            ],
+            "elementType": {
+              "kind": "maybe",
+              "element": {
+                "kind": "bigint"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_item0"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "bigint"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "guard": {
+                    "kind": "binary",
+                    "operator": "===",
+                    "left": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int64_remainder",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "2"
+                        }
+                      ]
+                    },
+                    "right": {
+                      "kind": "bigint",
+                      "value": "1"
+                    }
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_item0"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "bigint"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "bigint"
+              }
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 129
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "matchingValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_comprehend",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "10"
+                  }
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "20"
+                  }
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "30"
+                  }
+                ]
+              }
+            ],
+            "elementType": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "bigint"
+                },
+                {
+                  "kind": "bigint"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_item0"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint"
+                  },
+                  {
+                    "kind": "bigint"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "bigint-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "value": "1"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_item0"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint"
+                  },
+                  {
+                    "kind": "bigint"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "bigint-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "value": "1"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "bigint"
+              }
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 131,
+        "end": 233
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "presentTotal",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_reduce",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "curried-runtime-reference",
+            "name": "_ssrg_int64_add",
+            "arity": 2
+          },
+          {
+            "kind": "call",
+            "callee": "presentValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 235,
+        "end": 307
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "matchingTotal",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_reduce",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "curried-runtime-reference",
+            "name": "_ssrg_int64_add",
+            "arity": 2
+          },
+          {
+            "kind": "call",
+            "callee": "matchingValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 309,
+        "end": 383
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderTotals",
+      "parameters": [
+        {
+          "name": "totals",
+          "type": "readonly [bigint, bigint]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "totals"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "bigint"
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "value": "4"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": "40"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "pattern-filter totals: 4 / 40"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected pattern-filter totals"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 385,
+        "end": 543
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "renderTotals",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "call",
+                    "callee": "presentTotal",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "matchingTotal",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 545,
+        "end": 634
+      }
+    }
+  ]
+}

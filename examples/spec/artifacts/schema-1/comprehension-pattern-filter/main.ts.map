@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/comprehension-pattern-filter"
+  ],
+  "sourcesContent": [
+    "fn presentValues unit: Unit -> Array<Int> =\n  [value\n    | Just value <- [Just 1, Nothing, Just 3, Just 4],\n      value % 2 == 1]\n\nfn matchingValues unit: Unit -> Array<Int> =\n  [value\n    | (1, value) <- [(1, 10), (2, 20), (1, 30)]]\n\nfn presentTotal unit: Unit -> Int =\n  presentValues ()\n  |> reduce 0 (+)\n\nfn matchingTotal unit: Unit -> Int =\n  matchingValues ()\n  |> reduce 0 (+)\n\nfn renderTotals totals: (Int, Int) -> String =\n  match totals {\n    (4, 40) -> \"pattern-filter totals: 4 / 40\"\n    _ -> \"unexpected pattern-filter totals\"\n  }\n\npub effect fn main =\n  (presentTotal (), matchingTotal ())\n  |> renderTotals\n  |> println\n"
+  ],
+  "names": [
+    "presentValues",
+    "_ssrg_array_comprehend",
+    "Just",
+    "Nothing",
+    "Just",
+    "Just",
+    "value",
+    "remainder",
+    "value",
+    "matchingValues",
+    "_ssrg_array_comprehend",
+    "value",
+    "value",
+    "presentTotal",
+    "_ssrg_array_reduce",
+    "add",
+    "presentValues",
+    "matchingTotal",
+    "_ssrg_array_reduce",
+    "add",
+    "matchingValues",
+    "renderTotals",
+    "main",
+    "println",
+    "renderTotals",
+    "presentTotal",
+    "matchingTotal"
+  ],
+  "mappings": ";;;;;AAAAA;AAKAS;AAIAI;AAIAI;AAIAI;AAMAC"
+}

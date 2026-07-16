@@ -1001,8 +1001,12 @@ RangeはArrayへlowerせず、exclusive / inclusive境界を保持します。co
 binding / wildcard generator、guard、複数generatorを通常pipelineへ接続しました。backendは単一generatorを
 `collectMap`、後続generatorを持つ節を`collectFlatMap`へlowerし、source collectionとArray resultを混同しません。
 `schema-1/range-comprehension`はRangeからeven squareを生成してArray `reduce`へ接続し、Node / browserで実行します。
-`schema-1/array-comprehension`はArray同士のnested generatorを固定します。次のgateでは反駁可能patternの不一致を
-filterとして扱い、local / imported user-defined Iterable dictionaryを同じCore shapeから呼び出します。
+`schema-1/array-comprehension`はArray同士のnested generatorを固定します。
+`schema-1/comprehension-pattern-filter`はmatchと共有するTypeScript decision表現へconstructor / tuple patternをlowerし、
+predicateで構造照合とguardを評価してから、transformで同じprojectionからbindingを復元します。runtime helperは
+predicateが通った要素にだけtransformを呼ぶため、pattern不一致は仕様どおりfilterになり、暗黙の`MonadFail`や例外へ
+変換しません。binding / wildcardだけの既存caseは直接lambdaの軽い形を維持します。次のgateではlocal / imported
+user-defined Iterable dictionaryを同じCore shapeから呼び出します。
 
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head

@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "case": "comprehension-pattern-filter",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/comprehension-pattern-filter",
+    "export": "main",
+    "compiledModule": "../../schema-1/comprehension-pattern-filter/generated-module.json",
+    "typedInterface": "../../schema-1/comprehension-pattern-filter/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.unit",
+      "core.int64",
+      "core.array.comprehend",
+      "core.maybe",
+      "core.maybe.just",
+      "core.maybe.nothing",
+      "core.bool",
+      "core.int64.remainder",
+      "core.array.reduce",
+      "core.int64.add",
+      "core.string",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["pattern-filter totals: 4 / 40"],
+        "stdout": "pattern-filter totals: 4 / 40\n"
+      }
+    ]
+  }
+}

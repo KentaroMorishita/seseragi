@@ -62,18 +62,6 @@ pub(super) fn type_array_comprehension(
                 let expected = current_context.semantic_value_from_typed_type(&element_type);
                 let pattern_analysis = type_pattern(pattern, &expected, &current_context);
                 match_issues.extend(pattern_analysis.issues);
-                if !matches!(
-                    &pattern_analysis.typed,
-                    crate::TypedPattern::Binding { .. } | crate::TypedPattern::Wildcard { .. }
-                ) {
-                    match_issues.push(
-                        crate::typed::pure_issues::MatchIssue::PatternMismatch {
-                            pattern: pattern.span(),
-                            message: "the current comprehension lowering gate accepts binding or wildcard patterns"
-                                .to_owned(),
-                        },
-                    );
-                }
                 locals.extend(pattern_analysis.locals);
                 current_context = context.with_locals(locals.clone()).without_expected();
                 match select_iterable_evidence(source_type.clone(), element_type) {

@@ -1,0 +1,27 @@
+fn presentValues unit: Unit -> Array<Int> =
+  [value
+    | Just value <- [Just 1, Nothing, Just 3, Just 4],
+      value % 2 == 1]
+
+fn matchingValues unit: Unit -> Array<Int> =
+  [value
+    | (1, value) <- [(1, 10), (2, 20), (1, 30)]]
+
+fn presentTotal unit: Unit -> Int =
+  presentValues ()
+  |> reduce 0 (+)
+
+fn matchingTotal unit: Unit -> Int =
+  matchingValues ()
+  |> reduce 0 (+)
+
+fn renderTotals totals: (Int, Int) -> String =
+  match totals {
+    (4, 40) -> "pattern-filter totals: 4 / 40"
+    _ -> "unexpected pattern-filter totals"
+  }
+
+pub effect fn main =
+  (presentTotal (), matchingTotal ())
+  |> renderTotals
+  |> println

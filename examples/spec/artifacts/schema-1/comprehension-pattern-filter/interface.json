@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/comprehension-pattern-filter",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

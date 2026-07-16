@@ -1,0 +1,882 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "presentValues",
+      "nameSpan": {
+        "start": 3,
+        "end": 16
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 17,
+            "end": 21
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 23,
+              "end": 27
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 37,
+              "end": 40
+            }
+          }
+        ],
+        "span": {
+          "start": 31,
+          "end": 41
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 47,
+            "end": 52
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "constructor",
+              "name": "Just",
+              "nameSpan": {
+                "start": 59,
+                "end": 63
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 64,
+                  "end": 69
+                },
+                "span": {
+                  "start": 64,
+                  "end": 69
+                }
+              },
+              "span": {
+                "start": 59,
+                "end": 69
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 74,
+                      "end": 78
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 79,
+                      "end": 80
+                    }
+                  },
+                  "span": {
+                    "start": 74,
+                    "end": 80
+                  }
+                },
+                {
+                  "kind": "name",
+                  "name": "Nothing",
+                  "span": {
+                    "start": 82,
+                    "end": 89
+                  }
+                },
+                {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 91,
+                      "end": 95
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 96,
+                      "end": 97
+                    }
+                  },
+                  "span": {
+                    "start": 91,
+                    "end": 97
+                  }
+                },
+                {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 99,
+                      "end": 103
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "4",
+                    "span": {
+                      "start": 104,
+                      "end": 105
+                    }
+                  },
+                  "span": {
+                    "start": 99,
+                    "end": 105
+                  }
+                }
+              ],
+              "span": {
+                "start": 73,
+                "end": 106
+              }
+            },
+            "span": {
+              "start": 59,
+              "end": 106
+            }
+          },
+          {
+            "kind": "guard",
+            "condition": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 124,
+                "end": 126
+              },
+              "left": {
+                "kind": "binary",
+                "operator": "%",
+                "operatorSpan": {
+                  "start": 120,
+                  "end": 121
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "value",
+                  "span": {
+                    "start": 114,
+                    "end": 119
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "2",
+                  "span": {
+                    "start": 122,
+                    "end": 123
+                  }
+                },
+                "span": {
+                  "start": 114,
+                  "end": 123
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "1",
+                "span": {
+                  "start": 127,
+                  "end": 128
+                }
+              },
+              "span": {
+                "start": 114,
+                "end": 128
+              }
+            },
+            "span": {
+              "start": 114,
+              "end": 128
+            }
+          }
+        ],
+        "span": {
+          "start": 46,
+          "end": 129
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 129
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "matchingValues",
+      "nameSpan": {
+        "start": 134,
+        "end": 148
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 149,
+            "end": 153
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 155,
+              "end": 159
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 169,
+              "end": 172
+            }
+          }
+        ],
+        "span": {
+          "start": 163,
+          "end": 173
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 179,
+            "end": 184
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 192,
+                    "end": 193
+                  }
+                },
+                {
+                  "kind": "name",
+                  "name": "value",
+                  "nameSpan": {
+                    "start": 195,
+                    "end": 200
+                  },
+                  "span": {
+                    "start": 195,
+                    "end": 200
+                  }
+                }
+              ],
+              "span": {
+                "start": 191,
+                "end": 201
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 207,
+                        "end": 208
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "10",
+                      "span": {
+                        "start": 210,
+                        "end": 212
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 206,
+                    "end": 213
+                  }
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 216,
+                        "end": 217
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "20",
+                      "span": {
+                        "start": 219,
+                        "end": 221
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 215,
+                    "end": 222
+                  }
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 225,
+                        "end": 226
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "30",
+                      "span": {
+                        "start": 228,
+                        "end": 230
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 224,
+                    "end": 231
+                  }
+                }
+              ],
+              "span": {
+                "start": 205,
+                "end": 232
+              }
+            },
+            "span": {
+              "start": 191,
+              "end": 232
+            }
+          }
+        ],
+        "span": {
+          "start": 178,
+          "end": 233
+        }
+      },
+      "span": {
+        "start": 131,
+        "end": 233
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "presentTotal",
+      "nameSpan": {
+        "start": 238,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 251,
+            "end": 255
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 257,
+              "end": 261
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 265,
+          "end": 268
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 295,
+                "end": 301
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 302,
+                "end": 303
+              }
+            },
+            "span": {
+              "start": 295,
+              "end": 303
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "name",
+              "name": "+",
+              "span": {
+                "start": 305,
+                "end": 306
+              }
+            },
+            "span": {
+              "start": 304,
+              "end": 307
+            }
+          },
+          "span": {
+            "start": 295,
+            "end": 307
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "presentValues",
+            "span": {
+              "start": 273,
+              "end": 286
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 287,
+              "end": 289
+            }
+          },
+          "span": {
+            "start": 273,
+            "end": 289
+          }
+        },
+        "span": {
+          "start": 273,
+          "end": 307
+        }
+      },
+      "span": {
+        "start": 235,
+        "end": 307
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "matchingTotal",
+      "nameSpan": {
+        "start": 312,
+        "end": 325
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 326,
+            "end": 330
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 332,
+              "end": 336
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 340,
+          "end": 343
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 371,
+                "end": 377
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 378,
+                "end": 379
+              }
+            },
+            "span": {
+              "start": 371,
+              "end": 379
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "name",
+              "name": "+",
+              "span": {
+                "start": 381,
+                "end": 382
+              }
+            },
+            "span": {
+              "start": 380,
+              "end": 383
+            }
+          },
+          "span": {
+            "start": 371,
+            "end": 383
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "matchingValues",
+            "span": {
+              "start": 348,
+              "end": 362
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 363,
+              "end": 365
+            }
+          },
+          "span": {
+            "start": 348,
+            "end": 365
+          }
+        },
+        "span": {
+          "start": 348,
+          "end": 383
+        }
+      },
+      "span": {
+        "start": 309,
+        "end": 383
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderTotals",
+      "nameSpan": {
+        "start": 388,
+        "end": 400
+      },
+      "parameters": [
+        {
+          "name": "totals",
+          "nameSpan": {
+            "start": 401,
+            "end": 407
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 410,
+                  "end": 413
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 415,
+                  "end": 418
+                }
+              }
+            ],
+            "span": {
+              "start": 409,
+              "end": 419
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 423,
+          "end": 429
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "totals",
+          "span": {
+            "start": 440,
+            "end": 446
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "4",
+                  "span": {
+                    "start": 454,
+                    "end": 455
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "40",
+                  "span": {
+                    "start": 457,
+                    "end": 459
+                  }
+                }
+              ],
+              "span": {
+                "start": 453,
+                "end": 460
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"pattern-filter totals: 4 / 40\"",
+              "span": {
+                "start": 464,
+                "end": 495
+              }
+            },
+            "span": {
+              "start": 453,
+              "end": 495
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 500,
+                "end": 501
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected pattern-filter totals\"",
+              "span": {
+                "start": 505,
+                "end": 539
+              }
+            },
+            "span": {
+              "start": 500,
+              "end": 539
+            }
+          }
+        ],
+        "span": {
+          "start": 434,
+          "end": 543
+        }
+      },
+      "span": {
+        "start": 385,
+        "end": 543
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 559,
+        "end": 563
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 627,
+            "end": 634
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "renderTotals",
+            "span": {
+              "start": 609,
+              "end": 621
+            }
+          },
+          "argument": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "presentTotal",
+                  "span": {
+                    "start": 569,
+                    "end": 581
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 582,
+                    "end": 584
+                  }
+                },
+                "span": {
+                  "start": 569,
+                  "end": 584
+                }
+              },
+              {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "matchingTotal",
+                  "span": {
+                    "start": 586,
+                    "end": 599
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 600,
+                    "end": 602
+                  }
+                },
+                "span": {
+                  "start": 586,
+                  "end": 602
+                }
+              }
+            ],
+            "span": {
+              "start": 568,
+              "end": 603
+            }
+          },
+          "span": {
+            "start": 568,
+            "end": 621
+          }
+        },
+        "span": {
+          "start": 568,
+          "end": 634
+        }
+      },
+      "span": {
+        "start": 545,
+        "end": 634
+      }
+    }
+  ]
+}

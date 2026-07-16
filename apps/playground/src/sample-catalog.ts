@@ -51,6 +51,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "even square total: 220",
   },
   {
+    id: "comprehension-pattern-filter",
+    label: "Patternで値を選ぶ",
+    category: "基本",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/comprehension-pattern-filter/main.ssrg",
+    stdin: "",
+    expectedOutput: "pattern-filter totals: 4 / 40",
+  },
+  {
     id: "rock-paper-scissors",
     label: "型付きじゃんけん",
     category: "アプリ",

@@ -6,6 +6,8 @@ use crate::{
 use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
+mod comprehension_tests;
+#[cfg(test)]
 mod constrained_function_tests;
 mod decision;
 mod imports;

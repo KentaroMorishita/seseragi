@@ -221,6 +221,12 @@ TypeScriptIrのdictionary call、生成TS、`execution-schema-1/partial-functor-
 `execution-schema-1/partial-constrained-function`が`Badge is ready!`を固定し、dictionaryを早く渡す誤生成を拒否します。
 未解決constraintを保持するpolymorphic value schemeは独立した後続gateです。
 
+`schema-1/comprehension-pattern-filter`はArray generatorの`Just value`と`(1, value)`を通常のpattern decisionへlowerし、
+不一致要素を除外してからpayload / tuple bindingをelement式とguardへ渡します。
+`execution-schema-1/comprehension-pattern-filter`はconstructor filterの合計4とtuple filterの合計40をConsole traceまで固定し、
+pattern不一致でtransformを実行する誤生成を拒否します。sourceの走査は引き続きstandard Array `Iterable` runtimeを使い、
+user-defined Iterable dictionary dispatchは独立した後続gateです。
+
 `schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
 method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く
 `Labeled<Badge>` dictionaryとして運びます。生成TSは通常のmethod引数の後ろへcompiler-private evidence parameterを追加し、

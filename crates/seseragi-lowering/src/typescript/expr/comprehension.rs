@@ -3,8 +3,10 @@ use crate::{CoreComprehensionClause, CoreExpr, CorePattern};
 use std::collections::BTreeMap;
 
 use super::lower_core_expr_to_typescript;
+use crate::typescript::decision::lower_core_pattern_decision;
 use crate::typescript::names::safe_identifier;
-use crate::typescript::TypeScriptExpr;
+use crate::typescript::types::type_ref_from_core_expr;
+use crate::typescript::{TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptType};
 
 pub(super) fn lower_array_comprehension(
     element: CoreExpr,
@@ -25,11 +27,14 @@ pub(super) fn lower_array_comprehension(
     else {
         panic!("typed comprehension must begin with a generator");
     };
-    let parameter = match pattern {
-        CorePattern::Binding { name, .. } => safe_identifier(&name),
-        CorePattern::Wildcard { .. } => format!("$ssrg_item{depth}"),
-        _ => panic!("unsupported comprehension pattern reached TypeScript lowering"),
+    let direct_parameter = match &pattern {
+        CorePattern::Binding { name, .. } => Some(safe_identifier(name)),
+        CorePattern::Wildcard { .. } => Some(format!("$ssrg_item{depth}")),
+        _ => None,
     };
+    let pattern = direct_parameter
+        .is_none()
+        .then(|| lower_core_pattern_decision(pattern, imported_types));
     let remaining = clauses.collect::<Vec<_>>();
     let next_generator = remaining
         .iter()
@@ -37,7 +42,7 @@ pub(super) fn lower_array_comprehension(
     let (guards, nested) = next_generator
         .map(|index| remaining.split_at(index))
         .unwrap_or((&remaining, &[]));
-    let predicate = guards
+    let guard = guards
         .iter()
         .filter_map(|clause| match clause {
             CoreComprehensionClause::Guard { condition, .. } => Some(
@@ -49,9 +54,16 @@ pub(super) fn lower_array_comprehension(
             operator: "&&".to_owned(),
             left: Box::new(left),
             right: Box::new(right),
-        })
-        .unwrap_or(TypeScriptExpr::Boolean { value: true });
+        });
     let flatten = !nested.is_empty();
+    let element_type = type_ref_from_core_expr(&element, imported_types);
+    let transform_type = if flatten {
+        TypeScriptType::Array {
+            element: Box::new(element_type.clone()),
+        }
+    } else {
+        element_type
+    };
     let transform = if flatten {
         lower_array_comprehension(
             element,
@@ -62,6 +74,20 @@ pub(super) fn lower_array_comprehension(
         )
     } else {
         lower_core_expr_to_typescript(element, imported_values, imported_types)
+    };
+    let (parameter, predicate, transform) = match (direct_parameter, pattern) {
+        (Some(parameter), None) => (
+            parameter,
+            guard.unwrap_or(TypeScriptExpr::Boolean { value: true }),
+            transform,
+        ),
+        (None, Some(pattern)) => {
+            let parameter = format!("$ssrg_item{depth}");
+            let predicate = pattern_predicate(&parameter, &pattern, guard);
+            let transform = pattern_transform(&parameter, &pattern, transform, transform_type);
+            (parameter, predicate, transform)
+        }
+        _ => unreachable!("comprehension pattern lowering mode is total"),
     };
     let operation = runtime_iterable_operation(&evidence, flatten)
         .expect("typed comprehension requires materialized Iterable evidence");
@@ -78,5 +104,54 @@ pub(super) fn lower_array_comprehension(
                 body: Box::new(transform),
             },
         ],
+    }
+}
+
+fn pattern_predicate(
+    parameter: &str,
+    pattern: &crate::typescript::decision::TypeScriptPatternDecision,
+    guard: Option<TypeScriptExpr>,
+) -> TypeScriptExpr {
+    TypeScriptExpr::Decision {
+        scrutinee: Box::new(TypeScriptExpr::Identifier {
+            name: parameter.to_owned(),
+        }),
+        scrutinee_type: pattern.scrutinee_type.clone(),
+        branches: vec![
+            TypeScriptDecisionBranch {
+                tests: pattern.tests.clone(),
+                bindings: pattern.bindings.clone(),
+                guard,
+                value: TypeScriptExpr::Boolean { value: true },
+            },
+            TypeScriptDecisionBranch {
+                tests: Vec::new(),
+                bindings: Vec::new(),
+                guard: None,
+                value: TypeScriptExpr::Boolean { value: false },
+            },
+        ],
+        type_ref: TypeScriptType::Boolean,
+    }
+}
+
+fn pattern_transform(
+    parameter: &str,
+    pattern: &crate::typescript::decision::TypeScriptPatternDecision,
+    transform: TypeScriptExpr,
+    transform_type: TypeScriptType,
+) -> TypeScriptExpr {
+    TypeScriptExpr::Decision {
+        scrutinee: Box::new(TypeScriptExpr::Identifier {
+            name: parameter.to_owned(),
+        }),
+        scrutinee_type: pattern.scrutinee_type.clone(),
+        branches: vec![TypeScriptDecisionBranch {
+            tests: pattern.tests.clone(),
+            bindings: pattern.bindings.clone(),
+            guard: None,
+            value: transform,
+        }],
+        type_ref: transform_type,
     }
 }

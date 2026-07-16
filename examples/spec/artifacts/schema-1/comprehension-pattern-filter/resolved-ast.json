@@ -1,0 +1,1610 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/comprehension-pattern-filter",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "presentValues",
+      "nameSpan": {
+        "start": 3,
+        "end": 16
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 17,
+            "end": 21
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 23,
+              "end": 27
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 37,
+              "end": 40
+            }
+          }
+        ],
+        "span": {
+          "start": 31,
+          "end": 41
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 47,
+            "end": 52
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "constructor",
+              "name": "Just",
+              "nameSpan": {
+                "start": 59,
+                "end": 63
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 64,
+                  "end": 69
+                },
+                "span": {
+                  "start": 64,
+                  "end": 69
+                }
+              },
+              "span": {
+                "start": 59,
+                "end": 69
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 74,
+                      "end": 78
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 79,
+                      "end": 80
+                    }
+                  },
+                  "span": {
+                    "start": 74,
+                    "end": 80
+                  }
+                },
+                {
+                  "kind": "name",
+                  "name": "Nothing",
+                  "span": {
+                    "start": 82,
+                    "end": 89
+                  }
+                },
+                {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 91,
+                      "end": 95
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 96,
+                      "end": 97
+                    }
+                  },
+                  "span": {
+                    "start": 91,
+                    "end": 97
+                  }
+                },
+                {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 99,
+                      "end": 103
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "4",
+                    "span": {
+                      "start": 104,
+                      "end": 105
+                    }
+                  },
+                  "span": {
+                    "start": 99,
+                    "end": 105
+                  }
+                }
+              ],
+              "span": {
+                "start": 73,
+                "end": 106
+              }
+            },
+            "span": {
+              "start": 59,
+              "end": 106
+            }
+          },
+          {
+            "kind": "guard",
+            "condition": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 124,
+                "end": 126
+              },
+              "left": {
+                "kind": "binary",
+                "operator": "%",
+                "operatorSpan": {
+                  "start": 120,
+                  "end": 121
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "value",
+                  "span": {
+                    "start": 114,
+                    "end": 119
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "2",
+                  "span": {
+                    "start": 122,
+                    "end": 123
+                  }
+                },
+                "span": {
+                  "start": 114,
+                  "end": 123
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "1",
+                "span": {
+                  "start": 127,
+                  "end": 128
+                }
+              },
+              "span": {
+                "start": 114,
+                "end": 128
+              }
+            },
+            "span": {
+              "start": 114,
+              "end": 128
+            }
+          }
+        ],
+        "span": {
+          "start": 46,
+          "end": 129
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 129
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "matchingValues",
+      "nameSpan": {
+        "start": 134,
+        "end": 148
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 149,
+            "end": 153
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 155,
+              "end": 159
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 169,
+              "end": 172
+            }
+          }
+        ],
+        "span": {
+          "start": 163,
+          "end": 173
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 179,
+            "end": 184
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 192,
+                    "end": 193
+                  }
+                },
+                {
+                  "kind": "name",
+                  "name": "value",
+                  "nameSpan": {
+                    "start": 195,
+                    "end": 200
+                  },
+                  "span": {
+                    "start": 195,
+                    "end": 200
+                  }
+                }
+              ],
+              "span": {
+                "start": 191,
+                "end": 201
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 207,
+                        "end": 208
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "10",
+                      "span": {
+                        "start": 210,
+                        "end": 212
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 206,
+                    "end": 213
+                  }
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 216,
+                        "end": 217
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "20",
+                      "span": {
+                        "start": 219,
+                        "end": 221
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 215,
+                    "end": 222
+                  }
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 225,
+                        "end": 226
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "30",
+                      "span": {
+                        "start": 228,
+                        "end": 230
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 224,
+                    "end": 231
+                  }
+                }
+              ],
+              "span": {
+                "start": 205,
+                "end": 232
+              }
+            },
+            "span": {
+              "start": 191,
+              "end": 232
+            }
+          }
+        ],
+        "span": {
+          "start": 178,
+          "end": 233
+        }
+      },
+      "span": {
+        "start": 131,
+        "end": 233
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "presentTotal",
+      "nameSpan": {
+        "start": 238,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 251,
+            "end": 255
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 257,
+              "end": 261
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 265,
+          "end": 268
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 295,
+                "end": 301
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 302,
+                "end": 303
+              }
+            },
+            "span": {
+              "start": 295,
+              "end": 303
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "name",
+              "name": "+",
+              "span": {
+                "start": 305,
+                "end": 306
+              }
+            },
+            "span": {
+              "start": 304,
+              "end": 307
+            }
+          },
+          "span": {
+            "start": 295,
+            "end": 307
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "presentValues",
+            "span": {
+              "start": 273,
+              "end": 286
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 287,
+              "end": 289
+            }
+          },
+          "span": {
+            "start": 273,
+            "end": 289
+          }
+        },
+        "span": {
+          "start": 273,
+          "end": 307
+        }
+      },
+      "span": {
+        "start": 235,
+        "end": 307
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "matchingTotal",
+      "nameSpan": {
+        "start": 312,
+        "end": 325
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 326,
+            "end": 330
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 332,
+              "end": 336
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 340,
+          "end": 343
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 371,
+                "end": 377
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 378,
+                "end": 379
+              }
+            },
+            "span": {
+              "start": 371,
+              "end": 379
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "name",
+              "name": "+",
+              "span": {
+                "start": 381,
+                "end": 382
+              }
+            },
+            "span": {
+              "start": 380,
+              "end": 383
+            }
+          },
+          "span": {
+            "start": 371,
+            "end": 383
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "matchingValues",
+            "span": {
+              "start": 348,
+              "end": 362
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 363,
+              "end": 365
+            }
+          },
+          "span": {
+            "start": 348,
+            "end": 365
+          }
+        },
+        "span": {
+          "start": 348,
+          "end": 383
+        }
+      },
+      "span": {
+        "start": 309,
+        "end": 383
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderTotals",
+      "nameSpan": {
+        "start": 388,
+        "end": 400
+      },
+      "parameters": [
+        {
+          "name": "totals",
+          "nameSpan": {
+            "start": 401,
+            "end": 407
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 410,
+                  "end": 413
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 415,
+                  "end": 418
+                }
+              }
+            ],
+            "span": {
+              "start": 409,
+              "end": 419
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 423,
+          "end": 429
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "totals",
+          "span": {
+            "start": 440,
+            "end": 446
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "4",
+                  "span": {
+                    "start": 454,
+                    "end": 455
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "40",
+                  "span": {
+                    "start": 457,
+                    "end": 459
+                  }
+                }
+              ],
+              "span": {
+                "start": 453,
+                "end": 460
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"pattern-filter totals: 4 / 40\"",
+              "span": {
+                "start": 464,
+                "end": 495
+              }
+            },
+            "span": {
+              "start": 453,
+              "end": 495
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 500,
+                "end": 501
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected pattern-filter totals\"",
+              "span": {
+                "start": 505,
+                "end": 539
+              }
+            },
+            "span": {
+              "start": 500,
+              "end": 539
+            }
+          }
+        ],
+        "span": {
+          "start": 434,
+          "end": 543
+        }
+      },
+      "span": {
+        "start": 385,
+        "end": 543
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 559,
+        "end": 563
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 627,
+            "end": 634
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "renderTotals",
+            "span": {
+              "start": 609,
+              "end": 621
+            }
+          },
+          "argument": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "presentTotal",
+                  "span": {
+                    "start": 569,
+                    "end": 581
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 582,
+                    "end": 584
+                  }
+                },
+                "span": {
+                  "start": 569,
+                  "end": 584
+                }
+              },
+              {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "matchingTotal",
+                  "span": {
+                    "start": 586,
+                    "end": 599
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 600,
+                    "end": 602
+                  }
+                },
+                "span": {
+                  "start": 586,
+                  "end": 602
+                }
+              }
+            ],
+            "span": {
+              "start": 568,
+              "end": 603
+            }
+          },
+          "span": {
+            "start": 568,
+            "end": 621
+          }
+        },
+        "span": {
+          "start": 568,
+          "end": 634
+        }
+      },
+      "span": {
+        "start": 545,
+        "end": 634
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 634
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 129
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "parent": 1,
+      "kind": "comprehension",
+      "origin": {
+        "start": 59,
+        "end": 106
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 131,
+        "end": 233
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "comprehension",
+      "origin": {
+        "start": 191,
+        "end": 232
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 235,
+        "end": 307
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 309,
+        "end": 383
+      }
+    },
+    {
+      "id": 8,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 385,
+        "end": 543
+      }
+    },
+    {
+      "id": 9,
+      "parent": 8,
+      "kind": "match-arm",
+      "origin": {
+        "start": 453,
+        "end": 495
+      }
+    },
+    {
+      "id": 10,
+      "parent": 8,
+      "kind": "match-arm",
+      "origin": {
+        "start": 500,
+        "end": 539
+      }
+    },
+    {
+      "id": 11,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 545,
+        "end": 634
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "presentValues",
+      "canonical": "artifact/comprehension-pattern-filter::presentValues",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 16
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "matchingValues",
+      "canonical": "artifact/comprehension-pattern-filter::matchingValues",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 134,
+        "end": 148
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "presentTotal",
+      "canonical": "artifact/comprehension-pattern-filter::presentTotal",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 238,
+        "end": 250
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "matchingTotal",
+      "canonical": "artifact/comprehension-pattern-filter::matchingTotal",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 312,
+        "end": 325
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "renderTotals",
+      "canonical": "artifact/comprehension-pattern-filter::renderTotals",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 388,
+        "end": 400
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "main",
+      "canonical": "artifact/comprehension-pattern-filter::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 559,
+        "end": 563
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 17,
+        "end": 21
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 3,
+      "origin": {
+        "start": 64,
+        "end": 69
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "%",
+      "canonical": "std/prelude::%",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 149,
+        "end": 153
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 195,
+        "end": 200
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 251,
+        "end": 255
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "reduce",
+      "canonical": "std/prelude::reduce",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 326,
+        "end": 330
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "totals",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 8,
+      "origin": {
+        "start": 401,
+        "end": 407
+      }
+    },
+    {
+      "id": 24,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 25,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 23,
+        "end": 27
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 31,
+        "end": 41
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 37,
+        "end": 40
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 74,
+        "end": 78
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 82,
+        "end": 89
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 91,
+        "end": 95
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 99,
+        "end": 103
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 59,
+        "end": 63
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 114,
+        "end": 119
+      }
+    },
+    {
+      "spelling": "%",
+      "namespace": "operator",
+      "target": 15,
+      "origin": {
+        "start": 120,
+        "end": 121
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 16,
+      "origin": {
+        "start": 124,
+        "end": 126
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 47,
+        "end": 52
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 155,
+        "end": 159
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 163,
+        "end": 173
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 169,
+        "end": 172
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 179,
+        "end": 184
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 257,
+        "end": 261
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 265,
+        "end": 268
+      }
+    },
+    {
+      "spelling": "reduce",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 295,
+        "end": 301
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 21,
+      "origin": {
+        "start": 305,
+        "end": 306
+      }
+    },
+    {
+      "spelling": "presentValues",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 273,
+        "end": 286
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 332,
+        "end": 336
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 340,
+        "end": 343
+      }
+    },
+    {
+      "spelling": "reduce",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 371,
+        "end": 377
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 21,
+      "origin": {
+        "start": 381,
+        "end": 382
+      }
+    },
+    {
+      "spelling": "matchingValues",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 348,
+        "end": 362
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 410,
+        "end": 413
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 415,
+        "end": 418
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 24,
+      "origin": {
+        "start": 423,
+        "end": 429
+      }
+    },
+    {
+      "spelling": "totals",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 440,
+        "end": 446
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 25,
+      "origin": {
+        "start": 627,
+        "end": 634
+      }
+    },
+    {
+      "spelling": "renderTotals",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 609,
+        "end": 621
+      }
+    },
+    {
+      "spelling": "presentTotal",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 569,
+        "end": 581
+      }
+    },
+    {
+      "spelling": "matchingTotal",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 586,
+        "end": 599
+      }
+    }
+  ],
+  "issues": []
+}
