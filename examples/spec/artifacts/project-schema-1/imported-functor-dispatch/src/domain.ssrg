@@ -1,0 +1,19 @@
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+
+fn increment value: Int -> Int = value + 1
+
+pub fn incrementAll<F<_>>
+  value: F<Int>
+  -> F<Int>
+where Functor<F> =
+  map increment value

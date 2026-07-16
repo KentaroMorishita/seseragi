@@ -224,6 +224,11 @@ TypeScriptIrのdictionary call、生成TS、`execution-schema-1/partial-functor-
 actual dictionary dispatchを固定し、HKT parameter annotationは生成TypeScriptだけ`unknown`へ消去します。
 outer evidenceなしでconstraintを保持するgeneralized value schemeは独立した後続gateです。
 
+`project-schema-1/imported-functor-dispatch`はpublic `incrementAll<F<_>> where Functor<F>`のconstructor arityをfinal
+TypedInterfaceへ保存し、consumerの`Maybe<Int>`からHKTを具体化します。consumer generated ESMはproviderのfunctionと
+`Functor<Maybe>` dictionaryを同じmoduleからimportし、closed TypeScript checkとEffect executionで`Just 42`を固定します。
+function-typed parameterを持つimported higher-order callableはこのfixtureのscope外です。
+
 `schema-1/comprehension-pattern-filter`はArray generatorの`Just value`と`(1, value)`を通常のpattern decisionへlowerし、
 不一致要素を除外してからpayload / tuple bindingをelement式とguardへ渡します。
 `execution-schema-1/comprehension-pattern-filter`はconstructor filterの合計4とtuple filterの合計40をConsole traceまで固定し、

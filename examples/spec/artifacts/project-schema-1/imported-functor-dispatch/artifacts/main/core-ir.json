@@ -1,0 +1,334 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-functor-dispatch::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-functor-dispatch::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 39
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "incrementAll",
+          "local": "incrementAll",
+          "canonical": "fixture/imported-functor-dispatch::domain::incrementAll",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 21
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-functor-dispatch::main::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 41,
+        "end": 216
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 89,
+            "end": 94
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Nothing",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 101,
+                  "end": 108
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Nothing",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 112,
+                "end": 121
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 101,
+              "end": 121
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 126,
+                  "end": 133
+                }
+              },
+              {
+                "kind": "integer",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 131,
+                  "end": 133
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported Functor: Just 42",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 137,
+                "end": 164
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 126,
+              "end": 164
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Imported Functor: another value",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 179,
+                "end": 212
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 169,
+              "end": 212
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 83,
+          "end": 216
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-functor-dispatch::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 218,
+        "end": 291
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-functor-dispatch::main::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/imported-functor-dispatch::domain::incrementAll",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "std/prelude::Just",
+                    "arguments": [
+                      {
+                        "kind": "int64",
+                        "value": "41",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 246,
+                          "end": 248
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 241,
+                      "end": 248
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Functor",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "imported",
+                      "identity": "fixture/imported-functor-dispatch::domain::trait(Functor)<std/prelude::Maybe>",
+                      "providerModule": "fixture/imported-functor-dispatch::domain"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 241,
+                  "end": 266
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 241,
+              "end": 278
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 241,
+          "end": 291
+        }
+      }
+    }
+  ]
+}

@@ -118,7 +118,7 @@ pub(crate) fn typed_decl_from_surface(
             let type_constructor_parameters = type_parameters
                 .iter()
                 .filter(|parameter| parameter.is_constructor())
-                .map(|parameter| parameter.name.clone())
+                .cloned()
                 .collect();
             Some(TypedDecl::Fn {
                 symbol: declaration_symbol(resolution, name_span, SymbolKind::Function, &name),

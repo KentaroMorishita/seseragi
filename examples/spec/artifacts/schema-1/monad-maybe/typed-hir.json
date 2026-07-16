@@ -1094,7 +1094,10 @@
         "end": 1026
       },
       "typeConstructorParameters": [
-        "M"
+        {
+          "name": "M",
+          "arity": 1
+        }
       ],
       "scheme": {
         "typeParameters": [
@@ -1273,7 +1276,10 @@
         "end": 1136
       },
       "typeConstructorParameters": [
-        "M"
+        {
+          "name": "M",
+          "arity": 1
+        }
       ],
       "scheme": {
         "typeParameters": [

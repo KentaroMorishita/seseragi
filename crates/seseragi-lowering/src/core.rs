@@ -443,7 +443,10 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 visibility,
                 origin: source_span(&module.source, origin),
                 type_parameters: scheme.type_parameters,
-                type_constructor_parameters,
+                type_constructor_parameters: type_constructor_parameters
+                    .into_iter()
+                    .map(|parameter| parameter.name)
+                    .collect(),
                 constraints: scheme
                     .constraints
                     .into_iter()

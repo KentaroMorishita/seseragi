@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-functor-dispatch::main",
+  "runtimeRequirements": [
+    "core.maybe",
+    "core.int64",
+    "core.string",
+    "core.adt",
+    "core.unit",
+    "effect.console.println",
+    "core.maybe.just"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-functor-dispatch::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "incrementAll",
+          "local": "incrementAll",
+          "sourceLocal": "incrementAll",
+          "canonical": "fixture/imported-functor-dispatch::domain::incrementAll",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 21
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Functor$0",
+          "local": "__ssrg$instance$Functor$0",
+          "sourceLocal": "fixture/imported-functor-dispatch::domain::trait(Functor)<std/prelude::Maybe>",
+          "canonical": "fixture/imported-functor-dispatch::domain::trait(Functor)<std/prelude::Maybe>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 39
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 39
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "bigint"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Nothing"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported Functor: Just 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Imported Functor: another value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 41,
+        "end": 216
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "incrementAll",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_maybe_Just",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "41"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Functor$0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 218,
+        "end": 291
+      }
+    }
+  ]
+}

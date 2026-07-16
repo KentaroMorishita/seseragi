@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-functor-dispatch::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-functor-dispatch::domain",
+      "origin": {
+        "start": 0,
+        "end": 39
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "incrementAll",
+          "symbol": "fixture/imported-functor-dispatch::domain::incrementAll"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-functor-dispatch::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 218,
+        "end": 291
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/imported-functor-dispatch::domain::trait(Functor)<std/prelude::Maybe>",
+      "providerModule": "fixture/imported-functor-dispatch::domain",
+      "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
+      "argumentIdentities": [
+        "std/prelude::Maybe"
+      ],
+      "trait": "Functor",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 79,
+        "end": 248
+      }
+    }
+  ]
+}

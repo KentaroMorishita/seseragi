@@ -1076,6 +1076,30 @@ mod tests {
     }
 
     #[test]
+    fn preserves_function_type_constructor_arity_in_the_typed_interface() {
+        let interface = type_module_public_interface(
+            "artifact/imported-hkt/main.ssrg",
+            "pub trait Functor<F<_>> { fn map<A, B> f: (A -> B) -> value: F<A> -> F<B> }\n\
+             pub fn transform<F<_>, A, B> f: (A -> B) -> value: F<A> -> F<B>\n\
+             where Functor<F> = map f value\n",
+        );
+        let transform = interface
+            .exports
+            .iter()
+            .find(|export| export.name == "transform")
+            .expect("expected transform export");
+
+        assert_eq!(
+            transform.scheme.type_parameters,
+            vec![
+                seseragi_syntax::TypeParameter::constructor("F", 1),
+                seseragi_syntax::TypeParameter::value("A"),
+                seseragi_syntax::TypeParameter::value("B"),
+            ]
+        );
+    }
+
+    #[test]
     fn type_module_interface_ignores_type_operator_and_constructor_exports() {
         let interface = seseragi_syntax::parse_module_interface(
             "artifact/rich/main.ssrg",

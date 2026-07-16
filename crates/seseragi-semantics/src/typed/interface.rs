@@ -146,6 +146,7 @@ fn typed_value_export(
             symbol,
             visibility,
             origin,
+            type_constructor_parameters,
             scheme,
             parameters,
             ..
@@ -161,8 +162,13 @@ fn typed_value_export(
                 type_parameters: scheme
                     .type_parameters
                     .iter()
-                    .cloned()
-                    .map(seseragi_syntax::TypeParameter::value)
+                    .map(|name| {
+                        type_constructor_parameters
+                            .iter()
+                            .find(|parameter| parameter.name == *name)
+                            .cloned()
+                            .unwrap_or_else(|| seseragi_syntax::TypeParameter::value(name))
+                    })
                     .collect(),
                 constraints: scheme
                     .constraints

@@ -1,0 +1,14 @@
+import { incrementAll } from "./domain"
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just 42 -> "Imported Functor: Just 42"
+    Just _ -> "Imported Functor: another value"
+  }
+
+pub effect fn main =
+  Just 41
+  |> incrementAll
+  |> render
+  |> println

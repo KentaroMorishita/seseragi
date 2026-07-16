@@ -702,6 +702,13 @@ execution fixtureが`Just 42`を観測します。
 execution fixtureはouter dictionary捕捉をactual dispatchで固定します。なお、outer evidenceを捕捉するvalueと、
 constraint付きvalue schemeを独立してgeneralizeし後からdictionaryを受け取るvalueは区別し、後者は別gateに残します。
 
+`project-schema-1/imported-functor-dispatch`はHKT function schemeをmodule ABIへ接続します。TypedDeclの
+type-constructor parameterは名前だけでなくsourceのarityを保持し、final TypedInterfaceの`F<_>`を通常parameter `F`へ
+潰しません。consumerはimported `incrementAll<F<_>> where Functor<F>`へ`Maybe<Int>`を渡して`F = Maybe`を推論し、
+provider moduleのFunctor dictionary exportを通常のimport planningで受け取ります。closed TypeScript checkとactual Effect
+executionまで通すことで、shallow interfaceだけがarityを持つ偽の完了経路を排除します。function-typed parameterを持つ
+imported higher-order callableは既存のimported callable制限に残し、このHKT transport gateとは分離します。
+
 TypeScriptにはnative HKT applicationがないため、`F<A>`をそのまま不正なTypeScript型として生成しません。
 CoreIrはtype-constructor parameter名を保持し、backend parameter annotationだけを`unknown`へ消去します。
 これはSeseragiのkind / type / instance selectionをTypeScriptへ委譲するものではなく、意味確定後のtarget ABI消去です。

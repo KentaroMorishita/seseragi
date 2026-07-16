@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "file": "dist/imported-functor-dispatch/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-functor-dispatch::main"
+  ],
+  "sourcesContent": [
+    "import { incrementAll } from \"./domain\"\n\nfn render value: Maybe<Int> -> String =\n  match value {\n    Nothing -> \"Nothing\"\n    Just 42 -> \"Imported Functor: Just 42\"\n    Just _ -> \"Imported Functor: another value\"\n  }\n\npub effect fn main =\n  Just 41\n  |> incrementAll\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "render",
+    "main",
+    "println",
+    "render",
+    "incrementAll",
+    "Just"
+  ],
+  "mappings": ";;;;AAEAA;AAOAC"
+}

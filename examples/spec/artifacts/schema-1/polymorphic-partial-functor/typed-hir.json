@@ -279,7 +279,10 @@
         "end": 348
       },
       "typeConstructorParameters": [
-        "F"
+        {
+          "name": "F",
+          "arity": 1
+        }
       ],
       "scheme": {
         "typeParameters": [
@@ -446,7 +449,10 @@
         "end": 445
       },
       "typeConstructorParameters": [
-        "F"
+        {
+          "name": "F",
+          "arity": 1
+        }
       ],
       "scheme": {
         "typeParameters": [
@@ -571,7 +577,10 @@
         "end": 569
       },
       "typeConstructorParameters": [
-        "F"
+        {
+          "name": "F",
+          "arity": 1
+        }
       ],
       "scheme": {
         "typeParameters": [

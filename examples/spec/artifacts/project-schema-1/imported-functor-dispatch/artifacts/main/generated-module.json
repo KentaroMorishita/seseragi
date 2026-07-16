@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-functor-dispatch::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.int64",
+      "core.string",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-functor-dispatch/main.ts",
+    "sourceMap": "dist/imported-functor-dispatch/main.ts.map"
+  }
+}

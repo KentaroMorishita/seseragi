@@ -1,0 +1,521 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-functor-dispatch::domain",
+  "instances": [
+    {
+      "identity": "fixture/imported-functor-dispatch::domain::trait(Functor)<std/prelude::Maybe>",
+      "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 79,
+        "end": 248
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "map",
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "f",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "start": 120,
+                  "end": 121
+                }
+              },
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 135,
+                  "end": 140
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 175,
+                  "end": 180
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 189,
+                      "end": 196
+                    }
+                  },
+                  "body": {
+                    "kind": "variable",
+                    "name": "std/prelude::Nothing",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 200,
+                      "end": 207
+                    }
+                  },
+                  "origin": {
+                    "start": 189,
+                    "end": 207
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "std/prelude::Just",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 17,
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 219,
+                        "end": 223
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 214,
+                      "end": 223
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::Just",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "f",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "item",
+                            "type": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 236,
+                              "end": 240
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 234,
+                          "end": 240
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 227,
+                      "end": 240
+                    }
+                  },
+                  "origin": {
+                    "start": 214,
+                    "end": 240
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 169,
+                "end": 246
+              }
+            },
+            "origin": {
+              "start": 107,
+              "end": 246
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-functor-dispatch::domain::increment",
+      "visibility": "private",
+      "origin": {
+        "start": 250,
+        "end": 292
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 263,
+            "end": 268
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 283,
+            "end": 288
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 291,
+            "end": 292
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 283,
+          "end": 292
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-functor-dispatch::domain::incrementAll",
+      "visibility": "public",
+      "origin": {
+        "start": 294,
+        "end": 388
+      },
+      "typeConstructorParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "scheme": {
+        "typeParameters": [
+          "F"
+        ],
+        "constraints": [
+          {
+            "name": "Functor",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 322,
+            "end": 327
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-functor-dispatch::domain::trait(Functor)::map",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "fixture/imported-functor-dispatch::domain::increment",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 373,
+              "end": 382
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 383,
+              "end": 388
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Functor",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
+          "method": "map"
+        },
+        "type": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 369,
+          "end": 388
+        }
+      }
+    }
+  ]
+}
