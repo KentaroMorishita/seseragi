@@ -230,6 +230,304 @@
           }
         ]
       }
+    },
+    {
+      "identity": "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "traitIdentity": "std/prelude::Reducible",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-iterable-comprehension::domain::Countdown",
+        "std/prelude::Int"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 344,
+        "end": 547
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "reduce",
+            "scheme": {
+              "typeParameters": [
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "initial",
+                "type": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 400,
+                  "end": 407
+                }
+              },
+              {
+                "kind": "named",
+                "name": "step",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                },
+                "origin": {
+                  "start": 414,
+                  "end": 418
+                }
+              },
+              {
+                "kind": "named",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 439,
+                  "end": 445
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 474,
+                  "end": 480
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 22,
+                      "name": "limit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 499,
+                        "end": 504
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 489,
+                      "end": 504
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::reduce",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "initial",
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 515,
+                          "end": 522
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "step",
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          }
+                        },
+                        "origin": {
+                          "start": 523,
+                          "end": 527
+                        }
+                      },
+                      {
+                        "kind": "binary",
+                        "operator": "..=",
+                        "left": {
+                          "kind": "integer",
+                          "value": "1",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 529,
+                            "end": 530
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "limit",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 533,
+                            "end": 538
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Range",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 529,
+                          "end": 538
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Reducible",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Range",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/range::Reducible"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 508,
+                      "end": 539
+                    }
+                  },
+                  "origin": {
+                    "start": 489,
+                    "end": 539
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              "origin": {
+                "start": 468,
+                "end": 545
+              }
+            },
+            "origin": {
+              "start": 383,
+              "end": 545
+            }
+          }
+        ]
+      }
     }
   ],
   "declarations": [

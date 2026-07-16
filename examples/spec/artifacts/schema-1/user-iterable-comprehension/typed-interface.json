@@ -61,8 +61,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 582,
-        "end": 680
+        "start": 1074,
+        "end": 1151
       },
       "scheme": {
         "typeParameters": [],
@@ -140,6 +140,38 @@
       "origin": {
         "start": 180,
         "end": 342
+      }
+    },
+    {
+      "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "providerModule": "artifact/user-iterable-comprehension",
+      "traitIdentity": "std/prelude::Reducible",
+      "argumentIdentities": [
+        "artifact/user-iterable-comprehension::Countdown",
+        "std/prelude::Int"
+      ],
+      "trait": "Reducible",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Reducible",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 344,
+        "end": 547
       }
     }
   ]

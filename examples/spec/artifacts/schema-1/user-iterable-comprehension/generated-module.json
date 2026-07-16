@@ -11,6 +11,9 @@
       "core.int64",
       "core.iterator.unfold",
       "core.maybe",
+      "core.range.reduce",
+      "core.range",
+      "core.range.inclusive",
       "core.bool",
       "core.maybe.just",
       "core.int64.add",
@@ -18,10 +21,10 @@
       "core.int64.multiply",
       "core.iterator.comprehend",
       "core.int64.remainder",
+      "core.array.reduce",
       "core.string",
       "core.unit",
-      "effect.console.println",
-      "core.array.reduce"
+      "effect.console.println"
     ]
   },
   "exports": [
@@ -43,6 +46,21 @@
         }
       ],
       "dictionaryExport": "__ssrg$instance$Iterable$0"
+    },
+    {
+      "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Reducible$1"
     }
   ],
   "outputs": {

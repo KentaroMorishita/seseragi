@@ -14,18 +14,39 @@ instance Iterable<Countdown, Int> {
     }
 }
 
+instance Reducible<Countdown, Int> {
+  fn reduce<B>
+    initial: B -> step: (B -> Int -> B) -> values: Countdown -> B =
+    match values {
+      Countdown limit -> reduce initial step (1..=limit)
+    }
+}
+
 fn oddSquares values: Countdown -> Array<Int> =
   [value * value | value <- values, value % 2 != 0]
 
-fn renderTotal total: Int -> String =
-  match total {
-    35 -> "user Iterable total: 35"
-    _ -> "unexpected user Iterable total"
+fn addInt left: Int -> right: Int -> Int =
+  left + right
+
+fn total<C> values: C -> Int
+where Reducible<C, Int> =
+  values
+  |> reduce 0 addInt
+
+fn totals values: Countdown -> (Int, Int) =
+  (
+    values |> oddSquares |> reduce 0 (+),
+    values |> total
+  )
+
+fn renderTotals values: (Int, Int) -> String =
+  match values {
+    (35, 15) -> "user collection totals: 35 / 15"
+    _ -> "unexpected user collection totals"
   }
 
 pub effect fn main =
   Countdown 5
-  |> oddSquares
-  |> reduce 0 (+)
-  |> renderTotal
+  |> totals
+  |> renderTotals
   |> println

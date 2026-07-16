@@ -266,12 +266,19 @@ pub(crate) fn select_function_call_evidence(
                 Some(trait_identity) => {
                     select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
                 }
-                // Standard operations such as `reduce` carry their selected
-                // operation evidence without a resolved source trait symbol.
-                // They do not need a first-class dictionary value. Resolved
-                // constraints use the materializable-only fallback below.
-                None => standard_instance_identity(&constraint)
-                    .map(|identity| TypedInstanceEvidence::Standard { identity }),
+                // Standard operations such as `reduce` do not resolve through
+                // a source trait method, but their constraint can still be
+                // satisfied by evidence supplied by a generic caller or by a
+                // user instance. Prefer that materializable dictionary and
+                // retain the dedicated standard operation ABI as the fallback.
+                None => {
+                    let trait_identity = format!("std/prelude::{}", constraint.name);
+                    select_resolved_evidence(&constraint, &trait_identity, resolution, scoped)
+                        .or_else(|| {
+                            standard_instance_identity(&constraint)
+                                .map(|identity| TypedInstanceEvidence::Standard { identity })
+                        })
+                }
             }
             .ok_or_else(|| constraint.clone())?;
             Ok(TypedCallEvidence {

@@ -11,11 +11,11 @@
       "core.iterator.comprehend",
       "core.bool",
       "core.int64.remainder",
+      "core.int64.add",
+      "core.array.reduce",
       "core.string",
       "core.unit",
-      "effect.console.println",
-      "core.array.reduce",
-      "core.int64.add"
+      "effect.console.println"
     ]
   },
   "exports": [

@@ -110,6 +110,20 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
+            } else if callee == "std/prelude::reduce"
+                && matches!(evidence.as_slice(), [selected] if selected.constraint.name == "Reducible")
+            {
+                let dictionary = local_dictionary_expression(
+                    &evidence[0].evidence,
+                    imported_values,
+                    imported_types,
+                )
+                .expect("user Reducible call requires materialized dictionary evidence");
+                TypeScriptExpr::DictionaryCall {
+                    dictionary: Box::new(dictionary),
+                    method: "reduce".to_owned(),
+                    arguments,
+                }
             } else if let Some(operation) = runtime_iterator_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),

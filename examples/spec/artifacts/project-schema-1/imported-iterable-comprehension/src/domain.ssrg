@@ -13,3 +13,11 @@ instance Iterable<Countdown, Int> {
       Countdown limit -> unfold (advance limit) 1
     }
 }
+
+instance Reducible<Countdown, Int> {
+  fn reduce<B>
+    initial: B -> step: (B -> Int -> B) -> values: Countdown -> B =
+    match values {
+      Countdown limit -> reduce initial step (1..=limit)
+    }
+}

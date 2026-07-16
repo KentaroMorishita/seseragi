@@ -6,12 +6,13 @@
     "seseragi://artifact/user-iterable-comprehension"
   ],
   "sourcesContent": [
-    "pub type Countdown =\n  | Countdown Int\n\nfn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =\n  if current <= limit then\n    Just (current, current + 1)\n  else\n    Nothing\n\ninstance Iterable<Countdown, Int> {\n  fn iterate values: Countdown -> Iterator<Int> =\n    match values {\n      Countdown limit -> unfold (advance limit) 1\n    }\n}\n\nfn oddSquares values: Countdown -> Array<Int> =\n  [value * value | value <- values, value % 2 != 0]\n\nfn renderTotal total: Int -> String =\n  match total {\n    35 -> \"user Iterable total: 35\"\n    _ -> \"unexpected user Iterable total\"\n  }\n\npub effect fn main =\n  Countdown 5\n  |> oddSquares\n  |> reduce 0 (+)\n  |> renderTotal\n  |> println\n"
+    "pub type Countdown =\n  | Countdown Int\n\nfn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =\n  if current <= limit then\n    Just (current, current + 1)\n  else\n    Nothing\n\ninstance Iterable<Countdown, Int> {\n  fn iterate values: Countdown -> Iterator<Int> =\n    match values {\n      Countdown limit -> unfold (advance limit) 1\n    }\n}\n\ninstance Reducible<Countdown, Int> {\n  fn reduce<B>\n    initial: B -> step: (B -> Int -> B) -> values: Countdown -> B =\n    match values {\n      Countdown limit -> reduce initial step (1..=limit)\n    }\n}\n\nfn oddSquares values: Countdown -> Array<Int> =\n  [value * value | value <- values, value % 2 != 0]\n\nfn addInt left: Int -> right: Int -> Int =\n  left + right\n\nfn total<C> values: C -> Int\nwhere Reducible<C, Int> =\n  values\n  |> reduce 0 addInt\n\nfn totals values: Countdown -> (Int, Int) =\n  (\n    values |> oddSquares |> reduce 0 (+),\n    values |> total\n  )\n\nfn renderTotals values: (Int, Int) -> String =\n  match values {\n    (35, 15) -> \"user collection totals: 35 / 15\"\n    _ -> \"unexpected user collection totals\"\n  }\n\npub effect fn main =\n  Countdown 5\n  |> totals\n  |> renderTotals\n  |> println\n"
   ],
   "names": [
     "Countdown",
     "Countdown",
     "__ssrg$instance$Iterable$0",
+    "__ssrg$instance$Reducible$1",
     "advance",
     "Just",
     "add",
@@ -21,14 +22,21 @@
     "__ssrg$instance$Iterable$0",
     "remainder",
     "multiply",
-    "renderTotal",
-    "main",
-    "println",
-    "renderTotal",
+    "addInt",
+    "add",
+    "total",
+    "__ssrg$evidence$0",
+    "totals",
     "_ssrg_array_reduce",
     "add",
     "oddSquares",
+    "total",
+    "renderTotals",
+    "main",
+    "println",
+    "renderTotals",
+    "totals",
     "Countdown"
   ],
-  "mappings": ";;;;;;AAAAA;;AACIC;AAQJC;AANAC;AAaAI;AAGAK;AAMAC"
+  "mappings": ";;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC;AAqBAI;AAGAK;AAGAE;AAKAE;AAMAK;AAMAC"
 }

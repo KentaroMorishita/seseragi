@@ -248,6 +248,294 @@
           }
         ]
       }
+    },
+    {
+      "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 344,
+        "end": 547
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "reduce",
+            "typeParameters": [
+              "B"
+            ],
+            "parameters": [
+              {
+                "id": "initial",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "step",
+                "kind": "named",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                }
+              },
+              {
+                "id": "values",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 474,
+                  "end": 480
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Countdown",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/user-iterable-comprehension::Countdown",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 489,
+                        "end": 504
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "limit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 499,
+                        "end": 504
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::reduce",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "initial",
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 515,
+                          "end": 522
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "step",
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 523,
+                          "end": 527
+                        }
+                      },
+                      {
+                        "kind": "binary",
+                        "operator": "..=",
+                        "left": {
+                          "kind": "int64",
+                          "value": "1",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 529,
+                            "end": 530
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "limit",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 533,
+                            "end": 538
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Range",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 529,
+                          "end": 538
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Reducible",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Range",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/range::Reducible"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 508,
+                      "end": 539
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 489,
+                    "end": 539
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 468,
+                "end": 545
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 383,
+              "end": 545
+            }
+          }
+        ]
+      }
     }
   ],
   "functions": [
@@ -522,8 +810,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 344,
-        "end": 443
+        "start": 549,
+        "end": 648
       },
       "parameters": [
         {
@@ -551,8 +839,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 395,
-              "end": 400
+              "start": 600,
+              "end": 605
             }
           },
           "right": {
@@ -565,8 +853,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 403,
-              "end": 408
+              "start": 608,
+              "end": 613
             }
           },
           "evidence": [
@@ -604,8 +892,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 395,
-            "end": 408
+            "start": 600,
+            "end": 613
           }
         },
         "clauses": [
@@ -621,8 +909,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 411,
-                "end": 416
+                "start": 616,
+                "end": 621
               }
             },
             "source": {
@@ -635,8 +923,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 420,
-                "end": 426
+                "start": 625,
+                "end": 631
               }
             },
             "evidence": {
@@ -662,8 +950,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 411,
-              "end": 426
+              "start": 616,
+              "end": 631
             }
           },
           {
@@ -684,8 +972,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 428,
-                    "end": 433
+                    "start": 633,
+                    "end": 638
                   }
                 },
                 "right": {
@@ -693,8 +981,8 @@
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 436,
-                    "end": 437
+                    "start": 641,
+                    "end": 642
                   }
                 },
                 "evidence": [
@@ -732,8 +1020,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 428,
-                  "end": 437
+                  "start": 633,
+                  "end": 642
                 }
               },
               "right": {
@@ -741,8 +1029,8 @@
                 "value": "0",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 441,
-                  "end": 442
+                  "start": 646,
+                  "end": 647
                 }
               },
               "evidence": [
@@ -770,14 +1058,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 428,
-                "end": 442
+                "start": 633,
+                "end": 647
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 428,
-              "end": 442
+              "start": 633,
+              "end": 647
             }
           }
         ],
@@ -794,22 +1082,31 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 394,
-          "end": 443
+          "start": 599,
+          "end": 648
         }
       }
     },
     {
-      "symbol": "artifact/user-iterable-comprehension::renderTotal",
+      "symbol": "artifact/user-iterable-comprehension::addInt",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 445,
-        "end": 580
+        "start": 650,
+        "end": 707
       },
       "parameters": [
         {
-          "id": "total",
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
           "kind": "named",
           "type": {
             "kind": "named",
@@ -819,10 +1116,11 @@
         }
       ],
       "body": {
-        "kind": "decision",
-        "scrutinee": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
           "kind": "variable",
-          "name": "total",
+          "name": "left",
           "type": {
             "kind": "named",
             "name": "Int",
@@ -830,59 +1128,576 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 491,
-            "end": 496
+            "start": 695,
+            "end": 699
           }
         },
-        "scrutineeType": {
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 702,
+            "end": 707
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
           "kind": "named",
           "name": "Int",
           "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 695,
+          "end": 707
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-iterable-comprehension::total",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 709,
+        "end": 793
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::reduce",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "0",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 785,
+              "end": 786
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "artifact/user-iterable-comprehension::addInt",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 787,
+              "end": 793
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 766,
+              "end": 772
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 766,
+          "end": 793
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-iterable-comprehension::totals",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 795,
+        "end": 908
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "std/prelude::reduce",
+            "arguments": [
+              {
+                "kind": "int64",
+                "value": "0",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 878,
+                  "end": 879
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "+",
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 881,
+                  "end": 882
+                }
+              },
+              {
+                "kind": "call",
+                "callee": "artifact/user-iterable-comprehension::oddSquares",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "values",
+                    "type": {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 847,
+                      "end": 853
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 847,
+                  "end": 867
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 847,
+              "end": 883
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/user-iterable-comprehension::total",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 889,
+                  "end": 895
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 889,
+              "end": 904
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 841,
+          "end": 908
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-iterable-comprehension::renderTotals",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 910,
+        "end": 1072
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "values",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 965,
+            "end": 971
+          }
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
         },
         "branches": [
           {
             "tests": [
               {
                 "kind": "integer",
-                "path": [],
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
                 "value": "35",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 503,
-                  "end": 505
+                  "start": 979,
+                  "end": 981
+                }
+              },
+              {
+                "kind": "integer",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": "15",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 983,
+                  "end": 985
                 }
               }
             ],
             "value": {
               "kind": "string",
-              "value": "user Iterable total: 35",
+              "value": "user collection totals: 35 / 15",
               "origin": {
                 "source": "main.ssrg",
-                "start": 509,
-                "end": 534
+                "start": 990,
+                "end": 1023
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 503,
-              "end": 534
+              "start": 978,
+              "end": 1023
             }
           },
           {
             "tests": [],
             "value": {
               "kind": "string",
-              "value": "unexpected user Iterable total",
+              "value": "unexpected user collection totals",
               "origin": {
                 "source": "main.ssrg",
-                "start": 544,
-                "end": 576
+                "start": 1033,
+                "end": 1068
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 539,
-              "end": 576
+              "start": 1028,
+              "end": 1068
             }
           }
         ],
@@ -894,8 +1709,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 485,
-          "end": 580
+          "start": 959,
+          "end": 1072
         }
       }
     },
@@ -904,8 +1719,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 582,
-        "end": 680
+        "start": 1074,
+        "end": 1151
       },
       "parameters": [
         {
@@ -948,165 +1763,57 @@
         "arguments": [
           {
             "kind": "call",
-            "callee": "artifact/user-iterable-comprehension::renderTotal",
+            "callee": "artifact/user-iterable-comprehension::renderTotals",
             "arguments": [
               {
                 "kind": "call",
-                "callee": "std/prelude::reduce",
+                "callee": "artifact/user-iterable-comprehension::totals",
                 "arguments": [
                   {
-                    "kind": "int64",
-                    "value": "0",
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 645,
-                      "end": 646
-                    }
-                  },
-                  {
-                    "kind": "variable",
-                    "name": "+",
-                    "evidence": [
-                      {
-                        "constraint": {
-                          "name": "Add",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        "evidence": {
-                          "kind": "standard",
-                          "identity": "std/int::Add"
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "function",
-                      "parameter": {
-                        "kind": "named",
-                        "name": "Int",
-                        "arguments": []
-                      },
-                      "result": {
-                        "kind": "function",
-                        "parameter": {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        },
-                        "result": {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      }
-                    },
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 648,
-                      "end": 649
-                    }
-                  },
-                  {
                     "kind": "call",
-                    "callee": "artifact/user-iterable-comprehension::oddSquares",
+                    "callee": "artifact/user-iterable-comprehension::Countdown",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "artifact/user-iterable-comprehension::Countdown",
-                        "arguments": [
-                          {
-                            "kind": "int64",
-                            "value": "5",
-                            "origin": {
-                              "source": "main.ssrg",
-                              "start": 615,
-                              "end": 616
-                            }
-                          }
-                        ],
-                        "type": {
-                          "kind": "named",
-                          "name": "Countdown",
-                          "arguments": []
-                        },
+                        "kind": "int64",
+                        "value": "5",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 605,
-                          "end": 616
+                          "start": 1107,
+                          "end": 1108
                         }
                       }
                     ],
                     "type": {
                       "kind": "named",
-                      "name": "Array",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      ]
+                      "name": "Countdown",
+                      "arguments": []
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 605,
-                      "end": 632
-                    }
-                  }
-                ],
-                "evidence": [
-                  {
-                    "constraint": {
-                      "name": "Reducible",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "Array",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "evidence": {
-                      "kind": "standard",
-                      "identity": "std/array::Reducible"
+                      "start": 1097,
+                      "end": 1108
                     }
                   }
                 ],
                 "type": {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 605,
-                  "end": 650
+                  "start": 1097,
+                  "end": 1120
                 }
               }
             ],
@@ -1117,15 +1824,15 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 605,
-              "end": 667
+              "start": 1097,
+              "end": 1138
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 605,
-          "end": 680
+          "start": 1097,
+          "end": 1151
         }
       }
     }

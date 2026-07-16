@@ -151,3 +151,52 @@ where Functor<F> =
         bundle.typescript
     );
 }
+
+#[test]
+fn dispatches_standard_reduce_through_scoped_reducible_evidence() {
+    let source = "\
+pub type Pair =
+  | Pair (Int, Int)
+
+instance Reducible<Pair, Int> {
+  fn reduce<B>
+    initial: B -> step: (B -> Int -> B) -> values: Pair -> B =
+    match values {
+      Pair (first, second) -> step (step initial first) second
+    }
+}
+
+pub fn total<C> values: C -> Int
+where Reducible<C, Int> =
+  values
+  |> reduce 0 (+)
+
+pub fn answer unit: Unit -> Int =
+  Pair (20, 22)
+  |> total
+";
+    let typed = type_module("artifact/generic-reducible/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle.typescript.contains(
+            "__ssrg$evidence$0[\"reduce\"](0n)((_argument0) => (_argument1) => _ssrg_int64_add(_argument0, _argument1))(values)"
+        ),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        !bundle.typescript.contains("@seseragi/runtime/array"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(
+        bundle
+            .typescript
+            .contains("total(Pair([20n, 22n] as const))(__ssrg$instance$Reducible$0)"),
+        "{}",
+        bundle.typescript
+    );
+}

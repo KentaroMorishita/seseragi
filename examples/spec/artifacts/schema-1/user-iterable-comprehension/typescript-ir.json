@@ -8,6 +8,9 @@
     "core.int64",
     "core.iterator.unfold",
     "core.maybe",
+    "core.range.reduce",
+    "core.range",
+    "core.range.inclusive",
     "core.bool",
     "core.maybe.just",
     "core.int64.add",
@@ -15,15 +18,23 @@
     "core.int64.multiply",
     "core.iterator.comprehend",
     "core.int64.remainder",
+    "core.array.reduce",
     "core.string",
     "core.unit",
-    "effect.console.println",
-    "core.array.reduce"
+    "effect.console.println"
   ],
   "imports": [
     {
       "feature": "core.iterator.unfold",
       "local": "_ssrg_iterator_unfold"
+    },
+    {
+      "feature": "core.range.reduce",
+      "local": "_ssrg_range_reduce"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
     },
     {
       "feature": "core.maybe.just",
@@ -50,12 +61,12 @@
       "local": "_ssrg_int64_remainder"
     },
     {
-      "feature": "effect.console.println",
-      "local": "_ssrg_console_println"
-    },
-    {
       "feature": "core.array.reduce",
       "local": "_ssrg_array_reduce"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
     }
   ],
   "typeImports": [
@@ -192,6 +203,128 @@
               "source": "main.ssrg",
               "start": 218,
               "end": 340
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 344,
+        "end": 547
+      },
+      "dictionaryExport": "__ssrg$instance$Reducible$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "reduce",
+            "typeParameters": [
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "initial",
+                "type": "B",
+                "implicit": false
+              },
+              {
+                "name": "step",
+                "type": "(argument: B) => (argument: bigint) => B",
+                "implicit": false
+              },
+              {
+                "name": "values",
+                "type": "Countdown",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "values"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Countdown",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Countdown"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "limit",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_range_reduce",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "initial"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "step"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_range_inclusive",
+                        "arguments": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "limit"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 383,
+              "end": 545
             }
           }
         ]
@@ -346,18 +479,172 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 344,
-        "end": 443
+        "start": 549,
+        "end": 648
       }
     },
     {
       "kind": "const-function",
       "exported": false,
-      "name": "renderTotal",
+      "name": "addInt",
       "parameters": [
         {
-          "name": "total",
+          "name": "left",
           "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 650,
+        "end": 707
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "total",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "reduce",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "identifier",
+            "name": "addInt"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 709,
+        "end": 793
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "totals",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "Countdown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_array_reduce",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "0"
+              },
+              {
+                "kind": "curried-runtime-reference",
+                "name": "_ssrg_int64_add",
+                "arity": 2
+              },
+              {
+                "kind": "call",
+                "callee": "oddSquares",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "values"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "total",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Reducible$1"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 795,
+        "end": 908
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderTotals",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "readonly [bigint, bigint]",
           "implicit": false
         }
       ],
@@ -365,30 +652,53 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "total"
+          "name": "values"
         },
         "scrutineeType": {
-          "kind": "bigint"
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "bigint"
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
         },
         "branches": [
           {
             "tests": [
               {
                 "kind": "bigint-equals",
-                "path": [],
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
                 "value": "35"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": "15"
               }
             ],
             "value": {
               "kind": "string",
-              "value": "user Iterable total: 35"
+              "value": "user collection totals: 35 / 15"
             }
           },
           {
             "tests": [],
             "value": {
               "kind": "string",
-              "value": "unexpected user Iterable total"
+              "value": "unexpected user collection totals"
             }
           }
         ],
@@ -398,8 +708,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 445,
-        "end": 580
+        "start": 910,
+        "end": 1072
       }
     },
     {
@@ -419,34 +729,19 @@
         "arguments": [
           {
             "kind": "call",
-            "callee": "renderTotal",
+            "callee": "renderTotals",
             "arguments": [
               {
-                "kind": "runtime-call",
-                "callee": "_ssrg_array_reduce",
+                "kind": "call",
+                "callee": "totals",
                 "arguments": [
                   {
-                    "kind": "bigint",
-                    "value": "0"
-                  },
-                  {
-                    "kind": "curried-runtime-reference",
-                    "name": "_ssrg_int64_add",
-                    "arity": 2
-                  },
-                  {
                     "kind": "call",
-                    "callee": "oddSquares",
+                    "callee": "Countdown",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "Countdown",
-                        "arguments": [
-                          {
-                            "kind": "bigint",
-                            "value": "5"
-                          }
-                        ]
+                        "kind": "bigint",
+                        "value": "5"
                       }
                     ]
                   }
@@ -458,8 +753,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 582,
-        "end": 680
+        "start": 1074,
+        "end": 1151
       }
     }
   ]

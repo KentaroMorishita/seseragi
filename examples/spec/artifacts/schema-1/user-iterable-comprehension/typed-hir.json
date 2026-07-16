@@ -92,7 +92,7 @@
                     "symbol": "artifact/user-iterable-comprehension::Countdown",
                     "argument": {
                       "kind": "binding",
-                      "symbol": 18,
+                      "symbol": 21,
                       "name": "limit",
                       "type": {
                         "kind": "named",
@@ -226,6 +226,304 @@
             "origin": {
               "start": 218,
               "end": 340
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "traitIdentity": "std/prelude::Reducible",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/user-iterable-comprehension::Countdown",
+        "std/prelude::Int"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 344,
+        "end": 547
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "reduce",
+            "scheme": {
+              "typeParameters": [
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "initial",
+                "type": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 400,
+                  "end": 407
+                }
+              },
+              {
+                "kind": "named",
+                "name": "step",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                },
+                "origin": {
+                  "start": 414,
+                  "end": 418
+                }
+              },
+              {
+                "kind": "named",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 439,
+                  "end": 445
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 474,
+                  "end": 480
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "artifact/user-iterable-comprehension::Countdown",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 28,
+                      "name": "limit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 499,
+                        "end": 504
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 489,
+                      "end": 504
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::reduce",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "initial",
+                        "type": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 515,
+                          "end": 522
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "step",
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          }
+                        },
+                        "origin": {
+                          "start": 523,
+                          "end": 527
+                        }
+                      },
+                      {
+                        "kind": "binary",
+                        "operator": "..=",
+                        "left": {
+                          "kind": "integer",
+                          "value": "1",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 529,
+                            "end": 530
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "limit",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 533,
+                            "end": 538
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Range",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 529,
+                          "end": 538
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Reducible",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Range",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/range::Reducible"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 508,
+                      "end": 539
+                    }
+                  },
+                  "origin": {
+                    "start": 489,
+                    "end": 539
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              "origin": {
+                "start": 468,
+                "end": 545
+              }
+            },
+            "origin": {
+              "start": 383,
+              "end": 545
             }
           }
         ]
@@ -575,8 +873,8 @@
       "symbol": "artifact/user-iterable-comprehension::oddSquares",
       "visibility": "private",
       "origin": {
-        "start": 344,
-        "end": 443
+        "start": 549,
+        "end": 648
       },
       "scheme": {
         "typeParameters": [],
@@ -603,8 +901,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 358,
-            "end": 364
+            "start": 563,
+            "end": 569
           }
         }
       ],
@@ -622,8 +920,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 395,
-              "end": 400
+              "start": 600,
+              "end": 605
             }
           },
           "right": {
@@ -635,8 +933,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 403,
-              "end": 408
+              "start": 608,
+              "end": 613
             }
           },
           "evidence": [
@@ -673,8 +971,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 395,
-            "end": 408
+            "start": 600,
+            "end": 613
           }
         },
         "clauses": [
@@ -682,7 +980,7 @@
             "kind": "generator",
             "pattern": {
               "kind": "binding",
-              "symbol": 22,
+              "symbol": 32,
               "name": "value",
               "type": {
                 "kind": "named",
@@ -690,8 +988,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 411,
-                "end": 416
+                "start": 616,
+                "end": 621
               }
             },
             "source": {
@@ -703,8 +1001,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 420,
-                "end": 426
+                "start": 625,
+                "end": 631
               }
             },
             "evidence": {
@@ -729,8 +1027,8 @@
               }
             },
             "origin": {
-              "start": 411,
-              "end": 426
+              "start": 616,
+              "end": 631
             }
           },
           {
@@ -750,8 +1048,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 428,
-                    "end": 433
+                    "start": 633,
+                    "end": 638
                   }
                 },
                 "right": {
@@ -763,8 +1061,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 436,
-                    "end": 437
+                    "start": 641,
+                    "end": 642
                   }
                 },
                 "evidence": [
@@ -801,8 +1099,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 428,
-                  "end": 437
+                  "start": 633,
+                  "end": 642
                 }
               },
               "right": {
@@ -814,8 +1112,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 441,
-                  "end": 442
+                  "start": 646,
+                  "end": 647
                 }
               },
               "evidence": [
@@ -842,13 +1140,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 428,
-                "end": 442
+                "start": 633,
+                "end": 647
               }
             },
             "origin": {
-              "start": 428,
-              "end": 442
+              "start": 633,
+              "end": 647
             }
           }
         ],
@@ -864,18 +1162,541 @@
           ]
         },
         "origin": {
-          "start": 394,
-          "end": 443
+          "start": 599,
+          "end": 648
         }
       }
     },
     {
       "kind": "fn",
-      "symbol": "artifact/user-iterable-comprehension::renderTotal",
+      "symbol": "artifact/user-iterable-comprehension::addInt",
       "visibility": "private",
       "origin": {
-        "start": 445,
-        "end": 580
+        "start": 650,
+        "end": 707
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 660,
+            "end": 664
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 673,
+            "end": 678
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 695,
+            "end": 699
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 702,
+            "end": 707
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 695,
+          "end": 707
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/user-iterable-comprehension::total",
+      "visibility": "private",
+      "origin": {
+        "start": 709,
+        "end": 793
+      },
+      "scheme": {
+        "typeParameters": [
+          "C"
+        ],
+        "constraints": [
+          {
+            "name": "Reducible",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          },
+          "origin": {
+            "start": 721,
+            "end": 727
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::reduce",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "0",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 785,
+              "end": 786
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "artifact/user-iterable-comprehension::addInt",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "start": 787,
+              "end": 793
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "start": 766,
+              "end": 772
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 766,
+          "end": 793
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/user-iterable-comprehension::totals",
+      "visibility": "private",
+      "origin": {
+        "start": 795,
+        "end": 908
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          "origin": {
+            "start": 805,
+            "end": 811
+          }
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "std/prelude::reduce",
+            "arguments": [
+              {
+                "kind": "integer",
+                "value": "0",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 878,
+                  "end": 879
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "+",
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                },
+                "origin": {
+                  "start": 881,
+                  "end": 882
+                }
+              },
+              {
+                "kind": "call",
+                "callee": "artifact/user-iterable-comprehension::oddSquares",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "values",
+                    "type": {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 847,
+                      "end": 853
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 847,
+                  "end": 867
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 847,
+              "end": 883
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/user-iterable-comprehension::total",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 889,
+                  "end": 895
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 889,
+              "end": 904
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 841,
+          "end": 908
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/user-iterable-comprehension::renderTotals",
+      "visibility": "private",
+      "origin": {
+        "start": 910,
+        "end": 1072
       },
       "scheme": {
         "typeParameters": [],
@@ -889,15 +1710,25 @@
       "parameters": [
         {
           "kind": "named",
-          "name": "total",
+          "name": "values",
           "type": {
-            "kind": "named",
-            "name": "Int",
-            "arguments": []
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
           },
           "origin": {
-            "start": 460,
-            "end": 465
+            "start": 926,
+            "end": 932
           }
         }
       ],
@@ -905,79 +1736,136 @@
         "kind": "match",
         "scrutinee": {
           "kind": "variable",
-          "name": "total",
+          "name": "values",
           "type": {
-            "kind": "named",
-            "name": "Int",
-            "arguments": []
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
           },
           "origin": {
-            "start": 491,
-            "end": 496
+            "start": 965,
+            "end": 971
           }
         },
         "arms": [
           {
             "pattern": {
-              "kind": "integer",
-              "value": "35",
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "value": "35",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 979,
+                    "end": 981
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "15",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 983,
+                    "end": 985
+                  }
+                }
+              ],
               "type": {
-                "kind": "named",
-                "name": "Int",
-                "arguments": []
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
               },
               "origin": {
-                "start": 503,
-                "end": 505
+                "start": 978,
+                "end": 986
               }
             },
             "body": {
               "kind": "string",
-              "value": "user Iterable total: 35",
+              "value": "user collection totals: 35 / 15",
               "type": {
                 "kind": "named",
                 "name": "String",
                 "arguments": []
               },
               "origin": {
-                "start": 509,
-                "end": 534
+                "start": 990,
+                "end": 1023
               }
             },
             "origin": {
-              "start": 503,
-              "end": 534
+              "start": 978,
+              "end": 1023
             }
           },
           {
             "pattern": {
               "kind": "wildcard",
               "type": {
-                "kind": "named",
-                "name": "Int",
-                "arguments": []
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
               },
               "origin": {
-                "start": 539,
-                "end": 540
+                "start": 1028,
+                "end": 1029
               }
             },
             "body": {
               "kind": "string",
-              "value": "unexpected user Iterable total",
+              "value": "unexpected user collection totals",
               "type": {
                 "kind": "named",
                 "name": "String",
                 "arguments": []
               },
               "origin": {
-                "start": 544,
-                "end": 576
+                "start": 1033,
+                "end": 1068
               }
             },
             "origin": {
-              "start": 539,
-              "end": 576
+              "start": 1028,
+              "end": 1068
             }
           }
         ],
@@ -988,8 +1876,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 485,
-          "end": 580
+          "start": 959,
+          "end": 1072
         }
       }
     },
@@ -998,8 +1886,8 @@
       "symbol": "artifact/user-iterable-comprehension::main",
       "visibility": "public",
       "origin": {
-        "start": 582,
-        "end": 680
+        "start": 1074,
+        "end": 1151
       },
       "inferredContract": true,
       "parameters": [
@@ -1070,169 +1958,59 @@
         "arguments": [
           {
             "kind": "call",
-            "callee": "artifact/user-iterable-comprehension::renderTotal",
+            "callee": "artifact/user-iterable-comprehension::renderTotals",
             "arguments": [
               {
                 "kind": "call",
-                "callee": "std/prelude::reduce",
+                "callee": "artifact/user-iterable-comprehension::totals",
                 "arguments": [
                   {
-                    "kind": "integer",
-                    "value": "0",
-                    "type": {
-                      "kind": "named",
-                      "name": "Int",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 645,
-                      "end": 646
-                    }
-                  },
-                  {
-                    "kind": "variable",
-                    "name": "+",
-                    "evidence": [
-                      {
-                        "constraint": {
-                          "name": "Add",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        "evidence": {
-                          "kind": "standard",
-                          "identity": "std/int::Add"
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "function",
-                      "parameter": {
-                        "kind": "named",
-                        "name": "Int",
-                        "arguments": []
-                      },
-                      "result": {
-                        "kind": "function",
-                        "parameter": {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        },
-                        "result": {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      }
-                    },
-                    "origin": {
-                      "start": 648,
-                      "end": 649
-                    }
-                  },
-                  {
                     "kind": "call",
-                    "callee": "artifact/user-iterable-comprehension::oddSquares",
+                    "callee": "artifact/user-iterable-comprehension::Countdown",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "artifact/user-iterable-comprehension::Countdown",
-                        "arguments": [
-                          {
-                            "kind": "integer",
-                            "value": "5",
-                            "type": {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            },
-                            "origin": {
-                              "start": 615,
-                              "end": 616
-                            }
-                          }
-                        ],
+                        "kind": "integer",
+                        "value": "5",
                         "type": {
                           "kind": "named",
-                          "name": "Countdown",
+                          "name": "Int",
                           "arguments": []
                         },
                         "origin": {
-                          "start": 605,
-                          "end": 616
+                          "start": 1107,
+                          "end": 1108
                         }
                       }
                     ],
                     "type": {
                       "kind": "named",
-                      "name": "Array",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      ]
+                      "name": "Countdown",
+                      "arguments": []
                     },
                     "origin": {
-                      "start": 605,
-                      "end": 632
-                    }
-                  }
-                ],
-                "evidence": [
-                  {
-                    "constraint": {
-                      "name": "Reducible",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "Array",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "evidence": {
-                      "kind": "standard",
-                      "identity": "std/array::Reducible"
+                      "start": 1097,
+                      "end": 1108
                     }
                   }
                 ],
                 "type": {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
                 },
                 "origin": {
-                  "start": 605,
-                  "end": 650
+                  "start": 1097,
+                  "end": 1120
                 }
               }
             ],
@@ -1242,14 +2020,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 605,
-              "end": 667
+              "start": 1097,
+              "end": 1138
             }
           }
         ],
         "origin": {
-          "start": 605,
-          "end": 680
+          "start": 1097,
+          "end": 1151
         }
       }
     }

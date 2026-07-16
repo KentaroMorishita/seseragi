@@ -80,6 +80,31 @@
         "start": 180,
         "end": 342
       }
+    },
+    {
+      "trait": "Reducible",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Reducible",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 344,
+        "end": 547
+      }
     }
   ]
 }

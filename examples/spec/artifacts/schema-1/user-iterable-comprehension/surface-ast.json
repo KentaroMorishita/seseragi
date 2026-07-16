@@ -405,26 +405,284 @@
       }
     },
     {
+      "kind": "instance",
+      "traitName": "Reducible",
+      "traitNameSpan": {
+        "start": 353,
+        "end": 362
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Countdown",
+          "span": {
+            "start": 363,
+            "end": 372
+          }
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 374,
+            "end": 377
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "reduce",
+          "nameSpan": {
+            "start": 386,
+            "end": 392
+          },
+          "typeParameters": [
+            "B"
+          ],
+          "parameters": [
+            {
+              "name": "initial",
+              "nameSpan": {
+                "start": 400,
+                "end": 407
+              },
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "span": {
+                  "start": 409,
+                  "end": 410
+                }
+              }
+            },
+            {
+              "name": "step",
+              "nameSpan": {
+                "start": 414,
+                "end": 418
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "B",
+                  "span": {
+                    "start": 421,
+                    "end": 422
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "span": {
+                      "start": 426,
+                      "end": 429
+                    }
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "span": {
+                      "start": 433,
+                      "end": 434
+                    }
+                  },
+                  "span": {
+                    "start": 426,
+                    "end": 434
+                  }
+                },
+                "span": {
+                  "start": 421,
+                  "end": 434
+                }
+              }
+            },
+            {
+              "name": "values",
+              "nameSpan": {
+                "start": 439,
+                "end": 445
+              },
+              "type": {
+                "kind": "named",
+                "name": "Countdown",
+                "span": {
+                  "start": 447,
+                  "end": 456
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "B",
+            "span": {
+              "start": 460,
+              "end": 461
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "values",
+              "span": {
+                "start": 474,
+                "end": 480
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Countdown",
+                  "nameSpan": {
+                    "start": 489,
+                    "end": 498
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "limit",
+                    "nameSpan": {
+                      "start": 499,
+                      "end": 504
+                    },
+                    "span": {
+                      "start": 499,
+                      "end": 504
+                    }
+                  },
+                  "span": {
+                    "start": 489,
+                    "end": 504
+                  }
+                },
+                "body": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "reduce",
+                        "span": {
+                          "start": 508,
+                          "end": 514
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "initial",
+                        "span": {
+                          "start": 515,
+                          "end": 522
+                        }
+                      },
+                      "span": {
+                        "start": 508,
+                        "end": 522
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "step",
+                      "span": {
+                        "start": 523,
+                        "end": 527
+                      }
+                    },
+                    "span": {
+                      "start": 508,
+                      "end": 527
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "binary",
+                      "operator": "..=",
+                      "operatorSpan": {
+                        "start": 530,
+                        "end": 533
+                      },
+                      "left": {
+                        "kind": "integer",
+                        "raw": "1",
+                        "span": {
+                          "start": 529,
+                          "end": 530
+                        }
+                      },
+                      "right": {
+                        "kind": "name",
+                        "name": "limit",
+                        "span": {
+                          "start": 533,
+                          "end": 538
+                        }
+                      },
+                      "span": {
+                        "start": 529,
+                        "end": 538
+                      }
+                    },
+                    "span": {
+                      "start": 528,
+                      "end": 539
+                    }
+                  },
+                  "span": {
+                    "start": 508,
+                    "end": 539
+                  }
+                },
+                "span": {
+                  "start": 489,
+                  "end": 539
+                }
+              }
+            ],
+            "span": {
+              "start": 468,
+              "end": 545
+            }
+          },
+          "span": {
+            "start": 383,
+            "end": 545
+          }
+        }
+      ],
+      "span": {
+        "start": 344,
+        "end": 547
+      }
+    },
+    {
       "kind": "fn",
       "visibility": "private",
       "name": "oddSquares",
       "nameSpan": {
-        "start": 347,
-        "end": 357
+        "start": 552,
+        "end": 562
       },
       "parameters": [
         {
           "name": "values",
           "nameSpan": {
-            "start": 358,
-            "end": 364
+            "start": 563,
+            "end": 569
           },
           "type": {
             "kind": "named",
             "name": "Countdown",
             "span": {
-              "start": 366,
-              "end": 375
+              "start": 571,
+              "end": 580
             }
           }
         }
@@ -437,14 +695,14 @@
             "kind": "named",
             "name": "Int",
             "span": {
-              "start": 385,
-              "end": 388
+              "start": 590,
+              "end": 593
             }
           }
         ],
         "span": {
-          "start": 379,
-          "end": 389
+          "start": 584,
+          "end": 594
         }
       },
       "body": {
@@ -453,28 +711,28 @@
           "kind": "binary",
           "operator": "*",
           "operatorSpan": {
-            "start": 401,
-            "end": 402
+            "start": 606,
+            "end": 607
           },
           "left": {
             "kind": "name",
             "name": "value",
             "span": {
-              "start": 395,
-              "end": 400
+              "start": 600,
+              "end": 605
             }
           },
           "right": {
             "kind": "name",
             "name": "value",
             "span": {
-              "start": 403,
-              "end": 408
+              "start": 608,
+              "end": 613
             }
           },
           "span": {
-            "start": 395,
-            "end": 408
+            "start": 600,
+            "end": 613
           }
         },
         "clauses": [
@@ -484,25 +742,25 @@
               "kind": "name",
               "name": "value",
               "nameSpan": {
-                "start": 411,
-                "end": 416
+                "start": 616,
+                "end": 621
               },
               "span": {
-                "start": 411,
-                "end": 416
+                "start": 616,
+                "end": 621
               }
             },
             "source": {
               "kind": "name",
               "name": "values",
               "span": {
-                "start": 420,
-                "end": 426
+                "start": 625,
+                "end": 631
               }
             },
             "span": {
-              "start": 411,
-              "end": 426
+              "start": 616,
+              "end": 631
             }
           },
           {
@@ -511,195 +769,326 @@
               "kind": "binary",
               "operator": "!=",
               "operatorSpan": {
-                "start": 438,
-                "end": 440
+                "start": 643,
+                "end": 645
               },
               "left": {
                 "kind": "binary",
                 "operator": "%",
                 "operatorSpan": {
-                  "start": 434,
-                  "end": 435
+                  "start": 639,
+                  "end": 640
                 },
                 "left": {
                   "kind": "name",
                   "name": "value",
                   "span": {
-                    "start": 428,
-                    "end": 433
+                    "start": 633,
+                    "end": 638
                   }
                 },
                 "right": {
                   "kind": "integer",
                   "raw": "2",
                   "span": {
-                    "start": 436,
-                    "end": 437
+                    "start": 641,
+                    "end": 642
                   }
                 },
                 "span": {
-                  "start": 428,
-                  "end": 437
+                  "start": 633,
+                  "end": 642
                 }
               },
               "right": {
                 "kind": "integer",
                 "raw": "0",
                 "span": {
-                  "start": 441,
-                  "end": 442
+                  "start": 646,
+                  "end": 647
                 }
               },
               "span": {
-                "start": 428,
-                "end": 442
+                "start": 633,
+                "end": 647
               }
             },
             "span": {
-              "start": 428,
-              "end": 442
+              "start": 633,
+              "end": 647
             }
           }
         ],
         "span": {
-          "start": 394,
-          "end": 443
+          "start": 599,
+          "end": 648
         }
       },
       "span": {
-        "start": 344,
-        "end": 443
+        "start": 549,
+        "end": 648
       }
     },
     {
       "kind": "fn",
       "visibility": "private",
-      "name": "renderTotal",
+      "name": "addInt",
       "nameSpan": {
-        "start": 448,
-        "end": 459
+        "start": 653,
+        "end": 659
       },
       "parameters": [
         {
-          "name": "total",
+          "name": "left",
           "nameSpan": {
-            "start": 460,
-            "end": 465
+            "start": 660,
+            "end": 664
           },
           "type": {
             "kind": "named",
             "name": "Int",
             "span": {
-              "start": 467,
-              "end": 470
+              "start": 666,
+              "end": 669
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 673,
+            "end": 678
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 680,
+              "end": 683
             }
           }
         }
       ],
       "returnType": {
         "kind": "named",
-        "name": "String",
+        "name": "Int",
         "span": {
-          "start": 474,
-          "end": 480
+          "start": 687,
+          "end": 690
         }
       },
       "body": {
-        "kind": "match",
-        "scrutinee": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 700,
+          "end": 701
+        },
+        "left": {
           "kind": "name",
-          "name": "total",
+          "name": "left",
           "span": {
-            "start": 491,
-            "end": 496
+            "start": 695,
+            "end": 699
           }
         },
-        "arms": [
-          {
-            "pattern": {
-              "kind": "integer",
-              "raw": "35",
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 702,
+            "end": 707
+          }
+        },
+        "span": {
+          "start": 695,
+          "end": 707
+        }
+      },
+      "span": {
+        "start": 650,
+        "end": 707
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "total",
+      "nameSpan": {
+        "start": 712,
+        "end": 717
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 721,
+            "end": 727
+          },
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "span": {
+              "start": 729,
+              "end": 730
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 734,
+          "end": 737
+        }
+      },
+      "constraints": [
+        {
+          "name": "Reducible",
+          "nameSpan": {
+            "start": 744,
+            "end": 753
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
               "span": {
-                "start": 503,
-                "end": 505
+                "start": 754,
+                "end": 755
               }
             },
-            "body": {
-              "kind": "string",
-              "raw": "\"user Iterable total: 35\"",
+            {
+              "kind": "named",
+              "name": "Int",
               "span": {
-                "start": 509,
-                "end": 534
+                "start": 757,
+                "end": 760
+              }
+            }
+          ],
+          "span": {
+            "start": 744,
+            "end": 761
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 778,
+                "end": 784
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 785,
+                "end": 786
               }
             },
             "span": {
-              "start": 503,
-              "end": 534
+              "start": 778,
+              "end": 786
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "addInt",
+            "span": {
+              "start": 787,
+              "end": 793
+            }
+          },
+          "span": {
+            "start": 778,
+            "end": 793
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 766,
+            "end": 772
+          }
+        },
+        "span": {
+          "start": 766,
+          "end": 793
+        }
+      },
+      "span": {
+        "start": 709,
+        "end": 793
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "totals",
+      "nameSpan": {
+        "start": 798,
+        "end": 804
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 805,
+            "end": 811
+          },
+          "type": {
+            "kind": "named",
+            "name": "Countdown",
+            "span": {
+              "start": 813,
+              "end": 822
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 827,
+              "end": 830
             }
           },
           {
-            "pattern": {
-              "kind": "wildcard",
-              "span": {
-                "start": 539,
-                "end": 540
-              }
-            },
-            "body": {
-              "kind": "string",
-              "raw": "\"unexpected user Iterable total\"",
-              "span": {
-                "start": 544,
-                "end": 576
-              }
-            },
+            "kind": "named",
+            "name": "Int",
             "span": {
-              "start": 539,
-              "end": 576
+              "start": 832,
+              "end": 835
             }
           }
         ],
         "span": {
-          "start": 485,
-          "end": 580
+          "start": 826,
+          "end": 836
         }
       },
-      "span": {
-        "start": 445,
-        "end": 580
-      }
-    },
-    {
-      "kind": "effectFn",
-      "visibility": "public",
-      "name": "main",
-      "nameSpan": {
-        "start": 596,
-        "end": 600
-      },
-      "inferredContract": true,
-      "returnType": null,
       "body": {
-        "kind": "application",
-        "function": {
-          "kind": "name",
-          "name": "println",
-          "span": {
-            "start": 673,
-            "end": 680
-          }
-        },
-        "argument": {
-          "kind": "application",
-          "function": {
-            "kind": "name",
-            "name": "renderTotal",
-            "span": {
-              "start": 656,
-              "end": 667
-            }
-          },
-          "argument": {
+        "kind": "tuple",
+        "elements": [
+          {
             "kind": "application",
             "function": {
               "kind": "application",
@@ -709,21 +1098,21 @@
                   "kind": "name",
                   "name": "reduce",
                   "span": {
-                    "start": 638,
-                    "end": 644
+                    "start": 871,
+                    "end": 877
                   }
                 },
                 "argument": {
                   "kind": "integer",
                   "raw": "0",
                   "span": {
-                    "start": 645,
-                    "end": 646
+                    "start": 878,
+                    "end": 879
                   }
                 },
                 "span": {
-                  "start": 638,
-                  "end": 646
+                  "start": 871,
+                  "end": 879
                 }
               },
               "argument": {
@@ -732,18 +1121,18 @@
                   "kind": "name",
                   "name": "+",
                   "span": {
-                    "start": 648,
-                    "end": 649
+                    "start": 881,
+                    "end": 882
                   }
                 },
                 "span": {
-                  "start": 647,
-                  "end": 650
+                  "start": 880,
+                  "end": 883
                 }
               },
               "span": {
-                "start": 638,
-                "end": 650
+                "start": 871,
+                "end": 883
               }
             },
             "argument": {
@@ -752,56 +1141,275 @@
                 "kind": "name",
                 "name": "oddSquares",
                 "span": {
-                  "start": 622,
-                  "end": 632
+                  "start": 857,
+                  "end": 867
                 }
               },
               "argument": {
-                "kind": "application",
-                "function": {
-                  "kind": "name",
-                  "name": "Countdown",
-                  "span": {
-                    "start": 605,
-                    "end": 614
-                  }
-                },
-                "argument": {
-                  "kind": "integer",
-                  "raw": "5",
-                  "span": {
-                    "start": 615,
-                    "end": 616
-                  }
-                },
+                "kind": "name",
+                "name": "values",
                 "span": {
-                  "start": 605,
-                  "end": 616
+                  "start": 847,
+                  "end": 853
                 }
               },
               "span": {
-                "start": 605,
-                "end": 632
+                "start": 847,
+                "end": 867
               }
             },
             "span": {
-              "start": 605,
-              "end": 650
+              "start": 847,
+              "end": 883
             }
           },
-          "span": {
-            "start": 605,
-            "end": 667
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "total",
+              "span": {
+                "start": 899,
+                "end": 904
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "values",
+              "span": {
+                "start": 889,
+                "end": 895
+              }
+            },
+            "span": {
+              "start": 889,
+              "end": 904
+            }
           }
-        },
+        ],
         "span": {
-          "start": 605,
-          "end": 680
+          "start": 841,
+          "end": 908
         }
       },
       "span": {
-        "start": 582,
-        "end": 680
+        "start": 795,
+        "end": 908
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderTotals",
+      "nameSpan": {
+        "start": 913,
+        "end": 925
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 926,
+            "end": 932
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 935,
+                  "end": 938
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 940,
+                  "end": 943
+                }
+              }
+            ],
+            "span": {
+              "start": 934,
+              "end": 944
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 948,
+          "end": 954
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 965,
+            "end": 971
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "35",
+                  "span": {
+                    "start": 979,
+                    "end": 981
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "raw": "15",
+                  "span": {
+                    "start": 983,
+                    "end": 985
+                  }
+                }
+              ],
+              "span": {
+                "start": 978,
+                "end": 986
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"user collection totals: 35 / 15\"",
+              "span": {
+                "start": 990,
+                "end": 1023
+              }
+            },
+            "span": {
+              "start": 978,
+              "end": 1023
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 1028,
+                "end": 1029
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected user collection totals\"",
+              "span": {
+                "start": 1033,
+                "end": 1068
+              }
+            },
+            "span": {
+              "start": 1028,
+              "end": 1068
+            }
+          }
+        ],
+        "span": {
+          "start": 959,
+          "end": 1072
+        }
+      },
+      "span": {
+        "start": 910,
+        "end": 1072
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 1088,
+        "end": 1092
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 1144,
+            "end": 1151
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "renderTotals",
+            "span": {
+              "start": 1126,
+              "end": 1138
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "totals",
+              "span": {
+                "start": 1114,
+                "end": 1120
+              }
+            },
+            "argument": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Countdown",
+                "span": {
+                  "start": 1097,
+                  "end": 1106
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "5",
+                "span": {
+                  "start": 1107,
+                  "end": 1108
+                }
+              },
+              "span": {
+                "start": 1097,
+                "end": 1108
+              }
+            },
+            "span": {
+              "start": 1097,
+              "end": 1120
+            }
+          },
+          "span": {
+            "start": 1097,
+            "end": 1138
+          }
+        },
+        "span": {
+          "start": 1097,
+          "end": 1151
+        }
+      },
+      "span": {
+        "start": 1074,
+        "end": 1151
       }
     }
   ]

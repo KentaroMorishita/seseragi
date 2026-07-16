@@ -8,6 +8,9 @@
     "core.int64",
     "core.iterator.unfold",
     "core.maybe",
+    "core.range.reduce",
+    "core.range",
+    "core.range.inclusive",
     "core.bool",
     "core.maybe.just",
     "core.int64.add",
@@ -17,6 +20,14 @@
     {
       "feature": "core.iterator.unfold",
       "local": "_ssrg_iterator_unfold"
+    },
+    {
+      "feature": "core.range.reduce",
+      "local": "_ssrg_range_reduce"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
     },
     {
       "feature": "core.maybe.just",
@@ -165,6 +176,128 @@
               "source": "domain.ssrg",
               "start": 218,
               "end": 340
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 344,
+        "end": 547
+      },
+      "dictionaryExport": "__ssrg$instance$Reducible$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "reduce",
+            "typeParameters": [
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "initial",
+                "type": "B",
+                "implicit": false
+              },
+              {
+                "name": "step",
+                "type": "(argument: B) => (argument: bigint) => B",
+                "implicit": false
+              },
+              {
+                "name": "values",
+                "type": "Countdown",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "values"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Countdown",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Countdown"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "limit",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_range_reduce",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "initial"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "step"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_range_inclusive",
+                        "arguments": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "limit"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 383,
+              "end": 545
             }
           }
         ]

@@ -38,6 +38,9 @@
       "core.int64",
       "core.iterator.unfold",
       "core.maybe",
+      "core.range.reduce",
+      "core.range",
+      "core.range.inclusive",
       "core.bool",
       "core.maybe.just",
       "core.int64.add",
@@ -45,10 +48,10 @@
       "core.int64.multiply",
       "core.iterator.comprehend",
       "core.int64.remainder",
+      "core.array.reduce",
       "core.string",
       "core.unit",
-      "effect.console.println",
-      "core.array.reduce"
+      "effect.console.println"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",
@@ -57,8 +60,8 @@
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["user Iterable total: 35"],
-        "stdout": "user Iterable total: 35\n"
+        "arguments": ["user collection totals: 35 / 15"],
+        "stdout": "user collection totals: 35 / 15\n"
       }
     ]
   }

@@ -11,6 +11,9 @@
       "core.int64",
       "core.iterator.unfold",
       "core.maybe",
+      "core.range.reduce",
+      "core.range",
+      "core.range.inclusive",
       "core.bool",
       "core.maybe.just",
       "core.int64.add",
@@ -35,6 +38,21 @@
         }
       ],
       "dictionaryExport": "__ssrg$instance$Iterable$0"
+    },
+    {
+      "identity": "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Reducible$1"
     }
   ],
   "outputs": {

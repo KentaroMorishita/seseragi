@@ -88,6 +88,38 @@
         "start": 180,
         "end": 342
       }
+    },
+    {
+      "identity": "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "providerModule": "fixture/imported-iterable-comprehension::domain",
+      "traitIdentity": "std/prelude::Reducible",
+      "argumentIdentities": [
+        "fixture/imported-iterable-comprehension::domain::Countdown",
+        "std/prelude::Int"
+      ],
+      "trait": "Reducible",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Reducible",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 344,
+        "end": 547
+      }
     }
   ]
 }

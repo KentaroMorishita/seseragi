@@ -128,12 +128,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
   },
   {
     id: "user-iterable-comprehension",
-    label: "自作Iterableの流れ",
+    label: "自作Collectionの流れ",
     category: "型と抽象化",
     sourcePath:
       "examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg",
     stdin: "",
-    expectedOutput: "user Iterable total: 35",
+    expectedOutput: "user collection totals: 35 / 15",
   },
   {
     id: "list-comprehension",

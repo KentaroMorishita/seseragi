@@ -585,9 +585,11 @@ TypeScriptIrはlocal dictionaryの`add` method call、またはそのcurried fun
 `project-schema-1/imported-user-add-operator`ではconsumerがproviderのdictionary exportをimportして同じcallを実行し、
 型名やJavaScript tagをbackendで再判定しません。`semantic-diagnostics-schema-1/user-add-missing`は対応instanceがない
 concrete operandを、`operator-reference-missing`は対応instanceがないsectionを`SES-T0201 instance.missing`で拒否します。
-standard `Reducible<Array<Int>,Int>`とuser `Add<Score,Int,Score>` callbackの組合せは実行済みですが、generic
-`where Reducible<C,A>` evidenceからuser dictionaryの`reduce` methodを呼ぶ経路は未接続です。これはoperator selectionへ
-特例を足さず、collection trait method dispatchの独立sliceで回収します。struct / newtype `operator`糖衣も後続です。
+standard `Reducible<Array<Int>,Int>`とuser `Add<Score,Int,Score>` callbackの組合せに加え、generic
+`where Reducible<C,A>` evidenceからuser dictionaryの`reduce` methodを呼ぶ経路も接続済みです。prelude `reduce`は
+scoped / local / imported evidenceを標準operation evidenceより先に選び、materializable evidenceだけdictionary callへlowerします。
+標準Array / Range / Listは従来の専用runtime ABIを維持するため、存在しないstandard dictionaryを捏造しません。
+struct / newtype `operator`糖衣は後続です。
 
 `schema-1/pure-comparison`はInt、Bool、Stringの`==` / `!=`で、それぞれのstandard `Eq<A>` evidenceを
 TypedHirとCoreIrへ保持します。backendのstrict equality表現は変えませんが、型検査後にoperand spellingから
@@ -1079,6 +1081,13 @@ dictionaryの`iterate`を呼び、`Iterator<A>`用`collectMap` / `collectFlatMap
 `project-schema-1/imported-iterable-comprehension`はdictionary provider import、type-only Iterator import、複数moduleの
 runtime requirement closureとNode executionを固定します。これにより標準collection名のhardcodeだけでgreenになる経路を
 排除しました。
+
+同じfixtureはuser-defined `Reducible<Countdown, Int>`とgeneric `total<C> where Reducible<C, Int>`も固定します。
+generic bodyのprelude `reduce`はscoped parameter dictionaryのmethodへlowerし、具体callはlocalまたはimported provider
+dictionaryを渡します。custom dictionary method自身はfiniteなstandard Range reduceを組み合わせるため、標準operation ABIと
+user dictionary ABIを一つのexecutionで検査します。`semantic-diagnostics-schema-1/reducible-missing`は対応instanceのない
+concrete collectionを`instance.missing`で拒否します。standard Reducibleそのものをfirst-class dictionaryとして渡すABIは
+引き続き独立gateであり、このsliceはuser evidence dispatchと混同しません。
 
 同じcollection roadmapの次のsliceとして、仕様3.8のpersistent `List<A>` literalを
 `schema-1/list-literal`でTokenStreamからgenerated TypeScriptまで接続しました。`` `[a, b] ``はlexerでtemplate literalと

@@ -3,15 +3,28 @@ import { Countdown } from "./domain"
 fn oddSquares values: Countdown -> Array<Int> =
   [value * value | value <- values, value % 2 != 0]
 
-fn renderTotal total: Int -> String =
-  match total {
-    35 -> "imported Iterable total: 35"
-    _ -> "unexpected imported Iterable total"
+fn addInt left: Int -> right: Int -> Int =
+  left + right
+
+fn total<C> values: C -> Int
+where Reducible<C, Int> =
+  values
+  |> reduce 0 addInt
+
+fn totals values: Countdown -> (Int, Int) =
+  (
+    values |> oddSquares |> reduce 0 (+),
+    values |> total
+  )
+
+fn renderTotals values: (Int, Int) -> String =
+  match values {
+    (35, 15) -> "imported collection totals: 35 / 15"
+    _ -> "unexpected imported collection totals"
   }
 
 pub effect fn main =
   Countdown 5
-  |> oddSquares
-  |> reduce 0 (+)
-  |> renderTotal
+  |> totals
+  |> renderTotals
   |> println
