@@ -117,3 +117,37 @@ fn accepts_a_partially_applied_trait_method_from_its_expected_function_type() {
 
     assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
 }
+
+#[test]
+fn accepts_a_partially_applied_constrained_function_with_concrete_evidence() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Ready<A> { fn ready value: A -> String }\n\
+         instance Ready<Badge> { fn ready value: Badge -> String = \"Badge is ready\" }\n\
+         fn describe<T> value: T -> suffix: String -> String\n\
+         where Ready<T> =\n\
+           ready value + suffix\n\
+         fn applyLabel labeler: (String -> String) -> String = labeler \"!\"\n\
+         pub fn label value: Badge -> String = applyLabel (describe value)\n",
+    );
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn reports_missing_concrete_evidence_for_a_partial_constrained_function() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Ready<A> { fn ready value: A -> String }\n\
+         fn describe<T> value: T -> suffix: String -> String\n\
+         where Ready<T> =\n\
+           suffix\n\
+         fn applyLabel labeler: (String -> String) -> String = labeler \"!\"\n\
+         pub fn label value: Badge -> String = applyLabel (describe value)\n",
+    );
+
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
+}

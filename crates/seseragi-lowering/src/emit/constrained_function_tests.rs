@@ -65,3 +65,29 @@ pub fn answer value: Maybe<Int> -> Maybe<Int> =
         bundle.typescript
     );
 }
+
+#[test]
+fn defers_constrained_function_evidence_until_after_remaining_value_arguments() {
+    let source = "\
+pub type Badge = | Active
+pub trait Ready<A> { fn ready value: A -> String }
+instance Ready<Badge> { fn ready value: Badge -> String = \"Badge is ready\" }
+fn describe<T> value: T -> suffix: String -> String
+where Ready<T> =
+  ready value + suffix
+fn applyLabel labeler: (String -> String) -> String = labeler \"!\"
+pub fn label value: Badge -> String = applyLabel (describe value)
+";
+    let typed = type_module("artifact/partial-constrained-function/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(
+        bundle.typescript.contains(
+            "applyLabel((__ssrg$partial$0: string) => describe(value)(__ssrg$partial$0)(__ssrg$instance$Ready$0))"
+        ),
+        "{}",
+        bundle.typescript
+    );
+}

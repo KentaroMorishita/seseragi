@@ -50,3 +50,42 @@ fn passes_selected_local_evidence_to_a_constrained_function_call() {
             )
     ));
 }
+
+#[test]
+fn defers_selected_evidence_until_remaining_value_parameters_are_applied() {
+    let typed = type_module(
+        "artifact/partial-constrained-function/main.ssrg",
+        "pub type Badge = | Active\n\
+         pub trait Ready<A> { fn ready value: A -> String }\n\
+         instance Ready<Badge> { fn ready value: Badge -> String = \"Badge is ready\" }\n\
+         fn describe<T> value: T -> suffix: String -> String\n\
+         where Ready<T> =\n\
+           ready value + suffix\n\
+         fn applyLabel labeler: (String -> String) -> String = labeler \"!\"\n\
+         pub fn label value: Badge -> String = applyLabel (describe value)\n",
+    );
+    let TypedDecl::Fn { body, .. } = &typed.declarations[3] else {
+        panic!("expected label function");
+    };
+    let TypedExpr::Call { arguments, .. } = body else {
+        panic!("expected higher-order call");
+    };
+
+    assert!(matches!(
+        arguments.as_slice(),
+        [TypedExpr::Call {
+            evidence,
+            deferred_evidence_parameters,
+            ..
+        }] if matches!(
+            evidence.as_slice(),
+            [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local { .. },
+                ..
+            }]
+        ) && matches!(
+            deferred_evidence_parameters.as_slice(),
+            [crate::TypedType::Named { name, arguments }] if name == "String" && arguments.is_empty()
+        )
+    ));
+}

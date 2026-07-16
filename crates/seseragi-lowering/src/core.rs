@@ -218,6 +218,8 @@ pub enum CoreExpr {
         arguments: Vec<CoreExpr>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<CoreCallEvidence>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        deferred_evidence_parameters: Vec<CoreType>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         trait_dispatch: Option<CoreTraitDispatch>,
         #[serde(rename = "type")]

@@ -1,0 +1,28 @@
+pub type Badge =
+  | Active
+
+pub trait Ready<A> {
+  fn ready value: A -> String
+}
+
+instance Ready<Badge> {
+  fn ready value: Badge -> String = "Badge is ready"
+}
+
+fn describe<T>
+  value: T
+  -> suffix: String
+  -> String
+where Ready<T> =
+  ready value + suffix
+
+fn applyLabel
+  labeler: (String -> String)
+  -> String =
+  labeler "!"
+
+pub effect fn main =
+  Active
+  |> describe
+  |> applyLabel
+  |> println

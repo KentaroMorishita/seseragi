@@ -215,6 +215,12 @@ operation-only standard traitのdictionary ABIは独立した後続gateです。
 TypeScriptIrのdictionary call、生成TS、`execution-schema-1/partial-functor-value`の`Just 42`を一つのgateで固定します。
 通常のconstrained top-level functionを未飽和で保持するABIはこのcaseの完了条件に含みません。
 
+`schema-1/partial-constrained-function`は通常の`where Ready<T>`付きtop-level関数を一引数だけ適用し、
+残りの`String -> String`をhigher-order関数へ渡します。選択済みdictionaryは全value parameterの後ろへ置く既存ABIを
+維持するため、TypedHir / CoreIrの`deferredEvidenceParameters`を使って生成TSをeta-expandします。
+`execution-schema-1/partial-constrained-function`が`Badge is ready!`を固定し、dictionaryを早く渡す誤生成を拒否します。
+未解決constraintを保持するpolymorphic value schemeは独立した後続gateです。
+
 `schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
 method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く
 `Labeled<Badge>` dictionaryとして運びます。生成TSは通常のmethod引数の後ろへcompiler-private evidence parameterを追加し、

@@ -94,6 +94,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             callee,
             arguments,
             evidence,
+            deferred_evidence_parameters,
             trait_dispatch,
             type_ref,
             origin,
@@ -101,6 +102,10 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             callee,
             arguments: lower_exprs(source, arguments),
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
+            deferred_evidence_parameters: deferred_evidence_parameters
+                .into_iter()
+                .map(lower_typed_type)
+                .collect(),
             trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
                 trait_identity: dispatch.trait_identity,
                 method: dispatch.method,

@@ -401,6 +401,7 @@ type Internal =
                         origin: origin.clone(),
                     }],
                     evidence: Vec::new(),
+                    deferred_evidence_parameters: Vec::new(),
                     trait_dispatch: None,
                     type_ref: int_type,
                     origin,

@@ -109,6 +109,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Just 42",
   },
   {
+    id: "partial-constrained-function",
+    label: "制約付き関数を渡す",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/partial-constrained-function/main.ssrg",
+    stdin: "",
+    expectedOutput: "Badge is ready!",
+  },
+  {
     id: "applicative-maybe",
     label: "Applicativeの流れ",
     category: "型と抽象化",

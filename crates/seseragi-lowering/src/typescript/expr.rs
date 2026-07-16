@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 use super::decision::lower_core_decision;
 use super::dictionaries::local_dictionary_expression;
 use super::names::{local_name, safe_identifier};
-use super::types::type_ref_from_core_type;
+use super::types::{render_typescript_type, type_ref_from_core_type};
 use super::{TypeScriptExpr, TypeScriptStatement};
 
 mod comprehension;
@@ -55,6 +55,7 @@ pub(super) fn lower_core_expr_to_typescript(
             callee,
             arguments,
             evidence,
+            deferred_evidence_parameters,
             trait_dispatch,
             ..
         } => {
@@ -89,17 +90,28 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else {
-                arguments.extend(evidence.iter().map(|selected| {
-                    local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                let evidence = evidence
+                    .iter()
+                    .map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
                         .expect("constrained function call requires materializable evidence")
-                }));
-                TypeScriptExpr::Call {
-                    callee: imported_values
-                        .get(&callee)
-                        .cloned()
-                        .unwrap_or_else(|| local_name(&callee)),
+                    })
+                    .collect::<Vec<_>>();
+                let callee = imported_values
+                    .get(&callee)
+                    .cloned()
+                    .unwrap_or_else(|| local_name(&callee));
+                lower_constrained_call(
+                    callee,
                     arguments,
-                }
+                    evidence,
+                    deferred_evidence_parameters,
+                    imported_types,
+                )
             }
         }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {
@@ -221,6 +233,40 @@ pub(super) fn lower_core_expr_to_typescript(
             )),
         },
     }
+}
+
+fn lower_constrained_call(
+    callee: String,
+    mut arguments: Vec<TypeScriptExpr>,
+    evidence: Vec<TypeScriptExpr>,
+    deferred_parameters: Vec<CoreType>,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptExpr {
+    if deferred_parameters.is_empty() {
+        arguments.extend(evidence);
+        return TypeScriptExpr::Call { callee, arguments };
+    }
+
+    let parameters = deferred_parameters
+        .into_iter()
+        .enumerate()
+        .map(|(index, type_ref)| {
+            let name = format!("__ssrg$partial${index}");
+            let type_name =
+                render_typescript_type(&type_ref_from_core_type(&type_ref, imported_types));
+            arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
+            (name, type_name)
+        })
+        .collect::<Vec<_>>();
+    arguments.extend(evidence);
+
+    parameters.into_iter().rev().fold(
+        TypeScriptExpr::Call { callee, arguments },
+        |body, (name, type_name)| TypeScriptExpr::Lambda {
+            parameter: format!("{name}: {type_name}"),
+            body: Box::new(body),
+        },
+    )
 }
 
 pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {

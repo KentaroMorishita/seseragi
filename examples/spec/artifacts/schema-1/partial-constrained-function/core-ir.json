@@ -1,0 +1,422 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/partial-constrained-function",
+  "adts": [
+    {
+      "symbol": "artifact/partial-constrained-function::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/partial-constrained-function::Active",
+          "name": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/partial-constrained-function::trait(Ready)<artifact/partial-constrained-function::Badge>",
+      "trait": "Ready",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 83,
+        "end": 161
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "ready",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "Badge is ready",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 143,
+                "end": 159
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 109,
+              "end": 159
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/partial-constrained-function::describe",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 163,
+        "end": 260
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Ready",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          }
+        },
+        {
+          "id": "suffix",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "call",
+          "callee": "artifact/partial-constrained-function::trait(Ready)::ready",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 246,
+                "end": 251
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Ready",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "parameter",
+                "index": 0
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "artifact/partial-constrained-function::trait(Ready)",
+            "method": "ready"
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 240,
+            "end": 251
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "suffix",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 254,
+            "end": 260
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 240,
+          "end": 260
+        }
+      }
+    },
+    {
+      "symbol": "artifact/partial-constrained-function::applyLabel",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 262,
+        "end": 333
+      },
+      "parameters": [
+        {
+          "id": "labeler",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "labeler",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "!",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 330,
+              "end": 333
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 322,
+          "end": 333
+        }
+      }
+    },
+    {
+      "symbol": "artifact/partial-constrained-function::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 335,
+        "end": 407
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/partial-constrained-function::applyLabel",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/partial-constrained-function::describe",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/partial-constrained-function::Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 358,
+                      "end": 364
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Ready",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Badge",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "local",
+                      "identity": "artifact/partial-constrained-function::trait(Ready)<artifact/partial-constrained-function::Badge>"
+                    }
+                  }
+                ],
+                "deferredEvidenceParameters": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ],
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 358,
+                  "end": 378
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 358,
+              "end": 394
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 358,
+          "end": 407
+        }
+      }
+    }
+  ]
+}

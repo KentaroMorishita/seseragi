@@ -97,18 +97,30 @@ pub(super) fn type_application(
         &semantic_arguments,
     );
     let saturated = arguments.len() >= signature.parameters.len();
-    let evidence = if issue.is_none() && (saturated || signature.trait_identity.is_some()) {
+    let concrete_partial_constraints = !saturated
+        && signature.trait_identity.is_none()
+        && !application.constraints.is_empty()
+        && application.constraints.iter().all(|constraint| {
+            constraint.arguments.iter().all(|argument| {
+                !contains_unresolved_type_parameter(
+                    argument,
+                    &signature.type_parameters,
+                    &application.resolved_type_parameters,
+                )
+            })
+        });
+    let requires_evidence =
+        saturated || signature.trait_identity.is_some() || concrete_partial_constraints;
+    let evidence = if issue.is_none() && requires_evidence {
         match context
             .select_call_evidence(&application.constraints, &application.constraint_identities)
         {
             Ok(evidence) => evidence,
             Err(constraint) => {
-                if saturated || signature.trait_identity.is_some() {
-                    issue = Some(PureCallIssue::MissingInstance {
-                        callee: *callee_span,
-                        constraint,
-                    });
-                }
+                issue = Some(PureCallIssue::MissingInstance {
+                    callee: *callee_span,
+                    constraint,
+                });
                 Vec::new()
             }
         }
@@ -127,11 +139,23 @@ pub(super) fn type_application(
     } else {
         SemanticTypeKey::Other
     };
+    let deferred_evidence_parameters =
+        if !evidence.is_empty() && !saturated && signature.trait_identity.is_none() {
+            application
+                .parameters
+                .iter()
+                .skip(arguments.len())
+                .map(|parameter| parameter.type_ref.clone())
+                .collect()
+        } else {
+            Vec::new()
+        };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Call {
             callee: signature.symbol.clone(),
             arguments,
             evidence,
+            deferred_evidence_parameters,
             trait_dispatch: signature
                 .trait_identity
                 .clone()
@@ -239,5 +263,34 @@ fn is_unresolved_parameter_expectation(
         | TypedType::Record { .. }
         | TypedType::Tuple { .. }
         | TypedType::Function { .. } => false,
+    }
+}
+
+fn contains_unresolved_type_parameter(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+    resolved: &std::collections::BTreeSet<String>,
+) -> bool {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            (parameters.iter().any(|parameter| parameter.name == *name) && !resolved.contains(name))
+                || arguments.iter().any(|argument| {
+                    contains_unresolved_type_parameter(argument, parameters, resolved)
+                })
+        }
+        TypedType::ExternalNamed { arguments, .. } => arguments
+            .iter()
+            .any(|argument| contains_unresolved_type_parameter(argument, parameters, resolved)),
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| contains_unresolved_type_parameter(&field.type_ref, parameters, resolved)),
+        TypedType::Tuple { elements } => elements
+            .iter()
+            .any(|element| contains_unresolved_type_parameter(element, parameters, resolved)),
+        TypedType::Function { parameter, result } => {
+            contains_unresolved_type_parameter(parameter, parameters, resolved)
+                || contains_unresolved_type_parameter(result, parameters, resolved)
+        }
+        TypedType::Hole => true,
     }
 }
