@@ -3,7 +3,9 @@ use seseragi_syntax::TypeParameter;
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::{application_result_type_from, TopLevelPureFunction};
-use crate::typed::semantic_types::{instantiate_callable, SemanticValueType};
+use crate::typed::semantic_types::{
+    instantiate_callable, substitute_remaining_scheme_parameters, SemanticValueType,
+};
 use crate::typed::type_ref::typed_type_contains_hole;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -68,6 +70,12 @@ pub(crate) fn instantiated_application(
             key: signature.semantic_result.clone(),
         },
     );
+    let semantic_parameters = semantic
+        .parameters
+        .iter()
+        .map(|parameter| substitute_remaining_scheme_parameters(parameter, &substitutions))
+        .collect::<Vec<_>>();
+    let semantic_result = substitute_remaining_scheme_parameters(&semantic.result, &substitutions);
     let parameter_types = signature
         .parameters
         .iter()
@@ -89,7 +97,7 @@ pub(crate) fn instantiated_application(
     InstantiatedApplication {
         parameters: parameter_types
             .into_iter()
-            .zip(semantic.parameters)
+            .zip(semantic_parameters)
             .map(|(type_ref, semantic)| SemanticValueType {
                 type_ref,
                 key: semantic.key,
@@ -97,7 +105,7 @@ pub(crate) fn instantiated_application(
             .collect(),
         result: SemanticValueType {
             type_ref: result_type,
-            key: semantic.result.key,
+            key: semantic_result.key,
         },
         constraints,
         constraint_identities: signature.constraint_identities.clone(),

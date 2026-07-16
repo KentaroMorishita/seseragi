@@ -33,6 +33,10 @@
       "types": "./src/range.ts",
       "default": "./src/range.ts"
     },
+    "./iterator": {
+      "types": "./src/iterator.ts",
+      "default": "./src/iterator.ts"
+    },
     "./sum": {
       "types": "./src/sum.ts",
       "default": "./src/sum.ts"

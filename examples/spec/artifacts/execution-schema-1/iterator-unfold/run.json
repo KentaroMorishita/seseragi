@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "case": "iterator-unfold",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/iterator-unfold",
+    "export": "main",
+    "compiledModule": "../../schema-1/iterator-unfold/generated-module.json",
+    "typedInterface": "../../schema-1/iterator-unfold/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.iterator",
+      "core.int64",
+      "core.maybe",
+      "core.bool",
+      "core.maybe.just",
+      "core.int64.add",
+      "core.maybe.nothing",
+      "core.string",
+      "core.iterator.next",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.iterator.unfold"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["persistent iterator: 1 then 2"],
+        "stdout": "persistent iterator: 1 then 2\n"
+      }
+    ]
+  }
+}

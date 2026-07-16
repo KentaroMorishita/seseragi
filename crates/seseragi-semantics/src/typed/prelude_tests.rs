@@ -156,6 +156,36 @@ fn types_standard_either_patterns_and_proves_the_family_exhaustive() {
 }
 
 #[test]
+fn substitutes_iterator_element_types_through_nested_standard_results() {
+    let typed = type_module(
+        "artifact/prelude-iterator/main.ssrg",
+        "fn inspect iterator: Iterator<Int> -> Int =\n\
+           match next iterator {\n\
+             Nothing -> 0\n\
+             Just (value, _) -> value\n\
+           }\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected inspect function");
+    };
+    let TypedExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert!(matches!(
+        &arms[1].pattern,
+        TypedPattern::Constructor {
+            symbol,
+            argument: Some(argument),
+            ..
+        } if symbol == "std/prelude::Just"
+            && matches!(argument.as_ref(), TypedPattern::Tuple { elements, .. }
+                if matches!(&elements[0], TypedPattern::Binding { type_ref, .. }
+                    if type_ref == &named("Int")))
+    ));
+}
+
+#[test]
 fn selects_array_reducible_evidence_for_standard_reduce() {
     let typed = type_module(
         "artifact/array-reduce/main.ssrg",

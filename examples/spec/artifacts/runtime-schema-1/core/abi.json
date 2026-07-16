@@ -165,6 +165,38 @@
       }
     },
     {
+      "id": "core.iterator",
+      "kind": "value-representation",
+      "typescript": "type Iterator<A>",
+      "boundary": "persistent pure pull iterator returning Maybe<(A, Iterator<A>)>",
+      "typeIdentity": "std/prelude::Iterator",
+      "typeImport": {
+        "module": "@seseragi/runtime/iterator",
+        "export": "Iterator"
+      },
+      "import": null
+    },
+    {
+      "id": "core.iterator.unfold",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(S -> Maybe<(A, S)>) -> S -> Iterator<A> without eager stepping",
+      "import": {
+        "module": "@seseragi/runtime/iterator",
+        "export": "unfold"
+      }
+    },
+    {
+      "id": "core.iterator.next",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterator<A> -> Maybe<(A, Iterator<A>)> without consuming the iterator",
+      "import": {
+        "module": "@seseragi/runtime/iterator",
+        "export": "next"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

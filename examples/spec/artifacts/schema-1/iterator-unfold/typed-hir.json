@@ -1,0 +1,1778 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/iterator-unfold",
+  "externalTypeBindings": [
+    {
+      "spelling": "Iterator",
+      "canonical": "std/prelude::Iterator"
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/iterator-unfold::step",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 117
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "current",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 8,
+            "end": 15
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "variable",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 49,
+              "end": 56
+            }
+          },
+          "right": {
+            "kind": "integer",
+            "value": "3",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 60,
+              "end": 61
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 49,
+            "end": 61
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "std/prelude::Just",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "variable",
+                  "name": "current",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 77,
+                    "end": 84
+                  }
+                },
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "variable",
+                    "name": "current",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 86,
+                      "end": 93
+                    }
+                  },
+                  "right": {
+                    "kind": "integer",
+                    "value": "1",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 96,
+                      "end": 97
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 86,
+                    "end": 97
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 76,
+                "end": 98
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 71,
+            "end": 98
+          }
+        },
+        "elseBranch": {
+          "kind": "variable",
+          "name": "std/prelude::Nothing",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 110,
+            "end": 117
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 46,
+          "end": 117
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/iterator-unfold::render",
+      "visibility": "private",
+      "origin": {
+        "start": 119,
+        "end": 653
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "iterator",
+          "type": {
+            "kind": "named",
+            "name": "Iterator",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 129,
+            "end": 137
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::next",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "iterator",
+                  "type": {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 179,
+                    "end": 187
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Iterator",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 174,
+                "end": 187
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "std/prelude::next",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "iterator",
+                  "type": {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 194,
+                    "end": 202
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Iterator",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 189,
+                "end": 202
+              }
+            }
+          ],
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Iterator",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Iterator",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 173,
+            "end": 203
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "symbol": "std/prelude::Just",
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "binding",
+                        "symbol": 15,
+                        "name": "left",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 217,
+                          "end": 221
+                        }
+                      },
+                      {
+                        "kind": "binding",
+                        "symbol": 16,
+                        "name": "leftRest",
+                        "type": {
+                          "kind": "named",
+                          "name": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 223,
+                          "end": 231
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 216,
+                      "end": 232
+                    }
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 211,
+                    "end": 232
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "symbol": "std/prelude::Just",
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "binding",
+                        "symbol": 17,
+                        "name": "right",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 240,
+                          "end": 245
+                        }
+                      },
+                      {
+                        "kind": "binding",
+                        "symbol": 18,
+                        "name": "rightRest",
+                        "type": {
+                          "kind": "named",
+                          "name": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 247,
+                          "end": 256
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 239,
+                      "end": 257
+                    }
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 234,
+                    "end": 257
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 210,
+                "end": 258
+              }
+            },
+            "body": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "left": {
+                  "kind": "variable",
+                  "name": "left",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 271,
+                    "end": 275
+                  }
+                },
+                "right": {
+                  "kind": "variable",
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 279,
+                    "end": 284
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Eq",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Eq"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 271,
+                  "end": 284
+                }
+              },
+              "thenBranch": {
+                "kind": "match",
+                "scrutinee": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::next",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "leftRest",
+                          "type": {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 310,
+                            "end": 318
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Iterator",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 305,
+                        "end": 318
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::next",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "rightRest",
+                          "type": {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 325,
+                            "end": 334
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Iterator",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 320,
+                        "end": 334
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Iterator",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Iterator",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 304,
+                    "end": 335
+                  }
+                },
+                "arms": [
+                  {
+                    "pattern": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "constructor",
+                          "symbol": "std/prelude::Just",
+                          "argument": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "binding",
+                                "symbol": 20,
+                                "name": "leftNext",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 355,
+                                  "end": 363
+                                }
+                              },
+                              {
+                                "kind": "wildcard",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Iterator",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "start": 365,
+                                  "end": 366
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Iterator",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "start": 354,
+                              "end": 367
+                            }
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Iterator",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 349,
+                            "end": 367
+                          }
+                        },
+                        {
+                          "kind": "constructor",
+                          "symbol": "std/prelude::Just",
+                          "argument": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "binding",
+                                "symbol": 21,
+                                "name": "rightNext",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 375,
+                                  "end": 384
+                                }
+                              },
+                              {
+                                "kind": "wildcard",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Iterator",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "start": 386,
+                                  "end": 387
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Iterator",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "start": 374,
+                              "end": 388
+                            }
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Iterator",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 369,
+                            "end": 388
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Iterator",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Iterator",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 348,
+                        "end": 389
+                      }
+                    },
+                    "body": {
+                      "kind": "if",
+                      "condition": {
+                        "kind": "binary",
+                        "operator": "==",
+                        "left": {
+                          "kind": "variable",
+                          "name": "leftNext",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 408,
+                            "end": 416
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "rightNext",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 420,
+                            "end": 429
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Eq",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Eq"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 408,
+                          "end": 429
+                        }
+                      },
+                      "thenBranch": {
+                        "kind": "string",
+                        "value": "persistent iterator: 1 then 2",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 449,
+                          "end": 480
+                        }
+                      },
+                      "elseBranch": {
+                        "kind": "string",
+                        "value": "iterator rest changed",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 512,
+                          "end": 535
+                        }
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 405,
+                        "end": 535
+                      }
+                    },
+                    "origin": {
+                      "start": 348,
+                      "end": 535
+                    }
+                  },
+                  {
+                    "pattern": {
+                      "kind": "wildcard",
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Iterator",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Iterator",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 546,
+                        "end": 547
+                      }
+                    },
+                    "body": {
+                      "kind": "string",
+                      "value": "iterator ended early",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 551,
+                        "end": 573
+                      }
+                    },
+                    "origin": {
+                      "start": 546,
+                      "end": 573
+                    }
+                  }
+                ],
+                "exhaustive": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 298,
+                  "end": 583
+                }
+              },
+              "elseBranch": {
+                "kind": "string",
+                "value": "iterator changed",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 603,
+                  "end": 621
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 268,
+                "end": 621
+              }
+            },
+            "origin": {
+              "start": 210,
+              "end": 621
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 626,
+                "end": 627
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "iterator changed",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 631,
+                "end": 649
+              }
+            },
+            "origin": {
+              "start": 626,
+              "end": 649
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 167,
+          "end": 653
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/iterator-unfold::main",
+      "visibility": "public",
+      "origin": {
+        "start": 655,
+        "end": 716
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/iterator-unfold::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/prelude::unfold",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/iterator-unfold::step",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "origin": {
+                      "start": 685,
+                      "end": 689
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "value": "1",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 690,
+                      "end": 691
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Iterator",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 678,
+                  "end": 691
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 678,
+              "end": 703
+            }
+          }
+        ],
+        "origin": {
+          "start": 678,
+          "end": 716
+        }
+      }
+    }
+  ]
+}

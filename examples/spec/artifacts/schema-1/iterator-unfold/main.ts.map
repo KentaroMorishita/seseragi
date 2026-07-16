@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/iterator-unfold"
+  ],
+  "sourcesContent": [
+    "fn step current: Int -> Maybe<(Int, Int)> =\n  if current <= 3 then\n    Just (current, current + 1)\n  else\n    Nothing\n\nfn render iterator: Iterator<Int> -> String =\n  match (next iterator, next iterator) {\n    (Just (left, leftRest), Just (right, rightRest)) ->\n      if left == right then\n        match (next leftRest, next rightRest) {\n          (Just (leftNext, _), Just (rightNext, _)) ->\n            if leftNext == rightNext then\n              \"persistent iterator: 1 then 2\"\n            else\n              \"iterator rest changed\"\n          _ -> \"iterator ended early\"\n        }\n      else\n        \"iterator changed\"\n    _ -> \"iterator changed\"\n  }\n\npub effect fn main =\n  unfold step 1\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "step",
+    "Just",
+    "add",
+    "Nothing",
+    "render",
+    "next",
+    "next",
+    "left",
+    "leftRest",
+    "right",
+    "rightRest",
+    "next",
+    "next",
+    "leftNext",
+    "rightNext",
+    "main",
+    "println",
+    "render",
+    "unfold"
+  ],
+  "mappings": ";;;;;AAAAA;AAMAI;AAiBAW"
+}

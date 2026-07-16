@@ -1,0 +1,569 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/iterator-unfold",
+  "runtimeRequirements": [
+    "core.iterator",
+    "core.int64",
+    "core.maybe",
+    "core.bool",
+    "core.maybe.just",
+    "core.int64.add",
+    "core.maybe.nothing",
+    "core.string",
+    "core.iterator.next",
+    "core.adt",
+    "core.unit",
+    "effect.console.println",
+    "core.iterator.unfold"
+  ],
+  "imports": [
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.iterator.next",
+      "local": "_ssrg_iterator_next"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.iterator.unfold",
+      "local": "_ssrg_iterator_unfold"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.iterator",
+      "local": "Iterator"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "step",
+      "parameters": [
+        {
+          "name": "current",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "identifier",
+            "name": "current"
+          },
+          "right": {
+            "kind": "bigint",
+            "value": "3"
+          }
+        },
+        "thenBranch": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_maybe_Just",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int64_add",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "current"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "1"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "elseBranch": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_maybe_Nothing"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 117
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "iterator",
+          "type": "Iterator<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_iterator_next",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "iterator"
+                }
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_iterator_next",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "iterator"
+                }
+              ]
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint"
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "bigint"
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Just"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "leftRest",
+                "type": {
+                  "kind": "reference",
+                  "name": "Iterator",
+                  "arguments": [
+                    {
+                      "kind": "bigint"
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "rightRest",
+                "type": {
+                  "kind": "reference",
+                  "name": "Iterator",
+                  "arguments": [
+                    {
+                      "kind": "bigint"
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "conditional",
+              "condition": {
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                "right": {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              },
+              "thenBranch": {
+                "kind": "decision",
+                "scrutinee": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_iterator_next",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "leftRest"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_iterator_next",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "rightRest"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "scrutineeType": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "maybe",
+                      "element": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "bigint"
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "bigint"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "maybe",
+                      "element": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "bigint"
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "bigint"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "branches": [
+                  {
+                    "tests": [
+                      {
+                        "kind": "tag-equals",
+                        "path": [
+                          {
+                            "kind": "tuple-element",
+                            "index": 0
+                          }
+                        ],
+                        "tag": "Just"
+                      },
+                      {
+                        "kind": "tag-equals",
+                        "path": [
+                          {
+                            "kind": "tuple-element",
+                            "index": 1
+                          }
+                        ],
+                        "tag": "Just"
+                      }
+                    ],
+                    "bindings": [
+                      {
+                        "name": "leftNext",
+                        "type": {
+                          "kind": "bigint"
+                        },
+                        "path": [
+                          {
+                            "kind": "tuple-element",
+                            "index": 0
+                          },
+                          {
+                            "kind": "adt-payload"
+                          },
+                          {
+                            "kind": "tuple-element",
+                            "index": 0
+                          }
+                        ]
+                      },
+                      {
+                        "name": "rightNext",
+                        "type": {
+                          "kind": "bigint"
+                        },
+                        "path": [
+                          {
+                            "kind": "tuple-element",
+                            "index": 1
+                          },
+                          {
+                            "kind": "adt-payload"
+                          },
+                          {
+                            "kind": "tuple-element",
+                            "index": 0
+                          }
+                        ]
+                      }
+                    ],
+                    "value": {
+                      "kind": "conditional",
+                      "condition": {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "identifier",
+                          "name": "leftNext"
+                        },
+                        "right": {
+                          "kind": "identifier",
+                          "name": "rightNext"
+                        }
+                      },
+                      "thenBranch": {
+                        "kind": "string",
+                        "value": "persistent iterator: 1 then 2"
+                      },
+                      "elseBranch": {
+                        "kind": "string",
+                        "value": "iterator rest changed"
+                      }
+                    }
+                  },
+                  {
+                    "tests": [],
+                    "value": {
+                      "kind": "string",
+                      "value": "iterator ended early"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "string"
+                }
+              },
+              "elseBranch": {
+                "kind": "string",
+                "value": "iterator changed"
+              }
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "iterator changed"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 119,
+        "end": 653
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_iterator_unfold",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "step"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 655,
+        "end": 716
+      }
+    }
+  ]
+}

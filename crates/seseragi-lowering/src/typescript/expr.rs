@@ -1,6 +1,7 @@
 use crate::collection_ops::runtime_collection_operation;
 use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation_with_evidence;
+use crate::iterator_ops::runtime_iterator_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{CoreExpr, CoreMonadDoStatement, CoreStatement, CoreType};
@@ -80,6 +81,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_collection_operation(&callee, &evidence) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_iterator_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

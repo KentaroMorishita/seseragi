@@ -83,6 +83,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "Array"
                 | "List"
                 | "Range"
+                | "Iterator"
                 | "Effect"
                 | "Console"
                 | "ConsoleError"
@@ -99,6 +100,8 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "mapError"
                 | "fromEither"
                 | "reduce"
+                | "unfold"
+                | "next"
         ),
         SymbolNamespace::Operator => matches!(
             spelling,
@@ -138,7 +141,7 @@ pub(crate) fn type_constructor_arity(spelling: &str) -> Option<u32> {
         return Some(sum_type.type_parameters.len() as u32);
     }
     match spelling {
-        "Array" | "List" | "Range" => Some(1),
+        "Array" | "List" | "Range" | "Iterator" => Some(1),
         "Effect" => Some(3),
         name if is_standalone_symbol(SymbolNamespace::Type, name) => Some(0),
         _ => None,
@@ -152,6 +155,7 @@ pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
             | "std/prelude::ConsoleError"
             | "std/prelude::Stdin"
             | "std/prelude::StdinError"
+            | "std/prelude::Iterator"
     )
 }
 
@@ -178,5 +182,6 @@ mod tests {
         assert_eq!(type_constructor_arity("Maybe"), Some(1));
         assert_eq!(type_constructor_arity("Either"), Some(2));
         assert_eq!(type_constructor_arity("Effect"), Some(3));
+        assert_eq!(type_constructor_arity("Iterator"), Some(1));
     }
 }

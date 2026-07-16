@@ -1,0 +1,1463 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/iterator-unfold",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "step",
+      "nameSpan": {
+        "start": 3,
+        "end": 7
+      },
+      "parameters": [
+        {
+          "name": "current",
+          "nameSpan": {
+            "start": 8,
+            "end": 15
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 17,
+              "end": 20
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Maybe",
+        "arguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 31,
+                  "end": 34
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 36,
+                  "end": 39
+                }
+              }
+            ],
+            "span": {
+              "start": 30,
+              "end": 40
+            }
+          }
+        ],
+        "span": {
+          "start": 24,
+          "end": 41
+        }
+      },
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "operatorSpan": {
+            "start": 57,
+            "end": 59
+          },
+          "left": {
+            "kind": "name",
+            "name": "current",
+            "span": {
+              "start": 49,
+              "end": 56
+            }
+          },
+          "right": {
+            "kind": "integer",
+            "raw": "3",
+            "span": {
+              "start": 60,
+              "end": 61
+            }
+          },
+          "span": {
+            "start": 49,
+            "end": 61
+          }
+        },
+        "thenBranch": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "Just",
+            "span": {
+              "start": 71,
+              "end": 75
+            }
+          },
+          "argument": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "name",
+                "name": "current",
+                "span": {
+                  "start": 77,
+                  "end": 84
+                }
+              },
+              {
+                "kind": "binary",
+                "operator": "+",
+                "operatorSpan": {
+                  "start": 94,
+                  "end": 95
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "current",
+                  "span": {
+                    "start": 86,
+                    "end": 93
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 96,
+                    "end": 97
+                  }
+                },
+                "span": {
+                  "start": 86,
+                  "end": 97
+                }
+              }
+            ],
+            "span": {
+              "start": 76,
+              "end": 98
+            }
+          },
+          "span": {
+            "start": 71,
+            "end": 98
+          }
+        },
+        "elseBranch": {
+          "kind": "name",
+          "name": "Nothing",
+          "span": {
+            "start": 110,
+            "end": 117
+          }
+        },
+        "span": {
+          "start": 46,
+          "end": 117
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 117
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 122,
+        "end": 128
+      },
+      "parameters": [
+        {
+          "name": "iterator",
+          "nameSpan": {
+            "start": 129,
+            "end": 137
+          },
+          "type": {
+            "kind": "named",
+            "name": "Iterator",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 148,
+                  "end": 151
+                }
+              }
+            ],
+            "span": {
+              "start": 139,
+              "end": 152
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 156,
+          "end": 162
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "next",
+                "span": {
+                  "start": 174,
+                  "end": 178
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "iterator",
+                "span": {
+                  "start": 179,
+                  "end": 187
+                }
+              },
+              "span": {
+                "start": 174,
+                "end": 187
+              }
+            },
+            {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "next",
+                "span": {
+                  "start": 189,
+                  "end": 193
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "iterator",
+                "span": {
+                  "start": 194,
+                  "end": 202
+                }
+              },
+              "span": {
+                "start": 189,
+                "end": 202
+              }
+            }
+          ],
+          "span": {
+            "start": 173,
+            "end": 203
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Just",
+                  "nameSpan": {
+                    "start": 211,
+                    "end": 215
+                  },
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "left",
+                        "nameSpan": {
+                          "start": 217,
+                          "end": 221
+                        },
+                        "span": {
+                          "start": 217,
+                          "end": 221
+                        }
+                      },
+                      {
+                        "kind": "name",
+                        "name": "leftRest",
+                        "nameSpan": {
+                          "start": 223,
+                          "end": 231
+                        },
+                        "span": {
+                          "start": 223,
+                          "end": 231
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 216,
+                      "end": 232
+                    }
+                  },
+                  "span": {
+                    "start": 211,
+                    "end": 232
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Just",
+                  "nameSpan": {
+                    "start": 234,
+                    "end": 238
+                  },
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "right",
+                        "nameSpan": {
+                          "start": 240,
+                          "end": 245
+                        },
+                        "span": {
+                          "start": 240,
+                          "end": 245
+                        }
+                      },
+                      {
+                        "kind": "name",
+                        "name": "rightRest",
+                        "nameSpan": {
+                          "start": 247,
+                          "end": 256
+                        },
+                        "span": {
+                          "start": 247,
+                          "end": 256
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 239,
+                      "end": 257
+                    }
+                  },
+                  "span": {
+                    "start": 234,
+                    "end": 257
+                  }
+                }
+              ],
+              "span": {
+                "start": 210,
+                "end": 258
+              }
+            },
+            "body": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 276,
+                  "end": 278
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "left",
+                  "span": {
+                    "start": 271,
+                    "end": 275
+                  }
+                },
+                "right": {
+                  "kind": "name",
+                  "name": "right",
+                  "span": {
+                    "start": 279,
+                    "end": 284
+                  }
+                },
+                "span": {
+                  "start": 271,
+                  "end": 284
+                }
+              },
+              "thenBranch": {
+                "kind": "match",
+                "scrutinee": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "next",
+                        "span": {
+                          "start": 305,
+                          "end": 309
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "leftRest",
+                        "span": {
+                          "start": 310,
+                          "end": 318
+                        }
+                      },
+                      "span": {
+                        "start": 305,
+                        "end": 318
+                      }
+                    },
+                    {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "next",
+                        "span": {
+                          "start": 320,
+                          "end": 324
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "rightRest",
+                        "span": {
+                          "start": 325,
+                          "end": 334
+                        }
+                      },
+                      "span": {
+                        "start": 320,
+                        "end": 334
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 304,
+                    "end": 335
+                  }
+                },
+                "arms": [
+                  {
+                    "pattern": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "constructor",
+                          "name": "Just",
+                          "nameSpan": {
+                            "start": 349,
+                            "end": 353
+                          },
+                          "argument": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "name",
+                                "name": "leftNext",
+                                "nameSpan": {
+                                  "start": 355,
+                                  "end": 363
+                                },
+                                "span": {
+                                  "start": 355,
+                                  "end": 363
+                                }
+                              },
+                              {
+                                "kind": "wildcard",
+                                "span": {
+                                  "start": 365,
+                                  "end": 366
+                                }
+                              }
+                            ],
+                            "span": {
+                              "start": 354,
+                              "end": 367
+                            }
+                          },
+                          "span": {
+                            "start": 349,
+                            "end": 367
+                          }
+                        },
+                        {
+                          "kind": "constructor",
+                          "name": "Just",
+                          "nameSpan": {
+                            "start": 369,
+                            "end": 373
+                          },
+                          "argument": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "name",
+                                "name": "rightNext",
+                                "nameSpan": {
+                                  "start": 375,
+                                  "end": 384
+                                },
+                                "span": {
+                                  "start": 375,
+                                  "end": 384
+                                }
+                              },
+                              {
+                                "kind": "wildcard",
+                                "span": {
+                                  "start": 386,
+                                  "end": 387
+                                }
+                              }
+                            ],
+                            "span": {
+                              "start": 374,
+                              "end": 388
+                            }
+                          },
+                          "span": {
+                            "start": 369,
+                            "end": 388
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 348,
+                        "end": 389
+                      }
+                    },
+                    "body": {
+                      "kind": "if",
+                      "condition": {
+                        "kind": "binary",
+                        "operator": "==",
+                        "operatorSpan": {
+                          "start": 417,
+                          "end": 419
+                        },
+                        "left": {
+                          "kind": "name",
+                          "name": "leftNext",
+                          "span": {
+                            "start": 408,
+                            "end": 416
+                          }
+                        },
+                        "right": {
+                          "kind": "name",
+                          "name": "rightNext",
+                          "span": {
+                            "start": 420,
+                            "end": 429
+                          }
+                        },
+                        "span": {
+                          "start": 408,
+                          "end": 429
+                        }
+                      },
+                      "thenBranch": {
+                        "kind": "string",
+                        "raw": "\"persistent iterator: 1 then 2\"",
+                        "span": {
+                          "start": 449,
+                          "end": 480
+                        }
+                      },
+                      "elseBranch": {
+                        "kind": "string",
+                        "raw": "\"iterator rest changed\"",
+                        "span": {
+                          "start": 512,
+                          "end": 535
+                        }
+                      },
+                      "span": {
+                        "start": 405,
+                        "end": 535
+                      }
+                    },
+                    "span": {
+                      "start": 348,
+                      "end": 535
+                    }
+                  },
+                  {
+                    "pattern": {
+                      "kind": "wildcard",
+                      "span": {
+                        "start": 546,
+                        "end": 547
+                      }
+                    },
+                    "body": {
+                      "kind": "string",
+                      "raw": "\"iterator ended early\"",
+                      "span": {
+                        "start": 551,
+                        "end": 573
+                      }
+                    },
+                    "span": {
+                      "start": 546,
+                      "end": 573
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 298,
+                  "end": 583
+                }
+              },
+              "elseBranch": {
+                "kind": "string",
+                "raw": "\"iterator changed\"",
+                "span": {
+                  "start": 603,
+                  "end": 621
+                }
+              },
+              "span": {
+                "start": 268,
+                "end": 621
+              }
+            },
+            "span": {
+              "start": 210,
+              "end": 621
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 626,
+                "end": 627
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"iterator changed\"",
+              "span": {
+                "start": 631,
+                "end": 649
+              }
+            },
+            "span": {
+              "start": 626,
+              "end": 649
+            }
+          }
+        ],
+        "span": {
+          "start": 167,
+          "end": 653
+        }
+      },
+      "span": {
+        "start": 119,
+        "end": 653
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 669,
+        "end": 673
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 709,
+            "end": 716
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 697,
+              "end": 703
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "unfold",
+                "span": {
+                  "start": 678,
+                  "end": 684
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "step",
+                "span": {
+                  "start": 685,
+                  "end": 689
+                }
+              },
+              "span": {
+                "start": 678,
+                "end": 689
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 690,
+                "end": 691
+              }
+            },
+            "span": {
+              "start": 678,
+              "end": 691
+            }
+          },
+          "span": {
+            "start": 678,
+            "end": 703
+          }
+        },
+        "span": {
+          "start": 678,
+          "end": 716
+        }
+      },
+      "span": {
+        "start": 655,
+        "end": 716
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 716
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 117
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 119,
+        "end": 653
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 210,
+        "end": 621
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 348,
+        "end": 535
+      }
+    },
+    {
+      "id": 6,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 546,
+        "end": 573
+      }
+    },
+    {
+      "id": 7,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 626,
+        "end": 649
+      }
+    },
+    {
+      "id": 8,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 655,
+        "end": 716
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "step",
+      "canonical": "artifact/iterator-unfold::step",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 7
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "render",
+      "canonical": "artifact/iterator-unfold::render",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 122,
+        "end": 128
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "main",
+      "canonical": "artifact/iterator-unfold::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 669,
+        "end": 673
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 8,
+        "end": 15
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "<=",
+      "canonical": "std/prelude::<=",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "Iterator",
+      "canonical": "std/prelude::Iterator",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "iterator",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 129,
+        "end": 137
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "next",
+      "canonical": "std/prelude::next",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 217,
+        "end": 221
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "leftRest",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 223,
+        "end": 231
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 240,
+        "end": 245
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "rightRest",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 247,
+        "end": 256
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "leftNext",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 355,
+        "end": 363
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "rightNext",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 375,
+        "end": 384
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "unfold",
+      "canonical": "std/prelude::unfold",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 17,
+        "end": 20
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 24,
+        "end": 41
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 31,
+        "end": 34
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 36,
+        "end": 39
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 49,
+        "end": 56
+      }
+    },
+    {
+      "spelling": "<=",
+      "namespace": "operator",
+      "target": 9,
+      "origin": {
+        "start": 57,
+        "end": 59
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 71,
+        "end": 75
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 77,
+        "end": 84
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 86,
+        "end": 93
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 10,
+      "origin": {
+        "start": 94,
+        "end": 95
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 110,
+        "end": 117
+      }
+    },
+    {
+      "spelling": "Iterator",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 139,
+        "end": 152
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 148,
+        "end": 151
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 156,
+        "end": 162
+      }
+    },
+    {
+      "spelling": "next",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 174,
+        "end": 178
+      }
+    },
+    {
+      "spelling": "iterator",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 179,
+        "end": 187
+      }
+    },
+    {
+      "spelling": "next",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 189,
+        "end": 193
+      }
+    },
+    {
+      "spelling": "iterator",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 194,
+        "end": 202
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 211,
+        "end": 215
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 234,
+        "end": 238
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 271,
+        "end": 275
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 19,
+      "origin": {
+        "start": 276,
+        "end": 278
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 279,
+        "end": 284
+      }
+    },
+    {
+      "spelling": "next",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 305,
+        "end": 309
+      }
+    },
+    {
+      "spelling": "leftRest",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 310,
+        "end": 318
+      }
+    },
+    {
+      "spelling": "next",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 320,
+        "end": 324
+      }
+    },
+    {
+      "spelling": "rightRest",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 325,
+        "end": 334
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 349,
+        "end": 353
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 369,
+        "end": 373
+      }
+    },
+    {
+      "spelling": "leftNext",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 408,
+        "end": 416
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 19,
+      "origin": {
+        "start": 417,
+        "end": 419
+      }
+    },
+    {
+      "spelling": "rightNext",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 420,
+        "end": 429
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 22,
+      "origin": {
+        "start": 709,
+        "end": 716
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 697,
+        "end": 703
+      }
+    },
+    {
+      "spelling": "unfold",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 678,
+        "end": 684
+      }
+    },
+    {
+      "spelling": "step",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 685,
+        "end": 689
+      }
+    }
+  ],
+  "issues": []
+}

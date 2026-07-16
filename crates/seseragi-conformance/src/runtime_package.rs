@@ -5,6 +5,7 @@ use std::process::Command;
 mod comprehension;
 mod effect;
 mod imports;
+mod iterator;
 mod range;
 mod service;
 mod services;
@@ -69,6 +70,11 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.range.reduce") {
         range::check_typescript_runtime_range(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.iterator.unfold")
+        || runtime_helper_is_declared(abi, "core.iterator.next")
+    {
+        iterator::check_typescript_runtime_iterator(root)?;
     }
     if runtime_helper_is_declared(abi, "core.range.comprehend") {
         comprehension::check_typescript_runtime_comprehension(root)?;

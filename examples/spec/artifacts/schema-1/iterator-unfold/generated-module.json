@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "module": "artifact/iterator-unfold",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.iterator",
+      "core.int64",
+      "core.maybe",
+      "core.bool",
+      "core.maybe.just",
+      "core.int64.add",
+      "core.maybe.nothing",
+      "core.string",
+      "core.iterator.next",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.iterator.unfold"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

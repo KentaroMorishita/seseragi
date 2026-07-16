@@ -37,6 +37,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/stdin",
         export_name: "StdinError",
     },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Iterator",
+        runtime_feature: "core.iterator",
+        module: "@seseragi/runtime/iterator",
+        export_name: "Iterator",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

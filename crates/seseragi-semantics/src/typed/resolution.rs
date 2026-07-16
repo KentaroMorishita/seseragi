@@ -289,8 +289,17 @@ fn collect_callables(
     collect_local_trait_methods(resolved, semantic_types, &mut callables);
     callables.extend(imports::collect_imported_callables(resolved));
     for symbol in &resolved.symbols {
-        if symbol.canonical.as_deref() == Some("std/prelude::reduce") {
-            callables.insert(symbol.id, standard_reduce_callable());
+        match symbol.canonical.as_deref() {
+            Some("std/prelude::reduce") => {
+                callables.insert(symbol.id, standard_reduce_callable());
+            }
+            Some("std/prelude::unfold") => {
+                callables.insert(symbol.id, standard_unfold_callable());
+            }
+            Some("std/prelude::next") => {
+                callables.insert(symbol.id, standard_next_callable(resolved, semantic_types));
+            }
+            _ => {}
         }
     }
     callables
@@ -337,6 +346,130 @@ fn standard_reduce_callable() -> TopLevelPureFunction {
         semantic_parameters: vec![SemanticTypeKey::Other; 3],
         result: accumulator,
         semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn standard_unfold_callable() -> TopLevelPureFunction {
+    let state = named_type("S");
+    let element = named_type("A");
+    let maybe_step = named_type_with(
+        "Maybe",
+        vec![TypedType::Tuple {
+            elements: vec![element.clone(), state.clone()],
+        }],
+    );
+    let result = named_type_with("Iterator", vec![element.clone()]);
+    let semantic_state = scheme_value("S");
+    let semantic_element = scheme_value("A");
+    let semantic_result = iterator_semantic(semantic_element);
+    TopLevelPureFunction {
+        symbol: "std/prelude::unfold".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![
+            seseragi_syntax::TypeParameter::value("S"),
+            seseragi_syntax::TypeParameter::value("A"),
+        ],
+        constraints: Vec::new(),
+        constraint_identities: Vec::new(),
+        parameters: vec![
+            TypedType::Function {
+                parameter: Box::new(state.clone()),
+                result: Box::new(maybe_step),
+            },
+            state,
+        ],
+        semantic_parameters: vec![SemanticTypeKey::Other, semantic_state.key],
+        semantic_result: semantic_result.key,
+        result,
+    }
+}
+
+fn standard_next_callable(
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> TopLevelPureFunction {
+    let element = named_type("A");
+    let iterator = named_type_with("Iterator", vec![element.clone()]);
+    let semantic_element = scheme_value("A");
+    let semantic_iterator = iterator_semantic(semantic_element.clone());
+    let semantic_payload = SemanticValueType {
+        type_ref: TypedType::Tuple {
+            elements: vec![element.clone(), iterator.clone()],
+        },
+        key: SemanticTypeKey::Tuple(vec![
+            semantic_element.key.clone(),
+            semantic_iterator.key.clone(),
+        ]),
+    };
+    let result = named_type_with(
+        "Maybe",
+        vec![TypedType::Tuple {
+            elements: vec![element, iterator.clone()],
+        }],
+    );
+    let semantic_result = prelude_adt_semantic(resolved, semantic_types, &result, semantic_payload);
+    TopLevelPureFunction {
+        symbol: "std/prelude::next".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![seseragi_syntax::TypeParameter::value("A")],
+        constraints: Vec::new(),
+        constraint_identities: Vec::new(),
+        parameters: vec![iterator.clone()],
+        semantic_parameters: vec![semantic_iterator.key],
+        semantic_result: semantic_result.key,
+        result,
+    }
+}
+
+fn named_type(name: &str) -> TypedType {
+    named_type_with(name, Vec::new())
+}
+
+fn named_type_with(name: &str, arguments: Vec<TypedType>) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments,
+    }
+}
+
+fn scheme_value(name: &str) -> SemanticValueType {
+    SemanticValueType {
+        type_ref: named_type(name),
+        key: SemanticTypeKey::SchemeParameter(name.to_owned()),
+    }
+}
+
+fn iterator_semantic(element: SemanticValueType) -> SemanticValueType {
+    SemanticValueType {
+        type_ref: named_type_with("Iterator", vec![element.type_ref.clone()]),
+        key: SemanticTypeKey::ExternalNominal {
+            canonical: "std/prelude::Iterator".to_owned(),
+            arguments: vec![element],
+        },
+    }
+}
+
+fn prelude_adt_semantic(
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+    type_ref: &TypedType,
+    argument: SemanticValueType,
+) -> SemanticValueType {
+    let SemanticTypeKey::Adt { owner, .. } = semantic_types.key_from_typed_type(resolved, type_ref)
+    else {
+        return SemanticValueType {
+            type_ref: type_ref.clone(),
+            key: SemanticTypeKey::Other,
+        };
+    };
+    SemanticValueType {
+        type_ref: type_ref.clone(),
+        key: SemanticTypeKey::Adt {
+            owner,
+            arguments: vec![argument],
+        },
     }
 }
 

@@ -30,6 +30,8 @@ export {
   inclusive as inclusiveRange,
   reduce as reduceRange,
 } from "./range"
+export type { Iterator } from "./iterator"
+export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
 export type {
   Awaitable,
   ServiceFailure,

@@ -19,6 +19,25 @@ pub(super) fn substitute_type_parameters(
     substitute_semantic_type_parameters(value, &substitutions)
 }
 
+pub(crate) fn substitute_remaining_scheme_parameters(
+    value: &SemanticValueType,
+    substitutions: &BTreeMap<String, TypedType>,
+) -> SemanticValueType {
+    let substitutions = substitutions
+        .iter()
+        .map(|(parameter, type_ref)| {
+            (
+                TypeParameterKey::Scheme(parameter.clone()),
+                SemanticValueType {
+                    type_ref: type_ref.clone(),
+                    key: SemanticTypeKey::Other,
+                },
+            )
+        })
+        .collect();
+    substitute_semantic_type_parameters(value, &substitutions)
+}
+
 fn substitute_semantic_type_parameters(
     value: &SemanticValueType,
     substitutions: &BTreeMap<TypeParameterKey, SemanticValueType>,
@@ -78,6 +97,31 @@ fn substitute_semantic_type_parameters(
                 },
                 key: SemanticTypeKey::Adt {
                     owner: *owner,
+                    arguments,
+                },
+            }
+        }
+        (
+            TypedType::Named { name, .. },
+            SemanticTypeKey::ExternalNominal {
+                canonical,
+                arguments,
+            },
+        ) => {
+            let arguments = arguments
+                .iter()
+                .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
+                .collect::<Vec<_>>();
+            SemanticValueType {
+                type_ref: TypedType::Named {
+                    name: name.clone(),
+                    arguments: arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect(),
+                },
+                key: SemanticTypeKey::ExternalNominal {
+                    canonical: canonical.clone(),
                     arguments,
                 },
             }

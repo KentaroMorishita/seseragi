@@ -1,4 +1,5 @@
 use crate::collection_ops::{runtime_collection_operation, runtime_iterable_operation};
+use crate::iterator_ops::runtime_iterator_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
@@ -41,6 +42,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         } => {
             collect_evidence_runtime_requirements(evidence, requirements);
             if let Some(operation) = runtime_collection_operation(callee, evidence) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_iterator_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(constructor) = runtime_sum_constructor(callee) {
                 push_unique(requirements, constructor.runtime_feature);
@@ -303,6 +306,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         local: operation.local_name.to_owned(),
                     },
                 );
+            } else if let Some(operation) = runtime_iterator_operation(callee) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             } else if let Some(constructor) = runtime_sum_constructor(callee) {
                 push_sum_constructor_import(imports, constructor);
             }
@@ -539,6 +550,7 @@ pub(super) fn collect_type_runtime_requirement(
                 "Maybe" => push_unique(requirements, "core.maybe"),
                 "Either" => push_unique(requirements, "core.either"),
                 "Range" => push_unique(requirements, "core.range"),
+                "Iterator" => push_unique(requirements, "core.iterator"),
                 _ => {}
             }
             for argument in arguments {

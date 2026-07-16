@@ -9,7 +9,7 @@ mod imports;
 mod prelude;
 mod substitution;
 
-pub(crate) use substitution::instantiate_callable;
+pub(crate) use substitution::{instantiate_callable, substitute_remaining_scheme_parameters};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum SemanticTypeKey {
@@ -361,9 +361,9 @@ fn semantic_key_from_type_ref(
                     .symbols
                     .iter()
                     .find(|symbol| symbol.id == target)
-                    .map(|symbol| (target, symbol.kind))
+                    .map(|symbol| (target, symbol.kind, symbol.canonical.as_deref()))
             }) {
-                Some((owner, SymbolKind::Type)) if owners.contains(&owner) => {
+                Some((owner, SymbolKind::Type, _)) if owners.contains(&owner) => {
                     SemanticTypeKey::Adt {
                         owner,
                         arguments: arguments
@@ -375,7 +375,21 @@ fn semantic_key_from_type_ref(
                             .collect(),
                     }
                 }
-                Some((parameter, SymbolKind::TypeParameter)) => {
+                Some((_, SymbolKind::Type, Some(canonical)))
+                    if crate::prelude::is_external_nominal_type(canonical) =>
+                {
+                    SemanticTypeKey::ExternalNominal {
+                        canonical: canonical.to_owned(),
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| SemanticValueType {
+                                type_ref: typed_type_from_type_ref(argument),
+                                key: semantic_key_from_type_ref(resolved, owners, argument),
+                            })
+                            .collect(),
+                    }
+                }
+                Some((parameter, SymbolKind::TypeParameter, _)) => {
                     SemanticTypeKey::TypeParameter(parameter)
                 }
                 _ => SemanticTypeKey::Other,

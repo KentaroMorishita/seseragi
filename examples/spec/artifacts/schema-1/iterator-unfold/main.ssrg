@@ -1,0 +1,27 @@
+fn step current: Int -> Maybe<(Int, Int)> =
+  if current <= 3 then
+    Just (current, current + 1)
+  else
+    Nothing
+
+fn render iterator: Iterator<Int> -> String =
+  match (next iterator, next iterator) {
+    (Just (left, leftRest), Just (right, rightRest)) ->
+      if left == right then
+        match (next leftRest, next rightRest) {
+          (Just (leftNext, _), Just (rightNext, _)) ->
+            if leftNext == rightNext then
+              "persistent iterator: 1 then 2"
+            else
+              "iterator rest changed"
+          _ -> "iterator ended early"
+        }
+      else
+        "iterator changed"
+    _ -> "iterator changed"
+  }
+
+pub effect fn main =
+  unfold step 1
+  |> render
+  |> println
